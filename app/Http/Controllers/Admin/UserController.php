@@ -199,8 +199,8 @@ class UserController extends Controller
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
             // Input checking for dummy
-            if ($data['enable'] === "1") {
-                if ($data['status'] === "-1" || $data['transfer_enable'] === 0 || $data['expired_at'] < date('Y-m-d')) {
+            if ($data['enable'] === '1') {
+                if ($data['status'] === '-1' || $data['transfer_enable'] === 0 || $data['expired_at'] < date('Y-m-d')) {
                     $data['enable'] = 0;
                 }
             }
