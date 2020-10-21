@@ -198,6 +198,13 @@ class UserController extends Controller
             $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
+            // Input checking for dummy
+            if ($data['enable'] === '1') {
+                if ($data['status'] === '-1' || $data['transfer_enable'] === 0 || $data['expired_at'] < date('Y-m-d')) {
+                    $data['enable'] = 0;
+                }
+            }
+
             // 只有admin才有权限操作管理员属性
             if (Auth::getUser()->is_admin === 1) {
                 $data['is_admin'] = (int) $request->input('is_admin');
