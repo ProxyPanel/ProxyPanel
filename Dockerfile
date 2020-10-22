@@ -11,7 +11,11 @@ RUN crontab /etc/app_crontab/crontab
 # System V Init scripts
 COPY docker/init.d/caddy /etc/init.d/
 COPY docker/init.d/queue-worker /etc/init.d/
-RUN chmod a+x /etc/init.d/*
+COPY docker/entrypoint.sh /etc/
+COPY docker/wait-for-it.sh /etc/
+COPY docker/Caddyfile /etc/caddy/
+
+RUN chmod a+x /etc/init.d/* /etc/entrypoint.sh /etc/wait-for-it.sh
 
 COPY --chown=www-data:www-data . /www/wwwroot/proxypanel
 
@@ -24,9 +28,7 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer.phar install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader \
     && php artisan vendor:publish -n
 
-COPY docker/entrypoint.sh /etc/
-COPY docker/wait-for-it.sh /etc/
-COPY docker/Caddyfile /etc/caddy/
+
 
 #Avoid using env_reset in sudoers file
 RUN sed -i "s/env_reset/!env_reset/" /etc/sudoers
