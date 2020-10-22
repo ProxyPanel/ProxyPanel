@@ -1,0 +1,5 @@
+PATH=/
+SHELL=/bin/bash
+BASH_ENV=/root/container_env.sh
+
+* * * * * sudo -u "www-data" /usr/local/bin/php /www/wwwroot/proxypanel/artisan schedule:run > /proc/1/fd/1 2>&1
