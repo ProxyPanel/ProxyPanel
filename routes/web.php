@@ -5,7 +5,7 @@ if (env('APP_KEY') && \Illuminate\Support\Facades\Schema::hasTable('config')) {
         ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
     Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))
-        ->get('callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
+        ->any('callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
 }
 
 Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
@@ -63,6 +63,8 @@ Route::middleware(['isForbidden', 'isMaintenance', 'isLogin'])->group(function (
         Route::get('getStatus', 'PaymentController@getStatus')->name('orderStatus'); // 获取支付单状态
         Route::get('{trade_no}', 'PaymentController@detail')->name('orderDetail'); // 支付单详情
     });
+
+    Route::get('/stripe-checkout/{session_id}', 'Gateway\Stripe@redirectPage')->name('stripe-checkout'); // Stripe Checkout page
 });
 
 // 管理相关

@@ -135,6 +135,11 @@ class SystemController extends Controller
                         return Response::json(['status' => 'fail', 'message' => '请先设置【PayPal】必要参数']);
                     }
                     break;
+                case 'stripe':
+                    if(!sysConfig('stripe_public_key') || !sysConfig('stripe_secret_key')){
+                        return Response::json(['status' => 'fail', 'message' => '请先设置【Stripe】必要参数']);
+                    }
+                    break;
                 default:
                     return Response::json(['status' => 'fail', 'message' => '未知支付渠道']);
             }
