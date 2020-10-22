@@ -29,8 +29,4 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer.phar install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader \
     && php artisan vendor:publish -n
 
-
-#Avoid using env_reset in sudoers file
-RUN sed -i "s/env_reset/!env_reset/" /etc/sudoers
-
 CMD ["/etc/entrypoint.sh"]

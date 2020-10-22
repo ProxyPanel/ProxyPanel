@@ -3,7 +3,10 @@
 # turn on bash's job control
 set -m
 
-/etc/wait-for-it.sh $DB_HOST:$DB_PORT -t 45
+# export env from .env
+export "$(grep DB_HOST .env)" \
+&& export "$(grep DB_PORT .env)" \
+&& /etc/wait-for-it.sh $DB_HOST:$DB_PORT -t 45
 
 chmod -R 777 storage
 sudo -u "www-data" mkdir -p storage/framework/{cache,sessions,testing,views}
