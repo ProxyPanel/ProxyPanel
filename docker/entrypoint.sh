@@ -9,8 +9,8 @@ printenv | grep -v " " > /root/env.txt
 
 /etc/wait-for-it.sh $DB_HOST:$DB_PORT -t 45
 
-sudo -u "www-data" mkdir -p storage/framework/{cache,sessions,testing,views}
 chmod -R 777 storage
+sudo -u "www-data" mkdir -p storage/framework/{cache,sessions,testing,views}
 
 service queue-worker start
 service caddy start
