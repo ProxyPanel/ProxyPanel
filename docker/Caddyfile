@@ -1,0 +1,7 @@
+{$SITE_ADDRESS}
+
+root * /www/wwwroot/proxypanel/public
+
+php_fastcgi 127.0.0.1:9000
+
+file_server

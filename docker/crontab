@@ -1,0 +1,1 @@
+* * * * * /usr/bin/sudo -u "www-data" /usr/local/bin/php /www/wwwroot/proxypanel/artisan schedule:run > /proc/1/fd/1 2>&1

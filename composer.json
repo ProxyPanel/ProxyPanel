@@ -30,6 +30,7 @@
     "riverslei/payment": "^5.1",
     "spatie/laravel-permission": "^3.16",
     "srmklive/paypal": "^1.7",
+    "stripe/stripe-php": "^7.61",
     "xhat/payjs": "^1.4",
     "zbrettonye/geetest": "^1.2",
     "zbrettonye/hcaptcha": "^1.0",

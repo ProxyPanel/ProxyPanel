@@ -10,6 +10,7 @@ use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Controllers\Gateway\PayPal;
+use App\Http\Controllers\Gateway\Stripe;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
@@ -57,6 +58,8 @@ class PaymentController extends Controller
                 return new PayPal();
             case 'epay':
                 return new EPay();
+            case 'stripe':
+                return new Stripe();
             default:
                 Log::error('未知支付：'.self::$method);
 

@@ -22,4 +22,16 @@
     <button class="btn btn-flat" onclick="pay('{{sysConfig('is_otherPay')}}','5')">
         <img src="https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-150px.png" height="32px" alt="PayPal"/>
     </button>'
+@elseif(sysConfig('is_otherPay') == 'stripe')
+    <style>
+        .stripeLogo {
+            width: 70px;
+            height: 28px;
+            display: inline-block;
+            font-size: 18px;
+        }
+    </style>
+    <button class="btn btn-outline-{{config('theme.bg_color')}} mt-2" onclick="pay('{{sysConfig('is_otherPay')}}','6','{{ $goods->type }}','{{ $goods->id }}')">
+        <div class="stripeLogo">Stripe</div>
+    </button>
 @endif

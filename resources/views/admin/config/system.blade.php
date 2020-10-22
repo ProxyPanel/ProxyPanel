@@ -1210,6 +1210,7 @@
                                                 <option value="">关闭</option>
                                                 <option value="bitpayx">麻瓜宝</option>
                                                 <option value="paypal">PayPal</option>
+                                                <option value="stripe">Stripe</option>
                                             </select>
                                         </div>
                                     </div>
@@ -1518,6 +1519,65 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <hr />
+                                    <!-- Stripe begin -->
+                                    <div class="row pb-70">
+                                        <div class="form-group col-lg-2">
+                                            <label class="col-form-label">Stripe</label>
+                                        </div>
+                                        <div class="form-group col-lg-10">
+                                            <div class="row">
+                                                <label class="col-md-3 col-form-label" for="stripe_public_key">Public Key</label>
+                                                <div class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="stripe_public_key" value="{{$stripe_public_key}}"/>
+                                                        <span class="input-group-append">
+                                                            <button class="btn btn-primary" type="button" onclick="update('stripe_public_key')">
+                                                                修改
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-2">
+                                        </div>
+                                        <div class="form-group col-lg-10">
+                                            <div class="row">
+                                                <label class="col-md-3 col-form-label" for="stripe_secret_key">Secret Key</label>
+                                                <div class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="stripe_secret_key" value="{{$stripe_secret_key}}"/>
+                                                        <span class="input-group-append">
+                                                            <button class="btn btn-primary" type="button" onclick="update('stripe_secret_key')">
+                                                                修改
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-2">
+                                        </div>
+                                        <div class="form-group col-lg-10">
+                                            <div class="row">
+                                                <label class="col-md-3 col-form-label" for="stripe_secret_key">WebHook Signing secret</label>
+                                                <div class="col-md-9">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="stripe_signing_secret" value="{{$stripe_signing_secret}}"/>
+                                                        <span class="input-group-append">
+                                                            <button class="btn btn-primary" type="button" onclick="update('stripe_signing_secret')">
+                                                                修改
+                                                            </button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- Stripe end -->
+                                    <hr />
+
                                     <div class="form-group col-lg-6" hidden>
                                         <div class="row">
                                             <label class="col-md-3 col-form-label" for="paypal_app_id">应用ID</label>

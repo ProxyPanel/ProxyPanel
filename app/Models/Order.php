@@ -145,6 +145,9 @@ class Order extends Model
             case 5:
                 $pay_type_label = 'PayPal';
                 break;
+            case 6:
+                $pay_type_label = 'Stripe';
+                break;
             default:
                 $pay_type_label = '';
         }
@@ -169,6 +172,9 @@ class Order extends Model
                 break;
             case 5:
                 $pay_type_icon = $base_path.'paypal.png';
+                break;
+            case 6:
+                $pay_type_icon = $base_path.'stripe.png';
                 break;
             case 0:
             case 4:
@@ -203,6 +209,9 @@ class Order extends Model
                 break;
             case 'paypal':
                 $pay_way_label = 'PayPal';
+                break;
+            case 'stripe':
+                $pay_way_label = 'Stripe';
                 break;
             default:
                 $pay_way_label = '未知';
