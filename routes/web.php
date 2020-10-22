@@ -1,10 +1,10 @@
 <?php
 
 if (env('APP_KEY')) {
-    Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))
+    Route::domain(@sysConfig('subscribe_domain') ?: @sysConfig('website_url'))
         ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
-    Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))
+    Route::domain(@sysConfig('website_callback_url') ?: @sysConfig('website_url'))
         ->get('callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
 }
 
