@@ -1,9 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use App\Models\Config;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Migrations\Migration;
 
 class AddStripConfig extends Migration
 {
@@ -20,7 +18,7 @@ class AddStripConfig extends Migration
      */
     public function up()
     {
-        foreach($this->configs as $config){
+        foreach ($this->configs as $config) {
             Config::insert(['name' => $config]);
         }
     }

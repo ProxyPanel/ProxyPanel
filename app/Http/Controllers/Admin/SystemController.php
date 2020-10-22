@@ -136,7 +136,7 @@ class SystemController extends Controller
                     }
                     break;
                 case 'stripe':
-                    if(!sysConfig('stripe_public_key') || !sysConfig('stripe_secret_key')){
+                    if (! sysConfig('stripe_public_key') || ! sysConfig('stripe_secret_key')) {
                         return Response::json(['status' => 'fail', 'message' => '请先设置【Stripe】必要参数']);
                     }
                     break;

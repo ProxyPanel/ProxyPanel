@@ -1,10 +1,7 @@
 <?php
 
-
 namespace App\Http\Controllers\Gateway;
 
-use Stripe\Checkout\Session;
-use Stripe\Webhook;
 use App\Models\Payment;
 use Auth;
 use Exception;
@@ -12,40 +9,46 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
+use Stripe\Checkout\Session;
+use Stripe\Webhook;
 
-class Stripe extends AbstractPayment {
-    public function __construct() {
+class Stripe extends AbstractPayment
+{
+    public function __construct()
+    {
         \Stripe\Stripe::setApiKey(sysConfig('stripe_secret_key'));
     }
 
-    public function purchase($request): JsonResponse {
+    public function purchase($request): JsonResponse
+    {
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = $this->getCheckoutSessionData($payment->trade_no, $payment->amount);
 
-        try{
+        try {
             $session = Session::create($data);
 
             $url = route('stripe-checkout', ['session_id' => $session->id]);
             $payment->update(['url' => $url]);
 
             return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
-        }catch(Exception $e){
-            Log::error("【Stripe】错误: ".$e->getMessage());
+        } catch (Exception $e) {
+            Log::error('【Stripe】错误: '.$e->getMessage());
             exit;
         }
     }
 
-    protected function getCheckoutSessionData(string $tradeNo, int $amount): array {
+    protected function getCheckoutSessionData(string $tradeNo, int $amount): array
+    {
         $unitAmount = $amount * 100;
 
         return [
-            'payment_method_types' => [ 'card' ],
+            'payment_method_types' => ['card'],
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'usd',
                     'product_data' => [
-                        'name' => sysConfig('subject_name')?: sysConfig('website_name'),
+                        'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
                     ],
                     'unit_amount' => $unitAmount,
                 ],
@@ -60,13 +63,14 @@ class Stripe extends AbstractPayment {
     }
 
     // redirect to Stripe Payment url
-    public function redirectPage($session_id, request $request ) {
+    public function redirectPage($session_id, request $request)
+    {
         return view('user.stripe-checkout', ['session_id' => $session_id]);
     }
 
-
     // url = '/callback/notify?method=stripe'
-    public function notify($request): void {
+    public function notify($request): void
+    {
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $endpointSecret = sysConfig('stripe_signing_secret');
         $event = null;
@@ -74,17 +78,17 @@ class Stripe extends AbstractPayment {
 
         try {
             $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
-        } catch(\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             // Invalid payload
             http_response_code(400);
             exit();
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
             // Invalid signature
             http_response_code(400);
             exit();
         }
 
-        Log::info("Passed signature verification!");
+        Log::info('Passed signature verification!');
         switch ($event->type) {
             case 'checkout.session.completed':
 
@@ -117,17 +121,19 @@ class Stripe extends AbstractPayment {
         exit();
     }
 
-    public function fulfillOrder(Session $session) {
+    public function fulfillOrder(Session $session)
+    {
         $payment = Payment::whereTradeNo($session->client_reference_id)->first();
-        if($payment){
+        if ($payment) {
             $payment->order->update(['status' => 2]);
         }
     }
 
     // 未支付成功则关闭订单
-    public function failedPayment(Session $session) {
+    public function failedPayment(Session $session)
+    {
         $payment = Payment::whereTradeNo($session->client_reference_id)->first();
-        if($payment){
+        if ($payment) {
             $payment->order->update(['status' => -1]);
         }
     }
