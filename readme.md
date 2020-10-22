@@ -1,5 +1,5 @@
 # ProxyPanel
-[简体中文](https://github.com/ZBrettonYe/ProxyPanel/wiki)
+[简体中文](https://proxypanel.gitbook.io/wiki/)
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET
 
@@ -7,7 +7,6 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - Account: test@test.com
     - Password: 123456
 - [Issues](https://github.com/ZBrettonYe/ProxyPanel/issues)
-- [WIKI](https://proxypanel.gitbook.io/wiki/)
 - [UpdateLog](https://proxypanel.gitbook.io/wiki/updatelog)
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
 - [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
