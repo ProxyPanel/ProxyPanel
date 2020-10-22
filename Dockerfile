@@ -27,7 +27,6 @@ RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php -r "unlink('composer-setup.php');" \
     && php composer.phar global require hirak/prestissimo \
     && php composer.phar install --no-ansi --no-dev --no-interaction --no-plugins --no-progress --no-scripts --no-suggest --optimize-autoloader \
-    && php artisan optimize \
     && php artisan vendor:publish -n
 
 

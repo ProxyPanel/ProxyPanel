@@ -10,7 +10,7 @@
 ### END INIT INFO
 
 dir="/"
-cmd="/usr/bin/caddy run --envfile /root/env.txt --config /etc/caddy/Caddyfile"
+cmd="/usr/bin/caddy run --envfile /www/wwwroot/proxypanel/.env --config /etc/caddy/Caddyfile"
 user="root"
 
 name=`basename $0`

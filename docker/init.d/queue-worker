@@ -9,11 +9,8 @@
 # Description:       Enable service provided by daemon.
 ### END INIT INFO
 
-# source env variables
-. /root/env.txt
-
 dir="/www/wwwroot/proxypanel"
-cmd="env $(cat /root/env.txt | xargs) php artisan queue:work redis --daemon --queue=default --timeout=60 --tries=3 -vvv"
+cmd="php artisan queue:work redis --daemon --queue=default --timeout=60 --tries=3 -vvv"
 user="www-data"
 
 name=`basename $0`
