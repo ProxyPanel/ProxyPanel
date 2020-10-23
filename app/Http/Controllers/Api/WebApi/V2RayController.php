@@ -15,7 +15,7 @@ class V2RayController extends BaseController
         $node = Node::find($id);
         $nodeDv = NodeCertificate::whereDomain($node->v2_host)->first();
         $tlsProvider = $node->tls_provider ?: sysConfig('v2ray_tls_provider');
-        if (!$tlsProvider) {
+        if (! $tlsProvider) {
             $tlsProvider = null;
         }
 
@@ -25,11 +25,11 @@ class V2RayController extends BaseController
             'speed_limit'     => $node->speed_limit,
             'client_limit'    => $node->client_limit,
             'push_port'       => $node->push_port,
-            'redirect_url'    => sysConfig('redirect_url'),
+            'redirect_url'    => (string) sysConfig('redirect_url'),
             'secret'          => $node->auth->secret,
             'key'             => $nodeDv->key ?? '',
             'pem'             => $nodeDv->pem ?? '',
-            'v2_license'      => (string)sysConfig('v2ray_license'),
+            'v2_license'      => (string) sysConfig('v2ray_license'),
             'v2_alter_id'     => $node->v2_alter_id,
             'v2_port'         => $node->v2_port,
             'v2_method'       => $node->v2_method,
