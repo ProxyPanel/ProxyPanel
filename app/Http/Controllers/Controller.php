@@ -195,9 +195,9 @@ class Controller extends BaseController
     public function v2raySubUrl($name, $host, $port, $uuid, $alter_id, $net, $type, $domain, $path, $tls): string
     {
         return 'vmess://'.base64url_encode(json_encode([
-                'v'    => '2', 'ps' => $name, 'add' => $host, 'port' => $port, 'id' => $uuid, 'aid' => $alter_id, 'net' => $net,
-                'type' => $type, 'host' => $domain, 'path' => $path, 'tls' => $tls ? 'tls' : ''
-            ], JSON_PRETTY_PRINT));
+            'v'    => '2', 'ps' => $name, 'add' => $host, 'port' => $port, 'id' => $uuid, 'aid' => $alter_id, 'net' => $net,
+            'type' => $type, 'host' => $domain, 'path' => $path, 'tls' => $tls ? 'tls' : '',
+        ], JSON_PRETTY_PRINT));
     }
 
     public function trojanSubUrl($password, $domain, $port, $remark): string
