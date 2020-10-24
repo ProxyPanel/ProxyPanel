@@ -26,38 +26,38 @@ class SubscribeController extends Controller
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
         if (! $subscribe) {
-            exit($this->infoGenerator('使用的订阅链接错误！请重新从官网获取！'));
+            return $this->failed('使用链接错误！请重新获取！');
         }
 
         if ($subscribe->status !== 1) {
-            exit($this->infoGenerator('您的订阅链接已被封禁，请前往官网查询原因！'));
+            return $this->failed('链接已被封禁，请前往官网查询原因！');
         }
 
         // 检查用户是否有效
         $user = $subscribe->user;
         if (! $user) {
-            exit($this->infoGenerator('错误订阅链接，账号不存在！请前往官网重新获取订阅链接'));
+            return $this->failed('错误链接，账号不存在！请重新获取链接');
         }
 
         if ($user->status === -1) {
-            exit($this->infoGenerator('您的账号已经被禁止使用，请重新注册'));
+            return $this->failed('账号被禁用!');
         }
 
         if ($user->enable !== 1) {
-            $unusedTransfer = $user->transfer_enable - $user->u - $user->d;
             if ($user->ban_time) {
-                exit($this->infoGenerator('您的账号处于封禁状态，请在'.date('Y-m-d H:i:s', $user->ban_time).'之后再更新！'));
+                return $this->failed('账号封禁至'.date('m-d H:i', $user->ban_time).',请解封后再更新！');
             }
 
+            $unusedTransfer = $user->transfer_enable - $user->u - $user->d;
             if ($unusedTransfer <= 0) {
-                exit($this->infoGenerator('账号流量耗尽！请前往官网购买或重置流量！'));
+                return $this->failed('流量耗尽！请重新购买或重置流量！');
             }
 
             if ($user->expired_at < date('Y-m-d')) {
-                exit($this->infoGenerator('账号过期！请前往官网购买！'));
+                return $this->failed('账号过期！请续费！');
             }
 
-            exit($this->infoGenerator('账号存在问题，请前往官网查询！'));
+            return $this->failed('账号存在问题，请前往官网查询！');
         }
 
         // 更新访问次数
@@ -77,7 +77,7 @@ class SubscribeController extends Controller
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->get()->toArray();
         if (empty($nodeList)) {
-            exit($this->infoGenerator('无可用节点'));
+            return $this->failed('无可用节点');
         }
 
         // 打乱数组
@@ -89,7 +89,7 @@ class SubscribeController extends Controller
 
         // 展示到期时间和剩余流量
         if (sysConfig('is_custom_subscribe')) {
-            $scheme .= $this->infoGenerator('到期时间: '.($user->expired_at < date('Y-m-d') ? '过期' : $user->expired_at)).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
+            $scheme .= $this->infoGenerator('到期时间: '.$user->expired_at).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
         }
 
         // 控制客户端最多获取节点数
@@ -117,6 +117,11 @@ class SubscribeController extends Controller
     }
 
     // 抛出错误的节点信息，用于兼容防止客户端订阅失败
+    private function failed($text)
+    {
+        return Response::make(base64url_encode($this->infoGenerator($text)), 200);
+    }
+
     private function infoGenerator($text): string
     {
         $result = null;
