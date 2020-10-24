@@ -39,8 +39,7 @@ class V2RayController extends BaseController
             'v2_path'         => $node->v2_path,
             'v2_tls'          => $node->v2_tls ? true : false,
             'v2_tls_provider' => $tlsProvider,
-        ]
-        );
+        ]);
     }
 
     // 获取节点可用的用户列表

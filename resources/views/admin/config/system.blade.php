@@ -1544,7 +1544,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group col-lg-6 d-flex">
-                                            <label class="col-md-3 col-form-label" for="stripe_secret_key">WebHook Signing secret</label>
+                                            <label class="col-md-3 col-form-label" for="stripe_signing_secret">WebHook Signing secret</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="stripe_signing_secret" value="{{$stripe_signing_secret}}"/>

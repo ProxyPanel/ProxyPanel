@@ -156,7 +156,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <div class="btn btn-group-lg charge_credit">
+                    <div class="charge_credit">
                         @include('user.components.purchase')
                     </div>
                     <button type="button" class="btn btn-primary" id="change_btn" onclick="pay()">{{trans('home.recharge')}}</button>
