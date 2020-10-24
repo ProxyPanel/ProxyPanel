@@ -195,7 +195,8 @@
                                 <div class="panel-actions">
                                     <ul class="nav nav-pills" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" data-toggle="tab" href="#daily" aria-controls="daily" role="tab" aria-expanded="true" aria-selected="false">天</a>
+                                            <a class="nav-link active" data-toggle="tab" href="#daily" aria-controls="daily" role="tab" aria-expanded="true"
+                                               aria-selected="false">天</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#monthly" aria-controls="monthly" role="tab" aria-selected="true">月</a>
@@ -230,7 +231,7 @@
     @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
         <script src="/assets/custom/qart.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function() {
+            $(document).ready(function () {
                 new QArt({
                     value: '{{sysConfig('push_bear_qrcode')}}',
                     imagePath: '{{asset('/assets/images/wechat.png')}}',
@@ -245,11 +246,10 @@
     <script type="text/javascript">
         // 签到
         function checkIn() {
-            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire('长者的微笑', ret.message, 'success');
-                }
-                else {
+                } else {
                     swal.fire({
                         title: ret.message,
                         icon: 'error',
@@ -295,7 +295,7 @@
                             display: true,
                             ticks: {
                                 beginAtZero: true,
-                                userCallback: function(tick) {
+                                userCallback: function (tick) {
                                     return tick.toString() + ' GB';
                                 },
                             },
@@ -345,7 +345,7 @@
                             display: true,
                             ticks: {
                                 beginAtZero: true,
-                                userCallback: function(tick) {
+                                userCallback: function (tick) {
                                     return tick.toString() + ' GB';
                                 },
                             },
@@ -361,7 +361,7 @@
         @if($banedTime)
         // 每秒更新计时器
         const countDownDate = new Date("{{$banedTime}}").getTime();
-        const x = setInterval(function() {
+        const x = setInterval(function () {
             const distance = countDownDate - new Date().getTime();
             const hours = Math.floor(distance % 86400000 / 3600000);
             const minutes = Math.floor((distance % 3600000) / 60000);

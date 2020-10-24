@@ -41,7 +41,7 @@
     @if($payment->qr_code && $payment->url)
         <script src="/assets/custom/qart.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function() {
+            $(document).ready(function () {
                 new QArt({
                     value: '{{$payment->url}}',
                     imagePath: '{{asset($pay_type_icon)}}',
@@ -55,20 +55,19 @@
 
     <script type="text/javascript">
         // 检查支付单状态
-        const r = window.setInterval(function() {
+        const r = window.setInterval(function () {
             $.ajax({
                 method: 'GET',
                 url: '{{route('orderStatus')}}',
                 data: {trade_no: '{{$payment->trade_no}}'},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     window.clearInterval();
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false}).then(() => {
                             window.location.href = '{{route('invoice')}}';
                         });
-                    }
-                    else if (ret.status === 'error') {
+                    } else if (ret.status === 'error') {
                         swal.fire({title: ret.message, icon: 'error', timer: 1500, showConfirmButton: false}).then(() => {
                             window.location.href = '{{route('invoice')}}';
                         });

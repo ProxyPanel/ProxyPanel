@@ -45,8 +45,10 @@ class UserTrafficAbnormalAutoWarning extends Command
                     ->selectRaw('user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic')
                     ->first();
 
-                PushNotification::send('流量异常用户提醒',
-                    "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU).'，下行流量：'.flowAutoShow($traffic->totalD).'，共计：'.flowAutoShow($traffic->totalTraffic).'**。');
+                PushNotification::send(
+                    '流量异常用户提醒',
+                    "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU).'，下行流量：'.flowAutoShow($traffic->totalD).'，共计：'.flowAutoShow($traffic->totalTraffic).'**。'
+                );
             }
         }
     }

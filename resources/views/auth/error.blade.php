@@ -94,11 +94,11 @@
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script type="text/javascript">
-    (function(document, window, $) {
+    (function (document, window, $) {
         'use strict';
 
         const Site = window.Site;
-        $(document).ready(function() {
+        $(document).ready(function () {
             Site.run();
         });
     })(document, window, jQuery);

@@ -122,7 +122,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600"><i
-                                class="icon wb-star-outline"></i> {{trans('home.referral_apply_title')}}</h4>
+                                    class="icon wb-star-outline"></i> {{trans('home.referral_apply_title')}}</h4>
                         <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                             <thead class="thead-default">
                             <tr>
@@ -172,20 +172,19 @@
     <script type="text/javascript">
         // 申请提现
         function extractMoney() {
-            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });
-                }
-                else {
+                } else {
                     swal.fire('申请失败', ret.message, 'error');
                 }
             });
         }
 
         const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        clipboard.on('success', function () {
             swal.fire({
                 title: '复制成功',
                 icon: 'success',
@@ -193,7 +192,7 @@
                 showConfirmButton: false,
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on('error', function () {
             swal.fire({
                 title: '复制失败，请手动复制',
                 icon: 'error',

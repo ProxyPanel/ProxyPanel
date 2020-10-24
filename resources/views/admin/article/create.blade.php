@@ -57,15 +57,14 @@
                         <label class="col-form-label col-md-2" for="sort">排序</label>
                         <div class="col-md-2">
                             <input type="number" class="form-control" name="sort" id="sort" value="{{ old('sort')??0 }}" required/>
+                            <span class="text-help"> 值越高显示时越靠前 </span>
                         </div>
-                        <span class="text-help"> 值越高显示时越靠前 </span>
                     </div>
                     <div class="form-group row" id="all_logo">
                         <label class="col-form-label col-md-2" for="logo">LOGO</label>
                         <div class="col-md-4" id="icon" style="display: none;">
                             <input type="text" name="logo" id="logo" class="form-control" value="{{ old('logo') }}"/>
-                            <span class="text-help">
-                                <a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
+                            <span class="text-help"><a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
                         </div>
 
                         <div class="col-md-4" id="logoUpload">
@@ -97,13 +96,13 @@
     <script src="/assets/global/js/Plugin/summernote.js" type="text/javascript"></script>
     <script type="text/javascript">
         @if(old('type'))
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("input[name='type'][value='{{old('type')}}']").click();
         });
         @endif
     </script>
     <script type="text/javascript">
-        $('input:radio[name=\'type\']').on('change', function() {
+        $('input:radio[name=\'type\']').on('change', function () {
             const summary = $('#summary');
             const sort = $('#sort');
             const allLogo = $('#all_logo');

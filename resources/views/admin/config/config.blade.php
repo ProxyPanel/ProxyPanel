@@ -389,10 +389,10 @@
                 url: '{{route('admin.config.level.store')}}',
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', level: level, level_name: level_name},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#level_msg').show().html('正在添加');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#level_msg').show().html(ret.message);
                         return false;
@@ -400,10 +400,10 @@
                     $('#add_level_modal').modal('hide');
                     window.location.reload();
                 },
-                error: function() {
+                error: function () {
                     $('#level_msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                     swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 },
             });
@@ -420,11 +420,10 @@
                     level_name: $('#level_name_' + id).val(),
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -447,11 +446,10 @@
                         url: '{{route('admin.config.level.destroy', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
@@ -481,10 +479,10 @@
                 url: '{{route('admin.config.country.store')}}',
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', code: country_code, name: country_name},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#country_msg').show().html('正在添加');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#country_msg').show().html(ret.message);
                         return false;
@@ -492,10 +490,10 @@
                     $('#add_country_modal').modal('hide');
                     window.location.reload();
                 },
-                error: function() {
+                error: function () {
                     $('#country_msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                     swal.fire({
                         title: '添加成功',
                         icon: 'success',
@@ -513,11 +511,10 @@
                 url: '{{route('admin.config.country.update', '')}}/' + code,
                 data: {_token: '{{csrf_token()}}', name: $('#country_' + code).val()},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'});
                     }
                 },
@@ -540,11 +537,10 @@
                         url: '{{route('admin.config.country.destroy', '')}}/' + code,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
@@ -569,10 +565,10 @@
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', name: name, type: type},
                 dataType: 'json',
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#msg').show().html('正在添加');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#msg').show().html(ret.message);
                         return false;
@@ -580,10 +576,10 @@
 
                     $('#add_config_modal').modal('hide');
                 },
-                error: function() {
+                error: function () {
                     $('#msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                     swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 },
             });
@@ -596,11 +592,10 @@
                 url: '{{route('admin.config.ss.update', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -623,11 +618,10 @@
                         url: '{{route('admin.config.ss.destroy', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
@@ -655,10 +649,10 @@
                 url: '{{route('admin.config.label.store')}}',
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', name: name, sort: sort},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#level_msg').show().html('正在添加');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#lable_msg').show().html(ret.message);
                         return false;
@@ -666,10 +660,10 @@
                     $('#add_label_modal').modal('hide');
                     window.location.reload();
                 },
-                error: function() {
+                error: function () {
                     $('#lable_msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                     swal.fire({
                         title: '添加成功',
                         icon: 'success',
@@ -691,11 +685,10 @@
                     sort: $('#label_sort_' + id).val(),
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -717,11 +710,10 @@
                     url: '{{route('admin.config.label.destroy', '')}}/' + id,
                     data: {_token: '{{csrf_token()}}'},
                     dataType: 'json',
-                    success: function(ret) {
+                    success: function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        }
-                        else {
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     },

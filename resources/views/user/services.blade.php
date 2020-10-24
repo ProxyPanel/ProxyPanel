@@ -175,14 +175,12 @@
                 $('#change_btn').hide();
                 $('#charge_qrcode').hide();
                 $('#charge_coupon_code').hide();
-            }
-            else if (value === 2) {
+            } else if (value === 2) {
                 $('.charge_credit').hide();
                 $('#change_btn').hide();
                 $('#charge_qrcode').show();
                 $('#charge_coupon_code').hide();
-            }
-            else {
+            } else {
                 $('.charge_credit').hide();
                 $('#charge_qrcode').hide();
                 $('#charge_coupon_code').show();
@@ -190,7 +188,7 @@
             }
         }
 
-        $(document).ready(function() {
+        $(document).ready(function () {
             let which_selected = 3;
             @if(sysConfig('is_onlinePay'))
                 which_selected = 1;
@@ -203,7 +201,7 @@
         });
 
         // 切换充值方式
-        $('#charge_type').change(function() {
+        $('#charge_type').change(function () {
             itemControl(parseInt($(this).val()));
         });
 
@@ -218,12 +216,10 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                    $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({
                                 title: ret.message,
                                 text: ret.data,
@@ -251,29 +247,26 @@
                     url: '{{route('purchase')}}',
                     data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
                     dataType: 'json',
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#charge_msg').show().html('创建支付单中...');
                     },
-                    success: function(ret) {
+                    success: function (ret) {
                         if (ret.status === 'fail') {
                             return false;
-                        }
-                        else {
+                        } else {
                             $('#charge_msg').show().html(ret.message);
                             if (ret.data) {
                                 window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
-                            }
-                            else if (ret.url) {
+                            } else if (ret.url) {
                                 window.location.href = ret.url;
                             }
                         }
                     },
-                    error: function() {
+                    error: function () {
                         $('#charge_msg').show().html("{{trans('home.error_response')}}");
                     },
                 });
-            }
-            else if (paymentType === 3) {
+            } else if (paymentType === 3) {
                 if (charge_coupon === '') {
                     $('#charge_msg').show().html("{{trans('home.coupon_not_empty')}}");
                     $('#charge_coupon').focus();
@@ -284,10 +277,10 @@
                     method: 'POST',
                     url: '{{route('recharge')}}',
                     data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
-                    beforeSend: function() {
+                    beforeSend: function () {
                         $('#charge_msg').show().html("{{trans('home.recharging')}}");
                     },
-                    success: function(ret) {
+                    success: function (ret) {
                         if (ret.status === 'fail') {
                             $('#charge_msg').show().html(ret.message);
                             return false;
@@ -296,7 +289,7 @@
                         $('#charge_modal').modal('hide');
                         window.location.reload();
                     },
-                    error: function() {
+                    error: function () {
                         $('#charge_msg').show().html("{{trans('home.error_response')}}");
                     },
                 });

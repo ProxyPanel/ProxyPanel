@@ -66,7 +66,7 @@
                             display: true,
                             ticks: {
                                 beginAtZero: true,
-                                userCallback: function(tick) {
+                                userCallback: function (tick) {
                                     return tick.toString() + ' GB';
                                 },
                             },
@@ -116,7 +116,7 @@
                             display: true,
                             ticks: {
                                 beginAtZero: true,
-                                userCallback: function(tick) {
+                                userCallback: function (tick) {
                                     return tick.toString() + ' GB';
                                 },
                             },

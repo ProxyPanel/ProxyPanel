@@ -139,10 +139,10 @@
                 method: 'POST',
                 url: '{{route('admin.node.check', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#node' + id).removeClass('wb-signal').addClass('wb-loop icon-spin');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({
                             title: ret.title,
@@ -151,12 +151,11 @@
                                 ret.message[0] + '</td><td>' + ret.message[1] + '</td></tr></tbody></table>',
                             showConfirmButton: false,
                         });
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.title, text: ret.message, icon: 'error'});
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#node' + id).removeClass('wb-loop icon-spin').addClass('wb-signal');
                 },
             });
@@ -168,10 +167,10 @@
                 method: 'POST',
                 url: '{{route('admin.node.ping', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#ping' + id).removeClass('wb-order').addClass('wb-loop icon-spin');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({
                             icon: 'info',
@@ -180,12 +179,11 @@
                                 ret.message[3] + '</td></tr></tbody></table>',
                             showConfirmButton: false,
                         });
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'});
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#ping' + id).removeClass('wb-loop icon-spin').addClass('wb-order');
                 },
             });
@@ -205,18 +203,17 @@
                         method: 'POST',
                         url: '{{route('admin.node.reload', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $('#reload' + id).removeClass('wb-reload').addClass('wb-loop icon-spin');
                         },
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'});
                             }
                         },
-                        complete: function() {
+                        complete: function () {
                             $('#reload' + id).removeClass('wb-loop icon-spin').addClass('wb-reload');
                         },
                     });
@@ -230,18 +227,17 @@
                 method: 'GET',
                 url: '{{route('admin.node.geo', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#geo' + id).removeClass('wb-map').addClass('wb-loop icon-spin');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'});
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#geo' + id).removeClass('wb-loop icon-spin').addClass('wb-map');
                 },
             });
@@ -263,11 +259,10 @@
                         url: '{{route('admin.node.destroy', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },

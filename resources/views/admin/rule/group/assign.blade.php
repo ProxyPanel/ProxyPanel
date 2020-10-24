@@ -53,7 +53,7 @@
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
     <script src="/assets/global/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#nodes').multiSelect('select',@json($ruleGroup->nodes));
         });
 
@@ -61,45 +61,45 @@
         $('#nodes').multiSelect({
             selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配节点，此处可搜索\'>',
             selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配节点，此处可搜索\'>',
-            afterInit: function() {
+            afterInit: function () {
                 const that = this,
                     $selectableSearch = that.$selectableUl.prev(),
                     $selectionSearch = that.$selectionUl.prev(),
                     selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
                     selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-                that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function(e) {
+                that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function (e) {
                     if (e.which === 40) {
                         that.$selectableUl.focus();
                         return false;
                     }
                 });
 
-                that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function(e) {
+                that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function (e) {
                     if (e.which === 40) {
                         that.$selectionUl.focus();
                         return false;
                     }
                 });
             },
-            afterSelect: function() {
+            afterSelect: function () {
                 this.qs1.cache();
                 this.qs2.cache();
             },
-            afterDeselect: function() {
+            afterDeselect: function () {
                 this.qs1.cache();
                 this.qs2.cache();
             },
         });
 
         // 全选
-        $('#select-all').click(function() {
+        $('#select-all').click(function () {
             $('#nodes').multiSelect('select_all');
             return false;
         });
 
         // 反选
-        $('#deselect-all').click(function() {
+        $('#deselect-all').click(function () {
             $('#nodes').multiSelect('deselect_all');
             return false;
         });

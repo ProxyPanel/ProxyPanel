@@ -157,11 +157,10 @@
                         _token: '{{csrf_token()}}',
                         title: title,
                         content: content,
-                    }, function(ret) {
+                    }, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        }
-                        else {
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });

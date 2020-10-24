@@ -73,7 +73,8 @@
                                         <i class="red-600 icon wb-warning" data-content="线路波动/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
                                     @endif
                                     @if($node->traffic_rate != 1)
-                                        <i class="green-600 icon wb-info-circle" data-content="{{$node->traffic_rate}} 倍流量消耗" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
+                                        <i class="green-600 icon wb-info-circle" data-content="{{$node->traffic_rate}} 倍流量消耗" data-trigger="hover" data-toggle="popover"
+                                           data-placement="top"></i>
                                     @endif
                                     {{$node->name}}
                                 </p>
@@ -119,7 +120,7 @@
     <script src="/assets/custom/maps/jquery-jvectormap-world-mill-cn.js"></script>
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $('#world-map').vectorMap({
                 map: 'world_mill',
                 scaleColors: ['#C8EEFF', '#0071A4'],
@@ -172,10 +173,10 @@
                 method: 'POST',
                 url: '{{route('node')}}',
                 data: {_token: '{{csrf_token()}}', id: id, type: type},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#' + type + id).removeAttr('class').addClass('icon wb-loop icon-spin');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         switch (type) {
                             case 'code':
@@ -207,7 +208,7 @@
                         }
                     }
                 },
-                complete: function() {
+                complete: function () {
                     $('#' + type + id).removeAttr('class').addClass(oldClass);
                 },
             });

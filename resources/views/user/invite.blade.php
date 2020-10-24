@@ -88,11 +88,10 @@
                 url: '{{route('createInvite')}}',
                 data: {_token: '{{csrf_token()}}'},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -101,7 +100,7 @@
         }
 
         const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        clipboard.on('success', function () {
             swal.fire({
                 title: '复制成功',
                 icon: 'success',
@@ -109,7 +108,7 @@
                 showConfirmButton: false,
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on('error', function () {
             swal.fire({
                 title: '复制失败，请手动复制',
                 icon: 'error',

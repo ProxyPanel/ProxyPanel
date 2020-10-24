@@ -67,8 +67,8 @@
                             <label class="col-form-label col-md-2" for="sort">排序</label>
                             <div class="col-md-2">
                                 <input type="number" class="form-control" name="sort" value="{{$article->sort}}" required/>
+                                <span class="text-help"> 值越高显示时越靠前 </span>
                             </div>
-                            <span class="text-help"> 值越高显示时越靠前 </span>
                         </div>
                     @endif
                     @if($article->type !== 2)
@@ -80,17 +80,18 @@
                                     <span class="text-help"> 推荐尺寸：100x75 </span>
                                 </div>
                             @else
-                                <div class="col-md-4 input-group">
-                                    @if($article->logo)
-                                        <div class="input-group-prepend">
+                                <div class="col-md-4">
+                                    <div class="input-group">
+                                        @if($article->logo)
+                                            <div class="input-group-prepend">
                                             <span class="input-group-text">
                                                 <i class="fa {{$article->logo}}" aria-hidden="true"></i></span>
-                                        </div>
-                                    @endif
-                                    <input type="text" class="form-control" name="logo" value="{{$article->logo}}"/>
+                                            </div>
+                                        @endif
+                                        <input type="text" class="form-control" name="logo" value="{{$article->logo}}"/>
+                                    </div>
+                                    <span class="text-help"><a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
                                 </div>
-                                <span class="text-help">
-                                    <a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
                             @endif
                         </div>
                     @endif

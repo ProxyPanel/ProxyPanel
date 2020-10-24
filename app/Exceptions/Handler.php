@@ -95,8 +95,11 @@ class Handler extends ExceptionHandler
                         ]);
                     }
 
-                    return Response::view('auth.error',
-                        ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'], 419);
+                    return Response::view(
+                        'auth.error',
+                        ['message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>'],
+                        419
+                    );
                 case $exception instanceof ReflectionException:
                     if ($request->ajax()) {
                         return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
@@ -111,9 +114,11 @@ class Handler extends ExceptionHandler
                         ]);
                     }
 
-                    return Response::view('auth.error',
+                    return Response::view(
+                        'auth.error',
                         ['message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
-                        500);
+                        500
+                    );
                 case $exception instanceof ConnectionException:
                     if ($request->ajax()) {
                         return Response::json([

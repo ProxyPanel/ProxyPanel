@@ -192,7 +192,7 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#group').val({{Request::input('group')}});
             $('#level').val({{Request::input('level')}});
             $('#pay_way').val({{Request::input('pay_way')}});
@@ -213,12 +213,10 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
+                    $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
@@ -227,7 +225,7 @@
         }
 
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;
@@ -257,11 +255,10 @@
                         url: url,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
@@ -281,12 +278,10 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function(ret) {
+                    $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
@@ -296,18 +291,17 @@
 
         // 切换用户身份
         function switchToUser(id) {
-            $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function(ret) {
+            $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                }
-                else {
+                } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
         }
 
         const clipboard = new ClipboardJS('.copySubscribeLink');
-        clipboard.on('success', function() {
+        clipboard.on('success', function () {
             swal.fire({
                 title: '复制成功',
                 icon: 'success',
@@ -315,7 +309,7 @@
                 showConfirmButton: false,
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on('error', function () {
             swal.fire({
                 title: '复制失败，请手动复制',
                 icon: 'error',

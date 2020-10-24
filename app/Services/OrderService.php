@@ -66,8 +66,14 @@ class OrderService
         $ret = (new UserService(self::$user))->updateCredit(self::$order->origin_amount);
         // 余额变动记录日志
         if ($ret) {
-            Helpers::addUserCreditLog(self::$order->user_id, self::$order->id, $credit, self::$user->credit,
-                self::$order->amount, '用户通过'.self::$order->pay_way.'充值余额');
+            Helpers::addUserCreditLog(
+                self::$order->user_id,
+                self::$order->id,
+                $credit,
+                self::$user->credit,
+                self::$order->amount,
+                '用户通过'.self::$order->pay_way.'充值余额'
+            );
         }
 
         return $ret;
@@ -78,9 +84,13 @@ class OrderService
     {
         $ret = (new UserService(self::$user))->incrementData(self::$goods->traffic * MB);
         if ($ret) {
-            return Helpers::addUserTrafficModifyLog(self::$order->user_id, self::$order->id,
-                self::$user->transfer_enable - self::$goods->traffic * MB, self::$user->transfer_enable,
-                '['.self::$order->pay_way.']加上用户购买的套餐流量');
+            return Helpers::addUserTrafficModifyLog(
+                self::$order->user_id,
+                self::$order->id,
+                self::$user->transfer_enable - self::$goods->traffic * MB,
+                self::$user->transfer_enable,
+                '['.self::$order->pay_way.']加上用户购买的套餐流量'
+            );
         }
 
         return false;
@@ -113,8 +123,13 @@ class OrderService
 
         $ret = self::$user->update(array_merge($this->resetTimeAndData(), $updateData));
         if ($ret) {
-            return Helpers::addUserTrafficModifyLog(self::$order->user_id, self::$order->id, $oldData, self::$user->transfer_enable,
-                '【'.self::$order->pay_way.'】加上用户购买的套餐流量');
+            return Helpers::addUserTrafficModifyLog(
+                self::$order->user_id,
+                self::$order->id,
+                $oldData,
+                self::$user->transfer_enable,
+                '【'.self::$order->pay_way.'】加上用户购买的套餐流量'
+            );
         }
 
         return false;
@@ -162,8 +177,13 @@ class OrderService
             }
             // 按照返利模式进行返利判断
             if ($referralType == 2 || $referral) {
-                return $this->addReferralLog($user->id, $inviter->id, self::$order->id, self::$order->amount,
-                    self::$order->amount * sysConfig('referral_percent'));
+                return $this->addReferralLog(
+                    $user->id,
+                    $inviter->id,
+                    self::$order->id,
+                    self::$order->amount,
+                    self::$order->amount * sysConfig('referral_percent')
+                );
             }
         }
 

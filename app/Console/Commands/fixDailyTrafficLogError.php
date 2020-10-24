@@ -32,8 +32,7 @@ class fixDailyTrafficLogError extends Command
         Log::info('----------------------------【添加节点流量日志】开始----------------------------');
         foreach ($nodeArray as $nodeId) {
             $query = UserDataFlowLog::whereNodeId($nodeId)
-                ->whereBetween('log_time',
-                    [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]);
+                ->whereBetween('log_time', [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]);
 
             $u = $query->sum('u');
             $d = $query->sum('d');
@@ -54,9 +53,7 @@ class fixDailyTrafficLogError extends Command
         Log::info('----------------------------【节点流量日志修正】结束----------------------------');
         Log::info('----------------------------【用户流量日志修正】开始----------------------------');
         foreach (UserDailyDataFlow::all() as $log) {
-            UserDailyDataFlow::whereId($log->id)->update([
-                'created_at' => date('Y-m-d H:i:s', strtotime("$log->created_at -1 days")),
-            ]);
+            UserDailyDataFlow::whereId($log->id)->update(['created_at' => date('Y-m-d H:i:s', strtotime("$log->created_at -1 days"))]);
         }
         Log::info('----------------------------【用户个人流量日志修正】开始----------------------------');
         foreach (UserDataFlowLog::distinct()->pluck('user_id')->toArray() as $userId) {
@@ -75,8 +72,7 @@ class fixDailyTrafficLogError extends Command
     private function statisticsByUser($user_id, $node_id = 0): void
     {
         $query = UserDataFlowLog::whereUserId($user_id)
-            ->whereBetween('log_time',
-                [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]);
+            ->whereBetween('log_time', [strtotime(date('Y-m-d', strtotime('-1 days'))), strtotime($this->end)]);
 
         if ($node_id) {
             $query->whereNodeId($node_id);

@@ -41,7 +41,7 @@
 @section('script')
     <script type="text/javascript">
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 replyTicket();
                 return false;
@@ -65,14 +65,14 @@
                         async: true,
                         data: {_token: '{{csrf_token()}}', id: '{{$ticket->id}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             swal.fire({
                                 title: ret.message,
                                 icon: 'success',
                                 timer: 1300,
                             }).then(() => window.location.href = '{{route('ticket')}}');
                         },
-                        error: function() {
+                        error: function () {
                             swal.fire({title: '未知错误！请通知客服', icon: 'error'});
                         },
                     });
@@ -101,7 +101,7 @@
                         _token: '{{csrf_token()}}',
                         id: '{{$ticket->id}}',
                         content: content,
-                    }, function(ret) {
+                    }, function (ret) {
                         if (ret.status === 'success') {
                             swal.fire({
                                 title: ret.message,
@@ -109,8 +109,7 @@
                                 timer: 1000,
                                 showConfirmButton: false,
                             }).then(() => window.location.reload());
-                        }
-                        else {
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });

@@ -122,7 +122,7 @@
     <script src="/assets/global/vendor/marked/marked.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/to-markdown/to-markdown.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#status').val({{Request::input('status')}});
         });
 
@@ -140,10 +140,10 @@
                 url: '{{route('admin.marketing.add')}}',
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', title: title, content: $('#content').val()},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#msg').show().html('正在添加...');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#msg').show().html(ret.message);
                         return false;
@@ -152,16 +152,16 @@
                     $('#send_modal').modal('hide');
 
                 },
-                error: function() {
+                error: function () {
                     $('#msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                 },
             });
         }
 
         // 关闭modal触发
-        $('#send_modal').on('hide.bs.modal', function() {
+        $('#send_modal').on('hide.bs.modal', function () {
             window.location.reload();
         });
 

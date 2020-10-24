@@ -49,11 +49,10 @@
                         async: false,
                         data: {_token: '{{csrf_token()}}', content: content},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 $('#result').val(ret.data);
-                            }
-                            else {
+                            } else {
                                 $('#result').val(ret.message);
                             }
                         },

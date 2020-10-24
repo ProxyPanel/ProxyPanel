@@ -116,12 +116,10 @@
                         async: false,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                    then(() => window.location.reload());
-                            }
-                            else {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'});
                             }
                         },
@@ -145,12 +143,10 @@
                         async: false,
                         data: {_token: '{{csrf_token()}}', id: id},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                    then(() => window.location.reload());
-                            }
-                            else {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'});
                             }
                         },

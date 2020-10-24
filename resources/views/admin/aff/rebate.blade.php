@@ -101,12 +101,12 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#status').val({{Request::input('status')}});
         });
 
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;

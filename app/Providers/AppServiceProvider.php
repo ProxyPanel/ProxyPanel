@@ -14,7 +14,6 @@ use App\Observers\OrderObserver;
 use App\Observers\RuleGroupObserver;
 use App\Observers\UserGroupObserver;
 use App\Observers\UserObserver;
-use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Schema;
 use URL;
@@ -31,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->isLocal()) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
-            $this->app->register(IdeHelperServiceProvider::class);
+            $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
     }
 

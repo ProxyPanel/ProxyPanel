@@ -106,12 +106,10 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
+                    $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'});
                         }
                     });

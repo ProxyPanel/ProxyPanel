@@ -55,8 +55,7 @@ class CloudFlare
                     $response = $this->client->post(self::$apiHost.'zones/'.$this->zoneIdentifier[2].'/dns_records', $data);
                     break;
                 case 'update':
-                    $response = $this->client->put(self::$apiHost.'zones/'.$this->zoneIdentifier[2].'/dns_records/'.$id,
-                        $data);
+                    $response = $this->client->put(self::$apiHost.'zones/'.$this->zoneIdentifier[2].'/dns_records/'.$id, $data);
                     break;
                 case 'delete':
                     $response = $this->client->delete(self::$apiHost.'zones/'.$this->zoneIdentifier[2].'/dns_records/'.$id);

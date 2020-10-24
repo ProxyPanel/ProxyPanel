@@ -76,7 +76,7 @@
     <script type="text/javascript">
         function getInfo(id, type) {
             $.post("{{route('admin.user.exportProxy', $user->id)}}", {_token: '{{csrf_token()}}', id: id, type: type},
-                function(ret) {
+                function (ret) {
                     if (ret.status === 'success') {
                         switch (type) {
                             case 'code':

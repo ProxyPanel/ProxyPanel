@@ -124,7 +124,7 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;
@@ -172,12 +172,10 @@
                         email: email,
                         title: title,
                         content: content,
-                    }, function(ret) {
+                    }, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });

@@ -63,7 +63,7 @@
             <img src="{{sysConfig('website_logo') ?: '/assets/images/logo64.png'}}"
                  class="navbar-brand-logo" alt="logo"/>
             <span
-                class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
+                    class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
         </div>
     </div>
     <div class="navbar-container container-fluid">
@@ -265,11 +265,11 @@
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-    (function(document, window, $) {
+    (function (document, window, $) {
         'use strict';
 
         const Site = window.Site;
-        $(document).ready(function() {
+        $(document).ready(function () {
             Site.run();
         });
     })(document, window, jQuery);
@@ -278,13 +278,13 @@
 
 @if(Session::get("admin"))
     <script type="text/javascript">
-        $('#return_to_admin').click(function() {
+        $('#return_to_admin').click(function () {
             $.ajax({
                 method: 'POST',
                 url: '{{route('switch')}}',
                 data: {'_token': '{{csrf_token()}}'},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     swal.fire({
                         title: ret.message,
                         icon: 'success',
@@ -292,7 +292,7 @@
                         showConfirmButton: false,
                     }).then(() => window.location.href = '{{route('admin.index')}}');
                 },
-                error: function(ret) {
+                error: function (ret) {
                     swal.fire({
                         title: ret.message,
                         icon: 'error',

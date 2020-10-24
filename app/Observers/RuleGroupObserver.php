@@ -18,8 +18,10 @@ class RuleGroupObserver
                 reloadNode::dispatchNow($nodes);
             }
         } elseif ($ruleGroup->rules && Arr::exists($changes, 'nodes')) {
-            $arrayDiff = array_merge(array_diff($ruleGroup->nodes ?? [], $ruleGroup->getOriginal('nodes') ?? []),
-                array_diff($ruleGroup->getOriginal('nodes') ?? [], $ruleGroup->nodes ?? []));
+            $arrayDiff = array_merge(
+                array_diff($ruleGroup->nodes ?? [], $ruleGroup->getOriginal('nodes') ?? []),
+                array_diff($ruleGroup->getOriginal('nodes') ?? [], $ruleGroup->nodes ?? [])
+            );
 
             if ($arrayDiff) {
                 $nodes = Node::whereType(4)->whereIn('id', $arrayDiff)->get();

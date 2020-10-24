@@ -40,7 +40,7 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-        $('#login-form').submit(function(event) {
+        $('#login-form').submit(function (event) {
             @switch(sysConfig('is_captcha'))
             @case(3)
             // 先检查Google reCAPTCHA有没有进行验证

@@ -406,8 +406,11 @@ class UserController extends Controller
     public function invite()
     {
         if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
-            return Response::view('auth.error',
-                ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
+            return Response::view(
+                'auth.error',
+                ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'],
+                402
+            );
         }
 
         $view['num'] = Auth::getUser()->invite_num; // 还可以生成的邀请码数量
@@ -552,8 +555,8 @@ class UserController extends Controller
             // 更换订阅码
             Auth::getUser()->subscribe->update(['code' => Helpers::makeSubscribeCode()]);
 
-            // 更换连接密码
-            Auth::getUser()->update(['passwd' => Str::random()]);
+            // 更换连接信息
+            Auth::getUser()->update(['passwd' => Str::random(), 'vmess_id' => Str::uuid()]);
 
             DB::commit();
 
@@ -605,8 +608,14 @@ class UserController extends Controller
             DB::beginTransaction();
             // 写入日志
             $user = Auth::getUser();
-            Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit + $coupon->value, $coupon->value,
-                '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
+            Helpers::addUserCreditLog(
+                $user->id,
+                0,
+                $user->credit,
+                $user->credit + $coupon->value,
+                $coupon->value,
+                '用户手动充值 - [充值券：'.$request->input('coupon_sn').']'
+            );
 
             // 余额充值
             (new UserService($user))->updateCredit($coupon->value);

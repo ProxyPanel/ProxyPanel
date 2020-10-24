@@ -131,7 +131,7 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#type').selectpicker('val', {{Request::input('type')}});
         });
 
@@ -142,12 +142,11 @@
                 type: $('#add_type').val(),
                 name: $('#name').val(),
                 pattern: $('#pattern').val(),
-            }, function(ret) {
+            }, function (ret) {
                 $('#add').modal('hide');
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                }
-                else {
+                } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
             });
@@ -164,11 +163,10 @@
                     rule_pattern: $('#rule_pattern_' + id).val(),
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -191,11 +189,10 @@
                         url: url,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
@@ -205,7 +202,7 @@
         }
 
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;

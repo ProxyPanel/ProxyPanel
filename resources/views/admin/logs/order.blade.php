@@ -158,7 +158,7 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#is_expire').val({{Request::input('is_expire')}});
             $('#is_coupon').val({{Request::input('is_coupon')}});
             $('#pay_way').val({{Request::input('pay_way')}});
@@ -170,7 +170,7 @@
             format: 'yyyy-mm-dd',
         });
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;

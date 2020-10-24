@@ -2,11 +2,6 @@
 @section('css')
     <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
-    <style type="text/css">
-        .text-help {
-            padding-left: 1.0715rem;
-        }
-    </style>
 @endsection
 @section('content')
     <div class="page-content container">
@@ -29,15 +24,15 @@
                         <label class="col-md-2 col-form-label" for="name">卡券名称</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
+                            <span class="text-help"> 会用于前端显示 </span>
                         </div>
-                        <span class="text-help"> 会用于前端显示 </span>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="sn">使用券码</label>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="sn" id="sn" value="{{Request::old('sn')}}"/>
+                            <span class="text-help"> 提供给用户使用卡券的卡券，留空则默认为8位随机码 </span>
                         </div>
-                        <span class="text-help"> 提供给用户使用卡券的卡券，留空则默认为8位随机码 </span>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="logo">卡券图片</label>
@@ -47,7 +42,7 @@
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label">类型</label>
-                        <div class="col-md-10 d-flex align-items-center">
+                        <div class="col-md-10 align-items-center">
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" id="voucher" value="1" checked/>
                                 <label for="voucher">抵用券</label>
@@ -60,8 +55,8 @@
                                 <input type="radio" name="type" id="charge" value="3"/>
                                 <label for="charge">充值券</label>
                             </div>
+                            <span class="text-help"> 抵用：抵扣商品金额，折扣：商品百分比打折，充值：充值用户账号余额 </span>
                         </div>
-                        <span class="offset-md-2 text-help"> 抵用：抵扣商品金额，折扣：商品百分比打折，充值：充值用户账号余额 </span>
                     </div>
                     <div class="form-group row usage">
                         <label class="col-md-2 col-form-label" for="usable_times">使用次数</label>
@@ -76,16 +71,16 @@
                             <input type="number" class="form-control" name="value" id="value" value="{{Request::old('value')}}" required/>
                             <span class="input-group-text amount">元</span>
                             <span class="input-group-text discount" style="display: none;">%</span>
+                            <span class="text-help discount" style="display: none;"> 范围为 1~99折，即 1% ~ 99% </span>
                         </div>
-                        <span class="text-help discount" style="display: none;"> 范围为 1~99折，即 1% ~ 99% </span>
                     </div>
                     <div class="form-group row usage">
                         <label class="col-md-2 col-form-label" for="rule">条件</label>
                         <div class="col-md-4 input-group">
                             <input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" step="0.01" required/>
                             <span class="input-group-text">元</span>
+                            <span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>
                         </div>
-                        <span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="num">数量</label>
@@ -106,7 +101,8 @@
                                 <span class="input-group-text">至</span>
                             </div>
                             <label for="end_time"></label>
-                            <input type="text" class="form-control" name="end_time" id="end_time" value="{{Request::old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}" required/>
+                            <input type="text" class="form-control" name="end_time" id="end_time" value="{{Request::old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}"
+                                   required/>
                         </div>
                     </div>
                     <div class="form-actions col-12 text-right">
@@ -128,20 +124,18 @@
             format: 'yyyy-mm-dd',
         });
 
-        $('input[name=\'type\']').change(function() {
+        $('input[name=\'type\']').change(function () {
             if ($(this).val() === '2') {
                 $('#rule').attr('required', true);
                 $('.discount').show();
                 $('.usage').show();
                 $('.amount').hide();
-            }
-            else if ($(this).val() === '3') {
+            } else if ($(this).val() === '3') {
                 $('#rule').attr('required', false);
                 $('.discount').hide();
                 $('.usage').hide();
                 $('.amount').show();
-            }
-            else {
+            } else {
                 $('#rule').attr('required', true);
                 $('.discount').hide();
                 $('.usage').show();

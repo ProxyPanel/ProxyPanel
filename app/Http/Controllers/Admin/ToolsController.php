@@ -222,8 +222,11 @@ class ToolsController extends Controller
                 if (! empty($tcp_matches)) {
                     $url[] = str_replace('TCP request ', '[TCP] ', $tcp_matches[0]);
                 } else {
-                    preg_match('/UDP data to (25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/',
-                        $log, $udp_matches);
+                    preg_match(
+                        '/UDP data to (25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)\.(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)/',
+                        $log,
+                        $udp_matches
+                    );
                     if (! empty($udp_matches)) {
                         $url[] = str_replace('UDP data to ', '[UDP] ', $udp_matches[0]);
                     }

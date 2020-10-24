@@ -36,7 +36,8 @@
                                 <div class="panel-group panel-group-simple panel-group-continuous" id="accordion1" aria-multiselectable="true" role="tablist">
                                     <div class="panel">
                                         <div class="panel-heading" id="question-1" role="tab">
-                                            <a class="panel-title cyan-600" aria-controls="answer-1" aria-expanded="true" data-toggle="collapse" href="#answer-1" data-parent="#accordion1">
+                                            <a class="panel-title cyan-600" aria-controls="answer-1" aria-expanded="true" data-toggle="collapse" href="#answer-1"
+                                               data-parent="#accordion1">
                                                 <i class="icon wb-link" aria-hidden="true"></i>{{trans('home.subscribe_link')}}
                                             </a>
                                         </div>
@@ -49,7 +50,8 @@
                                                         <div class="input-group-btn btn-group" role="group">
                                                             @if(count($sub)>1)
                                                                 <div class="btn-group" role="group">
-                                                                    <button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown" aria-expanded="false">
+                                                                    <button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown"
+                                                                            aria-expanded="false">
                                                                         自定义订阅
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="sublink" role="menu">
@@ -85,7 +87,7 @@
                                         <div class="panel-heading" id="question-2" role="tab">
                                             <a class="panel-title" aria-controls="answer-2" aria-expanded="true"
                                                data-toggle="collapse" href="#answer-2" data-parent="#accordion1"><i
-                                                    class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
+                                                        class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-2"
@@ -99,7 +101,7 @@
                                         <div class="panel-heading" id="question-3" role="tab">
                                             <a class="panel-title" aria-controls="answer-3" aria-expanded="false"
                                                data-toggle="collapse" href="#answer-3" data-parent="#accordion1"><i
-                                                    class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
+                                                        class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3"
@@ -311,12 +313,10 @@
                 confirmButtonText: '{{trans('home.ticket_confirm')}}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function (ret) {
                         if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                                then(() => window.location.reload());
-                        }
-                        else {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     });
@@ -325,7 +325,7 @@
         }
 
         const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        clipboard.on('success', function () {
             swal.fire({
                 title: '复制成功',
                 icon: 'success',
@@ -333,7 +333,7 @@
                 showConfirmButton: false,
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on('error', function () {
             swal.fire({
                 title: '复制失败，请手动复制',
                 icon: 'error',

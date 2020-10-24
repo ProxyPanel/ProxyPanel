@@ -80,30 +80,23 @@
                 async: false,
                 data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     $('.input-group-prepend').remove();
                     if (ret.status === 'success') {
-                        $('#coupon_sn').
-                            parent().
-                            prepend(
-                                '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
+                        $('#coupon_sn').parent().prepend(
+                            '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
                         // 根据类型计算折扣后的总金额
                         let total_price = 0;
                         if (ret.data.type === 2) {
                             total_price = goods_price * (1 - ret.data.value / 100);
-                            $('.page-invoice-amount').
-                                parent().
-                                prepend('<p>优惠码 - ' + ret.data.name + ' ' + ret.data.value + '折<br> 优惠 <span>￥ - ' +
-                                    total_price.toFixed(2) + '</span></p>');
+                            $('.page-invoice-amount').parent().prepend('<p>优惠码 - ' + ret.data.name + ' ' + ret.data.value + '折<br> 优惠 <span>￥ - ' +
+                                total_price.toFixed(2) + '</span></p>');
                             total_price = goods_price - total_price;
-                        }
-                        else {
+                        } else {
                             total_price = goods_price - ret.data.value;
                             total_price = total_price > 0 ? total_price : 0;
                             if (ret.data.type === 1) {
-                                $('.page-invoice-amount').
-                                    parent().
-                                    prepend('优惠码-' + ret.data.name + ' <span>￥ - ' + ret.data.value + '</span>');
+                                $('.page-invoice-amount').parent().prepend('优惠码-' + ret.data.name + ' <span>￥ - ' + ret.data.value + '</span>');
                             }
                         }
 
@@ -115,13 +108,10 @@
                             timer: 1300,
                             showConfirmButton: false,
                         });
-                    }
-                    else {
+                    } else {
                         $('.grand-total').text('￥' + goods_price);
-                        $('#coupon_sn').
-                            parent().
-                            prepend(
-                                '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
+                        $('#coupon_sn').parent().prepend(
+                            '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
                         swal.fire({
                             title: ret.title,
                             text: ret.message,
@@ -148,8 +138,7 @@
                         contiousPay(method, pay_type);
                     }
                 });
-            }
-            else {
+            } else {
                 contiousPay(method, pay_type);
             }
         }
@@ -169,7 +158,7 @@
                     pay_type: pay_type,
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({
                             title: ret.message,
@@ -182,22 +171,19 @@
                         }
                         if (ret.data) {
                             window.location.href = '{{route('orderDetail', '')}}/' + ret.data;
-                        }
-                        else if (ret.url) {
+                        } else if (ret.url) {
                             window.location.href = ret.url;
                         }
-                    }
-                    else if (ret.status === 'info') {
+                    } else if (ret.status === 'info') {
                         swal.fire({title: ret.title, text: ret.message, icon: 'question'});
-                    }
-                    else {
+                    } else {
                         swal.fire({
                             title: ret.message,
                             icon: 'error',
                         });
                     }
                 },
-                error: function() {
+                error: function () {
                     swal.fire('未知错误', '请开工单通知客服', 'error');
                 },
             });

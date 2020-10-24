@@ -60,7 +60,8 @@
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
-                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::input('code')}}" @if(sysConfig('is_invite_register') == 2) required @endif/>
+                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::input('code')}}"
+                           @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
                         {{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
                     </label>
@@ -178,19 +179,18 @@
                 async: false,
                 data: {_token: '{{csrf_token()}}', email: email},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success'});
                         $('#sendCode').attr('disabled', true);
                         flag = true;
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
                         $('#sendCode').attr('disabled', false);
                         flag = false;
                     }
                 },
-                error: function() {
+                error: function () {
                     swal.fire({title: '发送失败', icon: 'error'});
                     flag = false;
                 },
@@ -200,20 +200,19 @@
             if (flag) {
                 // 60秒后才能重新申请发送
                 let left_time = 60;
-                const tt = window.setInterval(function() {
+                const tt = window.setInterval(function () {
                     left_time--;
                     if (left_time <= 0) {
                         window.clearInterval(tt);
                         $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
-                    }
-                    else {
+                    } else {
                         $('#sendCode').text(left_time + ' s');
                     }
                 }, 1000);
             }
         }
 
-        $('#register-form').submit(function(event) {
+        $('#register-form').submit(function (event) {
             @if($emailList)
             getEmail();
             @endif

@@ -5,7 +5,7 @@ if (env('APP_KEY') && \Illuminate\Support\Facades\Schema::hasTable('config')) {
         ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
     Route::domain(sysConfig('website_callback_url') ?: sysConfig('website_url'))
-        ->any('callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
+        ->match(['get', 'post'], 'callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
 }
 
 Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关

@@ -44,8 +44,8 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        const TableDatatablesScroller = function() {
-            const e = function() {
+        const TableDatatablesScroller = function () {
+            const e = function () {
                 const e = $('#analysis');
                 e.dataTable({
                     language: {
@@ -77,12 +77,12 @@
                 });
             };
             return {
-                init: function() {
+                init: function () {
                     jQuery().dataTable && (e());
                 },
             };
         }();
-        jQuery(document).ready(function() {
+        jQuery(document).ready(function () {
             TableDatatablesScroller.init();
         });
     </script>

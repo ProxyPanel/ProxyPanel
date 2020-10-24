@@ -276,7 +276,7 @@
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(function() {
+        $(function () {
             $('.card').matchHeight();
         });
     </script>

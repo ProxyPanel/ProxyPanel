@@ -42,7 +42,7 @@
 @section('script')
     <script type="text/javascript">
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 replyTicket();
                 return false;
@@ -65,15 +65,19 @@
                         async: true,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('admin.ticket.index')}}');
-                            }
-                            else {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                }).then(() => window.location.href = '{{route('admin.ticket.index')}}');
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
-                        error: function() {
+                        error: function () {
                             swal.fire({title: '未知错误！请通知客服', icon: 'error'});
                         },
                     });
@@ -103,15 +107,14 @@
                         url: '{{route('admin.ticket.update', $ticket->id)}}',
                         data: {_token: '{{csrf_token()}}', content: content},
                         dataType: 'json',
-                        success: function(ret) {
+                        success: function (ret) {
                             if (ret.status === 'success') {
                                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            }
-                            else {
+                            } else {
                                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                             }
                         },
-                        error: function() {
+                        error: function () {
                             swal.fire({title: '未知错误！请查看运行日志', icon: 'error'});
                         },
                     });

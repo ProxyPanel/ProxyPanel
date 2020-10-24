@@ -4,11 +4,6 @@
     <link href="/assets/custom/Plugin/bootstrap-switch/bootstrap-switch.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/ascolorpicker/asColorPicker.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
-    <style type="text/css">
-        .text-help {
-            padding-left: 1.0715rem;
-        }
-    </style>
 @endsection
 @section('content')
     <div class="page-content container">
@@ -39,7 +34,7 @@
                         <div class="col-lg-6 col-md-12">
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label">类型</label>
-                                <div class="col-md-10 d-flex align-items-center">
+                                <div class="col-md-10 align-items-center">
                                     <div class="radio-custom radio-primary radio-inline">
                                         <input type="radio" name="type" id="data_package" value="1"/>
                                         <label for="data_package">流量包</label>
@@ -48,8 +43,8 @@
                                         <input type="radio" name="type" id="data_plan" value="2" checked/>
                                         <label for="data_plan">套餐</label>
                                     </div>
+                                    <span class="text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
                                 </div>
-                                <span class="offset-md-2 text-help"> 套餐与账号有效期有关，流量包只扣可用流量，不影响有效期 </span>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="name">名称</label>
@@ -86,8 +81,8 @@
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="period" id="period" value="30"/>
                                     <span class="input-group-text">天</span>
+                                    <span class="text-help"> 套餐流量会每N天重置 </span>
                                 </div>
-                                <span class="text-help"> 套餐流量会每N天重置 </span>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="traffic">流量额度</label>
@@ -113,16 +108,16 @@
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="limit_num" id="limit_num" value="0" required/>
                                     <span class="input-group-text">次</span>
+                                    <span class="text-help"> 每个用户可以购买该商品次数，为 0 时代表不限购 </span>
                                 </div>
-                                <span class="text-help"> 每个用户可以购买该商品次数，为 0 时代表不限购 </span>
                             </div>
                             <div class="form-group row package-renew">
                                 <label class="col-md-2 col-form-label" for="days">有效期</label>
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="days" id="days" value="30"/>
                                     <span class="input-group-text">天</span>
+                                    <span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
                                 </div>
-                                <span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="is_hot">热销</label>
@@ -144,8 +139,8 @@
                                 <label class="col-md-2 col-form-label" for="sort">排序</label>
                                 <div class="col-md-4">
                                     <input type="number" class="form-control" name="sort" id="sort" value="0"/>
+                                    <span class="text-help"> 排序值越大排越前 </span>
                                 </div>
-                                <span class="text-help"> 排序值越大排越前 </span>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="color">颜色</label>
@@ -169,9 +164,8 @@
                                 <label class="col-md-2 col-form-label" for="info">自定义列表</label>
                                 <div class="col-md-8">
                                     <textarea class="form-control" rows="6" name="info" id="info" placeholder="商品的自定义列表添加"></textarea>
+                                    <span class="text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头<code>&lt;/li&gt;</code> 结尾</span>
                                 </div>
-                                <span class="offset-md-2 text-help"> 每行内容请以<code>&lt;li&gt;</code> 开头
-                                    <code>&lt;/li&gt;</code> 结尾</span>
                             </div>
                             <div class="form-actions col-12 text-right">
                                 <button type="submit" class="btn btn-success"><i class="icon wb-check"></i> 提 交</button>
@@ -196,7 +190,7 @@
     <script type="text/javascript">
         $('[data-toggle="switch"]').bootstrapSwitch();
         @isset($goods)
-        $(document).ready(function() {
+        $(document).ready(function () {
             const type = $('input[name=\'type\']');
             $('#id').val('{{$goods->id}}');
             $("input[name='type'][value='{{$goods->type}}']").click();
@@ -239,7 +233,7 @@
             trafficUnit.attr('disabled', true).selectpicker('refresh');
         });
         @elseif(old('type'))
-        $(document).ready(function() {
+        $(document).ready(function () {
             const type = $('input[name=\'type\']');
             $('#id').val('{{old('id')}}');
             $("input[name='type'][value='{{old('type')}}']").click();
@@ -274,14 +268,13 @@
         function itemControl(value) {
             if (value === 1) {
                 $('.package-renew').hide();
-            }
-            else {
+            } else {
                 $('.package-renew').show();
             }
         }
 
         // 选择商品类型
-        $('input[name=\'type\']').change(function() {
+        $('input[name=\'type\']').change(function () {
             itemControl(parseInt($(this).val()));
         });
     </script>

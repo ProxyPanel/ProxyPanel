@@ -27,8 +27,7 @@ class VNetController extends BaseController
             'push_port'    => $node->push_port,
             'secret'       => $node->auth->secret,
             'redirect_url' => sysConfig('redirect_url'),
-        ]
-        );
+        ]);
     }
 
     // 获取节点可用的用户列表

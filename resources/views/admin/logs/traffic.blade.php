@@ -42,7 +42,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
-                            <input type="text" class="form-control" name="end" id="end" value="{{Request::input('endTime')}}" placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
+                            <input type="text" class="form-control" name="end" id="end" value="{{Request::input('endTime')}}"
+                                   placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
@@ -111,7 +112,7 @@
             format: 'yyyy-mm-dd',
         });
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;

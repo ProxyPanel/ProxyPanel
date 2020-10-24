@@ -55,7 +55,8 @@
         }
     </style>
     <div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
-        <div class="font-size-16 h-p33 pl-20 pt-20" style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
+        <div class="font-size-16 h-p33 pl-20 pt-20"
+             style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
             <p>点击右上角 <i class="icon wb-more-horizontal"></i>，选择在
                 <img src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png" class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/>
                 Safari 中打开
@@ -146,10 +147,10 @@
 <!-- 客服 -->
 {!! sysConfig('website_customer_service') !!}
 <script type="text/javascript">
-    (function(document, window, $) {
+    (function (document, window, $) {
         'use strict';
         const Site = window.Site;
-        $(document).ready(function() {
+        $(document).ready(function () {
             Site.run();
         });
     })(document, window, jQuery);

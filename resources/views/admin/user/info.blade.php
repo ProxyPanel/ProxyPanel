@@ -339,7 +339,7 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             @isset($user)
             $('#username').val('{{$user->username}}');
             $('#email').val('{{$user->email}}');
@@ -382,12 +382,10 @@
                 },
                 dataType: 'json',
                 method: 'POST',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                            then(() => window.location.href = '/');
-                    }
-                    else {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
+                    } else {
                         swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
                 },
@@ -409,30 +407,28 @@
                 url: '{{route('admin.user.updateCredit')}}',
                 method: 'POST',
                 data: {_token: '{{csrf_token()}}', user_id: '{{$user->id}}', amount: amount},
-                beforeSend: function() {
+                beforeSend: function () {
                     $('#msg').show().html('充值中...');
                 },
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'fail') {
                         $('#msg').show().html(ret.message);
                         return false;
-                    }
-                    else {
+                    } else {
                         $('#handle_user_credit').modal('hide');
                         if (ret.status === 'success') {
                             swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                                 window.location.reload();
                             });
-                        }
-                        else {
+                        } else {
                             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                         }
                     }
                 },
-                error: function() {
+                error: function () {
                     $('#msg').show().html('请求错误，请重试');
                 },
-                complete: function() {
+                complete: function () {
                 },
             });
         }
@@ -442,7 +438,7 @@
         function Submit() {
             // 用途
             let usage = '';
-            $.each($('input:checkbox[name=\'usage\']'), function() {
+            $.each($('input:checkbox[name=\'usage\']'), function () {
                 if (this.checked) {
                     usage += $(this).val() + ',';
                 }
@@ -478,7 +474,7 @@
                     status: $('input:radio[name=\'status\']:checked').val(),
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
                         swal.fire({
                             title: '提示',
@@ -493,16 +489,17 @@
                                 }
                             },
                         );
-                    }
-                    else {
+                    } else {
                         swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     let str = '';
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
+                        $.each(errors.errors, function (index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
                         swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
                     }
                 },
@@ -513,21 +510,21 @@
 
         // 生成随机端口
         function makePort() {
-            $.get('{{route('admin.getPort')}}', function(ret) {
+            $.get('{{route('admin.getPort')}}', function (ret) {
                 $('#port').val(ret);
             });
         }
 
         // 生成UUID
         function makeUUID() {
-            $.get('{{route('createUUID')}}', function(ret) {
+            $.get('{{route('createUUID')}}', function (ret) {
                 $('#uuid').val(ret);
             });
         }
 
         // 生成随机密码
         function makePasswd() {
-            $.get('{{route('createStr')}}', function(ret) {
+            $.get('{{route('createStr')}}', function (ret) {
                 $('#passwd').val(ret);
             });
         }

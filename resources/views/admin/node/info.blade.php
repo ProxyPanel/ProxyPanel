@@ -86,7 +86,8 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="labels" class="col-md-3 col-form-label">标签</label>
-                                        <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="labels" name="labels" multiple>
+                                        <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="labels" name="labels"
+                                                multiple>
                                             @foreach($labelList as $label)
                                                 <option value="{{$label->id}}">{{$label->name}}</option>
                                             @endforeach
@@ -218,10 +219,8 @@
                                             <div class="form-group row">
                                                 <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
                                                 <input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
-                                                <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 </span>
-                                                <span class="text-help offset-md-3">
-                                                    严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接
-                                                    （<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+                                                <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
+                                                    严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
@@ -287,7 +286,8 @@
                                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" id="v2_ws">
                                                         <option value="" hidden></option>
                                                         @foreach($dvList as $dv)
-                                                            <option value="{{$dv->domain}}" @if(isset($node) && $node->v2_net === "ws" && $node->v2_host === $dv->domain) selected @endif>
+                                                            <option value="{{$dv->domain}}"
+                                                                    @if(isset($node) && $node->v2_net === "ws" && $node->v2_host === $dv->domain) selected @endif>
                                                                 {{$dv->domain}}
                                                             </option>
                                                         @endforeach
@@ -313,7 +313,8 @@
                                             <input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
                                             <div class="text-help offset-md-3"> 不同后端配置不同：
                                                 <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a>、
-                                                <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan" target="_blank">V2Ray-Poseidon</a>
+                                                <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
+                                                   target="_blank">V2Ray-Poseidon</a>
                                             </div>
                                         </div>
                                     </div>
@@ -401,7 +402,7 @@
 
     <script type="text/javascript">
         const string = "{{strtolower(Str::random())}}";
-        $(document).ready(function() {
+        $(document).ready(function () {
             let v2_path = $('#v2_path');
             @isset($node)
 
@@ -546,20 +547,25 @@
                     relay_server: $('#relay_server').val(),
                 },
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
-                            then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
-                    }
-                    else {
+                        swal.fire({
+                            title: ret.message,
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
+                    } else {
                         swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
                     }
                 },
-                error: function(data) {
+                error: function (data) {
                     let str = '';
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function(index, value) {str += '<li>' + value + '</li>';});
+                        $.each(errors.errors, function (index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
                         swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
                     }
                 },
@@ -575,8 +581,7 @@
                 case 'single':
                     if (check) {
                         $('.single-setting').show();
-                    }
-                    else {
+                    } else {
                         $('#single_port').val('');
                         $('#passwd').val('');
                         $('.single-setting').hide();
@@ -588,8 +593,7 @@
                         $('.relay-setting').show();
                         $('#relay_port').attr('required', true);
                         $('#relay_server').attr('required', true);
-                    }
-                    else {
+                    } else {
                         $('.relay-setting').hide();
                         $('#relay_port').removeAttr('required');
                         $('#relay_server').removeAttr('required');
@@ -601,8 +605,7 @@
                         $('#ip').val('').attr('readonly', true);
                         $('#ipv6').val('').attr('readonly', true);
                         $('#server').attr('required', true);
-                    }
-                    else {
+                    } else {
                         $('#ip').removeAttr('readonly');
                         $('#ipv6').removeAttr('readonly');
                         $('#server').removeAttr('required');
@@ -614,7 +617,7 @@
         }
 
         // 设置服务类型
-        $('input:radio[name=\'type\']').on('change', function() {
+        $('input:radio[name=\'type\']').on('change', function () {
             const type = parseInt($(this).val());
             const $ssr_setting = $('.ssr-setting');
             const $v2ray_setting = $('.v2ray-setting');
@@ -640,23 +643,22 @@
             }
         });
 
-        $('#obfs').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        $('#obfs').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             const obfs_param = $('.obfs_param');
             if ($('#obfs').val() === 'plain') {
                 $('#obfs_param').val('');
                 obfs_param.hide();
-            }
-            else {
+            } else {
                 obfs_param.show();
             }
         });
 
-        $('#v2_ws').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        $('#v2_ws').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             $('#v2_host').val($('#v2_ws').val());
         });
 
         // 设置V2Ray详细设置
-        $('#v2_net').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        $('#v2_net').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
             const type = $('.v2_type');
             const type_option = $('#type_option');
             const host = $('.v2_host');

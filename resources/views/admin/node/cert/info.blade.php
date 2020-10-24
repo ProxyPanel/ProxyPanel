@@ -19,13 +19,15 @@
                     <div class="form-group row">
                         <label for="key" class="col-md-3 col-form-label">Key</label>
                         <div class="col-md-9">
-                            <textarea type="text" rows="10" class="form-control" name="key" id="key" placeholder="域名证书的KEY值，允许为空，VNET-V2Ray后端支持自动签证书">@isset($Dv) {{$Dv->key}} @endisset</textarea>
+                            <textarea type="text" rows="10" class="form-control" name="key" id="key"
+                                      placeholder="域名证书的KEY值，允许为空，VNET-V2Ray后端支持自动签证书">@isset($Dv) {{$Dv->key}} @endisset</textarea>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="pem" class="col-md-3 col-form-label">Pem</label>
                         <div class="col-md-9">
-                            <textarea type="text" rows="10" class="form-control" name="pem" id="pem" placeholder="域名证书的PEM值，允许为空，VNET-V2Ray后端支持自动签证书">@isset($Dv) {{$Dv->pem}} @endisset</textarea>
+                            <textarea type="text" rows="10" class="form-control" name="pem" id="pem"
+                                      placeholder="域名证书的PEM值，允许为空，VNET-V2Ray后端支持自动签证书">@isset($Dv) {{$Dv->pem}} @endisset</textarea>
                         </div>
                     </div>
                     <div class="form-actions">
@@ -46,11 +48,15 @@
                 async: false,
                 data: {_token: '{{csrf_token()}}', domain: $('#domain').val(), key: $('#key').val(), pem: $('#pem').val()},
                 dataType: 'json',
-                success: function(ret) {
+                success: function (ret) {
                     if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
-                    }
-                    else {
+                        swal.fire({
+                            title: ret.message,
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
+                    } else {
                         swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
                     }
                 },

@@ -91,12 +91,12 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#status').val({{Request::input('status')}});
         });
 
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
+        $(document).on('keypress', 'input', function (e) {
             if (e.which === 13) {
                 Search();
                 return false;
@@ -110,13 +110,12 @@
 
         // 启用禁用用户的订阅
         function setSubscribeStatus(url) {
-            $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post(url, {_token: '{{csrf_token()}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });
-                }
-                else {
+                } else {
                     swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
                     });

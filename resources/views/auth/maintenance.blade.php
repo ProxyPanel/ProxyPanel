@@ -95,18 +95,18 @@
 <script src="/assets/global/js/Plugin/slidepanel.js"></script>
 
 <script>
-    (function(document, window, $) {
+    (function (document, window, $) {
         'use strict';
 
         var Site = window.Site;
-        $(document).ready(function() {
+        $(document).ready(function () {
             Site.run();
         });
     })(document, window, jQuery);
 
     // 每秒更新计时器
     const countDownDate = new Date("{{$time}}").getTime();
-    const x = setInterval(function() {
+    const x = setInterval(function () {
         const distance = countDownDate - new Date().getTime();
         const days = Math.floor(distance / 86400000);
         const hours = Math.floor(distance % 86400000 / 3600000);
