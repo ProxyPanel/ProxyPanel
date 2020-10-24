@@ -114,7 +114,7 @@
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-                                && curl -L -s http://mrw.so/5Qe2UX \<br>
+                                && curl -L -s https://bit.ly/2HswWko \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
                                 NODE_ID={{$vl->node->id}} \<br>
                                 NODE_KEY={{$vl->key}} \<br>
@@ -122,7 +122,7 @@
                                 <br>
                                 <br>
                                 <div class="text-center red-700 mb-5">操作命令</div>
-                                更新：curl -L -s http://mrw.so/5Qe2UX | bash
+                                更新：curl -L -s https://bit.ly/2HswWko | bash
                                 <br>
                                 卸载：curl -L -s http://mrw.so/5IHPR4 | bash
                                 <br>
