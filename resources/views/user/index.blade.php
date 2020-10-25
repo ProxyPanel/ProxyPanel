@@ -157,14 +157,8 @@
                                     <i class="wb-volume-high mr-10"></i>
                                     {{trans('home.announcement')}}
                                 </h2>
-                                <div class="panel-actions">
-                                    <nav>
-                                        <ul class="pagination pagination-no-border">
-                                            <li class="page-item">
-                                                {{ $noticeList->links() }}
-                                            </li>
-                                        </ul>
-                                    </nav>
+                                <div class="panel-actions pagination-no-border pagination-sm">
+                                    {{$noticeList->links()}}
                                 </div>
                             </div>
                             <div class="panel-body" data-show-on-hover="false" data-direction="vertical"
@@ -173,11 +167,11 @@
                                     <div class="pb-10" data-role="content">
                                         @if(!$noticeList -> isEmpty())
                                             @foreach($noticeList as $notice)
-                                                <h3 class="text-center">{!!$notice->title!!}</h3>
-                                                {!! $notice->content !!}
+                                                <h2 class="text-center">{!!$notice->title!!}</h2>
                                                 @if($notice->updated_at)
-                                                    <small class="text-bottom">更新于 <code>{{$notice->updated_at}}</code></small>
+                                                    <p class="text-right"><small>更新于 <code>{{$notice->updated_at}}</code></small></p>
                                                 @endif
+                                                {!! $notice->content !!}
                                             @endforeach
                                         @else
                                             <p class="text-center font-size-40">暂无公告</p>
