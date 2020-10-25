@@ -25,7 +25,7 @@
     <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/examples/css/pages/login-v3.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/examples/login-v3.min.css" type="text/css" rel="stylesheet">
 @yield('css')
 <!-- Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">

@@ -20,15 +20,11 @@
     <link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
-
     <!-- 插件/Plugins -->
     <link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
-    @yield('css')
-    <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
-
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
     <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
@@ -44,6 +40,7 @@
     <script type="text/javascript">
         Breakpoints();
     </script>
+    @yield('css')
 </head>
 
 <body class="animsition dashboard">
@@ -242,7 +239,7 @@
 <!--[if lt IE 11]>
 <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
 <![endif]-->
-<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
 
 <!-- 脚本/Scripts -->
 <script src="/assets/global/js/Component.js" type="text/javascript"></script>

@@ -2,7 +2,6 @@
 @section('title', trans('auth.register'))
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <form action="{{route('register')}}" method="post" id="register-form">
@@ -142,7 +141,7 @@
 	<!--[if lt IE 11]>
     <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
     <![endif]-->
-    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script type="text/javascript">

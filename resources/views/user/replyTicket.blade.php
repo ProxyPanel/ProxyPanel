@@ -1,7 +1,4 @@
 @extends('user.layouts')
-@section('css')
-    <link href="/assets/examples/css/structure/chat.css" type="text/css" rel="stylesheet">
-@endsection
 @section('content')
     <div class="page-content">
         <div class="panel panel-bordered">

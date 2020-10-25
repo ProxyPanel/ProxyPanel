@@ -27,7 +27,7 @@
     <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/examples/css/pages/errors.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/examples/errors.min.css" type="text/css" rel="stylesheet">
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
     <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">

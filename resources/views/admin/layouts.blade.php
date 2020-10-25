@@ -25,8 +25,6 @@
     <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
-    @yield('css')
-    <link href="/assets/custom/Plugin/sweetalert2/sweetalert2.min.css" type="text/css" rel="stylesheet">
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
     <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
@@ -42,6 +40,7 @@
     <script type="text/javascript">
         Breakpoints();
     </script>
+    @yield('css')
 </head>
 
 <body class="animsition dashboard">
@@ -142,7 +141,7 @@
                 </ul>
             </li>
             @php
-                $openTicket = \App\Models\Ticket::whereStatus(0)->count()
+                $openTicket = App\Models\Ticket::whereStatus(0)->count()
             @endphp
             <li class="site-menu-item has-sub {{request()->routeIs('admin.ticket.*', 'admin.article.*', 'admin.marketing.*')? 'active open' : ''}}">
                 <a href="javascript:void(0)">
@@ -257,7 +256,7 @@
                 </ul>
             </li>
             @php
-                $openApply = \App\Models\ReferralApply::whereStatus(0)->count()
+                $openApply = App\Models\ReferralApply::whereStatus(0)->count()
             @endphp
             <li class="site-menu-item has-sub {{request()->routeIs('admin.invite', 'admin.aff.*') ? 'active open' : ''}}">
                 <a href="javascript:void(0)">
@@ -419,7 +418,7 @@
 <!--[if lt IE 11]>
 <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
 <![endif]-->
-<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.min.js" type="text/javascript"></script>
+<script src="/assets/custom/Plugin/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
 <!-- 脚本/Scripts -->
 <script src="/assets/global/js/Component.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin.js" type="text/javascript"></script>

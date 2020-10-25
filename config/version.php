@@ -2,5 +2,5 @@
 
 return [
     'name'   => 'ProxyPanel',
-    'number' => '2.5.b',
+    'number' => '2.5.0',
 ];
