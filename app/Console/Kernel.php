@@ -11,14 +11,8 @@ use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
 use App\Console\Commands\AutoStatisticsUserDailyTraffic;
 use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
 use App\Console\Commands\DailyJob;
-use App\Console\Commands\fixDailyTrafficLogError;
 use App\Console\Commands\NodeBlockedDetection;
 use App\Console\Commands\ServiceTimer;
-use App\Console\Commands\updateTextToJson;
-use App\Console\Commands\updateTicket;
-use App\Console\Commands\updateUserLevel;
-use App\Console\Commands\updateUserName;
-use App\Console\Commands\upgradeUserResetTime;
 use App\Console\Commands\UserExpireAutoWarning;
 use App\Console\Commands\UserTrafficAbnormalAutoWarning;
 use App\Console\Commands\UserTrafficAutoWarning;
@@ -42,14 +36,8 @@ class Kernel extends ConsoleKernel
         AutoStatisticsUserDailyTraffic::class,
         AutoStatisticsUserHourlyTraffic::class,
         DailyJob::class,
-        fixDailyTrafficLogError::class,
         NodeBlockedDetection::class,
         ServiceTimer::class,
-        updateTextToJson::class,
-        updateTicket::class,
-        updateUserLevel::class,
-        updateUserName::class,
-        upgradeUserResetTime::class,
         UserExpireAutoWarning::class,
         UserTrafficAbnormalAutoWarning::class,
         UserTrafficAutoWarning::class,
