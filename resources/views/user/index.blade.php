@@ -111,13 +111,20 @@
                             <span class="font-weight-400 mb-10">{{trans('home.account_last_login')}}</span>
                             <ul class="list-group list-group-dividered px-20 mb-0">
                                 <li class="list-group-item px-0">
-                                    <i class="icon wb-time"></i>时间：{{date_format($userLoginLog->created_at,'Y/m/d H:i')}}
+                                    <i class="icon wb-time"></i>
+                                    时间：{{date_format($userLoginLog->created_at,'Y/m/d H:i')}}
                                 </li>
-                                <li class="list-group-item px-0"><i class="icon wb-code"></i>IP地址：{{$userLoginLog->ip}}
+                                <li class="list-group-item px-0">
+                                    <i class="icon wb-code"></i>
+                                    IP地址：{{$userLoginLog->ip}}
                                 </li>
-                                <li class="list-group-item px-0"><i class="icon wb-cloud"></i>运营商：{{$userLoginLog->isp}}
+                                <li class="list-group-item px-0">
+                                    <i class="icon wb-cloud"></i>
+                                    运营商：{{$userLoginLog->isp}}
                                 </li>
-                                <li class="list-group-item px-0"><i class="icon wb-map"></i>地区：{{$userLoginLog->area}}
+                                <li class="list-group-item px-0">
+                                    <i class="icon wb-map"></i>
+                                    地区：{{$userLoginLog->area ?: $userLoginLog->country.' '.$userLoginLog->province.' '.$userLoginLog->city}}
                                 </li>
                             </ul>
                         </div>

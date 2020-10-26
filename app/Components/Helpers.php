@@ -147,7 +147,7 @@ class Helpers
     public static function cacheSysConfig($name)
     {
         if ($name === 'is_onlinePay') {
-            $value = ! empty(array_filter(Cache::tags('sysConfig')->many(['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])));
+            $value = sysConfig('is_AliPay') || sysConfig('is_QQPay') || sysConfig('is_WeChatPay') || sysConfig('is_otherPay');
             Cache::tags('sysConfig')->put('is_onlinePay', $value);
         } else {
             $value = Config::find($name)->value;

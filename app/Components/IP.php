@@ -63,13 +63,15 @@ class IP
                 'country'  => $location[0] ?: '',
                 'province' => $location[2] ?: '',
                 'city'     => $location[3] ?: '',
+                'isp'      => $location[4] ?: '',
+                'area'     => $location[1] ?: '',
             ];
         }
 
         return $ipInfo;
     }
 
-    //// 通过ip2Location查询IP地址的详细信息
+    // 通过ip2Location查询IP地址的详细信息
     public static function ip2Location(string $ip)
     {
         $filePath = database_path('IP2LOCATION-LITE-DB3.IPV6.BIN');
@@ -115,6 +117,7 @@ class IP
                     'country'  => $message['data']['country'] === 'XX' ? '' : $message['data']['country'],
                     'province' => $message['data']['region'] === 'XX' ? '' : $message['data']['region'],
                     'city'     => $message['data']['city'] === 'XX' ? '' : $message['data']['city'],
+                    'isp'      => $message['data']['isp'] === 'XX' ? '' : $message['data']['isp'],
                 ];
             }
 
@@ -144,6 +147,7 @@ class IP
                     'country'  => $message['content']['address_detail']['country'],
                     'province' => $message['content']['address_detail']['province'],
                     'city'     => $message['content']['address_detail']['city'],
+                    'area'     => $message['address'],
                 ];
             }
 

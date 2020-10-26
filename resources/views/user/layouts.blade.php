@@ -161,10 +161,18 @@
                     <span class="site-menu-title">{{trans('home.help')}}</span>
                 </a>
             </li>
+            @php
+                $openTicket = App\Models\Ticket::uid()->whereStatus(1)->count()
+            @endphp
             <li class="site-menu-item {{request()->routeIs('ticket', 'replyTicket') ? 'active open' : ''}}">
                 <a href="{{route('ticket')}}">
                     <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
                     <span class="site-menu-title">{{trans('home.ticket_title')}}</span>
+                    @if($openTicket > 0)
+                        <div class="site-menu-badge">
+                            <span class="badge badge-pill badge-success">{{$openTicket}}</span>
+                        </div>
+                    @endif
                 </a>
             </li>
             <li class="site-menu-item {{request()->routeIs('invoice', 'invoiceInfo') ? 'active open' : ''}}">
