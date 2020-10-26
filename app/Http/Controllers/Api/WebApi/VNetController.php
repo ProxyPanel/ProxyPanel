@@ -19,7 +19,7 @@ class VNetController extends BaseController
             'obfs'         => $node->obfs,
             'obfs_param'   => $node->obfs_param ?? '',
             'is_udp'       => $node->is_udp,
-            'speed_limit'  => $node->speed_limit,
+            'speed_limit'  => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'single'       => $node->single,
             'port'         => (string) $node->port,
@@ -46,7 +46,7 @@ class VNetController extends BaseController
                 'protocol'    => $user->protocol,
                 'obfs'        => $user->obfs,
                 'obfs_param'  => $node->obfs_param,
-                'speed_limit' => $user->speed_limit,
+                'speed_limit' => $user->getRawOriginal('speed_limit'),
                 'enable'      => $user->enable,
             ];
         }

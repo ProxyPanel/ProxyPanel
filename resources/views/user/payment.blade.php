@@ -43,7 +43,7 @@
         <script type="text/javascript">
             $(document).ready(function () {
                 new QArt({
-                    value: '{{$payment->url}}',
+                    value: @json($payment->url),
                     imagePath: '{{asset($pay_type_icon)}}',
                     filter: 'color',
                     version: 10,

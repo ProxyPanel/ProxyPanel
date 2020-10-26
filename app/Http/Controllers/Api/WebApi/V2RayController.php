@@ -22,7 +22,7 @@ class V2RayController extends BaseController
         return $this->returnData('获取节点信息成功', 'success', 200, [
             'id'              => $node->id,
             'is_udp'          => $node->is_udp ? true : false,
-            'speed_limit'     => $node->speed_limit,
+            'speed_limit'     => $node->getRawOriginal('speed_limit'),
             'client_limit'    => $node->client_limit,
             'push_port'       => $node->push_port,
             'redirect_url'    => (string) sysConfig('redirect_url'),
@@ -52,7 +52,7 @@ class V2RayController extends BaseController
             $data[] = [
                 'uid'         => $user->id,
                 'vmess_uid'   => $user->vmess_id,
-                'speed_limit' => $user->speed_limit,
+                'speed_limit' => $user->getRawOriginal('speed_limit'),
             ];
         }
 
