@@ -55,7 +55,7 @@ class PushNotification
                 return $message;
             }
             // 发送失败
-            Helpers::addNotificationLog($title, $content, 2, 'admin', $message ? $message['errmsg'] : '未知');
+            Helpers::addNotificationLog($title, $content, 2, 'admin', -1, $message ? $message['errmsg'] : '未知');
 
             return false;
         }
@@ -86,7 +86,7 @@ class PushNotification
                 return $message;
             }
             // 发送失败
-            Helpers::addNotificationLog($title, $content, 3, 'admin', $message);
+            Helpers::addNotificationLog($title, $content, 3, 'admin', -1, $message);
 
             return false;
         }
