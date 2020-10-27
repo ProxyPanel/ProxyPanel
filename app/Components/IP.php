@@ -41,7 +41,7 @@ class IP
             return $response->json();
         }
 
-        Log::error('解析IPv6异常：'.$ip);
+        Log::warning('解析IPv6异常：'.$ip);
 
         return false;
     }
@@ -121,7 +121,7 @@ class IP
                 ];
             }
 
-            Log::error('【淘宝IP库】返回错误信息：'.$ip.PHP_EOL.$message['msg']);
+            Log::warning('【淘宝IP库】返回错误信息：'.$ip.PHP_EOL.$message['msg']);
         } else {
             Log::error('【淘宝IP库】解析异常：'.$ip);
         }
@@ -151,7 +151,7 @@ class IP
                 ];
             }
 
-            Log::error('【百度IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['message'], true));
+            Log::warning('【百度IP库】返回错误信息：'.$ip.PHP_EOL.var_export($message['message'], true));
         } else {
             Log::error('【百度IP库】解析异常：'.$ip);
         }

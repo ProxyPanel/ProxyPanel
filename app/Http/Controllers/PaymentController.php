@@ -61,7 +61,7 @@ class PaymentController extends Controller
             case 'stripe':
                 return new Stripe();
             default:
-                Log::error('未知支付：'.self::$method);
+                Log::warning('未知支付：'.self::$method);
 
                 return false;
         }

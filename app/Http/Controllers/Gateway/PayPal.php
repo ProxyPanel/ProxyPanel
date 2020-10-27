@@ -104,7 +104,7 @@ class PayPal extends AbstractPayment
                 Log::info("Order $payment->order_id has been paid successfully!");
                 $payment->order->update(['status' => 1]);
             } else {
-                Log::error("Error processing PayPal payment for Order $payment->id!");
+                Log::warning("Error processing PayPal payment for Order $payment->id!");
             }
         }
 

@@ -3,12 +3,15 @@
 namespace App\Jobs\VNet;
 
 use App\Models\User;
+use Arr;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Log;
+use Throwable;
 
 class editUser implements ShouldQueue
 {
@@ -41,8 +44,22 @@ class editUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $client = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
-        $client->post('api/user/edit', $this->data);
+        $response = $request->post('api/user/edit', $this->data);
+        $message = $response->json();
+        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+            if ($message['success'] === 'false') {
+                Log::warning("【编辑用户】推送失败（推送地址：".$host."，返回内容：".$message['content']."）");
+            } else {
+                Log::info("【编辑用户】推送成功（推送地址：".$host."，内容：".json_encode($this->data, true)."）");
+            }
+        }
+    }
+
+    // 队列失败处理
+    public function failed(Throwable $exception)
+    {
+        Log::warning("【编辑用户】推送异常：".$exception->getMessage());
     }
 }

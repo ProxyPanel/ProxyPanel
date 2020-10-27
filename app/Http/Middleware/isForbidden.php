@@ -69,7 +69,7 @@ class isForbidden
                     }
                     break;
                 default:
-                    Log::error('未知禁止访问模式！请在系统设置中修改【禁止访问模式】！');
+                    Log::warning('未知禁止访问模式！请在系统设置中修改【禁止访问模式】！');
                     break;
             }
         }

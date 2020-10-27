@@ -35,7 +35,7 @@ class BitpayX extends AbstractPayment
             return Response::json(['status' => 'success', 'url' => $result['payment_url'], 'message' => '创建订单成功!']);
         }
 
-        Log::error('创建订单错误：'.var_export($result, true));
+        Log::warning('创建订单错误：'.var_export($result, true));
 
         return Response::json(['status' => 'fail', 'message' => '创建订单失败!'.$result['error']]);
     }

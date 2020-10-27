@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Log;
+use Throwable;
 
 class reloadNode implements ShouldQueue
 {
@@ -41,10 +42,10 @@ class reloadNode implements ShouldQueue
                 'push_port'      => $node->push_port,
                 'single'         => $node->single,
                 'secret'         => $node->auth->secret,
-                //			'is_udp'         => $node->is_udp,
-                //			'speed_limit'    => $node->speed_limit,
-                //			'client_limit'   => $node->client_limit,
-                //			'redirect_url'   => (string) sysConfig('redirect_url')
+                'is_udp'         => $node->is_udp,
+                'speed_limit'    => $node->getRawOriginal('speed_limit'),
+                'client_limit'   => $node->client_limit,
+                'redirect_url'   => (string) sysConfig('redirect_url'),
             ]);
 
             if (! $ret) {
@@ -57,20 +58,27 @@ class reloadNode implements ShouldQueue
 
     public function send($host, $secret, $data): bool
     {
-        $client = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
-        $response = $client->post('api/v2/node/reload', $data);
-        if ($response->ok()) {
-            $message = $response->json();
-            if (Arr::has($message, ['success', 'content'])) {
-                if ($message['success']) {
-                    return true;
-                }
-                Log::error('重载节点失败：'.$host.' 反馈：'.$message['content']);
+        $response = $request->post('api/v2/node/reload', $data);
+        $message = $response->json();
+        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+            if ($message['success'] === 'false') {
+                Log::warning('【重载节点】失败：'.$host.' 反馈：'.$message['content']);
+                return false;
             }
+
+            Log::info('【重载节点】成功：'.$host.' 反馈：'.$message['content']);
+            return true;
         }
-        Log::error('重载节点失败url: '.$host);
+        Log::warning('【重载节点】失败：'.$host);
 
         return false;
+    }
+
+    // 队列失败处理
+    public function failed(Throwable $exception)
+    {
+        Log::error("【重载节点】推送异常：".$exception);
     }
 }
