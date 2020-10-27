@@ -65,10 +65,12 @@ class reloadNode implements ShouldQueue
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
                 Log::warning('【重载节点】失败：'.$host.' 反馈：'.$message['content']);
+
                 return false;
             }
 
             Log::info('【重载节点】成功：'.$host.' 反馈：'.$message['content']);
+
             return true;
         }
         Log::warning('【重载节点】失败：'.$host);
@@ -79,6 +81,6 @@ class reloadNode implements ShouldQueue
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::error("【重载节点】推送异常：".$exception);
+        Log::error('【重载节点】推送异常：'.$exception);
     }
 }

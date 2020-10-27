@@ -50,9 +50,9 @@ class editUser implements ShouldQueue
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
-                Log::warning("【编辑用户】推送失败（推送地址：".$host."，返回内容：".$message['content']."）");
+                Log::warning('【编辑用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
             } else {
-                Log::info("【编辑用户】推送成功（推送地址：".$host."，内容：".json_encode($this->data, true)."）");
+                Log::info('【编辑用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->data, true).'）');
             }
         }
     }
@@ -60,6 +60,6 @@ class editUser implements ShouldQueue
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::warning("【编辑用户】推送异常：".$exception->getMessage());
+        Log::warning('【编辑用户】推送异常：'.$exception->getMessage());
     }
 }
