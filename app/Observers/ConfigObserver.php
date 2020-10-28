@@ -22,9 +22,9 @@ class ConfigObserver
         // 域名出现变动，更新路由设定
         if (in_array($config->name, ['subscribe_domain', 'web_api_url', 'website_callback_url'])) {
             if (config('app.debug')) {
-                Artisan::call('route:clear');
+                Artisan::call('optimize:clear');
             } else {
-                Artisan::call('route:cache');
+                Artisan::call('optimize');
             }
         }
     }
