@@ -22,15 +22,15 @@
                             <li class="list-group-item"> 请在<code>15分钟</code>内完成支付，否者订单将会自动关闭</li>
                         </ul>
                     </div>
-                    <div class="col-auto ml-auto mr-auto">
+                    <div class="col-auto mx-auto">
                         @if($payment->qr_code && $payment->url)
-                            <div id="qrcode"></div>
+                            <div id="qrcode" class=" w-p100 h-p100"></div>
                         @else
                             <img class="h-250 w-250" src="{{$payment->qr_code}}" alt="支付二维码">
                         @endif
                     </div>
                 </div>
-                <div class="alert alert-danger text-center">
+                <div class="alert alert-danger text-center mt-10">
                     <strong>手机用户</strong>：长按二维码 -> 保存图片 ->打开支付软件 -> 扫一扫 -> 选择相册 进行付款
                 </div>
             </div>
@@ -39,17 +39,17 @@
 @endsection
 @section('script')
     @if($payment->qr_code && $payment->url)
-        <script src="/assets/custom/qart.min.js"></script>
+        <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function () {
-                new QArt({
-                    value: @json($payment->url),
-                    imagePath: '{{asset($pay_type_icon)}}',
-                    filter: 'color',
-                    version: 10,
-                    size: 300,
-                }).make(document.getElementById('qrcode'));
-            });
+            // Options
+            var options = {
+                text: @json($payment->url),
+                backgroundImage: '{{asset($pay_type_icon)}}',
+                autoColor: true,
+            };
+
+            // Create QRCode Object
+            new QRCode(document.getElementById("qrcode"), options);
         </script>
     @endif
 

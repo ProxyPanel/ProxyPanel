@@ -133,7 +133,7 @@
             </div>
             <div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-12">
                 <div class="row" data-plugin="matchHeight" data-by-row="true">
-                    <div class="col-xl-4 col-lg-6 pb-30">
+                    <div class="col-xl-4 col-lg-6 mb-30">
                         <div class="card card-shadow h-full">
                             <div class="card-block text-center p-20">
                                 <i class="font-size-40 wb-wrench"></i>
@@ -143,12 +143,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-lg-6 pb-30">
+                    <div class="col-xl-4 col-lg-6 mb-30">
                         <div class="card card-shadow text-center h-full">
                             <div class="card-block">
                                 @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>微信公告推送</h4>
-                                    <div id="qrcode"></div>
+                                    <div id="qrcode" class="mb-10"></div>
                                 @else
                                     <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>交流群</h4>
                                 @endif
@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 <div class="row" data-plugin="matchHeight" data-by-row="true">
-                    <div class="col-xxl-6 mb-35">
+                    <div class="col-xxl-6 mb-30">
                         <div class="panel panel-info panel-line h-full">
                             <div class="panel-heading">
                                 <h2 class="panel-title">
@@ -230,18 +230,19 @@
     <script src="/assets/global/js/Plugin/aspieprogress.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
-        <script src="/assets/custom/qart.min.js"></script>
+        <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script type="text/javascript">
-            $(document).ready(function () {
-                new QArt({
-                    value: '{{sysConfig('push_bear_qrcode')}}',
-                    imagePath: '{{asset('/assets/images/wechat.png')}}',
-                    filter: 'color',
-                    version: 10,
-                    size: 175,
-                    fillType: 'scale_to_fit',
-                }).make(document.getElementById('qrcode'));
-            });
+            // Options
+            var options = {
+                text: @json(sysConfig('push_bear_qrcode')),
+                width: 150,
+                height: 150,
+                backgroundImage: '{{asset('/assets/images/wechat.png')}}',
+                autoColor: true,
+            };
+
+            // Create QRCode Object
+            new QRCode(document.getElementById("qrcode"), options);
         </script>
     @endif
     <script type="text/javascript">

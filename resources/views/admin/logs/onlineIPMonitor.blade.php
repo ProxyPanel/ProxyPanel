@@ -107,7 +107,7 @@
 
         // 搜索
         function Search() {
-            window.location.href = '{{route('admin.log.online')}}' + $('#id').val() + '&ip=' + $('#ip').val() + '&email=' +
+            window.location.href = '{{route('admin.log.online')}}' + $('#id').val() + '?ip=' + $('#ip').val() + '&email=' +
                 $('#email').val() + '&port=' + $('#port').val() + '&nodeId=' + $('#nodeId option:selected').val();
         }
     </script>
