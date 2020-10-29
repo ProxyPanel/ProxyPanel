@@ -76,7 +76,7 @@ class NodeObserver
             }
         }
 
-        if ($node->type === 4) {
+        if ($node->type == 4) {
             reloadNode::dispatchNow(Node::whereId($node->id)->get());
         }
     }
