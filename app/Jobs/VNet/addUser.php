@@ -49,7 +49,7 @@ class addUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
 
         $response = $request->post('api/v2/user/add/list', $this->data);
         $message = $response->json();

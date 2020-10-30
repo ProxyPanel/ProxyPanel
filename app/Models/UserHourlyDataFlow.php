@@ -31,7 +31,7 @@ class UserHourlyDataFlow extends Model
 
     public function scopeUserRecentUsed($query, $uid)
     {
-        return $query->userHourly($uid)->where('created_at', '>=', date('Y-m-d H:55'));
+        return $query->userHourly($uid)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900));
     }
 
     // 1小时内流量异常用户

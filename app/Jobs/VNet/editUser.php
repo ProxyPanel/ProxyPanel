@@ -53,7 +53,7 @@ class editUser implements ShouldQueue
 
     private function list($host, $secret)
     {
-        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
 
         $response = $request->get('api/user/list');
         $message = $response->json();
@@ -68,7 +68,7 @@ class editUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
 
         $response = $request->post('api/user/edit', $this->data);
         $message = $response->json();

@@ -4,6 +4,7 @@
     <link href="/assets/custom/range.min.css" type="text/css" rel="stylesheet">
     <style>
         .table a {
+            color: #76838f;
             text-decoration: none;
         }
     </style>
