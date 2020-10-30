@@ -62,6 +62,7 @@ class editUser implements ShouldQueue
         }
 
         Log::warning('【用户列表】获取失败（推送地址：'.$host.'）');
+
         return false;
     }
 
