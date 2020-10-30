@@ -245,7 +245,7 @@ class UserController extends Controller
         (new UserService($user))->updateCredit(-$renewCost);
 
         // 记录余额操作日志
-        Helpers::addUserCreditLog($user->id, '', $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
+        Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
 
         return Response::json(['status' => 'success', 'message' => '重置成功']);
     }
