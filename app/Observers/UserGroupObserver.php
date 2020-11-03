@@ -12,8 +12,8 @@ class UserGroupObserver
     public function created(UserGroup $userGroup): void
     {
         $nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
-        if ($nodes) {
-            reloadNode::dispatchNow($nodes);
+        if ($nodes->isNotEmpty()) {
+            reloadNode::dispatchAfterResponse($nodes);
         }
     }
 
@@ -24,8 +24,8 @@ class UserGroupObserver
             $nodes = Node::whereType(4)
                 ->whereIn('id', array_diff($userGroup->nodes ?? [], $userGroup->getOriginal('nodes') ?? []))
                 ->get();
-            if ($nodes) {
-                reloadNode::dispatchNow($nodes);
+            if ($nodes->isNotEmpty()) {
+                reloadNode::dispatchAfterResponse($nodes);
             }
         }
     }

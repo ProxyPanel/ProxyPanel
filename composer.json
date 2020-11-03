@@ -28,7 +28,6 @@
     "phpoffice/phpspreadsheet": "^1.14",
     "rap2hpoutre/laravel-log-viewer": "^1.6",
     "riverslei/payment": "^5.1",
-    "spatie/laravel-permission": "^3.16",
     "srmklive/paypal": "^1.7",
     "stripe/stripe-php": "^7.61",
     "xhat/payjs": "^1.4",

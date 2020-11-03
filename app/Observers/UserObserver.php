@@ -24,8 +24,8 @@ class UserObserver
         $subscribe->save();
 
         $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
-        if ($allowNodes) {
-            addUser::dispatchNow($user->id, $allowNodes);
+        if ($allowNodes->isNotEmpty()) {
+            addUser::dispatchAfterResponse($user->id, $allowNodes);
         }
     }
 
@@ -33,8 +33,8 @@ class UserObserver
     {
         $changes = $user->getChanges();
         $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
-        if ($allowNodes && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
-            editUser::dispatchNow($user, $allowNodes);
+        if ($allowNodes->isNotEmpty() && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
+            editUser::dispatchAfterResponse($user, $allowNodes);
         }
     }
 
@@ -77,8 +77,8 @@ class UserObserver
     public function deleted(User $user): void
     {
         $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
-        if ($allowNodes) {
-            delUser::dispatchNow($user->id, $allowNodes);
+        if ($allowNodes->isNotEmpty()) {
+            delUser::dispatch($user->id, $allowNodes);
         }
     }
 }

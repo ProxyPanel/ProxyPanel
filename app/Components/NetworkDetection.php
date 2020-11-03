@@ -71,7 +71,7 @@ class NetworkDetection
     public static function ping(string $ip)
     {
         $url = 'https://api.oioweb.cn/api/hostping.php?host='.$ip; // https://api.iiwl.cc/api/ping.php?host=
-        $response = Http::timeout(15)->get($url);
+        $response = Http::timeout(15)->retry(2)->get($url);
 
         // 发送成功
         if ($response->ok()) {

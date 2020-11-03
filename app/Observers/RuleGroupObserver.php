@@ -14,8 +14,8 @@ class RuleGroupObserver
         $changes = $ruleGroup->getChanges();
         if ($ruleGroup->nodes && Arr::hasAny($changes, ['type', 'rules'])) {
             $nodes = Node::whereType(4)->whereIn('id', $ruleGroup->nodes)->get();
-            if ($nodes) {
-                reloadNode::dispatchNow($nodes);
+            if ($nodes->isNotEmpty()) {
+                reloadNode::dispatchAfterResponse($nodes);
             }
         } elseif ($ruleGroup->rules && Arr::exists($changes, 'nodes')) {
             $arrayDiff = array_merge(
@@ -25,8 +25,8 @@ class RuleGroupObserver
 
             if ($arrayDiff) {
                 $nodes = Node::whereType(4)->whereIn('id', $arrayDiff)->get();
-                if ($nodes) {
-                    reloadNode::dispatchNow($nodes);
+                if ($nodes->isNotEmpty()) {
+                    reloadNode::dispatchAfterResponse($nodes);
                 }
             }
         }

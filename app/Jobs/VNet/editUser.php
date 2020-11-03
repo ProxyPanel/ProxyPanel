@@ -46,7 +46,7 @@ class editUser implements ShouldQueue
             if ($list && in_array($this->data['uid'], $list)) {
                 $this->send($host, $secret);
             } else {
-                addUser::dispatchNow($this->data['uid'], $node);
+                addUser::dispatchAfterResponse($this->data['uid'], $node);
             }
         }
     }
