@@ -74,6 +74,7 @@ class NodeBlockedDetection extends Command
                     $info = true;
                 }
             }
+            sleep(5);
 
             // 节点检测次数
             if ($info && $detectionCheckTimes) {

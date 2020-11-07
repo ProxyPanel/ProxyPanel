@@ -2,6 +2,7 @@
 
 namespace App\Components;
 
+use Cache;
 use Http;
 use Log;
 
@@ -18,6 +19,12 @@ class NetworkDetection
      */
     public static function networkCheck(string $ip, bool $type, $port = null)
     {
+        $cacheKey = 'network_times_'.md5($ip);
+        if (Cache::has($cacheKey)) {
+            Cache::decrement($cacheKey);
+        } else {
+            Cache::put($cacheKey, 2, Day); // 24小时
+        }
         $url = 'https://api.50network.com/china-firewall/check/ip/'.($type ? 'icmp/' : ($port ? 'tcp_port/' : 'tcp_ack/')).$ip.($port ? '/'.$port : '');
 
         $checkName = $type ? 'ICMP' : 'TCP';
@@ -34,6 +41,11 @@ class NetworkDetection
             if (! $message['success']) {
                 if ($message['error'] === 'execute timeout (3s)') {
                     sleep(10);
+                    if (Cache::get($cacheKey) < 0) {
+                        Log::warning('【'.$checkName.'阻断检测】检测'.$ip.$port.'时，重复请求后无结果，最后返回'.$message['error']);
+
+                        return false;
+                    }
 
                     return self::networkCheck($ip, $type, $port);
                 }
