@@ -27,11 +27,11 @@ class editUser implements ShouldQueue
     {
         $this->nodes = $nodes;
         $this->data = [
-            'uid'         => $user->id,
-            'port'        => (int) $user->port,
-            'passwd'      => $user->passwd,
+            'uid' => $user->id,
+            'port' => (int) $user->port,
+            'passwd' => $user->passwd,
             'speed_limit' => $user->speed_limit,
-            'enable'      => (int) $user->enable,
+            'enable' => (int) $user->enable,
         ];
     }
 
@@ -46,7 +46,7 @@ class editUser implements ShouldQueue
             if ($list && in_array($this->data['uid'], $list)) {
                 $this->send($host, $secret);
             } else {
-                addUser::dispatchAfterResponse($this->data['uid'], $node);
+                addUser::dispatch($this->data['uid'], $node->id);
             }
         }
     }

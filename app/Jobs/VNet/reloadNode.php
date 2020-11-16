@@ -31,21 +31,21 @@ class reloadNode implements ShouldQueue
         $allSuccess = true;
         foreach ($this->nodes as $node) {
             $ret = $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret, [
-                'id'             => $node->id,
-                'port'           => (string) $node->port,
-                'passwd'         => $node->passwd ?: '',
-                'method'         => $node->method,
-                'protocol'       => $node->protocol,
-                'obfs'           => $node->obfs,
+                'id' => $node->id,
+                'port' => (string) $node->port,
+                'passwd' => $node->passwd ?: '',
+                'method' => $node->method,
+                'protocol' => $node->protocol,
+                'obfs' => $node->obfs,
                 'protocol_param' => $node->protocol_param,
-                'obfs_param'     => $node->obfs_param ?: '',
-                'push_port'      => $node->push_port,
-                'single'         => $node->single,
-                'secret'         => $node->auth->secret,
-                'is_udp'         => $node->is_udp,
-                'speed_limit'    => $node->getRawOriginal('speed_limit'),
-                'client_limit'   => $node->client_limit,
-                'redirect_url'   => (string) sysConfig('redirect_url'),
+                'obfs_param' => $node->obfs_param ?: '',
+                'push_port' => $node->push_port,
+                'single' => $node->single,
+                'secret' => $node->auth->secret,
+                'is_udp' => $node->is_udp,
+                'speed_limit' => $node->getRawOriginal('speed_limit'),
+                'client_limit' => $node->client_limit,
+                'redirect_url' => (string) sysConfig('redirect_url'),
             ]);
 
             if (! $ret) {
