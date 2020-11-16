@@ -28,7 +28,7 @@ class closeTicket extends Mailable implements ShouldQueue
     public function build(): closeTicket
     {
         return $this->view('emails.closeTicket')->subject('工单关闭提醒')->with([
-            'title'   => $this->title,
+            'title' => $this->title,
             'content' => $this->content,
         ]);
     }

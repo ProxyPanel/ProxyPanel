@@ -291,55 +291,55 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
     <script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
     <script type="text/javascript">
-        function linkManager($type) {
-            $('#sub_link').val('{{$link}}?type=' + $type);
-            return false;
-        }
+      function linkManager($type) {
+        $('#sub_link').val('{{$link}}?type=' + $type);
+        return false;
+      }
 
-        // 更换订阅地址
-        function exchangeSubscribe() {
-            swal.fire({
-                title: '警告',
-                text: '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+      // 更换订阅地址
+      function exchangeSubscribe() {
+        swal.fire({
+          title: '警告',
+          text: '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
 
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '复制成功',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+      const clipboard = new ClipboardJS('.mt-clipboard');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '复制成功',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
         });
-        clipboard.on('error', function () {
-            swal.fire({
-                title: '复制失败，请手动复制',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '复制失败，请手动复制',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
         });
+      });
     </script>
 @endsection

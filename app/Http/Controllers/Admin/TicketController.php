@@ -68,9 +68,8 @@ class TicketController extends Controller
         $obj->title = $title;
         $obj->content = $content;
         $obj->status = 0;
-        $obj->save();
 
-        if ($obj->id) {
+        if ($obj->save()) {
             return Response::json(['status' => 'success', 'message' => '工单创建成功']);
         }
 
@@ -95,9 +94,8 @@ class TicketController extends Controller
         $obj->ticket_id = $id;
         $obj->admin_id = Auth::id();
         $obj->content = $content;
-        $obj->save();
 
-        if ($obj->id) {
+        if ($obj->save()) {
             // 将工单置为已回复
             $ticket = Ticket::with('user')->find($id);
             Ticket::whereId($id)->update(['status' => 1]);
@@ -127,13 +125,9 @@ class TicketController extends Controller
     // 关闭工单
     public function destroy($id)
     {
-        $ticket = Ticket::with('user')->whereId($id)->first();
-        if (! $ticket) {
-            return Response::json(['status' => 'fail', 'message' => '关闭失败']);
-        }
+        $ticket = Ticket::findOrFail($id)->with('user');
 
-        $ret = Ticket::whereId($id)->update(['status' => 2]);
-        if (! $ret) {
+        if (! Ticket::whereId($id)->update(['status' => 2])) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 

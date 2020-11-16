@@ -119,68 +119,68 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
+        }
+      });
 
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.ticket.index')}}?email=' + $('#email').val();
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.ticket.index')}}?email=' + $('#email').val();
+      }
+
+      // 发起工单
+      function createTicket() {
+        const id = $('#user_id').val();
+        const email = $('#user_email').val();
+        const title = $('#title').val();
+        const content = $('#content').val();
+
+        if (id.trim() === '' && email.trim() === '') {
+          swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
+          return false;
         }
 
-        // 发起工单
-        function createTicket() {
-            const id = $('#user_id').val();
-            const email = $('#user_email').val();
-            const title = $('#title').val();
-            const content = $('#content').val();
+        if (title.trim() === '') {
+          swal.fire({title: '您未填写工单标题!', icon: 'warning'});
+          return false;
+        }
 
-            if (id.trim() === '' && email.trim() === '') {
-                swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
-                return false;
-            }
+        if (content.trim() === '') {
+          swal.fire({title: '您未填写工单内容!', icon: 'warning'});
+          return false;
+        }
 
-            if (title.trim() === '') {
-                swal.fire({title: '您未填写工单标题!', icon: 'warning'});
-                return false;
-            }
-
-            if (content.trim() === '') {
-                swal.fire({title: '您未填写工单内容!', icon: 'warning'});
-                return false;
-            }
-
-            swal.fire({
-                title: '确定提交工单？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.ticket.store')}}', {
-                        _token: '{{csrf_token()}}',
-                        id: id,
-                        email: email,
-                        title: title,
-                        content: content,
-                    }, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+        swal.fire({
+          title: '确定提交工单？',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.ticket.store')}}', {
+              _token: '{{csrf_token()}}',
+              id: id,
+              email: email,
+              title: title,
+              content: content,
+            }, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
     </script>
 @endsection

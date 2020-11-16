@@ -177,7 +177,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/ascolor/jquery-asColor.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/asgradient/jquery-asGradient.min.js" type="text/javascript"></script>
@@ -188,94 +188,94 @@
     <script src="/assets/global/js/Plugin/ascolorpicker.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $('[data-toggle="switch"]').bootstrapSwitch();
-        @isset($goods)
-        $(document).ready(function () {
-            const type = $('input[name=\'type\']');
-            $('#id').val('{{$goods->id}}');
-            $("input[name='type'][value='{{$goods->type}}']").click();
-            type.attr('disabled', true);
-            $('#name').val('{{$goods->name}}');
-            $('#price').val('{{$goods->price}}');
-            $('#level').selectpicker('val', '{{$goods->level}}');
-            @if ($goods->type == 2)
-            $('#renew').val('{{$goods->renew}}');
-            $('#period').val('{{$goods->period}}');
-            $('#days').val('{{$goods->days}}').attr('disabled', true);
-            @endif
-            $('#invite_num').val('{{$goods->invite_num}}');
-            $('#limit_num').val('{{$goods->limit_num}}');
-            @if ($goods->is_hot)
-            $('#is_hot').click();
-            @endif
-            @if ($goods->status)
-            $('#status').click();
-            @endif
-            $('#sort').val('{{$goods->sort}}');
-            $('#color').asColorPicker('val', '{{$goods->color}}');
-            $('#description').val('{{$goods->description}}');
-            $('#info').val('{!! $goods->info !!}');
-            const trafficUnit = $('#traffic_unit');
-            const traffic = $('#traffic');
-            @if($goods->traffic >= 1073741824)
-            traffic.val('{{$goods->traffic/1073741824}}');
-            trafficUnit.selectpicker('val', '1073741824');
-            @elseif($goods->traffic >= 1048576)
-            traffic.val('{{$goods->traffic/1048576}}');
-            trafficUnit.selectpicker('val', '1048576');
-            @elseif($goods->traffic >= 1024)
-            traffic.val('{{$goods->traffic/1024}}');
-            trafficUnit.selectpicker('val', '1024');
-            @else
-            traffic.val('{{$goods->traffic}}');
-            @endif
-            traffic.attr('disabled', true);
-            trafficUnit.attr('disabled', true).selectpicker('refresh');
-        });
-        @elseif(old('type'))
-        $(document).ready(function () {
-            const type = $('input[name=\'type\']');
-            $('#id').val('{{old('id')}}');
-            $("input[name='type'][value='{{old('type')}}']").click();
-            $('#name').val('{{old('name')}}');
-            $('#price').val('{{old('price')}}');
-            $('#level').selectpicker('val', '{{old('level')}}');
-            @if (old('type') == 2)
-            $('#renew').val('{{old('renew',0)}}');
-            $('#period').val('{{old('period',0)}}');
-            $('#days').val('{{old('days',0)}}');
-            @endif
-            $('#traffic').val('{{old('traffic')}}');
-            $('#traffic_unit').selectpicker('val', '{{old('traffic_unit')}}');
-            $('#invite_num').val('{{old('invite_num')}}');
-            $('#limit_num').val('{{old('limit_num')}}');
-            @if (old('is_hot'))
-            $('#is_hot').click();
-            @endif
-            @if (old('status'))
-            $('#status').click();
-            @endif
-            $('#sort').val('{{old('sort')}}');
-            $('#color').asColorPicker('val', '{{old('color')}}');
-            $('#description').val('{{old('description')}}');
-            $('#info').val('{{old('info')}}');
-        });
-        @else
-        $('#status').click();
+      $('[data-toggle="switch"]').bootstrapSwitch();
+      @isset($goods)
+      $(document).ready(function() {
+        const type = $('input[name=\'type\']');
+        $('#id').val('{{$goods->id}}');
+        $("input[name='type'][value='{{$goods->type}}']").click();
+        type.attr('disabled', true);
+        $('#name').val('{{$goods->name}}');
+        $('#price').val('{{$goods->price}}');
+        $('#level').selectpicker('val', '{{$goods->level}}');
+          @if ($goods->type == 2)
+          $('#renew').val('{{$goods->renew}}');
+        $('#period').val('{{$goods->period}}');
+        $('#days').val('{{$goods->days}}').attr('disabled', true);
+          @endif
+          $('#invite_num').val('{{$goods->invite_num}}');
+        $('#limit_num').val('{{$goods->limit_num}}');
+          @if ($goods->is_hot)
+          $('#is_hot').click();
+          @endif
+          @if ($goods->status)
+          $('#status').click();
+          @endif
+          $('#sort').val('{{$goods->sort}}');
+        $('#color').asColorPicker('val', '{{$goods->color}}');
+        $('#description').val('{{$goods->description}}');
+        $('#info').val('{!! $goods->info !!}');
+        const trafficUnit = $('#traffic_unit');
+        const traffic = $('#traffic');
+          @if($goods->traffic >= 1073741824)
+          traffic.val('{{$goods->traffic/1073741824}}');
+        trafficUnit.selectpicker('val', '1073741824');
+          @elseif($goods->traffic >= 1048576)
+          traffic.val('{{$goods->traffic/1048576}}');
+        trafficUnit.selectpicker('val', '1048576');
+          @elseif($goods->traffic >= 1024)
+          traffic.val('{{$goods->traffic/1024}}');
+        trafficUnit.selectpicker('val', '1024');
+          @else
+          traffic.val('{{$goods->traffic}}');
+          @endif
+          traffic.attr('disabled', true);
+        trafficUnit.attr('disabled', true).selectpicker('refresh');
+      });
+      @elseif(old('type'))
+      $(document).ready(function() {
+        const type = $('input[name=\'type\']');
+        $('#id').val('{{old('id')}}');
+        $("input[name='type'][value='{{old('type')}}']").click();
+        $('#name').val('{{old('name')}}');
+        $('#price').val('{{old('price')}}');
+        $('#level').selectpicker('val', '{{old('level')}}');
+          @if (old('type') == 2)
+          $('#renew').val('{{old('renew',0)}}');
+        $('#period').val('{{old('period',0)}}');
+        $('#days').val('{{old('days',0)}}');
+          @endif
+          $('#traffic').val('{{old('traffic')}}');
+        $('#traffic_unit').selectpicker('val', '{{old('traffic_unit')}}');
+        $('#invite_num').val('{{old('invite_num')}}');
+        $('#limit_num').val('{{old('limit_num')}}');
+          @if (old('is_hot'))
+          $('#is_hot').click();
+          @endif
+          @if (old('status'))
+          $('#status').click();
+          @endif
+          $('#sort').val('{{old('sort')}}');
+        $('#color').asColorPicker('val', '{{old('color')}}');
+        $('#description').val('{{old('description')}}');
+        $('#info').val('{{old('info')}}');
+      });
+      @else
+      $('#status').click();
 
-        @endisset
+      @endisset
 
-        function itemControl(value) {
-            if (value === 1) {
-                $('.package-renew').hide();
-            } else {
-                $('.package-renew').show();
-            }
+      function itemControl(value) {
+        if (value === 1) {
+          $('.package-renew').hide();
+        } else {
+          $('.package-renew').show();
         }
+      }
 
-        // 选择商品类型
-        $('input[name=\'type\']').change(function () {
-            itemControl(parseInt($(this).val()));
-        });
+      // 选择商品类型
+      $('input[name=\'type\']').change(function() {
+        itemControl(parseInt($(this).val()));
+      });
     </script>
 @endsection

@@ -111,7 +111,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
@@ -120,98 +120,98 @@
     <script src="/assets/custom/maps/jquery-jvectormap-world-mill-cn.js"></script>
 
     <script type="text/javascript">
-        $(function () {
-            $('#world-map').vectorMap({
-                map: 'world_mill',
-                scaleColors: ['#C8EEFF', '#0071A4'],
-                normalizeFunction: 'polynomial',
-                zoomAnimate: true,
-                hoverOpacity: 0.7,
-                hoverColor: false,
-                regionStyle: {
-                    initial: {
-                        fill: '#3E8EF7',
-                    },
-                    hover: {
-                        fill: '#589FFC',
-                    },
-                    selected: {
-                        fill: '#0B69E3',
-                    },
-                    selectedHover: {
-                        fill: '#589FFC',
-                    },
-                },
-                markerStyle: {
-                    initial: {
-                        r: 3,
-                        fill: '#FF4C52',
-                        'stroke-width': 0,
-                    },
-                    hover: {
-                        r: 6,
-                        stroke: '#FF4C52',
-                        'stroke-width': 0,
-                    },
-                },
-                backgroundColor: '#fff',
-                markers: [
-                        @foreach($nodesGeo as $name => $geo)
-                    {
-                        latLng: [{{$name}}], name: '{{$geo}}',
-                    },
-                    @endforeach
-                ],
-            });
-            $('.node').matchHeight();
-            $('.map').matchHeight();
+      $(function() {
+        $('#world-map').vectorMap({
+          map: 'world_mill',
+          scaleColors: ['#C8EEFF', '#0071A4'],
+          normalizeFunction: 'polynomial',
+          zoomAnimate: true,
+          hoverOpacity: 0.7,
+          hoverColor: false,
+          regionStyle: {
+            initial: {
+              fill: '#3E8EF7',
+            },
+            hover: {
+              fill: '#589FFC',
+            },
+            selected: {
+              fill: '#0B69E3',
+            },
+            selectedHover: {
+              fill: '#589FFC',
+            },
+          },
+          markerStyle: {
+            initial: {
+              r: 3,
+              fill: '#FF4C52',
+              'stroke-width': 0,
+            },
+            hover: {
+              r: 6,
+              stroke: '#FF4C52',
+              'stroke-width': 0,
+            },
+          },
+          backgroundColor: '#fff',
+          markers: [
+                  @foreach($nodesGeo as $name => $geo)
+            {
+              latLng: [{{$name}}], name: '{{$geo}}',
+            },
+              @endforeach
+          ],
         });
+        $('.node').matchHeight();
+        $('.map').matchHeight();
+      });
 
-        function getInfo(id, type) {
-            const oldClass = $('#' + type + id).attr('class');
-            $.ajax({
-                method: 'POST',
-                url: '{{route('node')}}',
-                data: {_token: '{{csrf_token()}}', id: id, type: type},
-                beforeSend: function () {
-                    $('#' + type + id).removeAttr('class').addClass('icon wb-loop icon-spin');
-                },
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        switch (type) {
-                            case 'code':
-                                swal.fire({
-                                    html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
-                                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            case 'qrcode':
-                                swal.fire({
-                                    title: '{{trans('home.scan_qrcode')}}',
-                                    html: '<div id="qrcode"></div>',
-                                    onBeforeOpen: () => {
-                                        $('#qrcode').qrcode({text: ret.data});
-                                    },
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            case 'text':
-                                swal.fire({
-                                    title: '{{trans('home.setting_info')}}',
-                                    html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            default:
-                                swal.fire({title: ret.title, text: ret.data, icon: 'error'});
-                        }
-                    }
-                },
-                complete: function () {
-                    $('#' + type + id).removeAttr('class').addClass(oldClass);
-                },
-            });
-        }
+      function getInfo(id, type) {
+        const oldClass = $('#' + type + id).attr('class');
+        $.ajax({
+          method: 'POST',
+          url: '{{route('node')}}',
+          data: {_token: '{{csrf_token()}}', id: id, type: type},
+          beforeSend: function() {
+            $('#' + type + id).removeAttr('class').addClass('icon wb-loop icon-spin');
+          },
+          success: function(ret) {
+            if (ret.status === 'success') {
+              switch (type) {
+                case 'code':
+                  swal.fire({
+                    html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
+                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
+                    showConfirmButton: false,
+                  });
+                  break;
+                case 'qrcode':
+                  swal.fire({
+                    title: '{{trans('home.scan_qrcode')}}',
+                    html: '<div id="qrcode"></div>',
+                    onBeforeOpen: () => {
+                      $('#qrcode').qrcode({text: ret.data});
+                    },
+                    showConfirmButton: false,
+                  });
+                  break;
+                case 'text':
+                  swal.fire({
+                    title: '{{trans('home.setting_info')}}',
+                    html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
+                    showConfirmButton: false,
+                  });
+                  break;
+                default:
+                  swal.fire({title: ret.title, text: ret.data, icon: 'error'});
+              }
+            }
+          },
+          complete: function() {
+            $('#' + type + id).removeAttr('class').addClass(oldClass);
+          },
+        });
+      }
     </script>
 @endsection

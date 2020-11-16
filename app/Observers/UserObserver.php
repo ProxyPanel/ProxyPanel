@@ -25,7 +25,7 @@ class UserObserver
 
         $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
         if ($allowNodes->isNotEmpty()) {
-            addUser::dispatchAfterResponse($user->id, $allowNodes);
+            addUser::dispatch($user->id, $allowNodes);
         }
     }
 
@@ -34,7 +34,7 @@ class UserObserver
         $changes = $user->getChanges();
         $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
         if ($allowNodes->isNotEmpty() && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
-            editUser::dispatchAfterResponse($user, $allowNodes);
+            editUser::dispatch($user, $allowNodes);
         }
     }
 

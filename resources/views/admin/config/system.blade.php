@@ -756,7 +756,7 @@
                                                     </div>
                                                     <label for="max_rand_traffic"></label>
                                                     <input type="number" class="form-control" id="max_rand_traffic" value="{{$max_rand_traffic}}"
-                                                           onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
+                                                           onchange="updateFromInput('max_rand_traffic','{{$min_rand_traffic}}',false)"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> MB </span>
                                                     </div>
@@ -1603,7 +1603,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
@@ -1615,103 +1615,103 @@
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-            $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
-            $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
-            $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
-            $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
-            $('#referral_type').selectpicker('val', '{{$referral_type}}');
-            $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
-            $('#is_notification').selectpicker('val', '{{$is_notification}}');
-            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
-            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
-            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+      $(document).ready(function() {
+        $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
+        $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
+        $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
+        $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
+        $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
+        $('#referral_type').selectpicker('val', '{{$referral_type}}');
+        $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
+        $('#is_notification').selectpicker('val', '{{$is_notification}}');
+        $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+        $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+        $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+        $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+      });
+
+      // 系统设置更新
+      function systemUpdate(systemItem, value) {
+        $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+          } else {
+            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+          }
         });
+      }
 
-        // 系统设置更新
-        function systemUpdate(systemItem, value) {
-            $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
+      // 正常input更新
+      function update(systemItem) {
+        systemUpdate(systemItem, $('#' + systemItem).val());
+      }
+
+      // 需要检查限制的更新
+      function updateFromInput(systemItem, lowerBound, upperBound) {
+        let value = parseInt($('#' + systemItem).val());
+        if (lowerBound !== false && value < lowerBound) {
+          swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else if (upperBound !== false && value > upperBound) {
+          swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else {
+          systemUpdate(systemItem, value);
+        }
+      }
+
+      // 其他项更新选择
+      function updateFromOther(inputType, systemItem) {
+        let input = $('#' + systemItem);
+        switch (inputType) {
+          case 'select':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val());
             });
-        }
-
-        // 正常input更新
-        function update(systemItem) {
-            systemUpdate(systemItem, $('#' + systemItem).val());
-        }
-
-        // 需要检查限制的更新
-        function updateFromInput(systemItem, lowerBound, upperBound) {
-            let value = parseInt($('#' + systemItem).val());
-            if (lowerBound !== false && value < lowerBound) {
-                swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-            } else if (upperBound !== false && value > upperBound) {
-                swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-            } else {
-                systemUpdate(systemItem, value);
-            }
-        }
-
-        // 其他项更新选择
-        function updateFromOther(inputType, systemItem) {
-            let input = $('#' + systemItem);
-            switch (inputType) {
-                case 'select':
-                    input.on('changed.bs.select', function () {
-                        systemUpdate(systemItem, $(this).val());
-                    });
-                    break;
-                case 'multiSelect':
-                    input.on('changed.bs.select', function () {
-                        systemUpdate(systemItem, $(this).val().join(','));
-                    });
-                    break;
-                case 'switch':
-                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        // 发送Bark测试消息
-        function sendTestNotification() {
-            $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+            break;
+          case 'multiSelect':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val().join(','));
             });
+            break;
+          case 'switch':
+            systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
+            break;
+          default:
+            break;
         }
+      }
 
-        // 生成网站安全码
-        function makeWebsiteSecurityCode() {
-            $.get('{{route('createStr')}}', function (ret) {
-                $('#website_security_code').val(ret);
-            });
-        }
+      // 发送Bark测试消息
+      function sendTestNotification() {
+        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
 
-        function epayInfo() {
-            $.get('{{route('admin.test.epay')}}', function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({
-                        title: '易支付信息(仅供参考)',
-                        html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                            '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                            '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-                        icon: 'info',
-                    });
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+      // 生成网站安全码
+      function makeWebsiteSecurityCode() {
+        $.get('{{route('createStr')}}', function(ret) {
+          $('#website_security_code').val(ret);
+        });
+      }
+
+      function epayInfo() {
+        $.get('{{route('admin.test.epay')}}', function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({
+              title: '易支付信息(仅供参考)',
+              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
+                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
+                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+              icon: 'info',
             });
-        }
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
     </script>
 @endsection

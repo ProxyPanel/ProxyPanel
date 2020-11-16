@@ -13,7 +13,7 @@ class UserGroupObserver
     {
         $nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
         if ($nodes->isNotEmpty()) {
-            reloadNode::dispatchAfterResponse($nodes);
+            reloadNode::dispatch($nodes);
         }
     }
 
@@ -25,7 +25,7 @@ class UserGroupObserver
                 ->whereIn('id', array_diff($userGroup->nodes ?? [], $userGroup->getOriginal('nodes') ?? []))
                 ->get();
             if ($nodes->isNotEmpty()) {
-                reloadNode::dispatchAfterResponse($nodes);
+                reloadNode::dispatch($nodes);
             }
         }
     }

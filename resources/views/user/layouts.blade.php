@@ -38,7 +38,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        Breakpoints();
+      Breakpoints();
     </script>
     @yield('css')
 </head>
@@ -262,7 +262,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-    Config.set('assets', '/assets');
+  Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
@@ -270,43 +270,43 @@
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-    (function (document, window, $) {
-        'use strict';
+  (function(document, window, $) {
+    'use strict';
 
-        const Site = window.Site;
-        $(document).ready(function () {
-            Site.run();
-        });
-    })(document, window, jQuery);
+    const Site = window.Site;
+    $(document).ready(function() {
+      Site.run();
+    });
+  })(document, window, jQuery);
 </script>
-@yield('script')
+@yield('javascript')
 
 @if(Session::get("admin"))
     <script type="text/javascript">
-        $('#return_to_admin').click(function () {
-            $.ajax({
-                method: 'POST',
-                url: '{{route('switch')}}',
-                data: {'_token': '{{csrf_token()}}'},
-                dataType: 'json',
-                success: function (ret) {
-                    swal.fire({
-                        title: ret.message,
-                        icon: 'success',
-                        timer: 1000,
-                        showConfirmButton: false,
-                    }).then(() => window.location.href = '{{route('admin.index')}}');
-                },
-                error: function (ret) {
-                    swal.fire({
-                        title: ret.message,
-                        icon: 'error',
-                        timer: 1500,
-                        showConfirmButton: false,
-                    });
-                },
+      $('#return_to_admin').click(function() {
+        $.ajax({
+          method: 'POST',
+          url: '{{route('switch')}}',
+          data: {'_token': '{{csrf_token()}}'},
+          dataType: 'json',
+          success: function(ret) {
+            swal.fire({
+              title: ret.message,
+              icon: 'success',
+              timer: 1000,
+              showConfirmButton: false,
+            }).then(() => window.location.href = '{{route('admin.index')}}');
+          },
+          error: function(ret) {
+            swal.fire({
+              title: ret.message,
+              icon: 'error',
+              timer: 1500,
+              showConfirmButton: false,
             });
+          },
         });
+      });
     </script>
 @endif
 <!-- 统计 -->

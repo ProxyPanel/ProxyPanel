@@ -18,7 +18,7 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action="@isset($userGroup){{route('admin.user.group.update',$userGroup->id)}}@else{{route('admin.user.group.store')}}@endisset" method="POST"
+                <form action="@isset($userGroup){{route('admin.user.group.update',$userGroup)}}@else{{route('admin.user.group.store')}}@endisset" method="POST"
                       enctype="multipart/form-data"
                       class="form-horizontal">
                     @isset($userGroup)@method('PUT')@endisset
@@ -51,62 +51,62 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/multi-select/jquery.multi-select.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
     <script src="/assets/global/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script type="text/javascript">
         @isset($userGroup)
-        $(document).ready(function () {
-            $('#name').val('{{$userGroup->name}}');
-            $('#nodes').multiSelect('select',@json($userGroup->nodes));
+        $(document).ready(function() {
+          $('#name').val('{{$userGroup->name}}');
+          $('#nodes').multiSelect('select',@json($userGroup->nodes));
         });
         @endisset
         // 权限列表
         $('#nodes').multiSelect({
-            selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配规则，此处可搜索\'>',
-            selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配规则，此处可搜索\'>',
-            afterInit: function () {
-                const that = this,
-                    $selectableSearch = that.$selectableUl.prev(),
-                    $selectionSearch = that.$selectionUl.prev(),
-                    selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-                    selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+          selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配规则，此处可搜索\'>',
+          selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配规则，此处可搜索\'>',
+          afterInit: function() {
+            const that = this,
+                $selectableSearch = that.$selectableUl.prev(),
+                $selectionSearch = that.$selectionUl.prev(),
+                selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-                that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function (e) {
-                    if (e.which === 40) {
-                        that.$selectableUl.focus();
-                        return false;
-                    }
-                });
+            that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function(e) {
+              if (e.which === 40) {
+                that.$selectableUl.focus();
+                return false;
+              }
+            });
 
-                that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function (e) {
-                    if (e.which === 40) {
-                        that.$selectionUl.focus();
-                        return false;
-                    }
-                });
-            },
-            afterSelect: function () {
-                this.qs1.cache();
-                this.qs2.cache();
-            },
-            afterDeselect: function () {
-                this.qs1.cache();
-                this.qs2.cache();
-            },
+            that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function(e) {
+              if (e.which === 40) {
+                that.$selectionUl.focus();
+                return false;
+              }
+            });
+          },
+          afterSelect: function() {
+            this.qs1.cache();
+            this.qs2.cache();
+          },
+          afterDeselect: function() {
+            this.qs1.cache();
+            this.qs2.cache();
+          },
         });
 
         // 全选
-        $('#select-all').click(function () {
-            $('#node').multiSelect('select_all');
-            return false;
+        $('#select-all').click(function() {
+          $('#node').multiSelect('select_all');
+          return false;
         });
 
         // 反选
-        $('#deselect-all').click(function () {
-            $('#node').multiSelect('deselect_all');
-            return false;
+        $('#deselect-all').click(function() {
+          $('#node').multiSelect('deselect_all');
+          return false;
         });
     </script>
 @endsection

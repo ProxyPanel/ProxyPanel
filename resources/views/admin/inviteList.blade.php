@@ -81,64 +81,64 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-        // 生成邀请码
-        function makeInvite() {
-            $.ajax({
-                method: 'POST',
-                url: '{{route('admin.invite.create')}}',
-                async: false,
-                data: {_token: '{{csrf_token()}}'},
-                dataType: 'json',
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                    }
-                },
-            });
-
-            return false;
-        }
-
-        // 导出邀请码
-        function exportInvite() {
-            swal.fire({
-                title: '提示',
-                text: '确定导出所有邀请码吗',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = '{{route('admin.invite.export')}}';
-                }
-            });
-        }
-
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '复制成功',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+      // 生成邀请码
+      function makeInvite() {
+        $.ajax({
+          method: 'POST',
+          url: '{{route('admin.invite.create')}}',
+          async: false,
+          data: {_token: '{{csrf_token()}}'},
+          dataType: 'json',
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            }
+          },
         });
-        clipboard.on('error', function () {
-            swal.fire({
-                title: '复制失败，请手动复制',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+
+        return false;
+      }
+
+      // 导出邀请码
+      function exportInvite() {
+        swal.fire({
+          title: '提示',
+          text: '确定导出所有邀请码吗',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            window.location.href = '{{route('admin.invite.export')}}';
+          }
         });
+      }
+
+      const clipboard = new ClipboardJS('.mt-clipboard');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '复制成功',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
+        });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '复制失败，请手动复制',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      });
     </script>
 @endsection

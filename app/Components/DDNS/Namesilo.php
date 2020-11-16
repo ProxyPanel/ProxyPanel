@@ -20,11 +20,11 @@ class Namesilo
         $domainInfo = $this->analysisDomain();
         if ($domainInfo) {
             return $this->send('dnsAddRecord', [
-                'domain'  => $domainInfo[0],
-                'rrtype'  => $type,
-                'rrhost'  => $domainInfo[1],
+                'domain' => $domainInfo[0],
+                'rrtype' => $type,
+                'rrhost' => $domainInfo[1],
                 'rrvalue' => $ip,
-                'rrttl'   => 3600,
+                'rrttl' => 3600,
             ]);
         }
 
@@ -63,8 +63,8 @@ class Namesilo
     {
         $params = [
             'version' => 1,
-            'type'    => 'xml',
-            'key'     => sysConfig('ddns_key'),
+            'type' => 'xml',
+            'key' => sysConfig('ddns_key'),
         ];
         $query = array_merge($params, $data);
 
@@ -86,11 +86,11 @@ class Namesilo
         $domainInfo = $this->analysisDomain();
 
         return $this->send('dnsUpdateRecord', [
-            'domain'  => $domainInfo[0],
-            'rrid'    => $recordId[0],
-            'rrhost'  => $domainInfo[1],
+            'domain' => $domainInfo[0],
+            'rrid' => $recordId[0],
+            'rrhost' => $domainInfo[1],
             'rrvalue' => $ip,
-            'rrttl'   => 3600,
+            'rrttl' => 3600,
         ]);
     }
 

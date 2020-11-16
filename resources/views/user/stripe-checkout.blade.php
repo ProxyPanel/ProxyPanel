@@ -9,11 +9,11 @@
     </div>
 @endsection
 
-@section('script')
+@section('javascript')
     <script src="https://js.stripe.com/v3/"></script>
     <script>
-        let stripe = Stripe('{{ sysConfig('stripe_public_key') }}');
-        let redirectData = stripe.redirectToCheckout({sessionId: '{{ $session_id  }}'});
-        console.log(redirectData);
+      let stripe = Stripe('{{ sysConfig('stripe_public_key') }}');
+      let redirectData = stripe.redirectToCheckout({sessionId: '{{ $session_id  }}'});
+      console.log(redirectData);
     </script>
 @endsection

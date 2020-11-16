@@ -67,8 +67,8 @@ class MarketingController extends Controller
 
             $response = Http::timeout(15)->get('https://pushbear.ftqq.com/sub', [
                 'sendkey' => sysConfig('push_bear_send_key'),
-                'text'    => $title,
-                'desp'    => $content,
+                'text' => $title,
+                'desp' => $content,
             ]);
 
             $message = $response->json();

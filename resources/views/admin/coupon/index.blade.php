@@ -110,72 +110,72 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#sn').val({{Request::input('sn')}});
-            $('#type').val({{Request::input('type')}});
-            $('#status').val({{Request::input('status')}});
+      $(document).ready(function() {
+        $('#sn').val({{Request::input('sn')}});
+        $('#type').val({{Request::input('type')}});
+        $('#status').val({{Request::input('status')}});
+      });
+
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
+        }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.coupon.index')}}?sn=' + $('#sn').val() + '&type=' + $('#type').val() + '&status=' +
+            $('#status').val();
+      }
+
+      // 批量导出卡券
+      function exportCoupon() {
+        swal.fire({
+          title: '卡券导出',
+          text: '确定导出所有卡券吗？',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            window.location.href = '{{route('admin.coupon.export')}}';
+          }
         });
+      }
 
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
+      // 删除卡券
+      function delCoupon(id, name) {
+        swal.fire({
+          title: '确定删除卡券 【' + name + '】 吗？',
+          icon: 'question',
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: '{{route('admin.coupon.destroy', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
+            });
+          }
         });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.coupon.index')}}?sn=' + $('#sn').val() + '&type=' + $('#type').val() + '&status=' +
-                $('#status').val();
-        }
-
-        // 批量导出卡券
-        function exportCoupon() {
-            swal.fire({
-                title: '卡券导出',
-                text: '确定导出所有卡券吗？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = '{{route('admin.coupon.export')}}';
-                }
-            });
-        }
-
-        // 删除卡券
-        function delCoupon(id, name) {
-            swal.fire({
-                title: '确定删除卡券 【' + name + '】 吗？',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: '{{route('admin.coupon.destroy', '')}}/' + id,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
-                }
-            });
-        }
+      }
     </script>
 @endsection

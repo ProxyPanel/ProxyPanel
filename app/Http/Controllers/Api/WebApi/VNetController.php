@@ -13,19 +13,19 @@ class VNetController extends BaseController
         $node = Node::find($id);
 
         return $this->returnData('获取节点信息成功', 'success', 200, [
-            'id'           => $node->id,
-            'method'       => $node->method,
-            'protocol'     => $node->protocol,
-            'obfs'         => $node->obfs,
-            'obfs_param'   => $node->obfs_param ?? '',
-            'is_udp'       => $node->is_udp,
-            'speed_limit'  => $node->getRawOriginal('speed_limit'),
+            'id' => $node->id,
+            'method' => $node->method,
+            'protocol' => $node->protocol,
+            'obfs' => $node->obfs,
+            'obfs_param' => $node->obfs_param ?? '',
+            'is_udp' => $node->is_udp,
+            'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
-            'single'       => $node->single,
-            'port'         => (string) $node->port,
-            'passwd'       => $node->passwd ?? '',
-            'push_port'    => $node->push_port,
-            'secret'       => $node->auth->secret,
+            'single' => $node->single,
+            'port' => (string) $node->port,
+            'passwd' => $node->passwd ?? '',
+            'push_port' => $node->push_port,
+            'secret' => $node->auth->secret,
             'redirect_url' => sysConfig('redirect_url'),
         ]);
     }
@@ -39,15 +39,15 @@ class VNetController extends BaseController
 
         foreach ($users as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'port'        => $user->port,
-                'passwd'      => $user->passwd,
-                'method'      => $user->method,
-                'protocol'    => $user->protocol,
-                'obfs'        => $user->obfs,
-                'obfs_param'  => $node->obfs_param,
+                'uid' => $user->id,
+                'port' => $user->port,
+                'passwd' => $user->passwd,
+                'method' => $user->method,
+                'protocol' => $user->protocol,
+                'obfs' => $user->obfs,
+                'obfs_param' => $node->obfs_param,
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
-                'enable'      => $user->enable,
+                'enable' => $user->enable,
             ];
         }
 

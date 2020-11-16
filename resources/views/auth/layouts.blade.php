@@ -38,7 +38,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        Breakpoints();
+      Breakpoints();
     </script>
 </head>
 <body class="animsition page-login-v3 layout-full" style="position: relative;">
@@ -133,10 +133,10 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-    Config.set('assets', '/assets');
+  Config.set('assets', '/assets');
 </script>
 <!-- Page -->
-@yield('script')
+@yield('javascript')
 <script src="/assets/js/Site.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
@@ -147,13 +147,13 @@
 <!-- 客服 -->
 {!! sysConfig('website_customer_service') !!}
 <script type="text/javascript">
-    (function (document, window, $) {
-        'use strict';
-        const Site = window.Site;
-        $(document).ready(function () {
-            Site.run();
-        });
-    })(document, window, jQuery);
+  (function(document, window, $) {
+    'use strict';
+    const Site = window.Site;
+    $(document).ready(function() {
+      Site.run();
+    });
+  })(document, window, jQuery);
 </script>
 </body>
 </html>

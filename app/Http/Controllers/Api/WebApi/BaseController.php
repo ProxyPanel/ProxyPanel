@@ -51,9 +51,9 @@ class BaseController
     {
         $etag = Helpers::abortIfNotModified($data);
         $data = [
-            'status'  => $status,
-            'code'    => $code,
-            'data'    => $data,
+            'status' => $status,
+            'code' => $code,
+            'data' => $data,
             'message' => $message,
         ];
 
@@ -149,8 +149,8 @@ class BaseController
                     $rule = Rule::find($ruleId);
                     if ($rule) {
                         $data[] = [
-                            'id'      => $rule->id,
-                            'type'    => $rule->type_api_label,
+                            'id' => $rule->id,
+                            'type' => $rule->type_api_label,
                             'pattern' => $rule->pattern,
                         ];
                     }

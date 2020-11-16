@@ -31,7 +31,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($ticketList as $ticket)
+                                @foreach($tickets as $ticket)
                                     <tr>
                                         <td>{{$ticket->id}}</td>
                                         <td>{{$ticket->title}}</td>
@@ -57,7 +57,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <nav class="Page navigation float-right">
-                                    {{$ticketList->links()}}
+                                    {{$tickets->links()}}
                                 </nav>
                             </div>
                         </div>
@@ -128,44 +128,44 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script type="text/javascript">
-        // 发起工单
-        function createTicket() {
-            const title = $('#title').val();
-            const content = $('#content').val();
+      // 发起工单
+      function createTicket() {
+        const title = $('#title').val();
+        const content = $('#content').val();
 
-            if (title.trim() === '') {
-                swal.fire({title: '您未填写工单标题!', icon: 'warning'});
-                return false;
-            }
-
-            if (content.trim() === '') {
-                swal.fire({title: '您未填写工单内容!', icon: 'warning'});
-                return false;
-            }
-
-            swal.fire({
-                title: '确定提交工单？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('openTicket')}}', {
-                        _token: '{{csrf_token()}}',
-                        title: title,
-                        content: content,
-                    }, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
+        if (title.trim() === '') {
+          swal.fire({title: '您未填写工单标题!', icon: 'warning'});
+          return false;
         }
+
+        if (content.trim() === '') {
+          swal.fire({title: '您未填写工单内容!', icon: 'warning'});
+          return false;
+        }
+
+        swal.fire({
+          title: '确定提交工单？',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('openTicket')}}', {
+              _token: '{{csrf_token()}}',
+              title: title,
+              content: content,
+            }, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            });
+          }
+        });
+      }
     </script>
 @endsection

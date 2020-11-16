@@ -27,6 +27,6 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
 @endsection

@@ -47,14 +47,14 @@ class DailyJob extends Command
         foreach ($userList as $user) {
             if ($isBanStatus) {
                 $user->update([
-                    'u'               => 0,
-                    'd'               => 0,
+                    'u' => 0,
+                    'd' => 0,
                     'transfer_enable' => 0,
-                    'enable'          => 0,
-                    'level'           => 0,
-                    'reset_time'      => null,
-                    'ban_time'        => null,
-                    'status'          => -1,
+                    'enable' => 0,
+                    'level' => 0,
+                    'reset_time' => null,
+                    'ban_time' => null,
+                    'status' => -1,
                 ]);
 
                 $this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
@@ -66,13 +66,13 @@ class DailyJob extends Command
                 Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
             } else {
                 $user->update([
-                    'u'               => 0,
-                    'd'               => 0,
+                    'u' => 0,
+                    'd' => 0,
                     'transfer_enable' => 0,
-                    'enable'          => 0,
-                    'level'           => 0,
-                    'reset_time'      => null,
-                    'ban_time'        => null,
+                    'enable' => 0,
+                    'level' => 0,
+                    'reset_time' => null,
+                    'ban_time' => null,
                 ]);
 
                 $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');

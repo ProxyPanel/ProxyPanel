@@ -115,58 +115,58 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/marked/marked.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/to-markdown/to-markdown.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#status').val({{Request::input('status')}});
-        });
+      $(document).ready(function() {
+        $('#status').val({{Request::input('status')}});
+      });
 
-        // 发送通道消息
-        function send() {
-            const title = $('#title').val();
+      // 发送通道消息
+      function send() {
+        const title = $('#title').val();
 
-            if (title.trim() === '') {
-                $('#msg').show().html('标题不能为空');
-                title.focus();
-                return false;
+        if (title.trim() === '') {
+          $('#msg').show().html('标题不能为空');
+          title.focus();
+          return false;
+        }
+
+        $.ajax({
+          url: '{{route('admin.marketing.add')}}',
+          method: 'POST',
+          data: {_token: '{{csrf_token()}}', title: title, content: $('#content').val()},
+          beforeSend: function() {
+            $('#msg').show().html('正在添加...');
+          },
+          success: function(ret) {
+            if (ret.status === 'fail') {
+              $('#msg').show().html(ret.message);
+              return false;
             }
 
-            $.ajax({
-                url: '{{route('admin.marketing.add')}}',
-                method: 'POST',
-                data: {_token: '{{csrf_token()}}', title: title, content: $('#content').val()},
-                beforeSend: function () {
-                    $('#msg').show().html('正在添加...');
-                },
-                success: function (ret) {
-                    if (ret.status === 'fail') {
-                        $('#msg').show().html(ret.message);
-                        return false;
-                    }
+            $('#send_modal').modal('hide');
 
-                    $('#send_modal').modal('hide');
-
-                },
-                error: function () {
-                    $('#msg').show().html('请求错误，请重试');
-                },
-                complete: function () {
-                },
-            });
-        }
-
-        // 关闭modal触发
-        $('#send_modal').on('hide.bs.modal', function () {
-            window.location.reload();
+          },
+          error: function() {
+            $('#msg').show().html('请求错误，请重试');
+          },
+          complete: function() {
+          },
         });
+      }
 
-        function Search() {
-            window.location.href = '{{route('admin.marketing.push')}}?status=' + $('#status').val();
-        }
+      // 关闭modal触发
+      $('#send_modal').on('hide.bs.modal', function() {
+        window.location.reload();
+      });
+
+      function Search() {
+        window.location.href = '{{route('admin.marketing.push')}}?status=' + $('#status').val();
+      }
     </script>
 @endsection

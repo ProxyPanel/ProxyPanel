@@ -46,7 +46,7 @@ class AdminController extends Controller
         $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past])->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::where('t', '>=', strtotime('-10 minutes'))->count(); // 10分钟内在线用户数
         $view['expireWarningUserCount'] = User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(); // 临近过期用户数
-        $view['largeTrafficUserCount'] = User::whereRaw('(u + d) >= 107374182400')->where('status', '<>', -1)->count(); // 流量超过100G的用户
+        $view['largeTrafficUserCount'] = User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(); // 流量使用超过90%的用户
         $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal()); // 1小时内流量异常用户
         $view['nodeCount'] = Node::count();
         $view['unnormalNodeCount'] = Node::whereStatus(0)->count();

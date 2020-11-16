@@ -13,15 +13,15 @@ class TrojanController extends BaseController
         $node = Node::find($id);
 
         return $this->returnData('获取节点信息成功', 'success', 200, [
-            'id'           => $node->id,
-            'is_udp'       => $node->is_udp ? true : false,
-            'speed_limit'  => $node->getRawOriginal('speed_limit'),
+            'id' => $node->id,
+            'is_udp' => $node->is_udp ? true : false,
+            'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
-            'push_port'    => $node->push_port,
+            'push_port' => $node->push_port,
             'redirect_url' => sysConfig('redirect_url'),
-            'trojan_port'  => $node->port,
-            'secret'       => $node->auth->secret,
-            'license'      => sysConfig('trojan_license'),
+            'trojan_port' => $node->port,
+            'secret' => $node->auth->secret,
+            'license' => sysConfig('trojan_license'),
         ]);
     }
 
@@ -33,8 +33,8 @@ class TrojanController extends BaseController
 
         foreach ($users as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'password'    => $user->passwd,
+                'uid' => $user->id,
+                'password' => $user->passwd,
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
             ];
         }

@@ -37,8 +37,8 @@ class RuleGroupController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'name'  => 'required',
-            'type'  => 'required|boolean',
+            'name' => 'required',
+            'type' => 'required|boolean',
             'rules' => 'required',
         ]);
 
@@ -80,8 +80,8 @@ class RuleGroupController extends Controller
         }
 
         $ret = RuleGroup::find($id)->update([
-            'name'  => $request->input('name'),
-            'type'  => $request->input('type'),
+            'name' => $request->input('name'),
+            'type' => $request->input('type'),
             'rules' => $request->input('rules'),
         ]);
 

@@ -22,11 +22,11 @@ class DNSPod
 
         if ($domainInfo) {
             return $this->send('Record.Create', [
-                'domain_id'      => $domainInfo[2],
-                'sub_domain'     => $domainInfo[1],
-                'record_type'    => $type,
+                'domain_id' => $domainInfo[2],
+                'sub_domain' => $domainInfo[1],
+                'record_type' => $type,
                 'record_line_id' => 0,
-                'value'          => $ip,
+                'value' => $ip,
             ]);
         }
 
@@ -61,7 +61,7 @@ class DNSPod
     {
         $public = [
             'login_token' => sysConfig('ddns_key').','.sysConfig('ddns_secret'),
-            'format'      => 'json',
+            'format' => 'json',
         ];
         $parameters = array_merge($data, $public);
 
@@ -88,12 +88,12 @@ class DNSPod
         $domainInfo = $this->analysisDomain();
         if ($recordId && $domainInfo) {
             return $this->send('Record.Modify', [
-                'domain_id'      => $domainInfo[2],
-                'record_id'      => $recordId[0],
-                'sub_domain'     => $domainInfo[1],
-                'record_type'    => $type,
+                'domain_id' => $domainInfo[2],
+                'record_id' => $recordId[0],
+                'sub_domain' => $domainInfo[1],
+                'record_type' => $type,
                 'record_line_id' => 0,
-                'value'          => $ip,
+                'value' => $ip,
             ]);
         }
 

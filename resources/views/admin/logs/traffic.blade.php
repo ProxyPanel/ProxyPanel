@@ -102,27 +102,27 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
-        });
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.log.traffic')}}?port=' + $('#port').val() + '&user_id=' + $('#user_id').val() + '&email=' + $('#email').val()
-                + '&nodeId=' + $('#nodeId option:selected').val() + '&startTime=' + $('#start').val() + '&endTime=' + $('#end').val();
+      $('.input-daterange').datepicker({
+        format: 'yyyy-mm-dd',
+      });
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.log.traffic')}}?port=' + $('#port').val() + '&user_id=' + $('#user_id').val() + '&email=' + $('#email').val()
+            + '&nodeId=' + $('#nodeId option:selected').val() + '&startTime=' + $('#start').val() + '&endTime=' + $('#end').val();
+      }
     </script>
 @endsection

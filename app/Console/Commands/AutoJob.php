@@ -12,7 +12,6 @@ use App\Models\NodeHeartBeat;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserBanedLog;
-use App\Models\UserHourlyDataFlow;
 use App\Models\VerifyCode;
 use Cache;
 use Illuminate\Console\Command;
@@ -107,7 +106,7 @@ class AutoJob extends Command
                     ->count('request_ip');
                 if ($request_times >= $subscribe_ban_times) {
                     $user->subscribe->update([
-                        'status'   => 0,
+                        'status' => 0,
                         'ban_time' => strtotime('+'.sysConfig('traffic_ban_time').' minutes'),
                         'ban_desc' => '存在异常，自动封禁',
                     ]);
@@ -148,7 +147,6 @@ class AutoJob extends Command
 
         // 封禁1小时内流量异常账号
         if (sysConfig('is_traffic_ban')) {
-            $trafficBanValue = sysConfig('traffic_ban_value');
             $trafficBanTime = sysConfig('traffic_ban_time');
             foreach (User::activeUser()->whereBanTime(null)->get() as $user) {
                 // 对管理员豁免
@@ -157,10 +155,9 @@ class AutoJob extends Command
                 }
 
                 // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
-                $totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
-                if ($totalTraffic >= $trafficBanValue * GB) {
+                if ($user->isTrafficWarning()) {
                     $user->update([
-                        'enable'   => 0,
+                        'enable' => 0,
                         'ban_time' => strtotime('+'.$trafficBanTime.' minutes'),
                     ]);
 
@@ -177,7 +174,7 @@ class AutoJob extends Command
         // 解封被临时封禁的账号
         $userList = User::whereEnable(0)->where('status', '>=', 0)->whereNotNull('ban_time')->get();
         foreach ($userList as $user) {
-            if ($user->ban_time < time()) {
+            if ($user->getRawOriginal('ban_time') < time()) {
                 $user->update(['enable' => 1, 'ban_time' => null]);
 
                 // 写入操作日志

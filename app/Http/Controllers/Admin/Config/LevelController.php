@@ -18,7 +18,7 @@ class LevelController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'level'      => 'required|numeric|unique:level,level',
+            'level' => 'required|numeric|unique:level,level',
             'level_name' => 'required',
         ]);
 
@@ -44,7 +44,7 @@ class LevelController extends Controller
         $level = $request->input('level');
 
         $validator = Validator::make($request->all(), [
-            'level'      => 'required|numeric',
+            'level' => 'required|numeric',
             'level_name' => 'required',
         ]);
 

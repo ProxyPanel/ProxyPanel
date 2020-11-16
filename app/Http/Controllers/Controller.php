@@ -195,7 +195,7 @@ class Controller extends BaseController
     public function v2raySubUrl($name, $host, $port, $uuid, $alter_id, $net, $type, $domain, $path, $tls): string
     {
         return 'vmess://'.base64url_encode(json_encode([
-            'v'    => '2', 'ps' => $name, 'add' => $host, 'port' => $port, 'id' => $uuid, 'aid' => $alter_id, 'net' => $net,
+            'v' => '2', 'ps' => $name, 'add' => $host, 'port' => $port, 'id' => $uuid, 'aid' => $alter_id, 'net' => $net,
             'type' => $type, 'host' => $domain, 'path' => $path, 'tls' => $tls ? 'tls' : '',
         ], JSON_PRETTY_PRINT));
     }
@@ -246,10 +246,10 @@ class Controller extends BaseController
         $dailyData[date('j', strtotime(now())) - 1] = round((array_sum($hourlyFlow) + $currentFlow) / GB, 3);
 
         return [
-            'trafficDaily'  => json_encode($dailyData),
+            'trafficDaily' => json_encode($dailyData),
             'trafficHourly' => json_encode($hourlyData),
-            'monthDays'     => json_encode(range(1, date('j'), 1)), // 本月天数
-            'dayHours'      => json_encode(range(0, date('G') + 1, 1)), // 本日小时
+            'monthDays' => json_encode(range(1, date('j'), 1)), // 本月天数
+            'dayHours' => json_encode(range(0, date('G') + 1, 1)), // 本日小时
         ];
     }
 }

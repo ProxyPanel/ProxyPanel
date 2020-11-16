@@ -11,8 +11,8 @@ return [
     |
     */
 
-    'filename'      => '_ide_helper',
-    'format'        => 'php',
+    'filename' => '_ide_helper',
+    'format' => 'php',
 
     /*
     |--------------------------------------------------------------------------
@@ -146,7 +146,7 @@ return [
             'Illuminate\Database\Eloquent\Builder',
             'Illuminate\Database\Query\Builder',
         ],
-        'Session'  => ['Illuminate\Session\Store'],
+        'Session' => ['Illuminate\Session\Store'],
     ],
 
     'magic' => [],
@@ -161,7 +161,7 @@ return [
     |
     */
 
-    'interfaces'                  => [
+    'interfaces' => [
 
     ],
 
@@ -191,7 +191,7 @@ return [
     |  ),
     |
     */
-    'custom_db_types'             => [
+    'custom_db_types' => [
         'mysql' => [
             'bit' => 'boolean',
         ],
@@ -231,7 +231,7 @@ return [
     | Cast the given "real type" to the given "type".
     |
     */
-    'type_overrides'              => [
+    'type_overrides' => [
         'integer' => 'int',
         'boolean' => 'bool',
     ],
@@ -245,6 +245,6 @@ return [
     | magic methods and properties.
     |
     */
-    'include_class_docblocks'     => false,
+    'include_class_docblocks' => false,
 
 ];

@@ -41,7 +41,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        Breakpoints();
+      Breakpoints();
     </script>
 </head>
 <body class="animsition page-error page-error-400 layout-full">
@@ -87,21 +87,21 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-    Config.set('assets', '/assets');
+  Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/asscrollable.js" type="text/javascript"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script type="text/javascript">
-    (function (document, window, $) {
-        'use strict';
+  (function(document, window, $) {
+    'use strict';
 
-        const Site = window.Site;
-        $(document).ready(function () {
-            Site.run();
-        });
-    })(document, window, jQuery);
+    const Site = window.Site;
+    $(document).ready(function() {
+      Site.run();
+    });
+  })(document, window, jQuery);
 </script>
 </body>
 </html>

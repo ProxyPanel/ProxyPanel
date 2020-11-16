@@ -87,27 +87,27 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#type').val({{Request::input('type')}});
-            $('#trade_status').val({{Request::input('trade_status')}});
-        });
+      $(document).ready(function() {
+        $('#type').val({{Request::input('type')}});
+        $('#trade_status').val({{Request::input('trade_status')}});
+      });
 
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.payment.callback')}}?out_trade_no=' + $('#trade_no').val() + '&trade_no=' +
-                $('#out_trade_no').val() + '&type=' + $('#type option:selected').val() + '&trade_status=' + $('#trade_status option:selected').val();
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.payment.callback')}}?out_trade_no=' + $('#trade_no').val() + '&trade_no=' +
+            $('#out_trade_no').val() + '&type=' + $('#type option:selected').val() + '&trade_status=' + $('#trade_status option:selected').val();
+      }
     </script>
 @endsection

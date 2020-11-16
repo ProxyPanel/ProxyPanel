@@ -68,13 +68,13 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.node.pingLog')}}?&nodeId=' + $('#nodeId option:selected').val();
-        }
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.node.pingLog')}}?&nodeId=' + $('#nodeId option:selected').val();
+      }
     </script>
 @endsection

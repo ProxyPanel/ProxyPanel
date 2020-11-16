@@ -45,11 +45,11 @@ class SubscribeController extends Controller
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed('账号封禁至'.date('m-d H:i', $user->ban_time).',请解封后再更新！');
+                return $this->failed('账号封禁至'.$user->ban_time.',请解封后再更新！');
             }
 
-            $unusedTransfer = $user->transfer_enable - $user->u - $user->d;
-            if ($unusedTransfer <= 0) {
+            $unusedTraffic = $user->transfer_enable - $user->usedTraffic();
+            if ($unusedTraffic <= 0) {
                 return $this->failed('流量耗尽！请重新购买或重置流量！');
             }
 
@@ -89,7 +89,7 @@ class SubscribeController extends Controller
 
         // 展示到期时间和剩余流量
         if (sysConfig('is_custom_subscribe')) {
-            $scheme .= $this->infoGenerator('到期时间: '.$user->expired_at).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->u - $user->d));
+            $scheme .= $this->infoGenerator('到期时间: '.$user->expired_at).$this->infoGenerator('剩余流量: '.flowAutoShow($user->transfer_enable - $user->usedTraffic()));
         }
 
         // 控制客户端最多获取节点数
@@ -103,7 +103,7 @@ class SubscribeController extends Controller
         }
 
         $headers = [
-            'Content-type'  => 'application/octet-stream; charset=utf-8',
+            'Content-type' => 'application/octet-stream; charset=utf-8',
             'Cache-Control' => 'no-store, no-cache, must-revalidate',
             //'Content-Disposition' => 'attachment; filename='.$filename
         ];
@@ -128,7 +128,7 @@ class SubscribeController extends Controller
         switch ($this->subType) {
             case 2:
                 $result = 'vmess://'.base64url_encode(json_encode([
-                    'v'    => '2', 'ps' => $text, 'add' => '0.0.0.0', 'port' => 0, 'id' => 0, 'aid' => 0, 'net' => 'tcp',
+                    'v' => '2', 'ps' => $text, 'add' => '0.0.0.0', 'port' => 0, 'id' => 0, 'aid' => 0, 'net' => 'tcp',
                     'type' => 'none', 'host' => '', 'path' => '/', 'tls' => 'tls',
                 ], JSON_PRETTY_PRINT));
                 break;

@@ -29,10 +29,10 @@
                             <td> {{$vo->name}} </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{route('admin.user.group.edit',$vo->id)}}" class="btn btn-primary">
+                                    <a href="{{route('admin.user.group.edit',$vo)}}" class="btn btn-primary">
                                         <i class="icon wb-edit" aria-hidden="true"></i>
                                     </a>
-                                    <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$vo->id)}}')" class="btn btn-danger">
+                                    <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$vo)}}')" class="btn btn-danger">
                                         <i class="icon wb-trash" aria-hidden="true"></i>
                                     </button>
                                 </div>
@@ -57,37 +57,37 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 删除用户分组
-        function deleteUserGroup(url) {
-            swal.fire({
-                title: '提示',
-                text: '确定删除该分组吗?',
-                icon: 'info',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: url,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      // 删除用户分组
+      function deleteUserGroup(url) {
+        swal.fire({
+          title: '提示',
+          text: '确定删除该分组吗?',
+          icon: 'info',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: url,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
     </script>
 @endsection

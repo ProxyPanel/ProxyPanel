@@ -94,7 +94,7 @@
                         <button type="button" class="btn btn-floating btn-sm btn-warning">
                             <i class="icon md-account"></i>
                         </button>
-                        <span class="ml-15 font-weight-400">流量大户（超过100G的用户）</span>
+                        <span class="ml-15 font-weight-400">流量大户（超过90%的用户）</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{$largeTrafficUserCount}}</span>
                         </div>
@@ -272,12 +272,12 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(function () {
-            $('.card').matchHeight();
-        });
+      $(function() {
+        $('.card').matchHeight();
+      });
     </script>
 @endsection

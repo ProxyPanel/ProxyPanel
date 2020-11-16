@@ -431,7 +431,7 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js" type="text/javascript"></script>
 <script type="text/javascript">
-    Config.set('assets', '/assets');
+  Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js" type="text/javascript"></script>
@@ -439,14 +439,14 @@
 <script src="/assets/global/js/Plugin/slidepanel.js" type="text/javascript"></script>
 <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-    (function (document, window, $) {
-        'use strict';
-        const Site = window.Site;
-        $(document).ready(function () {
-            Site.run();
-        });
-    })(document, window, jQuery);
+  (function(document, window, $) {
+    'use strict';
+    const Site = window.Site;
+    $(document).ready(function() {
+      Site.run();
+    });
+  })(document, window, jQuery);
 </script>
-@yield('script')
+@yield('javascript')
 </body>
 </html>

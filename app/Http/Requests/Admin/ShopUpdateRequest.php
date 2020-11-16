@@ -9,7 +9,7 @@ class ShopUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => 'required',
+            'name' => 'required',
             'price' => 'required|numeric|min:0',
             'renew' => 'required_unless:type,2|min:0',
         ];

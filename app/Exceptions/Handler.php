@@ -4,7 +4,6 @@ namespace App\Exceptions;
 
 use App\Components\IP;
 use ErrorException;
-use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
@@ -39,10 +38,9 @@ class Handler extends ExceptionHandler
      * Report or log an exception.
      *
      * @param  Throwable  $exception
-     *
      * @return void
      *
-     * @throws Exception|Throwable
+     * @throws Throwable
      */
     public function report(Throwable $exception)
     {
@@ -63,7 +61,6 @@ class Handler extends ExceptionHandler
      *
      * @param  Request  $request
      * @param  Throwable  $exception
-     *
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws Throwable
@@ -90,7 +87,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof TokenMismatchException: // 捕获CSRF异常
                     if ($request->ajax()) {
                         return Response::json([
-                            'status'  => 'fail',
+                            'status' => 'fail',
                             'message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>',
                         ]);
                     }
@@ -109,7 +106,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof ErrorException: // 捕获系统错误异常
                     if ($request->ajax()) {
                         return Response::json([
-                            'status'  => 'fail',
+                            'status' => 'fail',
                             'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>',
                         ]);
                     }
@@ -122,7 +119,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof ConnectionException:
                     if ($request->ajax()) {
                         return Response::json([
-                            'status'  => 'fail',
+                            'status' => 'fail',
                             'message' => $exception->getMessage(),
                         ]);
                     }
@@ -131,7 +128,7 @@ class Handler extends ExceptionHandler
                 default:
                     if ($request->ajax()) {
                         return Response::json([
-                            'status'  => 'fail',
+                            'status' => 'fail',
                             'message' => $exception->getMessage(),
                         ]);
                     }

@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\Verify;
 use App\Models\VerifyCode;
-use App\Services\UserService;
 use Auth;
 use Cache;
 use Captcha;
@@ -41,10 +40,10 @@ class AuthController extends Controller
     {
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'email'    => 'required|email',
+                'email' => 'required|email',
                 'password' => 'required',
             ], [
-                'email.required'    => trans('auth.email_null'),
+                'email.required' => trans('auth.email_null'),
                 'password.required' => trans('auth.password_null'),
             ]);
 
@@ -198,21 +197,21 @@ class AuthController extends Controller
 
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'username'        => 'required',
-                'email'           => 'required|email|unique:user',
-                'password'        => 'required|min:6',
+                'username' => 'required',
+                'email' => 'required|email|unique:user',
+                'password' => 'required|min:6',
                 'confirmPassword' => 'required|same:password',
-                'term'            => 'accepted',
+                'term' => 'accepted',
             ], [
-                'username.required'        => trans('auth.email_null'),
-                'email.required'           => trans('auth.email_null'),
-                'email.email'              => trans('auth.email_legitimate'),
-                'email.unique'             => trans('auth.email_exist'),
-                'password.required'        => trans('auth.password_null'),
-                'password.min'             => trans('auth.password_limit'),
+                'username.required' => trans('auth.email_null'),
+                'email.required' => trans('auth.email_null'),
+                'email.email' => trans('auth.email_legitimate'),
+                'email.unique' => trans('auth.email_exist'),
+                'password.required' => trans('auth.password_null'),
+                'password.min' => trans('auth.password_limit'),
                 'confirmPassword.required' => trans('auth.confirm_password'),
-                'confirmPassword.same'     => trans('auth.password_same'),
-                'term.accepted'            => trans('auth.unaccepted'),
+                'confirmPassword.same' => trans('auth.password_same'),
+                'term.accepted' => trans('auth.unaccepted'),
             ]);
 
             if ($validator->fails()) {
@@ -340,7 +339,7 @@ class AuthController extends Controller
                 if ($inviter_id) {
                     $referralUser = User::find($inviter_id);
                     if ($referralUser && $referralUser->expired_at >= date('Y-m-d')) {
-                        (new UserService($referralUser))->incrementData(sysConfig('referral_traffic') * MB);
+                        $referralUser->incrementData(sysConfig('referral_traffic') * MB);
                     }
                 }
 
@@ -455,7 +454,7 @@ class AuthController extends Controller
                 'email' => 'required|email',
             ], [
                 'email.required' => trans('auth.email_null'),
-                'email.email'    => trans('auth.email_legitimate'),
+                'email.email' => trans('auth.email_legitimate'),
             ]);
 
             if ($validator->fails()) {
@@ -510,14 +509,14 @@ class AuthController extends Controller
 
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'password'        => 'required|min:6',
+                'password' => 'required|min:6',
                 'confirmPassword' => 'required|same:password',
             ], [
-                'password.required'        => trans('auth.password_null'),
-                'password.min'             => trans('auth.password_limit'),
+                'password.required' => trans('auth.password_null'),
+                'password.min' => trans('auth.password_limit'),
                 'confirmPassword.required' => trans('auth.password_null'),
-                'confirmPassword.min'      => trans('auth.password_limit'),
-                'confirmPassword.same'     => trans('auth.password_same'),
+                'confirmPassword.min' => trans('auth.password_limit'),
+                'confirmPassword.same' => trans('auth.password_same'),
             ]);
 
             if ($validator->fails()) {
@@ -581,8 +580,8 @@ class AuthController extends Controller
                 'email' => 'required|email|exists:user,email',
             ], [
                 'email.required' => trans('auth.email_null'),
-                'email.email'    => trans('auth.email_legitimate'),
-                'email.exists'   => trans('auth.email_notExist'),
+                'email.email' => trans('auth.email_legitimate'),
+                'email.exists' => trans('auth.email_notExist'),
             ]);
 
             if ($validator->fails()) {
@@ -687,7 +686,7 @@ class AuthController extends Controller
         // 账号激活后给邀请人送流量
         $inviter = $user->inviter;
         if ($inviter) {
-            (new UserService($inviter))->incrementData(sysConfig('referral_traffic') * MB);
+            $inviter->incrementData(sysConfig('referral_traffic') * MB);
         }
 
         Session::flash('successMsg', trans('auth.active_success'));
@@ -702,8 +701,8 @@ class AuthController extends Controller
             'email' => 'required|email|unique:user',
         ], [
             'email.required' => trans('auth.email_null'),
-            'email.email'    => trans('auth.email_legitimate'),
-            'email.unique'   => trans('auth.email_exist'),
+            'email.email' => trans('auth.email_legitimate'),
+            'email.unique' => trans('auth.email_exist'),
         ]);
 
         $email = $request->input('email');

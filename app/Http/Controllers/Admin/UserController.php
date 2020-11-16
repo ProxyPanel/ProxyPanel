@@ -12,7 +12,6 @@ use App\Models\Node;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
-use App\Services\UserService;
 use Auth;
 use DB;
 use Exception;
@@ -82,7 +81,7 @@ class UserController extends Controller
 
         // 流量超过100G的
         if ($largeTraffic) {
-            $query->whereIn('status', [0, 1])->whereRaw('(u + d) >= 107374182400');
+            $query->whereIn('status', [0, 1])->whereRaw('(u + d)/transfer_enable >= 0.9');
         }
 
         // 临近过期提醒
@@ -105,31 +104,10 @@ class UserController extends Controller
             $query->whereIn('id', (new UserHourlyDataFlow)->trafficAbnormal());
         }
 
-        $userList = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
-        foreach ($userList as $user) {
-            $user->used_flow = flowAutoShow($user->u + $user->d);
-            if ($user->expired_at < date('Y-m-d')) {
-                $user->expireWarning = -1; // 已过期
-            } elseif ($user->expired_at === date('Y-m-d')) {
-                $user->expireWarning = 0; // 今天过期
-            } elseif ($user->expired_at > date('Y-m-d') && $user->expired_at <= date('Y-m-d', strtotime('+30 days'))) {
-                $user->expireWarning = 1; // 最近一个月过期
-            } else {
-                $user->expireWarning = 2; // 大于一个月过期
-            }
-
-            // 流量异常警告
-            $totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
-            $user->trafficWarning = $totalTraffic > (sysConfig('traffic_ban_value') * GB) ? 1 : 0;
-
-            // 订阅地址
-            $user->link = route('sub', $user->subscribe->code);
-        }
-
         return view('admin.user.index', [
-            'userList'   => $userList,
+            'userList' => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels'     => Level::all()->pluck('name', 'level')->toArray(),
+            'levels' => Level::all()->pluck('name', 'level')->toArray(),
         ]);
     }
 
@@ -178,7 +156,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         return view('admin.user.info', [
-            'user'      => $user->load('inviter:id,email'),
+            'user' => $user->load('inviter:id,email'),
             'levelList' => Level::orderBy('level')->get(),
             'groupList' => UserGroup::orderBy('id')->get(),
         ]);
@@ -324,7 +302,7 @@ class UserController extends Controller
         $user = User::find($userId);
 
         // 加减余额
-        if ((new UserService($user))->updateCredit($amount)) {
+        if ($user->updateCredit($amount)) {
             Helpers::addUserCreditLog($userId, 0, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);

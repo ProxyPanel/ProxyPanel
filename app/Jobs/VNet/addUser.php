@@ -29,11 +29,11 @@ class addUser implements ShouldQueue
         $data = [];
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'port'        => $user->port,
-                'passwd'      => $user->passwd,
+                'uid' => $user->id,
+                'port' => $user->port,
+                'passwd' => $user->passwd,
                 'speed_limit' => $user->speed_limit,
-                'enable'      => $user->enable,
+                'enable' => $user->enable,
             ];
         }
 
