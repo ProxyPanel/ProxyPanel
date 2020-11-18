@@ -7,7 +7,6 @@ use Arr;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -24,9 +23,9 @@ class addUser implements ShouldQueue
     private $data;
     private $nodes;
 
-    public function __construct($userIds, $nodes)
+    public function __construct($userIds, $nodeIds)
     {
-        $this->nodes = $nodes;
+        $this->nodes = Node::findMany($nodeIds);
         $data = [];
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
@@ -43,12 +42,8 @@ class addUser implements ShouldQueue
 
     public function handle(): void
     {
-        if ($this->nodes instanceof Collection) {
-            foreach ($this->nodes as $node) {
-                $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret);
-            }
-        } else {
-            $this->send(($this->nodes->server ?: $this->nodes->ip).':'.$this->nodes->push_port, $this->nodes->auth->secret);
+        foreach ($this->nodes as $node) {
+            $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret);
         }
     }
 

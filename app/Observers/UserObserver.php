@@ -23,8 +23,8 @@ class UserObserver
         $subscribe->code = Helpers::makeSubscribeCode();
         $subscribe->save();
 
-        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->get();
-        if ($allowNodes->isNotEmpty()) {
+        $allowNodes = Node::userAllowNodes($user->group_id, $user->level)->whereType(4)->pluck('id');
+        if ($allowNodes) {
             addUser::dispatch($user->id, $allowNodes);
         }
     }
