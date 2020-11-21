@@ -128,6 +128,10 @@ class ImproveTable extends Migration
             $table->foreign('ticket_id')->references('id')->on('ticket')->cascadeOnDelete();
         });
 
+        Schema::table('user', function (Blueprint $table) {
+            $table->foreign('inviter_id')->references('id')->on('user')->nullOnDelete();
+        });
+
         Schema::table('user_baned_log', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
         });
@@ -334,6 +338,11 @@ class ImproveTable extends Migration
 
         Schema::table('ticket_reply', function (Blueprint $table) {
             $table->unsignedInteger('admin_id')->default(0)->nullable(false)->change();
+        });
+
+        Schema::table('user', function (Blueprint $table) {
+            $table->dropForeign(['inviter_id']);
+            $table->dropIndex('user_inviter_id_foreign');
         });
 
         Schema::table('user_baned_log', function (Blueprint $table) {

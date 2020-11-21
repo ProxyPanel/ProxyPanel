@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use App\Models\User;
 use Arr;
 use Http;
@@ -23,9 +24,9 @@ class addUser implements ShouldQueue
     private $data;
     private $nodes;
 
-    public function __construct($userIds, $nodes)
+    public function __construct($userIds, $nodeIds)
     {
-        $this->nodes = $nodes;
+        $this->nodes = Node::findMany($nodeIds);
         $data = [];
         foreach (User::findMany($userIds) as $user) {
             $data[] = [

@@ -97,7 +97,6 @@ class RuleGroupController extends Controller
     {
         try {
             RuleGroup::whereId($id)->delete();
-            RuleGroupNode::whereRuleGroupId($id)->delete();
         } catch (Exception $e) {
             return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
         }

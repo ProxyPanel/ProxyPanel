@@ -42,7 +42,6 @@ class LabelController extends Controller
     {
         try {
             Label::whereId($id)->delete();
-            NodeLabel::whereLabelId($id)->delete(); // 删除节点关联
 
             return Response::json(['status' => 'success', 'message' => '删除成功']);
         } catch (Exception $e) {

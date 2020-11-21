@@ -210,7 +210,7 @@ class User extends Authenticatable
 
     public function scopeUserAccessNodes()
     {
-        return Node::userAllowNodes($this->attributes['group_id'], $this->attributes['level']);
+        return Node::userAllowNodes($this->attributes['group_id'] ?? 0, $this->attributes['level'] ?? 0);
     }
 
     public function getIsAvailableAttribute(): bool
@@ -225,19 +225,16 @@ class User extends Authenticatable
         return $this->credit >= 0 && $this->save();
     }
 
-    // 添加用户余额
-
     public function incrementData(int $data): bool
-    {
+    {// 添加用户流量
         $this->transfer_enable += $data;
 
         return $this->save();
     }
 
-    // 添加用户流量
-
     public function isNotCompleteOrderByUserId(int $userId): bool
-    {
+    { // 添加用户余额
+
         return Order::uid($userId)->whereIn('status', [0, 1])->exists();
     }
 
@@ -263,21 +260,18 @@ class User extends Authenticatable
         return $expired_status;
     }
 
-    public function isTrafficWarning()
-    {
+    public function isTrafficWarning(): bool
+    {// 流量异常警告
         return $this->recentTrafficUsed() >= (sysConfig('traffic_ban_value') * GB);
     }
-
-    // 流量异常警告
 
     public function recentTrafficUsed()
     {
         return UserHourlyDataFlow::userRecentUsed($this->id)->sum('total');
     }
 
-    //付费用户判断
     public function activePayingUser()
-    {
+    { //付费用户判断
         return $this->orders()->active()->where('origin_amount', '>', 0)->exists();
     }
 
