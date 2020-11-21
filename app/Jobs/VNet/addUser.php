@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use App\Models\User;
 use Arr;
 use Http;
