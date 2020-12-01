@@ -34,7 +34,7 @@ class AutoStatisticsUserHourlyTraffic extends Command
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
     }
 
-    private function statisticsByNode($user_id, $node_id = 0): void
+    private function statisticsByNode($user_id, $node_id = null): void
     {
         $query = UserDataFlowLog::whereUserId($user_id)->whereBetween('log_time', [strtotime('-1 hour'), time()]);
 

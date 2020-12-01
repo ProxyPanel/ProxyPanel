@@ -193,12 +193,12 @@ class Helpers
      *
      * @param  string  $description  备注
      * @param  int  $couponId  优惠券ID
-     * @param  int  $goodsId  商品ID
-     * @param  int  $orderId  订单ID
+     * @param  int|null  $goodsId  商品ID
+     * @param  int|null  $orderId  订单ID
      *
      * @return bool
      */
-    public static function addCouponLog(string $description, int $couponId, $goodsId = 0, $orderId = 0): bool
+    public static function addCouponLog($description, $couponId, $goodsId = null, $orderId = null): bool
     {
         $log = new CouponLog();
         $log->coupon_id = $couponId;
@@ -213,7 +213,7 @@ class Helpers
      * 记录余额操作日志.
      *
      * @param  int  $userId  用户ID
-     * @param  int  $orderId  订单ID
+     * @param  int|null  $orderId  订单ID
      * @param  int  $before  记录前余额
      * @param  int  $after  记录后余额
      * @param  int  $amount  发生金额
@@ -221,7 +221,7 @@ class Helpers
      *
      * @return bool
      */
-    public static function addUserCreditLog(int $userId, int $orderId, int $before, int $after, int $amount, $description = ''): bool
+    public static function addUserCreditLog($userId, $orderId, $before, $after, $amount, $description = ''): bool
     {
         $log = new UserCreditLog();
         $log->user_id = $userId;
@@ -239,14 +239,14 @@ class Helpers
      * 记录流量变动日志.
      *
      * @param  int  $userId  用户ID
-     * @param  int  $orderId  订单ID
+     * @param  int|null  $orderId  订单ID
      * @param  int  $before  记录前的值
      * @param  int  $after  记录后的值
      * @param  string  $description  描述
      *
      * @return bool
      */
-    public static function addUserTrafficModifyLog(int $userId, int $orderId, int $before, int $after, $description = ''): bool
+    public static function addUserTrafficModifyLog($userId, $orderId, $before, $after, $description = ''): bool
     {
         $log = new UserDataModifyLog();
         $log->user_id = $userId;

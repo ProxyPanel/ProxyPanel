@@ -1,5 +1,12 @@
 <?php
 
+use App\Models\CouponLog;
+use App\Models\Ticket;
+use App\Models\TicketReply;
+use App\Models\UserCreditLog;
+use App\Models\UserDailyDataFlow;
+use App\Models\UserDataModifyLog;
+use App\Models\UserHourlyDataFlow;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -20,7 +27,7 @@ class ImproveTable extends Migration
             $table->unsignedInteger('order_id')->default(null)->nullable()->change();
             $table->foreign('coupon_id')->references('id')->on('coupon')->nullOnDelete();
             $table->foreign('goods_id')->references('id')->on('goods')->nullOnDelete();
-            $table->foreign('order_id')->references('id')->on('order')->nullOnDelete();
+            $table->foreign('order_id')->references('id')->on('order')->cascadeOnDelete();
         });
 
         Schema::table('email_filter', function (Blueprint $table) {
@@ -122,6 +129,7 @@ class ImproveTable extends Migration
         });
 
         Schema::table('ticket_reply', function (Blueprint $table) {
+            $table->unsignedInteger('user_id')->default(null)->nullable()->comment('用户ID')->change();
             $table->unsignedInteger('admin_id')->default(null)->nullable()->comment('管理员ID')->change();
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
             $table->foreign('admin_id')->references('id')->on('user')->nullOnDelete();
@@ -143,6 +151,7 @@ class ImproveTable extends Migration
         });
 
         Schema::table('user_daily_data_flow', function (Blueprint $table) {
+            $table->unsignedInteger('node_id')->default(null)->nullable()->comment('节点ID，null表示统计全部节点')->change();
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
             $table->foreign('node_id')->references('id')->on('ss_node')->cascadeOnDelete();
         });
@@ -154,6 +163,7 @@ class ImproveTable extends Migration
         });
 
         Schema::table('user_hourly_data_flow', function (Blueprint $table) {
+            $table->unsignedInteger('node_id')->default(null)->nullable()->comment('节点ID，null表示统计全部节点')->change();
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
             $table->foreign('node_id')->references('id')->on('ss_node')->cascadeOnDelete();
         });
@@ -179,6 +189,16 @@ class ImproveTable extends Migration
         Schema::table('verify', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
         });
+        CouponLog::whereCouponId(0)->update(['coupon_id' => null]);
+        CouponLog::whereGoodsId(0)->update(['goods_id' => null]);
+        CouponLog::whereOrderId(0)->update(['order_id' => null]);
+        Ticket::whereAdminId(0)->update(['admin_id' => null]);
+        TicketReply::whereUserId(0)->update(['user_id' => null]);
+        TicketReply::whereAdminId(0)->update(['admin_id' => null]);
+        UserCreditLog::whereOrderId(0)->update(['order_id' => null]);
+        UserHourlyDataFlow::whereNodeId(0)->update(['node_id' => null]);
+        UserDailyDataFlow::whereNodeId(0)->update(['node_id' => null]);
+        UserDataModifyLog::whereOrderId(0)->update(['order_id' => null]);
 
         Schema::enableForeignKeyConstraints();
     }
@@ -191,6 +211,17 @@ class ImproveTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
+        CouponLog::whereCouponId(null)->update(['coupon_id' => 0]);
+        CouponLog::whereGoodsId(null)->update(['goods_id' => 0]);
+        CouponLog::whereOrderId(null)->update(['order_id' => 0]);
+        Ticket::whereAdminId(null)->update(['admin_id' => 0]);
+        TicketReply::whereUserId(null)->update(['user_id' => 0]);
+        TicketReply::whereAdminId(null)->update(['admin_id' => 0]);
+        UserCreditLog::whereOrderId(null)->update(['order_id' => 0]);
+        UserHourlyDataFlow::whereNodeId(null)->update(['node_id' => 0]);
+        UserDailyDataFlow::whereNodeId(null)->update(['node_id' => 0]);
+        UserDataModifyLog::whereOrderId(null)->update(['order_id' => 0]);
+
         Schema::table('coupon_log', function (Blueprint $table) {
             $table->dropForeign(['coupon_id']);
             $table->dropForeign(['goods_id']);
@@ -328,6 +359,7 @@ class ImproveTable extends Migration
         });
 
         Schema::table('ticket_reply', function (Blueprint $table) {
+            $table->unsignedInteger('user_id')->default(0)->nullable(false)->change();
             $table->dropForeign(['user_id']);
             $table->dropForeign(['admin_id']);
             $table->dropForeign(['ticket_id']);
@@ -365,6 +397,7 @@ class ImproveTable extends Migration
             $table->dropForeign(['user_id']);
             $table->dropForeign(['node_id']);
             $table->dropIndex('user_daily_data_flow_node_id_foreign');
+            $table->unsignedInteger('node_id')->default(0)->nullable(false)->change();
         });
 
         Schema::table('user_data_modify_log', function (Blueprint $table) {
@@ -382,6 +415,7 @@ class ImproveTable extends Migration
             $table->dropForeign(['user_id']);
             $table->dropForeign(['node_id']);
             $table->dropIndex('user_hourly_data_flow_node_id_foreign');
+            $table->unsignedInteger('node_id')->default(0)->nullable(false)->change();
         });
 
         Schema::table('user_login_log', function (Blueprint $table) {

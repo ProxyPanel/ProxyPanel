@@ -26,7 +26,7 @@ class UserHourlyDataFlow extends Model
     // 用户每时使用总流量
     public function scopeUserHourly($query, $uid)
     {
-        return $query->whereUserId($uid)->whereNodeId(0);
+        return $query->whereUserId($uid)->whereNodeId(null);
     }
 
     public function scopeUserRecentUsed($query, $uid)
@@ -37,7 +37,7 @@ class UserHourlyDataFlow extends Model
     // 1小时内流量异常用户
     public function trafficAbnormal(): array
     {
-        $userTotalTrafficList = self::whereNodeId(0)
+        $userTotalTrafficList = self::whereNodeId(null)
             ->where('total', '>', MB * 50)
             ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
             ->groupBy('user_id')

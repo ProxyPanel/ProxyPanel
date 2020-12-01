@@ -63,7 +63,7 @@ class DailyJob extends Command
                 Invite::whereInviterId($user->id)->whereStatus(0)->update(['status' => 2]);
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
+                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
             } else {
                 $user->update([
                     'u' => 0,
@@ -78,7 +78,7 @@ class DailyJob extends Command
                 $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
+                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
             }
         }
     }

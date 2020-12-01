@@ -54,7 +54,7 @@ class AutoClearLog extends Command
             UserHourlyDataFlow::where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 days')))->delete();
 
             // 清除用户各节点 / 节点总计的每天流量数据日志
-            UserDailyDataFlow::where('node_id', '<>', 0)
+            UserDailyDataFlow::where('node_id', '<>', null)
                 ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month')))
                 ->orWhere('created_at', '<=', date('Y-m-d H:i:s', strtotime('-3 month')))
                 ->delete();

@@ -27,7 +27,7 @@ class TicketController extends Controller
     {
         $email = $request->input('email');
 
-        $query = Ticket::whereIn('admin_id', [0, Auth::id()]);
+        $query = Ticket::whereAdminId(Auth::id())->orwhere('admin_id', null);
 
         if (isset($email)) {
             $query->whereHas('user', static function ($q) use ($email) {

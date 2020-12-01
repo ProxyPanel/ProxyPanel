@@ -26,6 +26,6 @@ class UserDailyDataFlow extends Model
     // 用户每天使用总流量
     public function scopeUserDaily($query, $uid)
     {
-        return $query->whereUserId($uid)->whereNodeId(0);
+        return $query->whereUserId($uid)->whereNodeId(null);
     }
 }

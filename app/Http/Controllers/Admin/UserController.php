@@ -137,7 +137,7 @@ class UserController extends Controller
 
             if ($user) {
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, $data['transfer_enable'], '后台手动添加用户');
+                Helpers::addUserTrafficModifyLog($user->id, null, 0, $data['transfer_enable'], '后台手动添加用户');
 
                 return Response::json(['status' => 'success', 'message' => '添加成功']);
             }
@@ -196,7 +196,7 @@ class UserController extends Controller
 
             // 写入用户流量变动记录
             if ($user->transfer_enable !== $data['transfer_enable']) {
-                Helpers::addUserTrafficModifyLog($id, 0, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
+                Helpers::addUserTrafficModifyLog($id, null, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
             }
 
             if ($user->update($data)) {
@@ -245,7 +245,7 @@ class UserController extends Controller
 
                 if ($uid) {
                     // 写入用户流量变动记录
-                    Helpers::addUserTrafficModifyLog($uid, 0, 0, 1024 * GB, '后台批量生成用户');
+                    Helpers::addUserTrafficModifyLog($uid, null, 0, 1024 * GB, '后台批量生成用户');
                 }
             }
 
@@ -303,7 +303,7 @@ class UserController extends Controller
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($userId, 0, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($userId, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }

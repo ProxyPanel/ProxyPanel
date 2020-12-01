@@ -86,7 +86,7 @@ class UserController extends Controller
         }
 
         // 写入用户流量变动记录
-        Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, $user->transfer_enable + $traffic, '[签到]');
+        Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $user->transfer_enable + $traffic, '[签到]');
 
         // 多久后可以再签到
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
@@ -239,7 +239,7 @@ class UserController extends Controller
         $user->updateCredit(-$renewCost);
 
         // 记录余额操作日志
-        Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
+        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
 
         return Response::json(['status' => 'success', 'message' => '重置成功']);
     }
@@ -600,7 +600,7 @@ class UserController extends Controller
             DB::beginTransaction();
             // 写入日志
             $user = Auth::getUser();
-            Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit + $coupon->value, $coupon->value, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
+            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
 
             // 余额充值
             $user->updateCredit($coupon->value);
