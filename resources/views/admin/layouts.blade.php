@@ -38,7 +38,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        Breakpoints();
+      Breakpoints();
     </script>
     @yield('css')
 </head>

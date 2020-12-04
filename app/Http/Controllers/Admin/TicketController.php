@@ -125,9 +125,9 @@ class TicketController extends Controller
     // 关闭工单
     public function destroy($id)
     {
-        $ticket = Ticket::findOrFail($id)->with('user');
+        $ticket = Ticket::with('user')->find($id);
 
-        if (! Ticket::whereId($id)->update(['status' => 2])) {
+        if (! $ticket->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 

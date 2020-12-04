@@ -53,8 +53,8 @@ class AutoJob extends Command
         $this->checkNodeStatus();
 
         // 检查维护模式
-        if (sysConfig('maintenance_mode')) {
-            Config::whereIn('name', ['maintenance_mode', 'maintenance_time'])->update(['value' => null]);
+        if (sysConfig('maintenance_mode') && sysConfig('maintenance_time') && sysConfig('maintenance_time') <= date('c')) {
+            Config::whereIn('name', ['maintenance_mode', 'maintenance_content', 'maintenance_time'])->update(['value' => null]);
         }
 
         $jobEndTime = microtime(true);

@@ -104,10 +104,8 @@ class DailyJob extends Command
     // 关闭超过72小时未处理的工单
     private function closeTickets(): void
     {
-        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get();
-        foreach ($ticketList as $ticket) {
-            $ret = Ticket::whereId($ticket->id)->update(['status' => 2]);
-            if ($ret) {
+        foreach (Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get() as $ticket) {
+            if ($ticket->close()) {
                 PushNotification::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
             }
         }

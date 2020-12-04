@@ -384,8 +384,7 @@ class UserController extends Controller
     {
         $id = $request->input('id');
 
-        $ret = Ticket::uid()->whereId($id)->update(['status' => 2]);
-        if ($ret) {
+        if (Ticket::uid()->whereId($id)->close()) {
             PushNotification::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
 
             return Response::json(['status' => 'success', 'message' => '关闭成功']);
