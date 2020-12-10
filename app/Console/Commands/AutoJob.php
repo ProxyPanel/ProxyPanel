@@ -149,11 +149,6 @@ class AutoJob extends Command
         if (sysConfig('is_traffic_ban')) {
             $trafficBanTime = sysConfig('traffic_ban_time');
             foreach (User::activeUser()->whereBanTime(null)->get() as $user) {
-                // 对管理员豁免
-                if ($user->is_admin) {
-                    continue;
-                }
-
                 // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
                 if ($user->isTrafficWarning()) {
                     $user->update([

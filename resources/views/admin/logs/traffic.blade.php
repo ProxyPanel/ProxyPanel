@@ -72,7 +72,11 @@
                                 @if(empty($vo->user))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id' => $vo->user->id])}}" target="_blank"> {{$vo->user->email}} </a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id' => $vo->user->id])}}" target="_blank"> {{$vo->user->email}} </a>
+                                    @else
+                                        {{$vo->user->email}}
+                                    @endcan
                                 @endif
                             </td>
                             <td> {{$vo->node->name ?? '【节点已删除】'}} </td>

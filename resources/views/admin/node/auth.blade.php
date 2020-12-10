@@ -7,11 +7,13 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">节点授权列表<small>WEBAPI</small></h2>
-                <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addAuth()">
-                        <i class="icon wb-plus" aria-hidden="true"></i>生成授权
-                    </button>
-                </div>
+                @can('admin.node.auth.store')
+                    <div class="panel-actions">
+                        <button class="btn btn-primary" onclick="addAuth()">
+                            <i class="icon wb-plus" aria-hidden="true"></i>生成授权
+                        </button>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -44,12 +46,16 @@
                                     <button data-target="#install_{{$vo->node->type}}_{{$vo->id}}" data-toggle="modal" class="btn btn-primary">
                                         <i class="icon wb-code" aria-hidden="true"></i>部署后端
                                     </button>
-                                    <button onclick="refreshAuth('{{$vo->id}}')" class="btn btn-danger">
-                                        <i class="icon wb-reload" aria-hidden="true"></i> 重置密钥
-                                    </button>
-                                    <button onclick="deleteAuth('{{$vo->id}}')" class="btn btn-primary">
-                                        <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                    </button>
+                                    @can('admin.node.auth.update')
+                                        <button onclick="refreshAuth('{{$vo->id}}')" class="btn btn-danger">
+                                            <i class="icon wb-reload" aria-hidden="true"></i> 重置密钥
+                                        </button>
+                                    @endcan
+                                    @can('admin.node.auth.destroy')
+                                        <button onclick="deleteAuth('{{$vo->id}}')" class="btn btn-primary">
+                                            <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -210,6 +216,7 @@
 
     <script type="text/javascript">
       // 生成授权KEY
+      @can('admin.node.auth.store')
       function addAuth() {
         swal.fire({
           title: '提示',
@@ -230,7 +237,9 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.node.auth.destroy')
       // 删除授权
       function deleteAuth(id) {
         swal.fire({
@@ -258,7 +267,9 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.node.auth.update')
       // 重置授权认证KEY
       function refreshAuth(id) {
         swal.fire({
@@ -286,5 +297,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

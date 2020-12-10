@@ -104,17 +104,8 @@ class TicketController extends Controller
             $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
 
             // 发通知邮件
-            if (! Auth::getUser()->is_admin) {
-                if (sysConfig('webmaster_email')) {
-                    $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-                    Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
-                }
-                // 推送通知管理员
-                PushNotification::send($title, $content);
-            } else {
-                $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-                Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
-            }
+            $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
+            Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
 
             return Response::json(['status' => 'success', 'message' => '回复成功']);
         }

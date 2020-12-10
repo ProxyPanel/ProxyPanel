@@ -26,15 +26,15 @@ class UserGroupController extends Controller
     // 添加用户分组页面
     public function create()
     {
-        $view['nodeList'] = Node::whereStatus(1)->get();
+        $nodes = Node::whereStatus(1)->pluck('name', 'id');
 
-        return view('admin.user.group.info', $view);
+        return view('admin.user.group.info', compact('nodes'));
     }
 
     // 添加用户分组
     public function store(Request $request): RedirectResponse
     {
-        $validator = Validator::make($request->all(), ['name' => 'required', 'nodes' => 'required']);
+        $validator = Validator::make($request->all(), ['name' => 'required']);
 
         if ($validator->fails()) {
             return Redirect::back()->withInput()->withErrors($validator->errors());
@@ -50,21 +50,25 @@ class UserGroupController extends Controller
     }
 
     // 编辑用户分组页面
-    public function edit($id)
+    public function edit(UserGroup $group)
     {
-        $view['userGroup'] = UserGroup::findOrFail($id);
-        $view['nodeList'] = Node::whereStatus(1)->get();
+        $nodes = Node::whereStatus(1)->pluck('name', 'id');
 
-        return view('admin.user.group.info', $view);
+        return view('admin.user.group.info', compact('group', 'nodes'));
     }
 
     // 编辑用户分组
-    public function update(Request $request, $id)
+    public function update(Request $request, UserGroup $group)
     {
-        $userGroup = UserGroup::findOrFail($id);
-        $userGroup->name = $request->input('name');
-        $userGroup->nodes = $request->input('nodes');
-        if ($userGroup->save()) {
+        $validator = Validator::make($request->all(), ['name' => 'required']);
+
+        if ($validator->fails()) {
+            return Redirect::back()->withInput()->withErrors($validator->errors());
+        }
+
+        $group->name = $request->input('name');
+        $group->nodes = $request->input('nodes');
+        if ($group->save()) {
             return Redirect::back()->with('successMsg', '操作成功');
         }
 
@@ -72,15 +76,15 @@ class UserGroupController extends Controller
     }
 
     // 删除用户分组
-    public function destroy($id): JsonResponse
+    public function destroy(UserGroup $group): JsonResponse
     {
         // 校验该分组下是否存在关联账号
-        if (User::whereGroupId($id)->count()) {
+        if (User::whereGroupId($group->id)->count()) {
             return Response::json(['status' => 'fail', 'message' => '该分组下存在关联账号，请先取消关联！']);
         }
 
         try {
-            UserGroup::whereId($id)->delete();
+            $group->delete();
         } catch (Exception $e) {
             return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
         }

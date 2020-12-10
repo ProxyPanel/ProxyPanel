@@ -41,9 +41,13 @@
                                 <td> {{$commission->id}} </td>
                                 <td> {{$commission->invitee->email ?? '【账号已删除】'}} </td>
                                 <td>
-                                    <a href="{{route('admin.order', ['id' => $commission->order->id])}}" target="_blank">
+                                    @can('admin.order')
+                                        <a href="{{route('admin.order', ['id' => $commission->order->id])}}" target="_blank">
+                                            {{$commission->order->goods->name}}
+                                        </a>
+                                    @else
                                         {{$commission->order->goods->name}}
-                                    </a>
+                                    @endcan
                                 </td>
                                 <td> ￥{{$commission->amount}} </td>
                                 <td> ￥{{$commission->commission}} </td>

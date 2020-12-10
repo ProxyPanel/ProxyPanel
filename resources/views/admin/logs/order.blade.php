@@ -107,7 +107,11 @@
                                 @if(empty($order->user) )
                                     【账号不存在】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->email}} </a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->email}} </a>
+                                    @else
+                                        {{$order->user->email}}
+                                    @endcan
                                 @endif
                             </td>
                             <td> {{$order->order_sn}}</td>

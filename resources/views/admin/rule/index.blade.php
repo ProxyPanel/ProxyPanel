@@ -8,11 +8,13 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">规则列表</h2>
-                <div class="panel-actions">
-                    <button data-toggle="modal" data-target="#add" class="btn btn-outline-primary">
-                        <i class="icon wb-plus" aria-hidden="true"></i>添加规则
-                    </button>
-                </div>
+                @can('admin.rule.store')
+                    <div class="panel-actions">
+                        <button data-toggle="modal" data-target="#add" class="btn btn-outline-primary">
+                            <i class="icon wb-plus" aria-hidden="true"></i>添加规则
+                        </button>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -51,10 +53,18 @@
                                 <input type="text" class="form-control" name="rule_pattern" id="rule_pattern_{{$rule->id}}" value="{{$rule->pattern}}"/>
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}')">
-                                    <i class="icon wb-edit"></i></button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="delRule('{{route('admin.rule.destroy',$rule)}}','{{$rule->name}}')">
-                                    <i class="icon wb-trash"></i></button>
+                                @canany(['admin.rule.update', 'admin.rule.destroy'])
+                                    <div class="btn-group">
+                                        @can('admin.rule.update')
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editRule('{{$rule->id}}')">
+                                                <i class="icon wb-edit"></i></button>
+                                        @endcan
+                                        @can('admin.rule.destroy')
+                                            <button class="btn btn-sm btn-outline-danger" onclick="delRule('{{route('admin.rule.destroy',$rule)}}','{{$rule->name}}')">
+                                                <i class="icon wb-trash"></i></button>
+                                        @endcan
+                                    </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -76,54 +86,56 @@
         </div>
     </div>
 
-    <div class="modal fade" id="add" aria-hidden="true" role="dialog" tabindex="-1">
-        <div class="modal-dialog modal-simple modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">添加规则</h4>
-                </div>
-                <form action="#" method="post" class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="msg"></div>
-                    <div class="form-row">
-                        <div class="col-12">
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="add_type">类型</label>
-                                <div class="col-xl-4 col-sm-8">
-                                    <select class="form-control" name="add_type" id="add_type" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        <option value="1">正则表达式</option>
-                                        <option value="2">域名</option>
-                                        <option value="3">IP</option>
-                                        <option value="4">协议</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="name">描述</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input type="text" class="form-control" name="name" id="name" required/>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="pattern">值</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input type="text" class="form-control" name="pattern" id="pattern" required/>
-                                </div>
-                            </div>
-                        </div>
+    @can('admin.rule.store')
+        <div class="modal fade" id="add" aria-hidden="true" role="dialog" tabindex="-1">
+            <div class="modal-dialog modal-simple modal-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">添加规则</h4>
                     </div>
-                </form>
-                <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
-                    <button type="button" class="btn btn-primary" onclick="addRule()">添 加</button>
+                    <form action="#" method="post" class="modal-body">
+                        <div class="alert alert-danger" style="display: none;" id="msg"></div>
+                        <div class="form-row">
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="add_type">类型</label>
+                                    <div class="col-xl-4 col-sm-8">
+                                        <select class="form-control" name="add_type" id="add_type" data-plugin="selectpicker" data-style="btn-outline btn-primary">
+                                            <option value="1">正则表达式</option>
+                                            <option value="2">域名</option>
+                                            <option value="3">IP</option>
+                                            <option value="4">协议</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="name">描述</label>
+                                    <div class="col-xl-6 col-sm-8">
+                                        <input type="text" class="form-control" name="name" id="name" required/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="pattern">值</label>
+                                    <div class="col-xl-6 col-sm-8">
+                                        <input type="text" class="form-control" name="pattern" id="pattern" required/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="modal-footer">
+                        <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                        <button type="button" class="btn btn-primary" onclick="addRule()">添 加</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
@@ -135,6 +147,7 @@
         $('#type').selectpicker('val', {{Request::input('type')}});
       });
 
+      @can('admin.rule.store')
       // 添加规则
       function addRule() {
         $.post("{{route('admin.rule.store')}}", {
@@ -151,7 +164,9 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.rule.update')
       // 编辑规则
       function editRule(id) {
         $.ajax({
@@ -172,7 +187,9 @@
           },
         });
       }
+      @endcan
 
+      @can('admin.rule.destroy')
       // 删除规则
       function delRule(url, name) {
         swal.fire({
@@ -200,6 +217,7 @@
           }
         });
       }
+      @endcan
 
       //回车检测
       $(document).on('keypress', 'input', function(e) {

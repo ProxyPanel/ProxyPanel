@@ -6,12 +6,12 @@ use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isAdminLogin;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
 use App\Http\Middleware\isMaintenance;
 use App\Http\Middleware\isSecurity;
+use App\Http\Middleware\Permission;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrimStrings;
@@ -33,7 +33,6 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Routing\Middleware\ValidateSignature;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Spatie\Permission\Middlewares\PermissionMiddleware;
 
 class Kernel extends HttpKernel
 {
@@ -71,6 +70,18 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
         ],
 
+        'user' => [
+            isForbidden::class,
+            isMaintenance::class,
+            isLogin::class,
+        ],
+
+        'admin' => [
+            isForbidden::class,
+            isAdminLogin::class,
+            Permission::class,
+        ],
+
         'api' => [
             'throttle:60,1',
             SubstituteBindings::class,
@@ -96,13 +107,9 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'webApi' => WebApi::class,
-        'isAdmin' => isAdmin::class,
-        'isAdminLogin' => isAdminLogin::class,
-        'isLogin' => isLogin::class,
         'isMaintenance' => isMaintenance::class,
         'isSecurity' => isSecurity::class,
         'isForbidden' => isForbidden::class,
         'affiliate' => Affiliate::class,
-        'permission' => PermissionMiddleware::class,
     ];
 }

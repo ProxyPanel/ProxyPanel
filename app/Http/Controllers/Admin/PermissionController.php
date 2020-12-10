@@ -5,82 +5,67 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
     public function index()
     {
-        //
+        $permissions = Permission::query()->paginate(15);
+
+        return view('admin.permission.index', compact('permissions'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
     public function create()
     {
-        //
+        return view('admin.permission.info');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator->errors());
+        }
+
+        $permission = Permission::create($request->all());
+
+        if ($permission) {
+            return redirect()->route('admin.permission.edit', $permission)->with('successMsg', '操作成功');
+        }
+
+        return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
+    public function edit(Permission $permission)
     {
-        //
+        return view('admin.permission.info', compact('permission'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
+    public function update(Request $request, Permission $permission)
     {
-        //
+        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator->errors());
+        }
+
+        if ($permission->update($request->all())) {
+            return redirect()->back()->with('successMsg', '操作成功');
+        }
+
+        return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Permission $permission)
     {
-        //
-    }
+        try {
+            $permission->delete();
+        } catch (Exception $e) {
+            return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
+        return Response::json(['status' => 'success', 'message' => '清理成功']);
     }
 }

@@ -9,9 +9,11 @@
             <div class="panel-heading">
                 <h2 class="panel-title">@isset($user) 编辑用户 @else 添加用户 @endisset</h2>
                 @isset($user)
-                    <div class="panel-actions">
-                        <button type="button" class="btn btn-sm btn-danger" onclick="switchToUser()">切换身份</button>
-                    </div>
+                    @can('admin.user.switch')
+                        <div class="panel-actions">
+                            <button type="button" class="btn btn-sm btn-danger" onclick="switchToUser()">切换身份</button>
+                        </div>
+                    @endcan
                 @endisset
             </div>
             <div class="panel-body">
@@ -42,7 +44,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="level">级别</label>
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" name="level" id="level" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach($levelList as $level)
+                                        @foreach($levels as $level)
                                             <option value="{{$level->level}}">{{$level->name}}</option>
                                         @endforeach
                                     </select>
@@ -53,7 +55,7 @@
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" name="group" id="group" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                         <option value="0">无分组</option>
-                                        @foreach($groupList as $group)
+                                        @foreach($userGroups as $group)
                                             <option value="{{$group->id}}">{{$group->name}}</option>
                                         @endforeach
                                     </select>
@@ -65,12 +67,11 @@
                                     <div class="col-xl-4 col-sm-8">
                                         <div class="input-group">
                                             <p class="form-control"> {{$user->credit}} </p>
-                                            <span class="input-group-append">
-                                                <button class="btn btn-danger" type="button" data-toggle="modal"
-                                                        data-target="#handle_user_credit">
-                                                    充值
-                                                </button>
-                                            </span>
+                                            @can('admin.user.updateCredit')
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#handle_user_credit">充值</button>
+                                                </div>
+                                            @endcan
                                         </div>
                                     </div>
                                 </div>
@@ -135,27 +136,16 @@
                                     </ul>
                                 </div>
                             </div>
-                            @isset($user)
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-sm-3 col-form-label">管理员</label>
-                                    <div class="col-md-10 col-sm-8">
-                                        <ul class="list-unstyled list-inline">
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" name="is_admin" id="admin" value="1"/>
-                                                    <label for="admin">是</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" name="is_admin" id="customer" value="0"/>
-                                                    <label for="customer">否</label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
+                            <div class="form-group row">
+                                <label class="col-md-2 col-sm-3 col-form-label" for="roles">角色权限</label>
+                                <div class="col-xl-4 col-sm-8">
+                                    <select class="form-control show-tick" name="roles[]" id="roles" data-plugin="selectpicker" data-style="btn-outline btn-primary" multiple>
+                                        @foreach($roles as $key => $description)
+                                            <option value="{{ $key }}">{{ $description }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                            @endisset
+                            </div>
                             <hr>
                             <div class="form-group row">
                                 <label class="col-md-2 col-sm-3 col-form-label" for="wechat">微信</label>
@@ -203,11 +193,11 @@
                                 <div class="col-xl-5 col-sm-8">
                                     <div class="input-group">
                                         <input type="text" class="form-control" name="uuid" id="uuid" placeholder="留空则自动生成随机UUID"/>
-                                        <span class="input-group-append">
+                                        <div class="input-group-append">
                                             <button class="btn btn-success" type="button" onclick="makeUUID()">
                                                 <i class="icon wb-refresh"></i>
                                             </button>
-                                        </span>
+                                        </div>
                                     </div>
                                     <span class="text-help"> V2Ray的账户ID </span>
                                 </div>
@@ -297,6 +287,7 @@
                             </div>
                         </div>
                         <div class="col-12 form-actions text-right">
+                            <a href="{{route('admin.user.index')}}" class="btn btn-secondary">返 回</a>
                             <button type="submit" class="btn btn-success">提 交</button>
                         </div>
                     </div>
@@ -305,31 +296,33 @@
         </div>
     </div>
     @isset($user)
-        <!-- 余额充值 -->
-        <div class="modal fade" id="handle_user_credit" aria-hidden="true" role="dialog" tabindex="-1">
-            <div class="modal-dialog modal-simple modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">充值</h4>
-                    </div>
-                    <form action="#" method="post" class="modal-body">
-                        <div class="alert alert-danger" style="display: none;" id="msg"></div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-3 col-form-label" for="amount"> 充值金额 </label>
-                            <input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" step="0.01"
-                                   onkeydown="if(event.keyCode===13){return false;}"/>
+        @can('admin.user.updateCredit')
+            <!-- 余额充值 -->
+            <div class="modal fade" id="handle_user_credit" aria-hidden="true" role="dialog" tabindex="-1">
+                <div class="modal-dialog modal-simple modal-center">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">×</span>
+                            </button>
+                            <h4 class="modal-title">充值</h4>
                         </div>
-                    </form>
-                    <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-danger">关闭</button>
-                        <button type="button" class="btn btn-primary" onclick="handleUserCredit()">充值</button>
+                        <form action="#" method="post" class="modal-body">
+                            <div class="alert alert-danger" style="display: none;" id="msg"></div>
+                            <div class="form-group row">
+                                <label class="col-md-2 col-sm-3 col-form-label" for="amount"> 充值金额 </label>
+                                <input type="number" class="col-sm-4 form-control" name="amount" id="amount" placeholder="填入负值则会扣余额" step="0.01"
+                                       onkeydown="if(event.keyCode===13){return false;}"/>
+                            </div>
+                        </form>
+                        <div class="modal-footer">
+                            <button data-dismiss="modal" class="btn btn-danger">关闭</button>
+                            <button type="button" class="btn btn-primary" onclick="handleUserCredit()">充值</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endcan
     @endisset
 @endsection
 @section('javascript')
@@ -349,7 +342,6 @@
         $('#reset_time').val('{{$user->reset_time}}');
         $('#expired_at').val('{{$user->expired_at}}');
         $("input[name='status'][value='{{$user->status}}']").click();
-        $("input[name='is_admin'][value='{{$user->is_admin}}']").click();
         $('#wechat').val('{{$user->wechat}}');
         $('#qq').val('{{$user->qq}}');
         $('#remark').val('{{$user->remark}}');
@@ -362,6 +354,7 @@
         $('#obfs').selectpicker('val', '{{$user->obfs}}');
         $('#speed_limit').val('{{$user->speed_limit}}');
         $('#uuid').val('{{$user->vmess_id}}');
+        $('#roles').selectpicker('val', @json($user->roles()->pluck('name')));
           @else
           $('#level').selectpicker('val', '0');
           @endisset
@@ -372,6 +365,7 @@
       });
 
       @isset($user)
+      @can('admin.user.switch')
       // 切换用户身份
       function switchToUser() {
         $.ajax({
@@ -391,7 +385,9 @@
           },
         });
       }
+      @endcan
 
+      @can('admin.user.updateCredit')
       // 余额充值
       function handleUserCredit() {
         const amount = $('#amount').val();
@@ -432,6 +428,7 @@
           },
         });
       }
+      @endcan
       @endisset
 
       // ajax同步提交
@@ -468,7 +465,7 @@
             remark: $('#remark').val(),
             level: $('#level').val(),
             group_id: $('#group').val(),
-            is_admin: $('input:radio[name=\'is_admin\']:checked').val(),
+            roles: $('#roles').val(),
             reset_time: $('#reset_time').val(),
             invite_num: $('#invite_num').val(),
             status: $('input:radio[name=\'status\']:checked').val(),
@@ -510,7 +507,7 @@
 
       // 生成随机端口
       function makePort() {
-        $.get('{{route('admin.getPort')}}', function(ret) {
+        $.get('{{route('getPort')}}', function(ret) {
           $('#port').val(ret);
         });
       }

@@ -7,10 +7,16 @@
         <div class="panel">
             <div class="panel-heading">
                 <h1 class="panel-title">卡券列表</h1>
-                <div class="panel-actions btn-group">
-                    <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
-                    <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
-                </div>
+                @canany(['admin.coupon.export', 'admin.coupon.create'])
+                    <div class="panel-actions btn-group">
+                        @can('admin.coupon.export')
+                            <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
+                        @endcan
+                        @can('admin.coupon.create')
+                            <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
+                        @endcan
+                    </div>
+                @endcanany
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -85,9 +91,11 @@
                             </td>
                             <td>
                                 @if($coupon->status !== 1)
-                                    <button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}','{{$coupon->name}}')">
-                                        <i class="icon wb-close"></i>
-                                    </button>
+                                    @can('admin.coupon.destroy')
+                                        <button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}','{{$coupon->name}}')">
+                                            <i class="icon wb-close"></i>
+                                        </button>
+                                    @endcan
                                 @endif
                             </td>
                         </tr>
@@ -134,6 +142,7 @@
             $('#status').val();
       }
 
+      @can('admin.coupon.export')
       // 批量导出卡券
       function exportCoupon() {
         swal.fire({
@@ -149,7 +158,9 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.coupon.destroy')
       // 删除卡券
       function delCoupon(id, name) {
         swal.fire({
@@ -177,5 +188,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

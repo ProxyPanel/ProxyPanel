@@ -72,18 +72,16 @@ class AuthController extends Controller
             }
 
             // 校验普通用户账号状态
-            if (! $user->is_admin) {
-                if ($user->status < 0) {
-                    Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
+            if ($user->status < 0) {
+                Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput()->withErrors(trans('auth.login_ban', ['email' => sysConfig('webmaster_email')]));
-                }
+                return Redirect::back()->withInput()->withErrors(trans('auth.login_ban', ['email' => sysConfig('webmaster_email')]));
+            }
 
-                if ($user->status === 0 && sysConfig('is_activate_account')) {
-                    Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
+            if ($user->status === 0 && sysConfig('is_activate_account')) {
+                Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
-                }
+                return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
             }
 
             // 写入登录日志
@@ -93,7 +91,7 @@ class AuthController extends Controller
             Auth::getUser()->update(['last_login' => time()]);
 
             // 根据权限跳转
-            if ($user->is_admin) {
+            if ($user->hasPermissionTo('admin.index')) {
                 return Redirect::route('admin.index');
             }
 
@@ -101,7 +99,7 @@ class AuthController extends Controller
         }
 
         if (Auth::check()) {
-            if (Auth::getUser()->is_admin) {
+            if (Auth::getUser()->hasPermissionTo('admin.index')) {
                 return Redirect::route('admin.index');
             }
 

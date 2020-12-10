@@ -48,9 +48,13 @@
                                 @if(empty($apply->user))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id'=>$apply->user_id])}}" target="_blank">
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id'=>$apply->user_id])}}" target="_blank">
+                                            {{$apply->user->email}}
+                                        </a>
+                                    @else
                                         {{$apply->user->email}}
-                                    </a>
+                                    @endcan
                                 @endif
                             </td>
                             <td> ￥{{$apply->amount}} </td>
@@ -67,19 +71,25 @@
                             </td>
                             <td> {{$apply->created_at == $apply->updated_at ? '' : $apply->updated_at}} </td>
                             <td>
-                                <div class="btn-group">
-                                    @if($apply->status === 0)
-                                        <a href="javascript:setStatus('{{$apply->id}}','1')" class="btn btn-sm btn-success">
-                                            <i class="icon wb-check" aria-hidden="true"></i>通过</a>
-                                        <a href="javascript:setStatus('{{$apply->id}}','-1')" class="btn btn-sm btn-danger">
-                                            <i class="icon wb-close" aria-hidden="true"></i>驳回</a>
-                                    @elseif($apply->status === 1)
-                                        <a href="javascript:setStatus('{{$apply->id}}','2')" class="btn btn-sm btn-primary">
-                                            <i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
-                                    @endif
-                                    <a href="{{route('admin.aff.detail', $apply->id)}}" class="btn btn-sm btn-default">
-                                        <i class="icon wb-search"></i></a>
-                                </div>
+                                @canany(['admin.aff.setStatus', 'admin.aff.detail'])
+                                    <div class="btn-group">
+                                        @can('admin.aff.setStatus')
+                                            @if($apply->status === 0)
+                                                <a href="javascript:setStatus('{{$apply->id}}','1')" class="btn btn-sm btn-success">
+                                                    <i class="icon wb-check" aria-hidden="true"></i>通过</a>
+                                                <a href="javascript:setStatus('{{$apply->id}}','-1')" class="btn btn-sm btn-danger">
+                                                    <i class="icon wb-close" aria-hidden="true"></i>驳回</a>
+                                            @elseif($apply->status === 1)
+                                                <a href="javascript:setStatus('{{$apply->id}}','2')" class="btn btn-sm btn-primary">
+                                                    <i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
+                                            @endif
+                                        @endcan
+                                        @can('admin.aff.detail')
+                                            <a href="{{route('admin.aff.detail', $apply->id)}}" class="btn btn-sm btn-default">
+                                                <i class="icon wb-search"></i></a>
+                                        @endcan
+                                    </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -123,6 +133,7 @@
         window.location.href = '{{route('admin.aff.index')}}?email=' + $('#email').val() + '&status=' + $('#status option:selected').val();
       }
 
+      @can('admin.aff.setStatus')
       // 更改状态
       function setStatus(id, status) {
         $.post('{{route('admin.aff.setStatus')}}', {_token: '{{csrf_token()}}', id: id, status: status}, function(ret) {
@@ -133,5 +144,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

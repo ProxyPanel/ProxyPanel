@@ -37,7 +37,11 @@
                             </td>
                             <td>
                                 @if ($vo->user)
-                                    <a href="{{route('admin.user.index', ['email'=>$vo->user->email])}}" target="_blank"> {{$vo->user->email}}</a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['email'=>$vo->user->email])}}" target="_blank"> {{$vo->user->email}}</a>
+                                    @else
+                                        {{$vo->user->email}}
+                                    @endcan
                                 @else
                                     【账号已删除】
                                 @endif

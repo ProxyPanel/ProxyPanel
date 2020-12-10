@@ -957,7 +957,8 @@
                                                     <option value="serverChan">ServerChan</option>
                                                     <option value="bark">Bark</option>
                                                 </select>
-                                                <span class="text-help">推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
+                                                <span class="text-help">推送节点离线提醒、用户流量异常警告、节点使用报告 @can('admin.test.notify')（<a href="javascript:sendTestNotification();
+">发送测试消息</a>）@endcan </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1357,9 +1358,11 @@
                                     <div class="row">
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label">易支付</label>
-                                            <div class="col-md-7">
-                                                <button class="btn btn-primary" type="button" onclick="epayInfo()">查询</button>
-                                            </div>
+                                            @can('admin.test.epay')
+                                                <div class="col-md-7">
+                                                    <button class="btn btn-primary" type="button" onclick="epayInfo()">查询</button>
+                                                </div>
+                                            @endcan
                                         </div>
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label" for="epay_url">接口对接地址</label>
@@ -1632,13 +1635,17 @@
 
       // 系统设置更新
       function systemUpdate(systemItem, value) {
-        $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-          } else {
-            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-          }
-        });
+          @can('admin.system.update')
+          $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            }
+          });
+          @else
+          swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          @endcan
       }
 
       // 正常input更新
@@ -1681,6 +1688,7 @@
       }
 
       // 发送Bark测试消息
+      @can('admin.test.notify')
       function sendTestNotification() {
         $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
           if (ret.status === 'success') {
@@ -1690,6 +1698,7 @@
           }
         });
       }
+      @endcan
 
       // 生成网站安全码
       function makeWebsiteSecurityCode() {
@@ -1698,6 +1707,7 @@
         });
       }
 
+      @can('admin.test.epay')
       function epayInfo() {
         $.get('{{route('admin.test.epay')}}', function(ret) {
           if (ret.status === 'success') {
@@ -1713,5 +1723,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

@@ -7,9 +7,11 @@
         <div class="panel">
             <div class="panel-heading">
                 <h3 class="panel-title">文章列表</h3>
-                <div class="panel-actions">
-                    <a href="{{route('admin.article.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加文章</a>
-                </div>
+                @can('admin.article.create')
+                    <div class="panel-actions">
+                        <a href="{{route('admin.article.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加文章</a>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -39,17 +41,27 @@
                                 <td> 未知</td>
                             @endif
                             <td>
-                                <a href="{{route('admin.article.show',$article->id)}}" target="_blank"> {{Str::limit($article->title, 80)}} </a>
+                                @can('admin.article.show')
+                                    <a href="{{route('admin.article.show',$article->id)}}" target="_blank"> {{Str::limit($article->title, 80)}} </a>
+                                @else
+                                    {{Str::limit($article->title, 80)}}
+                                @endcan
                             </td>
                             <td> {{$article->sort}} </td>
                             <td> {{$article->created_at}} </td>
                             <td>
-                                <div class="btn-group">
-                                    <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::input('page')])}}" class="btn btn-outline-primary">
-                                        <i class="icon wb-edit"></i></a>
-                                    <button class="btn btn-outline-danger" onclick="delArticle('{{route('admin.article.destroy',$article->id)}}')">
-                                        <i class="icon wb-close"></i></button>
-                                </div>
+                                @canany(['admin.article.edit', 'admin.article.destroy'])
+                                    <div class="btn-group">
+                                        @can('admin.article.edit')
+                                            <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::input('page')])}}" class="btn btn-outline-primary">
+                                                <i class="icon wb-edit"></i></a>
+                                        @endcan
+                                        @can('admin.article.destroy')
+                                            <button class="btn btn-outline-danger" onclick="delArticle('{{route('admin.article.destroy',$article->id)}}')">
+                                                <i class="icon wb-close"></i></button>
+                                        @endcan
+                                    </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -74,32 +86,34 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      // 删除文章
-      function delArticle(url) {
-        swal.fire({
-          title: '确定删除文章?',
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: url,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
+    @can('admin.article.destroy')
+        <script type="text/javascript">
+          // 删除文章
+          function delArticle(url) {
+            swal.fire({
+              title: '确定删除文章?',
+              icon: 'question',
+              showCancelButton: true,
+              cancelButtonText: '{{trans('home.ticket_close')}}',
+              confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  method: 'DELETE',
+                  url: url,
+                  data: {_token: '{{csrf_token()}}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    if (ret.status === 'success') {
+                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                  },
+                });
+              }
             });
           }
-        });
-      }
-    </script>
+        </script>
+    @endcan
 @endsection

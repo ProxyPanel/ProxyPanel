@@ -7,11 +7,13 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">触发记录</h2>
-                <div class="panel-actions">
-                    <a href="javascript:clearLog();" class="btn btn-outline-primary">
-                        <i class="icon wb-rubber" aria-hidden="true"></i>清空记录
-                    </a>
-                </div>
+                @can('admin.rule.clear')
+                    <div class="panel-actions">
+                        <a href="javascript:clearLog();" class="btn btn-outline-primary">
+                            <i class="icon wb-rubber" aria-hidden="true"></i>清空记录
+                        </a>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -95,6 +97,7 @@
             '&node_id=' + $('#node_id option:selected').val() + '&rule_id=' + $('#rule_id option:selected').val();
       }
 
+      @can('admin.rule.clear')
       // 清除所有记录
       function clearLog() {
         swal.fire({
@@ -116,5 +119,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

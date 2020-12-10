@@ -7,9 +7,11 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
-                <div class="panel-actions">
-                    <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
-                </div>
+                @can('admin.goods.create')
+                    <div class="panel-actions">
+                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -90,14 +92,20 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="btn-group">
-                                    <a href="{{route('admin.goods.edit', $goods)}}" class="btn btn-primary">
-                                        <i class="icon wb-edit"></i>
-                                    </a>
-                                    <button onclick="delGoods('{{route('admin.goods.destroy', $goods)}}','{{$goods->name}}')" class="btn btn-danger">
-                                        <i class="icon wb-trash"></i>
-                                    </button>
-                                </div>
+                                @canany(['admin.goods.edit', 'admin.goods.destroy'])
+                                    <div class="btn-group">
+                                        @can('admin.goods.edit')
+                                            <a href="{{route('admin.goods.edit', $goods)}}" class="btn btn-primary">
+                                                <i class="icon wb-edit"></i>
+                                            </a>
+                                        @endcan
+                                        @can('admin.goods.destroy')
+                                            <button onclick="delGoods('{{route('admin.goods.destroy', $goods)}}','{{$goods->name}}')" class="btn btn-danger">
+                                                <i class="icon wb-trash"></i>
+                                            </button>
+                                        @endcan
+                                    </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -121,8 +129,7 @@
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-            type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $('#type').val({{Request::input('type')}});
@@ -135,6 +142,7 @@
             $('#status option:selected').val();
       }
 
+      @can('admin.goods.destroy')
       // 删除商品
       function delGoods(url, name) {
         swal.fire({
@@ -162,5 +170,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

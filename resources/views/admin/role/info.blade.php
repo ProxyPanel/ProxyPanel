@@ -1,14 +1,19 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/multi-select/multi-select.min.css" type="text/css" rel="stylesheet">
+    <style>
+        .ms-container{
+            width:auto;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">@isset($group)编辑@else添加@endisset用戶分组</h2>
+                <h2 class="panel-title">@isset($role)编辑@else添加@endisset角色</h2>
                 <div class="panel-actions">
-                    <a href="{{route('admin.user.group.index')}}" class="btn btn-danger">返 回</a>
+                    <a href="{{route('admin.role.index')}}" class="btn btn-danger">返 回</a>
                 </div>
             </div>
             @if (Session::has('successMsg'))
@@ -18,26 +23,34 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action="@isset($group){{route('admin.user.group.update',$group)}}@else{{route('admin.user.group.store')}}@endisset"
+                <form action="@isset($role){{route('admin.role.update',$role)}}@else{{route('admin.role.store')}}@endisset"
                       method="POST" enctype="multipart/form-data" class="form-horizontal">
-                    @isset($group)@method('PUT')@endisset
+                    @isset($role)@method('PUT')@endisset
                     @csrf
                     <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="name">分组名称</label>
-                        <div class="col-md-9 col-sm-9">
-                            <input type="text" class="form-control" name="name" id="name"/>
+                        <label class="col-md-2 col-sm-3 col-form-label" for="description">显示名称</label>
+                        <div class="col-md-5 col-sm-9">
+                            <input type="text" class="form-control" name="description" id="description"/>
+                            <span class="text-help"> 名称，例如：管理员 </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="nodes">选择节点</label>
+                        <label class="col-md-2 col-sm-3 col-form-label" for="name">内部名称</label>
+                        <div class="col-md-5 col-sm-9">
+                            <input type="text" class="form-control" name="name" id="name"/>
+                            <span class="text-help"> 名称，例如：Administrator </span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-sm-3 col-form-label" for="permissions">选择权限</label>
                         <div class="col-md-9 col-sm-9">
                             <div class="btn-group mb-20">
                                 <button type="button" class="btn btn-primary" id="select-all">全 选</button>
                                 <button type="button" class="btn btn-danger" id="deselect-all">清 空</button>
                             </div>
-                            <select class="form-control" name="nodes[]" id="nodes" data-plugin="multiSelect" multiple>
-                                @foreach($nodes as $id => $name)
-                                    <option value="{{$id}}">{{$id . ' - ' . $name}}</option>
+                            <select class="form-control mx-auto w-p100" name="permissions[]" id="permissions" data-plugin="multiSelect" multiple>
+                                @foreach($permissions as $key => $description)
+                                    <option value="{{ $key }}">{{ $description .' - '. $key }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -55,14 +68,15 @@
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
     <script src="/assets/global/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script type="text/javascript">
-        @isset($group)
+        @isset($role)
         $(document).ready(function() {
-          $('#name').val('{{$group->name}}');
-          $('#nodes').multiSelect('select',@json($group->nodes));
+          $('#description').val('{{$role->description}}');
+          $('#name').val('{{$role->name}}');
+          $('#permissions').multiSelect('select',@json($role->permissions->pluck('name')));
         });
         @endisset
         // 权限列表
-        $('#nodes').multiSelect({
+        $('#permissions').multiSelect({
           selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配规则，此处可搜索\'>',
           selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配规则，此处可搜索\'>',
           afterInit: function() {
@@ -98,13 +112,13 @@
 
         // 全选
         $('#select-all').click(function() {
-          $('#nodes').multiSelect('select_all');
+          $('#permissions').multiSelect('select_all');
           return false;
         });
 
         // 反选
         $('#deselect-all').click(function() {
-          $('#nodes').multiSelect('deselect_all');
+          $('#permissions').multiSelect('deselect_all');
           return false;
         });
     </script>

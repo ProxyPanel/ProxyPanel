@@ -14,14 +14,20 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">用户列表</h2>
-                <div class="panel-actions">
-                    <button class="btn btn-outline-default" onclick="batchAddUsers()">
-                        <i class="icon wb-plus" aria-hidden="true"></i>批量生成
-                    </button>
-                    <a href="{{route('admin.user.create')}}" class="btn btn-outline-default">
-                        <i class="icon wb-user-add" aria-hidden="true"></i>添加用户
-                    </a>
-                </div>
+                @canany(['admin.user.batch', 'admin.user.create'])
+                    <div class="panel-actions">
+                        @can('admin.user.batch')
+                            <button class="btn btn-outline-default" onclick="batchAddUsers()">
+                                <i class="icon wb-plus" aria-hidden="true"></i>批量生成
+                            </button>
+                        @endcan
+                        @can('admin.user.create')
+                            <a href="{{route('admin.user.create')}}" class="btn btn-outline-default">
+                                <i class="icon wb-user-add" aria-hidden="true"></i>添加用户
+                            </a>
+                        @endcan
+                    </div>
+                @endcanany
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -140,34 +146,50 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="icon wb-wrench" aria-hidden="true"></i>
-                                    </button>
-                                    <div class="dropdown-menu" role="menu">
-                                        <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
-                                            <i class="icon wb-edit" aria-hidden="true"></i> 编辑
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->email}}')" role="menuitem">
-                                            <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
-                                            <i class="icon wb-code" aria-hidden="true"></i> 配置信息
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
-                                            <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
-                                            <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}')" role="menuitem">
-                                            <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
-                                            <i class="icon wb-user" aria-hidden="true"></i> 用户视角
-                                        </a>
+                                @canany(['admin.user.edit', 'admin.user.destroy', 'admin.user.export', 'admin.user.monitor', 'admin.user.online', 'admin.user.reset', 'admin.user.switch'])
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="icon wb-wrench" aria-hidden="true"></i>
+                                        </button>
+                                        <div class="dropdown-menu" role="menu">
+                                            @can('admin.user.edit')
+                                                <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
+                                                    <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.destroy')
+                                                <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->email}}')" role="menuitem">
+                                                    <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.export')
+                                                <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
+                                                    <i class="icon wb-code" aria-hidden="true"></i> 配置信息
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.monitor')
+                                                <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
+                                                    <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.online')
+                                                <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
+                                                    <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.reset')
+                                                <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}')" role="menuitem">
+                                                    <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.switch')
+                                                <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
+                                                    <i class="icon wb-user" aria-hidden="true"></i> 用户视角
+                                                </a>
+                                            @endcan
+                                        </div>
                                     </div>
-                                </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -202,6 +224,22 @@
         $('#enable').val({{Request::input('enable')}});
       });
 
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
+        }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
+            $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
+            + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
+      }
+
+      @can('admin.user.batch')
       // 批量生成账号
       function batchAddUsers() {
         swal.fire({
@@ -225,22 +263,9 @@
           }
         });
       }
+      @endcan
 
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
-            $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
-            + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
-      }
-
+      @can('admin.user.destroy')
       // 删除账号
       function delUser(url, email) {
         swal.fire({
@@ -268,7 +293,9 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.user.reset')
       // 重置流量
       function resetTraffic(id, email) {
         swal.fire({
@@ -290,17 +317,20 @@
           }
         });
       }
+      @endcan
 
+      @can('admin.user.switch')
       // 切换用户身份
       function switchToUser(id) {
         $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function(ret) {
           if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
           } else {
             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
           }
         });
       }
+      @endcan
 
       const clipboard = new ClipboardJS('.copySubscribeLink');
       clipboard.on('success', function() {

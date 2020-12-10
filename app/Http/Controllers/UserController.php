@@ -43,6 +43,10 @@ class UserController extends Controller
 {
     public function index()
     {
+        if (Session::has('user')) {
+            Auth::loginUsingId(Session::get('user'));
+            Session::forget('user');
+        }
         $user = Auth::getUser();
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->usedTraffic();

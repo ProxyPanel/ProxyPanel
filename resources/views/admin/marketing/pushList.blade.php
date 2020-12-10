@@ -9,9 +9,11 @@
         <div class="panel">
             <div class="panel-heading">
                 <h3 class="panel-title">推送消息列表</h3>
-                <div class="panel-actions">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#send_modal"><i class="icon wb-plus"></i>推送消息</button>
-                </div>
+                @can('admin.marketing.add')
+                    <div class="panel-actions">
+                        <button class="btn btn-primary" data-toggle="modal" data-target="#send_modal"><i class="icon wb-plus"></i>推送消息</button>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -31,7 +33,7 @@
                 <div class="alert alert-info alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
-                    仅会推送给关注了您的消息通道的用户 <a href="{{route('admin.system')}}" class="alert-link" target="_blank">设置PushBear</a>.
+                    仅会推送给关注了您的消息通道的用户 @can('admin.system.index')<a href="{{route('admin.system.index')}}" class="alert-link" target="_blank">设置PushBear</a> @else 设置PushBear @endcan
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
@@ -73,47 +75,49 @@
         </div>
     </div>
 
-    <!-- 推送消息 -->
-    <div id="send_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-backdrop="static"
-         data-keyboard="false">
-        <div class="modal-dialog modal-lg  modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">推送消息</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-danger" style="display: none;" id="msg"></div>
-                    <form action="#" method="post" class="form-horizontal">
-                        <div class="form-body">
-                            <div class="form-group">
-                                <div class="row">
-                                    <label for="title" class="col-md-2 control-label"> 标题 </label>
-                                    <div class="col-md-6">
-                                        <input type="text" class="form-control" name="title" id="title"/>
+    @can('admin.marketing.add')
+        <!-- 推送消息 -->
+        <div id="send_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-backdrop="static"
+             data-keyboard="false">
+            <div class="modal-dialog modal-lg  modal-center">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title">推送消息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-danger" style="display: none;" id="msg"></div>
+                        <form action="#" method="post" class="form-horizontal">
+                            <div class="form-body">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="title" class="col-md-2 control-label"> 标题 </label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="title" id="title"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="content" class="col-md-2 control-label"> 内容 </label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" rows="10" name="content" id="content" data-provide="markdown" data-iconlibrary="fa"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <div class="row">
-                                    <label for="content" class="col-md-2 control-label"> 内容 </label>
-                                    <div class="col-md-9">
-                                        <textarea class="form-control" rows="10" name="content" id="content" data-provide="markdown" data-iconlibrary="fa"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-danger" data-dismiss="modal">取消</button>
-                    <button class="btn btn-primary" onclick="return send();">推送</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger" data-dismiss="modal">取消</button>
+                        <button class="btn btn-primary" onclick="return send();">推送</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
@@ -126,6 +130,11 @@
         $('#status').val({{Request::input('status')}});
       });
 
+      function Search() {
+        window.location.href = '{{route('admin.marketing.push')}}?status=' + $('#status').val();
+      }
+
+      @can('admin.marketing.add')
       // 发送通道消息
       function send() {
         const title = $('#title').val();
@@ -164,9 +173,6 @@
       $('#send_modal').on('hide.bs.modal', function() {
         window.location.reload();
       });
-
-      function Search() {
-        window.location.href = '{{route('admin.marketing.push')}}?status=' + $('#status').val();
-      }
+        @endcan
     </script>
 @endsection

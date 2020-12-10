@@ -67,31 +67,6 @@ class AdminController extends Controller
         return view('admin.index', $view);
     }
 
-    // 修改个人资料
-    public function profile(Request $request)
-    {
-        if ($request->isMethod('POST')) {
-            $new_password = $request->input('new_password');
-
-            if (! Hash::check($request->input('old_password'), Auth::getUser()->password)) {
-                return Redirect::back()->withErrors('旧密码错误，请重新输入');
-            }
-
-            if (Hash::check($new_password, Auth::getUser()->password)) {
-                return Redirect::back()->withErrors('新密码不可与旧密码一样，请重新输入');
-            }
-
-            $ret = Auth::getUser()->update(['password' => $new_password]);
-            if (! $ret) {
-                return Redirect::back()->withErrors('修改失败');
-            }
-
-            return Redirect::back()->with('successMsg', '修改成功');
-        }
-
-        return view('admin.config.profile');
-    }
-
     // 邀请码列表
     public function inviteList(Request $request)
     {
@@ -164,10 +139,5 @@ class AdminController extends Controller
         $view['labelList'] = Label::with('nodes')->get();
 
         return view('admin.config.config', $view);
-    }
-
-    public function getPort(): int
-    {
-        return Helpers::getPort();
     }
 }

@@ -4,83 +4,75 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
     public function index()
     {
-        //
+        $roles = Role::with('permissions')->paginate(15);
+
+        return view('admin.role.index', compact('roles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
     public function create()
     {
-        //
+        $permissions = Permission::all()->pluck('description', 'name');
+
+        return view('admin.role.info', compact('permissions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  Request  $request
-     * @return Response
-     */
     public function store(Request $request)
     {
-        //
+        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator->errors());
+        }
+
+        $role = Role::create($request->except('permissions'));
+        $permissions = $request->input('permissions') ?: [];
+        if ($role->givePermissionTo($permissions)) {
+            return redirect()->route('admin.role.edit', $role)->with('successMsg', '操作成功');
+        }
+
+        return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
+    public function edit(Role $role)
     {
-        //
+        $role->load('permissions');
+        $permissions = Permission::all()->pluck('description', 'name');
+
+        return view('admin.role.info', compact('role', 'permissions'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
+    public function update(Request $request, Role $role)
     {
-        //
+        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator->errors());
+        }
+
+        $role->update($request->except('permissions'));
+        $permissions = $request->input('permissions') ?: [];
+        if ($role->syncPermissions($permissions)) {
+            return redirect()->back()->with('successMsg', '操作成功');
+        }
+
+        return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  Request  $request
-     * @param  int  $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
+    public function destroy(Role $role)
     {
-        //
-    }
+        try {
+            $role->delete();
+        } catch (Exception $e) {
+            return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
+        return Response::json(['status' => 'success', 'message' => '清理成功']);
     }
 }

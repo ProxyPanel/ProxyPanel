@@ -119,12 +119,14 @@
                                             @if($obfs->is_default)
                                                 <span class="badge badge-lg badge-default">默认</span>
                                             @else
-                                                <button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">
-                                                    默认
-                                                </button>
-                                                <button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
-                                                    <i class="icon wb-trash"></i>
-                                                </button>
+                                                <div class="btn-group">
+                                                    <button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">
+                                                        默认
+                                                    </button>
+                                                    <button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
+                                                        <i class="icon wb-trash"></i>
+                                                    </button>
+                                                </div>
                                             @endif
                                         </td>
                                     </tr>
@@ -279,6 +281,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="add_level_modal" aria-hidden="true" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
@@ -306,6 +309,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="add_country_modal" aria-hidden="true" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
@@ -333,6 +337,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="add_label_modal" aria-hidden="true" role="dialog" tabindex="-1">
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
@@ -368,346 +373,264 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-      // 添加等级
-      function addLevel() {
-        const level = $('#add_level').val();
-        const level_name = $('#add_level_name').val();
+        @can('admin.config.level.store')
+        // 添加等级
+        function addLevel() {
+          const level = $('#add_level').val();
+          const level_name = $('#add_level_name').val();
 
-        if (level.trim() === '') {
-          $('#level_msg').show().html('等级不能为空');
-          $('#level').focus();
-          return false;
-        }
-
-        if (level_name.trim() === '') {
-          $('#level_msg').show().html('等级名称不能为空');
-          $('#level_name').focus();
-          return false;
-        }
-
-        $.ajax({
-          url: '{{route('admin.config.level.store')}}',
-          method: 'POST',
-          data: {_token: '{{csrf_token()}}', level: level, level_name: level_name},
-          beforeSend: function() {
-            $('#level_msg').show().html('正在添加');
-          },
-          success: function(ret) {
-            if (ret.status === 'fail') {
-              $('#level_msg').show().html(ret.message);
-              return false;
-            }
-            $('#add_level_modal').modal('hide');
-            window.location.reload();
-          },
-          error: function() {
-            $('#level_msg').show().html('请求错误，请重试');
-          },
-          complete: function() {
-            swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-          },
-        });
-      }
-
-      // 更新等级
-      function updateLevel(id) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.config.level.update', '')}}/' + id,
-          data: {
-            _token: '{{csrf_token()}}',
-            level: $('#level_' + id).val(),
-            level_name: $('#level_name_' + id).val(),
-          },
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
-      }
-
-      // 删除等级
-      function delLevel(id, name) {
-        swal.fire({
-          title: '确定删除等级 【' + name + '】 ？',
-          icon: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: '{{route('admin.config.level.destroy', '')}}/' + id,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
+          if (level.trim() === '') {
+            $('#level_msg').show().html('等级不能为空');
+            $('#level').focus();
+            return false;
           }
-        });
-      }
 
-      // 添加国家/地区
-      function addCountry() {
-        const country_name = $('#add_country_name').val();
-        const country_code = $('#add_country_code').val();
-
-        if (country_code.trim() === '') {
-          $('#country_msg').show().html('国家/地区代码不能为空');
-          $('#add_country_code').focus();
-          return false;
-        }
-
-        if (country_name.trim() === '') {
-          $('#country_msg').show().html('国家/地区名称不能为空');
-          $('#add_country_name').focus();
-          return false;
-        }
-
-        $.ajax({
-          url: '{{route('admin.config.country.store')}}',
-          method: 'POST',
-          data: {_token: '{{csrf_token()}}', code: country_code, name: country_name},
-          beforeSend: function() {
-            $('#country_msg').show().html('正在添加');
-          },
-          success: function(ret) {
-            if (ret.status === 'fail') {
-              $('#country_msg').show().html(ret.message);
-              return false;
-            }
-            $('#add_country_modal').modal('hide');
-            window.location.reload();
-          },
-          error: function() {
-            $('#country_msg').show().html('请求错误，请重试');
-          },
-          complete: function() {
-            swal.fire({
-              title: '添加成功',
-              icon: 'success',
-              timer: 1000,
-              showConfirmButton: false,
-            }).then(() => window.location.reload());
-          },
-        });
-      }
-
-      // 更新国家/地区
-      function updateCountry(code) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.config.country.update', '')}}/' + code,
-          data: {_token: '{{csrf_token()}}', name: $('#country_' + code).val()},
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'});
-            }
-          },
-        });
-      }
-
-      // 删除国家/地区
-      function delCountry(code, name) {
-        swal.fire({
-          title: '确定删除 【' + name + '】 信息？',
-          icon: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: '{{route('admin.config.country.destroy', '')}}/' + code,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
+          if (level_name.trim() === '') {
+            $('#level_msg').show().html('等级名称不能为空');
+            $('#level_name').focus();
+            return false;
           }
-        });
-      }
 
-      // 添加配置
-      function addConfig() {
-        const name = $('#name').val();
-        const type = $('#type').val();
-
-        if (name.trim() === '') {
-          $('#msg').show().html('名称不能为空');
-          $('#name').focus();
-          return false;
-        }
-
-        $.ajax({
-          url: '{{route('admin.config.ss.store')}}',
-          method: 'POST',
-          data: {_token: '{{csrf_token()}}', name: name, type: type},
-          dataType: 'json',
-          beforeSend: function() {
-            $('#msg').show().html('正在添加');
-          },
-          success: function(ret) {
-            if (ret.status === 'fail') {
-              $('#msg').show().html(ret.message);
-              return false;
-            }
-
-            $('#add_config_modal').modal('hide');
-          },
-          error: function() {
-            $('#msg').show().html('请求错误，请重试');
-          },
-          complete: function() {
-            swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-          },
-        });
-      }
-
-      // 置为默认
-      function setDefault(id) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.config.ss.update', '')}}/' + id,
-          data: {_token: '{{csrf_token()}}'},
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
-      }
-
-      // 删除配置
-      function delConfig(id, name) {
-        swal.fire({
-          title: '确定删除配置 【' + name + '】 ？',
-          icon: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: '{{route('admin.config.ss.destroy', '')}}/' + id,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
-          }
-        });
-      }
-
-      // 添加标签
-      function addLabel() {
-        const name = $('#add_label').val();
-        const sort = $('#add_label_sort').val();
-
-        if (name.trim() === '') {
-          $('#lable_msg').show().html('标签不能为空');
-          return false;
-        }
-
-        if (sort.trim() === '') {
-          $('#lable_msg').show().html('标签排序不能为空');
-          return false;
-        }
-
-        $.ajax({
-          url: '{{route('admin.config.label.store')}}',
-          method: 'POST',
-          data: {_token: '{{csrf_token()}}', name: name, sort: sort},
-          beforeSend: function() {
-            $('#level_msg').show().html('正在添加');
-          },
-          success: function(ret) {
-            if (ret.status === 'fail') {
-              $('#lable_msg').show().html(ret.message);
-              return false;
-            }
-            $('#add_label_modal').modal('hide');
-            window.location.reload();
-          },
-          error: function() {
-            $('#lable_msg').show().html('请求错误，请重试');
-          },
-          complete: function() {
-            swal.fire({
-              title: '添加成功',
-              icon: 'success',
-              timer: 1000,
-              showConfirmButton: false,
-            }).then(() => window.location.reload());
-          },
-        });
-      }
-
-      // 编辑标签
-      function updateLabel(id) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.config.label.update', '')}}/' + id,
-          data: {
-            _token: '{{csrf_token()}}',
-            name: $('#label_name_' + id).val(),
-            sort: $('#label_sort_' + id).val(),
-          },
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
-      }
-
-      // 删除标签
-      function delLabel(id, name) {
-        swal.fire({
-          title: '警告',
-          text: '确定删除标签 【' + name + '】 ?',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
-        }).then((result) => {
           $.ajax({
-            method: 'DELETE',
-            url: '{{route('admin.config.label.destroy', '')}}/' + id,
+            url: '{{route('admin.config.level.store')}}',
+            method: 'POST',
+            data: {_token: '{{csrf_token()}}', level: level, level_name: level_name},
+            beforeSend: function() {
+              $('#level_msg').show().html('正在添加');
+            },
+            success: function(ret) {
+              if (ret.status === 'fail') {
+                $('#level_msg').show().html(ret.message);
+                return false;
+              }
+              $('#add_level_modal').modal('hide');
+              window.location.reload();
+            },
+            error: function() {
+              $('#level_msg').show().html('请求错误，请重试');
+            },
+            complete: function() {
+              swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.level.update')
+        // 更新等级
+        function updateLevel(id) {
+          $.ajax({
+            method: 'PUT',
+            url: '{{route('admin.config.level.update', '')}}/' + id,
+            data: {
+              _token: '{{csrf_token()}}',
+              level: $('#level_' + id).val(),
+              level_name: $('#level_name_' + id).val(),
+            },
+            dataType: 'json',
+            success: function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.level.destroy')
+        // 删除等级
+        function delLevel(id, name) {
+          swal.fire({
+            title: '确定删除等级 【' + name + '】 ？',
+            icon: 'question',
+            allowEnterKey: false,
+            showCancelButton: true,
+            cancelButtonText: '{{trans('home.ticket_close')}}',
+            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                method: 'DELETE',
+                url: '{{route('admin.config.level.destroy', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                  if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  }
+                },
+              });
+            }
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.country.store')
+        // 添加国家/地区
+        function addCountry() {
+          const country_name = $('#add_country_name').val();
+          const country_code = $('#add_country_code').val();
+
+          if (country_code.trim() === '') {
+            $('#country_msg').show().html('国家/地区代码不能为空');
+            $('#add_country_code').focus();
+            return false;
+          }
+
+          if (country_name.trim() === '') {
+            $('#country_msg').show().html('国家/地区名称不能为空');
+            $('#add_country_name').focus();
+            return false;
+          }
+
+          $.ajax({
+            url: '{{route('admin.config.country.store')}}',
+            method: 'POST',
+            data: {_token: '{{csrf_token()}}', code: country_code, name: country_name},
+            beforeSend: function() {
+              $('#country_msg').show().html('正在添加');
+            },
+            success: function(ret) {
+              if (ret.status === 'fail') {
+                $('#country_msg').show().html(ret.message);
+                return false;
+              }
+              $('#add_country_modal').modal('hide');
+              window.location.reload();
+            },
+            error: function() {
+              $('#country_msg').show().html('请求错误，请重试');
+            },
+            complete: function() {
+              swal.fire({
+                title: '添加成功',
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.country.update')
+        // 更新国家/地区
+        function updateCountry(code) {
+          $.ajax({
+            method: 'PUT',
+            url: '{{route('admin.config.country.update', '')}}/' + code,
+            data: {_token: '{{csrf_token()}}', name: $('#country_' + code).val()},
+            dataType: 'json',
+            success: function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'});
+              }
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.country.destroy')
+        // 删除国家/地区
+        function delCountry(code, name) {
+          swal.fire({
+            title: '确定删除 【' + name + '】 信息？',
+            icon: 'question',
+            allowEnterKey: false,
+            showCancelButton: true,
+            cancelButtonText: '{{trans('home.ticket_close')}}',
+            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                method: 'DELETE',
+                url: '{{route('admin.config.country.destroy', '')}}/' + code,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                  if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  }
+                },
+              });
+            }
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.ss.store')
+        // 添加配置
+        function addConfig() {
+          const name = $('#name').val();
+          const type = $('#type').val();
+
+          if (name.trim() === '') {
+            $('#msg').show().html('名称不能为空');
+            $('#name').focus();
+            return false;
+          }
+
+          $.ajax({
+            url: '{{route('admin.config.ss.store')}}',
+            method: 'POST',
+            data: {_token: '{{csrf_token()}}', name: name, type: type},
+            dataType: 'json',
+            beforeSend: function() {
+              $('#msg').show().html('正在添加');
+            },
+            success: function(ret) {
+              if (ret.status === 'fail') {
+                $('#msg').show().html(ret.message);
+                return false;
+              }
+
+              $('#add_config_modal').modal('hide');
+            },
+            error: function() {
+              $('#msg').show().html('请求错误，请重试');
+            },
+            complete: function() {
+              swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.ss.update')
+        // 置为默认
+        function setDefault(id) {
+          $.ajax({
+            method: 'PUT',
+            url: '{{route('admin.config.ss.update', '')}}/' + id,
             data: {_token: '{{csrf_token()}}'},
             dataType: 'json',
             success: function(ret) {
@@ -718,7 +641,149 @@
               }
             },
           });
-        });
-      }
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.ss.destroy')
+        // 删除配置
+        function delConfig(id, name) {
+          swal.fire({
+            title: '确定删除配置 【' + name + '】 ？',
+            icon: 'question',
+            allowEnterKey: false,
+            showCancelButton: true,
+            cancelButtonText: '{{trans('home.ticket_close')}}',
+            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                method: 'DELETE',
+                url: '{{route('admin.config.ss.destroy', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                  if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  }
+                },
+              });
+            }
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.label.store')
+        // 添加标签
+        function addLabel() {
+          const name = $('#add_label').val();
+          const sort = $('#add_label_sort').val();
+
+          if (name.trim() === '') {
+            $('#lable_msg').show().html('标签不能为空');
+            return false;
+          }
+
+          if (sort.trim() === '') {
+            $('#lable_msg').show().html('标签排序不能为空');
+            return false;
+          }
+
+          $.ajax({
+            url: '{{route('admin.config.label.store')}}',
+            method: 'POST',
+            data: {_token: '{{csrf_token()}}', name: name, sort: sort},
+            beforeSend: function() {
+              $('#level_msg').show().html('正在添加');
+            },
+            success: function(ret) {
+              if (ret.status === 'fail') {
+                $('#lable_msg').show().html(ret.message);
+                return false;
+              }
+              $('#add_label_modal').modal('hide');
+              window.location.reload();
+            },
+            error: function() {
+              $('#lable_msg').show().html('请求错误，请重试');
+            },
+            complete: function() {
+              swal.fire({
+                title: '添加成功',
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.label.update')
+        // 编辑标签
+        function updateLabel(id) {
+          $.ajax({
+            method: 'PUT',
+            url: '{{route('admin.config.label.update', '')}}/' + id,
+            data: {
+              _token: '{{csrf_token()}}',
+              name: $('#label_name_' + id).val(),
+              sort: $('#label_sort_' + id).val(),
+            },
+            dataType: 'json',
+            success: function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            },
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.label.destroy')
+        // 删除标签
+        function delLabel(id, name) {
+          swal.fire({
+            title: '警告',
+            text: '确定删除标签 【' + name + '】 ?',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: '{{trans('home.ticket_close')}}',
+            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          }).then((result) => {
+            $.ajax({
+              method: 'DELETE',
+              url: '{{route('admin.config.label.destroy', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
+            });
+          });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
     </script>
 @endsection

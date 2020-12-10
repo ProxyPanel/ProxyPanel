@@ -7,13 +7,15 @@
         <div class="panel">
             <div class="panel-heading">
                 <h3 class="panel-title">工单列表</h3>
-                <div class="panel-actions">
-                    <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
+                @can('admin.ticket.store')
+                    <div class="panel-actions">
+                        <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
                         <span>
                             <i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
                         </span>
-                    </button>
-                </div>
+                        </button>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -43,7 +45,11 @@
                                 @if(!$ticket->user)
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id'=>$ticket->user->id])}}" target="_blank">{{$ticket->user->email}}</a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id'=>$ticket->user->id])}}" target="_blank">{{$ticket->user->email}}</a>
+                                    @else
+                                        {{$ticket->user->email}}
+                                    @endcan
                                 @endif
                             </td>
 
@@ -54,15 +60,17 @@
                                 {!!$ticket->status_label!!}
                             </td>
                             <td>
-                                <a href="{{route('admin.ticket.edit',$ticket->id)}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
-                                    <span>
-                                        @if($ticket->status === 2)
-                                            <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}
-                                        @else
-                                            <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_open')}}
-                                        @endif
-                                    </span>
-                                </a>
+                                @can('admin.ticket.edit')
+                                    <a href="{{route('admin.ticket.edit',$ticket->id)}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+                                        <span>
+                                            @if($ticket->status === 2)
+                                                <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}
+                                            @else
+                                                <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_open')}}
+                                            @endif
+                                        </span>
+                                    </a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -84,40 +92,42 @@
         </div>
     </div>
 
-    <div id="add_ticket_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
-        <div class="modal-dialog modal-simple modal-center modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group row">
-                        <label for="domain" class="col-2 col-form-label">域名</label>
-                        <div class="input-group col-10">
-                            <input type="number" class="form-control col-md-4" name="user_id" id="user_id" placeholder="用户ID"/>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">或</span>
+    @can('admin.ticket.store')
+        <div id="add_ticket_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+            <div class="modal-dialog modal-simple modal-center modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row">
+                            <label for="domain" class="col-2 col-form-label">域名</label>
+                            <div class="input-group col-10">
+                                <input type="number" class="form-control col-md-4" name="user_id" id="user_id" placeholder="用户ID"/>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">或</span>
+                                </div>
+                                <input type="email" class="form-control col-md-8" name="user_email" id="user_email" placeholder="用户邮箱"/>
                             </div>
-                            <input type="email" class="form-control col-md-8" name="user_email" id="user_email" placeholder="用户邮箱"/>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="title" id="title" placeholder="标题">
+                        </div>
+                        <div class="form-group">
+                            <textarea type="text" class="form-control" rows="5" name="content" id="content" placeholder="内容"></textarea>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <input type="text" class="form-control" name="title" id="title" placeholder="标题">
+                    <div class="modal-footer">
+                        <button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
+                        <button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
                     </div>
-                    <div class="form-group">
-                        <textarea type="text" class="form-control" rows="5" name="content" id="content" placeholder="内容"></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
-                    <button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
                 </div>
             </div>
         </div>
-    </div>
+    @endcan
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
@@ -136,6 +146,7 @@
         window.location.href = '{{route('admin.ticket.index')}}?email=' + $('#email').val();
       }
 
+      @can('admin.ticket.store')
       // 发起工单
       function createTicket() {
         const id = $('#user_id').val();
@@ -182,5 +193,6 @@
           }
         });
       }
+        @endcan
     </script>
 @endsection

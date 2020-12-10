@@ -61,7 +61,11 @@
                             <td> {{$vo->type_label}} </td>
                             <td> {{$vo->trade_no}} </td>
                             <td>
-                                <a href="{{route('admin.order', ['order_sn' => $vo->out_trade_no])}}" target="_blank"> {{$vo->out_trade_no}} </a>
+                                @can('admin.order')
+                                    <a href="{{route('admin.order', ['order_sn' => $vo->out_trade_no])}}" target="_blank"> {{$vo->out_trade_no}} </a>
+                                @else
+                                    {{$vo->out_trade_no}}
+                                @endcan
                             </td>
                             <td> {{$vo->amount}}元</td>
                             <td> {!! $vo->trade_status_label !!} </td>
