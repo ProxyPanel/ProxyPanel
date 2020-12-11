@@ -7,11 +7,13 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">触发记录</h2>
-                <div class="panel-actions">
-                    <a href="javascript:clearLog();" class="btn btn-outline-primary">
-                        <i class="icon wb-rubber" aria-hidden="true"></i>清空记录
-                    </a>
-                </div>
+                @can('admin.rule.clear')
+                    <div class="panel-actions">
+                        <a href="javascript:clearLog();" class="btn btn-outline-primary">
+                            <i class="icon wb-rubber" aria-hidden="true"></i>清空记录
+                        </a>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -85,36 +87,38 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.rule.log')}}?uid=' + $('#uid').val() + '&email=' + $('#email').val() +
-                '&node_id=' + $('#node_id option:selected').val() + '&rule_id=' + $('#rule_id option:selected').val();
-        }
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.rule.log')}}?uid=' + $('#uid').val() + '&email=' + $('#email').val() +
+            '&node_id=' + $('#node_id option:selected').val() + '&rule_id=' + $('#rule_id option:selected').val();
+      }
 
-        // 清除所有记录
-        function clearLog() {
-            swal.fire({
-                title: '警告',
-                text: '确定清空所有记录吗？',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'});
-                        }
-                    });
-                }
+      @can('admin.rule.clear')
+      // 清除所有记录
+      function clearLog() {
+        swal.fire({
+          title: '警告',
+          text: '确定清空所有记录吗？',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'});
+              }
             });
-        }
+          }
+        });
+      }
+        @endcan
     </script>
 @endsection

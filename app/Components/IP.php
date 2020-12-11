@@ -60,11 +60,11 @@ class IP
             $location = explode('|', $ipInfo['region']);
 
             return [
-                'country'  => $location[0] ?: '',
+                'country' => $location[0] ?: '',
                 'province' => $location[2] ?: '',
-                'city'     => $location[3] ?: '',
-                'isp'      => $location[4] ?: '',
-                'area'     => $location[1] ?: '',
+                'city' => $location[3] ?: '',
+                'isp' => $location[4] ?: '',
+                'area' => $location[1] ?: '',
             ];
         }
 
@@ -80,9 +80,9 @@ class IP
                 ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME]);
 
             return [
-                'country'  => $location['countryName'],
+                'country' => $location['countryName'],
                 'province' => $location['regionName'],
-                'city'     => $location['cityName'],
+                'city' => $location['cityName'],
             ];
         } catch (Exception $e) {
             Log::error('【ip2Location】错误信息：'.$e->getMessage());
@@ -98,9 +98,9 @@ class IP
         $location = (new City($filePath))->findMap($ip, 'CN');
 
         return [
-            'country'  => $location['country_name'],
+            'country' => $location['country_name'],
             'province' => $location['region_name'],
-            'city'     => $location['city_name'],
+            'city' => $location['city_name'],
         ];
     }
 
@@ -114,10 +114,10 @@ class IP
             $message = $response->json();
             if ($message['code'] === 0) {
                 return [
-                    'country'  => $message['data']['country'] === 'XX' ? '' : $message['data']['country'],
+                    'country' => $message['data']['country'] === 'XX' ? '' : $message['data']['country'],
                     'province' => $message['data']['region'] === 'XX' ? '' : $message['data']['region'],
-                    'city'     => $message['data']['city'] === 'XX' ? '' : $message['data']['city'],
-                    'isp'      => $message['data']['isp'] === 'XX' ? '' : $message['data']['isp'],
+                    'city' => $message['data']['city'] === 'XX' ? '' : $message['data']['city'],
+                    'isp' => $message['data']['isp'] === 'XX' ? '' : $message['data']['isp'],
                 ];
             }
 
@@ -144,10 +144,10 @@ class IP
             $message = $response->json();
             if ($message['status'] === 0) {
                 return [
-                    'country'  => $message['content']['address_detail']['country'],
+                    'country' => $message['content']['address_detail']['country'],
                     'province' => $message['content']['address_detail']['province'],
-                    'city'     => $message['content']['address_detail']['city'],
-                    'area'     => $message['address'],
+                    'city' => $message['content']['address_detail']['city'],
+                    'area' => $message['address'],
                 ];
             }
 
@@ -167,9 +167,9 @@ class IP
             $location = (new Reader($filePath))->city($ip);
 
             return [
-                'country'  => $location->country->names['zh-CN'],
+                'country' => $location->country->names['zh-CN'],
                 'province' => '',
-                'city'     => $location->city->name ?? '',
+                'city' => $location->city->name ?? '',
             ];
         } catch (AddressNotFoundException $e) {
             Log::error('【GeoIP2】查询失败：'.$ip);

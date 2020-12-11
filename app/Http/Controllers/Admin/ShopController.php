@@ -11,10 +11,11 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Log;
 use Redirect;
 use Response;
-use Session;
+use Str;
 
 /**
  * 商店控制器.
@@ -55,22 +56,21 @@ class ShopController extends Controller
     // 添加商品
     public function store(ShopStoreRequest $request): RedirectResponse
     {
-        // 商品LOGO
-        if ($request->hasFile('logo')) {
-            $logo = 'upload/'.$request->file('logo')->store('images');
-
-            if (! $logo) {
-                return Redirect::back()->withInput()->withErrors('LOGO不合法');
-            }
-        }
-
         try {
             $data = $request->except('_token', 'logo', 'traffic', 'traffic_unit');
             $data['traffic'] = $request->input('traffic') * $request->input('traffic_unit') ?? 1;
-            $data['logo'] = $logo ?? null;
             $data['is_hot'] = $request->input('is_hot') ? 1 : 0;
             $data['status'] = $request->input('status') ? 1 : 0;
 
+            // 商品LOGO
+            if ($request->hasFile('logo')) {
+                $path = $this->fileUpload($request->file('logo'));
+                if (is_string($path)) {
+                    $data['logo'] = $path;
+                } else {
+                    return $path;
+                }
+            }
             $good = Goods::create($data);
 
             if ($good) {
@@ -83,6 +83,19 @@ class ShopController extends Controller
         }
 
         return Redirect::back()->withInput()->withErrors('添加商品信息失败');
+    }
+
+    // 图片上传
+    public function fileUpload(UploadedFile $file)
+    {
+        $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
+        $path = $file->storeAs('public', $fileName);
+
+        if (! $path) {
+            return Redirect::back()->withInput()->withErrors('Logo存储失败');
+        }
+
+        return 'upload/'.$fileName;
     }
 
     // 编辑商品页面
@@ -101,12 +114,12 @@ class ShopController extends Controller
         $data = $request->except('_token', '_method', 'logo');
         // 商品LOGO
         if ($request->hasFile('logo')) {
-            $logo = 'upload/'.$request->file('logo')->store('images');
-
-            if (! $logo) {
-                return Redirect::back()->withInput()->withErrors('LOGO不合法');
+            $path = $this->fileUpload($request->file('logo'));
+            if (is_string($path)) {
+                $data['logo'] = $path;
+            } else {
+                return $path;
             }
-            $data['logo'] = $logo;
         }
 
         try {
@@ -114,14 +127,15 @@ class ShopController extends Controller
             $data['status'] = $request->input('status') ? 1 : 0;
 
             if ($goods->update($data)) {
-                Session::flash('successMsg', '编辑成功');
+                return Redirect::back()->with('successMsg', '编辑成功');
             }
         } catch (Exception $e) {
             Log::error('编辑商品信息失败：'.$e->getMessage());
-            Session::flash('errorMsg', '编辑商品信息失败：'.$e->getMessage());
+
+            return Redirect::back()->withErrors('编辑商品信息失败：'.$e->getMessage());
         }
 
-        return Redirect::back();
+        return Redirect::back()->withInput()->withErrors('编辑失败');
     }
 
     // 删除商品

@@ -394,348 +394,348 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/switchery.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        const string = "{{strtolower(Str::random())}}";
-        $(document).ready(function () {
-            let v2_path = $('#v2_path');
-            @isset($node)
+      const string = "{{strtolower(Str::random())}}";
+      $(document).ready(function() {
+        let v2_path = $('#v2_path');
+          @isset($node)
 
-            @if($node->is_ddns)
-            $('#is_ddns').click();
-            @endif
-            $('#name').val('{{$node->name}}');
-            $('#server').val('{{$node->server}}');
-            $('#ip').val('{{$node->ip}}');
-            $('#ipv6').val('{{$node->ipv6}}');
-            $('#push_port').val('{{$node->push_port}}');
-            $('#traffic_rate').val('{{$node->traffic_rate}}');
-            $('#level').selectpicker('val', '{{$node->level}}');
-            $('#speed_limit').val('{{$node->speed_limit}}');
-            $('#client_limit').val('{{$node->client_limit}}');
-            $('#labels').selectpicker('val', {{$node->labels->pluck('label_id')}});
-            $('#country_code').selectpicker('val', '{{$node->country_code}}');
-            $('#description').val('{{$node->description}}');
-            $('#sort').val('{{$node->sort}}');
-            @if($node->is_udp)
-            $('#is_udp').click();
-            @endif
-            @if($node->status)
-            $('#status').click();
-            @endif
-            @if($node->is_subscribe)
-            $('#is_subscribe').click();
-            @endif
-            $("input[name='detection_type'][value='{{$node->detection_type}}']").click();
-            @if($node->single)
-            $('#single').click();
-            @endif
-            $('input[name = port]').val('{{$node->port}}');
-            $('#passwd').val('{{$node->passwd}}');
-            $("input[name='type'][value='{{$node->type}}']").click();
+          @if($node->is_ddns)
+          $('#is_ddns').click();
+          @endif
+          $('#name').val('{{$node->name}}');
+        $('#server').val('{{$node->server}}');
+        $('#ip').val('{{$node->ip}}');
+        $('#ipv6').val('{{$node->ipv6}}');
+        $('#push_port').val('{{$node->push_port}}');
+        $('#traffic_rate').val('{{$node->traffic_rate}}');
+        $('#level').selectpicker('val', '{{$node->level}}');
+        $('#speed_limit').val('{{$node->speed_limit}}');
+        $('#client_limit').val('{{$node->client_limit}}');
+        $('#labels').selectpicker('val', {{$node->labels->pluck('label_id')}});
+        $('#country_code').selectpicker('val', '{{$node->country_code}}');
+        $('#description').val('{{$node->description}}');
+        $('#sort').val('{{$node->sort}}');
+          @if($node->is_udp)
+          $('#is_udp').click();
+          @endif
+          @if($node->status)
+          $('#status').click();
+          @endif
+          @if($node->is_subscribe)
+          $('#is_subscribe').click();
+          @endif
+          $("input[name='detection_type'][value='{{$node->detection_type}}']").click();
+          @if($node->single)
+          $('#single').click();
+          @endif
+          $('input[name = port]').val('{{$node->port}}');
+        $('#passwd').val('{{$node->passwd}}');
+        $("input[name='type'][value='{{$node->type}}']").click();
 
-            @if($node->type == 1 || $node->type == 4)
-            // ShadowsocksR
-            $('#method').selectpicker('val', '{{$node->method}}');
-            $('#protocol').selectpicker('val', '{{$node->protocol}}');
-            $('#protocol_param').val('{{$node->protocol_param}}');
-            $('#obfs').selectpicker('val', '{{$node->obfs}}');
-            $('#obfs_param').val('{{$node->obfs_param}}');
-            @if($node->compatible)
-            $('#compatible').click();
-            @endif
-            @endif
+          @if($node->type == 1 || $node->type == 4)
+        // ShadowsocksR
+        $('#method').selectpicker('val', '{{$node->method}}');
+        $('#protocol').selectpicker('val', '{{$node->protocol}}');
+        $('#protocol_param').val('{{$node->protocol_param}}');
+        $('#obfs').selectpicker('val', '{{$node->obfs}}');
+        $('#obfs_param').val('{{$node->obfs_param}}');
+          @if($node->compatible)
+          $('#compatible').click();
+          @endif
+          @endif
 
-            @if($node->type === 2)
-            //V2Ray
-            $('#v2_alter_id').val('{{$node->v2_alter_id}}');
-            $('#v2_port').val('{{$node->v2_port}}');
-            $('#v2_method').selectpicker('val', '{{$node->v2_method}}');
-            $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
-            $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
-            $('#v2_host').val('{{$node->v2_host}}');
-            v2_path.val('{{$node->v2_path}}');
-            @if($node->v2_tls)
-            $('#v2_tls').click();
-            @endif
-            $('#tls_provider').val('{!! $node->tls_provider !!}');
-            @endif
+          @if($node->type === 2)
+        //V2Ray
+        $('#v2_alter_id').val('{{$node->v2_alter_id}}');
+        $('#v2_port').val('{{$node->v2_port}}');
+        $('#v2_method').selectpicker('val', '{{$node->v2_method}}');
+        $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
+        $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
+        $('#v2_host').val('{{$node->v2_host}}');
+        v2_path.val('{{$node->v2_path}}');
+          @if($node->v2_tls)
+          $('#v2_tls').click();
+          @endif
+          $('#tls_provider').val('{!! $node->tls_provider !!}');
+          @endif
 
-            @if($node->is_relay)
-            // 中转
-            $('#is_relay').click();
-            $('#relay_port').val('{{$node->relay_port}}');
-            $('#relay_server').val('{{$node->relay_server}}');
-            @endif
-            @else
-            $('#status').click();
-            $('#is_udp').click();
-            $('#is_subscribe').click();
-            v2_path.val('/' + string);
-            @endisset
-            if ($('#obfs').val() === 'plain') {
-                $('.obfs_param').hide();
-            }
-        });
+          @if($node->is_relay)
+        // 中转
+        $('#is_relay').click();
+        $('#relay_port').val('{{$node->relay_port}}');
+        $('#relay_server').val('{{$node->relay_server}}');
+          @endif
+          @else
+          $('#status').click();
+        $('#is_udp').click();
+        $('#is_subscribe').click();
+        v2_path.val('/' + string);
+          @endisset
+          if ($('#obfs').val() === 'plain') {
+            $('.obfs_param').hide();
+          }
+      });
 
-        // ajax同步提交
-        function Submit() {
-            const type = $('input[name=\'type\']:checked').val();
-            let port;
-            switch (type) {
-                case '2':
-                    port = $('#v2ray_port').val();
-                    break;
-                case '3':
-                    port = $('#trojan_port').val();
-                    break;
-                case '1':
-                case '4':
-                default:
-                    port = $('#single_port').val();
-            }
-            $.ajax({
-                method: @isset($node) 'PUT' @else 'POST' @endisset,
-                url: '{{isset($node)? route('admin.node.update', $node->id) : route('admin.node.store')}}',
-                async: false,
-                data: {
-                    _token: '{{csrf_token()}}',
-                    is_ddns: document.getElementById('is_ddns').checked ? 1 : 0,
-                    name: $('#name').val(),
-                    server: $('#server').val(),
-                    ip: $('#ip').val(),
-                    ipv6: $('#ipv6').val(),
-                    push_port: $('#push_port').val(),
-                    traffic_rate: $('#traffic_rate').val(),
-                    level: $('#level').val(),
-                    speed_limit: $('#speed_limit').val(),
-                    client_limit: $('#client_limit').val(),
-                    labels: $('#labels').val(),
-                    country_code: $('#country_code option:selected').val(),
-                    description: $('#description').val(),
-                    sort: $('#sort').val(),
-                    is_udp: document.getElementById('is_udp').checked ? 1 : 0,
-                    status: document.getElementById('status').checked ? 1 : 0,
-                    type: type,
-                    method: $('#method').val(),
-                    protocol: $('#protocol').val(),
-                    protocol_param: $('#protocol_param').val(),
-                    obfs: $('#obfs').val(),
-                    obfs_param: $('#obfs_param').val(),
-                    compatible: document.getElementById('compatible').checked ? 1 : 0,
-                    is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
-                    detection_type: $('input[name=\'detection_type\']:checked').val(),
-                    single: document.getElementById('single').checked ? 1 : 0,
-                    port: port,
-                    passwd: $('#passwd').val(),
-                    v2_alter_id: $('#v2_alter_id').val(),
-                    v2_port: $('#v2_port').val(),
-                    v2_method: $('#v2_method').val(),
-                    v2_net: $('#v2_net').val(),
-                    v2_type: $('#v2_type').val(),
-                    v2_host: $('#v2_host').val(),
-                    v2_path: $('#v2_path').val(),
-                    v2_tls: document.getElementById('v2_tls').checked ? 1 : 0,
-                    tls_provider: $('#tls_provider').val(),
-                    is_relay: document.getElementById('is_relay').checked ? 1 : 0,
-                    relay_port: $('#relay_port').val(),
-                    relay_server: $('#relay_server').val(),
-                },
-                dataType: 'json',
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
-                    } else {
-                        swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
-                    }
-                },
-                error: function (data) {
-                    let str = '';
-                    const errors = data.responseJSON;
-                    if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function (index, value) {
-                            str += '<li>' + value + '</li>';
-                        });
-                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
-                    }
-                },
-            });
-
-            return false;
+      // ajax同步提交
+      function Submit() {
+        const type = $('input[name=\'type\']:checked').val();
+        let port;
+        switch (type) {
+          case '2':
+            port = $('#v2ray_port').val();
+            break;
+          case '3':
+            port = $('#trojan_port').val();
+            break;
+          case '1':
+          case '4':
+          default:
+            port = $('#single_port').val();
         }
-
-        function switchSetting(id) {
-            let check = document.getElementById(id).checked ? 1 : 0;
-            switch (id) {
-                // 设置单端口多用户
-                case 'single':
-                    if (check) {
-                        $('.single-setting').show();
-                    } else {
-                        $('#single_port').val('');
-                        $('#passwd').val('');
-                        $('.single-setting').hide();
-                    }
-                    break;
-                //设置中转
-                case 'is_relay':
-                    if (check) {
-                        $('.relay-setting').show();
-                        $('#relay_port').attr('required', true);
-                        $('#relay_server').attr('required', true);
-                    } else {
-                        $('.relay-setting').hide();
-                        $('#relay_port').removeAttr('required');
-                        $('#relay_server').removeAttr('required');
-                    }
-                    break;
-                // 设置是否使用DDNS
-                case 'is_ddns':
-                    if (check) {
-                        $('#ip').val('').attr('readonly', true);
-                        $('#ipv6').val('').attr('readonly', true);
-                        $('#server').attr('required', true);
-                    } else {
-                        $('#ip').removeAttr('readonly');
-                        $('#ipv6').removeAttr('readonly');
-                        $('#server').removeAttr('required');
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        // 设置服务类型
-        $('input:radio[name=\'type\']').on('change', function () {
-            const type = parseInt($(this).val());
-            const $ssr_setting = $('.ssr-setting');
-            const $v2ray_setting = $('.v2ray-setting');
-            const $trojan_setting = $('.trojan-setting');
-            $ssr_setting.hide();
-            $v2ray_setting.hide();
-            $trojan_setting.hide();
-            switch (type) {
-                case 1:
-                    $ssr_setting.show();
-                    break;
-                case 2:
-                    $v2ray_setting.show();
-                    $('#v2_net').selectpicker('val', 'tcp');
-                    break;
-                case 3:
-                    $trojan_setting.show();
-                    break;
-                case 4:
-                    $ssr_setting.show();
-                    break;
-                default:
-            }
-        });
-
-        $('#obfs').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-            const obfs_param = $('.obfs_param');
-            if ($('#obfs').val() === 'plain') {
-                $('#obfs_param').val('');
-                obfs_param.hide();
+        $.ajax({
+          method: @isset($node) 'PUT' @else 'POST' @endisset,
+          url: '{{isset($node)? route('admin.node.update', $node->id) : route('admin.node.store')}}',
+          async: false,
+          data: {
+            _token: '{{csrf_token()}}',
+            is_ddns: document.getElementById('is_ddns').checked ? 1 : 0,
+            name: $('#name').val(),
+            server: $('#server').val(),
+            ip: $('#ip').val(),
+            ipv6: $('#ipv6').val(),
+            push_port: $('#push_port').val(),
+            traffic_rate: $('#traffic_rate').val(),
+            level: $('#level').val(),
+            speed_limit: $('#speed_limit').val(),
+            client_limit: $('#client_limit').val(),
+            labels: $('#labels').val(),
+            country_code: $('#country_code option:selected').val(),
+            description: $('#description').val(),
+            sort: $('#sort').val(),
+            is_udp: document.getElementById('is_udp').checked ? 1 : 0,
+            status: document.getElementById('status').checked ? 1 : 0,
+            type: type,
+            method: $('#method').val(),
+            protocol: $('#protocol').val(),
+            protocol_param: $('#protocol_param').val(),
+            obfs: $('#obfs').val(),
+            obfs_param: $('#obfs_param').val(),
+            compatible: document.getElementById('compatible').checked ? 1 : 0,
+            is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
+            detection_type: $('input[name=\'detection_type\']:checked').val(),
+            single: document.getElementById('single').checked ? 1 : 0,
+            port: port,
+            passwd: $('#passwd').val(),
+            v2_alter_id: $('#v2_alter_id').val(),
+            v2_port: $('#v2_port').val(),
+            v2_method: $('#v2_method').val(),
+            v2_net: $('#v2_net').val(),
+            v2_type: $('#v2_type').val(),
+            v2_host: $('#v2_host').val(),
+            v2_path: $('#v2_path').val(),
+            v2_tls: document.getElementById('v2_tls').checked ? 1 : 0,
+            tls_provider: $('#tls_provider').val(),
+            is_relay: document.getElementById('is_relay').checked ? 1 : 0,
+            relay_port: $('#relay_port').val(),
+            relay_server: $('#relay_server').val(),
+          },
+          dataType: 'json',
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.href = '{{route('admin.node.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') }}');
             } else {
-                obfs_param.show();
+              swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
             }
-        });
-
-        $('#v2_ws').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-            $('#v2_host').val($('#v2_ws').val());
-        });
-
-        // 设置V2Ray详细设置
-        $('#v2_net').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-            const type = $('.v2_type');
-            const type_option = $('#type_option');
-            const host = $('.v2_host');
-            const path = $('#v2_path');
-            const v2_ws = $('[name="v2_ws"]');
-            const v2_other = $('[name="v2_other"]');
-            type.show();
-            host.show();
-            v2_other.show();
-            v2_ws.hide();
-            path.val('/' + string);
-            switch ($(this).val()) {
-                case 'kcp':
-                    type_option.attr('disabled', false);
-                    break;
-                case 'ws':
-                    v2_ws.show();
-                    type.hide();
-                    v2_other.hide();
-                    break;
-                case 'http':
-                    type.hide();
-                    break;
-                case 'domainsocket':
-                    type.hide();
-                    host.hide();
-                    break;
-                case 'quic':
-                    type_option.attr('disabled', false);
-                    path.val(string);
-                    break;
-                case 'tcp':
-                default:
-                    type_option.attr('disabled', true);
-                    break;
+          },
+          error: function(data) {
+            let str = '';
+            const errors = data.responseJSON;
+            if ($.isEmptyObject(errors) === false) {
+              $.each(errors.errors, function(index, value) {
+                str += '<li>' + value + '</li>';
+              });
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
             }
-            $('#v2_type').selectpicker('refresh');
+          },
         });
 
-        // 服务条款
-        function showTnc() {
-            const content =
-                '<ol>' +
-                '<li>请勿直接复制黏贴以下配置，SSR(R)会报错的</li>' +
-                '<li>确保服务器时间为CST</li>' +
-                '</ol>' +
-                '&emsp;&emsp;"additional_ports" : {<br />' +
-                '&emsp;&emsp;&emsp;"443": {<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"passwd": "ProxyPanel",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"method": "none",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"protocol": "auth_chain_a",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"protocol_param": "#",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"obfs": "plain",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"obfs_param": "fe2.update.microsoft.com"<br />' +
-                '&emsp;&emsp;&emsp;}<br />' +
-                '&emsp;&emsp;},';
+        return false;
+      }
 
-            swal.fire({
-                title: '[节点 user-config.json 配置示例]',
-                html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
-                    content + '</div>',
-                icon: 'info',
-            });
+      function switchSetting(id) {
+        let check = document.getElementById(id).checked ? 1 : 0;
+        switch (id) {
+            // 设置单端口多用户
+          case 'single':
+            if (check) {
+              $('.single-setting').show();
+            } else {
+              $('#single_port').val('');
+              $('#passwd').val('');
+              $('.single-setting').hide();
+            }
+            break;
+            //设置中转
+          case 'is_relay':
+            if (check) {
+              $('.relay-setting').show();
+              $('#relay_port').attr('required', true);
+              $('#relay_server').attr('required', true);
+            } else {
+              $('.relay-setting').hide();
+              $('#relay_port').removeAttr('required');
+              $('#relay_server').removeAttr('required');
+            }
+            break;
+            // 设置是否使用DDNS
+          case 'is_ddns':
+            if (check) {
+              $('#ip').val('').attr('readonly', true);
+              $('#ipv6').val('').attr('readonly', true);
+              $('#server').attr('required', true);
+            } else {
+              $('#ip').removeAttr('readonly');
+              $('#ipv6').removeAttr('readonly');
+              $('#server').removeAttr('required');
+            }
+            break;
+          default:
+            break;
         }
+      }
 
-        // 模式提示
-        function showPortsOnlyConfig() {
-            const content = '严格模式："additional_ports_only": "true"'
-                + '<br><br>'
-                + '兼容模式："additional_ports_only": "false"';
-
-            swal.fire({
-                title: '[节点 user-config.json 配置示例]',
-                html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
-                    content + '</div>',
-                icon: 'info',
-            });
+      // 设置服务类型
+      $('input:radio[name=\'type\']').on('change', function() {
+        const type = parseInt($(this).val());
+        const $ssr_setting = $('.ssr-setting');
+        const $v2ray_setting = $('.v2ray-setting');
+        const $trojan_setting = $('.trojan-setting');
+        $ssr_setting.hide();
+        $v2ray_setting.hide();
+        $trojan_setting.hide();
+        switch (type) {
+          case 1:
+            $ssr_setting.show();
+            break;
+          case 2:
+            $v2ray_setting.show();
+            $('#v2_net').selectpicker('val', 'tcp');
+            break;
+          case 3:
+            $trojan_setting.show();
+            break;
+          case 4:
+            $ssr_setting.show();
+            break;
+          default:
         }
+      });
+
+      $('#obfs').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        const obfs_param = $('.obfs_param');
+        if ($('#obfs').val() === 'plain') {
+          $('#obfs_param').val('');
+          obfs_param.hide();
+        } else {
+          obfs_param.show();
+        }
+      });
+
+      $('#v2_ws').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        $('#v2_host').val($('#v2_ws').val());
+      });
+
+      // 设置V2Ray详细设置
+      $('#v2_net').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+        const type = $('.v2_type');
+        const type_option = $('#type_option');
+        const host = $('.v2_host');
+        const path = $('#v2_path');
+        const v2_ws = $('[name="v2_ws"]');
+        const v2_other = $('[name="v2_other"]');
+        type.show();
+        host.show();
+        v2_other.show();
+        v2_ws.hide();
+        path.val('/' + string);
+        switch ($(this).val()) {
+          case 'kcp':
+            type_option.attr('disabled', false);
+            break;
+          case 'ws':
+            v2_ws.show();
+            type.hide();
+            v2_other.hide();
+            break;
+          case 'http':
+            type.hide();
+            break;
+          case 'domainsocket':
+            type.hide();
+            host.hide();
+            break;
+          case 'quic':
+            type_option.attr('disabled', false);
+            path.val(string);
+            break;
+          case 'tcp':
+          default:
+            type_option.attr('disabled', true);
+            break;
+        }
+        $('#v2_type').selectpicker('refresh');
+      });
+
+      // 服务条款
+      function showTnc() {
+        const content =
+            '<ol>' +
+            '<li>请勿直接复制黏贴以下配置，SSR(R)会报错的</li>' +
+            '<li>确保服务器时间为CST</li>' +
+            '</ol>' +
+            '&emsp;&emsp;"additional_ports" : {<br />' +
+            '&emsp;&emsp;&emsp;"443": {<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"passwd": "ProxyPanel",<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"method": "none",<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"protocol": "auth_chain_a",<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"protocol_param": "#",<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"obfs": "plain",<br />' +
+            '&emsp;&emsp;&emsp;&emsp;"obfs_param": "fe2.update.microsoft.com"<br />' +
+            '&emsp;&emsp;&emsp;}<br />' +
+            '&emsp;&emsp;},';
+
+        swal.fire({
+          title: '[节点 user-config.json 配置示例]',
+          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
+              content + '</div>',
+          icon: 'info',
+        });
+      }
+
+      // 模式提示
+      function showPortsOnlyConfig() {
+        const content = '严格模式："additional_ports_only": "true"'
+            + '<br><br>'
+            + '兼容模式："additional_ports_only": "false"';
+
+        swal.fire({
+          title: '[节点 user-config.json 配置示例]',
+          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
+              content + '</div>',
+          icon: 'info',
+        });
+      }
     </script>
 @endsection

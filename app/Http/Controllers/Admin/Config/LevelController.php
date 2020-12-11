@@ -18,12 +18,12 @@ class LevelController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'level'      => 'required|numeric|unique:level,level',
+            'level' => 'required|numeric|unique:level,level',
             'level_name' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         $obj = new Level();
@@ -44,12 +44,12 @@ class LevelController extends Controller
         $level = $request->input('level');
 
         $validator = Validator::make($request->all(), [
-            'level'      => 'required|numeric',
+            'level' => 'required|numeric',
             'level_name' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
         // 校验该等级下是否存在关联账号
         $levelCheck = Level::where('id', '<>', $id)->whereLevel($level)->exists();

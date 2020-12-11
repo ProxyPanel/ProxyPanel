@@ -107,7 +107,11 @@
                                 @if(empty($order->user) )
                                     【账号不存在】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->email}} </a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->email}} </a>
+                                    @else
+                                        {{$order->user->email}}
+                                    @endcan
                                 @endif
                             </td>
                             <td> {{$order->order_sn}}</td>
@@ -152,37 +156,37 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#is_expire').val({{Request::input('is_expire')}});
-            $('#is_coupon').val({{Request::input('is_coupon')}});
-            $('#pay_way').val({{Request::input('pay_way')}});
-            $('#status').val({{Request::input('status')}});
-        });
+      $(document).ready(function() {
+        $('#is_expire').val({{Request::input('is_expire')}});
+        $('#is_coupon').val({{Request::input('is_coupon')}});
+        $('#pay_way').val({{Request::input('pay_way')}});
+        $('#status').val({{Request::input('status')}});
+      });
 
-        // 有效期
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
-        });
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.order')}}?email=' + $('#email').val() + '&order_sn=' + $('#order_sn').val() +
-                '&is_expire=' + $('#is_expire').val() + '&is_coupon=' + $('#is_coupon').val() + '&pay_way=' +
-                $('#pay_way').val() + '&status=' + $('#status').val() + '&sort=' +
-                $('input:radio[name=\'sort\']:checked').val() + '&range_time=' + [$('#start').val(), $('#end').val()];
+      // 有效期
+      $('.input-daterange').datepicker({
+        format: 'yyyy-mm-dd',
+      });
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.order')}}?email=' + $('#email').val() + '&order_sn=' + $('#order_sn').val() +
+            '&is_expire=' + $('#is_expire').val() + '&is_coupon=' + $('#is_coupon').val() + '&pay_way=' +
+            $('#pay_way').val() + '&status=' + $('#status').val() + '&sort=' +
+            $('input:radio[name=\'sort\']:checked').val() + '&range_time=' + [$('#start').val(), $('#end').val()];
+      }
     </script>
 @endsection

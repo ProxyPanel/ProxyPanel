@@ -28,6 +28,13 @@ class Ticket extends Model
         return $this->BelongsTo(User::class);
     }
 
+    public function close(): bool
+    {
+        $this->status = 2;
+
+        return $this->save();
+    }
+
     public function getStatusLabelAttribute(): string
     {
         switch ($this->attributes['status']) {

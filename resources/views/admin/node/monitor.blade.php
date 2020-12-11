@@ -27,102 +27,102 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$dayHours}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficHourly}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
+      const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: {{$dayHours}},
+          datasets: [
+            {
+              fill: true,
+              backgroundColor: 'rgba(98, 168, 234, .1)',
+              borderColor: Config.colors('primary', 600),
+              pointRadius: 4,
+              borderDashOffset: 2,
+              pointBorderColor: '#fff',
+              pointBackgroundColor: Config.colors('primary', 600),
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: Config.colors('primary', 600),
+              data: {{$trafficHourly}},
+            }],
+        },
+        options: {
+          legend: {
+            display: false,
+          },
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: '小时',
                 },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '小时',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('home.traffic_log_24hours')}}',
-                            },
-                        }],
+              }],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  beginAtZero: true,
                 },
-            },
-        });
+                scaleLabel: {
+                  display: true,
+                  labelString: '{{trans('home.traffic_log_24hours')}}',
+                },
+              }],
+          },
+        },
+      });
 
-        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$monthDays}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficDaily}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
+      const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: {{$monthDays}},
+          datasets: [
+            {
+              fill: true,
+              backgroundColor: 'rgba(98, 168, 234, .1)',
+              borderColor: Config.colors('primary', 600),
+              pointRadius: 4,
+              borderDashOffset: 2,
+              pointBorderColor: '#fff',
+              pointBackgroundColor: Config.colors('primary', 600),
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: Config.colors('primary', 600),
+              data: {{$trafficDaily}},
+            }],
+        },
+        options: {
+          legend: {
+            display: false,
+          },
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: '天',
                 },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '天',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('home.traffic_log_30days')}}',
-                            },
-                        }],
+              }],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  beginAtZero: true,
                 },
-            },
-        });
+                scaleLabel: {
+                  display: true,
+                  labelString: '{{trans('home.traffic_log_30days')}}',
+                },
+              }],
+          },
+        },
+      });
     </script>
 @endsection

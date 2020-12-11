@@ -23,12 +23,12 @@
                             </button>
                         @endif
                         <div class="content-text text-center mb-0">
-                            @if($not_paying_user)
+                            @if(!$paying_user)
                                 <p class="ml-15 mt-15 text-left">更长使用<code>时间</code></p>
                                 <p class="text-center">更多<code>流量</code></p>
                                 <p class="mb-15 mr-15 text-right">更多优质<code>线路</code></p>
                                 <a href="{{route('shop')}}" class="btn btn-block btn-danger">快 来 购 买 服 务 吧！</a>
-                            @elseif(Auth::getUser()->enable)
+                            @elseif(Auth::user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.enabled')}}</span>
                                 <p class="font-weight-300 m-0 green-500">{{trans('home.normal')}}</p>
@@ -36,11 +36,11 @@
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.expired')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('home.reason_expired')}}</p>
-                            @elseif($unusedTransfer == 0)
+                            @elseif($unusedTraffic == 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.disabled')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('home.reason_traffic_exhausted')}}</p>
-                            @elseif($isTrafficWarning || $banedTime != 0)
+                            @elseif(Auth::user()->isTrafficWarning() || $banedTime)
                                 <i class="wb-alert orange-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('home.limited')}}</span>
                                 <p class="font-weight-300 m-0 orange-500">{!!trans('home.reason_overused', ['data'=>sysConfig('traffic_ban_value')])!!}</p>
@@ -61,12 +61,12 @@
                                 </button>
                                 <span class="font-weight-400">{{trans('home.account_bandwidth_usage')}}</span>
                                 <div class="text-center font-weight-100 font-size-40">
-                                    {{flowAutoShow($unusedTransfer)}}
+                                    {{$unusedTraffic}}
                                     <br>
-                                    <h4>账号等级：<code class="font-size-20">{{Auth::getUser()->level}}</code></h4>
+                                    <h4>账号等级：<code class="font-size-20">{{Auth::user()->level}}</code></h4>
                                 </div>
                                 <div class="text-center font-weight-300 blue-grey-500 mb-10">
-                                    @if(!$not_paying_user && sysConfig('reset_traffic') && $resetDays != 0 && $remainDays>$resetDays)
+                                    @if($paying_user && sysConfig('reset_traffic') && $resetDays && $remainDays > $resetDays)
                                         {{trans('home.account_reset_notice', ['reset_day' => $resetDays])}}
                                     @endif
                                 </div>
@@ -75,10 +75,10 @@
                                 <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress"
                                      data-valuemax="100"
                                      data-barcolor="#96A3FA" data-size="100" data-barsize="10"
-                                     data-goal="{{$unusedPercent * 100}}" aria-valuenow="{{$unusedPercent * 100}}"
+                                     data-goal="{{$unusedPercent}}" aria-valuenow="{{$unusedPercent}}"
                                      role="progressbar">
                                     <span class="pie-progress-number blue-grey-700 font-size-20">
-                                        {{$unusedPercent * 100}}%</span>
+                                        {{$unusedPercent}}%</span>
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,7 @@
                         </button>
                         <span class="font-weight-400">{{trans('home.account_expire')}}</span>
                         <div class="content-text text-center mb-0">
-                            @if($remainDays != -1)
+                            @if($remainDays !== -1)
                                 <span class="font-size-40 font-weight-100">{{$remainDays}} {{trans('home.day')}}</span>
                                 <p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
                             @else
@@ -165,24 +165,20 @@
                                     {{trans('home.announcement')}}
                                 </h2>
                                 <div class="panel-actions pagination-no-border pagination-sm">
-                                    {{$noticeList->links()}}
+                                    {{$announcements->links()}}
                                 </div>
                             </div>
                             <div class="panel-body" data-show-on-hover="false" data-direction="vertical"
                                  data-skin="scrollable-shadow" data-plugin="scrollable">
                                 <div data-role="container">
                                     <div class="pb-10" data-role="content">
-                                        @if(!$noticeList -> isEmpty())
-                                            @foreach($noticeList as $notice)
-                                                <h2 class="text-center">{!!$notice->title!!}</h2>
-                                                @if($notice->updated_at)
-                                                    <p class="text-right"><small>更新于 <code>{{$notice->updated_at}}</code></small></p>
-                                                @endif
-                                                {!! $notice->content !!}
-                                            @endforeach
-                                        @else
+                                        @forelse($announcements as $announcement)
+                                            <h2 class="text-center">{!!$announcement->title!!}</h2>
+                                            <p class="text-right"><small>更新于 <code>{{$announcement->updated_at}}</code></small></p>
+                                            {!! $announcement->content !!}
+                                        @empty
                                             <p class="text-center font-size-40">暂无公告</p>
-                                        @endif
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
@@ -223,7 +219,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
@@ -232,148 +228,148 @@
     @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
         <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script type="text/javascript">
-            // Options
-            var options = {
-                text: @json(sysConfig('push_bear_qrcode')),
-                width: 150,
-                height: 150,
-                backgroundImage: '{{asset('/assets/images/wechat.png')}}',
-                autoColor: true,
-            };
+          // Options
+          const options = {
+            text: @json(sysConfig('push_bear_qrcode')),
+            width: 150,
+            height: 150,
+            backgroundImage: '{{asset('/assets/images/wechat.png')}}',
+            autoColor: true,
+          };
 
-            // Create QRCode Object
-            new QRCode(document.getElementById("qrcode"), options);
+          // Create QRCode Object
+          new QRCode(document.getElementById('qrcode'), options);
         </script>
     @endif
     <script type="text/javascript">
-        // 签到
-        function checkIn() {
-            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire('长者的微笑', ret.message, 'success');
-                } else {
-                    swal.fire({
-                        title: ret.message,
-                        icon: 'error',
-                    });
-                }
+      // 签到
+      function checkIn() {
+        $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire('长者的微笑', ret.message, 'success');
+          } else {
+            swal.fire({
+              title: ret.message,
+              icon: 'error',
             });
+          }
+        });
+      }
+
+      const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: {{$dayHours}},
+          datasets: [
+            {
+              fill: true,
+              backgroundColor: 'rgba(98, 168, 234, .1)',
+              borderColor: Config.colors('primary', 600),
+              pointRadius: 4,
+              borderDashOffset: 2,
+              pointBorderColor: '#fff',
+              pointBackgroundColor: Config.colors('primary', 600),
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: Config.colors('primary', 600),
+              data: {{$trafficHourly}},
+            }],
+        },
+        options: {
+          legend: {
+            display: false,
+          },
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: '小时',
+                },
+              }],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  beginAtZero: true,
+                  userCallback: function(tick) {
+                    return tick.toString() + ' GB';
+                  },
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: '{{trans('home.traffic_log_24hours')}}',
+                },
+              }],
+          },
+        },
+      });
+
+      const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: {{$monthDays}},
+          datasets: [
+            {
+              fill: true,
+              backgroundColor: 'rgba(98, 168, 234, .1)',
+              borderColor: Config.colors('primary', 600),
+              pointRadius: 4,
+              borderDashOffset: 2,
+              pointBorderColor: '#fff',
+              pointBackgroundColor: Config.colors('primary', 600),
+              pointHoverBackgroundColor: '#fff',
+              pointHoverBorderColor: Config.colors('primary', 600),
+              data: {{$trafficDaily}},
+            }],
+        },
+        options: {
+          legend: {
+            display: false,
+          },
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                display: true,
+                scaleLabel: {
+                  display: true,
+                  labelString: '天',
+                },
+              }],
+            yAxes: [
+              {
+                display: true,
+                ticks: {
+                  beginAtZero: true,
+                  userCallback: function(tick) {
+                    return tick.toString() + ' GB';
+                  },
+                },
+                scaleLabel: {
+                  display: true,
+                  labelString: '{{trans('home.traffic_log_30days')}}',
+                },
+              }],
+          },
+        },
+      });
+
+      @if($banedTime)
+      // 每秒更新计时器
+      const countDownDate = new Date("{{$banedTime}}").getTime();
+      const x = setInterval(function() {
+        const distance = countDownDate - new Date().getTime();
+        const hours = Math.floor(distance % 86400000 / 3600000);
+        const minutes = Math.floor((distance % 3600000) / 60000);
+        const seconds = Math.floor((distance % 60000) / 1000);
+        document.getElementById('countdown').innerHTML = hours + '时 ' + minutes + '分 ' + seconds + '秒';
+        if (distance <= 0) {
+          clearInterval(x);
+          document.getElementById('countdown').remove();
         }
-
-        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$dayHours}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficHourly}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '小时',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function (tick) {
-                                    return tick.toString() + ' GB';
-                                },
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('home.traffic_log_24hours')}}',
-                            },
-                        }],
-                },
-            },
-        });
-
-        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$monthDays}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficDaily}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '天',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function (tick) {
-                                    return tick.toString() + ' GB';
-                                },
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('home.traffic_log_30days')}}',
-                            },
-                        }],
-                },
-            },
-        });
-
-        @if($banedTime)
-        // 每秒更新计时器
-        const countDownDate = new Date("{{$banedTime}}").getTime();
-        const x = setInterval(function () {
-            const distance = countDownDate - new Date().getTime();
-            const hours = Math.floor(distance % 86400000 / 3600000);
-            const minutes = Math.floor((distance % 3600000) / 60000);
-            const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById('countdown').innerHTML = hours + '时 ' + minutes + '分 ' + seconds + '秒';
-            if (distance <= 0) {
-                clearInterval(x);
-                document.getElementById('countdown').remove();
-            }
-        }, 1000);
+      }, 1000);
         @endif
     </script>
 @endsection

@@ -6,12 +6,12 @@ use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\isAdmin;
 use App\Http\Middleware\isAdminLogin;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
 use App\Http\Middleware\isMaintenance;
 use App\Http\Middleware\isSecurity;
+use App\Http\Middleware\Permission;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrimStrings;
@@ -70,6 +70,18 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
         ],
 
+        'user' => [
+            isForbidden::class,
+            isMaintenance::class,
+            isLogin::class,
+        ],
+
+        'admin' => [
+            isForbidden::class,
+            isAdminLogin::class,
+            Permission::class,
+        ],
+
         'api' => [
             'throttle:60,1',
             SubstituteBindings::class,
@@ -84,24 +96,20 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'             => Authenticate::class,
-        'auth.basic'       => AuthenticateWithBasicAuth::class,
-        'bindings'         => SubstituteBindings::class,
-        'cache.headers'    => SetCacheHeaders::class,
-        'can'              => Authorize::class,
-        'guest'            => RedirectIfAuthenticated::class,
+        'auth' => Authenticate::class,
+        'auth.basic' => AuthenticateWithBasicAuth::class,
+        'bindings' => SubstituteBindings::class,
+        'cache.headers' => SetCacheHeaders::class,
+        'can' => Authorize::class,
+        'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
-        'signed'           => ValidateSignature::class,
-        'throttle'         => ThrottleRequests::class,
-        'verified'         => EnsureEmailIsVerified::class,
-        'webApi'           => WebApi::class,
-        'isAdmin'          => isAdmin::class,
-        'isAdminLogin'     => isAdminLogin::class,
-        'isLogin'          => isLogin::class,
-        'isMaintenance'    => isMaintenance::class,
-        'isSecurity'       => isSecurity::class,
-        'isForbidden'      => isForbidden::class,
-        'affiliate'        => Affiliate::class,
-
+        'signed' => ValidateSignature::class,
+        'throttle' => ThrottleRequests::class,
+        'verified' => EnsureEmailIsVerified::class,
+        'webApi' => WebApi::class,
+        'isMaintenance' => isMaintenance::class,
+        'isSecurity' => isSecurity::class,
+        'isForbidden' => isForbidden::class,
+        'affiliate' => Affiliate::class,
     ];
 }

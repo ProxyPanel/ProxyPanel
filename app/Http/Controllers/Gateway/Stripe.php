@@ -44,22 +44,22 @@ class Stripe extends AbstractPayment
         $unitAmount = $amount * 100;
 
         return [
-            'payment_method_types' => ['card'],
-            'line_items'           => [
+            'payment_method_types' => ['card', 'alipay'],
+            'line_items' => [
                 [
                     'price_data' => [
-                        'currency'     => 'usd',
+                        'currency' => 'usd',
                         'product_data' => ['name' => sysConfig('subject_name') ?: sysConfig('website_name')],
-                        'unit_amount'  => $unitAmount,
+                        'unit_amount' => $unitAmount,
                     ],
-                    'quantity'   => 1,
+                    'quantity' => 1,
                 ],
             ],
-            'mode'                 => 'payment',
-            'success_url'          => route('invoice'),
-            'cancel_url'           => route('invoice'),
-            'client_reference_id'  => $tradeNo,
-            'customer_email'       => Auth::getUser()->email,
+            'mode' => 'payment',
+            'success_url' => route('invoice'),
+            'cancel_url' => route('invoice'),
+            'client_reference_id' => $tradeNo,
+            'customer_email' => Auth::getUser()->email,
         ];
     }
 

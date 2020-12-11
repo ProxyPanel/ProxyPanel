@@ -47,14 +47,14 @@ class DailyJob extends Command
         foreach ($userList as $user) {
             if ($isBanStatus) {
                 $user->update([
-                    'u'               => 0,
-                    'd'               => 0,
+                    'u' => 0,
+                    'd' => 0,
                     'transfer_enable' => 0,
-                    'enable'          => 0,
-                    'level'           => 0,
-                    'reset_time'      => null,
-                    'ban_time'        => null,
-                    'status'          => -1,
+                    'enable' => 0,
+                    'level' => 0,
+                    'reset_time' => null,
+                    'ban_time' => null,
+                    'status' => -1,
                 ]);
 
                 $this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
@@ -63,22 +63,22 @@ class DailyJob extends Command
                 Invite::whereInviterId($user->id)->whereStatus(0)->update(['status' => 2]);
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
+                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
             } else {
                 $user->update([
-                    'u'               => 0,
-                    'd'               => 0,
+                    'u' => 0,
+                    'd' => 0,
                     'transfer_enable' => 0,
-                    'enable'          => 0,
-                    'level'           => 0,
-                    'reset_time'      => null,
-                    'ban_time'        => null,
+                    'enable' => 0,
+                    'level' => 0,
+                    'reset_time' => null,
+                    'ban_time' => null,
                 ]);
 
                 $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
+                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
             }
         }
     }
@@ -104,10 +104,8 @@ class DailyJob extends Command
     // 关闭超过72小时未处理的工单
     private function closeTickets(): void
     {
-        $ticketList = Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get();
-        foreach ($ticketList as $ticket) {
-            $ret = Ticket::whereId($ticket->id)->update(['status' => 2]);
-            if ($ret) {
+        foreach (Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get() as $ticket) {
+            if ($ticket->close()) {
                 PushNotification::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
             }
         }

@@ -63,17 +63,10 @@ class OrderService
     private function chargeCredit(): bool
     {
         $credit = self::$user->credit;
-        $ret = (new UserService(self::$user))->updateCredit(self::$order->origin_amount);
+        $ret = self::$user->updateCredit(self::$order->origin_amount);
         // 余额变动记录日志
         if ($ret) {
-            Helpers::addUserCreditLog(
-                self::$order->user_id,
-                self::$order->id,
-                $credit,
-                self::$user->credit,
-                self::$order->amount,
-                '用户通过'.self::$order->pay_way.'充值余额'
-            );
+            Helpers::addUserCreditLog(self::$order->user_id, self::$order->id, $credit, self::$user->credit, self::$order->amount, '用户通过'.self::$order->pay_way.'充值余额');
         }
 
         return $ret;
@@ -82,8 +75,7 @@ class OrderService
     // 激活流量包
     private function activatePackage(): bool
     {
-        $ret = (new UserService(self::$user))->incrementData(self::$goods->traffic * MB);
-        if ($ret) {
+        if (self::$user->incrementData(self::$goods->traffic * MB)) {
             return Helpers::addUserTrafficModifyLog(
                 self::$order->user_id,
                 self::$order->id,
@@ -112,8 +104,8 @@ class OrderService
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-            'level'      => self::$goods->level,
-            'enable'     => 1,
+            'level' => self::$goods->level,
+            'enable' => 1,
         ];
 
         // 无端口用户 添加端口
@@ -157,7 +149,7 @@ class OrderService
 
         return array_merge($data, [
             'transfer_enable' => self::$goods->traffic * MB,
-            'reset_time'      => $nextResetTime,
+            'reset_time' => $nextResetTime,
         ]);
     }
 
@@ -209,7 +201,6 @@ class OrderService
         $log->order_id = $oid;
         $log->amount = $amount;
         $log->commission = $commission;
-        $log->status = 0;
 
         return $log->save();
     }
@@ -219,7 +210,7 @@ class OrderService
     {
         self::$order->update([
             'expired_at' => date('Y-m-d H:i:s', strtotime('+'.self::$goods->days.' days')),
-            'status'     => 2,
+            'status' => 2,
         ]);
 
         return $this->activatePlan();

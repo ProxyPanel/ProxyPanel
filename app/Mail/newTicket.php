@@ -28,7 +28,7 @@ class newTicket extends Mailable implements ShouldQueue
     public function build(): newTicket
     {
         return $this->view('emails.newTicket')->subject('新工单提醒')->with([
-            'title'   => $this->title,
+            'title' => $this->title,
             'content' => $this->content,
         ]);
     }

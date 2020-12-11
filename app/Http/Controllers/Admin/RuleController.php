@@ -34,8 +34,8 @@ class RuleController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'type'    => 'required|between:1,4',
-            'name'    => 'required',
+            'type' => 'required|between:1,4',
+            'name' => 'required',
             'pattern' => 'required',
         ]);
 

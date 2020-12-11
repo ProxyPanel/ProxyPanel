@@ -164,41 +164,41 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        // 申请提现
-        function extractMoney() {
-            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    swal.fire('申请失败', ret.message, 'error');
-                }
+      // 申请提现
+      function extractMoney() {
+        $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+              window.location.reload();
             });
-        }
+          } else {
+            swal.fire('申请失败', ret.message, 'error');
+          }
+        });
+      }
 
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '复制成功',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+      const clipboard = new ClipboardJS('.mt-clipboard');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '复制成功',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
         });
-        clipboard.on('error', function () {
-            swal.fire({
-                title: '复制失败，请手动复制',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '复制失败，请手动复制',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
         });
+      });
     </script>
 @endsection

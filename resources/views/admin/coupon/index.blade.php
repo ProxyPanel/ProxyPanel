@@ -7,10 +7,16 @@
         <div class="panel">
             <div class="panel-heading">
                 <h1 class="panel-title">卡券列表</h1>
-                <div class="panel-actions btn-group">
-                    <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
-                    <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
-                </div>
+                @canany(['admin.coupon.export', 'admin.coupon.create'])
+                    <div class="panel-actions btn-group">
+                        @can('admin.coupon.export')
+                            <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
+                        @endcan
+                        @can('admin.coupon.create')
+                            <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
+                        @endcan
+                    </div>
+                @endcanany
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -59,7 +65,7 @@
                             <td> {{$coupon->id}} </td>
                             <td> {{$coupon->name}} </td>
                             <td> {{$coupon->sn}} </td>
-                            <td> @if($coupon->logo) <img src="{{$coupon->logo}}" alt="优惠码logo"/> @endif </td>
+                            <td> @if($coupon->logo) <img src="{{asset($coupon->logo)}}" class="h-50" alt="优惠码logo"/> @endif </td>
                             <td>
                                 @if($coupon->type === 1)
                                     抵用券
@@ -85,9 +91,11 @@
                             </td>
                             <td>
                                 @if($coupon->status !== 1)
-                                    <button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}','{{$coupon->name}}')">
-                                        <i class="icon wb-close"></i>
-                                    </button>
+                                    @can('admin.coupon.destroy')
+                                        <button class="btn btn-danger" onclick="delCoupon('{{$coupon->id}}','{{$coupon->name}}')">
+                                            <i class="icon wb-close"></i>
+                                        </button>
+                                    @endcan
                                 @endif
                             </td>
                         </tr>
@@ -110,72 +118,76 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#sn').val({{Request::input('sn')}});
-            $('#type').val({{Request::input('type')}});
-            $('#status').val({{Request::input('status')}});
+      $(document).ready(function() {
+        $('#sn').val({{Request::input('sn')}});
+        $('#type').val({{Request::input('type')}});
+        $('#status').val({{Request::input('status')}});
+      });
+
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
+        }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.coupon.index')}}?sn=' + $('#sn').val() + '&type=' + $('#type').val() + '&status=' +
+            $('#status').val();
+      }
+
+      @can('admin.coupon.export')
+      // 批量导出卡券
+      function exportCoupon() {
+        swal.fire({
+          title: '卡券导出',
+          text: '确定导出所有卡券吗？',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            window.location.href = '{{route('admin.coupon.export')}}';
+          }
         });
+      }
+      @endcan
 
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
+      @can('admin.coupon.destroy')
+      // 删除卡券
+      function delCoupon(id, name) {
+        swal.fire({
+          title: '确定删除卡券 【' + name + '】 吗？',
+          icon: 'question',
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: '{{route('admin.coupon.destroy', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
+            });
+          }
         });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.coupon.index')}}?sn=' + $('#sn').val() + '&type=' + $('#type').val() + '&status=' +
-                $('#status').val();
-        }
-
-        // 批量导出卡券
-        function exportCoupon() {
-            swal.fire({
-                title: '卡券导出',
-                text: '确定导出所有卡券吗？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = '{{route('admin.coupon.export')}}';
-                }
-            });
-        }
-
-        // 删除卡券
-        function delCoupon(id, name) {
-            swal.fire({
-                title: '确定删除卡券 【' + name + '】 吗？',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: '{{route('admin.coupon.destroy', '')}}/' + id,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
-                }
-            });
-        }
+      }
+        @endcan
     </script>
 @endsection

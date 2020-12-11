@@ -96,27 +96,27 @@
     </div>
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#status').val({{Request::input('status')}});
-        });
+      $(document).ready(function() {
+        $('#status').val({{Request::input('status')}});
+      });
 
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.aff.rebate')}}?invitee_email=' + $('#invitee_email').val() +
-                '&inviter_email=' + $('#inviter_email').val() + '&status=' + $('#status option:selected').val();
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.aff.rebate')}}?invitee_email=' + $('#invitee_email').val() +
+            '&inviter_email=' + $('#inviter_email').val() + '&status=' + $('#status option:selected').val();
+      }
     </script>
 @endsection

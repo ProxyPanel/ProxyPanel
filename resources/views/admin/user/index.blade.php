@@ -14,14 +14,20 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">用户列表</h2>
-                <div class="panel-actions">
-                    <button class="btn btn-outline-default" onclick="batchAddUsers()">
-                        <i class="icon wb-plus" aria-hidden="true"></i>批量生成
-                    </button>
-                    <a href="{{route('admin.user.create')}}" class="btn btn-outline-default">
-                        <i class="icon wb-user-add" aria-hidden="true"></i>添加用户
-                    </a>
-                </div>
+                @canany(['admin.user.batch', 'admin.user.create'])
+                    <div class="panel-actions">
+                        @can('admin.user.batch')
+                            <button class="btn btn-outline-default" onclick="batchAddUsers()">
+                                <i class="icon wb-plus" aria-hidden="true"></i>批量生成
+                            </button>
+                        @endcan
+                        @can('admin.user.create')
+                            <a href="{{route('admin.user.create')}}" class="btn btn-outline-default">
+                                <i class="icon wb-user-add" aria-hidden="true"></i>添加用户
+                            </a>
+                        @endcan
+                    </div>
+                @endcanany
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -94,7 +100,7 @@
                     </thead>
                     <tbody>
                     @foreach ($userList as $user)
-                        <tr class="{{$user->trafficWarning ? ' table-danger' : ''}}">
+                        <tr class="{{$user->isTrafficWarning() ? ' table-danger' : ''}}">
                             <td> {{$user->id}} </td>
                             <td> {{$user->email}} </td>
                             <td> {{$user->credit}} </td>
@@ -102,17 +108,18 @@
                                 {!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}
                             </td>
                             <td>
-                                <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{$user->link}}">{{$user->subscribe->code}}</a>
+                                <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy"
+                                   data-clipboard-text="{{$user->subUrl()}}">{{$user->subscribe->code}}</a>
                             </td>
-                            <td> {{$user->used_flow}} / {{$user->transfer_enable_formatted}} </td>
+                            <td> {{flowAutoShow($user->usedTraffic())}} / {{$user->transfer_enable_formatted}} </td>
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>
 
                             <td>
-                                @if ($user->expireWarning === -1)
+                                @if ($user->expired_at < date('Y-m-d'))
                                     <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
-                                @elseif ($user->expireWarning === 0)
+                                @elseif ($user->expired_at === date('Y-m-d'))
                                     <span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
-                                @elseif ($user->expireWarning === 1)
+                                @elseif ($user->expired_at <= date('Y-m-d', strtotime('+30 days')))
                                     <span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
                                 @else
                                     {{$user->expired_at}}
@@ -139,34 +146,50 @@
                                 </span>
                             </td>
                             <td>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="icon wb-wrench" aria-hidden="true"></i>
-                                    </button>
-                                    <div class="dropdown-menu" role="menu">
-                                        <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
-                                            <i class="icon wb-edit" aria-hidden="true"></i> 编辑
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->email}}')" role="menuitem">
-                                            <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.export', $user->id)}}" role="menuitem">
-                                            <i class="icon wb-code" aria-hidden="true"></i> 配置信息
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.monitor', $user->id)}}" role="menuitem">
-                                            <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
-                                        </a>
-                                        <a class="dropdown-item" href="{{route('admin.user.online', $user->id)}}" role="menuitem">
-                                            <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}')" role="menuitem">
-                                            <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
-                                        </a>
-                                        <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
-                                            <i class="icon wb-user" aria-hidden="true"></i> 用户视角
-                                        </a>
+                                @canany(['admin.user.edit', 'admin.user.destroy', 'admin.user.export', 'admin.user.monitor', 'admin.user.online', 'admin.user.reset', 'admin.user.switch'])
+                                    <div class="btn-group" role="group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                            <i class="icon wb-wrench" aria-hidden="true"></i>
+                                        </button>
+                                        <div class="dropdown-menu" role="menu">
+                                            @can('admin.user.edit')
+                                                <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
+                                                    <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.destroy')
+                                                <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->email}}')" role="menuitem">
+                                                    <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.export')
+                                                <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
+                                                    <i class="icon wb-code" aria-hidden="true"></i> 配置信息
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.monitor')
+                                                <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
+                                                    <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.online')
+                                                <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
+                                                    <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.reset')
+                                                <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}')" role="menuitem">
+                                                    <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
+                                                </a>
+                                            @endcan
+                                            @can('admin.user.switch')
+                                                <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
+                                                    <i class="icon wb-user" aria-hidden="true"></i> 用户视角
+                                                </a>
+                                            @endcan
+                                        </div>
                                     </div>
-                                </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -188,135 +211,143 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#group').val({{Request::input('group')}});
-            $('#level').val({{Request::input('level')}});
-            $('#pay_way').val({{Request::input('pay_way')}});
-            $('#status').val({{Request::input('status')}});
-            $('#enable').val({{Request::input('enable')}});
+      $(document).ready(function() {
+        $('#group').val({{Request::input('group')}});
+        $('#level').val({{Request::input('level')}});
+        $('#pay_way').val({{Request::input('pay_way')}});
+        $('#status').val({{Request::input('status')}});
+        $('#enable').val({{Request::input('enable')}});
+      });
+
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
+        }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
+            $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
+            + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
+      }
+
+      @can('admin.user.batch')
+      // 批量生成账号
+      function batchAddUsers() {
+        swal.fire({
+          title: '用户生成数量',
+          input: 'range',
+          inputAttributes: {min: 1, max: 10},
+          inputValue: 1,
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            });
+          }
         });
+      }
+      @endcan
 
-        // 批量生成账号
-        function batchAddUsers() {
-            swal.fire({
-                title: '用户生成数量',
-                input: 'range',
-                inputAttributes: {min: 1, max: 10},
-                inputValue: 1,
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
-        }
-
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
-                $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
-                + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
-        }
-
-        // 删除账号
-        function delUser(url, email) {
-            swal.fire({
-                title: '警告',
-                text: '确定删除用户 【' + email + '】 ？',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: url,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
-                }
-            });
-        }
-
-        // 重置流量
-        function resetTraffic(id, email) {
-            swal.fire({
-                title: '警告',
-                text: '确定重置 【' + email + '】 流量吗？',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
-        }
-
-        // 切换用户身份
-        function switchToUser(id) {
-            $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function (ret) {
+      @can('admin.user.destroy')
+      // 删除账号
+      function delUser(url, email) {
+        swal.fire({
+          title: '警告',
+          text: '确定删除用户 【' + email + '】 ？',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: url,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
                 if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
                 } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
+      @endcan
 
-        const clipboard = new ClipboardJS('.copySubscribeLink');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '复制成功',
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
+      @can('admin.user.reset')
+      // 重置流量
+      function resetTraffic(id, email) {
+        swal.fire({
+          title: '警告',
+          text: '确定重置 【' + email + '】 流量吗？',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
+          }
         });
-        clipboard.on('error', function () {
-            swal.fire({
-                title: '复制失败，请手动复制',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+      }
+      @endcan
+
+      @can('admin.user.switch')
+      // 切换用户身份
+      function switchToUser(id) {
+        $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
+          } else {
+            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+          }
         });
+      }
+      @endcan
+
+      const clipboard = new ClipboardJS('.copySubscribeLink');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '复制成功',
+          icon: 'success',
+          timer: 1000,
+          showConfirmButton: false,
+        });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '复制失败，请手动复制',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      });
     </script>
 @endsection

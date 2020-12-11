@@ -24,42 +24,42 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script type="text/javascript">
-        // 转换
-        function Decompile() {
-            const content = $('#content').val();
+      // 转换
+      function Decompile() {
+        const content = $('#content').val();
 
-            if (content.trim() === '') {
-                swal.fire({title: '请填入要反解析的链接信息', icon: 'warning', timer: 1000, showConfirmButton: false});
-                return;
-            }
-            swal.fire({
-                title: '确定继续反解析吗？',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('admin.tools.decompile')}}',
-                        async: false,
-                        data: {_token: '{{csrf_token()}}', content: content},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                $('#result').val(ret.data);
-                            } else {
-                                $('#result').val(ret.message);
-                            }
-                        },
-                    });
-                }
-            });
-            return false;
+        if (content.trim() === '') {
+          swal.fire({title: '请填入要反解析的链接信息', icon: 'warning', timer: 1000, showConfirmButton: false});
+          return;
         }
+        swal.fire({
+          title: '确定继续反解析吗？',
+          icon: 'question',
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'POST',
+              url: '{{route('admin.tools.decompile')}}',
+              async: false,
+              data: {_token: '{{csrf_token()}}', content: content},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  $('#result').val(ret.data);
+                } else {
+                  $('#result').val(ret.message);
+                }
+              },
+            });
+          }
+        });
+        return false;
+      }
     </script>
 @endsection

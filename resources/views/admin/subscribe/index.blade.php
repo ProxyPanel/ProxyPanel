@@ -51,21 +51,29 @@
                                 @if(empty($subscribe->user))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.user.index', ['id'=>$subscribe->user->id])}}" target="_blank">{{$subscribe->user->email}}</a>
+                                    @can('admin.user.index')
+                                        <a href="{{route('admin.user.index', ['id'=>$subscribe->user->id])}}" target="_blank">{{$subscribe->user->email}}</a>
+                                    @else
+                                        {{$subscribe->user->email}}
+                                    @endcan
                                 @endif
                             </td>
                             <td> {{$subscribe->code}} </td>
                             <td>
-                                <a href="{{route('admin.subscribe.log', $subscribe->id)}}" target="_blank">{{$subscribe->times}}</a>
+                                @can('admin.subscribe.log')
+                                    <a href="{{route('admin.subscribe.log', $subscribe->id)}}" target="_blank">{{$subscribe->times}}</a>
+                                @endcan
                             </td>
                             <td> {{$subscribe->updated_at}} </td>
                             <td> {{$subscribe->ban_time ? date('Y-m-d H:i', $subscribe->ban_time): ''}} </td>
                             <td> {{$subscribe->ban_desc}} </td>
                             <td>
-                                <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-sm btn-outline-danger @endif"
-                                        onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe->id)}}')">
-                                    @if($subscribe->status == 0) 启用 @else 禁用 @endif
-                                </button>
+                                @can('admin.subscribe.set')
+                                    <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-sm btn-outline-danger @endif"
+                                            onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe->id)}}')">
+                                        @if($subscribe->status == 0) 启用 @else 禁用 @endif
+                                    </button>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -87,40 +95,43 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#status').val({{Request::input('status')}});
-        });
+      $(document).ready(function() {
+        $('#status').val({{Request::input('status')}});
+      });
 
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.subscribe.index')}}' + '?user_id=' + $('#user_id').val() + '&email=' + $('#email').val() + '&status=' + $('#status option:selected').val();
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
 
-        // 启用禁用用户的订阅
-        function setSubscribeStatus(url) {
-            $.post(url, {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
-                        window.location.reload();
-                    });
-                }
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.subscribe.index')}}' + '?user_id=' + $('#user_id').val() + '&email=' + $('#email').val() + '&status=' +
+            $('#status option:selected').val();
+      }
+
+      @can('admin.subscribe.set')
+      // 启用禁用用户的订阅
+      function setSubscribeStatus(url) {
+        $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+              window.location.reload();
             });
-        }
+          } else {
+            swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
+              window.location.reload();
+            });
+          }
+        });
+      }
+        @endcan
     </script>
 @endsection

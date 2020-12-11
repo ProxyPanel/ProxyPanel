@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'name'   => 'ProxyPanel',
-    'number' => '2.5.1',
+    'name' => 'ProxyPanel',
+    'number' => '2.5.x',
 ];

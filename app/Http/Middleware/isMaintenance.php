@@ -20,7 +20,7 @@ class isMaintenance
         if (sysConfig('maintenance_mode')) {
             return response()->view('auth.maintenance', [
                 'message' => sysConfig('maintenance_content'),
-                'time'    => sysConfig('maintenance_time') ?: '0',
+                'time' => sysConfig('maintenance_time') ?: '0',
             ]);
         }
 

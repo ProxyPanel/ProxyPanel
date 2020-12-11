@@ -38,30 +38,30 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script type="text/javascript">
-        // 添加域名证书
-        function Submit() {
-            $.ajax({
-                method: @isset($Dv) 'PUT' @else 'POST' @endisset,
-                url: @isset($Dv) '{{route('admin.node.cert.update', $Dv->id)}}' @else '{{route('admin.node.cert.store')}}' @endisset,
-                async: false,
-                data: {_token: '{{csrf_token()}}', domain: $('#domain').val(), key: $('#key').val(), pem: $('#pem').val()},
-                dataType: 'json',
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
-                    } else {
-                        swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
-                    }
-                },
-            });
-            return false;
-        }
+      // 添加域名证书
+      function Submit() {
+        $.ajax({
+          method: @isset($Dv) 'PUT' @else 'POST' @endisset,
+          url: @isset($Dv) '{{route('admin.node.cert.update', $Dv->id)}}' @else '{{route('admin.node.cert.store')}}' @endisset,
+          async: false,
+          data: {_token: '{{csrf_token()}}', domain: $('#domain').val(), key: $('#key').val(), pem: $('#pem').val()},
+          dataType: 'json',
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.href = '{{route('admin.node.cert.index')}}');
+            } else {
+              swal.fire({title: '[错误 | Error]', text: ret.message, icon: 'error'});
+            }
+          },
+        });
+        return false;
+      }
     </script>
 @endsection

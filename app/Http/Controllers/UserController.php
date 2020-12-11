@@ -16,10 +16,8 @@ use App\Models\NodePing;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\TicketReply;
-use App\Models\UserHourlyDataFlow;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use App\Services\UserService;
 use Auth;
 use Cache;
 use DB;
@@ -45,26 +43,26 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = Auth::getUser();
-        if (! $user) {
-            return redirect()->route('login');
+        if (Session::has('user')) {
+            Auth::loginUsingId(Session::get('user'));
+            Session::forget('user');
         }
+        $user = Auth::getUser();
         $totalTransfer = $user->transfer_enable;
-        $usedTransfer = $user->u + $user->d;
-        $unusedTransfer = $totalTransfer - $usedTransfer > 0 ? $totalTransfer - $usedTransfer : 0;
+        $usedTransfer = $user->usedTraffic();
+        $unusedTraffic = $totalTransfer - $usedTransfer > 0 ? $totalTransfer - $usedTransfer : 0;
         $expireTime = $user->expired_at;
         $view['remainDays'] = $expireTime < date('Y-m-d') ? -1 : Helpers::daysToNow($expireTime);
         $view['resetDays'] = $user->reset_time ? Helpers::daysToNow($user->reset_time) : 0;
-        $view['unusedTransfer'] = $unusedTransfer;
+        $view['unusedTraffic'] = flowAutoShow($unusedTraffic);
         $view['expireTime'] = $expireTime;
-        $view['banedTime'] = $user->ban_time ? date('Y-m-d H:i:s', $user->ban_time) : 0;
-        $view['unusedPercent'] = $totalTransfer > 0 ? round($unusedTransfer / $totalTransfer, 2) : 0;
-        $view['noticeList'] = Article::type(2)->latest()->Paginate(1); // 公告
+        $view['banedTime'] = $user->ban_time ?: 0;
+        $view['unusedPercent'] = $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0;
+        $view['announcements'] = Article::type(2)->take(5)->latest()->Paginate(1); // 公告
         //流量异常判断
-        $hourlyTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
-        $view['isTrafficWarning'] = $hourlyTraffic >= (sysConfig('traffic_ban_value') * GB) ?: 0;
+        $view['isTrafficWarning'] = $user->isTrafficWarning();
         //付费用户判断
-        $view['not_paying_user'] = Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist();
+        $view['paying_user'] = $user->activePayingUser();
         $view['userLoginLog'] = UserLoginLog::whereUserId($user->id)->latest()->first(); // 近期登录日志
         $view = array_merge($view, $this->dataFlowChart($user->id));
 
@@ -87,12 +85,12 @@ class UserController extends Controller
 
         $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MB;
 
-        if (! (new UserService())->incrementData($traffic)) {
+        if (! $user->incrementData($traffic)) {
             return Response::json(['status' => 'fail', 'message' => '签到失败，系统异常']);
         }
 
         // 写入用户流量变动记录
-        Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, $user->transfer_enable + $traffic, '[签到]');
+        Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $user->transfer_enable + $traffic, '[签到]');
 
         // 多久后可以再签到
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
@@ -242,10 +240,10 @@ class UserController extends Controller
         $user->update(['u' => 0, 'd' => 0]);
 
         // 扣余额
-        (new UserService($user))->updateCredit(-$renewCost);
+        $user->updateCredit(-$renewCost);
 
         // 记录余额操作日志
-        Helpers::addUserCreditLog($user->id, 0, $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
+        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, '用户自行重置流量');
 
         return Response::json(['status' => 'success', 'message' => '重置成功']);
     }
@@ -253,15 +251,15 @@ class UserController extends Controller
     // 工单
     public function ticketList(Request $request)
     {
-        $view['ticketList'] = Ticket::uid()->latest()->paginate(10)->appends($request->except('page'));
-
-        return view('user.ticketList', $view);
+        return view('user.ticketList', [
+            'tickets' => Auth::user()->tickets()->latest()->paginate(10)->appends($request->except('page')),
+        ]);
     }
 
     // 订单
     public function invoices(Request $request)
     {
-        $view['orderList'] = Order::uid()
+        $view['orderList'] = Auth::user()->orders()
             ->with(['goods', 'payment'])
             ->orderByDesc('id')
             ->paginate(10)
@@ -291,7 +289,7 @@ class UserController extends Controller
     // 订单明细
     public function invoiceDetail($sn)
     {
-        $view['order'] = Order::uid()->with(['goods', 'coupon', 'payment'])->whereOrderSn($sn)->firstOrFail();
+        $view['order'] = Order::uid()->whereOrderSn($sn)->with(['goods', 'coupon', 'payment'])->firstOrFail();
 
         return view('user.invoiceDetail', $view);
     }
@@ -312,10 +310,8 @@ class UserController extends Controller
         $obj->user_id = $user->id;
         $obj->title = $title;
         $obj->content = $content;
-        $obj->status = 0;
-        $obj->save();
 
-        if ($obj->id) {
+        if ($obj->save()) {
             $emailTitle = '新工单提醒';
             $content = '标题：【'.$title.'】<br>用户：'.$user->email.'<br>内容：'.$content;
 
@@ -357,9 +353,8 @@ class UserController extends Controller
             $obj->ticket_id = $id;
             $obj->user_id = Auth::id();
             $obj->content = $content;
-            $obj->save();
 
-            if ($obj->id) {
+            if ($obj->save()) {
                 // 重新打开工单
                 $ticket->status = 0;
                 $ticket->save();
@@ -392,8 +387,7 @@ class UserController extends Controller
     {
         $id = $request->input('id');
 
-        $ret = Ticket::uid()->whereId($id)->update(['status' => 2]);
-        if ($ret) {
+        if (Ticket::uid()->whereId($id)->close()) {
             PushNotification::send('工单关闭提醒', '工单：ID'.$id.'用户已手动关闭');
 
             return Response::json(['status' => 'success', 'message' => '关闭成功']);
@@ -431,9 +425,7 @@ class UserController extends Controller
 
         $obj = new Invite();
         $obj->inviter_id = $user->id;
-        $obj->invitee_id = 0;
         $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
-        $obj->status = 0;
         $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('user_invite_days').' days'));
         $obj->save();
         if ($obj) {
@@ -484,8 +476,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'name'  => $coupon->name,
-            'type'  => $coupon->type,
+            'name' => $coupon->name,
+            'type' => $coupon->type,
             'value' => $coupon->value,
         ];
 
@@ -528,7 +520,7 @@ class UserController extends Controller
         $view['sub'] = $data;
 
         //付费用户判断
-        $view['not_paying_user'] = Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist();
+        $view['paying_user'] = Auth::user()->activePayingUser();
         //客户端安装
         $view['Shadowrocket_install'] = 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Shadowrocket.plist';
         $view['Quantumult_install'] = 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Quantumult.plist';
@@ -599,7 +591,7 @@ class UserController extends Controller
         ], ['coupon_sn.required' => '券码不能为空', 'coupon_sn.exists' => '该券不可用']);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         $coupon = Coupon::whereSn($request->input('coupon_sn'))->firstOrFail();
@@ -608,17 +600,10 @@ class UserController extends Controller
             DB::beginTransaction();
             // 写入日志
             $user = Auth::getUser();
-            Helpers::addUserCreditLog(
-                $user->id,
-                0,
-                $user->credit,
-                $user->credit + $coupon->value,
-                $coupon->value,
-                '用户手动充值 - [充值券：'.$request->input('coupon_sn').']'
-            );
+            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value, '用户手动充值 - [充值券：'.$request->input('coupon_sn').']');
 
             // 余额充值
-            (new UserService($user))->updateCredit($coupon->value);
+            $user->updateCredit($coupon->value);
 
             // 更改卡券状态
             Coupon::find($coupon->id)->update(['status' => 1]);

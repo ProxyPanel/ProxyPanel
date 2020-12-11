@@ -62,9 +62,9 @@ class NodeController extends Controller
     {
         return view('admin.node.info', [
             'countryList' => Country::orderBy('code')->get(),
-            'levelList'   => Level::orderBy('level')->get(),
-            'labelList'   => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'dvList'      => NodeCertificate::orderBy('id')->get(),
+            'levelList' => Level::orderBy('level')->get(),
+            'labelList' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'dvList' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -95,11 +95,11 @@ class NodeController extends Controller
     public function edit($id)
     {
         return view('admin.node.info', [
-            'node'        => Node::with('labels')->find($id),
+            'node' => Node::with('labels')->find($id),
             'countryList' => Country::orderBy('code')->get(),
-            'levelList'   => Level::orderBy('level')->get(),
-            'labelList'   => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'dvList'      => NodeCertificate::orderBy('id')->get(),
+            'levelList' => Level::orderBy('level')->get(),
+            'labelList' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'dvList' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -209,7 +209,7 @@ class NodeController extends Controller
 
         if ($result) {
             return Response::json([
-                'status'  => 'success',
+                'status' => 'success',
                 'message' => [
                     $result['telecom']['time'] ?: '无', //电信
                     $result['Unicom']['time'] ?: '无', // 联通

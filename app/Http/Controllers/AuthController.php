@@ -13,7 +13,6 @@ use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\Verify;
 use App\Models\VerifyCode;
-use App\Services\UserService;
 use Auth;
 use Cache;
 use Captcha;
@@ -41,10 +40,10 @@ class AuthController extends Controller
     {
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'email'    => 'required|email',
+                'email' => 'required|email',
                 'password' => 'required',
             ], [
-                'email.required'    => trans('auth.email_null'),
+                'email.required' => trans('auth.email_null'),
                 'password.required' => trans('auth.password_null'),
             ]);
 
@@ -73,18 +72,16 @@ class AuthController extends Controller
             }
 
             // 校验普通用户账号状态
-            if (! $user->is_admin) {
-                if ($user->status < 0) {
-                    Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
+            if ($user->status < 0) {
+                Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput()->withErrors(trans('auth.login_ban', ['email' => sysConfig('webmaster_email')]));
-                }
+                return Redirect::back()->withInput()->withErrors(trans('auth.login_ban', ['email' => sysConfig('webmaster_email')]));
+            }
 
-                if ($user->status === 0 && sysConfig('is_activate_account')) {
-                    Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
+            if ($user->status === 0 && sysConfig('is_activate_account')) {
+                Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                    return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
-                }
+                return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
             }
 
             // 写入登录日志
@@ -94,7 +91,7 @@ class AuthController extends Controller
             Auth::getUser()->update(['last_login' => time()]);
 
             // 根据权限跳转
-            if ($user->is_admin) {
+            if ($user->hasPermissionTo('admin.index')) {
                 return Redirect::route('admin.index');
             }
 
@@ -102,7 +99,7 @@ class AuthController extends Controller
         }
 
         if (Auth::check()) {
-            if (Auth::getUser()->is_admin) {
+            if (Auth::getUser()->hasPermissionTo('admin.index')) {
                 return Redirect::route('admin.index');
             }
 
@@ -198,21 +195,21 @@ class AuthController extends Controller
 
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'username'        => 'required',
-                'email'           => 'required|email|unique:user',
-                'password'        => 'required|min:6',
+                'username' => 'required',
+                'email' => 'required|email|unique:user',
+                'password' => 'required|min:6',
                 'confirmPassword' => 'required|same:password',
-                'term'            => 'accepted',
+                'term' => 'accepted',
             ], [
-                'username.required'        => trans('auth.email_null'),
-                'email.required'           => trans('auth.email_null'),
-                'email.email'              => trans('auth.email_legitimate'),
-                'email.unique'             => trans('auth.email_exist'),
-                'password.required'        => trans('auth.password_null'),
-                'password.min'             => trans('auth.password_limit'),
+                'username.required' => trans('auth.email_null'),
+                'email.required' => trans('auth.email_null'),
+                'email.email' => trans('auth.email_legitimate'),
+                'email.unique' => trans('auth.email_exist'),
+                'password.required' => trans('auth.password_null'),
+                'password.min' => trans('auth.password_limit'),
                 'confirmPassword.required' => trans('auth.confirm_password'),
-                'confirmPassword.same'     => trans('auth.password_same'),
-                'term.accepted'            => trans('auth.unaccepted'),
+                'confirmPassword.same' => trans('auth.password_same'),
+                'term.accepted' => trans('auth.unaccepted'),
             ]);
 
             if ($validator->fails()) {
@@ -340,7 +337,7 @@ class AuthController extends Controller
                 if ($inviter_id) {
                     $referralUser = User::find($inviter_id);
                     if ($referralUser && $referralUser->expired_at >= date('Y-m-d')) {
-                        (new UserService($referralUser))->incrementData(sysConfig('referral_traffic') * MB);
+                        $referralUser->incrementData(sysConfig('referral_traffic') * MB);
                     }
                 }
 
@@ -421,11 +418,11 @@ class AuthController extends Controller
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
         if (! $data['inviter_id']) {
             // 检查一下cookie里有没有aff
-            $cookieAff = \Request::hasCookie('register_aff') ? \Request::cookie('register_aff') : 0;
+            $cookieAff = \Request::hasCookie('register_aff');
             if ($cookieAff) {
-                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : 0;
+                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : null;
             } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-                $data['inviter_id'] = User::find($aff) ? $aff : 0;
+                $data['inviter_id'] = User::find($aff) ? $aff : null;
             }
         }
 
@@ -437,10 +434,8 @@ class AuthController extends Controller
     {
         $token = md5(sysConfig('website_name').$email.microtime());
         $verify = new Verify();
-        $verify->type = 1;
         $verify->user_id = $uid;
         $verify->token = $token;
-        $verify->status = 0;
         $verify->save();
 
         return $token;
@@ -455,7 +450,7 @@ class AuthController extends Controller
                 'email' => 'required|email',
             ], [
                 'email.required' => trans('auth.email_null'),
-                'email.email'    => trans('auth.email_legitimate'),
+                'email.email' => trans('auth.email_legitimate'),
             ]);
 
             if ($validator->fails()) {
@@ -510,14 +505,14 @@ class AuthController extends Controller
 
         if ($request->isMethod('POST')) {
             $validator = Validator::make($request->all(), [
-                'password'        => 'required|min:6',
+                'password' => 'required|min:6',
                 'confirmPassword' => 'required|same:password',
             ], [
-                'password.required'        => trans('auth.password_null'),
-                'password.min'             => trans('auth.password_limit'),
+                'password.required' => trans('auth.password_null'),
+                'password.min' => trans('auth.password_limit'),
                 'confirmPassword.required' => trans('auth.password_null'),
-                'confirmPassword.min'      => trans('auth.password_limit'),
-                'confirmPassword.same'     => trans('auth.password_same'),
+                'confirmPassword.min' => trans('auth.password_limit'),
+                'confirmPassword.same' => trans('auth.password_same'),
             ]);
 
             if ($validator->fails()) {
@@ -581,8 +576,8 @@ class AuthController extends Controller
                 'email' => 'required|email|exists:user,email',
             ], [
                 'email.required' => trans('auth.email_null'),
-                'email.email'    => trans('auth.email_legitimate'),
-                'email.exists'   => trans('auth.email_notExist'),
+                'email.email' => trans('auth.email_legitimate'),
+                'email.exists' => trans('auth.email_notExist'),
             ]);
 
             if ($validator->fails()) {
@@ -645,13 +640,7 @@ class AuthController extends Controller
             return Redirect::route('login');
         }
 
-        if (empty($user)) {
-            Session::flash('errorMsg', trans('auth.overtime'));
-
-            return view('auth.active');
-        }
-
-        if ($verify->status > 0) {
+        if (empty($user) || $verify->status > 0) {
             Session::flash('errorMsg', trans('auth.overtime'));
 
             return view('auth.active');
@@ -687,7 +676,7 @@ class AuthController extends Controller
         // 账号激活后给邀请人送流量
         $inviter = $user->inviter;
         if ($inviter) {
-            (new UserService($inviter))->incrementData(sysConfig('referral_traffic') * MB);
+            $inviter->incrementData(sysConfig('referral_traffic') * MB);
         }
 
         Session::flash('successMsg', trans('auth.active_success'));
@@ -702,8 +691,8 @@ class AuthController extends Controller
             'email' => 'required|email|unique:user',
         ], [
             'email.required' => trans('auth.email_null'),
-            'email.email'    => trans('auth.email_legitimate'),
-            'email.unique'   => trans('auth.email_exist'),
+            'email.email' => trans('auth.email_legitimate'),
+            'email.unique' => trans('auth.email_exist'),
         ]);
 
         $email = $request->input('email');
@@ -744,12 +733,11 @@ class AuthController extends Controller
     }
 
     // 生成注册验证码
-    private function addVerifyCode($email, $code): void
+    private function addVerifyCode(string $email, string $code): void
     {
         $verify = new VerifyCode();
         $verify->address = $email;
         $verify->code = $code;
-        $verify->status = 0;
         $verify->save();
     }
 

@@ -19,15 +19,15 @@ class F2Fpay extends AbstractPayment
     public function __construct()
     {
         self::$aliConfig = [
-            'use_sandbox'     => false,
-            'app_id'          => sysConfig('f2fpay_app_id'),
-            'sign_type'       => 'RSA2',
-            'ali_public_key'  => sysConfig('f2fpay_public_key'),
+            'use_sandbox' => false,
+            'app_id' => sysConfig('f2fpay_app_id'),
+            'sign_type' => 'RSA2',
+            'ali_public_key' => sysConfig('f2fpay_public_key'),
             'rsa_private_key' => sysConfig('f2fpay_private_key'),
-            'limit_pay'       => [],
-            'notify_url'      => route('payment.notify', ['method' => 'f2fpay']),
-            'return_url'      => route('invoice'),
-            'fee_type'        => 'CNY',
+            'limit_pay' => [],
+            'notify_url' => route('payment.notify', ['method' => 'f2fpay']),
+            'return_url' => route('invoice'),
+            'fee_type' => 'CNY',
         ];
     }
 
@@ -36,11 +36,11 @@ class F2Fpay extends AbstractPayment
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'body'        => '',
-            'subject'     => sysConfig('subject_name') ?: sysConfig('website_name'),
-            'trade_no'    => $payment->trade_no,
+            'body' => '',
+            'subject' => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'trade_no' => $payment->trade_no,
             'time_expire' => time() + 900, // 必须 15分钟 内付款
-            'amount'      => $payment->amount,
+            'amount' => $payment->amount,
         ];
 
         try {
@@ -64,7 +64,7 @@ class F2Fpay extends AbstractPayment
     public function notify($request): void
     {
         $data = [
-            'trade_no'       => $request->input('out_trade_no'),
+            'trade_no' => $request->input('out_trade_no'),
             'transaction_id' => $request->input('trade_no'),
         ];
 

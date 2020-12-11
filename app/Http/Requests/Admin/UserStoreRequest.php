@@ -10,7 +10,7 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'username' => 'required',
-            'email'    => 'required|unique:user,email,'.$this->user,
+            'email' => 'required|unique:user,email,'.$this->user,
         ];
     }
 }

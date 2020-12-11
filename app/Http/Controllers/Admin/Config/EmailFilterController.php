@@ -29,7 +29,7 @@ class EmailFilterController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         try {

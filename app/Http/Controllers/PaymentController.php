@@ -173,10 +173,8 @@ class PaymentController extends Controller
             $order->coupon_id = $coupon->id ?? 0;
             $order->origin_amount = $credit ?: $goods->price;
             $order->amount = $amount;
-            $order->is_expire = 0;
             $order->pay_type = $pay_type;
             $order->pay_way = self::$method;
-            $order->status = 0;
             $order->save();
 
             // 使用优惠券，减少可使用次数

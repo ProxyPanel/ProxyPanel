@@ -7,9 +7,11 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
-                <div class="panel-actions">
-                    <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
-                </div>
+                @can('admin.goods.create')
+                    <div class="panel-actions">
+                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <div class="form-row">
@@ -65,7 +67,7 @@
                             <td>
                                 @if($goods->logo)
                                     <a href="{{asset($goods->logo)}}" target="_blank">
-                                        <img src="{{asset($goods->logo)}}" alt="logo" class="h-50"/>
+                                        <img src="{{asset($goods->logo)}}" class="h-50" alt="logo"/>
                                     </a>
                                 @endif
                             </td>
@@ -90,14 +92,20 @@
                                 @endif
                             </td>
                             <td>
-                                <div class="btn-group">
-                                    <a href="{{route('admin.goods.edit', $goods->id)}}" class="btn btn-primary">
-                                        <i class="icon wb-edit"></i>
-                                    </a>
-                                    <button onclick="delGoods('{{route('admin.goods.destroy', $goods->id)}}','{{$goods->name}}')" class="btn btn-danger">
-                                        <i class="icon wb-trash"></i>
-                                    </button>
-                                </div>
+                                @canany(['admin.goods.edit', 'admin.goods.destroy'])
+                                    <div class="btn-group">
+                                        @can('admin.goods.edit')
+                                            <a href="{{route('admin.goods.edit', $goods)}}" class="btn btn-primary">
+                                                <i class="icon wb-edit"></i>
+                                            </a>
+                                        @endcan
+                                        @can('admin.goods.destroy')
+                                            <button onclick="delGoods('{{route('admin.goods.destroy', $goods)}}','{{$goods->name}}')" class="btn btn-danger">
+                                                <i class="icon wb-trash"></i>
+                                            </button>
+                                        @endcan
+                                    </div>
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach
@@ -119,48 +127,49 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-            type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#type').val({{Request::input('type')}});
-            $('#status').val({{Request::input('status')}});
-        });
+      $(document).ready(function() {
+        $('#type').val({{Request::input('type')}});
+        $('#status').val({{Request::input('status')}});
+      });
 
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.goods.index')}}?type=' + $('#type option:selected').val() + '&status=' +
-                $('#status option:selected').val();
-        }
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.goods.index')}}?type=' + $('#type option:selected').val() + '&status=' +
+            $('#status option:selected').val();
+      }
 
-        // 删除商品
-        function delGoods(url, name) {
-            swal.fire({
-                title: '警告',
-                text: '确定删除商品 【' + name + '】 ?',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '取消',
-                confirmButtonText: '确定',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      @can('admin.goods.destroy')
+      // 删除商品
+      function delGoods(url, name) {
+        swal.fire({
+          title: '警告',
+          text: '确定删除商品 【' + name + '】 ?',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '取消',
+          confirmButtonText: '确定',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              url: url,
+              method: 'DELETE',
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
+        @endcan
     </script>
 @endsection

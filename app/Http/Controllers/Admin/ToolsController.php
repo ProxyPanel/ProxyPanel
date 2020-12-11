@@ -75,18 +75,18 @@ class ToolsController extends Controller
             $data = [];
             foreach ($content->port_password as $port => $passwd) {
                 $data[] = [
-                    'u'               => 0,
-                    'd'               => 0,
-                    'enable'          => 1,
-                    'method'          => $method,
-                    'obfs'            => $obfs,
-                    'obfs_param'      => empty($obfs_param) ? '' : $obfs_param,
-                    'passwd'          => $passwd,
-                    'port'            => $port,
-                    'protocol'        => $protocol,
-                    'protocol_param'  => empty($protocol_param) ? '' : $protocol_param,
+                    'u' => 0,
+                    'd' => 0,
+                    'enable' => 1,
+                    'method' => $method,
+                    'obfs' => $obfs,
+                    'obfs_param' => empty($obfs_param) ? '' : $obfs_param,
+                    'passwd' => $passwd,
+                    'port' => $port,
+                    'protocol' => $protocol,
+                    'protocol_param' => empty($protocol_param) ? '' : $protocol_param,
                     'transfer_enable' => $transfer_enable,
-                    'user'            => date('Ymd').'_IMPORT_'.$port,
+                    'user' => date('Ymd').'_IMPORT_'.$port,
                 ];
             }
 
@@ -127,24 +127,18 @@ class ToolsController extends Controller
     {
         if ($request->isMethod('POST')) {
             if (! $request->hasFile('uploadFile')) {
-                Session::flash('errorMsg', '请选择要上传的文件');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('请选择要上传的文件');
             }
 
             $file = $request->file('uploadFile');
 
             // 只能上传JSON文件
             if ($file->getClientMimeType() !== 'application/json' || $file->getClientOriginalExtension() !== 'json') {
-                Session::flash('errorMsg', '只允许上传JSON文件');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('只允许上传JSON文件');
             }
 
             if (! $file->isValid()) {
-                Session::flash('errorMsg', '产生未知错误，请重新上传');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('产生未知错误，请重新上传');
             }
 
             $save_path = realpath(storage_path('uploads'));
@@ -155,9 +149,7 @@ class ToolsController extends Controller
             $data = file_get_contents($save_path.'/'.$new_name);
             $data = json_decode($data, true);
             if (! $data) {
-                Session::flash('errorMsg', '内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
             }
 
             try {
@@ -185,14 +177,10 @@ class ToolsController extends Controller
             } catch (Exception $e) {
                 DB::rollBack();
 
-                Session::flash('errorMsg', '出错了，可能是导入的配置中有端口已经存在了');
-
-                return Redirect::back();
+                return Redirect::back()->withErrors('出错了，可能是导入的配置中有端口已经存在了');
             }
 
-            Session::flash('successMsg', '导入成功');
-
-            return Redirect::back();
+            return Redirect::back()->with('successMsg', '导入成功');
         }
 
         return view('admin.tools.import');

@@ -756,7 +756,7 @@
                                                     </div>
                                                     <label for="max_rand_traffic"></label>
                                                     <input type="number" class="form-control" id="max_rand_traffic" value="{{$max_rand_traffic}}"
-                                                           onchange="updateFromInput('max_rand_traffic','0','{{$min_rand_traffic}}')"/>
+                                                           onchange="updateFromInput('max_rand_traffic','{{$min_rand_traffic}}',false)"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> MB </span>
                                                     </div>
@@ -957,7 +957,8 @@
                                                     <option value="serverChan">ServerChan</option>
                                                     <option value="bark">Bark</option>
                                                 </select>
-                                                <span class="text-help">推送节点离线提醒、用户流量异常警告、节点使用报告（<a href="javascript:sendTestNotification();">发送测试消息</a>）</span>
+                                                <span class="text-help">推送节点离线提醒、用户流量异常警告、节点使用报告 @can('admin.test.notify')（<a href="javascript:sendTestNotification();
+">发送测试消息</a>）@endcan </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1151,13 +1152,20 @@
                             </form>
                         </div>
                         <div class="tab-pane" id="other" role="tabpanel">
-                            <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form" role="form" id="setExtend">@csrf
-                                <div class="form-row">
+                            @if($errors->any())
+                                <x-alert type="danger" :message="$errors->all()"/>
+                            @endif
+                            @if (Session::has('successMsg'))
+                                <x-alert type="success" :message="Session::get('successMsg')"/>
+                            @endif
+                            <div class="form-row">
+                                <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
+                                      id="setExtend">@csrf
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_home_logo" data-plugin="dropify"
+                                                <input type="file" id="website_home_logo" name="website_home_logo" data-plugin="dropify"
                                                        data-default-file="{{asset($website_home_logo ?? '/assets/images/default.png')}}"/>
                                                 <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
@@ -1167,32 +1175,33 @@
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_logo" data-plugin="dropify"
+                                                <input type="file" id="website_logo" name="website_logo" data-plugin="dropify"
                                                        data-default-file="{{asset($website_logo ?? '/assets/images/default.png')}}"/>
                                                 <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
-                                            <div class="col-md-9">
-                                                <textarea class="form-control" rows="10" id="website_analytics">{{$website_analytics}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
-                                            <div class="col-md-9">
-                                                <textarea class="form-control" rows="10" id="website_customer_service">{{$website_customer_service}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
-                                            </div>
+                                </form>
+                                <div class="form-group col-lg-6">
+                                    <div class="row">
+                                        <label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" rows="10" id="website_analytics" name="website_analytics">{{$website_analytics}}</textarea>
+                                            <button class="btn btn-success float-right mt-10" type="button" onclick="update('website_analytics')">修改</button>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="form-group col-lg-6">
+                                    <div class="row">
+                                        <label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
+                                        <div class="col-md-9">
+                                                <textarea class="form-control" rows="10" id="website_customer_service"
+                                                          name="website_customer_service">{{$website_customer_service}}</textarea>
+                                            <button class="btn btn-success float-right mt-10" type="button" onclick="update('website_customer_service')">修改</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" id="payment" role="tabpanel">
                             <div class="tab-content pb-100">
@@ -1357,9 +1366,11 @@
                                     <div class="row">
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label">易支付</label>
-                                            <div class="col-md-7">
-                                                <button class="btn btn-primary" type="button" onclick="epayInfo()">查询</button>
-                                            </div>
+                                            @can('admin.test.epay')
+                                                <div class="col-md-7">
+                                                    <button class="btn btn-primary" type="button" onclick="epayInfo()">查询</button>
+                                                </div>
+                                            @endcan
                                         </div>
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label" for="epay_url">接口对接地址</label>
@@ -1603,7 +1614,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
@@ -1615,103 +1626,111 @@
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-            $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
-            $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
-            $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
-            $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
-            $('#referral_type').selectpicker('val', '{{$referral_type}}');
-            $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
-            $('#is_notification').selectpicker('val', '{{$is_notification}}');
-            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
-            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
-            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
-        });
+      $(document).ready(function() {
+        $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
+        $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
+        $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
+        $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
+        $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
+        $('#referral_type').selectpicker('val', '{{$referral_type}}');
+        $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
+        $('#is_notification').selectpicker('val', '{{$is_notification}}');
+        $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+        $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+        $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+        $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+      });
 
-        // 系统设置更新
-        function systemUpdate(systemItem, value) {
-            $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-            });
-        }
-
-        // 正常input更新
-        function update(systemItem) {
-            systemUpdate(systemItem, $('#' + systemItem).val());
-        }
-
-        // 需要检查限制的更新
-        function updateFromInput(systemItem, lowerBound, upperBound) {
-            let value = parseInt($('#' + systemItem).val());
-            if (lowerBound !== false && value < lowerBound) {
-                swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-            } else if (upperBound !== false && value > upperBound) {
-                swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+      // 系统设置更新
+      function systemUpdate(systemItem, value) {
+          @can('admin.system.update')
+          $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
             } else {
-                systemUpdate(systemItem, value);
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
-        }
+          });
+          @else
+          swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          @endcan
+      }
 
-        // 其他项更新选择
-        function updateFromOther(inputType, systemItem) {
-            let input = $('#' + systemItem);
-            switch (inputType) {
-                case 'select':
-                    input.on('changed.bs.select', function () {
-                        systemUpdate(systemItem, $(this).val());
-                    });
-                    break;
-                case 'multiSelect':
-                    input.on('changed.bs.select', function () {
-                        systemUpdate(systemItem, $(this).val().join(','));
-                    });
-                    break;
-                case 'switch':
-                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-                    break;
-                default:
-                    break;
-            }
-        }
+      // 正常input更新
+      function update(systemItem) {
+        systemUpdate(systemItem, $('#' + systemItem).val());
+      }
 
-        // 发送Bark测试消息
-        function sendTestNotification() {
-            $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+      // 需要检查限制的更新
+      function updateFromInput(systemItem, lowerBound, upperBound) {
+        let value = parseInt($('#' + systemItem).val());
+        if (lowerBound !== false && value < lowerBound) {
+          swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else if (upperBound !== false && value > upperBound) {
+          swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else {
+          systemUpdate(systemItem, value);
+        }
+      }
+
+      // 其他项更新选择
+      function updateFromOther(inputType, systemItem) {
+        let input = $('#' + systemItem);
+        switch (inputType) {
+          case 'select':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val());
             });
-        }
-
-        // 生成网站安全码
-        function makeWebsiteSecurityCode() {
-            $.get('{{route('createStr')}}', function (ret) {
-                $('#website_security_code').val(ret);
+            break;
+          case 'multiSelect':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val().join(','));
             });
+            break;
+          case 'switch':
+            systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
+            break;
+          default:
+            break;
         }
+      }
 
-        function epayInfo() {
-            $.get('{{route('admin.test.epay')}}', function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({
-                        title: '易支付信息(仅供参考)',
-                        html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                            '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                            '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-                        icon: 'info',
-                    });
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+      // 发送Bark测试消息
+      @can('admin.test.notify')
+      function sendTestNotification() {
+        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
+      @endcan
+
+      // 生成网站安全码
+      function makeWebsiteSecurityCode() {
+        $.get('{{route('createStr')}}', function(ret) {
+          $('#website_security_code').val(ret);
+        });
+      }
+
+      @can('admin.test.epay')
+      function epayInfo() {
+        $.get('{{route('admin.test.epay')}}', function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({
+              title: '易支付信息(仅供参考)',
+              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
+                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
+                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+              icon: 'info',
             });
-        }
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
+        @endcan
     </script>
 @endsection

@@ -60,11 +60,14 @@ class CouponController extends Controller
         // 优惠卷LOGO
         $logo = null;
         if ($request->hasFile('logo')) {
-            $logo = 'upload/'.$request->file('logo')->store('images');
+            $file = $request->file('logo');
+            $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
+            $path = $file->storeAs('public', $fileName);
 
-            if (! $logo) {
+            if (! $path) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
+            $logo = 'upload/'.$fileName;
         }
         try {
             $num = (int) $request->input('num');
@@ -80,7 +83,6 @@ class CouponController extends Controller
                 $obj->rule = $request->input('rule');
                 $obj->start_time = strtotime($request->input('start_time'));
                 $obj->end_time = strtotime($request->input('end_time'));
-                $obj->status = 0;
                 $obj->save();
             }
 

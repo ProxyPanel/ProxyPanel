@@ -12,7 +12,6 @@ use App\Models\Node;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
-use App\Services\UserService;
 use Auth;
 use DB;
 use Exception;
@@ -22,6 +21,7 @@ use Log;
 use Redirect;
 use Response;
 use Session;
+use Spatie\Permission\Models\Role;
 use Str;
 
 class UserController extends Controller
@@ -82,7 +82,7 @@ class UserController extends Controller
 
         // 流量超过100G的
         if ($largeTraffic) {
-            $query->whereIn('status', [0, 1])->whereRaw('(u + d) >= 107374182400');
+            $query->whereIn('status', [0, 1])->whereRaw('(u + d)/transfer_enable >= 0.9');
         }
 
         // 临近过期提醒
@@ -105,40 +105,28 @@ class UserController extends Controller
             $query->whereIn('id', (new UserHourlyDataFlow)->trafficAbnormal());
         }
 
-        $userList = $query->orderByDesc('id')->paginate(15)->appends($request->except('page'));
-        foreach ($userList as $user) {
-            $user->used_flow = flowAutoShow($user->u + $user->d);
-            if ($user->expired_at < date('Y-m-d')) {
-                $user->expireWarning = -1; // 已过期
-            } elseif ($user->expired_at === date('Y-m-d')) {
-                $user->expireWarning = 0; // 今天过期
-            } elseif ($user->expired_at > date('Y-m-d') && $user->expired_at <= date('Y-m-d', strtotime('+30 days'))) {
-                $user->expireWarning = 1; // 最近一个月过期
-            } else {
-                $user->expireWarning = 2; // 大于一个月过期
-            }
-
-            // 流量异常警告
-            $totalTraffic = UserHourlyDataFlow::userRecentUsed($user->id)->sum('total');
-            $user->trafficWarning = $totalTraffic > (sysConfig('traffic_ban_value') * GB) ? 1 : 0;
-
-            // 订阅地址
-            $user->link = route('sub', $user->subscribe->code);
-        }
-
         return view('admin.user.index', [
-            'userList'   => $userList,
+            'userList' => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels'     => Level::all()->pluck('name', 'level')->toArray(),
+            'levels' => Level::all()->pluck('name', 'level')->toArray(),
         ]);
     }
 
     // 添加账号页面
     public function create()
     {
+        if (Auth::getUser()->hasRole('Super Admin')) {
+            $roles = Role::all()->pluck('description', 'name');
+        } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
+            $roles = Auth::getUser()->roles();
+        } else {
+            $roles = [];
+        }
+
         return view('admin.user.info', [
-            'levelList' => Level::orderBy('level')->get(),
-            'groupList' => UserGroup::orderBy('id')->get(),
+            'levels' => Level::orderBy('level')->get(),
+            'userGroups' => UserGroup::orderBy('id')->get(),
+            'roles' => $roles,
         ]);
     }
 
@@ -146,7 +134,7 @@ class UserController extends Controller
     public function store(UserStoreRequest $request): JsonResponse
     {
         try {
-            $data = $request->except('_token', 'uuid');
+            $data = $request->except('_token', 'uuid', 'roles');
             $data['password'] = $data['password'] ?? Str::random();
             $data['port'] = $data['port'] ?? Helpers::getPort();
             $data['passwd'] = $data['passwd'] ?? Str::random();
@@ -157,9 +145,15 @@ class UserController extends Controller
             $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
             $user = User::create($data);
 
+            $roles = $request->input('roles');
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || Auth::getUser()->hasRole('Super Admin'))
+                || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
+                $user->assignRole($roles);
+            }
+
             if ($user) {
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, $data['transfer_enable'], '后台手动添加用户');
+                Helpers::addUserTrafficModifyLog($user->id, null, 0, $data['transfer_enable'], '后台手动添加用户');
 
                 return Response::json(['status' => 'success', 'message' => '添加成功']);
             }
@@ -173,30 +167,43 @@ class UserController extends Controller
     }
 
     // 编辑账号页面
-    public function edit($id)
+    public function edit(User $user)
     {
-        $user = User::find($id);
+        if (Auth::getUser()->hasRole('Super Admin')) {
+            $roles = Role::all()->pluck('description', 'name');
+        } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
+            $roles = Auth::getUser()->roles();
+        } else {
+            $roles = [];
+        }
 
         return view('admin.user.info', [
-            'user'      => $user->load('inviter:id,email'),
-            'levelList' => Level::orderBy('level')->get(),
-            'groupList' => UserGroup::orderBy('id')->get(),
+            'user' => $user->load('inviter:id,email'),
+            'levels' => Level::orderBy('level')->get(),
+            'userGroups' => UserGroup::orderBy('id')->get(),
+            'roles' => $roles,
         ]);
     }
 
     // 编辑账号
-    public function update(UserUpdateRequest $request, $id)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $user = User::find($id);
-
         try {
-            $data = $request->except('_token', 'password', 'uuid', 'password', 'is_admin');
+            $data = $request->except('_token', 'password', 'uuid', 'password', 'roles');
             $data['passwd'] = $request->input('passwd') ?? Str::random();
             $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
             $data['transfer_enable'] *= GB;
             $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
             $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+
+            // 只有超级管理员才能赋予超级管理员
+            $roles = $request->input('roles');
+
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || Auth::getUser()->hasRole('Super Admin'))
+                || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
+                $user->syncRoles($roles);
+            }
 
             // Input checking for dummy
             if ($data['enable'] === '1') {
@@ -205,20 +212,15 @@ class UserController extends Controller
                 }
             }
 
-            // 只有admin才有权限操作管理员属性
-            if (Auth::getUser()->is_admin === 1) {
-                $data['is_admin'] = (int) $request->input('is_admin');
-            }
-
             // 非演示环境才可以修改管理员密码
             $password = $request->input('password');
-            if (! empty($password) && ! (env('APP_DEMO') && $id === 1)) {
+            if (! empty($password) && ! (env('APP_DEMO') && $user->id === 1)) {
                 $data['password'] = $password;
             }
 
             // 写入用户流量变动记录
             if ($user->transfer_enable !== $data['transfer_enable']) {
-                Helpers::addUserTrafficModifyLog($id, 0, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
+                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
             }
 
             if ($user->update($data)) {
@@ -234,26 +236,23 @@ class UserController extends Controller
     }
 
     // 删除用户
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        if ($id <= 1) {
+        if ($user->id === 1) {
             return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
         }
 
         try {
-            DB::beginTransaction();
-
-            User::find($id)->delete();
-
-            DB::commit();
-
-            return Response::json(['status' => 'success', 'message' => '删除成功']);
+            if ($user->delete()) {
+                return Response::json(['status' => 'success', 'message' => '删除成功']);
+            }
         } catch (Exception $e) {
             Log::error('删除用户信息异常：'.$e->getMessage());
-            DB::rollBack();
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败']);
+            return Response::json(['status' => 'fail', 'message' => '删除失败'.$e->getMessage()]);
         }
+
+        return Response::json(['status' => 'fail', 'message' => '删除失败']);
     }
 
     // 批量生成账号
@@ -267,7 +266,7 @@ class UserController extends Controller
 
                 if ($uid) {
                     // 写入用户流量变动记录
-                    Helpers::addUserTrafficModifyLog($uid, 0, 0, 1024 * GB, '后台批量生成用户');
+                    Helpers::addUserTrafficModifyLog($uid, null, 0, 1024 * GB, '后台批量生成用户');
                 }
             }
 
@@ -284,16 +283,14 @@ class UserController extends Controller
     // 转换成某个用户的身份
     public function switchToUser(Request $request): JsonResponse
     {
-        $id = $request->input('user_id');
-
-        $user = User::find($id);
+        $user = User::find($request->input('user_id'));
         if (! $user) {
             return Response::json(['status' => 'fail', 'message' => '用户不存在']);
         }
 
         // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
         Session::put('admin', Auth::id());
-        Auth::login($user);
+        Session::put('user', $user->id);
 
         return Response::json(['status' => 'success', 'message' => '身份切换成功']);
     }
@@ -324,8 +321,8 @@ class UserController extends Controller
         $user = User::find($userId);
 
         // 加减余额
-        if ((new UserService($user))->updateCredit($amount)) {
-            Helpers::addUserCreditLog($userId, 0, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
+        if ($user->updateCredit($amount)) {
+            Helpers::addUserCreditLog($userId, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }
@@ -334,14 +331,9 @@ class UserController extends Controller
     }
 
     // 导出配置信息
-    public function export(Request $request, $id)
+    public function export(Request $request, User $user)
     {
-        if (empty($id)) {
-            return Redirect::back();
-        }
-
-        $user = User::find($id);
-        if (empty($user)) {
+        if ($user === null) {
             return Redirect::back();
         }
 

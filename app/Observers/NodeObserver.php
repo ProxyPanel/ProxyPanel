@@ -83,17 +83,6 @@ class NodeObserver
 
     public function deleted(Node $node): void
     {
-        // 删除分组关联、节点标签、节点相关日志
-        $node->labels()->delete();
-        $node->heartBeats()->delete();
-        $node->onlineLogs()->delete();
-        $node->pingLogs()->delete();
-        $node->dailyDataFlows()->delete();
-        $node->hourlyDataFlows()->delete();
-        $node->rules()->delete();
-        $node->ruleGroup()->delete();
-        $node->auth()->delete();
-
         // 断开审计规则分组节点联系
         foreach (RuleGroup::all() as $ruleGroup) {
             $nodes = $ruleGroup->nodes;

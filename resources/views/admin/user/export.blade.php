@@ -26,7 +26,11 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>
-                                <a href="{{route('admin.node.edit', $node->id)}}" target="_blank"> {{$node->name}} </a>
+                                @can('admin.node.edit')
+                                    <a href="{{route('admin.node.edit', $node)}}" target="_blank"> {{$node->name}} </a>
+                                @else
+                                    {{$node->name}}
+                                @endcan
                             </td>
                             <td>
                                 @if($node->compatible) <span class="label label-info">兼</span> @endif
@@ -36,17 +40,19 @@
                             <td>{{$node->server}}</td>
                             <td>{{$node->ip}}</td>
                             <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-outline-info"
-                                            onclick="getInfo('{{$node->id}}','code')"><i class="icon fa-code"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-info"
-                                            onclick="getInfo('{{$node->id}}','qrcode')"><i class="icon fa-qrcode"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-outline-info"
-                                            onclick="getInfo('{{$node->id}}','text')"><i class="icon fa-list"></i>
-                                    </button>
-                                </div>
+                                @can('admin.user.exportProxy')
+                                    <div class="btn-group">
+                                        <button class="btn btn-sm btn-outline-info"
+                                                onclick="getInfo('{{$node->id}}','code')"><i class="icon fa-code"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info"
+                                                onclick="getInfo('{{$node->id}}','qrcode')"><i class="icon fa-qrcode"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info"
+                                                onclick="getInfo('{{$node->id}}','text')"><i class="icon fa-list"></i>
+                                        </button>
+                                    </div>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -67,50 +73,51 @@
         </div>
     </div>>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
     <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
-        function getInfo(id, type) {
-            $.post("{{route('admin.user.exportProxy', $user->id)}}", {_token: '{{csrf_token()}}', id: id, type: type},
-                function (ret) {
-                    if (ret.status === 'success') {
-                        switch (type) {
-                            case 'code':
-                                swal.fire({
-                                    html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
-                                        '</textarea>' +
-                                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
-                                        ret.title + '</a>',
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            case 'qrcode':
-                                swal.fire({
-                                    title: '{{trans('home.scan_qrcode')}}',
-                                    html: '<div id="qrcode"></div>',
-                                    onBeforeOpen: () => {
-                                        $('#qrcode').qrcode({text: ret.data});
-                                    },
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            case 'text':
-                                swal.fire({
-                                    title: '{{trans('home.setting_info')}}',
-                                    html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
-                                        '</textarea>',
-                                    showConfirmButton: false,
-                                });
-                                break;
-                            default:
-                                swal.fire({title: ret.title, text: ret.data});
-                        }
+    @can('admin.user.exportProxy')
+        <script type="text/javascript">
+          function getInfo(id, type) {
+            $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
+                function(ret) {
+                  if (ret.status === 'success') {
+                    switch (type) {
+                      case 'code':
+                        swal.fire({
+                          html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
+                              '</textarea>' +
+                              '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
+                              ret.title + '</a>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'qrcode':
+                        swal.fire({
+                          title: '{{trans('home.scan_qrcode')}}',
+                          html: '<div id="qrcode"></div>',
+                          onBeforeOpen: () => {
+                            $('#qrcode').qrcode({text: ret.data});
+                          },
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'text':
+                        swal.fire({
+                          title: '{{trans('home.setting_info')}}',
+                          html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
+                              '</textarea>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      default:
+                        swal.fire({title: ret.title, text: ret.data});
                     }
+                  }
                 });
-        }
-    </script>
+          }
+        </script>
+    @endcan
 @endsection

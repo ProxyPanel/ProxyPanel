@@ -15,9 +15,6 @@
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
-            @if (Session::has('errorMsg'))
-                <x-alert type="danger" :message="Session::get('errorMsg')"/>
-            @endif
             <div class="panel-body">
                 <form action="{{route('admin.article.store')}}" class="form-horizontal" enctype="multipart/form-data" method="post">@csrf
                     <div class="form-group row">
@@ -89,49 +86,49 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/summernote/summernote.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/summernote.js" type="text/javascript"></script>
     <script type="text/javascript">
         @if(old('type'))
-        $(document).ready(function () {
-            $("input[name='type'][value='{{old('type')}}']").click();
+        $(document).ready(function() {
+          $("input[name='type'][value='{{old('type')}}']").click();
         });
         @endif
     </script>
     <script type="text/javascript">
-        $('input:radio[name=\'type\']').on('change', function () {
-            const summary = $('#summary');
-            const sort = $('#sort');
-            const allLogo = $('#all_logo');
-            const icon = $('#icon');
-            const logoUpload = $('#logoUpload');
-            summary.hide();
-            sort.hide();
-            allLogo.show();
-            switch (parseInt($(this).val())) {
-                case 1:
-                    summary.show();
-                    sort.show();
-                    icon.hide();
-                    logoUpload.show();
-                    break;
-                case 2:
-                    allLogo.hide();
-                    break;
-                case 3:
-                    sort.show();
-                    icon.show();
-                    logoUpload.hide();
-                    break;
-                case 4:
-                    icon.show();
-                    logoUpload.hide();
-                    break;
-                default:
-            }
-        });
+      $('input:radio[name=\'type\']').on('change', function() {
+        const summary = $('#summary');
+        const sort = $('#sort');
+        const allLogo = $('#all_logo');
+        const icon = $('#icon');
+        const logoUpload = $('#logoUpload');
+        summary.hide();
+        sort.hide();
+        allLogo.show();
+        switch (parseInt($(this).val())) {
+          case 1:
+            summary.show();
+            sort.show();
+            icon.hide();
+            logoUpload.show();
+            break;
+          case 2:
+            allLogo.hide();
+            break;
+          case 3:
+            sort.show();
+            icon.show();
+            logoUpload.hide();
+            break;
+          case 4:
+            icon.show();
+            logoUpload.hide();
+            break;
+          default:
+        }
+      });
     </script>
 @endsection

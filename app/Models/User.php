@@ -9,27 +9,33 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 /**
  * 用户信息.
  */
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasRoles;
 
     protected $table = 'user';
-    protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d'];
+    protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
     protected $dates = ['expired_at', 'reset_time'];
     protected $guarded = ['id'];
+
+    public function usedTrafficPercentage()
+    {
+        return round(($this->usedTraffic()) / $this->transfer_enable, 2);
+    }
+
+    public function usedTraffic(): int
+    {
+        return $this->d + $this->u;
+    }
 
     public function onlineIpLogs(): HasMany
     {
         return $this->hasMany(NodeOnlineUserIp::class);
-    }
-
-    public function orders(): HasMany
-    {
-        return $this->hasMany(Order::class);
     }
 
     public function payments(): HasMany
@@ -100,6 +106,11 @@ class User extends Authenticatable
     public function subscribe(): HasOne
     {
         return $this->hasOne(UserSubscribe::class);
+    }
+
+    public function subUrl()
+    {
+        return route('sub', $this->subscribe->code);
     }
 
     public function subscribeLogs(): HasManyThrough
@@ -199,6 +210,73 @@ class User extends Authenticatable
 
     public function scopeUserAccessNodes()
     {
-        return Node::userAllowNodes($this->attributes['group_id'], $this->attributes['level']);
+        return Node::userAllowNodes($this->attributes['group_id'] ?? 0, $this->attributes['level'] ?? 0);
+    }
+
+    public function getIsAvailableAttribute(): bool
+    {
+        return ! $this->ban_time && $this->transfer_enable && $this->expired_at > time();
+    }
+
+    public function updateCredit(float $credit): bool
+    {
+        $this->credit += $credit;
+
+        return $this->credit >= 0 && $this->save();
+    }
+
+    public function incrementData(int $data): bool
+    {// 添加用户流量
+        $this->transfer_enable += $data;
+
+        return $this->save();
+    }
+
+    public function isNotCompleteOrderByUserId(int $userId): bool
+    { // 添加用户余额
+
+        return Order::uid($userId)->whereIn('status', [0, 1])->exists();
+    }
+
+    public function trafficFetch(int $u, int $d): bool
+    {
+        $this->u += $u;
+        $this->d += $d;
+
+        return $this->save();
+    }
+
+    public function expired_status(): int
+    {
+        $expired_status = 2; // 大于一个月过期
+        if ($this->expired_at < date('Y-m-d')) {
+            $expired_status = -1; // 已过期
+        } elseif ($this->expired_at === date('Y-m-d')) {
+            $expired_status = 0; // 今天过期
+        } elseif ($this->expired_at > date('Y-m-d') && $this->expired_at <= date('Y-m-d', strtotime('+30 days'))) {
+            $expired_status = 1; // 最近一个月过期
+        }
+
+        return $expired_status;
+    }
+
+    public function isTrafficWarning(): bool
+    {// 流量异常警告
+        return $this->recentTrafficUsed() >= (sysConfig('traffic_ban_value') * GB);
+    }
+
+    public function recentTrafficUsed()
+    {
+        return UserHourlyDataFlow::userRecentUsed($this->id)->sum('total');
+    }
+
+    public function activePayingUser()
+    { //付费用户判断
+        return $this->orders()->active()->where('origin_amount', '>', 0)->exists();
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

@@ -27,7 +27,7 @@ class replyTicket extends Mailable implements ShouldQueue
     public function build(): replyTicket
     {
         return $this->view('emails.replyTicket')->subject('工单回复提醒')->with([
-            'title'   => $this->title,
+            'title' => $this->title,
             'content' => $this->content,
         ]);
     }

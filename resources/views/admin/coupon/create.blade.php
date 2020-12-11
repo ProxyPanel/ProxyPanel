@@ -113,34 +113,34 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        $('.input-daterange>input').datepicker({
-            format: 'yyyy-mm-dd',
-        });
+      $('.input-daterange>input').datepicker({
+        format: 'yyyy-mm-dd',
+      });
 
-        $('input[name=\'type\']').change(function () {
-            if ($(this).val() === '2') {
-                $('#rule').attr('required', true);
-                $('.discount').show();
-                $('.usage').show();
-                $('.amount').hide();
-            } else if ($(this).val() === '3') {
-                $('#rule').attr('required', false);
-                $('.discount').hide();
-                $('.usage').hide();
-                $('.amount').show();
-            } else {
-                $('#rule').attr('required', true);
-                $('.discount').hide();
-                $('.usage').show();
-                $('.amount').show();
-            }
-        });
+      $('input[name=\'type\']').change(function() {
+        if ($(this).val() === '2') {
+          $('#rule').attr('required', true);
+          $('.discount').show();
+          $('.usage').show();
+          $('.amount').hide();
+        } else if ($(this).val() === '3') {
+          $('#rule').attr('required', false);
+          $('.discount').hide();
+          $('.usage').hide();
+          $('.amount').show();
+        } else {
+          $('#rule').attr('required', true);
+          $('.discount').hide();
+          $('.usage').show();
+          $('.amount').show();
+        }
+      });
     </script>
 @endsection

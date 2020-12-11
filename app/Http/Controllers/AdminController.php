@@ -46,7 +46,7 @@ class AdminController extends Controller
         $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past])->count(); // 不活跃用户数
         $view['onlineUserCount'] = User::where('t', '>=', strtotime('-10 minutes'))->count(); // 10分钟内在线用户数
         $view['expireWarningUserCount'] = User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(); // 临近过期用户数
-        $view['largeTrafficUserCount'] = User::whereRaw('(u + d) >= 107374182400')->where('status', '<>', -1)->count(); // 流量超过100G的用户
+        $view['largeTrafficUserCount'] = User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(); // 流量使用超过90%的用户
         $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal()); // 1小时内流量异常用户
         $view['nodeCount'] = Node::count();
         $view['unnormalNodeCount'] = Node::whereStatus(0)->count();
@@ -67,31 +67,6 @@ class AdminController extends Controller
         return view('admin.index', $view);
     }
 
-    // 修改个人资料
-    public function profile(Request $request)
-    {
-        if ($request->isMethod('POST')) {
-            $new_password = $request->input('new_password');
-
-            if (! Hash::check($request->input('old_password'), Auth::getUser()->password)) {
-                return Redirect::back()->withErrors('旧密码错误，请重新输入');
-            }
-
-            if (Hash::check($new_password, Auth::getUser()->password)) {
-                return Redirect::back()->withErrors('新密码不可与旧密码一样，请重新输入');
-            }
-
-            $ret = Auth::getUser()->update(['password' => $new_password]);
-            if (! $ret) {
-                return Redirect::back()->withErrors('修改失败');
-            }
-
-            return Redirect::back()->with('successMsg', '修改成功');
-        }
-
-        return view('admin.config.profile');
-    }
-
     // 邀请码列表
     public function inviteList(Request $request)
     {
@@ -109,10 +84,7 @@ class AdminController extends Controller
     {
         for ($i = 0; $i < 10; $i++) {
             $obj = new Invite();
-            $obj->inviter_id = 0;
-            $obj->invitee_id = 0;
             $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
-            $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('admin_invite_days').' days'));
             $obj->save();
         }
@@ -164,10 +136,5 @@ class AdminController extends Controller
         $view['labelList'] = Label::with('nodes')->get();
 
         return view('admin.config.config', $view);
-    }
-
-    public function getPort(): int
-    {
-        return Helpers::getPort();
     }
 }

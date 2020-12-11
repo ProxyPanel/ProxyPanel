@@ -35,83 +35,83 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script type="text/javascript">
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                replyTicket();
-                return false;
-            }
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          replyTicket();
+          return false;
+        }
+      });
+
+      // 关闭工单
+      function closeTicket() {
+        swal.fire({
+          title: '{{trans('home.ticket_close_title')}}',
+          text: '{{trans('home.ticket_close_content')}}',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'POST',
+              url: '{{route('closeTicket')}}',
+              async: true,
+              data: {_token: '{{csrf_token()}}', id: '{{$ticket->id}}'},
+              dataType: 'json',
+              success: function(ret) {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1300,
+                }).then(() => window.location.href = '{{route('ticket')}}');
+              },
+              error: function() {
+                swal.fire({title: '未知错误！请通知客服', icon: 'error'});
+              },
+            });
+          }
         });
+      }
 
-        // 关闭工单
-        function closeTicket() {
-            swal.fire({
-                title: '{{trans('home.ticket_close_title')}}',
-                text: '{{trans('home.ticket_close_content')}}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('closeTicket')}}',
-                        async: true,
-                        data: {_token: '{{csrf_token()}}', id: '{{$ticket->id}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1300,
-                            }).then(() => window.location.href = '{{route('ticket')}}');
-                        },
-                        error: function () {
-                            swal.fire({title: '未知错误！请通知客服', icon: 'error'});
-                        },
-                    });
-                }
-            });
+      // 回复工单
+      function replyTicket() {
+        const content = document.getElementById('editor').value;
+
+        if (content.trim() === '') {
+          swal.fire({title: '您未填写工单内容!', icon: 'warning', timer: 1500});
+          return false;
         }
-
-        // 回复工单
-        function replyTicket() {
-            const content = document.getElementById('editor').value;
-
-            if (content.trim() === '') {
-                swal.fire({title: '您未填写工单内容!', icon: 'warning', timer: 1500});
-                return false;
-            }
-            swal.fire({
-                title: '确定回复工单？',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('replyTicket')}}', {
-                        _token: '{{csrf_token()}}',
-                        id: '{{$ticket->id}}',
-                        content: content,
-                    }, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false,
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+        swal.fire({
+          title: '确定回复工单？',
+          icon: 'question',
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('replyTicket')}}', {
+              _token: '{{csrf_token()}}',
+              id: '{{$ticket->id}}',
+              content: content,
+            }, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
     </script>
 @endsection

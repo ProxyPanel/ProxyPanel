@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <h3>
-                            <img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
+                            <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
                             {{sysConfig('website_name')}}
                         </h3>
                     </div>
@@ -94,7 +94,7 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 @endsection

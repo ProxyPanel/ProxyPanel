@@ -7,11 +7,13 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">节点授权列表<small>WEBAPI</small></h2>
-                <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="addAuth()">
-                        <i class="icon wb-plus" aria-hidden="true"></i>生成授权
-                    </button>
-                </div>
+                @can('admin.node.auth.store')
+                    <div class="panel-actions">
+                        <button class="btn btn-primary" onclick="addAuth()">
+                            <i class="icon wb-plus" aria-hidden="true"></i>生成授权
+                        </button>
+                    </div>
+                @endcan
             </div>
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -44,12 +46,16 @@
                                     <button data-target="#install_{{$vo->node->type}}_{{$vo->id}}" data-toggle="modal" class="btn btn-primary">
                                         <i class="icon wb-code" aria-hidden="true"></i>部署后端
                                     </button>
-                                    <button onclick="refreshAuth('{{$vo->id}}')" class="btn btn-danger">
-                                        <i class="icon wb-reload" aria-hidden="true"></i> 重置密钥
-                                    </button>
-                                    <button onclick="deleteAuth('{{$vo->id}}')" class="btn btn-primary">
-                                        <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                    </button>
+                                    @can('admin.node.auth.update')
+                                        <button onclick="refreshAuth('{{$vo->id}}')" class="btn btn-danger">
+                                            <i class="icon wb-reload" aria-hidden="true"></i> 重置密钥
+                                        </button>
+                                    @endcan
+                                    @can('admin.node.auth.destroy')
+                                        <button onclick="deleteAuth('{{$vo->id}}')" class="btn btn-primary">
+                                            <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                        </button>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>
@@ -138,7 +144,7 @@
                             </div>
                         @elseif($vl->node->type === 3)
                             @if(!$vl->node->server)
-                                <h3>请先<a href="{{route('admin.node.edit', $vl->node->id)}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上
+                                <h3>请先<a href="{{route('admin.node.edit', $vl->node)}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上
                                 </h3>
                             @else
                                 <div class="alert alert-info text-break">
@@ -204,87 +210,93 @@
     @endforeach
 
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
 
     <script type="text/javascript">
-        // 生成授权KEY
-        function addAuth() {
-            swal.fire({
-                title: '提示',
-                text: '确定生成所有节点的授权吗?',
-                icon: 'info',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.node.auth.store')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+      // 生成授权KEY
+      @can('admin.node.auth.store')
+      function addAuth() {
+        swal.fire({
+          title: '提示',
+          text: '确定生成所有节点的授权吗?',
+          icon: 'info',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.node.auth.store')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
+      @endcan
 
-        // 删除授权
-        function deleteAuth(id) {
-            swal.fire({
-                title: '提示',
-                text: '确定删除该授权吗?',
-                icon: 'info',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: '{{route('admin.node.auth.destroy', '')}}/' + id,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      @can('admin.node.auth.destroy')
+      // 删除授权
+      function deleteAuth(id) {
+        swal.fire({
+          title: '提示',
+          text: '确定删除该授权吗?',
+          icon: 'info',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: '{{route('admin.node.auth.destroy', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
+      @endcan
 
-        // 重置授权认证KEY
-        function refreshAuth(id) {
-            swal.fire({
-                title: '提示',
-                text: '确定继续操作吗?',
-                icon: 'info',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'PUT',
-                        url: '{{route('admin.node.auth.update', '')}}/' + id,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      @can('admin.node.auth.update')
+      // 重置授权认证KEY
+      function refreshAuth(id) {
+        swal.fire({
+          title: '提示',
+          text: '确定继续操作吗?',
+          icon: 'info',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('home.ticket_close')}}',
+          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'PUT',
+              url: '{{route('admin.node.auth.update', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
+        @endcan
     </script>
 @endsection

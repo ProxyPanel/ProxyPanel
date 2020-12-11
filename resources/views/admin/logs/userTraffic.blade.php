@@ -44,7 +44,11 @@
                             <td>
                                 @if ($vo->order_id)
                                     @if($vo->order)
-                                        <a href="{{route('admin.order', ['id' => $vo->order_id])}}">{{$vo->order->goods->name}}</a>
+                                        @can('admin.order')
+                                            <a href="{{route('admin.order', ['id' => $vo->order_id])}}"></a>
+                                        @else
+                                            {{$vo->order->goods->name}}
+                                        @endcan
                                     @else
                                         【订单已删除】
                                     @endif
@@ -74,22 +78,22 @@
         </div>
     </div>
 @endsection
-@section('script')
+@section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
             type="text/javascript"></script>
     <script type="text/javascript">
-        //回车检测
-        $(document).on('keypress', 'input', function (e) {
-            if (e.which === 13) {
-                Search();
-                return false;
-            }
-        });
-
-        // 搜索
-        function Search() {
-            window.location.href = '{{route('admin.log.flow')}}?email=' + $('#email').val();
+      //回车检测
+      $(document).on('keypress', 'input', function(e) {
+        if (e.which === 13) {
+          Search();
+          return false;
         }
+      });
+
+      // 搜索
+      function Search() {
+        window.location.href = '{{route('admin.log.flow')}}?email=' + $('#email').val();
+      }
     </script>
 @endsection

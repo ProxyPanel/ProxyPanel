@@ -27,7 +27,7 @@ class TicketController extends Controller
     {
         $email = $request->input('email');
 
-        $query = Ticket::whereIn('admin_id', [0, Auth::id()]);
+        $query = Ticket::whereAdminId(Auth::id())->orwhere('admin_id', null);
 
         if (isset($email)) {
             $query->whereHas('user', static function ($q) use ($email) {
@@ -67,10 +67,8 @@ class TicketController extends Controller
         $obj->admin_id = Auth::id();
         $obj->title = $title;
         $obj->content = $content;
-        $obj->status = 0;
-        $obj->save();
 
-        if ($obj->id) {
+        if ($obj->save()) {
             return Response::json(['status' => 'success', 'message' => '工单创建成功']);
         }
 
@@ -95,9 +93,8 @@ class TicketController extends Controller
         $obj->ticket_id = $id;
         $obj->admin_id = Auth::id();
         $obj->content = $content;
-        $obj->save();
 
-        if ($obj->id) {
+        if ($obj->save()) {
             // 将工单置为已回复
             $ticket = Ticket::with('user')->find($id);
             Ticket::whereId($id)->update(['status' => 1]);
@@ -106,17 +103,8 @@ class TicketController extends Controller
             $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
 
             // 发通知邮件
-            if (! Auth::getUser()->is_admin) {
-                if (sysConfig('webmaster_email')) {
-                    $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-                    Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
-                }
-                // 推送通知管理员
-                PushNotification::send($title, $content);
-            } else {
-                $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-                Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
-            }
+            $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
+            Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
 
             return Response::json(['status' => 'success', 'message' => '回复成功']);
         }
@@ -127,13 +115,9 @@ class TicketController extends Controller
     // 关闭工单
     public function destroy($id)
     {
-        $ticket = Ticket::with('user')->whereId($id)->first();
-        if (! $ticket) {
-            return Response::json(['status' => 'fail', 'message' => '关闭失败']);
-        }
+        $ticket = Ticket::with('user')->find($id);
 
-        $ret = Ticket::whereId($id)->update(['status' => 2]);
-        if (! $ret) {
+        if (! $ticket->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
 

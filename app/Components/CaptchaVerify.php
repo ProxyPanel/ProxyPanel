@@ -12,7 +12,7 @@ class CaptchaVerify
     {
         return [
             'sitekey' => sysConfig('hcaptcha_sitekey'),
-            'secret'  => sysConfig('hcaptcha_secret'),
+            'secret' => sysConfig('hcaptcha_secret'),
             'options' => [],
         ];
     }
@@ -21,7 +21,7 @@ class CaptchaVerify
     public static function geetestCaptchaGetConfig(): array
     {
         return [
-            'geetest_id'  => sysConfig('geetest_id'),
+            'geetest_id' => sysConfig('geetest_id'),
             'geetest_key' => sysConfig('geetest_key'),
         ];
     }
@@ -31,7 +31,7 @@ class CaptchaVerify
     {
         return [
             'sitekey' => sysConfig('google_captcha_sitekey'),
-            'secret'  => sysConfig('google_captcha_secret'),
+            'secret' => sysConfig('google_captcha_secret'),
             'options' => [],
         ];
     }
