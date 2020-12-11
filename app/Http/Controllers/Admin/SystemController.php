@@ -6,65 +6,13 @@ use App\Components\PushNotification;
 use App\Http\Controllers\Controller;
 use App\Models\Config;
 use App\Models\Label;
-use DB;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Redirect;
 use Response;
-use Session;
 
 class SystemController extends Controller
 {
-    // 设置系统扩展信息，例如客服、统计代码
-    public function setExtend(Request $request): ?RedirectResponse
-    {
-        $websiteAnalytics = $request->input('website_analytics');
-        $websiteCustomerService = $request->input('website_customer_service');
-
-        try {
-            DB::beginTransaction();
-
-            // 首页LOGO
-            if ($request->hasFile('website_home_logo')) {
-                $ret = 'upload/'.$request->file('website_home_logo')->store('images');
-                if (! $ret) {
-                    Session::flash('errorMsg', 'LOGO不合法');
-
-                    return Redirect::back();
-                }
-                Config::find('website_home_logo')->update(['value' => $ret]);
-            }
-
-            // 站内LOGO
-            if ($request->hasFile('website_logo')) {
-                $ret = 'upload/'.$request->file('website_logo')->store('images');
-                if (! $ret) {
-                    Session::flash('errorMsg', 'LOGO不合法');
-
-                    return Redirect::back();
-                }
-                Config::find('website_logo')->update(['value' => $ret]);
-            }
-
-            Config::find('website_analytics')->update(['value' => $websiteAnalytics]);
-            Config::find('website_customer_service')->update(['value' => $websiteCustomerService]);
-
-            Session::flash('successMsg', '更新成功');
-
-            DB::commit();
-
-            return Redirect::back();
-        } catch (Exception $e) {
-            DB::rollBack();
-
-            Session::flash('errorMsg', '更新失败');
-
-            return Redirect::back();
-        }
-    }
-
     // 系统设置
     public function index()
     {
@@ -72,6 +20,39 @@ class SystemController extends Controller
         $view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
 
         return view('admin.config.system', $view);
+    }
+
+    // 设置系统扩展信息，例如客服、统计代码
+    public function setExtend(Request $request): RedirectResponse
+    {
+        if ($request->hasFile('website_home_logo')) {
+            $validator = validator()->make($request->all(), ['website_home_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+            if ($validator->fails()) {
+                return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
+            }
+            $file = $request->file('website_home_logo');
+            $ret = $file->move('uploads/logo', $file->getClientOriginalName());
+            if ($ret && Config::find('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+            }
+        }
+
+        // 站内LOGO
+        if ($request->hasFile('website_logo')) {
+            $validator = validator()->make($request->all(), ['website_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+            if ($validator->fails()) {
+                return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
+            }
+            $file = $request->file('website_logo');
+            $ret = $file->move('uploads/logo', $file->getClientOriginalName());
+            if ($ret && Config::find('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+            }
+        }
+
+        return redirect()->route('admin.system.index', '#other')->withErrors('更新失败');
     }
 
     // 设置某个配置项

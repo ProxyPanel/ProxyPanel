@@ -11,6 +11,7 @@ class CouponRequest extends FormRequest
         return [
             'name' => 'required',
             'sn' => 'unique:coupon',
+            'logo' => 'nullable|image',
             'type' => 'required|integer|between:1,3',
             'usable_times' => 'integer|nullable',
             'num' => 'required|integer|min:1',

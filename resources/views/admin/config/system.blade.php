@@ -1152,13 +1152,20 @@
                             </form>
                         </div>
                         <div class="tab-pane" id="other" role="tabpanel">
-                            <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form" role="form" id="setExtend">@csrf
-                                <div class="form-row">
+                            @if($errors->any())
+                                <x-alert type="danger" :message="$errors->all()"/>
+                            @endif
+                            @if (Session::has('successMsg'))
+                                <x-alert type="success" :message="Session::get('successMsg')"/>
+                            @endif
+                            <div class="form-row">
+                                <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
+                                      id="setExtend">@csrf
                                     <div class="form-group col-lg-6">
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_home_logo">首页LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_home_logo" data-plugin="dropify"
+                                                <input type="file" id="website_home_logo" name="website_home_logo" data-plugin="dropify"
                                                        data-default-file="{{asset($website_home_logo ?? '/assets/images/default.png')}}"/>
                                                 <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
@@ -1168,32 +1175,33 @@
                                         <div class="row">
                                             <label class="col-form-label col-md-3" for="website_logo">站内LOGO</label>
                                             <div class="col-md-9">
-                                                <input type="file" id="website_logo" data-plugin="dropify"
+                                                <input type="file" id="website_logo" name="website_logo" data-plugin="dropify"
                                                        data-default-file="{{asset($website_logo ?? '/assets/images/default.png')}}"/>
                                                 <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
-                                            <div class="col-md-9">
-                                                <textarea class="form-control" rows="10" id="website_analytics">{{$website_analytics}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
-                                            <div class="col-md-9">
-                                                <textarea class="form-control" rows="10" id="website_customer_service">{{$website_customer_service}}</textarea>
-                                                <button type="submit" class="btn btn-success float-right mt-10"> 提 交</button>
-                                            </div>
+                                </form>
+                                <div class="form-group col-lg-6">
+                                    <div class="row">
+                                        <label class="col-form-label col-md-3" for="website_analytics">统计代码</label>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" rows="10" id="website_analytics" name="website_analytics">{{$website_analytics}}</textarea>
+                                            <button class="btn btn-success float-right mt-10" type="button" onclick="update('website_analytics')">修改</button>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
+                                <div class="form-group col-lg-6">
+                                    <div class="row">
+                                        <label class="col-form-label col-md-3" for="website_customer_service">客服代码</label>
+                                        <div class="col-md-9">
+                                                <textarea class="form-control" rows="10" id="website_customer_service"
+                                                          name="website_customer_service">{{$website_customer_service}}</textarea>
+                                            <button class="btn btn-success float-right mt-10" type="button" onclick="update('website_customer_service')">修改</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-pane" id="payment" role="tabpanel">
                             <div class="tab-content pb-100">

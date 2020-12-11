@@ -418,11 +418,11 @@ class AuthController extends Controller
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
         if (! $data['inviter_id']) {
             // 检查一下cookie里有没有aff
-            $cookieAff = \Request::hasCookie('register_aff') ? \Request::cookie('register_aff') : 0;
+            $cookieAff = \Request::hasCookie('register_aff');
             if ($cookieAff) {
-                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : 0;
+                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : null;
             } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-                $data['inviter_id'] = User::find($aff) ? $aff : 0;
+                $data['inviter_id'] = User::find($aff) ? $aff : null;
             }
         }
 
@@ -434,10 +434,8 @@ class AuthController extends Controller
     {
         $token = md5(sysConfig('website_name').$email.microtime());
         $verify = new Verify();
-        $verify->type = 1;
         $verify->user_id = $uid;
         $verify->token = $token;
-        $verify->status = 0;
         $verify->save();
 
         return $token;
@@ -642,13 +640,7 @@ class AuthController extends Controller
             return Redirect::route('login');
         }
 
-        if (empty($user)) {
-            Session::flash('errorMsg', trans('auth.overtime'));
-
-            return view('auth.active');
-        }
-
-        if ($verify->status > 0) {
+        if (empty($user) || $verify->status > 0) {
             Session::flash('errorMsg', trans('auth.overtime'));
 
             return view('auth.active');
@@ -741,12 +733,11 @@ class AuthController extends Controller
     }
 
     // 生成注册验证码
-    private function addVerifyCode($email, $code): void
+    private function addVerifyCode(string $email, string $code): void
     {
         $verify = new VerifyCode();
         $verify->address = $email;
         $verify->code = $code;
-        $verify->status = 0;
         $verify->save();
     }
 

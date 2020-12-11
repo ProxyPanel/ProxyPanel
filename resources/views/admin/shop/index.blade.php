@@ -67,7 +67,7 @@
                             <td>
                                 @if($goods->logo)
                                     <a href="{{asset($goods->logo)}}" target="_blank">
-                                        <img src="{{asset($goods->logo)}}" alt="logo" class="h-50"/>
+                                        <img src="{{asset($goods->logo)}}" class="h-50" alt="logo"/>
                                     </a>
                                 @endif
                             </td>

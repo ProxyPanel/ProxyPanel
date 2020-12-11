@@ -23,9 +23,6 @@
             @if($errors->any())
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
-            @if (Session::has('errorMsg'))
-                <x-alert type="danger" :message="Session::get('errorMsg')"/>
-            @endif
             <div class="panel-body">
                 <form action=@isset($goods){{route('admin.goods.update', $goods->id)}} @else {{route('admin.goods.store')}} @endisset method="post"
                       enctype="multipart/form-data" class="form-horizontal" role="form">@csrf

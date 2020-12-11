@@ -15,7 +15,7 @@
                 <i class="icon wb-more-horizontal" aria-hidden="true"></i>
             </button>
             <div class="navbar-brand navbar-brand-center">
-                <img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
+                <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
                 <span class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
             </div>
         </div>

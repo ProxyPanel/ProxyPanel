@@ -9,10 +9,7 @@
                 <h2 class="panel-title">数据导入</h2>
             </div>
             @if (Session::has('successMsg'))
-                <div class="alert alert-success" role="alert">
-                    <button class="close" data-close="alert"></button>
-                    {{Session::get('successMsg')}}
-                </div>
+                <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
             @if($errors->any())
                 <x-alert type="danger" :message="$errors->all()"/>

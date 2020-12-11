@@ -15,6 +15,7 @@ class ShopStoreRequest extends FormRequest
             'type' => 'required',
             'renew' => 'required_unless:type,2|min:0',
             'days' => 'required|integer',
+            'logo' => 'nullable|image',
         ];
     }
 }

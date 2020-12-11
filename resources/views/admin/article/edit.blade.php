@@ -15,9 +15,6 @@
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
-            @if (Session::has('errorMsg'))
-                <x-alert type="danger" :message="Session::get('errorMsg')"/>
-            @endif
             <div class="panel-body">
                 <form action="{{route('admin.article.update', $article->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal">@method('PUT')@csrf
                     <div class="form-group row">

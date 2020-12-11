@@ -84,10 +84,7 @@ class AdminController extends Controller
     {
         for ($i = 0; $i < 10; $i++) {
             $obj = new Invite();
-            $obj->inviter_id = 0;
-            $obj->invitee_id = 0;
             $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
-            $obj->status = 0;
             $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('admin_invite_days').' days'));
             $obj->save();
         }

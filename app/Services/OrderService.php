@@ -201,7 +201,6 @@ class OrderService
         $log->order_id = $oid;
         $log->amount = $amount;
         $log->commission = $commission;
-        $log->status = 0;
 
         return $log->save();
     }

@@ -15,9 +15,6 @@
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
-            @if (Session::has('errorMsg'))
-                <x-alert type="danger" :message="Session::get('errorMsg')"/>
-            @endif
             <div class="panel-body">
                 <form action="{{route('admin.article.store')}}" class="form-horizontal" enctype="multipart/form-data" method="post">@csrf
                     <div class="form-group row">

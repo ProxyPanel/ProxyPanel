@@ -23,7 +23,7 @@ class LevelController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         $obj = new Level();
@@ -49,7 +49,7 @@ class LevelController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
         // 校验该等级下是否存在关联账号
         $levelCheck = Level::where('id', '<>', $id)->whereLevel($level)->exists();

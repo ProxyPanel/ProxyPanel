@@ -12,6 +12,7 @@ class ShopUpdateRequest extends FormRequest
             'name' => 'required',
             'price' => 'required|numeric|min:0',
             'renew' => 'required_unless:type,2|min:0',
+            'logo' => 'nullable|image',
         ];
     }
 }

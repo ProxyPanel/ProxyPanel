@@ -54,7 +54,7 @@
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
-                                        {{$invite->inviter_id === 0 ? '系统生成' : ($invite->inviter->email ?? '【账号已删除】')}}
+                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->email ?? '【账号已删除】')}}
                                     </td>
                                     <td>
                                         {!!$invite->status_label!!}

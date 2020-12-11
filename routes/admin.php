@@ -110,7 +110,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('role', 'RoleController')->except('show');
 
         Route::get('system', 'SystemController@index')->name('system.index'); // 系统设置
-        Route::post('setExtend', 'SystemController@setExtend')->name('system.extend'); // 设置客服、统计代码
+        Route::post('setExtend', 'SystemController@setExtend')->name('system.extend'); // 设置logo图片文件
         Route::post('setConfig', 'SystemController@setConfig')->name('system.update'); // 设置某个配置项
         Route::post('sendTestNotification', 'SystemController@sendTestNotification')->name('test.notify'); //推送通知测试
     });

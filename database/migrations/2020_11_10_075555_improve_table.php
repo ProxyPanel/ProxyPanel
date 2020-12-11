@@ -1,8 +1,10 @@
 <?php
 
 use App\Models\CouponLog;
+use App\Models\Invite;
 use App\Models\Ticket;
 use App\Models\TicketReply;
+use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserDailyDataFlow;
 use App\Models\UserDataModifyLog;
@@ -35,6 +37,8 @@ class ImproveTable extends Migration
         });
 
         Schema::table('invite', function (Blueprint $table) {
+            $table->unsignedInteger('inviter_id')->default(null)->nullable()->change();
+            $table->unsignedInteger('invitee_id')->default(null)->nullable()->change();
             $table->foreign('inviter_id')->references('id')->on('user')->cascadeOnDelete();
             $table->foreign('invitee_id')->references('id')->on('user')->nullOnDelete();
         });
@@ -199,6 +203,9 @@ class ImproveTable extends Migration
         UserHourlyDataFlow::whereNodeId(0)->update(['node_id' => null]);
         UserDailyDataFlow::whereNodeId(0)->update(['node_id' => null]);
         UserDataModifyLog::whereOrderId(0)->update(['order_id' => null]);
+        Invite::whereInviterId(0)->update(['inviter_id' => null]);
+        Invite::whereInviteeId(0)->update(['invitee_id' => null]);
+        User::whereInviterId(0)->update(['inviter_id' => null]);
 
         Schema::enableForeignKeyConstraints();
     }
@@ -221,6 +228,7 @@ class ImproveTable extends Migration
         UserHourlyDataFlow::whereNodeId(null)->update(['node_id' => 0]);
         UserDailyDataFlow::whereNodeId(null)->update(['node_id' => 0]);
         UserDataModifyLog::whereOrderId(null)->update(['order_id' => 0]);
+        Invite::whereInviterId(null)->update(['inviter_id' => 0]);
 
         Schema::table('coupon_log', function (Blueprint $table) {
             $table->dropForeign(['coupon_id']);
@@ -246,6 +254,10 @@ class ImproveTable extends Migration
             $table->dropForeign(['invitee_id']);
             $table->dropIndex('invite_inviter_id_foreign');
             $table->dropIndex('invite_invitee_id_foreign');
+        });
+
+        Schema::table('invite', function (Blueprint $table) {
+            $table->unsignedInteger('inviter_id')->default(0)->nullable(false)->change();
         });
 
         Schema::table('node_auth', function (Blueprint $table) {

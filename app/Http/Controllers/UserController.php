@@ -310,7 +310,6 @@ class UserController extends Controller
         $obj->user_id = $user->id;
         $obj->title = $title;
         $obj->content = $content;
-        $obj->status = 0;
 
         if ($obj->save()) {
             $emailTitle = '新工单提醒';
@@ -426,9 +425,7 @@ class UserController extends Controller
 
         $obj = new Invite();
         $obj->inviter_id = $user->id;
-        $obj->invitee_id = 0;
         $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
-        $obj->status = 0;
         $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('user_invite_days').' days'));
         $obj->save();
         if ($obj) {
@@ -594,7 +591,7 @@ class UserController extends Controller
         ], ['coupon_sn.required' => '券码不能为空', 'coupon_sn.exists' => '该券不可用']);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         $coupon = Coupon::whereSn($request->input('coupon_sn'))->firstOrFail();

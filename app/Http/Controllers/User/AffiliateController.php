@@ -55,10 +55,8 @@ class AffiliateController extends Controller
         $ref = new ReferralApply();
         $ref->user_id = Auth::id();
         $ref->before = $commission;
-        $ref->after = 0;
         $ref->amount = $commission;
         $ref->link_logs = ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray();
-        $ref->status = 0;
         if ($ref->save()) {
             return Response::json(['status' => 'success', 'message' => '申请成功，请等待管理员审核']);
         }

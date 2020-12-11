@@ -67,7 +67,6 @@ class TicketController extends Controller
         $obj->admin_id = Auth::id();
         $obj->title = $title;
         $obj->content = $content;
-        $obj->status = 0;
 
         if ($obj->save()) {
             return Response::json(['status' => 'success', 'message' => '工单创建成功']);

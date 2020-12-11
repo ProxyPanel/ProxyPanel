@@ -65,7 +65,7 @@
                             <td> {{$coupon->id}} </td>
                             <td> {{$coupon->name}} </td>
                             <td> {{$coupon->sn}} </td>
-                            <td> @if($coupon->logo) <img src="{{$coupon->logo}}" alt="优惠码logo"/> @endif </td>
+                            <td> @if($coupon->logo) <img src="{{asset($coupon->logo)}}" class="h-50" alt="优惠码logo"/> @endif </td>
                             <td>
                                 @if($coupon->type === 1)
                                     抵用券

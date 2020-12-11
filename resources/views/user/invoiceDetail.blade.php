@@ -9,7 +9,7 @@
                 <div class="row">
                     <div class="col-lg-3">
                         <h3>
-                            <img src="{{sysConfig('website_logo')? :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
+                            <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo">
                             {{sysConfig('website_name')}}
                         </h3>
                     </div>
