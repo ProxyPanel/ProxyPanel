@@ -86,7 +86,7 @@ class NodeObserver
         // 断开审计规则分组节点联系
         foreach (RuleGroup::all() as $ruleGroup) {
             $nodes = $ruleGroup->nodes;
-            if ($nodes && in_array($node->id, $nodes, true)) {
+            if ($nodes && in_array($node->id, $nodes)) {
                 $ruleGroup->nodes = array_merge(array_diff($nodes, [$node->id]));
                 $ruleGroup->save();
             }
@@ -95,7 +95,7 @@ class NodeObserver
         // 断开用户分组控制节点联系
         foreach (UserGroup::all() as $userGroup) {
             $nodes = $userGroup->nodes;
-            if ($nodes && in_array($node->id, $nodes, true)) {
+            if ($nodes && in_array($node->id, $nodes)) {
                 $userGroup->nodes = array_merge(array_diff($nodes, [$node->id]));
                 $userGroup->save();
             }
