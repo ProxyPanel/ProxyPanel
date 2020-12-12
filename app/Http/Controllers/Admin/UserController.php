@@ -145,9 +145,9 @@ class UserController extends Controller
             $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
             $user = User::create($data);
 
-            $roles = $request->input('roles');
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || Auth::getUser()->hasRole('Super Admin'))
-                || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
+            $roles = $request->input('roles') ?? [];
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))
+                    || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->assignRole($roles);
             }
 
@@ -198,10 +198,10 @@ class UserController extends Controller
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
             // 只有超级管理员才能赋予超级管理员
-            $roles = $request->input('roles');
+            $roles = $request->input('roles') ?? [];
 
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || Auth::getUser()->hasRole('Super Admin'))
-                || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin')) ||
+                    Auth::getUser()->hasRole('Super Admin'))) {
                 $user->syncRoles($roles);
             }
 

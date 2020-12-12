@@ -67,11 +67,9 @@ class Helpers
         $user->username = $email;
         $user->email = $email;
         $user->password = $password;
-        // 生成一个可用端口
-        $user->port = self::getPort();
+        $user->port = self::getPort(); // 生成一个可用端口
         $user->passwd = Str::random();
         $user->vmess_id = Str::uuid();
-        $user->enable = 1;
         $user->method = self::getDefaultMethod();
         $user->protocol = self::getDefaultProtocol();
         $user->obfs = self::getDefaultObfs();
@@ -79,8 +77,6 @@ class Helpers
         $user->expired_at = date('Y-m-d', strtotime('+'.$data.' days'));
         $user->reg_ip = IP::getClientIp();
         $user->inviter_id = $inviter_id;
-        $user->reset_time = null;
-        $user->status = 0;
         $user->save();
 
         return $user->id;

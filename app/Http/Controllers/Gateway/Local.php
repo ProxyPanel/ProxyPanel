@@ -6,6 +6,7 @@ use App\Components\Helpers;
 use App\Models\Goods;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Response;
 
 class Local extends AbstractPayment
@@ -27,7 +28,7 @@ class Local extends AbstractPayment
         return Response::json(['status' => 'success', 'message' => '购买完成!']);
     }
 
-    public function notify($request): void
+    public function notify(Request $request): void
     {
     }
 }
