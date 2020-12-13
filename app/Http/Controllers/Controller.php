@@ -78,12 +78,6 @@ class Controller extends BaseController
         return $i;
     }
 
-    // 获取邮箱后缀
-    public function emailFilterList($type): array
-    {
-        return EmailFilter::whereType($type)->pluck('words')->toArray();
-    }
-
     // 将Base64图片转换为本地图片并保存
     public function base64ImageSaver($base64_image_content): ?string
     {

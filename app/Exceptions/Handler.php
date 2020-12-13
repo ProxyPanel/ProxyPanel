@@ -12,6 +12,7 @@ use Illuminate\Session\TokenMismatchException;
 use Log;
 use ReflectionException;
 use Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -22,7 +23,9 @@ class Handler extends ExceptionHandler
      *
      * @var array
      */
-    protected $dontReport = [];
+    protected $dontReport = [
+        HttpException::class,
+    ];
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
