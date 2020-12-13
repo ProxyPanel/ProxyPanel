@@ -95,7 +95,7 @@
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">VNET-V2Ray</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-                                && curl -L -s http://mrw.so/5XKg2o \<br>
+                                && curl -L -s https://bit.ly/3oO3HZy \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
                                 NODE_ID={{$vl->node->id}} \<br>
                                 NODE_KEY={{$vl->key}} \<br>
@@ -105,7 +105,7 @@
                                 <div class="text-center red-700 mb-5">操作命令</div>
                                 更新：同上
                                 <br>
-                                卸载：curl -L -s http://mrw.so/5XKg2o | bash -s -- --remove
+                                卸载：curl -L -s https://bit.ly/3oO3HZy | bash -s -- --remove
                                 <br>
                                 启动：systemctl start vnet-v2ray
                                 <br>
@@ -178,7 +178,7 @@
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">VNET</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-                                && curl -L -s http://mrw.so/6kit3t \<br>
+                                && curl -L -s https://bit.ly/3828OP1 \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
                                 NODE_ID={{$vl->node->id}} \<br>
                                 NODE_KEY={{$vl->key}} \<br>
@@ -188,7 +188,7 @@
                                 <div class="text-center red-700 mb-5">操作命令</div>
                                 更新：同上
                                 <br>
-                                卸载：curl -L -s http://mrw.so/6kit3t | bash -s -- --remove
+                                卸载：curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove
                                 <br>
                                 启动：systemctl start vnet
                                 <br>
