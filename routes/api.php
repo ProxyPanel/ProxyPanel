@@ -1,7 +1,7 @@
 <?php
 
 // 后端WEBAPI
-Route::group(['namespace' => 'Api\WebApi', 'middleware' => ['webApi']], function () {
+Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function () {
     // VNet后端WEBAPI V1版
     Route::group(['prefix' => 'web/v1'], function () {
         Route::get('node/{id}', 'VNetController@getNodeInfo'); // 获取节点信息
@@ -46,4 +46,14 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => ['webApi']], function
         Route::get('nodeRule/{id}', 'BaseController@getNodeRule'); // 获取节点的审计规则
         Route::post('trigger/{id}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录
     });
+});
+
+// 客户端API
+Route::group(['namespace' => 'Api\Client', 'middleware' => 'api', 'prefix' => 'client/v1'], function () {
+    Route::post('login', 'V1Controller@login'); // 登录
+    Route::post('logout', 'V1Controller@logout'); // 退出
+    Route::post('refresh', 'V1Controller@refresh'); // 刷新令牌
+    Route::post('profile', 'V1Controller@userProfile'); // 获取账户信息
+    Route::post('nodeList', 'V1Controller@nodeList'); // 获取账户节点
+    Route::post('register', 'V1Controller@register'); // 注册
 });
