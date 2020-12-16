@@ -1,0 +1,103 @@
+.contact-s {
+    padding: 80px 0;
+}
+
+.contact-form-col {
+    padding-right: 2vw;
+
+    &__intro {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 35px;
+        line-height: 30px;
+    }
+}
+
+.form--contact {
+    input {
+        border: none;
+        padding: 15px 26px 15px 12px;
+        height: 50px;
+    }
+
+    select {
+        border: none;
+        height: 50px;
+    }
+
+    textarea {
+        border: none;
+        min-height: 125px;
+        padding: 15px 12px;
+    }
+
+    .btn-primary {
+        width: 200px;
+        border-radius: 50px;
+        height: 50px;
+    }
+}
+
+.contact-data-col {
+    padding-left: 6vw;
+
+    &__intro {
+        font-size: 22px;
+        color: #333;
+        margin-bottom: 35px;
+        line-height: 30px;
+    }
+
+    &__list {
+
+        li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+
+            p {
+                color: #999;
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            img {
+                flex: 1 0 38px;
+                max-width: 38px;
+            }
+
+            .data {
+                padding-left: 15px;
+            }
+
+            .data-value {
+                line-height: 1;
+                font-weight: bolder;
+                font-size: 14px;
+                margin-bottom: 5px;
+
+                a {
+                    color: #333;
+                }
+            }
+        }
+    }
+}
+
+.online-chat {
+    &__title {
+        color: #333;
+        font-size: 22px;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 14px;
+        color: #999;
+    }
+
+    &__btn {
+        padding: 0;
+        margin-bottom: 15px;
+    }
+}

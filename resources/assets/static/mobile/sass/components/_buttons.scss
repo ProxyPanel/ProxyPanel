@@ -1,0 +1,51 @@
+.cs-btn {
+    display: inline-flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    transition: all .3s ease-in-out;
+    border-radius: 5.3vw;
+    font-size: 4vw;
+    line-height: 9.33333vw;
+    font-weight: 700;
+    padding: 0 9.6vw;
+}
+
+.cs-btn--primary {
+    background: #36f;
+    color: #fff;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.cs-btn--lg {
+    height: 60px;
+    padding: 0 30px;
+    width: 210px;
+    font-weight: 700;
+    font-size: 22px;
+}
+
+.jump-page-top {
+    cursor: pointer;
+    position: fixed;
+    right: 10px;
+    bottom: 80px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .3s ease-in-out;
+    background: #36f;
+    border-radius: 50%;
+    color: #fff;
+    z-index: 5000;
+    box-shadow: 0px 3px 5px -1px rgba(0,0,0,0.2), 0px 6px 10px 0px rgba(0,0,0,0.14), 0px 1px 18px 0px rgba(0,0,0,0.12);
+
+    &:hover {
+        background: rgb(35, 71, 178);
+    }
+}

@@ -28,6 +28,7 @@ use Session;
 use Str;
 use Validator;
 
+
 /**
  * 认证控制器.
  *
@@ -38,7 +39,10 @@ class AuthController extends Controller
     // 登录
     public function login(Request $request)
     {
+       // \Log::debug(222222222222);
+        
         if ($request->isMethod('POST')) {
+      
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required',
@@ -46,15 +50,20 @@ class AuthController extends Controller
                 'email.required' => trans('auth.email_null'),
                 'password.required' => trans('auth.password_null'),
             ]);
+            
+
 
             if ($validator->fails()) {
+               
+                Session::flash('errorMsg', '请输入正确的用户名和密码');
                 return Redirect::back()->withInput()->withErrors($validator->errors());
+                
             }
 
             $email = $request->input('email');
             $password = $request->input('password');
             $remember = $request->input('remember');
-
+        
             // 是否校验验证码
             $captcha = $this->check_captcha($request);
             if ($captcha !== false) {
@@ -95,7 +104,7 @@ class AuthController extends Controller
                 return Redirect::route('admin.index');
             }
 
-            return Redirect::route('home');
+            return Redirect::route('usercenter');
         }
 
         if (Auth::check()) {
@@ -185,7 +194,7 @@ class AuthController extends Controller
     {
         Auth::logout();
 
-        return Redirect::route('login');
+        return Redirect::route('home');
     }
 
     // 注册

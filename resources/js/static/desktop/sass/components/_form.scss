@@ -1,0 +1,66 @@
+input:focus,
+input:active {
+    outline: none;
+    box-shadow: none;
+}
+
+label {
+    color: rgb(115, 117, 122);
+    font-weight: 500;
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+textarea {
+    min-height: 169px;
+}
+
+textarea:focus,
+textarea:active {
+    outline: none;
+    box-shadow: none;
+}
+
+.form--payment {
+
+    .form-group {
+        margin-bottom: 22px;
+        position: relative;
+
+        &--last {
+            margin-bottom: 0;
+        }
+    }
+
+    .form-control {
+        color: #000;
+        border: 1px solid rgb(185, 186, 189);
+        height: 46px;
+        font-weight: 400;
+        padding: 9px 15px;
+        font-size: 1rem;
+        border-radius: 3px;
+        position: relative;
+
+        &:active,
+        &:focus {
+            box-shadow: none;
+            outline: none;
+        }
+    }
+
+    button.cs-btn {
+        padding: 0 35px;
+        height: 56px;
+        width: 106px;
+    }
+
+    .card-input {
+        @extend .form-control;
+    }
+
+    .__PrivateStripeElement {
+        top: 5px;
+    }
+}

@@ -27,3 +27,24 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::get('getPort', '\App\Components\Helpers@getPort')->name('getPort'); // 获取端口
 });
 Route::match(['get', 'post'], 'admin/login', 'AuthController@login')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录
+
+//前端静态页面
+Route::get('/', 'FrontPageController@home')->name("home");
+//Route::get('/home', 'FrontPageController@home')->name("home");
+Route::get('/price', 'FrontPageController@price')->name("price");
+Route::get('/feature', 'FrontPageController@feature')->name("feature");
+Route::get('/help-n', 'FrontPageController@help')->name("help-n");
+Route::get('/help-subpage-n', 'FrontPageController@helpsubpage')->name("help-subpage-n");
+//Route::get('/help-n/subpage', 'FrontPageController@helpsubpage')->name("help-subpage-n");
+Route::get('/vpn-apps', 'FrontPageController@vpn')->name("vpn-apps");
+Route::get('/account-n', 'FrontPageController@account')->name("account-n");
+Route::get('/contact', 'FrontPageController@contact')->name("contact");
+Route::get('/tutorial', 'FrontPageController@tutorial')->name("tutorial");
+Route::get('/term', 'FrontPageController@term')->name("term");
+
+
+/* Set global language */
+Route::get('locale/{locale}', function ($locale) {
+    Session::put('locale', $locale);
+    return redirect()->back();
+});

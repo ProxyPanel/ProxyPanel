@@ -1,0 +1,157 @@
+.platform-chooser {
+    background: #f0f0f0;
+    height: 110px;
+
+    &__inner {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+
+    &__link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        height: 100%;
+        max-width: 200px;
+        margin: 0 10px;
+        width: 100%;
+
+        img {
+            display: block;
+        }
+
+        span {
+            color: #666;
+            display: block;
+            margin-top: 17px;
+            font-size: 14px;
+        }
+
+        img.base {
+            display: block;
+        }
+
+        img.active {
+            display: none;
+        }
+
+        &.active {
+            span {
+                font-weight: 700;
+            }
+
+            img.base {
+                display: none;
+            }
+
+            img.active {
+                display: block;
+            }
+        }
+    }
+}
+
+.section--benefits {
+    background: #f0f0f0;
+    padding: 14vw 0 0 0;
+
+    .benefits-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+
+        &__item {
+            text-align: center;
+            margin: 0 0 16.8vw 0;
+            width: 50%;
+
+
+            img {
+                width: 14vw;
+                margin-bottom: 4.2vw;
+            }
+
+            h3 {
+                color: #333;
+                font-weight: 700;
+                font-size: 2.93333vw;
+                line-height: 3.2vw;
+                margin: 0;
+            }
+        }
+    }
+}
+
+.app-download {
+
+    img {
+        @extend .img-fluid;
+    }
+
+    .cs-btn {
+        background: #000;
+        width: 61.33333vw;
+        height: 14.66667vw;
+        border-radius: 10.66667vw;
+
+        img {
+            width: 80%;
+        }
+    }
+
+    &__btn-group {
+        text-align: center;
+    }
+
+    &__link {
+        display: inline-block;
+        position: relative;
+        margin-left: 20px;
+        color: rgb(102, 102, 102);
+        font-size: 14px;
+        top: -25px;
+
+        span {
+            font-weight: 700;
+        }
+
+        .icon-download {
+            background: url("../images/vpn-apps/download-icon.png") no-repeat;
+            width: 17px;
+            height: 17px;
+            display: inline-block;
+            position: relative;
+            top: 3px;
+        }
+    }
+
+    &__left {
+        h2 {
+            color: #333;
+            font-weight: 300;
+            font-size: 6.66667vw;
+            margin-top: 11.6vw;
+            margin-bottom: 4.4vw;
+            line-height: 8vw;
+            text-align: center;
+
+            strong {
+                font-weight: 700;
+            }
+        }
+    }
+
+    &__right {
+        text-align: center;
+
+        img {
+            margin: 18.66667vw 0;
+            width: 48vw;
+            min-height: 55.06667vw;
+        }
+    }
+}

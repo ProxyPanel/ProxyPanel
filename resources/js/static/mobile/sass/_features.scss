@@ -1,0 +1,69 @@
+.feature {
+    margin-bottom: 23.6vw;
+    padding-left: 10.66667vw;
+
+    .container {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    &:first-child {
+        img {
+            margin-left: -10.66667vw;
+            margin-bottom: 4vw;
+        }
+    }
+
+    img {
+        @extend .img-fluid;
+        width: 92.53333vw;
+        margin-bottom: 12vw;
+    }
+
+    .text-content {
+
+        h2 {
+            color: #333;
+            font-size: 6.93333vw;
+            margin-bottom: 3.73333vw;
+            line-height: 7.73333vw;
+        }
+
+        p {
+            margin-bottom: 4.53333vw;
+            font-size: 3.73333vw;
+            padding-right: 5.33333vw;
+            line-height: 5.06667vw;
+        }
+
+        .cs-btn {
+            padding: 0 9.6vw;
+            font-size: 4.26667vw;
+            border-radius: 8vw;
+            line-height: 10.66667vw;
+        }
+
+        &--light {
+            h2, p {
+                color: #fff;
+            }
+        }
+    }
+
+
+    &--03 {
+        height: 194.26667vw;
+        background: url("../images/features/section-bg.jpg") no-repeat;
+        background-size: cover;
+        padding-top: 18.53333vw;
+        padding-bottom: 18.53333vw;
+        margin-bottom: 18.53333vw;
+    }
+
+    &--05 {
+
+        img {
+            width: 78vw;
+        }
+    }
+}

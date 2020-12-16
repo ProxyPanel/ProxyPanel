@@ -1,6 +1,6 @@
 <?php
 
-Route::get('/', 'UserController@index')->name('home'); // 用户首页
+Route::get('usercenter', 'UserController@index')->name('usercenter'); // 用户首页
 Route::get('article', 'UserController@article')->name('article'); // 文章详情
 Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe')->name('changeSub'); // 更换节点订阅地址
 Route::match(['get', 'post'], 'nodeList', 'UserController@nodeList')->name('node'); // 节点列表

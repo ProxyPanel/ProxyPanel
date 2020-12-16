@@ -93,6 +93,7 @@ class PaymentController extends Controller
         self::$method = $request->input('method');
         $credit = $request->input('amount');
         $pay_type = $request->input('pay_type');
+        $pay_mode = $request->input('pay_mode');
         $amount = 0;
 
         $goods = Goods::find($goods_id);
@@ -186,7 +187,7 @@ class PaymentController extends Controller
                 Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $order->id);
             }
 
-            $request->merge(['id' => $order->id, 'type' => $pay_type, 'amount' => $amount]);
+            $request->merge(['id' => $order->id, 'mode'=> $pay_mode,'type' => $pay_type, 'amount' => $amount]);
 
             // 生成支付单
             return self::getClient()->purchase($request);

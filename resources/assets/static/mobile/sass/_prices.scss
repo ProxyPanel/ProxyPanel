@@ -1,0 +1,282 @@
+.page-content--price {
+    padding: 0 6.66667vw;
+}
+
+.top-content--price {
+    h2 {
+        color: #7783a5;
+        font-size: 3.888vw;
+        width: 66.67vw;
+        margin: 5.33333vw auto 2.26667vw;
+        text-align: center;
+    }
+
+    p {
+        color: #7783a5;
+        text-align: center;
+        width: 73.33333vw;
+        font-size: 2.96267vw;
+        margin: 0 auto 9.33333vw;
+    }
+}
+
+.prices-items {
+
+    &__bar {
+        position: relative;
+        margin-bottom: 6.66667vw;
+
+        &--hot {
+            .fire-ball {
+                background: url("../images/prices/fire-ball.png") no-repeat;
+                background-size: 100% 100%;
+                top: -12vw;
+                position: absolute;
+                left: 0;
+                width: 18.93333vw;
+                height: 15.86667vw;
+                z-index: 1000;
+            }
+
+        }
+
+        .bar-top {
+            background: #36f;
+            border-radius: 6.66667vw;
+            padding: 0 5.6vw 0 7.33333vw;
+            color: #fff;
+            height: 11.06667vw;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 3.7vw;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 13.86667vw;
+        }
+
+        .bar-bottom {
+            color: #7783a5;
+            background: #ebf0ff;
+            font-size: 2.592vw;
+            border-radius: 6vw;
+            right: 3.33333vw;
+            left: 3.33333vw;
+            height: 12vw;
+            padding-top: 7vw;
+            text-align: center;
+            position: absolute;
+            bottom: -50%;
+        }
+
+        .bar-badge {
+            color: #36f;
+            background: #fff;
+            line-height: 5.33333vw;
+            border-radius: 4vw;
+            position: absolute;
+            font-size: 3.2vw;
+            top: 0;
+            left: 50%;
+            padding: 0 4vw;
+            border: 0.26667vw solid;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+    &__type {
+        display: flex;
+        justify-content: space-between;
+
+        .custom-control {
+            width: 50%;
+        }
+
+        img {
+            height: 4vw;
+            margin-left: 1.6vw;
+            margin-top: 1vw;
+        }
+    }
+}
+
+
+.benefits {
+    padding-top: 8.53333vw;
+
+    h2 {
+        font-size: 2.96267vw;
+        color: #7783a5;
+        margin: 0 0 3.06667vw;
+    }
+
+    ul {
+        margin: 0 0 9.73333vw;
+
+        li {
+            line-height: 6.26667vw;
+            font-size: 2.96267vw;
+            position: relative;
+
+            &:before {
+                content: '';
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABIUlEQVQ4jZXTQStEYRQG4GfuTFOUXyCzkhIp8QNEs1HWFpYjFmxIsrQVhUKk/AM7VoyVPyCNpcUsbC3VxIzFvZfrzrjGu/rOd857vs77fifXOpPGOJYwhRKKeMYdjlBLFucSDXpwiEXk2tqGaOIca3iDQpQo4grTvxBjBFjGIGbRCKLEfhfkJGawF48wggfk/yB94AUDiXgsQKULMqxiCO9RnEclQLkL8gFOselbNygHQquycI0NzGM7lSsFbeWhmFvR+RELmMSFDvYWUMdo4m4CO3jFLfpwid4Oj9ULuEk12BUKtBOR7tHfeTo3WTYeY9jv/+PLxppQ4TRWMshwgqdYxHVUM4rTqAqdETdoYE64KK0MYhNnUW2Dn9sY41/r/Al34z26e4ozFgAAAABJRU5ErkJggg==) center no-repeat;
+                background-size: cover;
+                color: #fff;
+                vertical-align: middle;
+                display: inline-block;
+                width: 2.13333vw;
+                height: 2.13333vw;
+                margin-right: 2.13333vw;
+            }
+        }
+    }
+}
+
+.section--payment {
+    padding: 60px 0;
+
+    .container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .payment-items {
+        flex: 1 1 auto;
+        margin-right: 45px;
+        max-width: 760px;
+    }
+
+    .payment-item {
+        box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12);
+
+        &.active {
+            .payment-item__btn i {
+                transform: rotate(90deg);
+            }
+        }
+
+        img {
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+        &__btn {
+            background: #fff;
+            border-bottom: 1px solid rgb(232, 232, 233);
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            min-height: 48px;
+            padding: 16px;
+            text-align: left;
+            font-size: 14px;
+            transition: background-color .25s ease-in-out;
+
+            &:hover {
+                background-color: rgb(242, 240, 248);
+            }
+
+            i {
+                display: inline-block;
+                margin-left: 10px;
+                transition: all .25s ease-in-out;
+            }
+
+            span {
+                display: inline-block;
+                line-height: 1;
+                margin: 0 20px;
+            }
+        }
+
+        &__content {
+            flex: 1 1 auto;
+            font-size: 14px;
+
+            .card {
+                border-radius: 0;
+                border: none;
+                border-bottom: 1px solid rgb(232, 232, 233);
+                padding: 32px;
+            }
+
+            .amounts {
+
+                .amount-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 17px;
+                }
+
+                .amounts-total {
+                    font-weight: 700;
+                    font-size: 20px;
+                }
+            }
+
+            .cs-btn {
+                border-radius: 4px;
+                padding: 0 18px;
+                font-size: 14px;
+
+                img {
+                    margin-left: 5px;
+                }
+            }
+
+            .content-foot {
+                margin-top: 30px;
+                p {
+                    margin: 0;
+                }
+
+                i {
+                    display: inline-block;
+                    margin-right: 3px;
+                    width: 16px;
+                    height: 16px;
+                    position: relative;
+                    top: 2px;
+                }
+
+                .icon-lock {
+                    background: url('../images/icons/lock.svg') no-repeat;
+                }
+
+                .icon-reset {
+                    background: url('../images/icons/reset.svg') no-repeat;
+                }
+            }
+        }
+    }
+
+    .payment-info {
+        &__title {
+            color: #000;
+            font-size: 22px;
+            font-weight: 400;
+            margin-bottom: 20px;
+        }
+
+        ul {
+
+            li {
+                font-size: 14px;
+                position: relative;
+                line-height: 32px;
+
+                i {
+                    display: inline-block;
+                    margin-right: 20px;
+                    font-size: 12px;
+                }
+            }
+        }
+    }
+}
+
+
