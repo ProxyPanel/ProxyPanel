@@ -32,6 +32,8 @@
     "spatie/laravel-permission": "^3.17",
     "srmklive/paypal": "^1.7",
     "stripe/stripe-php": "^7.61",
+    "symfony/yaml": "^5.2",
+    "tymon/jwt-auth": "^1.0",
     "xhat/payjs": "^1.4",
     "zbrettonye/geetest": "^1.2",
     "zbrettonye/hcaptcha": "^1.0",
