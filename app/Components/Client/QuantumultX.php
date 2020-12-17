@@ -27,7 +27,7 @@ class QuantumultX
             "password={$server['passwd']}",
             "ssr-protocol={$server['protocol']}",
             "ssr-protocol-param={$server['protocol_param']}",
-            "obfs={$server['obs']}",
+            "obfs={$server['obfs']}",
             "obfs-host={$server['obfs_param']}",
             'fast-open=true',
             "udp-relay={$server['udp']}",

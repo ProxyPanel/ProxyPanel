@@ -105,7 +105,7 @@ class SubscribeController extends Controller
         }
 
         if ($target) {
-            if (strpos($target, 'quantumult%20x') !== false) {
+            if (strpos($target, 'quantumult x') !== false) {
                 exit($this->quantumultX($user, $servers));
             }
             if (strpos($target, 'quantumult') !== false) {

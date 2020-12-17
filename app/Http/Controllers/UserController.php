@@ -64,6 +64,22 @@ class UserController extends Controller
         //付费用户判断
         $view['paying_user'] = $user->activePayingUser();
         $view['userLoginLog'] = UserLoginLog::whereUserId($user->id)->latest()->first(); // 近期登录日志
+
+        $nodes = $user->userAccessNodes()->get();
+        $subType = [];
+        if ($nodes->whereIn('type', [1, 4])->isNotEmpty()) {
+            $subType[] = 'ss';
+        }
+        if ($nodes->where('type', 2)->isNotEmpty()) {
+            $subType[] = 'v2';
+        }
+        if ($nodes->where('type', 3)->isNotEmpty()) {
+            $subType[] = 'trojan';
+        }
+
+        $view['subscribe_status'] = $user->subscribe->status;
+        $view['subType'] = $subType;
+        $view['subUrl'] = route('sub', $user->subscribe->code);
         $view = array_merge($view, $this->dataFlowChart($user->id));
 
         return view('user.index', $view);
