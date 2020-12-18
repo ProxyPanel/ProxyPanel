@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -56,6 +57,10 @@ class RoleController extends Controller
             return redirect()->back()->withInput()->withErrors($validator->errors());
         }
 
+        if ($role->name === 'Super Admin') {
+            return redirect()->back()->withInput()->withErrors('请勿修改超级管理员');
+        }
+
         $role->update($request->except('permissions'));
         $permissions = $request->input('permissions') ?: [];
         if ($role->syncPermissions($permissions)) {
@@ -68,6 +73,9 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         try {
+            if ($role->name === 'Super Admin') {
+                return Response::json(['status' => 'fail', 'message' => '请勿删除超级管理员']);
+            }
             $role->delete();
         } catch (Exception $e) {
             return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);

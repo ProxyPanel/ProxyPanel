@@ -43,11 +43,11 @@
                                 @canany(['admin.role.edit', 'admin.role.destroy'])
                                     <div class="btn-group">
                                         @can('admin.role.edit')
-                                            <a class="btn btn-sm btn-outline-primary" href="{{route('admin.role.edit', $role->id)}}">
+                                            <a class="btn btn-sm btn-outline-primary" href="{{route('admin.role.edit', $role)}}">
                                                 <i class="icon wb-edit"></i></a>
                                         @endcan
                                         @can('admin.role.destroy')
-                                            <button class="btn btn-sm btn-outline-danger" onclick="delRole('{{route('admin.role.destroy', $role->id)}}','{{$role->name}}')">
+                                            <button class="btn btn-sm btn-outline-danger" onclick="delRole('{{route('admin.role.destroy', $role)}}','{{$role->name}}')">
                                                 <i class="icon wb-trash"></i></button>
                                         @endcan
                                     </div>

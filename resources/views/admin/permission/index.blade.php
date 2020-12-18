@@ -35,12 +35,12 @@
                                 @canany(['admin.permission.edit', 'admin.permission.destroy'])
                                     <div class="btn-group">
                                         @can('admin.permission.edit')
-                                            <a class="btn btn-sm btn-outline-primary" href="{{route('admin.permission.edit', $permission->id)}}">
+                                            <a class="btn btn-sm btn-outline-primary" href="{{route('admin.permission.edit', $permission)}}">
                                                 <i class="icon wb-edit"></i></a>
                                         @endcan
                                         @can('admin.permission.destroy')
                                             <button class="btn btn-sm btn-outline-danger"
-                                                    onclick="delPermission('{{route('admin.permission.destroy', $permission->id)}}','{{$permission->name}}')">
+                                                    onclick="delPermission('{{route('admin.permission.destroy', $permission)}}','{{$permission->name}}')">
                                                 <i class="icon wb-trash"></i></button>
                                         @endcan
                                     </div>
