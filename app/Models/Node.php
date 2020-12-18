@@ -77,6 +77,7 @@ class Node extends Model
     public function config($user)
     {
         $config = [
+            'id' => $this->id,
             'name' => $this->name,
             'host' => $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip),
             'group' => sysConfig('website_name'),
@@ -109,6 +110,7 @@ class Node extends Model
             case 1:
             case 4:
                 $config = array_merge($config, [
+                    'type' => $this->compatible ? 'shadowsocks' : 'shadowsocksr',
                     'method' => $this->method,
                     'protocol' => $this->protocol,
                     'obfs' => $this->obfs,
@@ -131,11 +133,6 @@ class Node extends Model
                     }
                 }
 
-                if ($this->compatible) {
-                    $config['type'] = 'shadowsocks';
-                } else {
-                    $config['type'] = 'shadowsocksr';
-                }
                 break;
         }
 

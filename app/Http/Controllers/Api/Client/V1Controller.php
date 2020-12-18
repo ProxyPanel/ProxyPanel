@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Goods;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -10,7 +11,7 @@ class V1Controller extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'shop']]);
         auth()->shouldUse('api');
     }
 
@@ -22,14 +23,25 @@ class V1Controller extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return response()->json(['ret' => 0, 'msg' => $validator->errors()->all()], 422);
         }
 
         if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['ret' => 0, 'msg' => '登录信息错误'], 401);
         }
 
         return $this->createNewToken($token);
+    }
+
+    protected function createNewToken($token)
+    {
+        return response()->json([
+            'ret' => 1,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60,
+            'user' => auth()->user()->profile(),
+        ]);
     }
 
     public function register(Request $request)
@@ -49,17 +61,14 @@ class V1Controller extends Controller
             ['password' => $request->password]
         ));
 
-        return response()->json([
-            'message' => 'User successfully registered',
-            'user' => $user,
-        ], 201);
+        return response()->json(['ret' => 1, 'user' => $user], 201);
     }
 
     public function logout()
     {
         auth()->logout();
 
-        return response()->json(['message' => 'User successfully signed out']);
+        return response()->json(['ret' => 1]);
     }
 
     public function refresh()
@@ -69,21 +78,34 @@ class V1Controller extends Controller
 
     public function userProfile()
     {
-        return response()->json(auth()->user());
+        return response()->json(auth()->user()->profile());
     }
 
-    public function nodeList()
+    public function nodeList(int $id = null)
     {
-        return response()->json(auth()->user()->userAccessNodes());
+        $user = auth()->user();
+        $nodes = $user->userAccessNodes()->get();
+        if (isset($id)) {
+            $node = $nodes->where('id', $id)->first();
+
+            if (empty($node)) {
+                return response()->json([], 204);
+            }
+
+            return response()->json($node->config($user));
+        }
+        $servers = [];
+        foreach ($nodes as $node) {
+            $servers[] = $node->config($user);
+        }
+
+        return response()->json($servers);
     }
 
-    protected function createNewToken($token)
+    public function shop()
     {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user(),
-        ]);
+        $shop = Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get();
+
+        return response()->json($shop);
     }
 }

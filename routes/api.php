@@ -51,9 +51,12 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function (
 // 客户端API
 Route::group(['namespace' => 'Api\Client', 'middleware' => 'api', 'prefix' => 'client/v1'], function () {
     Route::post('login', 'V1Controller@login'); // 登录
-    Route::post('logout', 'V1Controller@logout'); // 退出
-    Route::post('refresh', 'V1Controller@refresh'); // 刷新令牌
-    Route::post('profile', 'V1Controller@userProfile'); // 获取账户信息
-    Route::post('nodeList', 'V1Controller@nodeList'); // 获取账户节点
+    Route::get('logout', 'V1Controller@logout'); // 退出
+    Route::get('refresh', 'V1Controller@refresh'); // 刷新令牌
+    Route::get('profile', 'V1Controller@userProfile'); // 获取账户信息
+    Route::get('nodes', 'V1Controller@nodeList'); // 获取账户全部节点
+    Route::get('node/{id}', 'V1Controller@nodeList'); // 获取账户个别节点
+
     Route::post('register', 'V1Controller@register'); // 注册
+    Route::get('shop', 'V1Controller@shop'); // 获取商品信息
 });

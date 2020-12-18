@@ -34,6 +34,33 @@ class User extends Authenticatable implements JWTSubject
         return $this->d + $this->u;
     }
 
+    public function profile()
+    {
+        return [
+            'id' => $this->id,
+            'nickname' => $this->username,
+            'account' => $this->email,
+            'port' => $this->port,
+            'passwd' => $this->passwd,
+            'uuid' => $this->vmess_id,
+            'transfer_enable' => $this->transfer_enable,
+            'u' => $this->u,
+            'd' => $this->d,
+            't' => $this->t,
+            'enable' => $this->enable,
+            'speed_limit' => $this->speed_limit,
+            'credit' => $this->credit,
+            'expired_at' => $this->expired_at,
+            'ban_time' => $this->ban_time,
+            'level' => $this->level_name,
+            'group' => $this->group->name ?? null,
+            'last_login' => $this->last_login,
+            'reset_time' => $this->reset_time,
+            'invite_num' => $this->invite_num,
+            'status' => $this->status,
+        ];
+    }
+
     public function onlineIpLogs(): HasMany
     {
         return $this->hasMany(NodeOnlineUserIp::class);
