@@ -711,7 +711,7 @@ class AuthController extends Controller
         }
 
         // 是否开启注册发送验证码
-        if (sysConfig('is_activate_account') != 1) {
+        if ((int) sysConfig('is_activate_account') !== 1) {
             return Response::json(['status' => 'fail', 'message' => trans('auth.captcha_close')]);
         }
 
@@ -744,7 +744,7 @@ class AuthController extends Controller
     // 公开的邀请码列表
     public function free()
     {
-        $view['inviteList'] = Invite::whereInviterId(0)->whereStatus(0)->paginate();
+        $view['inviteList'] = Invite::whereInviterId(null)->whereStatus(0)->paginate();
 
         return view('auth.free', $view);
     }

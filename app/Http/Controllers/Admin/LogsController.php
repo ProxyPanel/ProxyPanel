@@ -45,9 +45,9 @@ class LogsController extends Controller
 
         if (isset($is_coupon)) {
             if ($is_coupon) {
-                $query->where('coupon_id', '<>', 0);
+                $query->where('coupon_id', '<>', null);
             } else {
-                $query->whereCouponId(0);
+                $query->whereCouponId(null);
             }
         }
 
