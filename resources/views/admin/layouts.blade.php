@@ -482,9 +482,8 @@
     @endsection
 @section('layout_javascript')
     <!--[if lt IE 11]>
-    <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/sweetalert2/polyfill.min.js" type="text/javascript"></script>
     <![endif]-->
-    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
-    <script src="/assets/custom/Plugin/js-cookie/js.cookie.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
     @yield('javascript')
 @endsection

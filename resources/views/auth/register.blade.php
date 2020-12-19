@@ -139,9 +139,9 @@
     @endsection
 @section('javascript')
 	<!--[if lt IE 11]>
-    <script src="/assets/custom/Plugin/sweetalert2/polyfill.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/sweetalert2/polyfill.min.js" type="text/javascript"></script>
     <![endif]-->
-    <script src="/assets/custom/Plugin/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
     <script type="text/javascript">

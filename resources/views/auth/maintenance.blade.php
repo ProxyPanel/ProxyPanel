@@ -1,27 +1,22 @@
 @extends('_layout')
 @section('title', '维护 | Maintenance')
-@section('layout_css')
-    <link href="/assets/css/examples/maintenance.min.css" type="text/css" rel="stylesheet">
-    @endsection
 @section('layout_content')
    <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-        <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-        browser. Please
-        <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
+    <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
+    browser. Please
+    <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
 
-    <!-- Page -->
-    <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
-        <div class="page-content vertical-align-middle">
-            <i class="icon wb-settings icon-spin page-maintenance-icon" aria-hidden="true"></i>
-            <h2>维护建设中</h2>
-            {!! $message !!}
-            <footer class="page-copyright">
-                <p id="countdown"></p>
-            </footer>
-        </div>
+<div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
+    <div class="page-content vertical-align-middle">
+        <i class="icon wb-settings icon-spin font-size-70" aria-hidden="true"></i>
+        <h2>维护建设中</h2>
+        {!! $message !!}
+        <footer class="page-copyright">
+            <p id="countdown"></p>
+        </footer>
     </div>
-    <!-- End Page -->
+</div>
 @endsection
 @section('layout_javascript')
     <script>

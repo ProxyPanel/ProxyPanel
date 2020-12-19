@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/custom/Plugin/bootstrap-switch/bootstrap-switch.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/custom/bootstrap-switch/bootstrap-switch.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/ascolorpicker/asColorPicker.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
 @endsection
@@ -181,7 +181,7 @@
     <script src="/assets/global/vendor/ascolorpicker/jquery-asColorPicker.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script src="/assets/custom/Plugin/bootstrap-switch/bootstrap-switch.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/bootstrap-switch/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/ascolorpicker.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
     <script type="text/javascript">

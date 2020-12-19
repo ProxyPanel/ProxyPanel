@@ -101,6 +101,5 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
     <script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
 @endsection

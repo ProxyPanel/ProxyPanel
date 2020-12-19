@@ -122,9 +122,8 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/marked/marked.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/to-markdown/to-markdown.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/marked/marked.min.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $('#status').val({{Request::input('status')}});

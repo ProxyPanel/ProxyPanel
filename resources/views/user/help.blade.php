@@ -290,7 +290,7 @@
 
 @endsection
 @section('javascript')
-    <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/clipboardjs/clipboard.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
     <script src="/assets/custom/jump-tab.js" type="text/javascript"></script>

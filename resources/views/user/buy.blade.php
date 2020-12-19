@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/css/examples/invoice.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/invoice.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content">

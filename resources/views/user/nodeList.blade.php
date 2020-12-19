@@ -3,7 +3,7 @@
     <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
     <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/webui-popover/webui-popover.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/jvectormap/jquery-jvectormap.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/jvectormap/jquery-jvectormap.min.css" type="text/css" rel="stylesheet">
 @endsection
 @section('content')
     <!-- BEGIN CONTENT BODY -->
@@ -114,7 +114,7 @@
 @section('javascript')
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
-    <script src="/assets/custom/Plugin/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/jquery-qrcode/jquery.qrcode.min.js" type="text/javascript"></script>
     <script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
     <script src="/assets/custom/maps/jquery-jvectormap-world-mill-cn.js"></script>

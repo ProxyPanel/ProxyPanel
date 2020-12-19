@@ -18,20 +18,20 @@
     <title>@yield('title')</title>
     <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
-    <link href="/assets/global/css/bootstrap.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/bootstrap-extend.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/css/site.min.css" type="text/css" rel="stylesheet">
     <!-- 插件/Plugins -->
     <link href="/assets/global/vendor/animsition/animsition.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/flag-icon-css/flag-icon.min.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous" />
 @yield('layout_css')
 <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" type="text/css" rel="stylesheet">
     <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" type="text/css" rel="stylesheet">
     <!--[if lt IE 9]>
-    <script src="/assets/global/vendor/html5shiv/html5shiv.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.loli.net/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha512-UDJtJXfzfsiPPgnI5S1000FPLBHMhvzAMX15I+qG2E2OAzC9P1JzUwJOfnypXiOH7MRPaqzhPbBGDNNj7zBfoA==" crossorigin="anonymous"></script>
     <![endif]-->
     <!--[if lt IE 10]>
     <script src="/assets/global/vendor/media-match/media.match.min.js" type="text/javascript"></script>
@@ -52,12 +52,12 @@
 <script src="/assets/global/vendor/popper-js/umd/popper.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/bootstrap/bootstrap.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/animsition/animsition.min.js" type="text/javascript"></script>
-<script src="/assets/global/vendor/mousewheel/jquery.mousewheel.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/mousewheel/jquery.mousewheel.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js" type="text/javascript"></script>
 <!-- 插件/Plugins -->
-<script src="/assets/global/vendor/screenfull/screenfull.js" type="text/javascript"></script>
+<script src="/assets/global/vendor/screenfull/screenfull.min.js" type="text/javascript"></script>
 <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js" type="text/javascript"></script>
 <!-- 脚本/Scripts -->
 <script src="/assets/global/js/Component.js" type="text/javascript"></script>

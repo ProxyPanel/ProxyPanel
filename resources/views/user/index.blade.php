@@ -276,8 +276,8 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/Plugin/clipboardjs/clipboard.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.js" type="text/javascript"></script>
+    <script src="/assets/custom/clipboardjs/clipboard.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
