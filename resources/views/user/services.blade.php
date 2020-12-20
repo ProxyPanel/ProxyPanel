@@ -168,7 +168,7 @@
 @section('javascript')
     <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
-    <script type="text/javascript">
+    <script>
       function itemControl(value) {
         if (value === 1) {
           $('.charge_credit').show();

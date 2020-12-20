@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -114,12 +114,11 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script src="/assets/global/js/Plugin/dropify.js"></script>
+    <script>
       $('.input-daterange>input').datepicker({
         format: 'yyyy-mm-dd',
       });

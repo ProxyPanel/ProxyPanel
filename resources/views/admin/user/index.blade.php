@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/custom/range.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/assets/custom/range.min.css" rel="stylesheet">
     <style>
         .table a {
             color: #76838f;
@@ -212,10 +212,10 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js" type="text/javascript"></script>
-    <script src="/assets/custom/clipboardjs/clipboard.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
+    <script>
       $(document).ready(function() {
         $('#group').val({{Request::input('group')}});
         $('#level').val({{Request::input('level')}});

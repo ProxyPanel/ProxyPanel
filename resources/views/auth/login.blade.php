@@ -39,7 +39,7 @@
     @endif
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       $('#login-form').submit(function(event) {
           @switch(sysConfig('is_captcha'))
           @case(3)

@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title', trans('auth.register'))
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <form action="{{route('register')}}" method="post" id="register-form">
@@ -139,12 +139,12 @@
     @endsection
 @section('javascript')
 	<!--[if lt IE 11]>
-    <script src="/assets/custom/sweetalert2/polyfill.min.js" type="text/javascript"></script>
+    <script src="/assets/custom/sweetalert2/polyfill.min.js"></script>
     <![endif]-->
-    <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script>
         @if($emailList)
         function getEmail() {
           let email = $('#emailHead').val().trim();

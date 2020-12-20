@@ -41,7 +41,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
         @can('admin.ticket.destroy')
         // 关闭工单
         function closeTicket() {

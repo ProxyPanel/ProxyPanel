@@ -1,8 +1,8 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/switchery/switchery.min.css" type="text/css" rel="stylesheet">
-    <style type="text/css">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/switchery/switchery.min.css" rel="stylesheet">
+    <style>
         .hidden {
             display: none
         }
@@ -395,12 +395,11 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/switchery.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
+    <script src="/assets/global/js/Plugin/switchery.js"></script>
+    <script>
       const string = "{{strtolower(Str::random())}}";
       $(document).ready(function() {
         let v2_path = $('#v2_path');

@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -69,7 +69,7 @@
                                             <p class="form-control"> {{$user->credit}} </p>
                                             @can('admin.user.updateCredit')
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#handle_user_credit">充值</button>
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit">充值</button>
                                                 </div>
                                             @endcan
                                         </div>
@@ -326,12 +326,11 @@
     @endisset
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
+    <script>
       $(document).ready(function() {
           @isset($user)
           $('#username').val('{{$user->username}}');

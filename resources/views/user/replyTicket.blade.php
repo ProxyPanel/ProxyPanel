@@ -36,7 +36,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       //回车检测
       $(document).on('keypress', 'input', function(e) {
         if (e.which === 13) {

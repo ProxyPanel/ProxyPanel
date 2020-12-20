@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/css/invoice.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/invoice.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content">
@@ -67,7 +67,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       // 校验优惠券是否可用
       function redeemCoupon() {
         const coupon_sn = $('#coupon_sn').val();

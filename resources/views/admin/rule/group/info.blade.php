@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/multi-select/multi-select.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/multi-select/multi-select.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -69,10 +69,10 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/multi-select/jquery.multi-select.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/multi-select/jquery.multi-select.min.js"></script>
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
-    <script src="/assets/custom/jquery.quicksearch.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/custom/jquery.quicksearch.min.js"></script>
+    <script>
         @isset($ruleGroup)
         $(document).ready(function() {
           $('#name').val('{{$ruleGroup->name}}');

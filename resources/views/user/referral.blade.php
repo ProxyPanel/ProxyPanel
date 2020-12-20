@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-header">
@@ -165,11 +165,10 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"
-            type="text/javascript"></script>
-    <script src="/assets/custom/clipboardjs/clipboard.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
+    <script>
       // 申请提现
       function extractMoney() {
         $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {

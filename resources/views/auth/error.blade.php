@@ -1,7 +1,7 @@
 @extends('_layout')
 @section('title', sysConfig('website_name').' - '.trans('error.title'))
 @section('layout_css')
-    <link href="/assets/css/errors.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/errors.min.css" rel="stylesheet">
     @endsection
 @section('body_class', 'page-error page-error-400 layout-full')
 @section('layout_content')

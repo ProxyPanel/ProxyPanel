@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/summernote/summernote.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/summernote/summernote.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -113,8 +113,8 @@
 
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/summernote/summernote.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/summernote.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+    <script src="/assets/global/vendor/summernote/summernote.min.js"></script>
+    <script src="/assets/global/js/Plugin/dropify.js"></script>
+    <script src="/assets/global/js/Plugin/summernote.js"></script>
 @endsection

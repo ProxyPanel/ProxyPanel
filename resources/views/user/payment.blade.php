@@ -40,7 +40,7 @@
 @section('javascript')
     @if($payment->qr_code && $payment->url)
         <script src="/assets/custom/easy.qrcode.min.js"></script>
-        <script type="text/javascript">
+        <script>
           // Options
           var options = {
             text: @json($payment->url),
@@ -53,7 +53,7 @@
         </script>
     @endif
 
-    <script type="text/javascript">
+    <script>
       // 检查支付单状态
       const r = window.setInterval(function() {
         $.ajax({

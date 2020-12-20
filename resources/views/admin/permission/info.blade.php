@@ -43,7 +43,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
         @isset($permission)
         $(document).ready(function() {
           $('#description').val('{{$permission->description}}');

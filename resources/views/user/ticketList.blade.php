@@ -1,6 +1,6 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/global/fonts/themify/themify.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/themify/themify.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -129,7 +129,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       // 发起工单
       function createTicket() {
         const title = $('#title').val();

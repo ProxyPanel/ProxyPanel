@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/fonts/material-design/material-design.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/material-design/material-design.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -287,9 +287,9 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
+    <script src="/assets/global/js/Plugin/matchheight.js"></script>
+    <script>
       $(function() {
         $('.card').matchHeight();
       });

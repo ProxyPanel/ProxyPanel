@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -39,7 +39,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       // 添加域名证书
       function Submit() {
         $.ajax({

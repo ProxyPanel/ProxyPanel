@@ -25,7 +25,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       // 转换
       function Decompile() {
         const content = $('#content').val();

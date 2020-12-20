@@ -1,9 +1,9 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/custom/bootstrap-switch/bootstrap-switch.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/ascolorpicker/asColorPicker.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/custom/bootstrap-switch/bootstrap-switch.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/ascolorpicker/asColorPicker.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -175,16 +175,16 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/ascolor/jquery-asColor.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/asgradient/jquery-asGradient.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/ascolorpicker/jquery-asColorPicker.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script src="/assets/custom/bootstrap-switch/bootstrap-switch.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/ascolorpicker.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/vendor/ascolor/jquery-asColor.min.js"></script>
+    <script src="/assets/global/vendor/asgradient/jquery-asGradient.min.js"></script>
+    <script src="/assets/global/vendor/ascolorpicker/jquery-asColorPicker.min.js"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/custom/bootstrap-switch/bootstrap-switch.min.js"></script>
+    <script src="/assets/global/js/Plugin/ascolorpicker.js"></script>
+    <script src="/assets/global/js/Plugin/dropify.js"></script>
+    <script>
       $('[data-toggle="switch"]').bootstrapSwitch();
       @isset($goods)
       $(document).ready(function() {

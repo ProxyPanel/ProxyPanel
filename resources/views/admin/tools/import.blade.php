@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container">
@@ -25,5 +25,5 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
 @endsection

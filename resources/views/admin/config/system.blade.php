@@ -1,8 +1,8 @@
 @extends('admin.layouts')
 @section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/switchery/switchery.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/dropify/dropify.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/switchery/switchery.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -1615,17 +1615,16 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/switchery/switchery.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/dropify/dropify.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/switchery.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/responsive-tabs.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/tabs.js" type="text/javascript"></script>
-    <script src="/assets/custom/jump-tab.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/dropify.js" type="text/javascript"></script>
-
-    <script type="text/javascript">
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
+    <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/js/Plugin/switchery.js"></script>
+    <script src="/assets/global/js/Plugin/responsive-tabs.js"></script>
+    <script src="/assets/global/js/Plugin/tabs.js"></script>
+    <script src="/assets/custom/jump-tab.js"></script>
+    <script src="/assets/global/js/Plugin/dropify.js"></script>
+    <script>
       $(document).ready(function() {
         $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
         $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');

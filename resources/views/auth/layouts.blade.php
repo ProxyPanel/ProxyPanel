@@ -1,7 +1,7 @@
 @extends('_layout')
 @section('title', sysConfig('website_name'))
 @section('layout_css')
-    <link href="/assets/css/login-v3.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/css/login-v3.min.css" rel="stylesheet">
     @yield('css')
 @endsection
 @section('body_class', 'page-login-v3 layout-full position-relative')
@@ -73,9 +73,9 @@
     </div>
 @endsection
 @section('layout_javascript')
-    <script src="/assets/global/vendor/jquery-placeholder/jquery.placeholder.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/jquery-placeholder.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/material.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/jquery-placeholder/jquery.placeholder.min.js"></script>
+    <script src="/assets/global/js/Plugin/jquery-placeholder.js"></script>
+    <script src="/assets/global/js/Plugin/material.js"></script>
     @yield('javascript')
     <!-- 统计 -->
     {!! sysConfig('website_analytics') !!}

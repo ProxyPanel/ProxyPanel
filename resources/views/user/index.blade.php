@@ -1,8 +1,8 @@
 @extends('user.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
-    <link href="/assets/global/vendor/aspieprogress/asPieProgress.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/aspieprogress/asPieProgress.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -276,17 +276,17 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/clipboardjs/clipboard.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/chart-js/Chart.min.js" type="text/javascript"></script>
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/aspieprogress.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js" type="text/javascript"></script>
+    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
+    <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
+    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
+    <script src="/assets/global/js/Plugin/matchheight.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
         <script src="/assets/custom/easy.qrcode.min.js"></script>
-        <script type="text/javascript">
+        <script>
           // Options
           const options = {
             text: @json(sysConfig('push_bear_qrcode')),
@@ -300,7 +300,7 @@
           new QRCode(document.getElementById('qrcode'), options);
         </script>
     @endif
-    <script type="text/javascript">
+    <script>
       // 更换订阅地址
       function exchangeSubscribe() {
         swal.fire({

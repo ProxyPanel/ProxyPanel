@@ -74,7 +74,7 @@
 
 @endsection
 @section('javascript')
-    <script type="text/javascript">
+    <script>
       // 转换
       function Convert() {
         const content = $('#content').val();
