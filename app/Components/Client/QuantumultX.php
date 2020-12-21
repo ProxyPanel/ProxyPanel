@@ -16,7 +16,7 @@ class QuantumultX
         ];
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildShadowsocksr($server)
@@ -35,7 +35,7 @@ class QuantumultX
         ];
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildVmess($server)
@@ -73,7 +73,7 @@ class QuantumultX
             $config[] = "obfs-host={$server['v2_host']}";
         }
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildTrojan($server)
@@ -91,6 +91,6 @@ class QuantumultX
         ];
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 }

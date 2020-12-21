@@ -18,7 +18,7 @@ class Surfboard
         ];
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildVmess($server)
@@ -42,6 +42,6 @@ class Surfboard
             $config[] = "ws-headers=Host:{$server['v2_host']}";
         }
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 }

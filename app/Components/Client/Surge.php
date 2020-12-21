@@ -17,7 +17,7 @@ class Surge
         ];
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildVmess($server)
@@ -41,7 +41,7 @@ class Surge
             $config[] = "ws-headers=Host:{$server['v2_host']}";
         }
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 
     public static function buildTrojan($server)
@@ -58,6 +58,6 @@ class Surge
 
         $config = array_filter($config);
 
-        return implode(',', $config)."\r\n";
+        return implode(',', $config).PHP_EOL;
     }
 }

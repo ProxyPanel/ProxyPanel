@@ -105,7 +105,7 @@ class SubscribeController extends Controller
         }
 
         if ($target) {
-            if (strpos($target, 'quantumult x') !== false) {
+            if (strpos($target, 'quantumult%20x') !== false) {
                 exit($this->quantumultX($user, $servers));
             }
             if (strpos($target, 'quantumult') !== false) {
@@ -123,9 +123,9 @@ class SubscribeController extends Controller
             if (strpos($target, 'shadowrocket') !== false) {
                 exit($this->shadowrocket($user, $servers));
             }
-            if (strpos($target, 'shadowsocks') !== false) {
-                exit($this->shaodowsocksSIP008($servers));
-            }
+//            if (strpos($target, 'shadowsocks') !== false) {
+//                exit($this->shaodowsocksSIP008($servers));
+//            }
         }
         exit($this->origin($servers));
     }
@@ -196,10 +196,9 @@ class SubscribeController extends Controller
 
     private function quantumult(User $user, array $servers = []): string
     {
-        header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable).'; expire='.strtotime($user->expired_at);
-        $uri = $this->origin($servers);
+        header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable.'; expire='.strtotime($user->expired_at));
 
-        return base64_encode($uri);
+        return $this->origin($servers);
     }
 
     private function origin(array $servers = [], bool $encode = true): string

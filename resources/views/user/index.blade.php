@@ -165,12 +165,12 @@
                                                 <select class="form-control" id="client" name="client" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                                     <option value="" hidden>默 认</option>
                                                     <option value="quantumult">圈 - Quantumult</option>
-                                                    <option value="quantumult x">圈X - QuantumultX</option>
+                                                    <option value="quantumult%20x">圈X - QuantumultX</option>
                                                     <option value="clash">Clash</option>
                                                     <option value="surfboard">Surfboard</option>
                                                     <option value="surge">Surge</option>
                                                     <option value="shadowrocket">小火箭 - Shadowrocket</option>
-                                                    <option value="shadowsocks">SS路由器</option>
+{{--                                                    <option value="shadowsocks">SS路由器</option>--}}
                                                 </select>
                                             </div>
                                         </div>

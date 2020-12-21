@@ -11,14 +11,14 @@ class URLSchemes
         $name = rawurlencode($server['name']);
         $str = base64url_encode("{$server['method']}:{$server['method']}");
 
-        return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}\r\n";
+        return "ss://{$str}@{$server['host']}:{$server['port']}#{$name}".PHP_EOL;
     }
 
     public static function buildShadowsocksr($server)
     {
         $setting = "{$server['host']}:{$server['port']}:{$server['protocol']}:{$server['method']}:{$server['obfs']}:";
 
-        return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?obfsparam='.base64url_encode($server['obfs_param']).'&protoparam='.base64url_encode($server['protocol_param']).'&remarks='.base64url_encode($server['name']).'&group='.base64url_encode($server['group']).'&udpport='.$server['udp'].'&uot=0').'\r\n';
+        return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?obfsparam='.base64url_encode($server['obfs_param']).'&protoparam='.base64url_encode($server['protocol_param']).'&remarks='.base64url_encode($server['name']).'&group='.base64url_encode($server['group']).'&udpport='.$server['udp'].'&uot=0').PHP_EOL;
     }
 
     // TODO: More study required about id usage https://shadowsocks.org/en/wiki/SIP008-Online-Configuration-Delivery.html
@@ -52,7 +52,7 @@ class URLSchemes
             'tls' => $server['v2_tls'],
         ];
 
-        return 'vmess://'.base64_encode(json_encode($config))."\r\n";
+        return 'vmess://'.base64_encode(json_encode($config)).PHP_EOL;
     }
 
     public static function buildTrojan($server)
@@ -63,6 +63,6 @@ class URLSchemes
             $query = "?sni={$server['relay_server']}";
         }
 
-        return "trojan://{$server['passwd']}@{$server['host']}:{$server['port']}{$query}#{$name}\r\n";
+        return "trojan://{$server['passwd']}@{$server['host']}:{$server['port']}{$query}#{$name}".PHP_EOL;
     }
 }
