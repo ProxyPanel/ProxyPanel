@@ -157,8 +157,8 @@ class NodeController extends Controller
                 return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
             }
         }
-        $data[0] = NetworkDetection::networkCheck($node->ip, true); //ICMP
-        $data[1] = NetworkDetection::networkCheck($node->ip, false, $node->single ? $node->port : null); //TCP
+        $data[0] = (new NetworkDetection)->networkCheck($node->ip, true); //ICMP
+        $data[1] = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22); //TCP
 
         return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
     }

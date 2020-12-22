@@ -59,7 +59,7 @@ class NodeBlockedDetection extends Command
                 }
             }
             if ($node->detection_type !== 1) {
-                $icmpCheck = NetworkDetection::networkCheck($node->ip, true);
+                $icmpCheck = (new NetworkDetection)->networkCheck($node->ip, true);
                 if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
                     $message .= '| '.$node->name.' | ICMP | '.$icmpCheck." |\r\n";
                     $sendText = true;
@@ -67,7 +67,7 @@ class NodeBlockedDetection extends Command
                 }
             }
             if ($node->detection_type !== 2) {
-                $tcpCheck = NetworkDetection::networkCheck($node->ip, false, $node->single ? $node->port : null);
+                $tcpCheck = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22);
                 if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
                     $message .= '| '.$node->name.' | TCP | '.$tcpCheck." |\r\n";
                     $sendText = true;
