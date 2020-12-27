@@ -5,6 +5,35 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css" rel="stylesheet">
     <!-- <link rel="stylesheet" href="../css/style.css"> -->
     <link href="{{ asset('assets/static/desktop/css/style.css') }}" rel="stylesheet">
+     <style>
+    .loading {
+        position: fixed;
+        z-index: 998;
+        background: rgba(255, 255, 255, 0.8);
+        left: 0;
+        top: 0;
+        display: none;
+        width: 100%;
+        height: 100%;
+    }
+    .loading__content {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+    }
+    .loading p {
+        text-align: center;
+        font-weight: 700;
+        color: #0040ff;
+        font-size: 32px;
+    }
+   </style>
 @endsection
 
 @section('content')
@@ -34,7 +63,7 @@
                                       @if($package->is_hot)
                                         <a href="#" class="price-item price-item--hot selected">
                                             <div class="fire-ball">Hot</div>
-                                            <h2 class="price-item__time" data-package-time= {{$package->days}} >{{$package->days}} Day</h2>
+                                            <h2 class="price-item__time" data-package-time= {{$package->days}} >{{$package->name}}</h2>
                                         <p class="price-item__value" data-package-price= {{$package->price}}><span>$</span>{{$package->price}}</p>
                                         <p class="price-item__id" data-package-sku= {{$package->id}}   style="display: none" ><span>$</span>{{$package->id}}</p>
                                         <div class="price-item__duration">{{$package->name}}</div>
@@ -42,11 +71,11 @@
                                       </a>
                                       @else
                                         <a href="#" class="price-item">
-                                        <h2 class="price-item__time" data-package-time={{$package->days}} >{{$package->days}} Day</h2>
-                                        <p class="price-item__value" data-package-price= {{$package->price}} ><span>$</span>{{$package->price}}</p>
-                                        <p class="price-item__id" data-package-id= {{$package->id}}   ><span>$</span>{{$package->id}}</p>
+                                        <h2 class="price-item__time" data-package-time={{$package->name}} >{{$package->name}}</h2>
+                                        <p class="price-item__value" data-package-price= {{$package->price}} >${{$package->price}}</p>
+                                        <p class="price-item__id" data-package-id= {{$package->days}}   >{{$package->days}}Days</p>
                                         <div class="price-item__duration">{{$package->name}}</div>
-                                        <div class="price-item__subtext">$ 0.99 billed every 1 Day</div>
+                                        <div class="price-item__subtext">每30天重置流量</div>
                                       </a>
                                       @endif
 
@@ -75,7 +104,7 @@
 
                                         <button class="payment-item__btn" type="button" data-toggle="collapse" data-target="#paypalCollapse" aria-expanded="false" aria-controls="paypalCollapse">
                                             <i class="fas fa-chevron-right"></i>
-                                            <span>Alipay</span>
+                                            <span>{{__('static.dsktp_prices_alipay_title')}}</span>
                                             <img src="{{ asset('assets/static/desktop/images/logos/alipay-logo.png') }}" alt="Alipay">
                                         </button>
 
@@ -84,17 +113,16 @@
 
                                             <div class="amounts">
                                                     <div class="amount-row value">
-                                                        <span>1 Year</span>
-                                                        <span>$129.98</span>
+                                                        <span></span>
+                                                        <span></span>
                                                     </div>
                                                     <div class="amount-row discount">
-                                                        <span>Discount -50%
-                                                        </span>
-                                                        <span>$-64.99</span>
+                                                        <span></span>
+                                                        <span></span>
                                                     </div>
                                                     <div class="amount-row amounts-total">
                                                         <span>Total</span>
-                                                        <span class="amount-total-value">$64.99</span>
+                                                        <span class="amount-total-value"></span>
                                                     </div>
                                             </div>
 
@@ -108,8 +136,8 @@
                                                 </div>
 
                                                 <div class="content-foot">
-                                                    <p><i class="icon-reset"></i> {!! __('static.dsktp_prices_card_small_title_1') !!} </p>
-                                                    <p><i class="icon-lock"></i>  {{ __('static.dsktp_prices_card_small_text_1') }} </p>
+                                                    <p><i class="icon-reset"></i> {{ __('static.dsktp_prices_alipay_title_1') }} </p>
+                                                    <p><i class="icon-lock"></i>  {{ __('static.dsktp_prices_alipay_text_1') }} </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -118,7 +146,7 @@
                                     <div class="payment-item">
                                         <button class="payment-item__btn" type="button" data-toggle="collapse" data-target="#creditCollapse" aria-expanded="false" aria-controls="creditCollapse">
                                             <i class="fas fa-chevron-right"></i>
-                                            <span>Credit cards</span>
+                                            <span>{{__('static.dsktp_prices_card_title')}}</span>
                                             <img src="{{ asset('assets/static/desktop/images/logos/visa.svg') }}" alt="visa">
                                             <img src="{{ asset('assets/static/desktop/images/logos/mastercard.svg') }}" alt="mastercard">
                                             <img src="{{ asset('assets/static/desktop/images/logos/amex.svg') }}" alt="amex">
@@ -129,38 +157,37 @@
 
                                                 <div class="amounts">
                                                     <div class="amount-row value">
-                                                        <span>1 Year</span>
-                                                        <span>$129.98</span>
+                                                        <span></span>
+                                                        <span></span>
                                                     </div>
                                                     <div class="amount-row discount">
-                                                        <span>Discount -50%
-                                                        </span>
-                                                        <span>$-64.99</span>
+                                                        <span></span>
+                                                        <span></span>
                                                     </div>
                                                     <div class="amount-row amounts-total">
                                                         <span>Total</span>
-                                                        <span class="amount-total-value">$64.99</span>
+                                                        <span class="amount-total-value"></span>
                                                     </div>
                                                 </div>
 
                                                 <form action="." class="form--payment" id="payment-form" method="POST">
                                                     @csrf
                                                     <div class="form-group">
-                                                        <label for="firstName">First Name</label>
+                                                        <label for="firstName">{{__('static.dsktp_prices_card_text_firstname')}}</label>
                                                         <input type="text" class="form-control" name="first_name" id="firstName" required>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="lastName">Last Name</label>
+                                                        <label for="lastName">{{__('static.dsktp_prices_card_text_lastname')}}</label>
                                                         <input type="text" class="form-control" name="last_name" id="lastName" required>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="card">Card</label>
+                                                        <label for="card">{{__('static.dsktp_prices_card_text_cardnum')}}</label>
                                                         <div class="card-input" id="card-element">
                                                             <!-- <input type="text" class="form-control" name="card" id="card" placeholder="1234 1234 1234 1234" required> -->
                                                         </div>
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="expired">Expired</label>
+                                                        <label for="expired">{{__('static.dsktp_prices_card_text_expired')}}</label>
                                                         <div class="card-input" id="card-expire">
 
                                                         </div>
@@ -168,12 +195,12 @@
                                                     </div>
                                                     <div class="form-group row">
                                                         <div class="col-md-4">
-                                                            <label for="cvc">CVV</label>
+                                                            <label for="cvc">{{__('static.dsktp_prices_card_text_cvv')}}</label>
                                                             <div class="card-input" id="card-cvc"></div>
                                                             <!-- <input type="text" class="form-control" id="cvc" name="cvc" placeholder="CVC"  required > -->
                                                         </div>
                                                         <div class="col-md-8">
-                                                            <label for="postalCode">Postal Code</label>
+                                                            <label for="postalCode">{{__('static.dsktp_prices_card_text_postcode')}}</label>
                                                             <input type="text" class="form-control" name="postal_code" id="postalCode" required>
                                                         </div>
                                                     </div>
@@ -190,8 +217,8 @@
                                                 </form>
 
                                                 <div class="content-foot">
-                                                    <p><i class="icon-reset"></i> {!! __('static.dsktp_prices_card_small_title_1') !!} </p>
-                                                    <p><i class="icon-lock"></i> {{ __('static.dsktp_prices_card_small_text_1') }} </p>
+                                                    <p><i class="icon-reset"></i> {{ __('static.dsktp_prices_card_title_1') }} </p>
+                                                    <p><i class="icon-lock"></i> {{ __('static.dsktp_prices_card_text_1') }} </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -222,6 +249,14 @@
                 </div>
             </div>
         </main>
+        
+   @if (Auth::check())
+    <div class="loading">
+    <div class="loading__content">
+        <p>Redirecting...</p>
+    </div>
+    </div>
+    @endif
 
 @endsection
 

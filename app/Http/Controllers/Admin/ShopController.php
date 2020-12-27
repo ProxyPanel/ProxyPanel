@@ -40,7 +40,7 @@ class ShopController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['goodsList'] = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
+        $view['goodsList'] = $query->whereIs_del(0)->orderByDesc('status')->paginate(10)->appends($request->except('page'));
 
         return view('admin.shop.index', $view);
     }

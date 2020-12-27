@@ -5,9 +5,18 @@ return [
     // General
     'login' => '登录',
     'register' => '注册',
-
+    'features'  => '功能',
+    'price'  => '价格',
+    'download'  => '下载',
+    'help'  =>'帮助',
     // DESKTOP
-
+    // DESKTOP
+    'contact' => '联系我们',
+     'tutorial' => '使用说明',
+    'help' => '帮助',
+    'term' => '使用条款',
+    'about_us' => '关于我们',
+    
     /* desktop home */
     'dsktp_feature_title_1' => '解锁各类型网站',
     'dsktp_feature_text_1' => '77VPN helps you to unblock websites in your network from around the globe. Provides unrestricted access to the web by allowing you to unblock websites. Get access to your favorite websites and content like Facebook, Twitter, and Pinterest that be blocked in your country from anywhere and anytime.',
@@ -60,24 +69,41 @@ return [
 
     // desktop prices
     'dsktp_prices_hero_title' => '77VPN Plans',
-    'dsktp_prices_hero_text' => 'Get started today with the perfect Rita VPN plan for you.Try it risk-free with your 7-day
-    money-back guarantee.',
-    'dsktp_prices_first_step_title' => 'First step',
-    'dsktp_prices_first_step_text' => 'Select your subscription plan:',
-    'dsktp_prices_second_step_title' => 'Second step',
-    'dsktp_prices_second_step_text' => 'Select your preferred method of payment:',
-    'dsktp_prices_hero_helper_text' => 'FYI:The 1-year plan includes the biggest savings and is fully refundable for 7 days.',
-
+    'dsktp_prices_hero_text' => ' 您可以根据需求和购买77VPN的套餐，一个账户多台设备使用，与 Windows、macOS、Linux、Android、iOS 兼容，并且有相关的路由器解决方案。',
+    'dsktp_prices_first_step_title' => '第一步',
+    'dsktp_prices_first_step_text' => '选择适合您的套餐:',
+    'dsktp_prices_second_step_title' => '第二步',
+    'dsktp_prices_second_step_text' => '选择您的支付方式:',
+    'dsktp_prices_hero_helper_text' => '温馨提示: 所有套餐都为高速网络无限流量，不限制流量，不限制速度，支持Youtube高清视频秒开',
+    
+    
+    'dsktp_prices_alipay_title'=> '支付宝',
+    'dsktp_prices_alipay_title_1'=> '您的购买价格会根据当前汇率自动换算成人民币价格',
+    'dsktp_prices_alipay_text_1' => '您会被跳转到支付宝支付页面，扫码完成支付,完成支付后到订单管理可以查看您的订单',
+    
+    
+    'dsktp_prices_card_title'=> '信用卡',
+    'dsktp_prices_card_title_1'=> '需要支持visa或者万事达的信用卡，您的购买价格会根据当前汇率自动换算成人民币价格',
+    'dsktp_prices_card_text_1' => '完成支付后，您可以移步到订单管理，查看您当前的订单',
+    
+     'dsktp_prices_card_text_firstname' => '姓氏',
+     'dsktp_prices_card_text_lastname' => '名',
+    'dsktp_prices_card_text_cardnum' => '信用卡号',
+    'dsktp_prices_card_text_expired' =>  '有效期至',
+    'dsktp_prices_card_text_cvv' =>  'CVV 安全码',
+    'dsktp_prices_card_text_postcode' =>  '邮政编码',
+    
+    
     'dsktp_prices_card_small_text_1' => 'You\'re 100% backed by our 7-day money-back guarantee.',
-    'dsktp_prices_card_small_text_2' => 'You will be redirected to PayPal to complete your purchase securely.',
+    'dsktp_prices_card_small_text_2' => '您会被跳转到支付宝支付页面，扫码完成支付',
 
     // desktop help
-    'dsktp_help_hero_title' => '77VPN <span>Help Center</span>',
-    'dsktp_help_hero_text' => 'All you need to know about RitaVPN',
+    'dsktp_help_hero_title' => '77VPN <span>帮助中心</span>',
+    'dsktp_help_hero_text' => 'All you need to know about 77VPN',
     'dsktp_help_list_maintitle' => 'Category questions',
 
     'dsktp_help_list_title_1' => '下载 安装',
-    'dsktp_help_list_title_2' => 'How do I use RitaVPN?',
+    'dsktp_help_list_title_2' => 'How do I use 77VPN?',
     'dsktp_help_list_title_3' => 'Connection issues',
     'dsktp_help_list_title_4' => 'Premium users',
     'dsktp_help_list_title_5' => 'About 77VPN',

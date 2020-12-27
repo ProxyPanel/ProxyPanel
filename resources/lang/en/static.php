@@ -5,7 +5,19 @@ return [
     // General
     'login' => 'Sign In',
     'register' => 'Sign Up',
-
+ 
+    'features'  => 'Features',
+    'price'  => 'Price',
+    'download'  => ' Apps',
+    'help'  =>'Help',
+    
+    // DESKTOP
+    'contact' => 'Contact Us',
+     'tutorial' => 'VPN Setup Tutorial',
+    'help' => 'Help',
+    'term' => 'Term',
+    'about_us' => 'About Us',
+    
     // DESKTOP
 
     /* desktop home */
@@ -70,6 +82,23 @@ return [
 
     'dsktp_prices_card_small_text_1' => 'You\'re 100% backed by our 7-day money-back guarantee.',
     'dsktp_prices_card_small_text_2' => 'You will be redirected to PayPal to complete your purchase securely.',
+
+     'dsktp_prices_alipay_title'=> 'Alipay',
+    'dsktp_prices_alipay_title_1'=> 'The price will be converted to your local currency based on the current exchange rate',
+    'dsktp_prices_alipay_text_1' => 'This page will be redirected to the Alipay payment page, scan the QR code to complete the payment',
+    
+    
+    'dsktp_prices_card_title'=> 'Card',
+    'dsktp_prices_card_title_1'=> 'The price will be converted to your local currency based on the current exchange rate',
+    'dsktp_prices_card_text_1' => 'This page will be redirected to the Alipay payment page, scan the QR code to complete the payment',
+    
+     'dsktp_prices_card_text_firstname' => 'FirstName',
+     'dsktp_prices_card_text_lastname' => 'LastName',
+    'dsktp_prices_card_text_cardnum' => 'Card Number',
+    'dsktp_prices_card_text_expired' =>  'Expired',
+    'dsktp_prices_card_text_cvv' =>  'CVV',
+    'dsktp_prices_card_text_postcode' =>  'Postal code',
+
 
     // desktop help
     'dsktp_help_hero_title' => '77VPN <span>Help Center</span>',

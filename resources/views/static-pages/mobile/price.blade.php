@@ -7,7 +7,7 @@
 <style>
     .loading {
         position: fixed;
-        z-index: 99998;
+        z-index: 1010;
         background: rgba(255, 255, 255, 0.8);
         left: 0;
         top: 0;
@@ -54,25 +54,62 @@
             <form class="form--mobilePayment" action="your url here to process mobile payment" method="POST">
                 @csrf
                 <div class="prices-items">
-                  @foreach($packageList as $package)
                     @if (Auth::check())
                     <div class="prices-items__bar js-checkout" data-plan-id="1">
-                        <div class="bar-top"><span>{{$package->name}}</span> <span>{{$package->days}} Days</span> <span>Price $ {{$package->price}}</span></div>
-                        <div class="bar-bottom"><span>Device num:{{$package->usage}} and unlimited traffic</span></div>
+                        <div class="bar-top"><span>1 Day</span> <span>$0.99/Day</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
                     </div>
                     @else
                     <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="1">
-                      
-                       <div class="bar-top"><span>1 Day</span> <span>$0.99/Day</span></div>
+                        <div class="bar-top"><span>1 Day</span> <span>$0.99/Day</span></div>
                         <div class="bar-bottom">$0.99 Total</div>
-                    
                     </a>
                     @endif
-                 @endforeach
-                  
+
+                    @if (Auth::check())
+                    <div class="prices-items__bar js-checkout" data-plan-id="2">
+                        <div class="bar-top"><span>7 Days</span> <span>$0.99/Week</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </div>
+                    @else
+                    <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="2">
+                        <div class="bar-top"><span>7 Days</span> <span>$0.99/Week</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </a>
+                    @endif
+
+                    @if (Auth::check())
+                    <div class="prices-items__bar prices-items__bar--hot js-checkout" data-plan-id="3">
+                        <div class="fire-ball"></div>
+                        <div class="bar-badge">save50%</div>
+                        <div class="bar-top"><span>1 Year</span> <span>$0.99/Month</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </div>
+                    @else
+                    <a href="{{ url('/account-n') }}" class="prices-items__bar prices-items__bar--hot" data-plan-id="3">
+                        <div class="fire-ball"></div>
+                        <div class="bar-badge">save50%</div>
+                        <div class="bar-top"><span>1 Year</span> <span>$0.99/Month</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </a>
+                    @endif
+
+                    @if (Auth::check())
+                    <div class="prices-items__bar js-checkout" data-plan-id="4">
+                        <div class="bar-badge">save50%</div>
+                        <div class="bar-top"><span>1 Month</span> <span>$0.99/Year</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </div>
+                    @else
+                    <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="4">
+                        <div class="bar-badge">save50%</div>
+                        <div class="bar-top"><span>1 Month</span> <span>$0.99/Year</span></div>
+                        <div class="bar-bottom">$0.99 Total</div>
+                    </a>
+                    @endif
                     <div class="prices-items__type">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" id="alipayCheck" name="paymentType" checked value="alipay">
+                            <input type="radio" class="custom-control-input" id="alipayCheck" name="paymentType" checked value="ali">
                             <label class="custom-control-label" for="alipayCheck"><img src="{{ asset('assets/static/mobile/images/prices/alipay-logo.png') }}" alt="alipay"></label>
                         </div>
                         <div class="custom-control custom-radio">
@@ -98,11 +135,14 @@
     </div>
 </main>
 
+@if (Auth::check())
 <div class="loading">
     <div class="loading__content">
         <p>Redirecting...</p>
-    </div> 
+    </div>
 </div>
+@endif
+
 @endsection
 
 @section('footer-script')
@@ -117,39 +157,24 @@
 
 <script>
     $(function() {
-
         var stripe = Stripe('pk_test_JZOOnMThjoHKJdVDc8MwKAH500b2mHbiWF'); // used your stripe key
-
         $(document).on('click', ".js-checkout", function(e) {
             e.preventDefault();
             // created hidden input for store the choosen value
             let planID = $(this).data('plan-id');
-            let payMethod = 'stripe';
-            let payMode = 'session';
-            let amount = 10 ;
             let input = $('<input />', {
                 type: 'hidden',
                 name: 'planID',
-               // method:'alipay',
                 value: planID
             });
-            
-         
-
             const formData = new FormData();
             const paymentType = $('input[name="paymentType"]:checked').val();
             const token = $('input[name="_token"]').val();
-
-            formData.append('pay_type', paymentType);
-             formData.append('method', payMethod);
-            formData.append('pay_mode', payMode);
-            formData.append('amount', amount);
-            formData.append('goods_id', planID);
+            formData.append('paymentType', paymentType);
+            formData.append('planID', planID);
             formData.append('_token', token);
-
             $(".loading").show();
-
-            fetch('payment/purchase', {
+            fetch('create-checkout-session', {
                     method: 'POST',
                     body: formData
                 })
@@ -172,7 +197,6 @@
                     console.error('Error:', error);
                     $(".loading").hide();
                 });
-
             //$('.form--mobilePayment').append(input);
             //$('.form--mobilePayment')[0].submit();
         });

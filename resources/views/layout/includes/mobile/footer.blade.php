@@ -2,19 +2,22 @@
     <div class="container">
 
         <div class="client-platforms">
-            <a class="cs-btn cs-btn--primary">
+            <a class="cs-btn cs-btn--primary cs-btn--ios" style="display: none">
                 <img src="{{ asset('assets/static/mobile/images/index/apple-store-graphics.png') }}" alt="apple download">
+            </a>
+            <a class="cs-btn cs-btn--primary cs-btn--android" style="display: none">
+                <img src="{{ asset('assets/static/mobile/images/index/playe-store-graphics.png') }}" alt="android download">
             </a>
         </div>
 
         <div class="page-footer__col page-footer__col--shortcut">
             <h4 class="col-title">{{ __('static.mbl_section_footer_title_1') }}</h4>
             <ul class="footer-menu">
-                <li><a href="{{url('contact')}}">Contact Us</a></li>
-                <li><a href="{{url('tutorial')}}">VPN Setup Tutorial</a></li>
-                <li><a href="{{url('help-n')}}">Help</a></li>
-                <li><a href="{{url('term')}}">Term of use</a></li>
-                <li><a href="{{url('contact')}}">About us</a></li>
+                <li><a href="#">Contact Us</a></li>
+                <li><a href="#">VPN Setup Tutorial</a></li>
+                <li><a href="#">Help</a></li>
+                <li><a href="#">Term of use</a></li>
+                <li><a href="#">About us</a></li>
             </ul>
         </div>
         <div class="page-footer__col page-footer__col--lang">
@@ -52,6 +55,26 @@
                 window.location.replace(window.location.origin + '/' + 'locale/zh-CN');
             }
         });
+        function getMobileOperatingSystem() {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/android/i.test(userAgent)) {
+                return "Android";
+            }
+            // iOS detection from: http://stackoverflow.com/a/9039885/177710
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return "iOS";
+            }
+            return "unknown";
+        }
+        let mobileOperation = getMobileOperatingSystem();
+        if (mobileOperation === "Android") {
+            $(".cs-btn--android").show();
+        } else if (mobileOperation === "iOS") {
+            $(".cs-btn--ios").show();
+        } else {
+            $(".cs-btn--ios").show();
+            $(".cs-btn--android").show();
+        }
     });
 </script>
 

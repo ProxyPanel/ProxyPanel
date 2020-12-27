@@ -33,11 +33,11 @@
                 <div class="page-footer__col">
                     <h4 class="col-title">{{ __('static.dsktp_section_footer_title_2') }}</h4>
                     <ul class="footer-menu">
-                        <li><a href="{{url('contact')}}">Contact Us</a></li>
-                        <li><a href="{{url('tutorial')}}">VPN Setup Tutorial</a></li>
-                        <li><a href="{{url('help-n')}}">Help</a></li>
-                        <li><a href="{{url('term')}}">Term of use</a></li>
-                        <li><a href="{{url('contact')}}">About us</a></li>
+                        <li><a href="{{url('contact')}}">{{ __('static.contact') }}</a></li>
+                        <li><a href="{{url('tutorial')}}">{{ __('static.tutorial') }}</a></li>
+                        
+                        <li><a href="{{url('term')}}">{{ __('static.term') }}</a></li>
+                       <li><a href="{{url('help-n')}}">{{ __('static.help') }}</a></li>
                     </ul>
                 </div>
                 <div class="page-footer__col">
@@ -98,6 +98,13 @@
                         <span>Sign in</span>
                     </div>
 
+                     @if(Session::get('errorLoginMsg'))
+                        <div class="alert alert-danger">
+                            <!-- <button class="close" data-close="alert"></button> -->
+                            <span> {{Session::get('errorLoginMsg')}} </span>
+                        </div>
+                    @endif
+                   
                     <form action="{{url('login')}}" class="form--signin" method="post">
                         <div class="md-form">
                             <i class="icon-user"></i>
@@ -149,18 +156,10 @@
                     <div class="modal-tab">
                         <span>Sign Up</span>
                     </div>
-
-                    @if(Session::get('errorMsg'))
+                    @if(Session::get('errorRegMsg'))
                         <div class="alert alert-danger">
                             <!-- <button class="close" data-close="alert"></button> -->
-                            <span> {{Session::get('errorMsg')}} </span>
-                        </div>
-                    @endif
-
-                    @if(Session::get('regSuccessMsg'))
-                        <div class="alert alert-danger">
-                            <!-- <button class="close" data-close="alert"></button> -->
-                            <span> {{Session::get('regSuccessMsg')}} </span>
+                            <span> {{Session::get('errorRegMsg')}} </span>
                         </div>
                     @endif
 

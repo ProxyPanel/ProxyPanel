@@ -67,7 +67,7 @@
                             </div>
                         </div>
 
-                        @if(\App\Components\Helpers::systemConfig()['is_register'])
+                        @if(sysConfig('is_register'))
                             <button type="submit" class="cs-btn cs-btn--primary">Sign Up</button>
                         @endif
 

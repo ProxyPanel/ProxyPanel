@@ -32,6 +32,7 @@ $(function () {
     // Submit ALIPAY payment
     $(document).on('click', '.js-checkout-alipay', function (e) {
         e.stopPropagation();
+         $('.loading').css('display', 'flex');
 
         if (totalPrice <= 0) {
             return;
@@ -68,6 +69,7 @@ $(function () {
                 // Return URL where the customer should be redirected to after payment
                 return_url: `http://${window.location.host}/payment/payment-success`,
             }).then((result) => {
+                 $('.loading').css('display', 'none');
                 if (result.error) {
                     $this.prop('disabled', false);
                     // Inform the customer that there was an error.
@@ -83,8 +85,11 @@ $(function () {
     var form = document.getElementById('payment-form');
     form.addEventListener('submit', function (event) {
         event.preventDefault();
+       $('.loading').css('display', 'flex');
 
         if (totalPrice <= 0) {
+            $('.loading').css('display', 'none');
+            $('html, body').animate({ scrollTop: $('.payment-step--package').offset().top + "px" }, 500);
             return;
         }
 
@@ -130,10 +135,13 @@ $(function () {
                 console.log(result);
                 $('button[name="card-submit"]').prop('disabled', true);
                 if (result.error) {
+                    $('.loading').css('display', 'none');
+                    $('button[name="card-submit"]').prop('disabled', false);
                     // Show error to your customer (e.g., insufficient funds)
                     console.log(result.error.message);
                 } else {
                     // The payment has been processed!
+                    console.log(result.paymentIntent.status);
                     if (result.paymentIntent.status === 'succeeded') {
                         // Show a success message to your customer
                         // There's a risk of the customer closing the window before callback
@@ -141,33 +149,8 @@ $(function () {
                         // payment_intent.succeeded event that handles any business critical
                         // post-payment actions.
                         // REDIRECTING TO STORE THIS PAYMENT DATAS
-                        var paymentIntent = result.paymentIntent;
-                       // var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                        var redirect = '/usercenter';
-                        var token = $('input[name="_token"]').val();
-                          console.log(token);  
-                       
-                      fetch(
-                       'payment/payment-success',
-                       {
-                        headers:{
-                            'Content-Type': 'application/json',
-                            "X-CSRF-Token": token
-                        },
-                        method : 'get',
-                        //body: JSON.stringify({
-                        //    paymentIntent: paymentIntent
-                       //})
-                       
-                        }
-                       ).then((data) => {
-                          console.log(data);
-                       //  window.location.href = redirect;
-                       }).catch((error) => {
-                         console.log(error);
-                       });
-                      //  console.log(result);
-                       // alert("Successfully payment with card666");
+                        console.log(result);
+                        window.location.href = `/payment/payment-success`;
                     }
                 }
             });

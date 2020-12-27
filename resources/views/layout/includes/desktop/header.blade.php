@@ -28,10 +28,10 @@
                 <div class="page-header__right">
                     <nav class="page-header__nav {{ (Request::segment(1) === 'vpn-apps' || Request::segment(1) === 'price' || Request::segment(1) === 'contact') ? ' page-header__nav--dark' : '' }}">
                         <ul>
-                            <li><a href="{{ route('feature', app()->getLocale()) }}">Features</a></li>
-                            <li><a href="{{ route('price', app()->getLocale()) }}">Price</a></li>
-                            <li><a href="{{ route('vpn-apps', app()->getLocale()) }}">VPN Apps</a></li>
-                            <li><a href="{{ route('help-n', app()->getLocale()) }}">Help</a></li>
+                            <li><a href="{{ route('feature', app()->getLocale()) }}">{{ __('static.features') }}</a></li>
+                            <li><a href="{{ route('price', app()->getLocale()) }}">{{ __('static.price') }}</a></li>
+                            <li><a href="{{ route('vpn-apps', app()->getLocale()) }}">{{ __('static.download') }}</a></li>
+                            <li><a href="{{ route('help-n', app()->getLocale()) }}">{{ __('static.help') }}</a></li>
                         </ul>
                     </nav>
                     @if (!Auth::check())
@@ -50,8 +50,8 @@
                     </div>
                     @endif
                     <div class="page-header__lang {{ (Request::segment(1) === 'vpn-apps' || Request::segment(1) === 'price' || Request::segment(1) === 'contact') ? ' page-header__lang--dark' : '' }}">
-                        <a href="{{ url('locale/en') }}" class="{{  app()->getLocale() === 'en' ? 'is-active' : '' }}">English</a>
-                        <a href="{{ url('locale/zh-CN') }}" class="{{  app()->getLocale() === 'zh-CN' ? 'is-active' : '' }}">Chinese</a>
+                        <a href="{{ url('lang/en') }}" class="{{  app()->getLocale() === 'en' ? 'is-active' : '' }}">English</a>
+                        <a href="{{ url('lang/zh-CN') }}" class="{{  app()->getLocale() === 'zh-CN' ? 'is-active' : '' }}">Chinese</a>
                     </div>
                 </div>
             </header>

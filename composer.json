@@ -22,6 +22,7 @@
     "ipip/db": "^1.0",
     "jenssegers/agent": "^2.6",
     "laravel/framework": "^7.29",
+    "laravel/passport": "^9.0",
     "laravel/tinker": "^2.5",
     "mews/captcha": "^3.1",
     "mews/purifier": "^3.3",

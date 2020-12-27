@@ -12,12 +12,13 @@ use Log;
 use Response;
 use Stripe\Checkout\Session;
 use Stripe\Webhook;
+//use Stripe;
 
 class Stripe extends AbstractPayment
 {
     public function __construct()
     {
-        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+        \Stripe\Stripe::setApiKey('sk_test_iDjVzI1B3U7l5mU4UaPbfbQ300b2yRQxoi');
     }
 
     public function purchase($request): JsonResponse

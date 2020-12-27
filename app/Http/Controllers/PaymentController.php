@@ -21,6 +21,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
+use Jenssegers\Agent\Agent;
 
 /**
  * 支付控制器.
@@ -96,6 +97,7 @@ class PaymentController extends Controller
         $pay_mode = $request->input('pay_mode');
         $amount = 0;
 
+        \Log::debug($request->input('method'));
         $goods = Goods::find($goods_id);
         // 充值余额
         if ($credit) {
@@ -225,4 +227,27 @@ class PaymentController extends Controller
 
         return view('user.payment', $view);
     }
+      public function paymentSuccess(Request $request)
+    {
+        $agent = new Agent();
+
+        if ($agent->isMobile() || $agent->isTablet()) {
+            return view('static-pages.mobile.success-payment');
+        } else {
+            return view('static-pages.desktop.success-payment');
+        }
+    }
+
+    public function paymentFailed(Request $request)
+    {
+        $agent = new Agent();
+
+        if ($agent->isMobile() || $agent->isTablet()) {
+            return view('static-pages.mobile.failed-payment');
+        } else {
+            return view('static-pages.desktop.failed-payment');
+        }
+    }
+    
+    
 }

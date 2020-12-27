@@ -2,68 +2,60 @@
     background: #171525;
     min-height: calc(100vh - 16.26667vw);
     margin-top: 16.26667vw;
-
     .container {
         padding: 0 6.66667vw;
     }
-
     &__head {
         padding-top: 13.33333vw;
         margin-bottom: 7.6vw;
         display: flex;
-
         span {
             display: inline-block;
             margin: 0 5px;
         }
-
         a {
             font-size: 5.06667vw;
-            color: rgba(255,255,255,0.3);
-
+            color: rgba(255, 255, 255, 0.3);
             &.active {
                 color: #fff;
             }
         }
     }
-
     form {
         label {
             color: #fff;
             font-size: 4vw;
         }
-
         .md-form {
             margin-top: 0;
-
             input {
                 font-size: 3.33333vw;
                 height: 13.6vw;
             }
         }
     }
-
     .cs-btn {
         width: 100%;
         border-radius: 0;
         margin-bottom: 6vw;
     }
-
     .password-reset {
         color: #fff;
         font-size: 4.26667vw;
     }
-
     .form-bottom {
         position: absolute;
         left: 0;
         width: 100%;
         bottom: 10.66667vw;
         text-align: center;
-
         a {
-            font-size: 3.2vw;
+            font-size: 3.3vw;
             color: #fb1658;
         }
+    }
+    .md-form input[type="text"],
+    .md-form input[type="password"] {
+        color: #fff;
     }
 }
