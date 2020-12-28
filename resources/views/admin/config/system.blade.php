@@ -508,7 +508,7 @@
                                             <div class="col-md-9">
                                                 <input type="checkbox" id="is_custom_subscribe" data-plugin="switchery" @if($is_custom_subscribe) checked
                                                        @endif onchange="updateFromOther('switch','is_custom_subscribe')">
-                                                <span class="text-help">启用后，订阅信息顶部将显示过期时间、剩余流量（Quantumult有特殊效果） </span>
+                                                <span class="text-help">启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端） </span>
                                             </div>
                                         </div>
                                     </div>

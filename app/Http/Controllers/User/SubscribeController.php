@@ -135,7 +135,7 @@ class SubscribeController extends Controller
     // 抛出错误的节点信息，用于兼容防止客户端订阅失败
     private function failed($text)
     {
-        return Response::make(base64url_encode($this->infoGenerator($text)), 200);
+        return Response::make(base64url_encode($this->infoGenerator($text)));
     }
 
     private function infoGenerator($text): string
@@ -175,7 +175,9 @@ class SubscribeController extends Controller
     private function quantumultX(User $user, array $servers = []): string
     {
         $uri = '';
-        header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
+        if (sysConfig('is_custom_subscribe')) {
+            header("subscription-userinfo: upload={$user->u}; download={$user->d}; total={$user->transfer_enable}; expire={$user->expired_at}");
+        }
         foreach ($servers as $server) {
             if ($server['type'] === 'shadowsocks') {
                 $uri .= QuantumultX::buildShadowsocks($server);
@@ -196,7 +198,9 @@ class SubscribeController extends Controller
 
     private function quantumult(User $user, array $servers = []): string
     {
-        header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable.'; expire='.strtotime($user->expired_at));
+        if (sysConfig('is_custom_subscribe')) {
+            header('subscription-userinfo: upload='.$user->u.'; download='.$user->d.';total='.$user->transfer_enable.'; expire='.strtotime($user->expired_at));
+        }
 
         return $this->origin($servers);
     }
@@ -351,10 +355,13 @@ class SubscribeController extends Controller
     private function shadowrocket(User $user, array $servers = []): string
     {
         //display remaining traffic and expire date
-        $upload = flowAutoShow($user->u);
-        $download = flowAutoShow($user->d);
-        $totalTraffic = flowAutoShow($user->transfer_enable);
-        $uri = "STATUS=🚀↑:{$upload},↓:{$download},TOT:{$totalTraffic}💡Expires:{$user->expired_at}\r\n";
+        $uri = '';
+        if (sysConfig('is_custom_subscribe')) {
+            $upload = flowAutoShow($user->u);
+            $download = flowAutoShow($user->d);
+            $totalTraffic = flowAutoShow($user->transfer_enable);
+            $uri = "STATUS=📤:{$upload}📥:{$download}⏳:{$totalTraffic}📅:{$user->expired_at}\r\n";
+        }
         $uri .= $this->origin($servers, false);
 
         return base64_encode($uri);
