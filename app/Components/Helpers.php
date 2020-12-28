@@ -50,6 +50,37 @@ class Helpers
         return $code;
     }
 
+    /**
+     * 添加用户.
+     *
+     * @param  string  $email  用户邮箱
+     * @param  string  $password  用户密码
+     * @param  int  $transfer_enable  可用流量
+     * @param  int|null  $date  可使用天数
+     * @param  int|null  $inviter_id  邀请人
+     * @param  string|null  $username  昵称
+     * @return User
+     */
+    public static function addUser(string $email, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $username = null): User
+    {
+        return User::create([
+            'username' => $username ?? $email,
+            'email' => $email,
+            'password' => $password,
+            'port' => self::getPort(), // 生成一个可用端口
+            'passwd' => Str::random(),
+            'vmess_id' => Str::uuid(),
+            'method' => self::getDefaultMethod(),
+            'protocol' => self::getDefaultProtocol(),
+            'obfs' => self::getDefaultObfs(),
+            'transfer_enable' => $transfer_enable,
+            'expired_at' => date('Y-m-d', strtotime('+'.$date.' days')),
+            'user_group_id' => null,
+            'reg_ip' => IP::getClientIp(),
+            'inviter_id' => $inviter_id,
+        ]);
+    }
+
     // 获取一个有效端口
     public static function getPort(): int
     {

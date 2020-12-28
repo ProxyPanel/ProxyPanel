@@ -19,5 +19,6 @@ $factory->define(User::class, function (Faker $faker) {
         'obfs' => Helpers::getDefaultObfs(),
         'transfer_enable' => (int) sysConfig('default_traffic') * MB,
         'expired_at' => date('Y-m-d', strtotime('+'.sysConfig('default_days').' days')),
+        'user_group_id' => null,
     ];
 });

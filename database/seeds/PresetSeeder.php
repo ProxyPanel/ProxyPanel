@@ -7,7 +7,6 @@ use App\Models\Label;
 use App\Models\Level;
 use App\Models\Rule;
 use App\Models\SsConfig;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class PresetSeeder extends Seeder
@@ -514,7 +513,7 @@ class PresetSeeder extends Seeder
         }
 
         // 生成初始管理账号
-        $user = factory(User::class)->create(['username' => '管理员', 'email' => 'test@test.com', 'password' => '123456']);
+        $user = Helpers::addUser('test@test.com', '123456', 100 * GB, sysConfig('default_days'), null, '管理员');
         $user->assignRole('Super Admin');
     }
 }

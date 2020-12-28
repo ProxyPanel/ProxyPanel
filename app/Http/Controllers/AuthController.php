@@ -241,13 +241,13 @@ class AuthController extends Controller
                     if (Invite::whereCode($code)->whereStatus(0)->doesntExist()) {
                         return Redirect::back()->withInput($request->except('code'))->withErrors(trans('auth.code_error'));
                     }
-                } elseif (sysConfig('is_invite_register') == 2) { // 必须使用邀请码
+                } elseif ((int) sysConfig('is_invite_register') === 2) { // 必须使用邀请码
                     return Redirect::back()->withInput()->withErrors(trans('auth.code_null'));
                 }
             }
 
             // 注册前发送激活码
-            if (sysConfig('is_activate_account') == 1) {
+            if ((int) sysConfig('is_activate_account') === 1) {
                 if (! $verify_code) {
                     return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha_null'));
                 }
@@ -288,9 +288,7 @@ class AuthController extends Controller
             $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
             // 创建新用户
-            $user = factory(User::class)->create([
-                'username' => $username, 'email' => $email, 'password' => $password, 'transfer_enable' => $transfer_enable, 'inviter_id' => $inviter_id,
-            ]);
+            $user = Helpers::addUser($email, $password, $transfer_enable, sysConfig('default_days'), $inviter_id, $username);
 
             // 注册失败，抛出异常
             if (! $user) {
@@ -306,7 +304,10 @@ class AuthController extends Controller
 
             // 更新邀请码
             if ($affArr['code_id'] && sysConfig('is_invite_register')) {
-                Invite::find($affArr['code_id'])->update(['invitee_id' => $user->id, 'status' => 1]);
+                $invite = Invite::find($affArr['code_id']);
+                if ($invite) {
+                    $invite->update(['invitee_id' => $user->id, 'status' => 1]);
+                }
             }
 
             // 清除邀请人Cookie
@@ -510,7 +511,7 @@ class AuthController extends Controller
 
             $password = $request->input('password');
             // 校验账号
-            $verify = Verify::type(1)->whereToken($token)->first();
+            $verify = Verify::type(1)->whereToken($token)->firstOrFail();
             $user = $verify->user;
             if (! $verify) {
                 return Redirect::route('login');
@@ -573,7 +574,7 @@ class AuthController extends Controller
             $email = $request->input('email');
 
             // 是否开启账号激活
-            if (sysConfig('is_activate_account') != 2) {
+            if ((int) sysConfig('is_activate_account') !== 2) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.active_close', ['email' => sysConfig('webmaster_email')]));
             }
 
@@ -620,7 +621,7 @@ class AuthController extends Controller
             return Redirect::route('login');
         }
 
-        $verify = Verify::type(1)->with('user')->whereToken($token)->first();
+        $verify = Verify::type(1)->with('user')->whereToken($token)->firstOrFail();
         $user = $verify->user;
         if (! $verify) {
             return Redirect::route('login');

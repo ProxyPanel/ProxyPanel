@@ -263,7 +263,7 @@ class UserController extends Controller
 
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
-                $user = factory(User::class)->create($preset);
+                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
                 // 写入用户流量变动记录
                 Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, '后台批量生成用户');
             }
