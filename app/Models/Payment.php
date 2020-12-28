@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Payment extends Model
 {
     protected $table = 'payment';
-    protected $fillable = ['qr_code', 'url', 'status'];
+    protected $guarded = [];
 
     public function scopeUid($query)
     {

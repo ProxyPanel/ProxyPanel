@@ -12,7 +12,7 @@ class Label extends Model
 {
     public $timestamps = false;
     protected $table = 'label';
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function nodes()
     {

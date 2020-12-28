@@ -14,5 +14,5 @@ class Config extends Model
     protected $table = 'config';
     protected $primaryKey = 'name';
     protected $keyType = 'string';
-    protected $fillable = ['value'];
+    protected $guarded = [];
 }

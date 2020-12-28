@@ -100,6 +100,10 @@ class NetworkDetection
             }
 
             if (! $message['success']) {
+                if ($message['error'] && $message['error'] === 'execute timeout (3s)') {
+                    return false;
+                }
+
                 Log::warning('【'.$checkName.'阻断检测】检测'.$ip.$port.'时，返回'.var_export($message, true));
 
                 return false;

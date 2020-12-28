@@ -16,7 +16,7 @@ class Invite extends Model
 
     protected $table = 'invite';
     protected $dates = ['dateline', 'deleted_at'];
-    protected $fillable = ['invitee_id', 'status'];
+    protected $guarded = [];
 
     public function scopeUid($query)
     {

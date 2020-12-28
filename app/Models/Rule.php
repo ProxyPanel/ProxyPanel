@@ -11,7 +11,7 @@ class Rule extends Model
 {
     public $timestamps = false;
     protected $table = 'rule';
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function getTypeLabelAttribute(): string
     {

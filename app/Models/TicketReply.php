@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class TicketReply extends Model
 {
     protected $table = 'ticket_reply';
+    protected $guarded = [];
 
     public function ticket(): BelongsTo
     {

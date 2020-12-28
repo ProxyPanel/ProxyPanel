@@ -14,7 +14,7 @@ class Article extends Model
 
     protected $table = 'article';
     protected $dates = ['deleted_at'];
-    protected $guarded = ['id', 'created_at'];
+    protected $guarded = [];
 
     // 筛选类型
     public function scopeType($query, $type)

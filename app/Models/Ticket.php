@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Ticket extends Model
 {
     protected $table = 'ticket';
+    protected $guarded = [];
 
     public function scopeUid($query)
     {

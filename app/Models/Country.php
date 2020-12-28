@@ -14,5 +14,5 @@ class Country extends Model
     protected $table = 'country';
     protected $primaryKey = 'code';
     protected $keyType = 'string';
-    protected $fillable = ['*'];
+    protected $guarded = [];
 }

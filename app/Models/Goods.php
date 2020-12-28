@@ -14,7 +14,7 @@ class Goods extends Model
 
     protected $table = 'goods';
     protected $dates = ['deleted_at'];
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function scopeType($query, $type)
     {

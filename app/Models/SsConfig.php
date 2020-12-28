@@ -11,7 +11,7 @@ class SsConfig extends Model
 {
     public $timestamps = false;
     protected $table = 'ss_config';
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     // 筛选默认
 
