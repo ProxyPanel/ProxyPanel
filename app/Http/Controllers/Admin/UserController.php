@@ -142,6 +142,7 @@ class UserController extends Controller
             $data['port'] = $data['port'] ?? Helpers::getPort();
             $data['passwd'] = $data['passwd'] ?? Str::random();
             $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
+            $data['transfer_enable'] *= GB;
             $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
             $data['reg_ip'] = IP::getClientIp();
