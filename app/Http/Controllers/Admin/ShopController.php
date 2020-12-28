@@ -17,11 +17,6 @@ use Redirect;
 use Response;
 use Str;
 
-/**
- * 商店控制器.
- *
- * Class ShopController
- */
 class ShopController extends Controller
 {
     // 商品列表
@@ -40,17 +35,13 @@ class ShopController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['goodsList'] = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
-
-        return view('admin.shop.index', $view);
+        return view('admin.shop.index', ['goodsList' => $query->orderByDesc('status')->paginate(10)->appends($request->except('page'))]);
     }
 
     // 添加商品页面
     public function create()
     {
-        $view['levelList'] = Level::orderBy('level')->get();
-
-        return view('admin.shop.info', $view);
+        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get()]);
     }
 
     // 添加商品
@@ -71,10 +62,9 @@ class ShopController extends Controller
                     return $path;
                 }
             }
-            $good = Goods::create($data);
 
-            if ($good) {
-                return Redirect::route('admin.goods.edit', $good->id)->with('successMsg', '添加成功');
+            if ($good = Goods::create($data)) {
+                return Redirect::route('admin.goods.edit', $good)->with('successMsg', '添加成功');
             }
         } catch (Exception $e) {
             Log::error('添加商品信息异常：'.$e->getMessage());
@@ -99,18 +89,17 @@ class ShopController extends Controller
     }
 
     // 编辑商品页面
-    public function edit($id)
+    public function edit(Goods $good)
     {
-        $view['goods'] = Goods::find($id);
-        $view['levelList'] = Level::orderBy('level')->get();
-
-        return view('admin.shop.info', $view);
+        return view('admin.shop.info', [
+            'good' => $good,
+            'levels' => Level::orderBy('level')->get(),
+        ]);
     }
 
     // 编辑商品
-    public function update(ShopUpdateRequest $request, $id)
+    public function update(ShopUpdateRequest $request, Goods $good)
     {
-        $goods = Goods::findOrFail($id);
         $data = $request->except('_token', '_method', 'logo');
         // 商品LOGO
         if ($request->hasFile('logo')) {
@@ -126,7 +115,7 @@ class ShopController extends Controller
             $data['is_hot'] = $request->input('is_hot') ? 1 : 0;
             $data['status'] = $request->input('status') ? 1 : 0;
 
-            if ($goods->update($data)) {
+            if ($good->update($data)) {
                 return Redirect::back()->with('successMsg', '编辑成功');
             }
         } catch (Exception $e) {
@@ -139,10 +128,10 @@ class ShopController extends Controller
     }
 
     // 删除商品
-    public function destroy($id): JsonResponse
+    public function destroy(Goods $good): JsonResponse
     {
         try {
-            if (Goods::find($id)->delete()) {
+            if ($good->delete()) {
                 return Response::json(['status' => 'success', 'message' => '删除成功']);
             }
         } catch (Exception $e) {

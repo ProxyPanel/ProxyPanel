@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
 use App\Models\Country;
 use App\Models\Invite;
 use App\Models\Label;
@@ -15,68 +14,56 @@ use App\Models\ReferralLog;
 use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
-use Auth;
-use Hash;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Log;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Redirect;
 use Response;
 use Str;
 
-/**
- * 管理员控制器.
- *
- * Class AdminController
- */
 class AdminController extends Controller
 {
     public function index()
     {
         $past = strtotime('-'.sysConfig('expire_days').' days');
 
-        $view['expireDays'] = sysConfig('expire_days');
-        $view['totalUserCount'] = User::count(); // 总用户数
-        $view['todayRegister'] = User::whereDate('created_at', date('Y-m-d'))->count(); // 今日注册用户
-        $view['enableUserCount'] = User::whereEnable(1)->count(); // 有效用户数
-        $view['activeUserCount'] = User::where('t', '>=', $past)->count(); // 活跃用户数
-        $view['unActiveUserCount'] = User::whereEnable(1)->whereBetween('t', [1, $past])->count(); // 不活跃用户数
-        $view['onlineUserCount'] = User::where('t', '>=', strtotime('-10 minutes'))->count(); // 10分钟内在线用户数
-        $view['expireWarningUserCount'] = User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(); // 临近过期用户数
-        $view['largeTrafficUserCount'] = User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(); // 流量使用超过90%的用户
-        $view['flowAbnormalUserCount'] = count((new UserHourlyDataFlow)->trafficAbnormal()); // 1小时内流量异常用户
-        $view['nodeCount'] = Node::count();
-        $view['unnormalNodeCount'] = Node::whereStatus(0)->count();
-        $view['flowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total'));
-        $view['todayFlowCount'] = flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total'));
-        $view['totalFlowCount'] = flowAutoShow(NodeDailyDataFlow::sum('total'));
-        $view['totalCredit'] = User::where('credit', '<>', 0)->sum('credit') / 100;
-        $view['totalWaitRefAmount'] = ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100;
-        $view['todayWaitRefAmount'] = ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100;
-        $view['totalRefAmount'] = ReferralApply::whereStatus(2)->sum('amount') / 100;
-        $view['totalOrder'] = Order::count();
-        $view['todayOrder'] = Order::whereDate('created_at', date('Y-m-d'))->count();
-        $view['totalOnlinePayOrder'] = Order::where('pay_type', '<>', 0)->count();
-        $view['todayOnlinePayOrder'] = Order::where('pay_type', '<>', 0)->whereDate('created_at', date('Y-m-d'))->count();
-        $view['totalSuccessOrder'] = Order::whereStatus(2)->count();
-        $view['todaySuccessOrder'] = Order::whereStatus(2)->whereDate('created_at', date('Y-m-d'))->count();
-
-        return view('admin.index', $view);
+        return view('admin.index', [
+            'expireDays' => sysConfig('expire_days'),
+            'totalUserCount' => User::count(), // 总用户数
+            'todayRegister' => User::whereDate('created_at', date('Y-m-d'))->count(), // 今日注册用户
+            'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
+            'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数,
+            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
+            'unActiveUserCount' => User::whereEnable(1)->whereBetween('t', [1, $past])->count(), // 不活跃用户数
+            'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
+            'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(), // 临近过期用户数
+            'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
+            'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
+            'nodeCount' => Node::count(),
+            'unnormalNodeCount' => Node::whereStatus(0)->count(),
+            'flowCount' => flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total')),
+            'todayFlowCount' => flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total')),
+            'totalFlowCount' => flowAutoShow(NodeDailyDataFlow::sum('total')),
+            'totalCredit' => User::where('credit', '<>', 0)->sum('credit') / 100,
+            'totalWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100,
+            'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100,
+            'totalRefAmount' => ReferralApply::whereStatus(2)->sum('amount') / 100,
+            'totalOrder' => Order::count(),
+            'todayOrder' => Order::whereDate('created_at', date('Y-m-d'))->count(),
+            'totalOnlinePayOrder' => Order::where('pay_type', '<>', 0)->count(),
+            'todayOnlinePayOrder' => Order::where('pay_type', '<>', 0)->whereDate('created_at', date('Y-m-d'))->count(),
+            'totalSuccessOrder' => Order::whereStatus(2)->count(),
+            'todaySuccessOrder' => Order::whereStatus(2)->whereDate('created_at', date('Y-m-d'))->count(),
+        ]);
     }
 
     // 邀请码列表
-    public function inviteList(Request $request)
+    public function inviteList()
     {
-        $view['inviteList'] = Invite::with(['invitee:id,email', 'inviter:id,email'])
-            ->orderBy('status')
-            ->orderByDesc('id')
-            ->paginate(15)
-            ->appends($request->except('page'));
-
-        return view('admin.inviteList', $view);
+        return view('admin.inviteList', [
+            'inviteList' => Invite::with(['invitee:id,email', 'inviter:id,email'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page')),
+        ]);
     }
 
     // 生成邀请码
@@ -128,13 +115,13 @@ class AdminController extends Controller
 
     public function config()
     {
-        $view['methodList'] = SsConfig::type(1)->get();
-        $view['protocolList'] = SsConfig::type(2)->get();
-        $view['obfsList'] = SsConfig::type(3)->get();
-        $view['countryList'] = Country::all();
-        $view['levelList'] = Level::all();
-        $view['labelList'] = Label::with('nodes')->get();
-
-        return view('admin.config.config', $view);
+        return view('admin.config.config', [
+            'methods' => SsConfig::type(1)->get(),
+            'protocols' => SsConfig::type(2)->get(),
+            'obfsList' => SsConfig::type(3)->get(),
+            'countries' => Country::all(),
+            'levels' => Level::all(),
+            'labels' => Label::with('nodes')->get(),
+        ]);
     }
 }

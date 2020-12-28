@@ -31,33 +31,33 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($userTrafficLogs as $log)
                         <tr>
-                            <td> {{$vo->id}} </td>
+                            <td> {{$log->id}} </td>
                             <td>
-                                @if(empty($vo->user))
+                                @if(empty($log->user))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.log.flow', ['email' => $vo->user->email])}}"> {{$vo->user->email}} </a>
+                                    <a href="{{route('admin.log.flow', ['email' => $log->user->email])}}"> {{$log->user->email}} </a>
                                 @endif
                             </td>
                             <td>
-                                @if ($vo->order_id)
-                                    @if($vo->order)
+                                @if ($log->order_id)
+                                    @if($log->order)
                                         @can('admin.order')
-                                            <a href="{{route('admin.order', ['id' => $vo->order_id])}}"></a>
+                                            <a href="{{route('admin.order', ['id' => $log->order_id])}}"></a>
                                         @else
-                                            {{$vo->order->goods->name}}
+                                            {{$log->order->goods->name}}
                                         @endcan
                                     @else
                                         【订单已删除】
                                     @endif
                                 @endif
                             </td>
-                            <td> {{$vo->before}} </td>
-                            <td> {{$vo->after}} </td>
-                            <td> {{$vo->description}} </td>
-                            <td> {{$vo->created_at}} </td>
+                            <td> {{$log->before}} </td>
+                            <td> {{$log->after}} </td>
+                            <td> {{$log->description}} </td>
+                            <td> {{$log->created_at}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -66,11 +66,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条记录
+                        共 <code>{{$userTrafficLogs->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$userTrafficLogs->links()}}
                         </nav>
                     </div>
                 </div>

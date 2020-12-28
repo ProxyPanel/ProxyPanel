@@ -7,9 +7,9 @@
                 <!-- BEGIN PORTLET -->
                 <div class="panel">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{{$info->title}}<sub class="ml-30">{{$info->created_at}}</sub></h3>
+                        <h3 class="panel-title">{{$article->title}}<sub class="ml-30">{{$article->created_at}}</sub></h3>
                         <div class="panel-body pt-0 pb-60">
-                            {!! $info->content !!}
+                            {!! $article->content !!}
                         </div>
                     </div>
                 </div>

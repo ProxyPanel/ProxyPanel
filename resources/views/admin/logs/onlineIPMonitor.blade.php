@@ -31,7 +31,7 @@
                     <div class="form-group col-lg-2 col-sm-5">
                         <select name="nodeId" id="nodeId" class="form-control" onChange="Search()">
                             <option value="" @if(Request::input('nodeId') == '') selected @endif hidden>选择节点</option>
-                            @foreach($nodeList as $node)
+                            @foreach($nodes as $node)
                                 <option value="{{$node->id}}"
                                         @if(Request::input('nodeId') == $node->id) selected @endif>{{$node->name}}</option>
                             @endforeach
@@ -55,23 +55,23 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($onlineIPLogs as $log)
                         <tr>
-                            <td>{{$vo->id}}</td>
-                            <td>{{$vo->type}}</td>
-                            <td>{{$vo->node ? $vo->node->name : '【节点已删除】'}}</td>
-                            <td>{{$vo->user ? $vo->user->email : '【用户已删除】'}}</td>
+                            <td>{{$log->id}}</td>
+                            <td>{{$log->type}}</td>
+                            <td>{{$log->node ? $log->node->name : '【节点已删除】'}}</td>
+                            <td>{{$log->user ? $log->user->email : '【用户已删除】'}}</td>
                             <td>
-                                @if (strpos($vo->ip, ',') !== false)
-                                    @foreach (explode(',', $vo->ip) as $ip)
+                                @if (strpos($log->ip, ',') !== false)
+                                    @foreach (explode(',', $log->ip) as $ip)
                                         <a href="https://www.ipip.net/ip/{{$ip}}.html" target="_blank">{{$ip}}</a>
                                     @endforeach
                                 @else
-                                    <a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a>
+                                    <a href="https://www.ipip.net/ip/{{$log->ip}}.html" target="_blank">{{$log->ip}}</a>
                                 @endif
                             </td>
-                            <td>{{strpos($vo->ip, ',') !== false? '':$vo->ipInfo}}</td>
-                            <td>{{date('Y-m-d H:i:s',$vo->created_at)}}</td>
+                            <td>{{strpos($log->ip, ',') !== false? '':$log->ipInfo}}</td>
+                            <td>{{date('Y-m-d H:i:s',$log->created_at)}}</td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -80,11 +80,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 个账号
+                        共 <code>{{$onlineIPLogs->total()}}</code> 个账号
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$onlineIPLogs->links()}}
                         </nav>
                     </div>
                 </div>

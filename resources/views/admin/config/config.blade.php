@@ -44,7 +44,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($methodList as $method)
+                                @foreach($methods as $method)
                                     <tr>
                                         <td> {{$method->name}}</td>
                                         <td>
@@ -78,7 +78,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($protocolList as $protocol)
+                                @foreach($protocols as $protocol)
                                     <tr>
                                         <td> {{$protocol->name}}</td>
                                         <td>
@@ -147,7 +147,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($levelList as $level)
+                                @foreach($levels as $level)
                                     <tr>
                                         <td>
                                             <input type="text" class="form-control" name="level" id="level_{{$level->id}}" value="{{$level->level}}"/>
@@ -182,7 +182,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($countryList as $country)
+                                @foreach($countries as $country)
                                     <tr>
                                         <td>
                                             <svg class="w-40 h-40 text-center" aria-hidden="true">
@@ -222,7 +222,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($labelList as $label)
+                                @foreach($labels as $label)
                                     <tr>
                                         <td>
                                             <input type="text" class="form-control" name="label_name" id="label_name_{{$label->id}}" value="{{$label->name}}"/>

@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * 节点负载信息.
  */
-class NodeHeartBeat extends Model
+class NodeHeartbeat extends Model
 {
     public $timestamps = false;
-    protected $table = 'ss_node_info';
+    protected $table = 'node_heartbeat';
 
     public function scopeRecently($query)
     {

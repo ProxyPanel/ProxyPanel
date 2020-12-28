@@ -26,26 +26,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($ruleGroupList as $ruleGroup)
+                    @foreach ($ruleGroups as $ruleGroup)
                         <tr>
                             <td> {{$ruleGroup->id}} </td>
                             <td> {{$ruleGroup->name}} </td>
                             <td> {!! $ruleGroup->type_label !!} </td>
                             <td>
-                                @canany(['admin.rule.group.editNode', 'admin.rule.group.edit', 'admin.rule.group.destroy'])
+                                @canany(['admin.rule.group.edit', 'admin.rule.group.destroy'])
                                     <div class="btn-group">
-                                        @can('admin.rule.group.editNode')
-                                            <a href="{{route('admin.rule.group.editNode', $ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
-                                                <i class="icon wb-plus" aria-hidden="true"></i>分配节点
-                                            </a>
-                                        @endcan
                                         @can('admin.rule.group.edit')
-                                            <a href="{{route('admin.rule.group.edit', $ruleGroup->id)}}" class="btn btn-sm btn-outline-primary">
+                                            <a href="{{route('admin.rule.group.edit', $ruleGroup)}}" class="btn btn-sm btn-outline-primary">
                                                 <i class="icon wb-edit"></i>编辑
                                             </a>
                                         @endcan
                                         @can('admin.rule.group.destroy')
-                                            <button onclick="delRuleGroup('{{route('admin.rule.group.destroy', $ruleGroup->id)}}', '{{$ruleGroup->name}}')"
+                                            <button onclick="delRuleGroup('{{route('admin.rule.group.destroy', $ruleGroup)}}', '{{$ruleGroup->name}}')"
                                                     class="btn btn-sm btn-outline-danger">
                                                 <i class="icon wb-trash"></i>删除
                                             </button>
@@ -61,11 +56,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$ruleGroupList->total()}}</code> 个分组
+                        共 <code>{{$ruleGroups->total()}}</code> 个分组
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$ruleGroupList->links()}}
+                            {{$ruleGroups->links()}}
                         </nav>
                     </div>
                 </div>

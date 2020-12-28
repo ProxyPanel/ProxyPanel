@@ -14,8 +14,8 @@ class Label extends Model
     protected $table = 'label';
     protected $guarded = ['id'];
 
-    public function nodes(): HasMany
+    public function nodes()
     {
-        return $this->hasMany(NodeLabel::class);
+        return $this->belongsToMany(Node::class);
     }
 }

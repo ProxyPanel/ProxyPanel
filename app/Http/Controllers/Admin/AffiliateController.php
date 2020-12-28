@@ -5,15 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
 
-/**
- * 推广控制器.
- *
- * Class AffiliateController
- */
 class AffiliateController extends Controller
 {
     // 提现申请列表
@@ -33,44 +26,38 @@ class AffiliateController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['applyList'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.aff.index', $view);
+        return view('admin.aff.index', ['applyList' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
     // 提现申请详情
-    public function detail(Request $request, $id)
+    public function detail(Request $request, ReferralApply $aff)
     {
-        $view['basic'] = ReferralApply::with('user:id,email')->find($id);
-        $view['commissions'] = [];
-        if ($view['basic'] && $view['basic']->link_logs) {
-            $view['commissions'] = ReferralLog::with(['invitee:id,email', 'order.goods:id,name'])
-                ->whereIn('id', $view['basic']->link_logs)
+        if ($aff->link_logs) {
+            $commissions = ReferralLog::with(['invitee:id,email', 'order.goods:id,name'])
+                ->whereIn('id', $aff->link_logs)
                 ->paginate(15)
                 ->appends($request->except('page'));
         }
 
-        return view('admin.aff.detail', $view);
+        return view('admin.aff.detail', [
+            'referral' => $aff->load('user:id,email'),
+            'commissions' => $commissions ?? null,
+        ]);
     }
 
     // 设置提现申请状态
-    public function setStatus(Request $request): JsonResponse
+    public function setStatus(Request $request, ReferralApply $aff)
     {
-        $id = $request->input('id');
-        $status = (int) $request->input('status');
+        $status = (int) $request->validate(['status' => 'required|numeric|between:-1,2']);
 
-        $ret = ReferralApply::whereId($id)->update(['status' => $status]);
-        if ($ret) {
+        if ($aff->update(['status' => $status])) {
             // 审核申请的时候将关联的
-            $referralApply = ReferralApply::findOrFail($id);
-            if ($referralApply && $status === 1) {
-                ReferralLog::whereIn('id', $referralApply->link_logs)->update(['status' => 1]);
-            } elseif ($referralApply && $status === 2) {
-                ReferralLog::whereIn('id', $referralApply->link_logs)->update(['status' => 2]);
+            if ($status === 1 || $status === 2) {
+                $aff->referral_logs()->update(['status' => $status]);
             }
         }
 
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
+        return response()->json(['status' => 'success', 'message' => '操作成功']);
     }
 
     // 用户返利流水记录
@@ -98,8 +85,6 @@ class AffiliateController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.aff.rebate', $view);
+        return view('admin.aff.rebate', ['referralLogs' => $query->paginate(15)->appends($request->except('page'))]);
     }
 }

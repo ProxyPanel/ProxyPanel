@@ -13,11 +13,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::name('user.')->group(function () {
             Route::post('batchAdd', 'UserController@batchAddUsers')->name('batch'); // 批量生成账号
             Route::resource('group', 'UserGroupController')->except('show'); // 用户分组管理
-            Route::get('monitor/{id}', 'LogsController@userTrafficMonitor')->name('monitor'); // 用户流量监控
+            Route::get('monitor/{user}', 'LogsController@userTrafficMonitor')->name('monitor'); // 用户流量监控
             Route::get('online/{id}', 'LogsController@onlineIPMonitor')->name('online'); // 在线IP监控
-            Route::post('switch', 'UserController@switchToUser')->name('switch'); // 转换成某个用户的身份
-            Route::post('updateCredit', 'UserController@handleUserCredit')->name('updateCredit'); // 用户余额充值
-            Route::post('reset', 'UserController@resetTraffic')->name('reset'); // 重置用户流量
+            Route::post('switch/{user}', 'UserController@switchToUser')->name('switch'); // 转换成某个用户的身份
+            Route::post('updateCredit/{user}', 'UserController@handleUserCredit')->name('updateCredit'); // 用户余额充值
+            Route::post('reset/{user}', 'UserController@resetTraffic')->name('reset'); // 重置用户流量
             Route::get('export/{user}', 'UserController@export')->name('export'); // 查看配置信息
             Route::post('export/{user}', 'UserController@exportProxyConfig')->name('exportProxy'); // 读取配置信息
         });
@@ -25,7 +25,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::prefix('subscribe')->name('subscribe.')->group(function () {
             Route::get('/', 'SubscribeController@index')->name('index'); // 订阅码列表
             Route::get('log/{id}', 'SubscribeController@subscribeLog')->name('log'); // 订阅码记录
-            Route::post('set/{id}', 'SubscribeController@setSubscribeStatus')->name('set'); // 启用禁用用户的订阅
+            Route::post('set/{subscribe}', 'SubscribeController@setSubscribeStatus')->name('set'); // 启用禁用用户的订阅
         });
 
         Route::resource('ticket', 'TicketController')->except('create', 'show');
@@ -38,30 +38,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('node', 'NodeController')->except('show');
         Route::prefix('node')->name('node.')->group(function () {
-            Route::get('monitor/{id}', 'NodeController@nodeMonitor')->name('monitor'); // 节点流量监控
-            Route::post('check/{id}', 'NodeController@checkNode')->name('check'); // 节点阻断检测
-            Route::post('ping/{id}', 'NodeController@pingNode')->name('ping'); // 节点ping测速
+            Route::get('monitor/{node}', 'NodeController@nodeMonitor')->name('monitor'); // 节点流量监控
+            Route::post('check/{node}', 'NodeController@checkNode')->name('check'); // 节点阻断检测
+            Route::post('ping/{node}', 'NodeController@pingNode')->name('ping'); // 节点ping测速
             Route::get('pingLog', 'NodeController@pingLog')->name('pingLog'); // 节点Ping测速日志
             Route::get('refreshGeo/{id}', 'NodeController@refreshGeo')->name('geo'); // 更新节点
-            Route::post('reload/{id}', 'NodeController@reload')->name('reload'); // 更新节点
+            Route::post('reload/{node}', 'NodeController@reload')->name('reload'); // 更新节点
 
-            Route::prefix('auth')->name('auth.')->group(function () {
-                Route::get('/', 'NodeController@authList')->name('index');
-                Route::post('/', 'NodeController@addAuth')->name('store');
-                Route::delete('{id}', 'NodeController@delAuth')->name('destroy');
-                Route::put('{id}', 'NodeController@refreshAuth')->name('update');
-            }); // 节点Api授权相关
-
+            Route::resource('auth', 'NodeAuthController')->except(['create', 'show', 'edit']); // 节点授权相关
             Route::resource('cert', 'CertController')->except('show'); // 节点域名tls相关
         });
 
         Route::resource('rule', 'RuleController')->except('create', 'edit', 'show'); // 节点审计规则管理
         Route::name('rule.')->prefix('rule')->group(function () {
             Route::resource('group', 'RuleGroupController')->except('show');
-            Route::name('group.')->prefix('group')->group(function () {
-                Route::get('{id}/assign', 'RuleGroupController@assignNode')->name('editNode');
-                Route::put('{id}/assign', 'RuleGroupController@assign')->name('assign'); // 规则分组关联节点
-            });
             Route::get('log', 'RuleController@ruleLogList')->name('log'); // 用户触发审计规则日志
             Route::post('clear', 'RuleController@clearLog')->name('clear'); // 清除所有审计触发日志
         });
@@ -72,9 +62,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::prefix('aff')->name('aff.')->group(function () {
             Route::get('/', 'AffiliateController@index')->name('index'); // 提现申请列表
-            Route::get('detail/{id}', 'AffiliateController@detail')->name('detail'); // 提现申请详情
-            Route::post('set', 'AffiliateController@setStatus')->name('setStatus'); // 设置提现申请状态
             Route::get('rebate', 'AffiliateController@rebate')->name('rebate'); // 返利流水记录
+            Route::get('/{aff}', 'AffiliateController@detail')->name('detail'); // 提现申请详情
+            Route::put('/{aff}', 'AffiliateController@setStatus')->name('setStatus'); // 设置提现申请状态
         });
 
         Route::get('order', 'LogsController@orderList')->name('order'); // 订单列表

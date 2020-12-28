@@ -11,7 +11,7 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     <i class="icon wb-shopping-cart" aria-hidden="true"></i>
-                    @isset($goods) 编辑商品 @else 添加商品 @endisset
+                    @isset($good) 编辑商品 @else 添加商品 @endisset
                 </h1>
                 <div class="panel-actions">
                     <a href="{{route('admin.goods.index')}}" class="btn btn-danger">返 回</a>
@@ -24,9 +24,9 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action=@isset($goods){{route('admin.goods.update', $goods->id)}} @else {{route('admin.goods.store')}} @endisset method="post"
+                <form action=@isset($good){{route('admin.goods.update', $good)}} @else {{route('admin.goods.store')}} @endisset method="post"
                       enctype="multipart/form-data" class="form-horizontal" role="form">@csrf
-                    @isset($goods) @method('PUT') @endisset
+                    @isset($good) @method('PUT') @endisset
                     <div class="form-row">
                         <div class="col-lg-6 col-md-12">
                             <div class="form-group row">
@@ -60,7 +60,7 @@
                                 <label for="level" class="col-md-2 col-form-label">等级</label>
                                 <div class="col-md-4">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="level" id="level">
-                                        @foreach ($levelList as $level)
+                                        @foreach ($levels as $level)
                                             <option value="{{$level->level}}">{{$level->name}}</option>
                                         @endforeach
                                     </select>
@@ -148,7 +148,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="logo">商品图片</label>
                                 <div class="col-md-6">
-                                    <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="{{asset($goods->logo ?? '/assets/images/default.png')}}"/>
+                                    <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="{{asset($good->logo ?? '/assets/images/default.png')}}"/>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -186,45 +186,45 @@
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
       $('[data-toggle="switch"]').bootstrapSwitch();
-      @isset($goods)
+      @isset($good)
       $(document).ready(function() {
         const type = $('input[name=\'type\']');
-        $('#id').val('{{$goods->id}}');
-        $("input[name='type'][value='{{$goods->type}}']").click();
+        $('#id').val('{{$good->id}}');
+        $("input[name='type'][value='{{$good->type}}']").click();
         type.attr('disabled', true);
-        $('#name').val('{{$goods->name}}');
-        $('#price').val('{{$goods->price}}');
-        $('#level').selectpicker('val', '{{$goods->level}}');
-          @if ($goods->type == 2)
-          $('#renew').val('{{$goods->renew}}');
-        $('#period').val('{{$goods->period}}');
-        $('#days').val('{{$goods->days}}').attr('disabled', true);
+        $('#name').val('{{$good->name}}');
+        $('#price').val('{{$good->price}}');
+        $('#level').selectpicker('val', '{{$good->level}}');
+          @if ($good->type == 2)
+          $('#renew').val('{{$good->renew}}');
+        $('#period').val('{{$good->period}}');
+        $('#days').val('{{$good->days}}').attr('disabled', true);
           @endif
-          $('#invite_num').val('{{$goods->invite_num}}');
-        $('#limit_num').val('{{$goods->limit_num}}');
-          @if ($goods->is_hot)
+          $('#invite_num').val('{{$good->invite_num}}');
+        $('#limit_num').val('{{$good->limit_num}}');
+          @if ($good->is_hot)
           $('#is_hot').click();
           @endif
-          @if ($goods->status)
+          @if ($good->status)
           $('#status').click();
           @endif
-          $('#sort').val('{{$goods->sort}}');
-        $('#color').asColorPicker('val', '{{$goods->color}}');
-        $('#description').val('{{$goods->description}}');
-        $('#info').val('{!! $goods->info !!}');
+          $('#sort').val('{{$good->sort}}');
+        $('#color').asColorPicker('val', '{{$good->color}}');
+        $('#description').val('{{$good->description}}');
+        $('#info').val('{!! $good->info !!}');
         const trafficUnit = $('#traffic_unit');
         const traffic = $('#traffic');
-          @if($goods->traffic >= 1073741824)
-          traffic.val('{{$goods->traffic/1073741824}}');
+          @if($good->traffic >= 1073741824)
+          traffic.val('{{$good->traffic/1073741824}}');
         trafficUnit.selectpicker('val', '1073741824');
-          @elseif($goods->traffic >= 1048576)
-          traffic.val('{{$goods->traffic/1048576}}');
+          @elseif($good->traffic >= 1048576)
+          traffic.val('{{$good->traffic/1048576}}');
         trafficUnit.selectpicker('val', '1048576');
-          @elseif($goods->traffic >= 1024)
-          traffic.val('{{$goods->traffic/1024}}');
+          @elseif($good->traffic >= 1024)
+          traffic.val('{{$good->traffic/1024}}');
         trafficUnit.selectpicker('val', '1024');
           @else
-          traffic.val('{{$goods->traffic}}');
+          traffic.val('{{$good->traffic}}');
           @endif
           traffic.attr('disabled', true);
         trafficUnit.attr('disabled', true).selectpicker('refresh');

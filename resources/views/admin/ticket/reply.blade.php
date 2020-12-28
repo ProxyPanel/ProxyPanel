@@ -108,7 +108,7 @@
             if (result.value) {
               $.ajax({
                 method: 'PUT',
-                url: '{{route('admin.ticket.update', $ticket->id)}}',
+                url: '{{route('admin.ticket.update', $ticket)}}',
                 data: {_token: '{{csrf_token()}}', content: content},
                 dataType: 'json',
                 success: function(ret) {

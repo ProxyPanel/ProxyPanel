@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Models\Config;
 use App\Models\Node;
 use App\Models\Order;
-use App\Models\RuleGroup;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Observers\ConfigObserver;
@@ -51,7 +50,6 @@ class AppServiceProvider extends ServiceProvider
         Config::observe(ConfigObserver::class);
         Node::observe(NodeObserver::class);
         Order::observe(OrderObserver::class);
-        RuleGroup::observe(RuleGroupObserver::class);
         UserGroup::observe(UserGroupObserver::class);
         User::observe(UserObserver::class);
     }

@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 节点在线用户IP信息.
  */
-class NodeOnlineUserIp extends Model
+class NodeOnlineIp extends Model
 {
     public $timestamps = false;
-    protected $table = 'ss_node_ip';
+    protected $table = 'node_online_ip';
 
     public function node(): BelongsTo
     {

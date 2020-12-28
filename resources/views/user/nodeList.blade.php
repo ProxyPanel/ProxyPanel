@@ -80,7 +80,7 @@
                                 </p>
                                 <blockquote>
                                     @foreach($node->labels as $label)
-                                        <span class="badge badge-pill font-size-10 up m-0 badge-info">{{$label->label->name}}</span>
+                                        <span class="badge badge-pill font-size-10 up m-0 badge-info">{{$label->name}}</span>
                                     @endforeach
                                     <br>
                                     {{$node->description}}

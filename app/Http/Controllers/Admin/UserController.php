@@ -9,16 +9,15 @@ use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
 use App\Models\Level;
 use App\Models\Node;
+use App\Models\Order;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
 use Auth;
-use DB;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Redirect;
 use Response;
 use Session;
 use Spatie\Permission\Models\Role;
@@ -96,8 +95,14 @@ class UserController extends Controller
         }
 
         // 不活跃用户
-        if ($request->input('unActive')) {
+        if ($request->has('unActive')) {
             $query->whereBetween('t', [1, strtotime('-'.sysConfig('expire_days').' days')])->whereEnable(1);
+        }
+
+        // 不活跃用户
+        if ($request->has('paying')) {
+            $payingUser = Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
+            $query->whereIn('id', $payingUser);
         }
 
         // 1小时内流量异常用户
@@ -119,14 +124,12 @@ class UserController extends Controller
             $roles = Role::all()->pluck('description', 'name');
         } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
             $roles = Auth::getUser()->roles();
-        } else {
-            $roles = [];
         }
 
         return view('admin.user.info', [
             'levels' => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles,
+            'roles' => $roles ?? [],
         ]);
     }
 
@@ -173,15 +176,13 @@ class UserController extends Controller
             $roles = Role::all()->pluck('description', 'name');
         } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
             $roles = Auth::getUser()->roles();
-        } else {
-            $roles = [];
         }
 
         return view('admin.user.info', [
             'user' => $user->load('inviter:id,email'),
             'levels' => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles,
+            'roles' => $roles ?? [],
         ]);
     }
 
@@ -256,38 +257,26 @@ class UserController extends Controller
     }
 
     // 批量生成账号
-    public function batchAddUsers(Request $request)
+    public function batchAddUsers()
     {
+        $preset = ['transfer_enable' => 1024 * GB, 'expired_at' => date('Y-m-d', strtotime('+365 days'))];
+
         try {
-            DB::beginTransaction();
-
-            for ($i = 0; $i < $request->input('amount', 1); $i++) {
-                $uid = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
-
-                if ($uid) {
-                    // 写入用户流量变动记录
-                    Helpers::addUserTrafficModifyLog($uid, null, 0, 1024 * GB, '后台批量生成用户');
-                }
+            for ($i = 0; $i < (int) request('amount', 1); $i++) {
+                $user = factory(User::class)->create($preset);
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, '后台批量生成用户');
             }
-
-            DB::commit();
 
             return Response::json(['status' => 'success', 'message' => '批量生成账号成功']);
         } catch (Exception $e) {
-            DB::rollBack();
-
             return Response::json(['status' => 'fail', 'message' => '批量生成账号失败：'.$e->getMessage()]);
         }
     }
 
     // 转换成某个用户的身份
-    public function switchToUser(Request $request): JsonResponse
+    public function switchToUser(User $user): JsonResponse
     {
-        $user = User::find($request->input('user_id'));
-        if (! $user) {
-            return Response::json(['status' => 'fail', 'message' => '用户不存在']);
-        }
-
         // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
         Session::put('admin', Auth::id());
         Session::put('user', $user->id);
@@ -296,10 +285,10 @@ class UserController extends Controller
     }
 
     // 重置用户流量
-    public function resetTraffic(Request $request): JsonResponse
+    public function resetTraffic(User $user): JsonResponse
     {
         try {
-            User::find($request->input('id'))->update(['u' => 0, 'd' => 0]);
+            $user->update(['u' => 0, 'd' => 0]);
         } catch (Exception $e) {
             Log::error('流量重置失败：'.$e->getMessage());
 
@@ -310,19 +299,17 @@ class UserController extends Controller
     }
 
     // 操作用户余额
-    public function handleUserCredit(Request $request): JsonResponse
+    public function handleUserCredit(Request $request, User $user): JsonResponse
     {
-        $userId = $request->input('user_id');
-        $amount = $request->input('amount');
+        $amount = (int) $request->input('amount');
 
-        if (empty($userId) || empty($amount)) {
+        if (empty($amount)) {
             return Response::json(['status' => 'fail', 'message' => '充值异常']);
         }
-        $user = User::find($userId);
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($userId, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }
@@ -331,19 +318,15 @@ class UserController extends Controller
     }
 
     // 导出配置信息
-    public function export(Request $request, User $user)
+    public function export(User $user)
     {
-        if ($user === null) {
-            return Redirect::back();
-        }
-
-        $view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
-        $view['user'] = $user;
-
-        return view('admin.user.export', $view);
+        return view('admin.user.export', [
+            'user' => $user,
+            'nodeList' => Node::whereStatus(1)->orderByDesc('sort')->orderBy('id')->paginate(15)->appends(\request('page')),
+        ]);
     }
 
-    public function exportProxyConfig(Request $request, $uid): JsonResponse
+    public function exportProxyConfig(Request $request, User $user): JsonResponse
     {
         $node = Node::find($request->input('id'));
         if ($node->type === 1) {
@@ -356,7 +339,7 @@ class UserController extends Controller
             $proxyType = 'V2Ray';
         }
 
-        $data = $this->getUserNodeInfo($uid, $node->id, $request->input('type') !== 'text' ? 0 : 1);
+        $data = $this->getUserNodeInfo($user->id, $node->id, $request->input('type') !== 'text' ? 0 : 1);
 
         return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
     }

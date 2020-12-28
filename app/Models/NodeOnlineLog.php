@@ -10,5 +10,5 @@ use Illuminate\Database\Eloquent\Model;
 class NodeOnlineLog extends Model
 {
     public $timestamps = false;
-    protected $table = 'ss_node_online_log';
+    protected $table = 'node_online_log';
 }

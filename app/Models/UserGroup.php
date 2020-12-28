@@ -11,6 +11,15 @@ class UserGroup extends Model
 {
     public $timestamps = false;
     protected $table = 'user_group';
-    protected $casts = ['nodes' => 'array'];
-    protected $guarded = ['id'];
+    protected $guarded = [];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    public function nodes()
+    {
+        return $this->belongsToMany(Node::class);
+    }
 }

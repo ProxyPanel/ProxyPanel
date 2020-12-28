@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Api\WebApi;
 use App\Components\Helpers;
 use App\Models\Node;
 use App\Models\NodeHeartBeat;
+use App\Models\NodeOnlineIp;
 use App\Models\NodeOnlineLog;
-use App\Models\NodeOnlineUserIp;
-use App\Models\Rule;
-use App\Models\RuleGroup;
-use App\Models\RuleGroupNode;
 use App\Models\RuleLog;
 use App\Models\User;
 use App\Models\UserDataFlowLog;
@@ -74,7 +71,7 @@ class BaseController
                 return $this->returnData('上报节点在线用户IP信息失败，请检查字段');
             }
 
-            $obj = new NodeOnlineUserIp();
+            $obj = new NodeOnlineIp();
             $obj->node_id = $id;
             $obj->user_id = $input['uid'];
             $obj->ip = $input['ip'];
@@ -137,27 +134,21 @@ class BaseController
     }
 
     // 获取节点的审计规则
-    public function getNodeRule($id): JsonResponse
+    public function getNodeRule(Node $node): JsonResponse
     {
-        $nodeRule = RuleGroupNode::whereNodeId($id)->first();
         $data = [];
         //节点未设置任何审计规则
-        if ($nodeRule) {
-            $ruleGroup = RuleGroup::find($nodeRule->rule_group_id);
-            if ($ruleGroup && $ruleGroup->rules) {
-                foreach ($ruleGroup->rules as $ruleId) {
-                    $rule = Rule::find($ruleId);
-                    if ($rule) {
-                        $data[] = [
-                            'id' => $rule->id,
-                            'type' => $rule->type_api_label,
-                            'pattern' => $rule->pattern,
-                        ];
-                    }
-                }
-
-                return $this->returnData('获取节点审计规则成功', 'success', 200, ['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data]);
+        if ($node->rule_group_id) {
+            $ruleGroup = $node->ruleGroup;
+            foreach ($ruleGroup->rules as $rule) {
+                $data[] = [
+                    'id' => $rule->id,
+                    'type' => $rule->type_api_label,
+                    'pattern' => $rule->pattern,
+                ];
             }
+
+            return $this->returnData('获取节点审计规则成功', 'success', 200, ['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data]);
         }
 
         //放行
@@ -173,9 +164,8 @@ class BaseController
             $obj->node_id = $id;
             $obj->rule_id = $request->input('rule_id');
             $obj->reason = $request->input('reason');
-            $obj->save();
 
-            if ($obj->id) {
+            if ($obj->save()) {
                 return $this->returnData('上报用户触发审计规则日志成功', 'success', 200);
             }
         }

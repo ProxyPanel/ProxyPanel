@@ -27,7 +27,7 @@
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="node_id" name="node_id" onChange="Search()">
                             <option value="" @if(Request::input('node_id') == '') selected @endif>节点</option>
-                            @foreach($nodeList as $node)
+                            @foreach($nodes as $node)
                                 <option value="{{$node->id}}" @if(Request::input('node_id') == $node->id) selected @endif>{{$node->id . ' - ' . $node->name}}</option>
                             @endforeach
                         </select>
@@ -35,7 +35,7 @@
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="rule_id" name="rule_id" onChange="Search()">
                             <option value="" @if(Request::input('rule_id') == '') selected @endif>规则</option>
-                            @foreach($ruleList as $rule)
+                            @foreach($rules as $rule)
                                 <option value="{{$rule->id}}" @if(Request::input('rule_id') == $rule->id) selected @endif>{{$rule->name}}</option>
                             @endforeach
                         </select>

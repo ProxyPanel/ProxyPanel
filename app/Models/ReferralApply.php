@@ -24,6 +24,11 @@ class ReferralApply extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function referral_logs()
+    {
+        return ReferralLog::whereIn('id', $this->link_logs);
+    }
+
     public function getBeforeAttribute($value)
     {
         return $value / 100;

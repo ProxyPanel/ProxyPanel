@@ -1,7 +1,7 @@
 <?php
 
 Route::get('/', 'UserController@index')->name('home'); // 用户首页
-Route::get('article', 'UserController@article')->name('article'); // 文章详情
+Route::get('article/{article}', 'UserController@article')->name('article'); // 文章详情
 Route::post('exchangeSubscribe', 'UserController@exchangeSubscribe')->name('changeSub'); // 更换节点订阅地址
 Route::match(['get', 'post'], 'nodeList', 'UserController@nodeList')->name('node'); // 节点列表
 Route::post('checkIn', 'UserController@checkIn')->name('checkIn'); // 签到
@@ -14,7 +14,7 @@ Route::get('invoices', 'UserController@invoices')->name('invoice'); // 订单列
 Route::post('closePlan', 'UserController@closePlan')->name('cancelPlan'); // 激活预支付套餐
 Route::get('invoice/{sn}', 'UserController@invoiceDetail')->name('invoiceInfo'); // 订单明细
 Route::post('resetUserTraffic', 'UserController@resetUserTraffic')->name('resetTraffic'); // 重置用户流量
-Route::get('buy/{id}', 'UserController@buy')->name('buy'); // 购买商品
+Route::get('buy/{good}', 'UserController@buy')->name('buy'); // 购买商品
 Route::post('redeemCoupon', 'UserController@redeemCoupon')->name('redeemCoupon'); // 使用优惠券
 Route::get('invite', 'UserController@invite')->name('invite'); // 邀请码
 Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); // 生成邀请码
@@ -30,8 +30,8 @@ Route::namespace('User')->group(function () {
 
 Route::prefix('payment')->group(function () {
     Route::post('purchase', 'PaymentController@purchase')->name('purchase'); // 创建支付
-    Route::post('close', 'PaymentController@close')->name('closeOrder'); // 关闭支付单
     Route::get('getStatus', 'PaymentController@getStatus')->name('orderStatus'); // 获取支付单状态
+    Route::put('{order}/close', 'PaymentController@close')->name('closeOrder'); // 关闭支付单
     Route::get('{trade_no}', 'PaymentController@detail')->name('orderDetail'); // 支付单详情
 });
 

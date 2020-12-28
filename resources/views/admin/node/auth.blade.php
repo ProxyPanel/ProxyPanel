@@ -31,28 +31,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($list as $vo)
+                    @foreach ($authorizations as $auth)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->node_id}} </td>
-                            <td> {{$vo->node->type_label}} </td>
-                            <td> {{Str::limit($vo->node->name, 20) ?? '【节点已删除】'}} </td>
-                            <td> {{$vo->node->server ?? '【节点已删除】'}} </td>
-                            <td> {{$vo->node->ip ?? '【节点已删除】'}} </td>
-                            <td><span class="badge badge-lg badge-info"> {{$vo->key}} </span></td>
-                            <td><span class="badge badge-lg badge-info"> {{$vo->secret}} </span></td>
+                            <td> {{$auth->id}} </td>
+                            <td> {{$auth->node_id}} </td>
+                            <td> {{$auth->node->type_label}} </td>
+                            <td> {{Str::limit($auth->node->name, 20) ?? '【节点已删除】'}} </td>
+                            <td> {{$auth->node->server ?? '【节点已删除】'}} </td>
+                            <td> {{$auth->node->ip ?? '【节点已删除】'}} </td>
+                            <td><span class="badge badge-lg badge-info"> {{$auth->key}} </span></td>
+                            <td><span class="badge badge-lg badge-info"> {{$auth->secret}} </span></td>
                             <td>
                                 <div class="btn-group">
-                                    <button data-target="#install_{{$vo->node->type}}_{{$vo->id}}" data-toggle="modal" class="btn btn-primary">
+                                    <button data-target="#install_{{$auth->node->type}}_{{$auth->id}}" data-toggle="modal" class="btn btn-primary">
                                         <i class="icon wb-code" aria-hidden="true"></i>部署后端
                                     </button>
                                     @can('admin.node.auth.update')
-                                        <button onclick="refreshAuth('{{$vo->id}}')" class="btn btn-danger">
+                                        <button onclick="refreshAuth('{{$auth->id}}')" class="btn btn-danger">
                                             <i class="icon wb-reload" aria-hidden="true"></i> 重置密钥
                                         </button>
                                     @endcan
                                     @can('admin.node.auth.destroy')
-                                        <button onclick="deleteAuth('{{$vo->id}}')" class="btn btn-primary">
+                                        <button onclick="deleteAuth('{{$auth->id}}')" class="btn btn-primary">
                                             <i class="icon wb-trash" aria-hidden="true"></i> 删除
                                         </button>
                                     @endcan
@@ -66,11 +66,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条授权
+                        共 <code>{{$authorizations->total()}}</code> 条授权
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$authorizations->links()}}
                         </nav>
                     </div>
                 </div>
@@ -78,8 +78,8 @@
         </div>
     </div>
 
-    @foreach($list as $vl)
-        <div id="install_{{$vl->node->type}}_{{$vl->id}}" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+    @foreach($authorizations as $auth)
+        <div id="install_{{$auth->node->type}}_{{$auth->id}}" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
             <div class="modal-dialog modal-simple modal-center modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -87,18 +87,18 @@
                             <span aria-hidden="true">×</span>
                         </button>
                         <h4 class="modal-title">
-                            部署 {{$vl->node->type_label}} 后端
+                            部署 {{$auth->node->type_label}} 后端
                         </h4>
                     </div>
                     <div class="modal-body">
-                        @if($vl->node->type === 2)
+                        @if($auth->node->type === 2)
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">VNET-V2Ray</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                 && curl -L -s https://bit.ly/3oO3HZy \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$vl->node->id}} \<br>
-                                NODE_KEY={{$vl->key}} \<br>
+                                NODE_ID={{$auth->node->id}} \<br>
+                                NODE_KEY={{$auth->key}} \<br>
                                 bash
                                 <br>
                                 <br>
@@ -122,8 +122,8 @@
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                 && curl -L -s https://bit.ly/2HswWko \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$vl->node->id}} \<br>
-                                NODE_KEY={{$vl->key}} \<br>
+                                NODE_ID={{$auth->node->id}} \<br>
+                                NODE_KEY={{$auth->key}} \<br>
                                 bash
                                 <br>
                                 <br>
@@ -142,9 +142,9 @@
                                 <br>
                                 实时日志：journalctl -u v2ray -f
                             </div>
-                        @elseif($vl->node->type === 3)
-                            @if(!$vl->node->server)
-                                <h3>请先<a href="{{route('admin.node.edit', $vl->node)}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上
+                        @elseif($auth->node->type === 3)
+                            @if(!$auth->node->server)
+                                <h3>请先<a href="{{route('admin.node.edit', $auth->node)}}" target="_blank">填写节点域名</a>并将域名解析到节点对应的IP上
                                 </h3>
                             @else
                                 <div class="alert alert-info text-break">
@@ -152,9 +152,9 @@
                                     (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                     && curl -L -s http://mrw.so/6cMfGy \<br>
                                     | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                    NODE_ID={{$vl->node->id}} \<br>
-                                    NODE_KEY={{$vl->key}} \<br>
-                                    NODE_HOST={{$vl->node->server}} \<br>
+                                    NODE_ID={{$auth->node->id}} \<br>
+                                    NODE_KEY={{$auth->key}} \<br>
+                                    NODE_HOST={{$auth->node->server}} \<br>
                                     bash
                                     <br>
                                     <br>
@@ -180,8 +180,8 @@
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                 && curl -L -s https://bit.ly/3828OP1 \<br>
                                 | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$vl->node->id}} \<br>
-                                NODE_KEY={{$vl->key}} \<br>
+                                NODE_ID={{$auth->node->id}} \<br>
+                                NODE_KEY={{$auth->key}} \<br>
                                 bash
                                 <br>
                                 <br>

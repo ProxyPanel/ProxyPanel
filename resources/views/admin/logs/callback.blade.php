@@ -55,21 +55,21 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($callbackLogs as $log)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->type_label}} </td>
-                            <td> {{$vo->trade_no}} </td>
+                            <td> {{$log->id}} </td>
+                            <td> {{$log->type_label}} </td>
+                            <td> {{$log->trade_no}} </td>
                             <td>
                                 @can('admin.order')
-                                    <a href="{{route('admin.order', ['order_sn' => $vo->out_trade_no])}}" target="_blank"> {{$vo->out_trade_no}} </a>
+                                    <a href="{{route('admin.order', ['order_sn' => $log->out_trade_no])}}" target="_blank"> {{$log->out_trade_no}} </a>
                                 @else
-                                    {{$vo->out_trade_no}}
+                                    {{$log->out_trade_no}}
                                 @endcan
                             </td>
-                            <td> {{$vo->amount}}元</td>
-                            <td> {!! $vo->trade_status_label !!} </td>
-                            <td> {{$vo->created_at}} </td>
+                            <td> {{$log->amount}}元</td>
+                            <td> {!! $log->trade_status_label !!} </td>
+                            <td> {{$log->created_at}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -78,11 +78,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 个账号
+                        共 <code>{{$callbackLogs->total()}}</code> 个账号
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$callbackLogs->links()}}
                         </nav>
                     </div>
                 </div>

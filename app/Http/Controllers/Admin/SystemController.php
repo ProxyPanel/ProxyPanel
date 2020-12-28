@@ -16,10 +16,7 @@ class SystemController extends Controller
     // 系统设置
     public function index()
     {
-        $view = Config::pluck('value', 'name')->toArray();
-        $view['labelList'] = Label::orderByDesc('sort')->orderBy('id')->get();
-
-        return view('admin.config.system', $view);
+        return view('admin.config.system', array_merge(['labelList' => Label::orderByDesc('sort')->orderBy('id')->get()], Config::pluck('value', 'name')->toArray()));
     }
 
     // 设置系统扩展信息，例如客服、统计代码

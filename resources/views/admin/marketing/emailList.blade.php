@@ -38,14 +38,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($emails as $email)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->title}} </td>
-                            <td> {{$vo->content}} </td>
-                            <td> {{$vo->status_label}} </td>
-                            <td> {{$vo->created_at}} </td>
-                            <td> {{$vo->error}} </td>
+                            <td> {{$email->id}} </td>
+                            <td> {{$email->title}} </td>
+                            <td> {{$email->content}} </td>
+                            <td> {{$email->status_label}} </td>
+                            <td> {{$email->created_at}} </td>
+                            <td> {{$email->error}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -54,11 +54,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条消息
+                        共 <code>{{$emails->total()}}</code> 条消息
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$emails->links()}}
                         </nav>
                     </div>
                 </div>

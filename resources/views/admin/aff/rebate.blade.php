@@ -44,32 +44,32 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($referralLogs as $referralLog)
                         <tr>
-                            <td> {{$vo->id}} </td>
+                            <td> {{$referralLog->id}} </td>
                             <td>
-                                @if(empty($vo->invitee))
+                                @if(empty($referralLog->invitee))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.aff.rebate',['invitee_email' => $vo->invitee->email])}}"> {{$vo->invitee->email}} </a>
+                                    <a href="{{route('admin.aff.rebate',['invitee_email' => $referralLog->invitee->email])}}"> {{$referralLog->invitee->email}} </a>
                                 @endif
                             </td>
                             <td>
-                                @if(empty($vo->inviter))
+                                @if(empty($referralLog->inviter))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.aff.rebate',['inviter_email' => $vo->inviter->email])}}"> {{$vo->inviter->email}} </a>
+                                    <a href="{{route('admin.aff.rebate',['inviter_email' => $referralLog->inviter->email])}}"> {{$referralLog->inviter->email}} </a>
                                 @endif
                             </td>
-                            <td> {{$vo->order_id}} </td>
-                            <td> {{$vo->amount}} </td>
-                            <td> {{$vo->commission}} </td>
-                            <td> {{$vo->created_at}} </td>
-                            <td> {{$vo->updated_at}} </td>
+                            <td> {{$referralLog->order_id}} </td>
+                            <td> {{$referralLog->amount}} </td>
+                            <td> {{$referralLog->commission}} </td>
+                            <td> {{$referralLog->created_at}} </td>
+                            <td> {{$referralLog->updated_at}} </td>
                             <td>
-                                @if ($vo->status === 1)
+                                @if ($referralLog->status === 1)
                                     <span class="badge badge-danger">申请中</span>
-                                @elseif($vo->status === 2)
+                                @elseif($referralLog->status === 2)
                                     <span class="badge badge-default">已提现</span>
                                 @else
                                     <span class="badge badge-info">未提现</span>
@@ -83,11 +83,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 个申请
+                        共 <code>{{$referralLogs->total()}}</code> 个申请
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$referralLogs->links()}}
                         </nav>
                     </div>
                 </div>

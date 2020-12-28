@@ -5,6 +5,7 @@ namespace App\Models;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * 工单.
@@ -25,7 +26,12 @@ class Ticket extends Model
 
     public function admin(): BelongsTo
     {
-        return $this->BelongsTo(User::class);
+        return $this->belongsTo(User::class);
+    }
+
+    public function reply(): HasMany
+    {
+        return $this->hasMany(TicketReply::class);
     }
 
     public function close(): bool

@@ -16,9 +16,7 @@ class EmailFilterController extends Controller
     // 邮箱过滤列表
     public function index()
     {
-        $view['list'] = EmailFilter::orderByDesc('id')->paginate(15);
-
-        return view('admin.config.emailFilter', $view);
+        return view('admin.config.emailFilter', ['list' => EmailFilter::orderByDesc('id')->paginate()]);
     }
 
     // 添加邮箱后缀

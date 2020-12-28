@@ -22,7 +22,7 @@ class User extends Authenticatable implements JWTSubject
     protected $table = 'user';
     protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
     protected $dates = ['expired_at', 'reset_time'];
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function usedTrafficPercentage()
     {
@@ -63,7 +63,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function onlineIpLogs(): HasMany
     {
-        return $this->hasMany(NodeOnlineUserIp::class);
+        return $this->hasMany(NodeOnlineIp::class);
     }
 
     public function payments(): HasMany
@@ -151,11 +151,6 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Verify::class);
     }
 
-    public function group(): BelongsTo
-    {
-        return $this->belongsTo(UserGroup::class);
-    }
-
     public function inviter(): BelongsTo
     {
         return $this->belongsTo(__CLASS__);
@@ -221,24 +216,20 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('status', '<>', -1)->whereEnable(1);
     }
 
-    public function scopeNodeAllowUsers($query, $node_id, $node_level)
+    public function nodes()
     {
-        $groups = [0];
-        if ($node_id) {
-            foreach (UserGroup::all() as $userGroup) {
-                $nodes = $userGroup->nodes;
-                if ($nodes && in_array($node_id, $nodes)) {
-                    $groups[] = $userGroup->id;
-                }
-            }
+        if ($this->attributes['user_group_id']) {
+            $query = $this->group->nodes();
+        } else {
+            $query = Node::query();
         }
 
-        return $query->activeUser()->whereIn('group_id', $groups)->where('level', '>=', $node_level);
+        return $query->whereStatus(1)->where('level', '<=', $this->attributes['level'] ?? 0);
     }
 
-    public function scopeUserAccessNodes()
+    public function group(): BelongsTo
     {
-        return Node::userAllowNodes($this->attributes['group_id'] ?? 0, $this->attributes['level'] ?? 0);
+        return $this->belongsTo(UserGroup::class);
     }
 
     public function getIsAvailableAttribute(): bool

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
-use App\Models\NodeOnlineUserIp;
+use App\Models\NodeOnlineIp;
 use App\Models\NotificationLog;
 use App\Models\Order;
 use App\Models\PaymentCallback;
@@ -15,7 +15,6 @@ use App\Models\UserCreditLog;
 use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use Illuminate\Http\Request;
-use Redirect;
 
 class LogsController extends Controller
 {
@@ -78,9 +77,7 @@ class LogsController extends Controller
             $query->orderByDesc('id');
         }
 
-        $view['orderList'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.logs.order', $view);
+        return view('admin.logs.order', ['orders' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 流量日志
@@ -123,20 +120,18 @@ class LogsController extends Controller
             $query->where('log_time', '<=', strtotime($endTime));
         }
 
-        // 已使用流量
-        $view['totalTraffic'] = flowAutoShow($query->sum('u') + $query->sum('d'));
-
-        $list = $query->latest('log_time')->paginate(20)->appends($request->except('page'));
-        foreach ($list as $vo) {
-            $vo->u = flowAutoShow($vo->u);
-            $vo->d = flowAutoShow($vo->d);
-            $vo->log_time = date('Y-m-d H:i:s', $vo->log_time);
+        $dataFlowLogs = $query->latest('log_time')->paginate(20)->appends($request->except('page'));
+        foreach ($dataFlowLogs as $log) {
+            $log->u = flowAutoShow($log->u);
+            $log->d = flowAutoShow($log->d);
+            $log->log_time = date('Y-m-d H:i:s', $log->log_time);
         }
 
-        $view['list'] = $list;
-        $view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
-
-        return view('admin.logs.traffic', $view);
+        return view('admin.logs.traffic', [
+            'totalTraffic' => flowAutoShow($query->sum('u') + $query->sum('d')), // 已使用流量
+            'dataFlowLogs' => $dataFlowLogs,
+            'nodes' => Node::whereStatus(1)->orderByDesc('sort')->latest()->get(),
+        ]);
     }
 
     // 邮件发送日志列表
@@ -155,9 +150,7 @@ class LogsController extends Controller
             $query->whereType($type);
         }
 
-        $view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.logs.notification', $view);
+        return view('admin.logs.notification', ['notificationLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
     // 在线IP监控（实时）
@@ -168,7 +161,7 @@ class LogsController extends Controller
         $port = $request->input('port');
         $nodeId = $request->input('nodeId');
 
-        $query = NodeOnlineUserIp::with(['node:id,name', 'user:id,email'])->where('created_at', '>=', strtotime('-2 minutes'));
+        $query = NodeOnlineIp::with(['node:id,name', 'user:id,email'])->where('created_at', '>=', strtotime('-2 minutes'));
 
         if (isset($ip)) {
             $query->whereIp($ip);
@@ -209,10 +202,10 @@ class LogsController extends Controller
             $log->ipInfo = implode(' ', $ipInfo);
         }
 
-        $view['list'] = $onlineIPLogs;
-        $view['nodeList'] = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
-
-        return view('admin.logs.onlineIPMonitor', $view);
+        return view('admin.logs.onlineIPMonitor', [
+            'onlineIPLogs' => $onlineIPLogs,
+            'nodes' => Node::whereStatus(1)->orderByDesc('sort')->latest()->get(),
+        ]);
     }
 
     // 用户余额变动记录
@@ -228,9 +221,7 @@ class LogsController extends Controller
             });
         }
 
-        $view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.logs.userCreditHistory', $view);
+        return view('admin.logs.userCreditHistory', ['userCreditLogs' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 用户封禁记录
@@ -246,9 +237,7 @@ class LogsController extends Controller
             });
         }
 
-        $view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.logs.userBanHistory', $view);
+        return view('admin.logs.userBanHistory', ['userBanLogs' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 用户流量变动记录
@@ -264,9 +253,7 @@ class LogsController extends Controller
             });
         }
 
-        $view['list'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.logs.userTraffic', $view);
+        return view('admin.logs.userTraffic', ['userTrafficLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
     // 用户在线IP记录
@@ -297,34 +284,19 @@ class LogsController extends Controller
 
         $userList = $query->paginate(15)->appends($request->except('page'));
 
-        $nodeOnlineIPs = NodeOnlineUserIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct();
-        // Todo 优化查询
+        $nodeOnlineIPs = NodeOnlineIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct()->get();
         foreach ($userList as $user) {
             // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-            $user->onlineIPList = $nodeOnlineIPs->wherePort($user->port)->limit(5)->get();
+            $user->onlineIPList = $nodeOnlineIPs->where('port', '==', $user->port)->chunk(5);
         }
 
-        $view['userList'] = $userList;
-
-        return view('admin.logs.userOnlineIP', $view);
+        return view('admin.logs.userOnlineIP', ['userList' => $userList]);
     }
 
     // 用户流量监控
-    public function userTrafficMonitor($id)
+    public function userTrafficMonitor(User $user)
     {
-        if (empty($id)) {
-            return Redirect::back();
-        }
-
-        $user = User::find($id);
-        if (empty($user)) {
-            return Redirect::back();
-        }
-
-        $view['email'] = $user->email;
-        $view = array_merge($view, $this->dataFlowChart($user->id));
-
-        return view('admin.logs.userMonitor', $view);
+        return view('admin.logs.userMonitor', array_merge(['email' => $user->email], $this->dataFlowChart($user->id)));
     }
 
     // 回调日志
@@ -338,8 +310,6 @@ class LogsController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['list'] = $query->latest()->paginate(10)->appends($request->except('page'));
-
-        return view('admin.logs.callback', $view);
+        return view('admin.logs.callback', ['callbackLogs' => $query->latest()->paginate(10)->appends($request->except('page'))]);
     }
 }

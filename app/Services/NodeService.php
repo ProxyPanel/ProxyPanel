@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Components\IP;
 use App\Models\Node;
-use App\Models\NodeLabel;
 
 class NodeService
 {
@@ -25,21 +24,5 @@ class NodeService
         }
 
         return $result;
-    }
-
-    // 生成节点标签
-    public function makeLabels($nodeId, $labels): void
-    {
-        // 先删除所有该节点的标签
-        NodeLabel::whereNodeId($nodeId)->delete();
-
-        if (! empty($labels) && is_array($labels)) {
-            foreach ($labels as $label) {
-                $nodeLabel = new NodeLabel();
-                $nodeLabel->node_id = $nodeId;
-                $nodeLabel->label_id = $label;
-                $nodeLabel->save();
-            }
-        }
     }
 }

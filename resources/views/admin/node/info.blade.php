@@ -67,11 +67,21 @@
                                     <div class="form-group row">
                                         <label for="level" class="col-md-3 col-form-label">等级</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="level" name="level">
-                                            @foreach($levelList as $level)
+                                            @foreach($levels as $level)
                                                 <option value="{{$level->level}}">{{$level->name}}</option>
                                             @endforeach
                                         </select>
                                         <div class="text-help offset-md-3"> 等级：0-无等级，全部可见</div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="ruleGroup" class="col-md-3 col-form-label">审计分组</label>
+                                        <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick"
+                                                id="ruleGroup" name="ruleGroup">
+                                            <option value="">不使用</option>
+                                            @foreach($ruleGroups as $ruleGroup)
+                                                <option value="{{$ruleGroup->id}}">{{$ruleGroup->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                     <div class="form-group row">
                                         <label for="speed_limit" class="col-md-3 col-form-label">节点限速</label>
@@ -88,7 +98,7 @@
                                         <label for="labels" class="col-md-3 col-form-label">标签</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="labels" name="labels"
                                                 multiple>
-                                            @foreach($labelList as $label)
+                                            @foreach($labels as $label)
                                                 <option value="{{$label->id}}">{{$label->name}}</option>
                                             @endforeach
                                         </select>
@@ -98,7 +108,7 @@
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                 class="col-md-5 form-control" name="country_code" id="country_code">
                                             <option value="un" selected hidden>请选择</option>
-                                            @foreach($countryList as $country)
+                                            @foreach($countries as $country)
                                                 <option value="{{$country->code}}">{{$country->code}} - {{$country->name}}</option>
                                             @endforeach
                                         </select>
@@ -285,10 +295,10 @@
                                                 <div name="v2_ws">
                                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" id="v2_ws">
                                                         <option value="" hidden></option>
-                                                        @foreach($dvList as $dv)
-                                                            <option value="{{$dv->domain}}"
-                                                                    @if(isset($node) && $node->v2_net === "ws" && $node->v2_host === $dv->domain) selected @endif>
-                                                                {{$dv->domain}}
+                                                        @foreach($certs as $cert)
+                                                            <option value="{{$cert->domain}}"
+                                                                    @if(isset($node) && $node->v2_net === "ws" && $node->v2_host === $cert->domain) selected @endif>
+                                                                {{$cert->domain}}
                                                             </option>
                                                         @endforeach
                                                     </select>
@@ -415,9 +425,10 @@
         $('#push_port').val('{{$node->push_port}}');
         $('#traffic_rate').val('{{$node->traffic_rate}}');
         $('#level').selectpicker('val', '{{$node->level}}');
+        $('#ruleGroup').selectpicker('val', '{{$node->rule_group_id}}');
         $('#speed_limit').val('{{$node->speed_limit}}');
         $('#client_limit').val('{{$node->client_limit}}');
-        $('#labels').selectpicker('val', {{$node->labels->pluck('label_id')}});
+        $('#labels').selectpicker('val', {{$node->labels->pluck('id')}});
         $('#country_code').selectpicker('val', '{{$node->country_code}}');
         $('#description').val('{{$node->description}}');
         $('#sort').val('{{$node->sort}}');
@@ -500,7 +511,7 @@
         }
         $.ajax({
           method: @isset($node) 'PUT' @else 'POST' @endisset,
-          url: '{{isset($node)? route('admin.node.update', $node->id) : route('admin.node.store')}}',
+          url: '{{isset($node)? route('admin.node.update', $node) : route('admin.node.store')}}',
           async: false,
           data: {
             _token: '{{csrf_token()}}',
@@ -512,6 +523,7 @@
             push_port: $('#push_port').val(),
             traffic_rate: $('#traffic_rate').val(),
             level: $('#level').val(),
+            rule_group_id: $('#ruleGroup').val(),
             speed_limit: $('#speed_limit').val(),
             client_limit: $('#client_limit').val(),
             labels: $('#labels').val(),

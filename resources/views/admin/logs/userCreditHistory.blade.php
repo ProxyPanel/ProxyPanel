@@ -32,22 +32,22 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($userCreditLogs as $log)
                         <tr>
-                            <td> {{$vo->id}} </td>
+                            <td> {{$log->id}} </td>
                             <td>
-                                @if(empty($vo->user))
+                                @if(empty($log->user))
                                     【账号已删除】
                                 @else
-                                    <a href="{{route('admin.log.credit', ['email'=>$vo->user->email])}}"> {{$vo->user->email}} </a>
+                                    <a href="{{route('admin.log.credit', ['email'=>$log->user->email])}}"> {{$log->user->email}} </a>
                                 @endif
                             </td>
-                            <td> {{$vo->order_id}} </td>
-                            <td> {{$vo->before}} </td>
-                            <td> {{$vo->amount}} </td>
-                            <td> {{$vo->after}} </td>
-                            <td> {{$vo->description}} </td>
-                            <td> {{$vo->created_at}} </td>
+                            <td> {{$log->order_id}} </td>
+                            <td> {{$log->before}} </td>
+                            <td> {{$log->amount}} </td>
+                            <td> {{$log->after}} </td>
+                            <td> {{$log->description}} </td>
+                            <td> {{$log->created_at}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -56,11 +56,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条记录
+                        共 <code>{{$userCreditLogs->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$userCreditLogs->links()}}
                         </nav>
                     </div>
                 </div>

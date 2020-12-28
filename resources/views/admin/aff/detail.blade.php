@@ -8,9 +8,9 @@
             <div class="panel-heading">
                 <h2 class="panel-title">提现申请详情</h2>
                 <div class="panel-actions">
-                    @if($basic->status === -1)
+                    @if($referral->status === -1)
                         <span class="badge badge-lg badge-danger"> 已驳回 </span>
-                    @elseif($basic->status === 2)
+                    @elseif($referral->status === 2)
                         <span class="badge badge-lg badge-success"> 已打款 </span>
                     @endif
                     <a href="{{route('admin.aff.index')}}" class="btn btn-danger"> 返 回</a>
@@ -22,7 +22,7 @@
                         <thead class="thead-default">
                         <tr>
                             <th colspan="6">
-                                申请单ID：{{$basic->id}} | 申请人：{{$basic->user->email}} | 申请提现金额：￥{{$basic->amount}} | 申请时间：{{$basic->created_at}}
+                                申请单ID：{{$referral->id}} | 申请人：{{$referral->user->email}} | 申请提现金额：￥{{$referral->amount}} | 申请时间：{{$referral->created_at}}
                             </th>
                         </tr>
                         <tr>

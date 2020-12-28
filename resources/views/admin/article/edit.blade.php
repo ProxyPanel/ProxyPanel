@@ -16,7 +16,7 @@
                 <x-alert type="success" :message="Session::get('successMsg')"/>
             @endif
             <div class="panel-body">
-                <form action="{{route('admin.article.update', $article->id)}}" method="POST" enctype="multipart/form-data" class="form-horizontal">@method('PUT')@csrf
+                <form action="{{route('admin.article.update', $article)}}" method="POST" enctype="multipart/form-data" class="form-horizontal">@method('PUT')@csrf
                     <div class="form-group row">
                         <label for="type" class="col-form-label col-md-2">类型</label>
                         <div class="col-md-10 d-flex align-items-center">

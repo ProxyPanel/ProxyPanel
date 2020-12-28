@@ -19,7 +19,7 @@ class UserObserver
         $subscribe->code = Helpers::makeSubscribeCode();
         $subscribe->save();
 
-        $allowNodes = $user->userAccessNodes()->whereType(4)->pluck('id');
+        $allowNodes = $user->nodes()->whereType(4)->pluck('id');
         if ($allowNodes) {
             addUser::dispatch($user->id, $allowNodes);
         }
@@ -28,7 +28,7 @@ class UserObserver
     public function updated(User $user): void
     {
         $changes = $user->getChanges();
-        $allowNodes = $user->userAccessNodes()->whereType(4)->get();
+        $allowNodes = $user->nodes()->whereType(4)->get();
         if ($allowNodes->isNotEmpty() && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
             editUser::dispatch($user, $allowNodes);
         }
@@ -36,7 +36,7 @@ class UserObserver
 
     public function deleted(User $user): void
     {
-        $allowNodes = $user->userAccessNodes()->whereType(4)->get();
+        $allowNodes = $user->nodes()->whereType(4)->get();
         if ($allowNodes->isNotEmpty()) {
             delUser::dispatch($user->id, $allowNodes);
         }

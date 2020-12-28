@@ -9,6 +9,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Session\TokenMismatchException;
+use Illuminate\Validation\ValidationException;
 use Log;
 use ReflectionException;
 use Response;
@@ -25,6 +26,7 @@ class Handler extends ExceptionHandler
      */
     protected $dontReport = [
         HttpException::class,
+        ValidationException::class,
     ];
 
     /**

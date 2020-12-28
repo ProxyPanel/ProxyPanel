@@ -8,10 +8,8 @@ use Illuminate\Http\JsonResponse;
 class TrojanController extends BaseController
 {
     // 获取节点信息
-    public function getNodeInfo($id): JsonResponse
+    public function getNodeInfo(Node $node): JsonResponse
     {
-        $node = Node::find($id);
-
         return $this->returnData('获取节点信息成功', 'success', 200, [
             'id' => $node->id,
             'is_udp' => $node->is_udp ? true : false,
@@ -26,12 +24,9 @@ class TrojanController extends BaseController
     }
 
     // 获取节点可用的用户列表
-    public function getUserList($id): JsonResponse
+    public function getUserList(Node $node): JsonResponse
     {
-        $users = Node::find($id)->node_access_users;
-        $data = [];
-
-        foreach ($users as $user) {
+        foreach ($node->users() as $user) {
             $data[] = [
                 'uid' => $user->id,
                 'password' => $user->passwd,
@@ -39,6 +34,6 @@ class TrojanController extends BaseController
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);
+        return $this->returnData('获取用户列表成功', 'success', 200, $data ?? [], ['updateTime' => time()]);
     }
 }

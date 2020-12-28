@@ -18,7 +18,7 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             <div class="panel-body">
-                <form action="{{isset($ruleGroup) ? route('admin.rule.group.update', $ruleGroup->id) : route('admin.rule.group.store')}}" method="post"
+                <form action="{{isset($ruleGroup) ? route('admin.rule.group.update', $ruleGroup) : route('admin.rule.group.store')}}" method="post"
                       enctype="multipart/form-data" class="form-horizontal">
                     @isset($ruleGroup)@method('PUT')@endisset @csrf
                     <div class="form-group row">
@@ -54,7 +54,7 @@
                                 <button type="button" class="btn btn-danger" id="deselect-all">清 空</button>
                             </div>
                             <select class="form-control" name="rules[]" id="rules" data-plugin="multiSelect" multiple>
-                                @foreach($ruleList as $rule)
+                                @foreach($rules as $rule)
                                     <option value="{{$rule->id}}">{{$rule->id . ' - ' . $rule->name}}</option>
                                 @endforeach
                             </select>
@@ -77,7 +77,7 @@
         $(document).ready(function() {
           $('#name').val('{{$ruleGroup->name}}');
           $("input[name='type'][value='{{$ruleGroup->type}}']").click();
-          $('#rules').multiSelect('select',@json($ruleGroup->rules));
+          $('#rules').multiSelect('select', @json(array_map('strval', $ruleGroup->rules()->get()->pluck('id')->toArray())));
         });
         @endisset
         // 权限列表

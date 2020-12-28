@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -39,13 +38,11 @@ class SubscribeController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['subscribeList'] = $query->latest()->paginate(20)->appends($request->except('page'));
-
-        return view('admin.subscribe.index', $view);
+        return view('admin.subscribe.index', ['subscribeList' => $query->latest()->paginate(20)->appends($request->except('page'))]);
     }
 
     //订阅记录
-    public function subscribeLog(Request $request, $id)
+    public function subscribeLog($id)
     {
         $query = UserSubscribeLog::with('user:email');
 
@@ -53,19 +50,12 @@ class SubscribeController extends Controller
             $query->whereUserSubscribeId($id);
         }
 
-        $view['subscribeLog'] = $query->latest()->paginate(20)->appends($request->except('page'));
-
-        return view('admin.subscribe.log', $view);
+        return view('admin.subscribe.log', ['subscribeLog' => $query->latest()->paginate(20)->appends(\request('page'))]);
     }
 
     // 设置用户的订阅的状态
-    public function setSubscribeStatus(Request $request, $id): JsonResponse
+    public function setSubscribeStatus(UserSubscribe $subscribe)
     {
-        if (empty($id)) {
-            return Response::json(['status' => 'fail', 'message' => '操作异常']);
-        }
-        $subscribe = UserSubscribe::find($id);
-
         if ($subscribe->status) {
             $subscribe->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
         } else {

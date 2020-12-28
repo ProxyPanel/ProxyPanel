@@ -51,10 +51,6 @@ class AuthController extends Controller
                 return Redirect::back()->withInput()->withErrors($validator->errors());
             }
 
-            $email = $request->input('email');
-            $password = $request->input('password');
-            $remember = $request->input('remember');
-
             // 是否校验验证码
             $captcha = $this->check_captcha($request);
             if ($captcha !== false) {
@@ -62,7 +58,7 @@ class AuthController extends Controller
             }
 
             // 验证账号并创建会话
-            if (! Auth::attempt(['email' => $email, 'password' => $password], $remember)) {
+            if (! Auth::attempt($validator->validated(), $request->input('remember'))) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.login_error'));
             }
             $user = Auth::getUser();
@@ -81,23 +77,17 @@ class AuthController extends Controller
             if ($user->status === 0 && sysConfig('is_activate_account')) {
                 Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-                return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
+                return Redirect::back()->withInput()->withErrors(trans('auth.active_tip').'<a href="'.route('active').'?email='.$user->email.'" target="_blank"><span style="color:#000">【'.trans('auth.active_account').'】</span></a>');
             }
 
             // 写入登录日志
             $this->addUserLoginLog($user->id, IP::getClientIp());
 
             // 更新登录信息
-            Auth::getUser()->update(['last_login' => time()]);
-
-            // 根据权限跳转
-            if ($user->hasPermissionTo('admin.index')) {
-                return Redirect::route('admin.index');
-            }
-
-            return Redirect::route('home');
+            $user->update(['last_login' => time()]);
         }
 
+        // 根据权限跳转
         if (Auth::check()) {
             if (Auth::getUser()->hasPermissionTo('admin.index')) {
                 return Redirect::route('admin.index');
@@ -110,7 +100,7 @@ class AuthController extends Controller
     }
 
     // 校验验证码
-    private function check_captcha($request)
+    private function check_captcha(Request $request)
     {
         switch (sysConfig('is_captcha')) {
             case 1: // 默认图形验证码
@@ -298,14 +288,14 @@ class AuthController extends Controller
             $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
             // 创建新用户
-            $uid = Helpers::addUser($email, $password, $transfer_enable, sysConfig('default_days'), $inviter_id);
+            $user = factory(User::class)->create([
+                'username' => $username, 'email' => $email, 'password' => $password, 'transfer_enable' => $transfer_enable, 'inviter_id' => $inviter_id,
+            ]);
 
             // 注册失败，抛出异常
-            if (! $uid) {
+            if (! $user) {
                 return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
             }
-            // 更新昵称
-            User::find($uid)->update(['username' => $username]);
 
             // 注册次数+1
             if (Cache::has($cacheKey)) {
@@ -316,16 +306,16 @@ class AuthController extends Controller
 
             // 更新邀请码
             if ($affArr['code_id'] && sysConfig('is_invite_register')) {
-                Invite::find($affArr['code_id'])->update(['invitee_id' => $uid, 'status' => 1]);
+                Invite::find($affArr['code_id'])->update(['invitee_id' => $user->id, 'status' => 1]);
             }
 
             // 清除邀请人Cookie
             Cookie::unqueue('register_aff');
 
             // 注册后发送激活码
-            if (sysConfig('is_activate_account') == 2) {
+            if ((int) sysConfig('is_activate_account') === 2) {
                 // 生成激活账号的地址
-                $token = $this->addVerifyUrl($uid, $email);
+                $token = $this->addVerifyUrl($user->id, $email);
                 $activeUserUrl = route('activeAccount', $token);
 
                 $logId = Helpers::addNotificationLog('注册激活', '请求地址：'.$activeUserUrl, 1, $email);
@@ -341,8 +331,8 @@ class AuthController extends Controller
                     }
                 }
 
-                if (sysConfig('is_activate_account') == 1) {
-                    User::find($uid)->update(['status' => 1]);
+                if ((int) sysConfig('is_activate_account') === 1) {
+                    $user->update(['status' => 1]);
                 }
 
                 Session::flash('successMsg', trans('auth.register_success'));
@@ -351,10 +341,9 @@ class AuthController extends Controller
             return Redirect::route('login')->withInput();
         }
 
-        $view['emailList'] = sysConfig('is_email_filtering') != 2 ? false : EmailFilter::whereType(2)->get();
         Session::put('register_token', Str::random());
 
-        return view('auth.register', $view);
+        return view('auth.register', ['emailList' => (int) sysConfig('is_email_filtering') !== 2 ? false : EmailFilter::whereType(2)->get()]);
     }
 
     //邮箱检查
@@ -562,10 +551,7 @@ class AuthController extends Controller
             $verify->save();
         }
 
-        // 重新获取一遍verify
-        $view['verify'] = Verify::type(1)->whereToken($token)->first();
-
-        return view('auth.reset', $view);
+        return view('auth.reset', ['verify' => Verify::type(1)->whereToken($token)->first()]); // 重新获取一遍verify
     }
 
     // 激活账号页
@@ -744,13 +730,11 @@ class AuthController extends Controller
     // 公开的邀请码列表
     public function free()
     {
-        $view['inviteList'] = Invite::whereInviterId(null)->whereStatus(0)->paginate();
-
-        return view('auth.free', $view);
+        return view('auth.free', ['inviteList' => Invite::whereInviterId(null)->whereStatus(0)->paginate()]);
     }
 
     // 切换语言
-    public function switchLang($locale): RedirectResponse
+    public function switchLang(string $locale): RedirectResponse
     {
         Session::put('locale', $locale);
 

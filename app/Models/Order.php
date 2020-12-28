@@ -14,7 +14,7 @@ class Order extends Model
 {
     protected $table = 'order';
     protected $dates = ['expired_at'];
-    protected $fillable = ['expired_at', 'is_expire', 'status'];
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
@@ -58,15 +58,15 @@ class Order extends Model
 
     public function scopeActivePlan($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
-            $list->whereType(2);
+        return $query->active()->with('goods')->whereHas('goods', static function ($query) {
+            $query->whereType(2);
         });
     }
 
     public function scopeActivePackage($query)
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($list) {
-            $list->whereType(1);
+        return $query->active()->with('goods')->whereHas('goods', static function ($query) {
+            $query->whereType(1);
         });
     }
 

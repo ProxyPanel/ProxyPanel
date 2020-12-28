@@ -41,11 +41,11 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($referralUserList as $vo)
+                            @foreach($referralUserList as $user)
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
-                                    <td> {{str_replace(mb_substr($vo->email, 3, 4), "****", $vo->email)}}  </td>
-                                    <td> {{$vo->created_at}} </td>
+                                    <td> {{str_replace(mb_substr($user->email, 3, 4), "****", $user->email)}}  </td>
+                                    <td> {{$user->created_at}} </td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -133,17 +133,17 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach($referralApplyList as $vo)
+                            @foreach($referralApplyList as $referralApply)
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
-                                    <td> {{$vo->created_at}} </td>
-                                    <td> ￥{{$vo->amount}} </td>
+                                    <td> {{$referralApply->created_at}} </td>
+                                    <td> ￥{{$referralApply->amount}} </td>
                                     <td>
-                                        @if ($vo->status === 0)
+                                        @if ($referralApply->status === 0)
                                             <span class="badge badge-sm badge-warning">待审核</span>
-                                        @elseif($vo->status === 1)
+                                        @elseif($referralApply->status === 1)
                                             <span class="badge badge-sm badge-info">审核通过 - 待打款</span>
-                                        @elseif($vo->status === 2)
+                                        @elseif($referralApply->status === 2)
                                             <span>已打款</span>
                                         @else
                                             <span class="badge badge-sm badge-dark">驳回</span>

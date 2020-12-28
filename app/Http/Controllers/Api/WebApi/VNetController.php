@@ -8,10 +8,8 @@ use Illuminate\Http\JsonResponse;
 class VNetController extends BaseController
 {
     // 获取节点信息
-    public function getNodeInfo($id): JsonResponse
+    public function getNodeInfo(Node $node): JsonResponse
     {
-        $node = Node::find($id);
-
         return $this->returnData('获取节点信息成功', 'success', 200, [
             'id' => $node->id,
             'method' => $node->method,
@@ -31,13 +29,9 @@ class VNetController extends BaseController
     }
 
     // 获取节点可用的用户列表
-    public function getUserList($id): JsonResponse
+    public function getUserList(Node $node): JsonResponse
     {
-        $node = Node::find($id);
-        $users = $node->node_access_users;
-        $data = [];
-
-        foreach ($users as $user) {
+        foreach ($node->users() as $user) {
             $data[] = [
                 'uid' => $user->id,
                 'port' => $user->port,
@@ -51,7 +45,7 @@ class VNetController extends BaseController
             ];
         }
 
-        if ($data) {
+        if (isset($data)) {
             return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);
         }
 

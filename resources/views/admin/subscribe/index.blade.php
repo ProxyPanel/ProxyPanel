@@ -61,7 +61,7 @@
                             <td> {{$subscribe->code}} </td>
                             <td>
                                 @can('admin.subscribe.log')
-                                    <a href="{{route('admin.subscribe.log', $subscribe->id)}}" target="_blank">{{$subscribe->times}}</a>
+                                    <a href="{{route('admin.subscribe.log', $subscribe)}}" target="_blank">{{$subscribe->times}}</a>
                                 @endcan
                             </td>
                             <td> {{$subscribe->updated_at}} </td>
@@ -70,7 +70,7 @@
                             <td>
                                 @can('admin.subscribe.set')
                                     <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-sm btn-outline-danger @endif"
-                                            onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe->id)}}')">
+                                            onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
                                         @if($subscribe->status == 0) 启用 @else 禁用 @endif
                                     </button>
                                 @endcan

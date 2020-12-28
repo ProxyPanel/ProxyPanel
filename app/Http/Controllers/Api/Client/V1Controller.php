@@ -84,7 +84,7 @@ class V1Controller extends Controller
     public function nodeList(int $id = null)
     {
         $user = auth()->user();
-        $nodes = $user->userAccessNodes()->get();
+        $nodes = $user->nodes()->get();
         if (isset($id)) {
             $node = $nodes->where('id', $id)->first();
 

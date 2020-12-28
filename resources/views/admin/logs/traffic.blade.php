@@ -23,7 +23,7 @@
                     <div class="form-group col-lg-3 col-sm-8">
                         <select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
                             <option value="" @if(Request::input('nodeId') == '') selected @endif hidden>选择节点</option>
-                            @foreach($nodeList as $node)
+                            @foreach($nodes as $node)
                                 <option value="{{$node->id}}" @if(Request::input('nodeId') == $node->id) selected @endif>
                                     {{$node->name}}
                                 </option>
@@ -64,26 +64,26 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($dataFlowLogs as $log)
                         <tr>
-                            <td> {{$vo->id}} </td>
+                            <td> {{$log->id}} </td>
                             <td>
-                                @if(empty($vo->user))
+                                @if(empty($log->user))
                                     【账号已删除】
                                 @else
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['id' => $vo->user->id])}}" target="_blank"> {{$vo->user->email}} </a>
+                                        <a href="{{route('admin.user.index', ['id' => $log->user->id])}}" target="_blank"> {{$log->user->email}} </a>
                                     @else
-                                        {{$vo->user->email}}
+                                        {{$log->user->email}}
                                     @endcan
                                 @endif
                             </td>
-                            <td> {{$vo->node->name ?? '【节点已删除】'}} </td>
-                            <td> {{$vo->rate}} </td>
-                            <td> {{$vo->u}} </td>
-                            <td> {{$vo->d}} </td>
-                            <td><span class="badge badge-danger"> {{$vo->traffic}} </span></td>
-                            <td> {{$vo->log_time}} </td>
+                            <td> {{$log->node->name ?? '【节点已删除】'}} </td>
+                            <td> {{$log->rate}} </td>
+                            <td> {{$log->u}} </td>
+                            <td> {{$log->d}} </td>
+                            <td><span class="badge badge-danger"> {{$log->traffic}} </span></td>
+                            <td> {{$log->log_time}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -92,11 +92,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-6">
-                        共 <code>{{$list->total()}} 条记录</code>，合计 <code>{{$totalTraffic}}</code>
+                        共 <code>{{$dataFlowLogs->total()}} 条记录</code>，合计 <code>{{$totalTraffic}}</code>
                     </div>
                     <div class="col-sm-6">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$dataFlowLogs->links()}}
                         </nav>
                     </div>
                 </div>

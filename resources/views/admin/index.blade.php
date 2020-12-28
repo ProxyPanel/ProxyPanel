@@ -38,6 +38,19 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
+                    <a href="{{route('admin.user.index', ['paying'=>1])}}" class="card card-shadow">
+                        <div class="card-block bg-white">
+                            <button type="button" class="btn btn-floating btn-sm btn-info">
+                                <i class="icon md-money-box"></i>
+                            </button>
+                            <span class="ml-15 font-weight-400">付费用户</span>
+                            <div class="content-text text-center mb-0">
+                                <span class="font-size-40 font-weight-100">{{$payingUserCount}}</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-xl-3 col-md-6 info-panel">
                     <a href="{{route('admin.user.index', ['active'=>1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-success">

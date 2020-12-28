@@ -22,14 +22,14 @@
                     <div class="form-group row">
                         <label class="col-md-2 col-sm-3 col-form-label" for="description">名称</label>
                         <div class="col-md-7 col-sm-8">
-                            <input type="text" class="form-control" name="description" id="description"/>
+                            <input type="text" class="form-control" name="description" id="description" required/>
                             <span class="text-help"> 填写名称，例：【A系统】编辑A </span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-sm-3 col-form-label" for="name">行为</label>
                         <div class="col-md-7 col-sm-8">
-                            <input type="text" class="form-control" name="name" id="name"/>
+                            <input type="text" class="form-control" name="name" id="name" required/>
                             <span class="text-help"> 填写路由名称，例：admin.permission.create,update </span>
                         </div>
                     </div>
@@ -44,11 +44,13 @@
 @endsection
 @section('javascript')
     <script>
-        @isset($permission)
-        $(document).ready(function() {
-          $('#description').val('{{$permission->description}}');
-          $('#name').val('{{$permission->name}}');
-        });
-        @endisset
+      $(document).ready(function() {
+          @isset($permission)
+          $('#description').val(@json(old('description') ?? $permission->description));
+        $('#name').val(@json(old('name') ?? $permission->name));
+          @endisset
+          $('#description').val(@json(old('description')));
+        $('#name').val(@json(old('name')));
+      });
     </script>
 @endsection

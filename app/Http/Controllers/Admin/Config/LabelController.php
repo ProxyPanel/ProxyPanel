@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Config;
 
 use App\Http\Controllers\Controller;
 use App\Models\Label;
-use App\Models\NodeLabel;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,9 +27,9 @@ class LabelController extends Controller
     }
 
     // 编辑标签
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, Label $label): JsonResponse
     {
-        if (Label::whereId($id)->update(['name' => $request->input('name'), 'sort' => $request->input('sort')])) {
+        if ($label->update(['name' => $request->input('name'), 'sort' => $request->input('sort')])) {
             return Response::json(['status' => 'success', 'message' => '编辑成功']);
         }
 
@@ -38,10 +37,10 @@ class LabelController extends Controller
     }
 
     // 删除标签
-    public function destroy($id): ?JsonResponse
+    public function destroy(Label $label): ?JsonResponse
     {
         try {
-            Label::whereId($id)->delete();
+            $label->delete();
 
             return Response::json(['status' => 'success', 'message' => '删除成功']);
         } catch (Exception $e) {

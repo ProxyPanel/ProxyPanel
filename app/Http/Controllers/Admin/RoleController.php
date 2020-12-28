@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Requests\Admin\RoleRequest;
+use Exception;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -12,29 +12,19 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $roles = Role::with('permissions')->paginate(15);
-
-        return view('admin.role.index', compact('roles'));
+        return view('admin.role.index', ['roles' => Role::with('permissions')->paginate(15)]);
     }
 
     public function create()
     {
-        $permissions = Permission::all()->pluck('description', 'name');
-
-        return view('admin.role.info', compact('permissions'));
+        return view('admin.role.info', ['permissions' => Permission::all()->pluck('description', 'name')]);
     }
 
-    public function store(Request $request)
+    public function store(RoleRequest $request)
     {
-        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
+        if ($role = Role::create($request->only(['name', 'description']))) {
+            $role->givePermissionTo($request->input('permissions') ?: []);
 
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator->errors());
-        }
-
-        $role = Role::create($request->except('permissions'));
-        $permissions = $request->input('permissions') ?: [];
-        if ($role->givePermissionTo($permissions)) {
             return redirect()->route('admin.role.edit', $role)->with('successMsg', '操作成功');
         }
 
@@ -43,27 +33,21 @@ class RoleController extends Controller
 
     public function edit(Role $role)
     {
-        $role->load('permissions');
-        $permissions = Permission::all()->pluck('description', 'name');
-
-        return view('admin.role.info', compact('role', 'permissions'));
+        return view('admin.role.info', [
+            'role' => $role->load('permissions'),
+            'permissions' => Permission::all()->pluck('description', 'name'),
+        ]);
     }
 
-    public function update(Request $request, Role $role)
+    public function update(RoleRequest $request, Role $role)
     {
-        $validator = validator()->make($request->all(), ['name' => 'required', 'description' => 'required']);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withInput()->withErrors($validator->errors());
-        }
-
         if ($role->name === 'Super Admin') {
             return redirect()->back()->withInput()->withErrors('请勿修改超级管理员');
         }
 
-        $role->update($request->except('permissions'));
-        $permissions = $request->input('permissions') ?: [];
-        if ($role->syncPermissions($permissions)) {
+        if ($role->update($request->only(['name', 'description']))) {
+            $role->syncPermissions($request->input('permissions') ?: []);
+
             return redirect()->back()->with('successMsg', '操作成功');
         }
 
@@ -74,13 +58,13 @@ class RoleController extends Controller
     {
         try {
             if ($role->name === 'Super Admin') {
-                return Response::json(['status' => 'fail', 'message' => '请勿删除超级管理员']);
+                return response()->json(['status' => 'fail', 'message' => '请勿删除超级管理员']);
             }
             $role->delete();
         } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '清理成功']);
+        return response()->json(['status' => 'success', 'message' => '清理成功']);
     }
 }

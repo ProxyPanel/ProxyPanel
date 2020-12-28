@@ -3,15 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\RuleRequest;
 use App\Models\Node;
 use App\Models\Rule;
-use App\Models\RuleGroup;
 use App\Models\RuleLog;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
-use Validator;
 
 class RuleController extends Controller
 {
@@ -25,31 +24,13 @@ class RuleController extends Controller
             $query->whereType($type);
         }
 
-        $view['rules'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.rule.index', $view);
+        return view('admin.rule.index', ['rules' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 添加审计规则
-    public function store(Request $request): JsonResponse
+    public function store(RuleRequest $request): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|between:1,4',
-            'name' => 'required',
-            'pattern' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
-        }
-
-        $rule = new Rule();
-        $rule->type = $request->input('type');
-        $rule->name = $request->input('name');
-        $rule->pattern = $request->input('pattern');
-        $rule->save();
-
-        if ($rule->id) {
+        if (Rule::create($request->validated())) {
             return Response::json(['status' => 'success', 'message' => '提交成功']);
         }
 
@@ -57,9 +38,9 @@ class RuleController extends Controller
     }
 
     // 编辑审计规则
-    public function update(Request $request, $id): JsonResponse
+    public function update(RuleRequest $request, Rule $rule): JsonResponse
     {
-        if (Rule::find($id)->update(['name' => $request->input('rule_name'), 'pattern' => $request->input('rule_pattern')])) {
+        if ($rule->update($request->validated())) {
             return Response::json(['status' => 'success', 'message' => '操作成功']);
         }
 
@@ -67,18 +48,10 @@ class RuleController extends Controller
     }
 
     // 删除审计规则
-    public function destroy($id): JsonResponse
+    public function destroy(Rule $rule): JsonResponse
     {
         try {
-            Rule::whereId($id)->delete();
-
-            foreach (RuleGroup::all() as $ruleGroup) {
-                $rules = $ruleGroup->rules;
-                if ($rules && in_array($id, $rules, true)) {
-                    $ruleGroup->rules = array_merge(array_diff($rules, [$id]));
-                    $ruleGroup->save();
-                }
-            }
+            $rule->delete();
         } catch (Exception $e) {
             return Response::json(['status' => 'fail', 'message' => '操作失败, '.$e->getMessage()]);
         }
@@ -110,11 +83,11 @@ class RuleController extends Controller
             $query->whereRuleId($ruleId);
         }
 
-        $view['nodeList'] = Node::all();
-        $view['ruleList'] = Rule::all();
-        $view['ruleLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.rule.log', $view);
+        return view('admin.rule.log', [
+            'nodes' => Node::all(),
+            'rules' => Rule::all(),
+            'ruleLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
+        ]);
     }
 
     // 清除所有审计触发日志
@@ -125,8 +98,8 @@ class RuleController extends Controller
         } catch (Exception $e) {
             return Response::json(['status' => 'fail', 'message' => '清理失败, '.$e->getMessage()]);
         }
-        $result = RuleLog::doesntExist();
-        if ($ret || $result) {
+
+        if ($ret || RuleLog::doesntExist()) {
             return Response::json(['status' => 'success', 'message' => '清理成功']);
         }
 

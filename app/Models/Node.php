@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -11,12 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Node extends Model
 {
-    protected $table = 'ss_node';
-    protected $guarded = ['id', 'created_at'];
+    protected $table = 'node';
+    protected $guarded = [];
 
-    public function labels(): HasMany
+    public function labels()
     {
-        return $this->hasMany(NodeLabel::class);
+        return $this->belongsToMany(Label::class);
     }
 
     public function heartBeats(): HasMany
@@ -44,14 +46,14 @@ class Node extends Model
         return $this->hasMany(NodeHourlyDataFlow::class);
     }
 
-    public function rules(): hasMany
+    public function ruleGroup(): BelongsTo
     {
-        return $this->hasMany(NodeRule::class);
+        return $this->belongsTo(RuleGroup::class);
     }
 
-    public function ruleGroup(): hasOne
+    public function userGroups(): BelongsToMany
     {
-        return $this->hasOne(RuleGroupNode::class);
+        return $this->belongsToMany(UserGroup::class);
     }
 
     public function auth(): HasOne
@@ -64,14 +66,10 @@ class Node extends Model
         return $this->hasOne(Level::class, 'level', 'level');
     }
 
-    public function scopeUserAllowNodes($query, $user_group_id, $user_level)
+    public function users()
     {
-        $userGroup = UserGroup::find($user_group_id);
-        if ($userGroup) {
-            $query->whereIn('id', $userGroup->nodes);
-        }
-
-        return $query->whereStatus(1)->where('level', '<=', $user_level ?: 0);
+        return User::activeUser()->whereIn('user_group_id', $this->userGroups->pluck('id')->toArray())->orwhereNull('user_group_id')->where('level', '>=',
+            $this->attributes['level'])->get();
     }
 
     public function config($user)
@@ -147,11 +145,6 @@ class Node extends Model
     public function setSpeedLimitAttribute($value)
     {
         return $this->attributes['speed_limit'] = $value * Mbps;
-    }
-
-    public function getNodeAccessUsersAttribute()
-    {
-        return User::nodeAllowUsers($this->attributes['id'], $this->attributes['level'])->get();
     }
 
     public function getTypeLabelAttribute(): string

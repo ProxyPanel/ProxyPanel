@@ -25,7 +25,7 @@
                     <div class="form-group row">
                         <label class="col-md-2 col-sm-3 col-form-label" for="name">分组名称</label>
                         <div class="col-md-9 col-sm-9">
-                            <input type="text" class="form-control" name="name" id="name"/>
+                            <input type="text" class="form-control" name="name" id="name" required/>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -58,7 +58,7 @@
         @isset($group)
         $(document).ready(function() {
           $('#name').val('{{$group->name}}');
-          $('#nodes').multiSelect('select',@json($group->nodes));
+          $('#nodes').multiSelect('select', @json(array_map('strval', $group->nodes->pluck('id')->toArray())));
         });
         @endisset
         // 权限列表

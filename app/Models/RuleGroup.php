@@ -10,8 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class RuleGroup extends Model
 {
     protected $table = 'rule_group';
-    protected $casts = ['rules' => 'array', 'nodes' => 'array'];
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     public function getTypeLabelAttribute(): string
     {
@@ -22,5 +21,10 @@ class RuleGroup extends Model
         }
 
         return $type_label;
+    }
+
+    public function rules()
+    {
+        return $this->belongsToMany(Rule::class);
     }
 }

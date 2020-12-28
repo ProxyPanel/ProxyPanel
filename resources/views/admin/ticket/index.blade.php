@@ -61,7 +61,7 @@
                             </td>
                             <td>
                                 @can('admin.ticket.edit')
-                                    <a href="{{route('admin.ticket.edit',$ticket->id)}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
+                                    <a href="{{route('admin.ticket.edit',$ticket)}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
                                         <span>
                                             @if($ticket->status === 2)
                                                 <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}

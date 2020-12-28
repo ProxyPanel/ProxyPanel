@@ -95,7 +95,6 @@ class PaymentController extends Controller
         $pay_type = $request->input('pay_type');
         $amount = 0;
 
-        $goods = Goods::find($goods_id);
         // 充值余额
         if ($credit) {
             if (! is_numeric($credit) || $credit <= 0) {
@@ -104,6 +103,7 @@ class PaymentController extends Controller
             $amount = $credit;
         // 购买服务
         } elseif ($goods_id && self::$method) {
+            $goods = Goods::find($goods_id);
             if (! $goods || ! $goods->status) {
                 return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);
             }
@@ -140,7 +140,7 @@ class PaymentController extends Controller
                 }
             }
 
-            // 使用优惠券 TODO 代码整合至 CouponService
+            // 使用优惠券
             if ($coupon_sn) {
                 $coupon = Coupon::whereStatus(0)->whereIn('type', [1, 2])->whereSn($coupon_sn)->first();
                 if (! $coupon) {
@@ -162,31 +162,29 @@ class PaymentController extends Controller
             }
         }
 
-        $orderSn = date('ymdHis').random_int(100000, 999999);
-
         // 生成订单
         try {
-            $order = new Order();
-            $order->order_sn = $orderSn;
-            $order->user_id = Auth::id();
-            $order->goods_id = $credit ? 0 : $goods_id;
-            $order->coupon_id = $coupon->id ?? 0;
-            $order->origin_amount = $credit ?: $goods->price;
-            $order->amount = $amount;
-            $order->pay_type = $pay_type;
-            $order->pay_way = self::$method;
-            $order->save();
+            $newOrder = Order::create([
+                'order_sn' => date('ymdHis').random_int(100000, 999999),
+                'user_id' => auth()->id(),
+                'goods_id' => $credit ? null : $goods_id,
+                'coupon_id' => $coupon->id ?? null,
+                'origin_amount' => $credit ?: $goods->price ?? 0,
+                'amount'=>$amount,
+                'pay_type'=>$pay_type,
+                'pay_way'=>self::$method,
+            ]);
 
             // 使用优惠券，减少可使用次数
             if (! empty($coupon)) {
                 if ($coupon->usable_times > 0) {
-                    Coupon::whereId($coupon->id)->decrement('usable_times', 1);
+                    $coupon->decrement('usable_times', 1);
                 }
 
-                Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $order->id);
+                Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $newOrder->id);
             }
 
-            $request->merge(['id' => $order->id, 'type' => $pay_type, 'amount' => $amount]);
+            $request->merge(['id' => $newOrder->id, 'type' => $pay_type, 'amount' => $amount]);
 
             // 生成支付单
             return self::getClient()->purchase($request);
@@ -197,15 +195,10 @@ class PaymentController extends Controller
         return Response::json(['status' => 'fail', 'message' => '订单创建失败']);
     }
 
-    public function close(Request $request): JsonResponse
+    public function close(Order $order): JsonResponse
     {
-        $order = Order::find($request->input('id'));
-        if ($order) {
-            if (! $order->update(['status' => -1])) {
-                return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
-            }
-        } else {
-            return Response::json(['status' => 'fail', 'message' => '未找到订单']);
+        if (! $order->update(['status' => -1])) {
+            return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
         }
 
         return Response::json(['status' => 'success', 'message' => '关闭订单成功']);
@@ -215,13 +208,14 @@ class PaymentController extends Controller
     public function detail($trade_no)
     {
         $payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->firstOrFail();
-        $view['payment'] = $payment;
         $goods = $payment->order->goods;
-        $view['name'] = $goods->name ?? '余额充值';
-        $view['days'] = $goods->days ?? 0;
-        $view['pay_type'] = $payment->order->pay_type_label ?: 0;
-        $view['pay_type_icon'] = $payment->order->pay_type_icon;
 
-        return view('user.payment', $view);
+        return view('user.payment', [
+            'payment' => $payment,
+            'name' => $goods->name ?? '余额充值',
+            'days' => $goods->days ?? 0,
+            'pay_type' => $payment->order->pay_type_label ?: 0,
+            'pay_type_icon' => $payment->order->pay_type_icon,
+        ]);
     }
 }

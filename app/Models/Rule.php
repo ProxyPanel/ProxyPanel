@@ -56,4 +56,9 @@ class Rule extends Model
 
         return $type_api_label;
     }
+
+    public function rule_groups()
+    {
+        return $this->belongsToMany(RuleGroup::class);
+    }
 }

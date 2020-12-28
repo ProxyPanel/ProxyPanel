@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Components\Helpers;
-use App\Components\PushNotification;
 use App\Http\Controllers\Controller;
 use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use App\Models\Ticket;
-use App\Models\TicketReply;
 use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
@@ -27,7 +25,7 @@ class TicketController extends Controller
     {
         $email = $request->input('email');
 
-        $query = Ticket::whereAdminId(Auth::id())->orwhere('admin_id', null);
+        $query = Ticket::whereAdminId(Auth::id())->orwhere('admin_id');
 
         if (isset($email)) {
             $query->whereHas('user', static function ($q) use ($email) {
@@ -35,9 +33,7 @@ class TicketController extends Controller
             });
         }
 
-        $view['ticketList'] = $query->latest()->paginate(10)->appends($request->except('page'));
-
-        return view('admin.ticket.index', $view);
+        return view('admin.ticket.index', ['ticketList' => $query->latest()->paginate(10)->appends($request->except('page'))]);
     }
 
     // 创建工单
@@ -76,28 +72,22 @@ class TicketController extends Controller
     }
 
     // 回复
-    public function edit($id)
+    public function edit(Ticket $ticket)
     {
-        $view['ticket'] = Ticket::find($id);
-        $view['replyList'] = TicketReply::whereTicketId($id)->oldest()->get();
-
-        return view('admin.ticket.reply', $view);
+        return view('admin.ticket.reply', [
+            'ticket' => $ticket,
+            'replyList' => $ticket->reply()->oldest()->get(),
+        ]);
     }
 
     // 回复工单
-    public function update(Request $request, $id)
+    public function update(Request $request, Ticket $ticket)
     {
         $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
-        $obj = new TicketReply();
-        $obj->ticket_id = $id;
-        $obj->admin_id = Auth::id();
-        $obj->content = $content;
-
-        if ($obj->save()) {
+        if ($ticket->reply()->create(['admin_id' => Auth::id(), 'content' => $content])) {
             // 将工单置为已回复
-            $ticket = Ticket::with('user')->find($id);
-            Ticket::whereId($id)->update(['status' => 1]);
+            $ticket->update(['status' => 1]);
 
             $title = '工单回复提醒';
             $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
@@ -113,10 +103,8 @@ class TicketController extends Controller
     }
 
     // 关闭工单
-    public function destroy($id)
+    public function destroy(Ticket $ticket)
     {
-        $ticket = Ticket::with('user')->find($id);
-
         if (! $ticket->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }

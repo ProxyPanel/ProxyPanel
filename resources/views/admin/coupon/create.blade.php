@@ -96,13 +96,14 @@
                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                             </div>
                             <label for="start_time"></label>
-                            <input type="text" class="form-control" name="start_time" id="start_time" value="{{Request::old('start_time') ?? date("Y-m-d")}}" required/>
+                            <input type="text" class="form-control" name="start_time" id="start_time"
+                                   value="{{Request::old('start_time') ?? date("Y-m-d")}}" required/>
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
                             <label for="end_time"></label>
-                            <input type="text" class="form-control" name="end_time" id="end_time" value="{{Request::old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}"
-                                   required/>
+                            <input type="text" class="form-control" name="end_time" id="end_time"
+                                   value="{{Request::old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}" required/>
                         </div>
                     </div>
                     <div class="form-actions col-12 text-right">
@@ -119,27 +120,33 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
-      $('.input-daterange>input').datepicker({
-        format: 'yyyy-mm-dd',
-      });
+        @if(old('type'))
+        $(document).ready(function() {
+          $("input[name='type'][value='{{old('type')}}']").click();
+        });
+        @endif
 
-      $('input[name=\'type\']').change(function() {
-        if ($(this).val() === '2') {
-          $('#rule').attr('required', true);
-          $('.discount').show();
-          $('.usage').show();
-          $('.amount').hide();
-        } else if ($(this).val() === '3') {
-          $('#rule').attr('required', false);
-          $('.discount').hide();
-          $('.usage').hide();
-          $('.amount').show();
-        } else {
-          $('#rule').attr('required', true);
-          $('.discount').hide();
-          $('.usage').show();
-          $('.amount').show();
-        }
-      });
+        $('.input-daterange>input').datepicker({
+          format: 'yyyy-mm-dd',
+        });
+
+        $('input[name=\'type\']').change(function() {
+          if ($(this).val() === '2') {
+            $('#rule').attr('required', true);
+            $('.discount').show();
+            $('.usage').show();
+            $('.amount').hide();
+          } else if ($(this).val() === '3') {
+            $('#rule').attr('required', false);
+            $('.discount').hide();
+            $('.usage').hide();
+            $('.amount').show();
+          } else {
+            $('#rule').attr('required', true);
+            $('.discount').hide();
+            $('.usage').show();
+            $('.amount').show();
+          }
+        });
     </script>
 @endsection

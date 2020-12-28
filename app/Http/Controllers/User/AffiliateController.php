@@ -18,17 +18,18 @@ class AffiliateController extends Controller
         if (ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()) {
             return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
         }
-        $view['referral_traffic'] = flowAutoShow(sysConfig('referral_traffic') * MB);
-        $view['referral_percent'] = sysConfig('referral_percent');
-        $view['referral_money'] = sysConfig('referral_money');
-        $view['totalAmount'] = ReferralLog::uid()->sum('commission') / 100;
-        $view['canAmount'] = ReferralLog::uid()->whereStatus(0)->sum('commission') / 100;
-        $view['aff_link'] = route('register', ['aff' => Auth::id()]);
-        $view['referralLogList'] = ReferralLog::uid()->with('invitee:id,email')->latest()->paginate(10, ['*'], 'log_page');
-        $view['referralApplyList'] = ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page');
-        $view['referralUserList'] = Auth::getUser()->invitees()->select(['email', 'created_at'])->latest()->paginate(10, ['*'], 'user_page');
 
-        return view('user.referral', $view);
+        return view('user.referral', [
+            'referral_traffic' => flowAutoShow(sysConfig('referral_traffic') * MB),
+            'referral_percent' => sysConfig('referral_percent'),
+            'referral_money' => sysConfig('referral_money'),
+            'totalAmount' => ReferralLog::uid()->sum('commission') / 100,
+            'canAmount' => ReferralLog::uid()->whereStatus(0)->sum('commission') / 100,
+            'aff_link' => route('register', ['aff' => Auth::id()]),
+            'referralLogList' => ReferralLog::uid()->with('invitee:id,email')->latest()->paginate(10, ['*'], 'log_page'),
+            'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
+            'referralUserList' => Auth::getUser()->invitees()->select(['email', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),
+        ]);
     }
 
     // 申请提现

@@ -138,10 +138,10 @@
         }).then((result) => {
           if (result.value) {
             $.ajax({
-              method: 'POST',
-              url: '{{route('closeOrder')}}',
+              method: 'PUT',
+              url: '{{route('closeOrder'), ''}}/' + id,
               async: false,
-              data: {_token: '{{csrf_token()}}', id: id},
+              data: {_token: '{{csrf_token()}}'},
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {

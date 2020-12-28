@@ -9,12 +9,12 @@ class ArticleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required',
-            'type' => 'required|numeric',
-            'summary' => 'nullable',
-            'logo' => 'nullable|exclude_if:type,4|image',
-            'content' => 'required',
+            'type' => 'required|numeric|between:1,4',
+            'title' => 'required|string',
+            'summary' => 'string|nullable',
             'sort' => 'required_if:type,1|numeric',
+            'logo' => 'nullable|exclude_if:type,4|image',
+            'content' => 'required|string',
         ];
     }
 }

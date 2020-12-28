@@ -197,10 +197,7 @@ class ToolsController extends Controller
         }
 
         $logs = $this->tail($file, 10000);
-        if (false === $logs) {
-            $view['urlList'] = [];
-        } else {
-            $url = [];
+        if (false !== $logs) {
             foreach ($logs as $log) {
                 if (str_contains($log, 'TCP connecting')) {
                     continue;
@@ -220,10 +217,8 @@ class ToolsController extends Controller
                     }
                 }
             }
-
-            $view['urlList'] = array_unique($url);
         }
 
-        return view('admin.tools.analysis', $view);
+        return view('admin.tools.analysis', ['urlList' => array_unique($url ?? [])]);
     }
 }

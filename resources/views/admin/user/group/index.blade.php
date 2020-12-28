@@ -25,20 +25,20 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($list as $vo)
+                    @foreach ($groups as $group)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->name}} </td>
+                            <td> {{$group->id}} </td>
+                            <td> {{$group->name}} </td>
                             <td>
                                 @canany(['admin.user.group.edit', 'admin.user.group.destroy'])
                                     <div class="btn-group">
                                         @can('admin.user.group.edit')
-                                            <a href="{{route('admin.user.group.edit',$vo)}}" class="btn btn-primary">
+                                            <a href="{{route('admin.user.group.edit',$group)}}" class="btn btn-primary">
                                                 <i class="icon wb-edit" aria-hidden="true"></i>
                                             </a>
                                         @endcan
                                         @can('admin.user.group.destroy')
-                                            <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$vo)}}')" class="btn btn-danger">
+                                            <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$group)}}')" class="btn btn-danger">
                                                 <i class="icon wb-trash" aria-hidden="true"></i>
                                             </button>
                                         @endcan
@@ -53,11 +53,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 个分组
+                        共 <code>{{$groups->total()}}</code> 个分组
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$groups->links()}}
                         </nav>
                     </div>
                 </div>

@@ -47,14 +47,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($pushes as $push)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->title}} </td>
-                            <td> {{$vo->content}} </td>
-                            <td> {{$vo->status_label}} </td>
-                            <td> {{$vo->created_at}} </td>
-                            <td> {{$vo->error}} </td>
+                            <td> {{$push->id}} </td>
+                            <td> {{$push->title}} </td>
+                            <td> {{$push->content}} </td>
+                            <td> {{$push->status_label}} </td>
+                            <td> {{$push->created_at}} </td>
+                            <td> {{$push->error}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -63,11 +63,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条推送消息
+                        共 <code>{{$pushes->total()}}</code> 条推送消息
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$pushes->links()}}
                         </nav>
                     </div>
                 </div>

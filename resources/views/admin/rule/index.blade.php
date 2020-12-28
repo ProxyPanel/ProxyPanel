@@ -150,18 +150,43 @@
       @can('admin.rule.store')
       // 添加规则
       function addRule() {
-        $.post("{{route('admin.rule.store')}}", {
-          _token: '{{csrf_token()}}',
-          type: $('#add_type').val(),
-          name: $('#name').val(),
-          pattern: $('#pattern').val(),
-        }, function(ret) {
+        $.post("{{route('admin.rule.store')}}", {}, function(ret) {
           $('#add').modal('hide');
           if (ret.status === 'success') {
             swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
           } else {
             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
           }
+        });
+        $.ajax({
+          method: 'POST',
+          url: "{{route('admin.rule.store')}}",
+          data: {
+            _token: '{{csrf_token()}}',
+            type: $('#add_type').val(),
+            name: $('#name').val(),
+            pattern: $('#pattern').val(),
+          },
+          dataType: 'json',
+          success: function(ret) {
+            $('#add').modal('hide');
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            }
+          },
+          error: function(data) {
+            $('#add').modal('hide');
+            let str = '';
+            const errors = data.responseJSON;
+            if ($.isEmptyObject(errors) === false) {
+              $.each(errors.errors, function(index, value) {
+                str += '<li>' + value + '</li>';
+              });
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+            }
+          },
         });
       }
       @endcan
@@ -183,6 +208,16 @@
               swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
             } else {
               swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            }
+          },
+          error: function(data) {
+            let str = '';
+            const errors = data.responseJSON;
+            if ($.isEmptyObject(errors) === false) {
+              $.each(errors.errors, function(index, value) {
+                str += '<li>' + value + '</li>';
+              });
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
             }
           },
         });

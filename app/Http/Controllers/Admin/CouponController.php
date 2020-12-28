@@ -43,9 +43,7 @@ class CouponController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['couponList'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.coupon.index', $view);
+        return view('admin.coupon.index', ['couponList' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
     // 添加优惠券页面
@@ -71,19 +69,12 @@ class CouponController extends Controller
         }
         try {
             $num = (int) $request->input('num');
+            $data = $request->only(['name', 'type', 'usable_times', 'value', 'rule', 'start_time', 'end_time']);
+            $data['logo'] = $logo;
 
             for ($i = 0; $i < $num; $i++) {
-                $obj = new Coupon();
-                $obj->name = $request->input('name');
-                $obj->logo = $logo;
-                $obj->sn = $num === 1 && $request->input('sn') ? $request->input('sn') : Str::random(8);
-                $obj->type = $request->input('type');
-                $obj->usable_times = $request->input('usable_times');
-                $obj->value = $request->input('value');
-                $obj->rule = $request->input('rule');
-                $obj->start_time = strtotime($request->input('start_time'));
-                $obj->end_time = strtotime($request->input('end_time'));
-                $obj->save();
+                $data['sn'] = $num === 1 && $request->input('sn') ? $request->input('sn') : Str::random(8);
+                Coupon::create($data);
             }
 
             return Redirect::route('admin.coupon.index')->with('successMsg', '生成成功');
@@ -95,10 +86,10 @@ class CouponController extends Controller
     }
 
     // 删除优惠券
-    public function destroy($id): JsonResponse
+    public function destroy(Coupon $coupon): JsonResponse
     {
         try {
-            if (Coupon::find($id)->delete()) {
+            if ($coupon->delete()) {
                 return Response::json(['status' => 'success', 'message' => '删除成功']);
             }
         } catch (Exception $e) {
@@ -132,7 +123,7 @@ class CouponController extends Controller
             $sheet->setTitle('抵用券');
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（元）', '使用限制（元）'], null);
             foreach ($voucherList as $k => $vo) {
-                $dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
                 $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule], null, 'A'.($k + 2));
             }
 
@@ -143,7 +134,7 @@ class CouponController extends Controller
             $sheet->setTitle('折扣券');
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '折扣（折）', '使用限制（元）'], null);
             foreach ($discountCouponList as $k => $vo) {
-                $dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
                 $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->rule], null, 'A'.($k + 2));
             }
 
@@ -154,7 +145,7 @@ class CouponController extends Controller
             $sheet->setTitle('充值券');
             $sheet->fromArray(['名称', '有效期', '券码', '金额（元）'], null);
             foreach ($refillList as $k => $vo) {
-                $dateRange = date('Y-m-d', $vo->start_time).' ~ '.date('Y-m-d', $vo->end_time);
+                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
                 $sheet->fromArray([$vo->name, $dateRange, $vo->sn, $vo->value], null, 'A'.($k + 2));
             }
 

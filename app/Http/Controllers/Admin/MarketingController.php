@@ -31,9 +31,7 @@ class MarketingController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.marketing.emailList', $view);
+        return view('admin.marketing.emailList', ['emails' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 消息通道群发列表
@@ -47,9 +45,7 @@ class MarketingController extends Controller
             $query->whereStatus($status);
         }
 
-        $view['list'] = $query->paginate(15)->appends($request->except('page'));
-
-        return view('admin.marketing.pushList', $view);
+        return view('admin.marketing.pushList', ['pushes' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
     // 添加推送消息

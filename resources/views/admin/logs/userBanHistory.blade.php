@@ -30,26 +30,26 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($userBanLogs as $log)
                         <tr>
                             <td>
-                                {{$vo->id}}
+                                {{$log->id}}
                             </td>
                             <td>
-                                @if ($vo->user)
+                                @if ($log->user)
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['email'=>$vo->user->email])}}" target="_blank"> {{$vo->user->email}}</a>
+                                        <a href="{{route('admin.user.index', ['email'=>$log->user->email])}}" target="_blank"> {{$log->user->email}}</a>
                                     @else
-                                        {{$vo->user->email}}
+                                        {{$log->user->email}}
                                     @endcan
                                 @else
                                     【账号已删除】
                                 @endif
                             </td>
-                            <td> {{$vo->time}}分钟</td>
-                            <td> {{$vo->description}} </td>
-                            <td> {{$vo->created_at}} </td>
-                            <td> {{date("Y-m-d H:i:s", $vo->user->t)}} </td>
+                            <td> {{$log->time}}分钟</td>
+                            <td> {{$log->description}} </td>
+                            <td> {{$log->created_at}} </td>
+                            <td> {{date("Y-m-d H:i:s", $log->user->t)}} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -58,11 +58,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条记录
+                        共 <code>{{$userBanLogs->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$userBanLogs->links()}}
                         </nav>
                     </div>
                 </div>

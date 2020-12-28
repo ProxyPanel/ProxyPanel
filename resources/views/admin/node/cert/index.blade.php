@@ -30,25 +30,25 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach ($list as $vo)
+                    @foreach ($certs as $cert)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->domain}} </td>
-                            <td> {{$vo->key ? '✔️' : '❌'}} </td>
-                            <td> {{$vo->pem ? '✔️' : '❌'}} </td>
-                            <td> {{$vo->issuer}} </td>
-                            <td> {{$vo->from}} </td>
-                            <td> {{$vo->to}} </td>
+                            <td> {{$cert->id}} </td>
+                            <td> {{$cert->domain}} </td>
+                            <td> {{$cert->key ? '✔️' : '❌'}} </td>
+                            <td> {{$cert->pem ? '✔️' : '❌'}} </td>
+                            <td> {{$cert->issuer}} </td>
+                            <td> {{$cert->from}} </td>
+                            <td> {{$cert->to}} </td>
                             <td>
                                 @canany(['admin.node.cert.edit', 'admin.node.cert.destroy'])
                                     <div class="btn-group">
                                         @can('admin.node.cert.edit')
-                                            <a href="{{route('admin.node.cert.edit', $vo->id)}}" class="btn btn-primary">
+                                            <a href="{{route('admin.node.cert.edit', $cert)}}" class="btn btn-primary">
                                                 <i class="icon wb-edit" aria-hidden="true"></i>
                                             </a>
                                         @endcan
                                         @can('admin.node.cert.destroy')
-                                            <button onclick="delCertificate('{{$vo->id}}')" class="btn btn-danger">
+                                            <button onclick="delCertificate('{{$cert->id}}')" class="btn btn-danger">
                                                 <i class="icon wb-trash" aria-hidden="true"></i>
                                             </button>
                                         @endcan
@@ -63,11 +63,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 个域名证书
+                        共 <code>{{$certs->total()}}</code> 个域名证书
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$certs->links()}}
                         </nav>
                     </div>
                 </div>

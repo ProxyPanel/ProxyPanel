@@ -54,7 +54,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="group">分组</label>
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" name="group" id="group" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        <option value="0">无分组</option>
+                                        <option value="">无分组</option>
                                         @foreach($userGroups as $group)
                                             <option value="{{$group->id}}">{{$group->name}}</option>
                                         @endforeach
@@ -163,13 +163,6 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="remark">备注</label>
                                 <div class="col-xl-6 col-sm-8">
                                     <textarea class="form-control" rows="3" name="remark" id="remark"></textarea>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="inviter">邀请人</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <p class="form-control"> {{empty($user->inviter) ? '无邀请人' : $user->inviter->email}} </p>
                                 </div>
                             </div>
                         </div>
@@ -285,6 +278,21 @@
                                     <span class="text-help">为 0 时不限速 </span>
                                 </div>
                             </div>
+                            @isset($user)
+                                <hr>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="inviter">邀请人</label>
+                                    <div class="col-xl-6 col-sm-8">
+                                        <p class="form-control"> {{empty($user->inviter) ? '无邀请人' : $user->inviter->email}} </p>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="created_at">注册时间</label>
+                                    <div class="col-xl-6 col-sm-8">
+                                        <p class="form-control"> {{$user->created_at}} </p>
+                                    </div>
+                                </div>
+                            @endisset
                         </div>
                         <div class="col-12 form-actions text-right">
                             <a href="{{route('admin.user.index')}}" class="btn btn-secondary">返 回</a>
@@ -336,7 +344,7 @@
           $('#username').val('{{$user->username}}');
         $('#email').val('{{$user->email}}');
         $('#level').selectpicker('val', '{{$user->level}}');
-        $('#group').selectpicker('val', '{{$user->group_id}}');
+        $('#group').selectpicker('val', '{{$user->user_group_id}}');
         $('#invite_num').val('{{$user->invite_num}}');
         $('#reset_time').val('{{$user->reset_time}}');
         $('#expired_at').val('{{$user->expired_at}}');
@@ -368,11 +376,8 @@
       // 切换用户身份
       function switchToUser() {
         $.ajax({
-          url: '{{route('admin.user.switch')}}',
-          data: {
-            'user_id': '{{$user->id}}',
-            '_token': '{{csrf_token()}}',
-          },
+          url: '{{route('admin.user.switch', $user)}}',
+          data: {'_token': '{{csrf_token()}}'},
           dataType: 'json',
           method: 'POST',
           success: function(ret) {
@@ -399,9 +404,9 @@
         }
 
         $.ajax({
-          url: '{{route('admin.user.updateCredit')}}',
+          url: '{{route('admin.user.updateCredit', $user)}}',
           method: 'POST',
-          data: {_token: '{{csrf_token()}}', user_id: '{{$user->id}}', amount: amount},
+          data: {_token: '{{csrf_token()}}', amount: amount},
           beforeSend: function() {
             $('#msg').show().html('充值中...');
           },
@@ -442,7 +447,7 @@
 
         $.ajax({
           method: @isset($user)'PUT' @else 'POST' @endisset,
-          url: '{{isset($user)? route('admin.user.update', $user->id) : route('admin.user.store')}}',
+          url: '{{isset($user)? route('admin.user.update', $user) : route('admin.user.store')}}',
           async: false,
           data: {
             _token: '{{csrf_token()}}',
@@ -463,7 +468,7 @@
             expired_at: $('#expired_at').val(),
             remark: $('#remark').val(),
             level: $('#level').val(),
-            group_id: $('#group').val(),
+            user_group_id: $('#group').val(),
             roles: $('#roles').val(),
             reset_time: $('#reset_time').val(),
             invite_num: $('#invite_num').val(),

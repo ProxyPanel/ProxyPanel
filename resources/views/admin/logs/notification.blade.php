@@ -41,18 +41,18 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($notificationLogs as $log)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->type === 1 ? 'Email' : ($vo->type === 2? 'ServerChan': 'Bark')}} </td>
-                            <td> {{$vo->address}} </td>
-                            <td> {{$vo->title}} </td>
-                            <td> {{$vo->content}} </td>
-                            <td> {{$vo->created_at}} </td>
+                            <td> {{$log->id}} </td>
+                            <td> {{$log->type === 1 ? 'Email' : ($log->type === 2? 'ServerChan': 'Bark')}} </td>
+                            <td> {{$log->address}} </td>
+                            <td> {{$log->title}} </td>
+                            <td> {{$log->content}} </td>
+                            <td> {{$log->created_at}} </td>
                             <td>
-                                @if($vo->status < 0)
-                                    <span class="badge badge-danger"> {{Str::limit($vo->error)}} </span>
-                                @elseif($vo->status > 0)
+                                @if($log->status < 0)
+                                    <span class="badge badge-danger"> {{Str::limit($log->error)}} </span>
+                                @elseif($log->status > 0)
                                     <labe class="badge badge-success">投递成功</labe>
                                 @else
                                     <span class="badge badge-default"> 等待投递 </span>
@@ -66,11 +66,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条记录
+                        共 <code>{{$notificationLogs->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$notificationLogs->links()}}
                         </nav>
                     </div>
                 </div>

@@ -79,7 +79,7 @@
                             <td>
                                 {{$coupon->value}}@if($coupon->type === 2)%@else元@endif
                             </td>
-                            <td> {{date('Y-m-d', $coupon->start_time)}} ~ {{date('Y-m-d', $coupon->end_time)}} </td>
+                            <td> {{$coupon->start_time}} ~ {{$coupon->end_time}} </td>
                             <td>
                                 @if($coupon->status === 1)
                                     <span class="badge badge-lg badge-default"> 已使用 </span>

@@ -42,7 +42,7 @@
                             @endif
                             <td>
                                 @can('admin.article.show')
-                                    <a href="{{route('admin.article.show',$article->id)}}" target="_blank"> {{Str::limit($article->title, 80)}} </a>
+                                    <a href="{{route('admin.article.show',$article)}}" target="_blank"> {{Str::limit($article->title, 80)}} </a>
                                 @else
                                     {{Str::limit($article->title, 80)}}
                                 @endcan

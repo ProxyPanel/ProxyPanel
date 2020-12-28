@@ -307,7 +307,7 @@
           confirmButtonText: '{{trans('home.ticket_confirm')}}',
         }).then((result) => {
           if (result.value) {
-            $.post('{{route('admin.user.reset')}}', {_token: '{{csrf_token()}}', id: id}, function(ret) {
+            $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
               if (ret.status === 'success') {
                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
               } else {
@@ -322,7 +322,7 @@
       @can('admin.user.switch')
       // 切换用户身份
       function switchToUser(id) {
-        $.post('{{route('admin.user.switch')}}', {_token: '{{csrf_token()}}', user_id: id}, function(ret) {
+        $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
           if (ret.status === 'success') {
             swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
           } else {

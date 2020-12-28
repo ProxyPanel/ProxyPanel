@@ -99,7 +99,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($orderList as $order)
+                    @foreach($orders as $order)
                         <tr>
                             <td> {{$order->id}} </td>
                             <td>
@@ -142,11 +142,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$orderList->total()}}</code> 个订单
+                        共 <code>{{$orders->total()}}</code> 个订单
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$orderList->links()}}
+                            {{$orders->links()}}
                         </nav>
                     </div>
                 </div>

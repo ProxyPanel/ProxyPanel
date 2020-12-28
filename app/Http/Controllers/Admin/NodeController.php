@@ -10,18 +10,15 @@ use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
-use App\Models\NodeAuth;
 use App\Models\NodeCertificate;
 use App\Models\NodePing;
+use App\Models\RuleGroup;
 use App\Services\NodeService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Redirect;
 use Response;
-use Session;
-use Str;
 
 class NodeController extends Controller
 {
@@ -52,19 +49,18 @@ class NodeController extends Controller
             $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);
         }
 
-        $view['nodeList'] = $nodeList;
-
-        return view('admin.node.index', $view);
+        return view('admin.node.index', ['nodeList' => $nodeList]);
     }
 
     // 添加节点页面
     public function create()
     {
         return view('admin.node.info', [
-            'countryList' => Country::orderBy('code')->get(),
-            'levelList' => Level::orderBy('level')->get(),
-            'labelList' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'dvList' => NodeCertificate::orderBy('id')->get(),
+            'countries' => Country::orderBy('code')->get(),
+            'levels' => Level::orderBy('level')->get(),
+            'ruleGroups' => RuleGroup::orderBy('id')->get(),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -76,8 +72,8 @@ class NodeController extends Controller
 
             if ($node) {
                 // 生成节点标签
-                if ($request->exists('labels')) {
-                    (new NodeService())->makeLabels($node->id, $request->input('labels'));
+                if ($request->has('labels')) {
+                    $node->labels()->attach($request->input('labels'));
                 }
 
                 return Response::json(['status' => 'success', 'message' => '添加成功']);
@@ -92,27 +88,24 @@ class NodeController extends Controller
     }
 
     // 编辑节点页面
-    public function edit($id)
+    public function edit(Node $node)
     {
         return view('admin.node.info', [
-            'node' => Node::with('labels')->find($id),
-            'countryList' => Country::orderBy('code')->get(),
-            'levelList' => Level::orderBy('level')->get(),
-            'labelList' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'dvList' => NodeCertificate::orderBy('id')->get(),
+            'node' => $node,
+            'countries' => Country::orderBy('code')->get(),
+            'levels' => Level::orderBy('level')->get(),
+            'ruleGroups' => RuleGroup::orderBy('id')->get(),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
     // 编辑节点
-    public function update(NodeRequest $request, $id): JsonResponse
+    public function update(NodeRequest $request, Node $node): JsonResponse
     {
-        $node = Node::find($id);
-
         try {
-            // 生成节点标签
-            if ($request->exists('labels')) {
-                (new NodeService())->makeLabels($node->id, $request->input('labels'));
-            }
+            // 更新节点标签
+            $node->labels()->sync($request->input('labels'));
 
             if ($node->update($request->except('_token', 'labels'))) {
                 return Response::json(['status' => 'success', 'message' => '编辑成功']);
@@ -127,10 +120,8 @@ class NodeController extends Controller
     }
 
     // 删除节点
-    public function destroy($id): JsonResponse
+    public function destroy(Node $node): JsonResponse
     {
-        $node = Node::findOrFail($id);
-
         try {
             if ($node->delete()) {
                 return Response::json(['status' => 'success', 'message' => '删除成功']);
@@ -145,9 +136,8 @@ class NodeController extends Controller
     }
 
     // 节点信息验证
-    public function checkNode($id): JsonResponse
+    public function checkNode(Node $node): JsonResponse
     {
-        $node = Node::find($id);
         // 使用DDNS的node先获取ipv4地址
         if ($node->is_ddns) {
             $ip = gethostbyname($node->server);
@@ -174,9 +164,9 @@ class NodeController extends Controller
     }
 
     // 重载节点
-    public function reload($id): JsonResponse
+    public function reload(Node $node): JsonResponse
     {
-        if (reloadNode::dispatchNow(Node::whereId($id)->get())) {
+        if (reloadNode::dispatchNow($node)) {
             return Response::json(['status' => 'success', 'message' => '重载成功！']);
         }
 
@@ -184,27 +174,14 @@ class NodeController extends Controller
     }
 
     // 节点流量监控
-    public function nodeMonitor($id)
+    public function nodeMonitor(Node $node)
     {
-        $node = Node::find($id);
-        if (! $node) {
-            Session::flash('errorMsg', '节点不存在，请重试');
-
-            return Redirect::back();
-        }
-
-        $view['nodeName'] = $node->name;
-        $view['nodeServer'] = $node->server;
-        $view = array_merge($view, $this->DataFlowChart($node->id, true));
-
-        return view('admin.node.monitor', $view);
+        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
     }
 
     // Ping节点延迟
-    public function pingNode($id): JsonResponse
+    public function pingNode(Node $node): JsonResponse
     {
-        $node = Node::findOrFail($id);
-
         $result = NetworkDetection::ping($node->is_ddns ? $node->server : $node->ip);
 
         if ($result) {
@@ -225,69 +202,15 @@ class NodeController extends Controller
     // Ping节点延迟日志
     public function pingLog(Request $request)
     {
-        $node_id = $request->input('nodeId');
+        $node_id = $request->input('id');
         $query = NodePing::query();
         if (isset($node_id)) {
             $query->whereNodeId($node_id);
         }
 
-        $view['nodeList'] = Node::orderBy('id')->get();
-        $view['pingLogs'] = $query->latest()->paginate(15)->appends($request->except('page'));
-
-        return view('admin.node.ping', $view);
-    }
-
-    // 节点授权列表
-    public function authList(Request $request)
-    {
-        $view['list'] = NodeAuth::orderBy('node_id')->paginate(15)->appends($request->except('page'));
-
-        return view('admin.node.auth', $view);
-    }
-
-    // 添加节点授权
-    public function addAuth(): JsonResponse
-    {
-        $nodeArray = Node::whereStatus(1)->orderBy('id')->pluck('id')->toArray();
-        $authArray = NodeAuth::orderBy('node_id')->pluck('node_id')->toArray();
-
-        $arrayDifferent = array_diff($nodeArray, $authArray);
-
-        if (empty($arrayDifferent)) {
-            return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
-        }
-
-        foreach ($arrayDifferent as $nodeId) {
-            $obj = new NodeAuth();
-            $obj->node_id = $nodeId;
-            $obj->key = Str::random();
-            $obj->secret = Str::random(8);
-            $obj->save();
-        }
-
-        return Response::json(['status' => 'success', 'message' => '生成成功']);
-    }
-
-    // 删除节点授权
-    public function delAuth($id): JsonResponse
-    {
-        try {
-            NodeAuth::whereId($id)->delete();
-        } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '错误：'.var_export($e, true)]);
-        }
-
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
-    }
-
-    // 重置节点授权
-    public function refreshAuth($id): JsonResponse
-    {
-        $ret = NodeAuth::find($id)->update(['key' => Str::random(), 'secret' => Str::random(8)]);
-        if ($ret) {
-            return Response::json(['status' => 'success', 'message' => '操作成功']);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '操作失败']);
+        return view('admin.node.ping', [
+            'nodeList' => Node::orderBy('id')->get(),
+            'pingLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
+        ]);
     }
 }

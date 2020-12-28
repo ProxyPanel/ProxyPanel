@@ -8,73 +8,18 @@ use App\Models\Level;
 use App\Models\Rule;
 use App\Models\SsConfig;
 use App\Models\User;
-use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Seeder;
 
-class PresetData extends Migration
+class PresetSeeder extends Seeder
 {
     /**
-     * Run the migrations.
+     * Run the database seeds.
      *
      * @return void
      */
-    public function up()
+    public function run()
     {
-        // 生成初始管理账号
-        User::create([
-            'username' => '管理员',
-            'email'    => 'test@test.com',
-            'password' => '123456',
-            'port'     => 10000,
-            'passwd'   => Str::random(),
-            'vmess_id' => Str::uuid(),
-            'is_admin' => 1,
-        ]);
-
-        // 生成最初的等级
-        Level::insert(['level' => 0, 'name' => 'Free']);
-        for ($i = 1; $i < 8; $i++) {
-            Level::insert(['level' => $i, 'name' => 'VIP-'.$i]);
-        }
-
-        // ss系列 加密方式
-        SsConfig::insert(['name' => 'none', 'type' => 1, 'is_default' => 1]);
-        SsConfig::insert(['name' => 'rc4-md5']);
-        SsConfig::insert(['name' => 'aes-128-cfb']);
-        SsConfig::insert(['name' => 'aes-192-cfb']);
-        SsConfig::insert(['name' => 'aes-256-cfb']);
-        SsConfig::insert(['name' => 'aes-128-ctr']);
-        SsConfig::insert(['name' => 'aes-192-ctr']);
-        SsConfig::insert(['name' => 'aes-256-ctr']);
-        SsConfig::insert(['name' => 'aes-128-gcm']);
-        SsConfig::insert(['name' => 'aes-192-gcm']);
-        SsConfig::insert(['name' => 'aes-256-gcm']);
-        SsConfig::insert(['name' => 'bf-cfb']);
-        SsConfig::insert(['name' => 'cast5-cfb']);
-        SsConfig::insert(['name' => 'des-cfb']);
-        SsConfig::insert(['name' => 'salsa20']);
-        SsConfig::insert(['name' => 'chacha20']);
-        SsConfig::insert(['name' => 'chacha20-ietf']);
-        SsConfig::insert(['name' => 'chacha20-ietf-poly1305']);
-
-        // ss系列 协议
-        SsConfig::insert(['name' => 'origin', 'type' => 2, 'is_default' => 1]);
-        SsConfig::insert(['name' => 'auth_sha1_v4', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_aes128_md5', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_aes128_sha1', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_a', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_b', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_c', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_d', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_e', 'type' => 2]);
-        SsConfig::insert(['name' => 'auth_chain_f', 'type' => 2]);
-
-        // ss系列 混淆
-        SsConfig::insert(['name' => 'plain', 'type' => 3, 'is_default' => 1]);
-        SsConfig::insert(['name' => 'http_simple', 'type' => 3]);
-        SsConfig::insert(['name' => 'http_post', 'type' => 3]);
-        SsConfig::insert(['name' => 'tls1.2_ticket_auth', 'type' => 3]);
-        SsConfig::insert(['name' => 'tls1.2_ticket_fastauth', 'type' => 3]);
-
+        // 系统参数
         $configList = [
             'is_rand_port',
             'is_user_rand_port',
@@ -198,48 +143,93 @@ class PresetData extends Migration
         }
 
         $presetDates = [
-            'invite_num'              => 3,
-            'is_register'             => 1,
-            'is_invite_register'      => 2,
-            'website_name'            => 'ProxyPanel',
-            'is_reset_password'       => 1,
-            'reset_password_times'    => 3,
-            'website_url'             => 'https://demo.proxypanel.ml',
-            'active_times'            => 3,
-            'is_checkin'              => 1,
-            'min_rand_traffic'        => 10,
-            'max_rand_traffic'        => 500,
-            'traffic_limit_time'      => 1440,
-            'referral_traffic'        => 1024,
-            'referral_percent'        => 0.2,
-            'referral_money'          => 100,
-            'referral_status'         => 1,
-            'default_traffic'         => 1024,
+            'invite_num' => 3,
+            'is_register' => 1,
+            'is_invite_register' => 2,
+            'website_name' => 'ProxyPanel',
+            'is_reset_password' => 1,
+            'reset_password_times' => 3,
+            'website_url' => 'https://demo.proxypanel.ml',
+            'active_times' => 3,
+            'is_checkin' => 1,
+            'min_rand_traffic' => 10,
+            'max_rand_traffic' => 500,
+            'traffic_limit_time' => 1440,
+            'referral_traffic' => 1024,
+            'referral_percent' => 0.2,
+            'referral_money' => 100,
+            'referral_status' => 1,
+            'default_traffic' => 1024,
             'traffic_warning_percent' => 80,
-            'expire_days'             => 15,
-            'reset_traffic'           => 1,
-            'default_days'            => 7,
-            'subscribe_max'           => 3,
-            'min_port'                => 10000,
-            'max_port'                => 65535,
-            'is_traffic_ban'          => 1,
-            'traffic_ban_value'       => 10,
-            'traffic_ban_time'        => 60,
-            'is_clear_log'            => 1,
-            'is_subscribe_ban'        => 1,
-            'subscribe_ban_times'     => 20,
-            'auto_release_port'       => 1,
-            'register_ip_limit'       => 5,
-            'detection_check_times'   => 3,
-            'alipay_transport'        => 'http',
-            'alipay_currency'         => 'USD',
-            'user_invite_days'        => 7,
-            'admin_invite_days'       => 7,
+            'expire_days' => 15,
+            'reset_traffic' => 1,
+            'default_days' => 7,
+            'subscribe_max' => 3,
+            'min_port' => 10000,
+            'max_port' => 65535,
+            'is_traffic_ban' => 1,
+            'traffic_ban_value' => 10,
+            'traffic_ban_time' => 60,
+            'is_clear_log' => 1,
+            'is_subscribe_ban' => 1,
+            'subscribe_ban_times' => 20,
+            'auto_release_port' => 1,
+            'register_ip_limit' => 5,
+            'detection_check_times' => 3,
+            'alipay_transport' => 'http',
+            'alipay_currency' => 'USD',
+            'user_invite_days' => 7,
+            'admin_invite_days' => 7,
         ];
 
         foreach ($presetDates as $key => $value) {
             Config::find($key)->update(['value' => $value]);
         }
+
+        // 生成最初的等级
+        Level::insert(['level' => 0, 'name' => 'Free']);
+        for ($i = 1; $i < 8; $i++) {
+            Level::insert(['level' => $i, 'name' => 'VIP-'.$i]);
+        }
+
+        // ss系列 加密方式
+        SsConfig::insert(['name' => 'none', 'type' => 1, 'is_default' => 1]);
+        SsConfig::insert(['name' => 'rc4-md5']);
+        SsConfig::insert(['name' => 'aes-128-cfb']);
+        SsConfig::insert(['name' => 'aes-192-cfb']);
+        SsConfig::insert(['name' => 'aes-256-cfb']);
+        SsConfig::insert(['name' => 'aes-128-ctr']);
+        SsConfig::insert(['name' => 'aes-192-ctr']);
+        SsConfig::insert(['name' => 'aes-256-ctr']);
+        SsConfig::insert(['name' => 'aes-128-gcm']);
+        SsConfig::insert(['name' => 'aes-192-gcm']);
+        SsConfig::insert(['name' => 'aes-256-gcm']);
+        SsConfig::insert(['name' => 'bf-cfb']);
+        SsConfig::insert(['name' => 'cast5-cfb']);
+        SsConfig::insert(['name' => 'des-cfb']);
+        SsConfig::insert(['name' => 'salsa20']);
+        SsConfig::insert(['name' => 'chacha20']);
+        SsConfig::insert(['name' => 'chacha20-ietf']);
+        SsConfig::insert(['name' => 'chacha20-ietf-poly1305']);
+
+        // ss系列 协议
+        SsConfig::insert(['name' => 'origin', 'type' => 2, 'is_default' => 1]);
+        SsConfig::insert(['name' => 'auth_sha1_v4', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_aes128_md5', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_aes128_sha1', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_a', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_b', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_c', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_d', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_e', 'type' => 2]);
+        SsConfig::insert(['name' => 'auth_chain_f', 'type' => 2]);
+
+        // ss系列 混淆
+        SsConfig::insert(['name' => 'plain', 'type' => 3, 'is_default' => 1]);
+        SsConfig::insert(['name' => 'http_simple', 'type' => 3]);
+        SsConfig::insert(['name' => 'http_post', 'type' => 3]);
+        SsConfig::insert(['name' => 'tls1.2_ticket_auth', 'type' => 3]);
+        SsConfig::insert(['name' => 'tls1.2_ticket_fastauth', 'type' => 3]);
 
         // 节点用标签
         $labelList = [
@@ -499,39 +489,32 @@ class PresetData extends Migration
 
         // 审核规则
         $ruleList = [
-            '360'     => '(.*.||)(^360|0360|1360|3600|360safe|^so|qhimg|qhmsg|^yunpan|qihoo|qhcdn|qhupdate|360totalsecurity|360shouji|qihucdn|360kan|secmp).(cn|com|net)',
-            '腾讯管家'    => '(.guanjia.qq.com|qqpcmgr|QQPCMGR)',
-            '金山毒霸'    => '(.*.||)(rising|kingsoft|duba|xindubawukong|jinshanduba).(com|net|org)',
-            '暗网相关'    => '(.*.||)(netvigator|torproject).(cn|com|net|org)',
-            '百度定位'    => '(api|ps|sv|offnavi|newvector|ulog.imap|newloc|tracknavi)(.map|).(baidu|n.shifen).com',
-            '法轮功类'    => '(.*.||)(dafahao|minghui|dongtaiwang|dajiyuan|falundata|shenyun|tuidang|epochweekly|epochtimes|ntdtv|falundafa|wujieliulan|zhengjian).(org|com|net)',
-            'BT扩展名'   => '(torrent|.torrent|peer_id=|info_hash|get_peers|find_node|BitTorrent|announce_peer|announce.php?passkey=)',
-            '邮件滥发'    => '((^.*@)(guerrillamail|guerrillamailblock|sharklasers|grr|pokemail|spam4|bccto|chacuo|027168).(info|biz|com|de|net|org|me|la)|Subject|HELO|SMTP)',
-            '迅雷下载'    => '(.?)(xunlei|sandai|Thunder|XLLiveUD)(.)',
-            '大陆应用'    => '(.*.||)(baidu|qq|163|189|10000|10010|10086|sohu|sogoucdn|sogou|uc|58|taobao|qpic|bilibili|hdslb|acgvideo|sina|douban|doubanio|xiaohongshu|sinaimg|weibo|xiaomi|youzanyun|meituan|dianping|biliapi|huawei|pinduoduo|cnzz).(org|com|net|cn)',
-            '大陆银行'    => '(.*.||)(icbc|ccb|boc|bankcomm|abchina|cmbchina|psbc|cebbank|cmbc|pingan|spdb|citicbank|cib|hxb|bankofbeijing|hsbank|tccb|4001961200|bosc|hkbchina|njcb|nbcb|lj-bank|bjrcb|jsbchina|gzcb|cqcbank|czbank|hzbank|srcb|cbhb|cqrcb|grcbank|qdccb|bocd|hrbcb|jlbank|bankofdl|qlbchina|dongguanbank|cscb|hebbank|drcbank|zzbank|bsb|xmccb|hljrcc|jxnxs|gsrcu|fjnx|sxnxs|gx966888|gx966888|zj96596|hnnxs|ahrcu|shanxinj|hainanbank|scrcu|gdrcu|hbxh|ynrcc|lnrcc|nmgnxs|hebnx|jlnls|js96008|hnnx|sdnxs).(org|com|net|cn)',
-            '台湾银行'    => '(.*.||)(firstbank|bot|cotabank|megabank|tcb-bank|landbank|hncb|bankchb|tbb|ktb|tcbbank|scsb|bop|sunnybank|kgibank|fubon|ctbcbank|cathaybk|eximbank|bok|ubot|feib|yuantabank|sinopac|esunbank|taishinbank|jihsunbank|entiebank|hwataibank|csc|skbank).(org|com|net|tw)',
+            '360' => '(.*.||)(^360|0360|1360|3600|360safe|^so|qhimg|qhmsg|^yunpan|qihoo|qhcdn|qhupdate|360totalsecurity|360shouji|qihucdn|360kan|secmp).(cn|com|net)',
+            '腾讯管家' => '(.guanjia.qq.com|qqpcmgr|QQPCMGR)',
+            '金山毒霸' => '(.*.||)(rising|kingsoft|duba|xindubawukong|jinshanduba).(com|net|org)',
+            '暗网相关' => '(.*.||)(netvigator|torproject).(cn|com|net|org)',
+            '百度定位' => '(api|ps|sv|offnavi|newvector|ulog.imap|newloc|tracknavi)(.map|).(baidu|n.shifen).com',
+            '法轮功类' => '(.*.||)(dafahao|minghui|dongtaiwang|dajiyuan|falundata|shenyun|tuidang|epochweekly|epochtimes|ntdtv|falundafa|wujieliulan|zhengjian).(org|com|net)',
+            'BT扩展名' => '(torrent|.torrent|peer_id=|info_hash|get_peers|find_node|BitTorrent|announce_peer|announce.php?passkey=)',
+            '邮件滥发' => '((^.*@)(guerrillamail|guerrillamailblock|sharklasers|grr|pokemail|spam4|bccto|chacuo|027168).(info|biz|com|de|net|org|me|la)|Subject|HELO|SMTP)',
+            '迅雷下载' => '(.?)(xunlei|sandai|Thunder|XLLiveUD)(.)',
+            '大陆应用' => '(.*.||)(baidu|qq|163|189|10000|10010|10086|sohu|sogoucdn|sogou|uc|58|taobao|qpic|bilibili|hdslb|acgvideo|sina|douban|doubanio|xiaohongshu|sinaimg|weibo|xiaomi|youzanyun|meituan|dianping|biliapi|huawei|pinduoduo|cnzz).(org|com|net|cn)',
+            '大陆银行' => '(.*.||)(icbc|ccb|boc|bankcomm|abchina|cmbchina|psbc|cebbank|cmbc|pingan|spdb|citicbank|cib|hxb|bankofbeijing|hsbank|tccb|4001961200|bosc|hkbchina|njcb|nbcb|lj-bank|bjrcb|jsbchina|gzcb|cqcbank|czbank|hzbank|srcb|cbhb|cqrcb|grcbank|qdccb|bocd|hrbcb|jlbank|bankofdl|qlbchina|dongguanbank|cscb|hebbank|drcbank|zzbank|bsb|xmccb|hljrcc|jxnxs|gsrcu|fjnx|sxnxs|gx966888|gx966888|zj96596|hnnxs|ahrcu|shanxinj|hainanbank|scrcu|gdrcu|hbxh|ynrcc|lnrcc|nmgnxs|hebnx|jlnls|js96008|hnnx|sdnxs).(org|com|net|cn)',
+            '台湾银行' => '(.*.||)(firstbank|bot|cotabank|megabank|tcb-bank|landbank|hncb|bankchb|tbb|ktb|tcbbank|scsb|bop|sunnybank|kgibank|fubon|ctbcbank|cathaybk|eximbank|bok|ubot|feib|yuantabank|sinopac|esunbank|taishinbank|jihsunbank|entiebank|hwataibank|csc|skbank).(org|com|net|tw)',
             '大陆第三方支付' => '(.*.||)(alipay|baifubao|yeepay|99bill|95516|51credit|cmpay|tenpay|lakala|jdpay).(org|com|net|cn)',
-            '台湾特供'    => '(.*.||)(visa|mycard|mastercard|gov|gash|beanfun|bank|line).(org|com|net|cn|tw|jp|kr)',
-            '涉政治类'    => '(.*.||)(shenzhoufilm|secretchina|renminbao|aboluowang|mhradio|guangming|zhengwunet|soundofhope|yuanming|zhuichaguoji|fgmtv|xinsheng|shenyunperformingarts|epochweekly|tuidang|shenyun|falundata|bannedbook|pincong|rfi|mingjingnews|boxun|rfa|scmp|ogate|voachinese).(org|com|net|rocks|fr)',
-            '流媒体'     => '(.*.||)(youtube|googlevideo|hulu|netflix|nflxvideo|akamai|nflximg|hbo|mtv|bbc|tvb).(org|club|com|net|tv)',
-            '测速类'     => '(.*.||)(fast|speedtest).(org|com|net|cn)',
-            '外汇交易类'   => '(.*.||)(metatrader4|metatrader5|mql5).(org|com|net)',
+            '台湾特供' => '(.*.||)(visa|mycard|mastercard|gov|gash|beanfun|bank|line).(org|com|net|cn|tw|jp|kr)',
+            '涉政治类' => '(.*.||)(shenzhoufilm|secretchina|renminbao|aboluowang|mhradio|guangming|zhengwunet|soundofhope|yuanming|zhuichaguoji|fgmtv|xinsheng|shenyunperformingarts|epochweekly|tuidang|shenyun|falundata|bannedbook|pincong|rfi|mingjingnews|boxun|rfa|scmp|ogate|voachinese).(org|com|net|rocks|fr)',
+            '流媒体' => '(.*.||)(youtube|googlevideo|hulu|netflix|nflxvideo|akamai|nflximg|hbo|mtv|bbc|tvb).(org|club|com|net|tv)',
+            '测速类' => '(.*.||)(fast|speedtest).(org|com|net|cn)',
+            '外汇交易类' => '(.*.||)(metatrader4|metatrader5|mql5).(org|com|net)',
         ];
 
         foreach ($ruleList as $name => $pattern) {
             Rule::insert(['type' => 1, 'name' => $name, 'pattern' => $pattern]);
         }
-    }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        echo 'plz run php artisan migrate:fresh'.PHP_EOL;
-        echo '请运行 php artisan migrate:fresh'.PHP_EOL;
+        // 生成初始管理账号
+        $user = factory(User::class)->create(['username' => '管理员', 'email' => 'test@test.com', 'password' => '123456']);
+        $user->assignRole('Super Admin');
     }
 }

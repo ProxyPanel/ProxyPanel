@@ -80,11 +80,7 @@ class AutoJob extends Command
         VerifyCode::recentUnused()->update(['status' => 2]);
 
         // 优惠券到期 / 用尽的 自动置无效
-        Coupon::whereStatus(0)
-            ->where('end_time', '<=', time())
-            ->orWhereIn('type', [1, 2])
-            ->whereUsableTimes(0)
-            ->update(['status' => 2]);
+        Coupon::withTrashed()->whereStatus(0)->where('end_time', '<=', time())->orWhereIn('type', [1, 2])->whereUsableTimes(0)->update(['status' => 2]);
 
         // 邀请码到期自动置无效
         Invite::whereStatus(0)->where('dateline', '<=', date('Y-m-d H:i:s'))->update(['status' => 2]);
