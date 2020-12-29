@@ -150,14 +150,6 @@
       @can('admin.rule.store')
       // 添加规则
       function addRule() {
-        $.post("{{route('admin.rule.store')}}", {}, function(ret) {
-          $('#add').modal('hide');
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-          } else {
-            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-          }
-        });
         $.ajax({
           method: 'POST',
           url: "{{route('admin.rule.store')}}",

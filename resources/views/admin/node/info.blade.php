@@ -107,7 +107,6 @@
                                         <label for="country_code" class="col-md-3 col-form-label"> 国家/地区 </label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                 class="col-md-5 form-control" name="country_code" id="country_code">
-                                            <option value="un" selected hidden>请选择</option>
                                             @foreach($countries as $country)
                                                 <option value="{{$country->code}}">{{$country->code}} - {{$country->name}}</option>
                                             @endforeach

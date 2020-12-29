@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\PushNotification;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
 use App\Models\Label;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Response;
 
 class SystemController extends Controller
@@ -20,7 +20,7 @@ class SystemController extends Controller
     }
 
     // 设置系统扩展信息，例如客服、统计代码
-    public function setExtend(Request $request): RedirectResponse
+    public function setExtend(SystemRequest $request): RedirectResponse
     {
         if ($request->hasFile('website_home_logo')) {
             $validator = validator()->make($request->all(), ['website_home_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
@@ -53,29 +53,18 @@ class SystemController extends Controller
     }
 
     // 设置某个配置项
-    public function setConfig(Request $request): JsonResponse
+    public function setConfig(SystemRequest $request): JsonResponse
     {
         $name = $request->input('name');
         $value = $request->input('value');
 
-        if (! $name) {
-            return Response::json(['status' => 'fail', 'message' => '设置失败：请求参数异常']);
-        }
-
-        // 屏蔽异常配置
-        if (! in_array($name, Config::pluck('name')->toArray(), true)) {
-            return Response::json(['status' => 'fail', 'message' => '设置失败：配置不存在']);
-        }
-
         // 如果开启用户邮件重置密码，则先设置网站名称和网址
         if ($value !== '0' && in_array($name, ['is_reset_password', 'is_activate_account', 'expire_warning', 'traffic_warning'], true)) {
-            $config = Config::find('website_name');
-            if (! $config->value) {
+            if (! Config::find('website_url')->value) {
                 return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站名称】']);
             }
 
-            $config = Config::find('website_url');
-            if (! $config->value) {
+            if (! Config::find('website_url')->value) {
                 return Response::json(['status' => 'fail', 'message' => '设置失败：启用该配置需要先设置【网站地址】']);
             }
         }
@@ -146,9 +135,11 @@ class SystemController extends Controller
         }
 
         // 更新配置
-        Config::find($name)->update(['value' => $value]);
+        if (Config::findOrFail($name)->update(['value' => $value])) {
+            return Response::json(['status' => 'success', 'message' => '修改成功']);
+        }
 
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
+        return Response::json(['status' => 'fail', 'message' => '修改失败']);
     }
 
     // 推送通知测试

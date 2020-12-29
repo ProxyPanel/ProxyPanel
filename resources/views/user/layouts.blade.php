@@ -175,7 +175,7 @@
     <footer class="site-footer">
         <div class="site-footer-legal">
             Copyright ©️2017 - 2020 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}}</a>
-            🚀 版本: {{config('version.number')}}
+            🚀 版本: <code> {{config('version.number')}} </code>
         </div>
         <div class="site-footer-right">
             由 <a href="{{sysConfig('website_url')}}" target="_blank">{{sysConfig('website_name')}}</a> 🈺运营

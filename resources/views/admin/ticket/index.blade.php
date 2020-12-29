@@ -177,18 +177,36 @@
           confirmButtonText: '{{trans('home.ticket_confirm')}}',
         }).then((result) => {
           if (result.value) {
-            $.post('{{route('admin.ticket.store')}}', {
-              _token: '{{csrf_token()}}',
-              id: id,
-              email: email,
-              title: title,
-              content: content,
-            }, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
+            $.ajax({
+              method: 'POST',
+              url: "{{route('admin.ticket.store')}}",
+              data: {
+                _token: '{{csrf_token()}}',
+                id: id,
+                email: email,
+                title: title,
+                content: content,
+              },
+              dataType: 'json',
+              success: function(ret) {
+                $('#add_ticket_modal').modal('hide');
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
+              error: function(data) {
+                $('#add_ticket_modal').modal('hide');
+                let str = '';
+                const errors = data.responseJSON;
+                if ($.isEmptyObject(errors) === false) {
+                  $.each(errors.errors, function(index, value) {
+                    str += '<li>' + value + '</li>';
+                  });
+                  swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                }
+              },
             });
           }
         });

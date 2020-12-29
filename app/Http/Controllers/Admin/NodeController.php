@@ -14,6 +14,7 @@ use App\Models\NodeCertificate;
 use App\Models\NodePing;
 use App\Models\RuleGroup;
 use App\Services\NodeService;
+use Arr;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -68,7 +69,9 @@ class NodeController extends Controller
     public function store(NodeRequest $request): JsonResponse
     {
         try {
-            $node = Node::create($request->except('_token', 'labels'));
+            $array = $request->validated();
+            Arr::forget($array, ['labels']);
+            $node = Node::create($array);
 
             if ($node) {
                 // 生成节点标签
@@ -104,10 +107,12 @@ class NodeController extends Controller
     public function update(NodeRequest $request, Node $node): JsonResponse
     {
         try {
-            // 更新节点标签
-            $node->labels()->sync($request->input('labels'));
+            $array = $request->validated();
+            Arr::forget($array, ['labels']);
+            if ($node->update($array)) {
+                // 更新节点标签
+                $node->labels()->sync($request->input('labels'));
 
-            if ($node->update($request->except('_token', 'labels'))) {
                 return Response::json(['status' => 'success', 'message' => '编辑成功']);
             }
         } catch (Exception $e) {
@@ -182,9 +187,7 @@ class NodeController extends Controller
     // Ping节点延迟
     public function pingNode(Node $node): JsonResponse
     {
-        $result = NetworkDetection::ping($node->is_ddns ? $node->server : $node->ip);
-
-        if ($result) {
+        if ($result = NetworkDetection::ping($node->is_ddns ? $node->server : $node->ip)) {
             return Response::json([
                 'status' => 'success',
                 'message' => [

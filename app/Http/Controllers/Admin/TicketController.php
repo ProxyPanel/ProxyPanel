@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\Helpers;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\TicketRequest;
 use App\Mail\closeTicket;
 use App\Mail\replyTicket;
 use App\Models\Ticket;
@@ -37,34 +38,16 @@ class TicketController extends Controller
     }
 
     // 创建工单
-    public function store(Request $request)
+    public function store(TicketRequest $request)
     {
-        $id = $request->input('id');
-        $email = $request->input('email');
-        $title = $request->input('title');
-        $content = $request->input('content');
-
-        $user = User::find($id) ?: User::whereEmail($email)->first();
-
-        if (! $user) {
-            return Response::json(['status' => 'fail', 'message' => '用户不存在']);
-        }
+        $data = $request->validated();
+        $user = User::find($data['id']) ?: User::whereEmail($data['email'])->first();
 
         if ($user === Auth::user()) {
             return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);
         }
 
-        if (empty($title) || empty($content)) {
-            return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
-        }
-
-        $obj = new Ticket();
-        $obj->user_id = $user->id;
-        $obj->admin_id = Auth::id();
-        $obj->title = $title;
-        $obj->content = $content;
-
-        if ($obj->save()) {
+        if (Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => $data['content']])) {
             return Response::json(['status' => 'success', 'message' => '工单创建成功']);
         }
 
