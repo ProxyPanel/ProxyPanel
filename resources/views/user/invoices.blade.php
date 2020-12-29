@@ -139,7 +139,7 @@
           if (result.value) {
             $.ajax({
               method: 'PUT',
-              url: '{{route('closeOrder'), ''}}/' + id,
+              url: '{{route('closeOrder', '')}}/' + id,
               async: false,
               data: {_token: '{{csrf_token()}}'},
               dataType: 'json',
