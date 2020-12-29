@@ -89,7 +89,7 @@ class AuthController extends Controller
 
         // 根据权限跳转
         if (Auth::check()) {
-            if (Auth::getUser()->hasPermissionTo('admin.index')) {
+            if (Auth::getUser()->hasPermissionTo('admin.index') || Auth::getUser()->hasRole('Super Admin')) {
                 return Redirect::route('admin.index');
             }
 

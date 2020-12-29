@@ -1,5 +1,6 @@
 @extends('_layout')
 @section('title', '维护 | Maintenance')
+@section('body_class','page-login-v3 layout-full')
 @section('layout_content')
    <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
     <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
