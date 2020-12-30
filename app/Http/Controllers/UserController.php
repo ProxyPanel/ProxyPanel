@@ -331,9 +331,7 @@ class UserController extends Controller
         $ticket = Ticket::uid()->with('user')->whereId($id)->firstOrFail();
 
         if ($request->isMethod('POST')) {
-            $content = clean($request->input('content'));
-            $content = str_replace(['atob', 'eval'], '', $content);
-            $content = substr($content, 0, 300);
+            $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
             if (empty($content)) {
                 return Response::json(['status' => 'fail', 'message' => '回复内容不能为空']);
@@ -567,7 +565,6 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => '身份切换失败']);
     }
 
-    // Todo 卡券余额合并至CouponService
     public function charge(Request $request): ?JsonResponse
     {
         $validator = Validator::make($request->all(), [

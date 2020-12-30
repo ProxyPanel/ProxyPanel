@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
+use Arr;
 use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -137,11 +138,13 @@ class UserController extends Controller
     public function store(UserStoreRequest $request): JsonResponse
     {
         try {
-            $data = $request->except('_token', 'uuid', 'roles');
+            $data = $request->validated();
+            Arr::forget($data, 'roles');
             $data['password'] = $data['password'] ?? Str::random();
             $data['port'] = $data['port'] ?? Helpers::getPort();
             $data['passwd'] = $data['passwd'] ?? Str::random();
-            $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
+            $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+            Arr::forget($data, 'uuid');
             $data['transfer_enable'] *= GB;
             $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
@@ -149,9 +152,9 @@ class UserController extends Controller
             $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
             $user = User::create($data);
 
-            $roles = $request->input('roles') ?? [];
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))
-                    || Auth::getUser()->hasRole('Super Admin'))) {
+            $roles = $request->input('roles');
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
+                        && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->assignRole($roles);
             }
 
@@ -191,19 +194,21 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user)
     {
         try {
-            $data = $request->except('_token', 'password', 'uuid', 'password', 'roles');
+            $data = $request->validated();
+            Arr::forget($data, 'roles');
             $data['passwd'] = $request->input('passwd') ?? Str::random();
-            $data['vmess_id'] = $request->input('uuid') ?? Str::uuid();
+            $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+            Arr::forget($data, 'uuid');
             $data['transfer_enable'] *= GB;
             $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
             $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
             // 只有超级管理员才能赋予超级管理员
-            $roles = $request->input('roles') ?? [];
+            $roles = $request->input('roles');
 
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin')) ||
-                    Auth::getUser()->hasRole('Super Admin'))) {
+            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
+                        && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->syncRoles($roles);
             }
 
@@ -260,8 +265,6 @@ class UserController extends Controller
     // 批量生成账号
     public function batchAddUsers()
     {
-        $preset = ['transfer_enable' => 1024 * GB, 'expired_at' => date('Y-m-d', strtotime('+365 days'))];
-
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
                 $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);

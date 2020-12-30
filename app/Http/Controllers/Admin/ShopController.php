@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ShopStoreRequest;
 use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Models\Goods;
 use App\Models\Level;
+use Arr;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -48,10 +49,13 @@ class ShopController extends Controller
     public function store(ShopStoreRequest $request): RedirectResponse
     {
         try {
-            $data = $request->except('_token', 'logo', 'traffic', 'traffic_unit');
-            $data['traffic'] = $request->input('traffic') * $request->input('traffic_unit') ?? 1;
-            $data['is_hot'] = $request->input('is_hot') ? 1 : 0;
-            $data['status'] = $request->input('status') ? 1 : 0;
+            $data = $request->validated();
+            if (array_key_exists('traffic_unit', $data)) {
+                $data['traffic'] *= $data['traffic_unit'];
+                Arr::forget($data, 'traffic_unit');
+            }
+            $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
+            $data['status'] = array_key_exists('status', $data) ? 1 : 0;
 
             // 商品LOGO
             if ($request->hasFile('logo')) {
@@ -100,7 +104,8 @@ class ShopController extends Controller
     // 编辑商品
     public function update(ShopUpdateRequest $request, Goods $good)
     {
-        $data = $request->except('_token', '_method', 'logo');
+        $data = $request->validated();
+
         // 商品LOGO
         if ($request->hasFile('logo')) {
             $path = $this->fileUpload($request->file('logo'));
@@ -112,9 +117,8 @@ class ShopController extends Controller
         }
 
         try {
-            $data['is_hot'] = $request->input('is_hot') ? 1 : 0;
-            $data['status'] = $request->input('status') ? 1 : 0;
-
+            $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
+            $data['status'] = array_key_exists('status', $data) ? 1 : 0;
             if ($good->update($data)) {
                 return Redirect::back()->with('successMsg', '编辑成功');
             }
