@@ -6,6 +6,7 @@ use Arr;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -23,6 +24,9 @@ class reloadNode implements ShouldQueue
 
     public function __construct($nodes)
     {
+        if (! $nodes instanceof Collection) {
+            $nodes = collect([$nodes]);
+        }
         $this->nodes = $nodes;
     }
 

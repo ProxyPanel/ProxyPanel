@@ -83,8 +83,11 @@ class Node extends Model
 
     public function users()
     {
-        return User::activeUser()->whereIn('user_group_id', $this->userGroups->pluck('id')->toArray())->orwhereNull('user_group_id')->where('level', '>=',
-            $this->attributes['level'])->get();
+        return User::activeUser()
+            ->where('level', '>=', $this->attributes['level'])
+            ->whereNull('user_group_id')
+            ->orwhereIn('user_group_id', $this->userGroups->pluck('id')->toArray())
+            ->get();
     }
 
     public function config($user)

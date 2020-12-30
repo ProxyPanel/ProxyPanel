@@ -53,7 +53,7 @@ class V1Controller extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors()->toJson(), 400);
+            return response()->json($validator->errors()->all(), 400);
         }
 
         $user = User::create(array_merge(
@@ -86,7 +86,7 @@ class V1Controller extends Controller
         $user = auth()->user();
         $nodes = $user->nodes()->get();
         if (isset($id)) {
-            $node = $nodes->where('id', $id)->first();
+            $node = $nodes->find($id);
 
             if (empty($node)) {
                 return response()->json([], 204);
