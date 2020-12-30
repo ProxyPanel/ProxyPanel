@@ -26,9 +26,24 @@ class Node extends Model
         return $this->hasMany(NodeHeartBeat::class);
     }
 
+    public function onlineIps(): HasMany
+    {
+        return $this->hasMany(NodeOnlineIp::class);
+    }
+
     public function onlineLogs(): HasMany
     {
         return $this->hasMany(NodeOnlineLog::class);
+    }
+
+    public function userDataFlowLogs(): HasMany
+    {
+        return $this->hasMany(UserDataFlowLog::class);
+    }
+
+    public function ruleLogs(): HasMany
+    {
+        return $this->hasMany(RuleLog::class);
     }
 
     public function pingLogs(): HasMany

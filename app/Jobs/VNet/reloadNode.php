@@ -42,10 +42,10 @@ class reloadNode implements ShouldQueue
                 'push_port' => $node->push_port,
                 'single' => $node->single,
                 'secret' => $node->auth->secret,
-                'is_udp' => $node->is_udp,
                 'speed_limit' => $node->getRawOriginal('speed_limit'),
+                'is_udp' => $node->is_udp,
                 'client_limit' => $node->client_limit,
-                'redirect_url' => (string) sysConfig('redirect_url'),
+                // 'redirect_url' => (string) sysConfig('redirect_url'),
             ]);
 
             if (! $ret) {

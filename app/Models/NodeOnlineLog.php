@@ -11,4 +11,5 @@ class NodeOnlineLog extends Model
 {
     public $timestamps = false;
     protected $table = 'node_online_log';
+    protected $guarded = [];
 }

@@ -11,6 +11,7 @@ class NodeHeartbeat extends Model
 {
     public $timestamps = false;
     protected $table = 'node_heartbeat';
+    protected $guarded = [];
 
     public function scopeRecently($query)
     {

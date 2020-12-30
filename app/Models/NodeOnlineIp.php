@@ -12,6 +12,7 @@ class NodeOnlineIp extends Model
 {
     public $timestamps = false;
     protected $table = 'node_online_ip';
+    protected $guarded = [];
 
     public function node(): BelongsTo
     {

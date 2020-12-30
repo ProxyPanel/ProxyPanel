@@ -78,23 +78,23 @@ class Handler extends ExceptionHandler
                 case $exception instanceof NotFoundHttpException: // 捕获访问异常
                     Log::info('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());
 
-                    if ($request->ajax()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')]);
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.MissingPage')], 404);
                     }
 
                     return Response::view('auth.error', ['message' => trans('error.MissingPage')], 404);
                 case $exception instanceof AuthenticationException:  // 捕获身份校验异常
-                    if ($request->ajax()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')]);
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.Unauthorized')], 401);
                     }
 
                     return Response::view('auth.error', ['message' => trans('error.Unauthorized')], 401);
                 case $exception instanceof TokenMismatchException: // 捕获CSRF异常
-                    if ($request->ajax()) {
+                    if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
                             'status' => 'fail',
                             'message' => trans('error.RefreshPage').'<a href="'.route('login').'" target="_blank">'.trans('error.Refresh').'</a>',
-                        ]);
+                        ], 419);
                     }
 
                     return Response::view(
@@ -103,17 +103,17 @@ class Handler extends ExceptionHandler
                         419
                     );
                 case $exception instanceof ReflectionException:
-                    if ($request->ajax()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')]);
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('error.SystemError')], 500);
                     }
 
                     return Response::view('auth.error', ['message' => trans('error.SystemError')], 500);
                 case $exception instanceof ErrorException: // 捕获系统错误异常
-                    if ($request->ajax()) {
+                    if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
                             'status' => 'fail',
                             'message' => trans('error.SystemError').', '.trans('error.Visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>',
-                        ]);
+                        ], 500);
                     }
 
                     return Response::view(
@@ -122,20 +122,14 @@ class Handler extends ExceptionHandler
                         500
                     );
                 case $exception instanceof ConnectionException:
-                    if ($request->ajax()) {
-                        return Response::json([
-                            'status' => 'fail',
-                            'message' => $exception->getMessage(),
-                        ]);
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()], 408);
                     }
 
                     return Response::view('auth.error', ['message' => $exception->getMessage()], 408);
                 default:
-                    if ($request->ajax()) {
-                        return Response::json([
-                            'status' => 'fail',
-                            'message' => $exception->getMessage(),
-                        ]);
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()]);
                     }
 
                     return Response::view('auth.error', ['message' => $exception->getMessage()]);

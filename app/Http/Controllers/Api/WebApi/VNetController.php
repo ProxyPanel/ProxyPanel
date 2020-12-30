@@ -45,10 +45,6 @@ class VNetController extends BaseController
             ];
         }
 
-        if (isset($data)) {
-            return $this->returnData('获取用户列表成功', 'success', 200, $data, ['updateTime' => time()]);
-        }
-
-        return $this->returnData('获取用户列表失败');
+        return $this->returnData('获取用户列表成功', 'success', 200, $data ?? [], ['updateTime' => time()]);
     }
 }

@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Node;
-use App\Models\NodeAuth;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Response;
@@ -20,7 +18,7 @@ class WebApi
      */
     public function handle($request, Closure $next)
     {
-        $id = $request->id;
+        $node = $request->node;
         $key = $request->header('key');
         $time = $request->header('timestamp');
 
@@ -28,17 +26,8 @@ class WebApi
             return $this->returnData('Your key is null!');
         }
 
-        if (! isset($id)) {// 未提供 node
-            return $this->returnData('Your Node Id is null!');
-        }
-
-        $node = Node::find($id);
-        if (! $node) {// node不存在
-            return $this->returnData('Unknown Node!');
-        }
-
-        $nodeAuth = NodeAuth::whereNodeId($id)->first();
-        if (! $nodeAuth || $key !== $nodeAuth->key) {// key不存在/不匹配
+        $nodeAuth = $node->auth ?? null;
+        if (! isset($nodeAuth) || $key !== $nodeAuth->key) {// key不存在/不匹配
             return $this->returnData('Token is invalid!');
         }
 
@@ -50,7 +39,7 @@ class WebApi
     }
 
     // 返回数据
-    public function returnData($message): JsonResponse
+    public function returnData(string $message): JsonResponse
     {
         return Response::json(['status' => 'fail', 'code' => 404, 'message' => $message]);
     }

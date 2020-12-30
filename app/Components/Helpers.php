@@ -252,20 +252,4 @@ class Helpers
 
         return $log->save();
     }
-
-    public static function abortIfNotModified($data): string
-    {
-        $req = request();
-        // Only for "GET" method
-        if (! $req->isMethod('GET')) {
-            return '';
-        }
-
-        $etag = sha1(json_encode($data));
-        if ($etag == $req->header('IF-NONE-MATCH')) {
-            abort(304);
-        }
-
-        return $etag;
-    }
 }
