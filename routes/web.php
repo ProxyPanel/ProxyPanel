@@ -13,9 +13,11 @@ Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.chec
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
-    Route::match(['get', 'post'], 'login', 'AuthController@login')->middleware('isSecurity')->name('login'); // 登录
+    Route::get('login', 'AuthController@showLoginForm')->middleware('isSecurity')->name('login'); // 登录
+    Route::post('login', 'AuthController@login')->middleware('isSecurity'); // 登录
     Route::get('logout', 'AuthController@logout')->name('logout'); // 退出
-    Route::match(['get', 'post'], 'register', 'AuthController@register')->name('register'); // 注册
+    Route::get('register', 'AuthController@showRegistrationForm')->name('register'); // 注册
+    Route::post('register', 'AuthController@register'); // 注册
     Route::match(['get', 'post'], 'reset', 'AuthController@resetPassword')->name('resetPasswd'); // 重设密码
     Route::match(['get', 'post'], 'reset/{token}', 'AuthController@reset')->name('resettingPasswd'); // 重设密码
     Route::match(['get', 'post'], 'activeUser', 'AuthController@activeUser')->name('active'); // 激活账号

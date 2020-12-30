@@ -54,8 +54,8 @@
                 <label class="floating-label" for="password">{{trans('auth.password')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="password" class="form-control" autocomplete="off" name="confirmPassword" required/>
-                <label class="floating-label" for="confirmPassword">{{trans('auth.confirm_password')}}</label>
+                <input type="password" class="form-control" autocomplete="off" name="password_confirmation" required/>
+                <label class="floating-label" for="password_confirmation">{{trans('auth.confirm_password')}}</label>
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
