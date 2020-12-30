@@ -53,6 +53,20 @@
                             </div>
                         </div>
                     </div>
+                    
+                     <div class="feature">
+                        <div class="feature__left">
+                            <div class="text-box">
+                                <h2 class="feature__title">{{ __('static.dsktp_feature_title_4') }}</h2>
+                                <p class="feature__text">{{ __('static.dsktp_feature_text_4') }}</p>
+                                <a href="#" class="cs-btn cs-btn--primary">{{ __('static.dsktp_feature_btn') }}</a>
+                            </div>
+                        </div>
+                        <div class="feature__right">
+                            <img src="{{ asset('assets/static/desktop/images/index/feature-img-04.jpg') }}" alt="feature desc">
+                        </div>
+                    </div>
+
                 </div>
             </section>
 

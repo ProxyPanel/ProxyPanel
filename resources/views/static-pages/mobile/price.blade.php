@@ -54,59 +54,21 @@
             <form class="form--mobilePayment" action="your url here to process mobile payment" method="POST">
                 @csrf
                 <div class="prices-items">
+                    @foreach($packageList as $package)
                     @if (Auth::check())
                     <div class="prices-items__bar js-checkout" data-plan-id="1">
-                        <div class="bar-top"><span>1 Day</span> <span>$0.99/Day</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
+                        <div class="bar-top"><span>{{$package->name}}</span> <span>{{$package->days}} Days</span> <span>Price $ {{$package->price}}</span></div>
+                        <div class="bar-bottom"><span>Device num:{{$package->usage}} and unlimited traffic</span></div>
                     </div>
                     @else
                     <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="1">
-                        <div class="bar-top"><span>1 Day</span> <span>$0.99/Day</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
+                      
+                       <div class="bar-top"><span>{{$package->name}}</span> <span>{{$package->days}} Days</span> <span>Price $ {{$package->price}}</span></div>
+                        <div class="bar-bottom">Device Num:{{$package->usage}} / Unlimited traffic</div>
+                    
                     </a>
                     @endif
-
-                    @if (Auth::check())
-                    <div class="prices-items__bar js-checkout" data-plan-id="2">
-                        <div class="bar-top"><span>7 Days</span> <span>$0.99/Week</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </div>
-                    @else
-                    <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="2">
-                        <div class="bar-top"><span>7 Days</span> <span>$0.99/Week</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </a>
-                    @endif
-
-                    @if (Auth::check())
-                    <div class="prices-items__bar prices-items__bar--hot js-checkout" data-plan-id="3">
-                        <div class="fire-ball"></div>
-                        <div class="bar-badge">save50%</div>
-                        <div class="bar-top"><span>1 Year</span> <span>$0.99/Month</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </div>
-                    @else
-                    <a href="{{ url('/account-n') }}" class="prices-items__bar prices-items__bar--hot" data-plan-id="3">
-                        <div class="fire-ball"></div>
-                        <div class="bar-badge">save50%</div>
-                        <div class="bar-top"><span>1 Year</span> <span>$0.99/Month</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </a>
-                    @endif
-
-                    @if (Auth::check())
-                    <div class="prices-items__bar js-checkout" data-plan-id="4">
-                        <div class="bar-badge">save50%</div>
-                        <div class="bar-top"><span>1 Month</span> <span>$0.99/Year</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </div>
-                    @else
-                    <a href="{{ url('/account-n') }}" class="prices-items__bar" data-plan-id="4">
-                        <div class="bar-badge">save50%</div>
-                        <div class="bar-top"><span>1 Month</span> <span>$0.99/Year</span></div>
-                        <div class="bar-bottom">$0.99 Total</div>
-                    </a>
-                    @endif
+                    @endforeach
                     <div class="prices-items__type">
                         <div class="custom-control custom-radio">
                             <input type="radio" class="custom-control-input" id="alipayCheck" name="paymentType" checked value="ali">

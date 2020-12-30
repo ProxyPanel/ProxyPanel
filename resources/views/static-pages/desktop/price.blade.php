@@ -63,7 +63,7 @@
                                       @if($package->is_hot)
                                         <a href="#" class="price-item price-item--hot selected">
                                             <div class="fire-ball">Hot</div>
-                                            <h2 class="price-item__time" data-package-time= {{$package->days}} >{{$package->name}}</h2>
+                                            <h2 class="price-item__time" data-package-name= {{$package->name}} >{{$package->name}}</h2>
                                         <p class="price-item__value" data-package-price= {{$package->price}}><span>$</span>{{$package->price}}</p>
                                         <p class="price-item__id" data-package-sku= {{$package->id}}   style="display: none" ><span>$</span>{{$package->id}}</p>
                                         <div class="price-item__duration">{{$package->name}}</div>
@@ -71,11 +71,13 @@
                                       </a>
                                       @else
                                         <a href="#" class="price-item">
-                                        <h2 class="price-item__time" data-package-time={{$package->name}} >{{$package->name}}</h2>
+                                        <h2 class="price-item__time" data-package-name={{$package->name}} >{{$package->name}}</h2>
                                         <p class="price-item__value" data-package-price= {{$package->price}} >${{$package->price}}</p>
                                         <p class="price-item__id" data-package-id= {{$package->days}}   >{{$package->days}}Days</p>
-                                        <div class="price-item__duration">{{$package->name}}</div>
-                                        <div class="price-item__subtext">每30天重置流量</div>
+                                        <p class="price-item__id" data-package-id= {{$package->days}}   >无限流量，不限速</p>
+                                        <div class="price-item__duration">设备数：{{$package->usage}}，速度：高清</div>
+                                       
+                                        <div class="price-item__subtext">流量每30天重置</div>
                                       </a>
                                       @endif
 
@@ -232,14 +234,14 @@
                                 </div> -->
 
                                 <div class="payment-info">
-                                    <h3 class="payment-info__title">Enjoy exclusive benefits of premium:</h3>
+                                    <h3 class="payment-info__title">{{ __('static.dsktp_prices_card_text_premium') }} :</h3>
                                     <ul>
-                                        <li><i class="fas fa-check"></i> No ADs</li>
-                                        <li><i class="fas fa-check"></i> 6x faster</li>
-                                        <li><i class="fas fa-check"></i >Unlimited usage</li>
-                                        <li><i class="fas fa-check"></i> Support 4 devices</li>
-                                        <li><i class="fas fa-check"></i> 24/7 tech support</li>
-                                        <li><i class="fas fa-check"></i> Zero Traffic Logs</li>
+                                        <li><i class="fas fa-check"></i> {{ __('static.dsktp_prices_card_text_premium_5') }}</li>
+                                        <li><i class="fas fa-check"></i> {{ __('static.dsktp_prices_card_text_premium_1') }}</li>
+                                        <li><i class="fas fa-check"></i >{{ __('static.dsktp_prices_card_text_premium_2') }}</li>
+                                        <li><i class="fas fa-check"></i> {{ __('static.dsktp_prices_card_text_premium_3') }}</li>
+                                        <li><i class="fas fa-check"></i> {{ __('static.dsktp_prices_card_text_premium_4') }}</li>
+                                        <li><i class="fas fa-check"></i> {{ __('static.dsktp_prices_card_text_premium_6') }}</li>
                                     </ul>
                                 </div>
 

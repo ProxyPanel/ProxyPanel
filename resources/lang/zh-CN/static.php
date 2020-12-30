@@ -18,15 +18,20 @@ return [
     'about_us' => '关于我们',
     
     /* desktop home */
-    'dsktp_feature_title_1' => '解锁各类型网站',
-    'dsktp_feature_text_1' => '77VPN helps you to unblock websites in your network from around the globe. Provides unrestricted access to the web by allowing you to unblock websites. Get access to your favorite websites and content like Facebook, Twitter, and Pinterest that be blocked in your country from anywhere and anytime.',
+    'dsktp_feature_title_1' => '解锁各类网站，获取不同国家内容',
+    'dsktp_feature_text_1' => '77VPN帮助用户访问全球各类型网站和应用，并且解锁各类型的网站，可以解锁观看 Facebook、 Twitter、 Pinterest、Youtube、Google 、Netflix、Hulu、Amazon Video 、TVB等等信息及视频内容，并且可以切换全球不同地区ip，观看不同地区推送内容。 ',
+    
     'dsktp_feature_btn' => '获取 77VPN',
 
-    'dsktp_feature_title_2' => '保护您的隐私',
-    'dsktp_feature_text_2' => '77VPN helps you to unblock websites in your network from around the globe. Provides unrestricted access to the web by allowing you to unblock websites. Get access to your favorite websites and content like Facebook, Twitter, and Pinterest that be blocked in your country from anywhere and anytime.',
+    'dsktp_feature_title_2' => '保护您的隐私，永不掉线',
+    'dsktp_feature_text_2' => '77VPN 承诺零日志存储，保证您的隐私。 隐藏您的真实ip地址，使用全球最先进加密算法，建立多层加密通信隧道，防止任何第三方获取到您的访问信息。77VPN通过高质量的多线路支持，自动选择最优线路，保证您的设备永不掉线。为商务用户提供更加稳定的网络服务',
 
-    'dsktp_feature_title_3' => '获取不同国家的内容服务',
+    'dsktp_feature_title_3' => '不限制流量不限速，支持多种设备',
     'dsktp_feature_text_3' => '77VPN helps you to unblock websites in your network from around the globe. Provides unrestricted access to the web by allowing you to unblock websites. Get access to your favorite websites and content like Facebook, Twitter, and Pinterest that be blocked in your country from anywhere and anytime.',
+    
+    
+     'dsktp_feature_title_4' => '提供商业内网专线，高质量服务金融外贸业务',
+    'dsktp_feature_text_4' => '77VPN helps you to unblock websites in your network from around the globe. Provides unrestricted access to the web by allowing you to unblock websites. Get access to your favorite websites and content like Facebook, Twitter, and Pinterest that be blocked in your country from anywhere and anytime.',
 
     'dsktp_section_about_title' => '用户对 77VPN 的评价',
     'dsktp_section_plan_title' => '选择一个适合您的套餐',
@@ -43,29 +48,34 @@ return [
 
 
     /* desktop features */
-    'dsktp_feature_hero_title' => '77VPN <span>FEATURES </span>',
-    'dsktp_feature_hero_text' => 'Experience the Internet as it should be: Private, Safe and Fair.',
-    'dsktp_feature_hero_btn' => 'Start Your Free Trial',
+    'dsktp_feature_hero_title' => '77VPN <span>提供专业高速稳定的网络服务</span>',
+    'dsktp_feature_hero_text' => '77VPN采用业界最先进的连接算法和协议，保证用户通信的安全性，不会被任何的第三方窃取。并且通过多次的网络中转，保证您的的网络访问完全匿名。',
+    'dsktp_feature_hero_btn' => '免 费 下 载 试 用',
 
-    'dsktp_feature_section_title_1' => 'Protect Your Online Privacy',
+    'dsktp_feature_section_title_1' => '网络通信金融级加密及隐私保护',
     'dsktp_feature_section_text_1' => 'All your internet traffic is fully protected by masking your true IP address. Therefore to keep your browsing history to yourself, protect you from prying eyes at home, work or in public places.',
     'dsktp_feature_section_btn_1' => '获取 77VPN',
 
-    'dsktp_feature_section_title_2' => 'Surf the Internet Securely',
+    'dsktp_feature_section_title_2' => '不限制流量，不限制速度',
     'dsktp_feature_section_text_2' => '77VPN uses the best-in-class encryption technology AES-256 and OpenVPN protocols to encrypt your traffic between VPN servers and your devices. What\'s more, with a kill switch, RitaVPN encrpyts your traffic all the time even if your VPN connection drops.',
     'dsktp_feature_section_btn_2' => '获取 77VPN',
 
-    'dsktp_feature_section_title_3' => 'Access to the Blocked Contents',
+    'dsktp_feature_section_title_3' => '可获得全球不同地区视频和网络信息服务平台解锁服务',
     'dsktp_feature_section_text_3' => 'With 77VPN, you’ll be able to surf the internet with a new IP address and location. This enables you to access news, social media, sports, video streaming or any other entertainment content wherever you want without censorship and bandwidth limits.',
     'dsktp_feature_section_btn_3' => '获取 77VPN',
 
-    'dsktp_feature_section_title_4' => 'Easy to Use and High Compatibility',
+    'dsktp_feature_section_title_4' => '一键连接，支持在多种设备上使用',
     'dsktp_feature_section_text_4' => "77VPN is very friendly to the beginners as it's easy to use with just one-click to start and without any extra configuration. As its high compatibility, it'll work on Windows, Mac, Android, iOS with a single account.",
     'dsktp_feature_section_btn_4' => '获取 77VPN',
 
-    'dsktp_feature_section_title_5' => 'Get Tech Support',
+    'dsktp_feature_section_title_5' => '提供全方位的人工技术支持服务',
     'dsktp_feature_section_text_5' => 'Real humans are available via live chat and email to help you with all the problems you meet in setting and using RitaVPN.',
     'dsktp_feature_section_btn_5' => '获取77VPN',
+    
+    
+      'dsktp_feature_section_title_6' => '提供稳定的内网专线服务',
+    'dsktp_feature_section_text_6' => 'All your internet traffic is fully protected by masking your true IP address. Therefore to keep your browsing history to yourself, protect you from prying eyes at home, work or in public places.',
+    'dsktp_feature_section_btn_6' => '获取77VPN',
 
     // desktop prices
     'dsktp_prices_hero_title' => '77VPN Plans',
@@ -92,6 +102,15 @@ return [
     'dsktp_prices_card_text_expired' =>  '有效期至',
     'dsktp_prices_card_text_cvv' =>  'CVV 安全码',
     'dsktp_prices_card_text_postcode' =>  '邮政编码',
+    
+    
+    'dsktp_prices_card_text_premium' => '加入会员后可以享受到的特权服务',
+    'dsktp_prices_card_text_premium_1' => '无广告干扰',
+    'dsktp_prices_card_text_premium_2' => '高清秒开线路',
+    'dsktp_prices_card_text_premium_3' => '无限制流量',
+    'dsktp_prices_card_text_premium_4' => '一个账户多种设备支持',
+    'dsktp_prices_card_text_premium_5' => '人工技术支持',
+    'dsktp_prices_card_text_premium_6' => '零日志存储',
     
     
     'dsktp_prices_card_small_text_1' => 'You\'re 100% backed by our 7-day money-back guarantee.',

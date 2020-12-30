@@ -210,7 +210,7 @@ $(function () {
     });
 
     function setPaymentData($data) {
-        let time = $data.find('.price-item__time').data('package-time');
+        let name = $data.find('.price-item__time').data('package-name');
         let price = parseFloat($data.find('.price-item__value').data('package-price'), 2);
         let sku = parseFloat($data.find('.price-item__id').data('package-id'), 2);
         let sale = parseFloat($data.find('.price-item__sale').data('package-sale'), 2);
@@ -219,14 +219,14 @@ $(function () {
         let amounts = $('.amounts');
         if (!sale) {
             amounts.find('.discount').hide();
-            amounts.find('.amount-row.value').html('<span>' + time + 'day</span><span>$' + price + '</span>');
+            amounts.find('.amount-row.value').html('<span>' + name + '</span><span>Pirce： $' + price + '</span>');
             amounts.find('.amounts-total').find('.amount-total-value').html('$' + price);
 
             currentPrice = price;
         } else {
             let discountPrice = parseFloat(price * (sale / 100)).toFixed(2);
             priceVal = parseFloat(price - discountPrice).toFixed(2);
-            amounts.find('.amount-row.value').html('<span>' + time + 'day</span><span>$' + price + '</span>');
+            amounts.find('.amount-row.value').html('<span>' + name + '</span><span>Pirce： $' + price + '</span>');
             amounts.find('.discount').html('<span>Discount -' + sale + '%</span><span>$-' + discountPrice + '</span>');
             amounts.find('.discount').show();
             amounts.find('.amounts-total').find('.amount-total-value').html('$' + priceVal);

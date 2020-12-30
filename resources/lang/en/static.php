@@ -100,6 +100,16 @@ return [
     'dsktp_prices_card_text_postcode' =>  'Postal code',
 
 
+  //premium
+   'dsktp_prices_card_text_premium' => 'Enjoy exclusive benefits of premium',
+    'dsktp_prices_card_text_premium_1' => 'No ADs',
+    'dsktp_prices_card_text_premium_2' => '6x faster',
+    'dsktp_prices_card_text_premium_3' => 'Unlimited Traffic',
+    'dsktp_prices_card_text_premium_4' => 'Supported Multiple device' ,
+    'dsktp_prices_card_text_premium_5' => 'Technical Support',
+    'dsktp_prices_card_text_premium_6' => 'Zero Traffic Logs',
+
+
     // desktop help
     'dsktp_help_hero_title' => '77VPN <span>Help Center</span>',
     'dsktp_help_hero_text' => 'All you need to know about 77VPN',

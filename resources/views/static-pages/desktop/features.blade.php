@@ -49,6 +49,23 @@
                     </div>
                 </section>
 
+
+                <section class="feature feature--01">
+                    <div class="container">
+                        <div class="feature__left">
+                            <img src="{{ asset('assets/static/desktop/images/features/feature-01.jpg') }}" alt="Feature">
+                        </div>
+                        <div class="feature__right">
+                            <div class="text-content">
+                                <h2>{{ __('static.dsktp_feature_section_title_6') }}</h2>
+                                <p>{{ __('static.dsktp_feature_section_text_6') }}</p>
+                                <a class="cs-btn cs-btn--primary cs-btn--lg" href="#">{{ __('static.dsktp_feature_section_btn_6') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                
                 <section class="feature feature--03">
                     <div class="container">
                         <div class="feature__left">
@@ -94,6 +111,7 @@
                         </div>
                     </div>
                 </section>
+                
 
             </div>
         </main>

@@ -25,7 +25,7 @@
             <div class="select-wrapper">
                 <select class="js-footer-lang">
                     <option value="en" data-value="en" {{  app()->getLocale() === 'en' ? 'selected' : '' }}>English</option>
-                    <option value="ch" data-value="ch" {{  app()->getLocale() === 'zh-CN' ? 'selected' : '' }}>Chinese</option>
+                    <option value="ch" data-value="ch" {{  app()->getLocale() === 'zh-CN' ? 'selected' : '' }}>中文</option>
                 </select>
             </div>
         </div>
@@ -50,9 +50,9 @@
         $('.js-footer-lang').on('change', function(e) {
             let value = e.target.value;
             if (value === 'en') {
-                window.location.replace(window.location.origin + '/' + 'locale/en');
+                window.location.replace(window.location.origin + '/' + 'lang/en');
             } else {
-                window.location.replace(window.location.origin + '/' + 'locale/zh-CN');
+                window.location.replace(window.location.origin + '/' + 'lang/zh-CN');
             }
         });
         function getMobileOperatingSystem() {
