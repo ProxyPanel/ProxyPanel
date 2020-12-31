@@ -47,3 +47,35 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => ['webApi']], function
         Route::post('trigger/{id}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录
     });
 });
+
+Route::group(['middleware' => ['auth:api','checkPostPara']], function() {
+    Route::get('test','Api\Client\UsersController@test');
+    Route::post('user/ver1/logupload','Api\Client\UsersController@logUpload');
+    Route::get('user/ver1/refreshstatus','Api\Client\UsersController@refreshStatus');
+    Route::post('user/ver1/updateuser','Api\Client\AuthsController@updateUser');
+    Route::post('user/ver1/buy','Api\Client\Buycontroller@create');
+    Route::get('user/ver1/serverlist','Api\Client\Client\UsersController@serverList');
+    Route::get('user/ver1/get_userstatus','Api\Client\UsersController@get_userstatus');
+    Route::get('user/ver1/goodslist','Api\Client\UsersController@goodslist');
+    Route::get('user/ver1/puerchased','Api\Client\UsersController@puerchased');
+    Route::get('user/ver1/latestVersion/{device_type}','Api\Client\UsersController@latestVersion');
+    Route::get('user/ver1/contract','Api\Client\UsersController@contract');
+    Route::post('user/ver1/getdomain','Api\Client\UsersController@getDmain');
+    Route::get('user/ver1/getseting','Api\Client\UsersController@getSeting');
+    Route::post('user/ver1/checkin','Api\Client\UsersController@checkIn');
+    Route::get('user/ver1/getpaymethod','Api\Client\UsersController@getPayMethod');
+    Route::get('user/ver1/help/{type}','Api\Client\UsersController@help');
+    Route::get('user/ver1/affrecord','Api\Client\UsersController@getAffRecord');
+    Route::post('user/ver1/edpawdcode/update-password-with-auth-token','Api\Client\AuthsController@updatePasswordWithAuth');
+
+});
+
+Route::group(['middleware' => ['api']], function() {
+  	
+    Route::post('user/ver1/vregister','Api\Client\UsersController@vregister');
+    Route::post('user/ver1/login','Api\Client\UsersController@login');
+    Route::post('user/ver1/get_edpawdcode','Api\Client\AuthsController@sendCodeAPI');
+    Route::post('user/ver1/updatepassword','Api\Client\AuthsController@updatePasswordWithCode');
+  });
+
+
