@@ -12,7 +12,7 @@ class Surfboard
             "{$server['port']}",
             "{$server['method']}",
             "{$server['passwd']}",
-            'https://raw.githubusercontent.com/Hackl0us/proxy-tool-backup/master/SSEncrypt.module',
+            sysConfig('website_url').'/clients/SSEncrypt.module',
             'tfo=true',
             "udp-relay={$server['udp']}",
         ];

@@ -508,8 +508,15 @@ class UserController extends Controller
             'subscribe_status' => $subscribe->status, // 订阅连接
             'link' => $subscribe_link,
             'subscribe_link' => 'sub://'.base64url_encode($subscribe_link),
-            'Shadowrocket_link' => 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.(sysConfig('website_name').'-'.sysConfig('website_url')),
+            'Shadowrocket_link' => 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.urlencode(sysConfig('website_name').' '.sysConfig('website_url')),
             'Shadowrocket_linkQrcode' => 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(sysConfig('website_name')),
+            'Clash_link' => "clash://install-config?url={$subscribe_link}",
+            'Surge_link' => "surge:///install-config?url={$subscribe_link}",
+            'Quantumultx' => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
+                'server_remote' => "{$subscribe_link},  tag=".urlencode(sysConfig('website_name').' '.sysConfig('website_url')),
+                'filter_remote' => '',
+                'rewrite_remote' => '',
+            ]),
             'Quantumult_linkOut' => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),
             'Quantumult_linkIn' => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),
         ]);
