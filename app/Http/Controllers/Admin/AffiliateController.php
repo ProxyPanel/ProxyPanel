@@ -32,16 +32,9 @@ class AffiliateController extends Controller
     // 提现申请详情
     public function detail(Request $request, ReferralApply $aff)
     {
-        if ($aff->link_logs) {
-            $commissions = ReferralLog::with(['invitee:id,email', 'order.goods:id,name'])
-                ->whereIn('id', $aff->link_logs)
-                ->paginate(15)
-                ->appends($request->except('page'));
-        }
-
         return view('admin.aff.detail', [
             'referral' => $aff->load('user:id,email'),
-            'commissions' => $commissions ?? null,
+            'commissions' => $aff->referral_logs()->with(['invitee:id,email', 'order.goods:id,name'])->paginate()->appends($request->except('page')),
         ]);
     }
 

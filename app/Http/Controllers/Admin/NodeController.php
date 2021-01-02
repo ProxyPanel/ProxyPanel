@@ -68,12 +68,10 @@ class NodeController extends Controller
     // 添加节点
     public function store(NodeRequest $request): JsonResponse
     {
+        $array = $request->validated();
+        Arr::forget($array, ['labels']);
         try {
-            $array = $request->validated();
-            Arr::forget($array, ['labels']);
-            $node = Node::create($array);
-
-            if ($node) {
+            if ($node = Node::create($array)) {
                 // 生成节点标签
                 if ($request->has('labels')) {
                     $node->labels()->attach($request->input('labels'));

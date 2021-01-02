@@ -13,7 +13,7 @@ class CertController extends Controller
     // 域名证书列表
     public function index()
     {
-        $certs = NodeCertificate::orderBy('id')->paginate(15)->appends(request('page'));
+        $certs = NodeCertificate::orderBy('id')->paginate()->appends(request('page'));
         foreach ($certs as $cert) {
             if ($cert->pem) {
                 $certInfo = openssl_x509_parse($cert->pem);
@@ -63,14 +63,14 @@ class CertController extends Controller
     {
         try {
             if ($cert->delete()) {
-                return response()->json(['status' => 'success', 'message' => '操作成功']);
+                return response()->json(['status' => 'success', 'message' => '删除成功']);
             }
         } catch (Exception $e) {
             Log::error('删除域名证书失败：'.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => '删除域名证书错误：'.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => '删除错误：'.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'fail', 'message' => '删除域名证书失败']);
+        return response()->json(['status' => 'fail', 'message' => '删除失败']);
     }
 }

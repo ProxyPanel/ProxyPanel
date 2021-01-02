@@ -44,7 +44,7 @@ class SystemController extends Controller
             }
             $file = $request->file('website_logo');
             $ret = $file->move('uploads/logo', $file->getClientOriginalName());
-            if ($ret && Config::find('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+            if ($ret && Config::findOrFail('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
                 return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
             }
         }

@@ -38,14 +38,14 @@ class ReferralLog extends Model
         return $value / 100;
     }
 
-    public function setAmountAttribute($value): void
-    {
-        $this->attributes['amount'] = $value * 100;
-    }
-
     public function getCommissionAttribute($value)
     {
         return $value / 100;
+    }
+
+    public function setAmountAttribute($value): void
+    {
+        $this->attributes['amount'] = $value * 100;
     }
 
     public function setCommissionAttribute($value): void

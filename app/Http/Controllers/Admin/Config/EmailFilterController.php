@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\EmailFilter;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -16,13 +15,14 @@ class EmailFilterController extends Controller
     // 邮箱过滤列表
     public function index()
     {
-        return view('admin.config.emailFilter', ['list' => EmailFilter::orderByDesc('id')->paginate()]);
+        return view('admin.config.emailFilter', ['filters' => EmailFilter::orderByDesc('id')->paginate()]);
     }
 
     // 添加邮箱后缀
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'type' => 'required|numeric|between:1,2',
             'words' => 'required|unique:email_filter',
         ]);
 
@@ -31,11 +31,7 @@ class EmailFilterController extends Controller
         }
 
         try {
-            $obj = new EmailFilter();
-            $obj->type = $request->input('type');
-            $obj->words = strtolower($request->input('words'));
-
-            if ($obj->save()) {
+            if (EmailFilter::create($validator->validated())) {
                 return Response::json(['status' => 'success', 'message' => '添加成功']);
             }
         } catch (Exception $e) {
@@ -48,11 +44,10 @@ class EmailFilterController extends Controller
     }
 
     // 删除邮箱后缀
-    public function destroy($id): JsonResponse
+    public function destroy(EmailFilter $filter)
     {
         try {
-            $result = EmailFilter::whereId($id)->delete();
-            if ($result) {
+            if ($filter->delete()) {
                 return Response::json(['status' => 'success', 'message' => '删除成功']);
             }
         } catch (Exception $e) {

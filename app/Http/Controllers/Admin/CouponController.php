@@ -15,11 +15,6 @@ use Redirect;
 use Response;
 use Str;
 
-/**
- * 优惠券控制器.
- *
- * Class CouponController
- */
 class CouponController extends Controller
 {
     // 优惠券列表
@@ -67,11 +62,10 @@ class CouponController extends Controller
             }
             $logo = 'upload/'.$fileName;
         }
+        $num = (int) $request->input('num');
+        $data = $request->only(['name', 'type', 'usable_times', 'value', 'rule', 'start_time', 'end_time']);
+        $data['logo'] = $logo;
         try {
-            $num = (int) $request->input('num');
-            $data = $request->only(['name', 'type', 'usable_times', 'value', 'rule', 'start_time', 'end_time']);
-            $data['logo'] = $logo;
-
             for ($i = 0; $i < $num; $i++) {
                 $data['sn'] = $num === 1 && $request->input('sn') ? $request->input('sn') : Str::random(8);
                 Coupon::create($data);

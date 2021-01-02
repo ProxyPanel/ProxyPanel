@@ -8,6 +8,7 @@ use App\Models\Article;
 use Exception;
 use Illuminate\Http\UploadedFile;
 use Log;
+use Str;
 
 class ArticleController extends Controller
 {

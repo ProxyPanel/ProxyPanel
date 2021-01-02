@@ -110,18 +110,9 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($request->isMethod('POST')) {
-            $infoType = $request->input('type');
+            $server = Node::findOrFail($request->input('id'))->config($user); // 提取节点信息
 
-            $node = Node::find($request->input('id'));
-            // 生成节点信息
-            if ($node->type === 1) {
-                $proxyType = $node->compatible ? 'SS' : 'SSR';
-            } else {
-                $proxyType = 'V2Ray';
-            }
-            $data = $this->getUserNodeInfo($user->id, $node->id, $infoType !== 'text' ? 0 : 1);
-
-            return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
+            return Response::json(['status' => 'success', 'data' => $this->getUserNodeInfo($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
         }
 
         // 获取当前用户可用节点

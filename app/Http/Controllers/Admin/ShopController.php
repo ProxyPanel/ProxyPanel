@@ -48,25 +48,24 @@ class ShopController extends Controller
     // 添加商品
     public function store(ShopStoreRequest $request): RedirectResponse
     {
+        $data = $request->validated();
+        if (array_key_exists('traffic_unit', $data)) {
+            $data['traffic'] *= $data['traffic_unit'];
+            Arr::forget($data, 'traffic_unit');
+        }
+        $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
+        $data['status'] = array_key_exists('status', $data) ? 1 : 0;
+
+        // 商品LOGO
+        if ($request->hasFile('logo')) {
+            $path = $this->fileUpload($request->file('logo'));
+            if (is_string($path)) {
+                $data['logo'] = $path;
+            } else {
+                return $path;
+            }
+        }
         try {
-            $data = $request->validated();
-            if (array_key_exists('traffic_unit', $data)) {
-                $data['traffic'] *= $data['traffic_unit'];
-                Arr::forget($data, 'traffic_unit');
-            }
-            $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
-            $data['status'] = array_key_exists('status', $data) ? 1 : 0;
-
-            // 商品LOGO
-            if ($request->hasFile('logo')) {
-                $path = $this->fileUpload($request->file('logo'));
-                if (is_string($path)) {
-                    $data['logo'] = $path;
-                } else {
-                    return $path;
-                }
-            }
-
             if ($good = Goods::create($data)) {
                 return Redirect::route('admin.goods.edit', $good)->with('successMsg', '添加成功');
             }

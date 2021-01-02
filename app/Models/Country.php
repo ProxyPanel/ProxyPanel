@@ -15,4 +15,9 @@ class Country extends Model
     protected $primaryKey = 'code';
     protected $keyType = 'string';
     protected $guarded = [];
+
+    public function nodes()
+    {
+        return $this->hasMany(Node::class, 'country_code');
+    }
 }

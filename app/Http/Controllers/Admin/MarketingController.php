@@ -7,17 +7,11 @@ use App\Models\Marketing;
 use DB;
 use Exception;
 use Http;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
 use RuntimeException;
 
-/**
- * 促销控制器.
- *
- * Class MarketingController
- */
 class MarketingController extends Controller
 {
     // 邮件群发消息列表
@@ -49,7 +43,7 @@ class MarketingController extends Controller
     }
 
     // 添加推送消息
-    public function addPushMarketing(Request $request): ?JsonResponse
+    public function addPushMarketing(Request $request)
     {
         $title = $request->input('title');
         $content = $request->input('content');
@@ -74,7 +68,7 @@ class MarketingController extends Controller
                 throw new RuntimeException($message['message']);
             }
 
-            $this->addMarketing(2, $title, $content, 1);
+            $this->addMarketing(2, $title, $content);
 
             DB::commit();
 

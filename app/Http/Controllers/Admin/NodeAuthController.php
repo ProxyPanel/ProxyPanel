@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Node;
 use App\Models\NodeAuth;
 use Exception;
-use Illuminate\Http\Request;
+use Response;
+use Str;
 
 class NodeAuthController extends Controller
 {
@@ -16,24 +18,16 @@ class NodeAuthController extends Controller
     }
 
     // 添加节点授权
-    public function store(Request $request)
+    public function store()
     {
-        $nodeArray = Node::whereStatus(1)->orderBy('id')->pluck('id')->toArray();
-        $authArray = NodeAuth::orderBy('node_id')->pluck('node_id')->toArray();
+        $nodes = Node::whereStatus(1)->doesntHave('auth')->orderBy('id')->get();
 
-        $arrayDifferent = array_diff($nodeArray, $authArray);
-
-        if (empty($arrayDifferent)) {
+        if ($nodes->isEmpty()) {
             return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
         }
-
-        foreach ($arrayDifferent as $nodeId) {
-            $obj = new NodeAuth();
-            $obj->node_id = $nodeId;
-            $obj->key = Str::random();
-            $obj->secret = Str::random(8);
-            $obj->save();
-        }
+        $nodes->each(static function ($node) {
+            $node->auth()->create(['key' => Str::random(), 'secret' => Str::random(8)]);
+        });
 
         return Response::json(['status' => 'success', 'message' => '生成成功']);
     }

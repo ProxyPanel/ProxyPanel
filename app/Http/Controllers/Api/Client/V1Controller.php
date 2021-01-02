@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\Goods;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -26,11 +27,11 @@ class V1Controller extends Controller
             return response()->json(['ret' => 0, 'msg' => $validator->errors()->all()], 422);
         }
 
-        if (! $token = auth()->attempt($validator->validated())) {
-            return response()->json(['ret' => 0, 'msg' => '登录信息错误'], 401);
+        if ($token = auth()->attempt($validator->validated())) {
+            return $this->createNewToken($token);
         }
 
-        return $this->createNewToken($token);
+        return response()->json(['ret' => 0, 'msg' => '登录信息错误'], 401);
     }
 
     protected function createNewToken($token)

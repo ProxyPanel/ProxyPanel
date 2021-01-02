@@ -90,7 +90,7 @@ class Node extends Model
             ->get();
     }
 
-    public function config($user)
+    public function config(User $user)
     {
         $config = [
             'id' => $this->id,

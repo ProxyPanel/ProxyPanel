@@ -27,14 +27,14 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($list as $vo)
+                    @foreach($filters as $filter)
                         <tr>
-                            <td> {{$vo->id}} </td>
-                            <td> {{$vo->type==1? '黑':'白'}} </td>
-                            <td> {{$vo->words}} </td>
+                            <td> {{$filter->id}} </td>
+                            <td> {{$filter->type === 1? '黑':'白'}} </td>
+                            <td> {{$filter->words}} </td>
                             <td>
                                 @can('admin.config.filter.destroy')
-                                    <button class="btn btn-danger" onclick="delSuffix('{{$vo->id}}','{{$vo->words}}')">
+                                    <button class="btn btn-danger" onclick="delSuffix('{{$filter->id}}','{{$filter->words}}')">
                                         <i class="icon wb-trash"></i>
                                     </button>
                                 @endcan
@@ -47,11 +47,11 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$list->total()}}</code> 条记录
+                        共 <code>{{$filters->total()}}</code> 条记录
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{$filters->links()}}
                         </nav>
                     </div>
                 </div>

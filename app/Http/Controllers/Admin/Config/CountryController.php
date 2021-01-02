@@ -4,67 +4,44 @@ namespace App\Http\Controllers\Admin\Config;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
-use App\Models\Node;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
+use Validator;
 
 class CountryController extends Controller
 {
     // 添加国家/地区
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
-        $code = $request->input('code');
-        $name = $request->input('name');
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|string|unique:country,code',
+            'name' => 'required',
+        ]);
 
-        if (empty($code)) {
-            return Response::json(['status' => 'fail', 'message' => '国家/地区代码不能为空']);
+        if ($validator->fails()) {
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        if (empty($name)) {
-            return Response::json(['status' => 'fail', 'message' => '国家/地区名称不能为空']);
+        if (Country::create($validator->validated())) {
+            return Response::json(['status' => 'success', 'message' => '生成成功']);
         }
 
-        $exists = Country::find($code);
-        if ($exists) {
-            return Response::json(['status' => 'fail', 'message' => '该国家/地区名称已存在，请勿重复添加']);
-        }
-
-        $obj = new Country();
-        $obj->code = $code;
-        $obj->name = $name;
-
-        if ($obj->save()) {
-            return Response::json(['status' => 'success', 'message' => '提交成功']);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '操作失败']);
+        return Response::json(['status' => 'fail', 'message' => '生成失败']);
     }
 
     // 编辑国家/地区
-    public function update(Request $request, $code): JsonResponse
+    public function update(Request $request, Country $country)
     {
-        $name = $request->input('name');
+        $validator = Validator::make($request->all(), ['name' => 'required']);
 
-        if (empty($name)) {
-            return Response::json(['status' => 'fail', 'message' => '国家/地区名称不能为空']);
-        }
-
-        $country = Country::find($code);
-        if (! $country) {
-            return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
-        }
-
-        // 校验该国家/地区下是否存在关联节点
-        if (Node::whereCountryCode($country->code)->exists()) {
-            return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+        if ($validator->fails()) {
+            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
         try {
-            $country->name = $name;
-            if ($country->save()) {
+            if ($country->update($validator->validated())) {
                 return Response::json(['status' => 'success', 'message' => '编辑成功']);
             }
         } catch (Exception $e) {
@@ -77,15 +54,10 @@ class CountryController extends Controller
     }
 
     // 删除国家/地区
-    public function destroy($code): ?JsonResponse
+    public function destroy(Country $country)
     {
-        $country = Country::find($code);
-        if (! $country) {
-            return Response::json(['status' => 'fail', 'message' => '国家/地区不存在']);
-        }
-
         // 校验该国家/地区下是否存在关联节点
-        if (Node::whereCountryCode($country->code)->exists()) {
+        if ($country->nodes()->exists()) {
             return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
         }
 

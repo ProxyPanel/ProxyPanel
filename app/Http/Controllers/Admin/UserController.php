@@ -137,22 +137,22 @@ class UserController extends Controller
     // 添加账号
     public function store(UserStoreRequest $request): JsonResponse
     {
-        try {
-            $data = $request->validated();
-            Arr::forget($data, 'roles');
-            $data['password'] = $data['password'] ?? Str::random();
-            $data['port'] = $data['port'] ?? Helpers::getPort();
-            $data['passwd'] = $data['passwd'] ?? Str::random();
-            $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
-            Arr::forget($data, 'uuid');
-            $data['transfer_enable'] *= GB;
-            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
-            $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
-            $data['reg_ip'] = IP::getClientIp();
-            $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
-            $user = User::create($data);
+        $data = $request->validated();
+        Arr::forget($data, 'roles');
+        $data['password'] = $data['password'] ?? Str::random();
+        $data['port'] = $data['port'] ?? Helpers::getPort();
+        $data['passwd'] = $data['passwd'] ?? Str::random();
+        $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+        Arr::forget($data, 'uuid');
+        $data['transfer_enable'] *= GB;
+        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+        $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+        $data['reg_ip'] = IP::getClientIp();
+        $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
+        $user = User::create($data);
 
-            $roles = $request->input('roles');
+        $roles = $request->input('roles');
+        try {
             if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
                         && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->assignRole($roles);
@@ -193,20 +193,19 @@ class UserController extends Controller
     // 编辑账号
     public function update(UserUpdateRequest $request, User $user)
     {
+        $data = $request->validated();
+        Arr::forget($data, 'roles');
+        $data['passwd'] = $request->input('passwd') ?? Str::random();
+        $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+        Arr::forget($data, 'uuid');
+        $data['transfer_enable'] *= GB;
+        $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
+        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+        $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+
+        // 只有超级管理员才能赋予超级管理员
+        $roles = $request->input('roles');
         try {
-            $data = $request->validated();
-            Arr::forget($data, 'roles');
-            $data['passwd'] = $request->input('passwd') ?? Str::random();
-            $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
-            Arr::forget($data, 'uuid');
-            $data['transfer_enable'] *= GB;
-            $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
-            $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
-            $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
-
-            // 只有超级管理员才能赋予超级管理员
-            $roles = $request->input('roles');
-
             if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
                         && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->syncRoles($roles);
@@ -332,19 +331,8 @@ class UserController extends Controller
 
     public function exportProxyConfig(Request $request, User $user): JsonResponse
     {
-        $node = Node::find($request->input('id'));
-        if ($node->type === 1) {
-            if ($node->compatible) {
-                $proxyType = 'SS';
-            } else {
-                $proxyType = 'SSR';
-            }
-        } else {
-            $proxyType = 'V2Ray';
-        }
+        $server = Node::findOrFail($request->input('id'))->config($user); // 提取节点信息
 
-        $data = $this->getUserNodeInfo($user->id, $node->id, $request->input('type') !== 'text' ? 0 : 1);
-
-        return Response::json(['status' => 'success', 'data' => $data, 'title' => $proxyType]);
+        return Response::json(['status' => 'success', 'data' => $this->getUserNodeInfo($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
     }
 }

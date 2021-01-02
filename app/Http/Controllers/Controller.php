@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\EmailFilter;
-use App\Models\Node;
+use App\Components\Client\Text;
+use App\Components\Client\URLSchemes;
 use App\Models\NodeDailyDataFlow;
 use App\Models\NodeHourlyDataFlow;
-use App\Models\User;
 use App\Models\UserDailyDataFlow;
 use App\Models\UserDataFlowLog;
 use App\Models\UserHourlyDataFlow;
@@ -105,108 +104,26 @@ class Controller extends BaseController
         return '';
     }
 
-    /**
-     * 节点信息.
-     *
-     * @param  int  $uid  用户ID
-     * @param  int  $nodeId  节点ID
-     * @param  int  $infoType  信息类型：0为链接，1为文字
-     *
-     * @return string
-     */
-    public function getUserNodeInfo(int $uid, int $nodeId, int $infoType): string
+    // 节点信息
+    public function getUserNodeInfo(array $server, bool $is_url): ?string
     {
-        $user = User::find($uid);
-        $node = Node::find($nodeId);
-        $scheme = null;
-        $group = sysConfig('website_name'); // 分组名称
-        $host = $node->is_relay ? $node->relay_server : ($node->server ?: $node->ip);
-        $data = null;
-        switch ($node->type) {
-            case 2:
-                // 生成v2ray scheme
-                if ($infoType !== 1) {
-                    // 生成v2ray scheme
-                    $data = $this->v2raySubUrl(
-                        $node->name,
-                        $host,
-                        $node->v2_port,
-                        $user->vmess_id,
-                        $node->v2_alter_id,
-                        $node->v2_net,
-                        $node->v2_type,
-                        $node->v2_host,
-                        $node->v2_path,
-                        $node->v2_tls ? 'tls' : ''
-                    );
-                } else {
-                    $data = '服务器：'.$host.PHP_EOL.'IPv6：'.($node->ipv6 ?: '').PHP_EOL.'端口：'.$node->v2_port.PHP_EOL.'加密方式：'.$node->v2_method.PHP_EOL.'用户ID：'.$user->vmess_id.PHP_EOL.'额外ID：'.$node->v2_alter_id.PHP_EOL.'传输协议：'.$node->v2_net.PHP_EOL.'伪装类型：'.$node->v2_type.PHP_EOL.'伪装域名：'.($node->v2_host ?: '').PHP_EOL.'路径：'.($node->v2_path ?: '').PHP_EOL.'TLS：'.($node->v2_tls ? 'tls' : '').PHP_EOL;
-                }
+        switch ($server['type']) {
+            case'shadowsocks':
+                $data = $is_url ? URLSchemes::buildShadowsocks($server) : Text::buildShadowsocks($server);
                 break;
-            case 3:
-                if ($infoType !== 1) {
-                    $data = $this->trojanSubUrl($user->passwd, $host, $node->port, $node->name);
-                } else {
-                    $data = '备注：'.$node->name.PHP_EOL.'服务器：'.$host.PHP_EOL.'密码：'.$user->passwd.PHP_EOL.'端口：'.$node->port.PHP_EOL;
-                }
+            case 'shadowsocksr':
+                $data = $is_url ? URLSchemes::buildShadowsocksr($server) : Text::buildShadowsocksr($server);
                 break;
-            case 1:
-            case 4:
-                $protocol = $node->protocol;
-                $method = $node->method;
-                $obfs = $node->obfs;
-                if ($node->single) {
-                    //单端口使用中转的端口
-                    $port = $node->is_relay ? $node->relay_port : $node->port;
-                    $passwd = $node->passwd;
-                    $protocol_param = $user->port.':'.$user->passwd;
-                } else {
-                    $port = $user->port;
-                    $passwd = $user->passwd;
-                    $protocol_param = $node->protocol_param;
-                    if ($node->type === 1) {
-                        $protocol = $user->protocol;
-                        $method = $user->method;
-                        $obfs = $user->obfs;
-                    }
-                }
-
-                if ($infoType !== 1) {
-                    // 生成ss/ssr scheme
-                    $data = $node->compatible ? $this->ssSubUrl($host, $port, $method, $passwd, $group) :
-                        $this->ssrSubUrl($host, $port, $protocol, $method, $obfs, $passwd, $node->obfs_param, $protocol_param, $node->name, $group, $node->is_udp);
-                } else {
-                    // 生成文本配置信息
-                    $data = '服务器：'.$host.PHP_EOL.'IPv6：'.$node->ipv6.PHP_EOL.'服务器端口：'.$port.PHP_EOL.'密码：'.$passwd.PHP_EOL.'加密：'.$method.PHP_EOL.($node->compatible ? '' : '协议：'.$protocol.PHP_EOL.'协议参数：'.$protocol_param.PHP_EOL.'混淆：'.$obfs.PHP_EOL.'混淆参数：'.$node->obfs_param.PHP_EOL);
-                }
+            case 'v2ray':
+                $data = $is_url ? URLSchemes::buildVmess($server) : Text::buildVmess($server);
+                break;
+            case 'trojan':
+                $data = $is_url ? URLSchemes::buildTrojan($server) : Text::buildTrojan($server);
                 break;
             default:
         }
 
-        return $data;
-    }
-
-    public function v2raySubUrl($name, $host, $port, $uuid, $alter_id, $net, $type, $domain, $path, $tls): string
-    {
-        return 'vmess://'.base64url_encode(json_encode([
-            'v' => '2', 'ps' => $name, 'add' => $host, 'port' => $port, 'id' => $uuid, 'aid' => $alter_id, 'net' => $net,
-            'type' => $type, 'host' => $domain, 'path' => $path, 'tls' => $tls ? 'tls' : '',
-        ], JSON_PRETTY_PRINT));
-    }
-
-    public function trojanSubUrl($password, $domain, $port, $remark): string
-    {
-        return 'trojan://'.urlencode($password).'@'.$domain.':'.$port.'#'.urlencode($remark);
-    }
-
-    public function ssSubUrl($host, $port, $method, $passwd, $group): string
-    {
-        return 'ss://'.base64url_encode($method.':'.$passwd.'@'.$host.':'.$port).'#'.$group;
-    }
-
-    public function ssrSubUrl($host, $port, $protocol, $method, $obfs, $passwd, $obfs_param, $protocol_param, $name, $group, $is_udp): string
-    {
-        return 'ssr://'.base64url_encode($host.':'.$port.':'.$protocol.':'.$method.':'.$obfs.':'.base64url_encode($passwd).'/?obfsparam='.base64url_encode($obfs_param).'&protoparam='.base64url_encode($protocol_param).'&remarks='.base64url_encode($name).'&group='.base64url_encode($group).'&udpport='.$is_udp.'&uot=0');
+        return $data ?? null;
     }
 
     // 流量使用图表

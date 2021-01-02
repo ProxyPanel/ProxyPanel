@@ -392,7 +392,7 @@
           $.ajax({
             url: '{{route('admin.config.level.store')}}',
             method: 'POST',
-            data: {_token: '{{csrf_token()}}', level: level, level_name: level_name},
+            data: {_token: '{{csrf_token()}}', level: level, name: level_name},
             beforeSend: function() {
               $('#level_msg').show().html('正在添加');
             },
@@ -426,7 +426,7 @@
             data: {
               _token: '{{csrf_token()}}',
               level: $('#level_' + id).val(),
-              level_name: $('#level_name_' + id).val(),
+              name: $('#level_name_' + id).val(),
             },
             dataType: 'json',
             success: function(ret) {

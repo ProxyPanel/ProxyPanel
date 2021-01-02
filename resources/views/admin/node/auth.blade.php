@@ -19,7 +19,6 @@
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
-                        <th> #</th>
                         <th> 节点ID</th>
                         <th> 节点类型</th>
                         <th> 节点名称</th>
@@ -33,7 +32,6 @@
                     <tbody>
                     @foreach ($authorizations as $auth)
                         <tr>
-                            <td> {{$auth->id}} </td>
                             <td> {{$auth->node_id}} </td>
                             <td> {{$auth->node->type_label}} </td>
                             <td> {{Str::limit($auth->node->name, 20) ?? '【节点已删除】'}} </td>

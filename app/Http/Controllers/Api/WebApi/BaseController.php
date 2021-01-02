@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\WebApi;
 
 use App\Models\Node;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
@@ -73,7 +74,7 @@ class BaseController
 
         $onlineCount = 0;
         foreach ($validator->validated() as $input) { // 处理节点在线IP数据
-            $formattedData[] = ['user_id' => $input['uid'], 'ip' => $input['ip'], 'created_at' => time()];
+            $formattedData[] = ['user_id' => $input['uid'], 'ip' => $input['ip'], 'port' => User::find($input['uid'])->port, 'created_at' => time()];
             $onlineCount++;
         }
 

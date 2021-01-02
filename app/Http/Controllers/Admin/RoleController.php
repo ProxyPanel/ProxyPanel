@@ -23,7 +23,7 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         if ($role = Role::create($request->only(['name', 'description']))) {
-            $role->givePermissionTo($request->input('permissions') ?: []);
+            $role->givePermissionTo($request->input('permissions') ?? []);
 
             return redirect()->route('admin.role.edit', $role)->with('successMsg', '操作成功');
         }
