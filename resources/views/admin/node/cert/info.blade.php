@@ -7,6 +7,9 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">@isset($cert) 编辑 @else 添加 @endisset域名证书</h2>
+                <div class="panel-actions">
+                    <a href="{{route('admin.node.cert.index')}}" class="btn btn-danger">返 回</a>
+                </div>
             </div>
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>

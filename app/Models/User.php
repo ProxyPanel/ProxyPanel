@@ -53,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
             'expired_at' => $this->expired_at,
             'ban_time' => $this->ban_time,
             'level' => $this->level_name,
-            'group' => $this->group->name ?? null,
+            'group' => $this->userGroup->name ?? null,
             'last_login' => $this->last_login,
             'reset_time' => $this->reset_time,
             'invite_num' => $this->invite_num,
@@ -219,7 +219,7 @@ class User extends Authenticatable implements JWTSubject
     public function nodes()
     {
         if ($this->attributes['user_group_id']) {
-            $query = $this->group->nodes();
+            $query = $this->userGroup->nodes();
         } else {
             $query = Node::query();
         }
@@ -227,7 +227,7 @@ class User extends Authenticatable implements JWTSubject
         return $query->whereStatus(1)->where('level', '<=', $this->attributes['level'] ?? 0);
     }
 
-    public function group(): BelongsTo
+    public function userGroup(): BelongsTo
     {
         return $this->belongsTo(UserGroup::class);
     }

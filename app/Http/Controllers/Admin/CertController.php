@@ -37,7 +37,7 @@ class CertController extends Controller
     public function store(CertRequest $request)
     {
         if ($cert = NodeCertificate::create($request->validated())) {
-            return redirect(route('admin.node.cert.update', $cert))->with('successMsg', '生成成功');
+            return redirect(route('admin.node.cert.edit', $cert))->with('successMsg', '生成成功');
         }
 
         return redirect()->back()->withInput()->withErrors('生成失败');
