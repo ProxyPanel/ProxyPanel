@@ -2,17 +2,16 @@
 
 /**
  * Created by PayBeaver <merchant.paybeaver.com>
- * Version: 2020-12-06
+ * Version: 2020-12-06.
  */
 
 namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
-use Log;
 use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Log;
 use Response;
 
 class PayBeaver extends AbstractPayment
@@ -21,10 +20,10 @@ class PayBeaver extends AbstractPayment
     private $appSecret;
     private $url = 'https://api.paybeaver.com/api/v1/developer';
 
-    public function __construct($appId, $appSecret)
+    public function __construct()
     {
-        $this->appId = $appId;
-        $this->appSecret = $appSecret;
+        $this->appId = sysConfig('paybeaver_app_id');
+        $this->appSecret = sysConfig('paybeaver_app_secret');
     }
 
     public function purchase($request): JsonResponse
@@ -41,21 +40,48 @@ class PayBeaver extends AbstractPayment
 
         if (isset($result['message'])) {
             Log::warning('创建订单错误：'.$result['message']);
+
             return Response::json(['status' => 'fail', 'message' => '创建订单失败：'.$result['message']]);
         }
 
-        if (!isset($result['data']) || !isset($result['data']['pay_url'])) {
+        if (! isset($result['data']['pay_url'])) {
             Log::warning('创建订单错误：未知错误');
+
             return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
         }
 
         $payment->update(['url' => $result['data']['pay_url']]);
+
         return Response::json(['status' => 'success', 'url' => $result['data']['pay_url'], 'message' => '创建订单成功!']);
+    }
+
+    private function createOrder($params)
+    {
+        $params['sign'] = $this->sign($params);
+
+        $response = Http::post($this->url.'/orders', $params);
+
+        if ($response->ok()) {
+            return $response->json();
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);
+    }
+
+    private function sign($params)
+    {
+        if (isset($params['sign'])) {
+            unset($params['sign']);
+        }
+        ksort($params);
+        reset($params);
+
+        return strtolower(md5(http_build_query($params).$this->appSecret));
     }
 
     public function notify($request): void
     {
-        if (!$this->paybeaverVerify($request->post())) {
+        if (! $this->paybeaverVerify($request->post())) {
             exit(json_encode(['status' => 400]));
         }
 
@@ -71,40 +97,8 @@ class PayBeaver extends AbstractPayment
         exit(json_encode(['status' => 500]));
     }
 
-    protected function createOrder($params)
+    private function paybeaverVerify($params)
     {
-        $params['sign'] = $this->sign($params);
-        return $this->request('/orders', $params);
-    }
-
-    protected function paybeaverVerify($params)
-    {
-        // Log::warning('got sign ' . $params['sign']);
-        // Log::warning('calc sign ' . $this->sign($params));
         return hash_equals($params['sign'], $this->sign($params));
-    }
-
-    protected function sign($params)
-    {
-        // Log::warning('paybeaver app secret: ' . $this->appSecret);
-        // Log::warning('query: ' . http_build_query($params) . $this->appSecret);
-        if (isset($params['sign'])) unset($params['sign']);
-        ksort($params);
-        reset($params);
-        return strtolower(md5(http_build_query($params) . $this->appSecret));
-    }
-
-    protected function request($path, $data) {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, "{$this->url}{$path}");
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-        $data = curl_exec($curl);
-        curl_close($curl);
-        return json_decode($data, true);
     }
 }

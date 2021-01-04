@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use App\Models\Config;
+use Illuminate\Database\Migrations\Migration;
 
 class AddPaybeaverPayment extends Migration
 {

@@ -199,11 +199,6 @@ class Order extends Model
             case 6:
                 $pay_type_icon = $base_path.'stripe.png';
                 break;
-            case 7:
-                $pay_type_icon = $base_path.'coin.png';
-                break;
-            case 0:
-            case 4:
             default:
                 $pay_type_icon = $base_path.'coin.png';
         }

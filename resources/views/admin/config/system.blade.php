@@ -1574,7 +1574,7 @@
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label">海狸支付 PayBeaver</label>
                                             <div class="col-md-7">
-                                                请到<a href="https://merchant.paybeaver.com/?aff_code=" target="_blank">海狸支付 PayBeaver</a>申请账号
+                                                请到<a href="https://merchant.paybeaver.com/?aff_code=iK4GNuX8" target="_blank">海狸支付 PayBeaver</a>申请账号
                                             </div>
                                         </div>
                                         <div class="form-group col-lg-6 d-flex"></div>
