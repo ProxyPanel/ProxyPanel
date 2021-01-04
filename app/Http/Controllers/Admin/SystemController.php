@@ -107,6 +107,11 @@ class SystemController extends Controller
                         return Response::json(['status' => 'fail', 'message' => '请先设置【Stripe】必要参数']);
                     }
                     break;
+                case 'paybeaver':
+                    if (! sysConfig('paybeaver_app_id') || ! sysConfig('paybeaver_app_secret')) {
+                        return Response::json(['status' => 'fail', 'message' => '请先设置【PayBeaver】必要参数']);
+                    }
+                    break;
                 default:
                     return Response::json(['status' => 'fail', 'message' => '未知支付渠道']);
             }

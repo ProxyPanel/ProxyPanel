@@ -11,6 +11,7 @@ use App\Http\Controllers\Gateway\Local;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Controllers\Gateway\PayPal;
 use App\Http\Controllers\Gateway\Stripe;
+use App\Http\Controllers\Gateway\PayBeaver;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
@@ -60,6 +61,8 @@ class PaymentController extends Controller
                 return new EPay();
             case 'stripe':
                 return new Stripe();
+            case 'paybeaver':
+                return new PayBeaver(sysConfig('paybeaver_app_id'), sysConfig('paybeaver_app_secret'));
             default:
                 Log::warning('未知支付：'.self::$method);
 
