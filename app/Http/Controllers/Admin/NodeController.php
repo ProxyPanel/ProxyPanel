@@ -11,7 +11,6 @@ use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
-use App\Models\NodePing;
 use App\Models\RuleGroup;
 use App\Services\NodeService;
 use Arr;
@@ -185,33 +184,13 @@ class NodeController extends Controller
     // Ping节点延迟
     public function pingNode(Node $node): JsonResponse
     {
-        if ($result = NetworkDetection::ping($node->is_ddns ? $node->server : $node->ip)) {
+        if ($result = (new NetworkDetection)->ping($node->is_ddns ? $node->server : $node->ip)) {
             return Response::json([
                 'status' => 'success',
-                'message' => [
-                    $result['telecom']['time'] ?: '无', //电信
-                    $result['Unicom']['time'] ?: '无', // 联通
-                    $result['move']['time'] ?: '无', // 移动
-                    $result['HongKong']['time'] ?: '无', // 香港
-                ],
+                'message' => $result,
             ]);
         }
 
         return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
-    }
-
-    // Ping节点延迟日志
-    public function pingLog(Request $request)
-    {
-        $node_id = $request->input('id');
-        $query = NodePing::query();
-        if (isset($node_id)) {
-            $query->whereNodeId($node_id);
-        }
-
-        return view('admin.node.ping', [
-            'nodeList' => Node::orderBy('id')->get(),
-            'pingLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
-        ]);
     }
 }

@@ -4,11 +4,9 @@ namespace App\Console\Commands;
 
 use App\Components\Helpers;
 use App\Components\PushNotification;
-use App\Models\Invite;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
-use App\Models\UserBanedLog;
 use App\Services\OrderService;
 use Illuminate\Console\Command;
 use Log;
@@ -57,10 +55,10 @@ class DailyJob extends Command
                     'status' => -1,
                 ]);
 
-                $this->addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
+                Helpers::addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
 
                 // 废除其名下邀请码
-                Invite::whereInviterId($user->id)->whereStatus(0)->update(['status' => 2]);
+                $user->invites()->whereStatus(0)->update(['status' => 2]);
 
                 // 写入用户流量变动记录
                 Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
@@ -75,30 +73,12 @@ class DailyJob extends Command
                     'ban_time' => null,
                 ]);
 
-                $this->addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
+                Helpers::addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
 
                 // 写入用户流量变动记录
                 Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');
             }
         }
-    }
-
-    /**
-     * 添加用户封禁日志.
-     *
-     * @param  int  $userId  用户ID
-     * @param  int  $time  封禁时长，单位分钟
-     * @param  string  $description  封禁理由
-     * @return bool
-     */
-    private function addUserBanLog(int $userId, int $time, string $description): bool
-    {
-        $log = new UserBanedLog();
-        $log->user_id = $userId;
-        $log->time = $time;
-        $log->description = $description;
-
-        return $log->save();
     }
 
     // 关闭超过72小时未处理的工单

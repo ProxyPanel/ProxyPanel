@@ -14,23 +14,47 @@ class NetworkDetection
      *
      * @return bool|array
      */
-    public static function ping(string $ip)
+    public function ping(string $ip)
     {
-        $url = 'https://api.oioweb.cn/api/hostping.php?host='.$ip; // https://api.iiwl.cc/api/ping.php?host=
-        $response = Http::timeout(15)->retry(2)->get($url);
-
-        // 发送成功
-        if ($response->ok()) {
-            $message = $response->json();
-            if ($message && $message['code']) {
-                return $message['data'];
+        $round = 0;
+        // 依次尝试接口
+        while (true) {
+            switch ($round) {
+                case 0:
+                    $ret = $this->oiowebPing($ip);
+                    break;
+                default:
+                    return false;
             }
-            // 发送失败
-            Log::warning('【PING】检测'.$ip.'时，返回'.var_export($message, true));
-
-            return false;
+            if ($ret !== false) {
+                return $ret;
+            }
+            $round++;
         }
-        Log::warning('【PING】检测'.$ip.'时，接口返回异常访问链接：'.$url);
+    }
+
+    private function oiowebPing(string $ip)
+    {
+        $msg = null;
+        foreach ([1, 6, 14] as $line) {
+            $url = "https://api.oioweb.cn/api/hostping.php?host={$ip}&node={$line}"; // https://api.iiwl.cc/api/ping.php?host=
+            $response = Http::timeout(15)->get($url);
+
+            // 发送成功
+            if ($response->ok()) {
+                $message = $response->json();
+                if ($message && $message['code']) {
+                    $msg .= "{$message['node']}：{$message['data']['Time']}<br>";
+                }
+            } else {
+                return false;
+            }
+        }
+
+        if ($msg) {
+            return $msg;
+        }
+        Log::warning('【PING】检测'.$ip.'时，api.oioweb.cn无结果');
 
         // 发送错误
         return false;

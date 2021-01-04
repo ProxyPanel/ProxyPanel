@@ -80,6 +80,26 @@ class Order extends Model
         return $query->uid($uid)->activePackage();
     }
 
+    public function close() // 关闭订单
+    {
+        return $this->update(['status' => -1]);
+    }
+
+    public function paid() // 完成订单
+    {
+        return $this->update(['status' => 1]);
+    }
+
+    public function complete() // 完成订单
+    {
+        return $this->update(['status' => 2]);
+    }
+
+    public function prepay() // 预支付订单
+    {
+        return $this->update(['status' => 3]);
+    }
+
     // 订单状态
     public function getStatusLabelAttribute(): string
     {

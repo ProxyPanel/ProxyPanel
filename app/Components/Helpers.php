@@ -7,6 +7,7 @@ use App\Models\CouponLog;
 use App\Models\NotificationLog;
 use App\Models\SsConfig;
 use App\Models\User;
+use App\Models\UserBanedLog;
 use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
 use App\Models\UserSubscribe;
@@ -248,6 +249,25 @@ class Helpers
         $log->order_id = $orderId;
         $log->before = $before;
         $log->after = $after;
+        $log->description = $description;
+
+        return $log->save();
+    }
+
+    /**
+     * 添加用户封禁日志.
+     *
+     * @param  int  $userId  用户ID
+     * @param  int  $time  封禁时长，单位分钟
+     * @param  string  $description  封禁理由
+     *
+     * @return bool
+     */
+    public static function addUserBanLog(int $userId, int $time, string $description)
+    {
+        $log = new UserBanedLog();
+        $log->user_id = $userId;
+        $log->time = $time;
         $log->description = $description;
 
         return $log->save();

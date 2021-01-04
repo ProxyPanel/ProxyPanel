@@ -102,7 +102,7 @@ class PayPal extends AbstractPayment
 
             if (! strcasecmp($status, 'Completed') || ! strcasecmp($status, 'Processed')) {
                 Log::info("Order $payment->order_id has been paid successfully!");
-                $payment->order->update(['status' => 1]);
+                $payment->order->paid();
             } else {
                 Log::warning("Error processing PayPal payment for Order $payment->id!");
             }
@@ -126,7 +126,7 @@ class PayPal extends AbstractPayment
         if ($response === 'VERIFIED' && $request['invoice']) {
             $payment = Payment::whereTradeNo($request['invoice'])->first();
             if ($payment && $payment->status === 0) {
-                $ret = $payment->order->update(['status' => 2]);
+                $ret = $payment->order->complete();
                 if ($ret) {
                     exit('success');
                 }

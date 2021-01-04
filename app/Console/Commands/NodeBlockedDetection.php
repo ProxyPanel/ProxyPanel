@@ -92,7 +92,7 @@ class NodeBlockedDetection extends Command
                     Cache::increment($cacheKey);
                 } else {
                     Cache::forget($cacheKey);
-                    Node::find($node->id)->update(['status' => 0]);
+                    $node->update(['status' => 0]);
                     $additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
                 }
             }

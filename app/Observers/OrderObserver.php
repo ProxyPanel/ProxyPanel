@@ -19,7 +19,7 @@ class OrderObserver
                 $payment = $order->payment;
                 if ($payment) {
                     // 关闭在线订单
-                    $payment->update(['status' => -1]);
+                    $payment->close();
                     // 退回优惠券
                     if ($order->coupon_id && $this->returnCoupon($order->coupon)) {
                         Helpers::addCouponLog('订单超时未支付，自动退回', $order->coupon_id, $order->goods_id, $order->id);

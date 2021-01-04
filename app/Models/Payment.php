@@ -29,6 +29,16 @@ class Payment extends Model
         return $this->belongsTo(Order::class);
     }
 
+    public function close() // 关闭支付单
+    {
+        return $this->update(['status' => -1]);
+    }
+
+    public function complete() // 完成支付单
+    {
+        return $this->update(['status' => 1]);
+    }
+
     public function getAmountAttribute($value)
     {
         return $value / 100;

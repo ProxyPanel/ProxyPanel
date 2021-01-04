@@ -126,7 +126,7 @@ class Stripe extends AbstractPayment
     {
         $payment = Payment::whereTradeNo($session->client_reference_id)->first();
         if ($payment) {
-            $payment->order->update(['status' => 2]);
+            $payment->order->complete();
         }
     }
 
@@ -135,7 +135,7 @@ class Stripe extends AbstractPayment
     {
         $payment = Payment::whereTradeNo($session->client_reference_id)->first();
         if ($payment) {
-            $payment->order->update(['status' => -1]);
+            $payment->order->close();
         }
     }
 }

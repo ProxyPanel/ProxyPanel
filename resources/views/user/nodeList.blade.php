@@ -96,13 +96,6 @@
                                         <i id="text{{$node->id}}" class="icon fa-list"></i>
                                     </button>
                                 </p>
-                                <p class="text-muted">
-                                    <span>电信： {{$node->ct>0 ?$node->ct.' ms' :'无数据'}} </span>
-                                    <span>联通： {{$node->cu>0 ?$node->cu.' ms' :'无数据'}} </span>
-                                    <br>
-                                    <span>移动： {{$node->cm>0 ?$node->cm.' ms' :'无数据'}} </span>
-                                    <span>香港： {{$node->hk>0 ?$node->hk.' ms' :'无数据'}} </span>
-                                </p>
                             </div>
                         </div>
                     </div>

@@ -186,7 +186,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['admin.node.index', 'admin.node.auth.index', 'admin.node.cert.index', 'admin.node.pingLog'])
+                @canany(['admin.node.index', 'admin.node.auth.index', 'admin.node.cert.index'])
                     <li class="site-menu-item has-sub {{request()->routeIs('admin.node.*') ? 'active open' : ''}}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
@@ -211,13 +211,6 @@
                                 <li class="site-menu-item {{request()->routeIs('admin.node.cert.*') ? 'active open' : ''}}">
                                     <a href="{{route('admin.node.cert.index')}}">
                                         <span class="site-menu-title">证书列表</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.node.pingLog')
-                                <li class="site-menu-item {{request()->routeIs('admin.node.pingLog') ? 'active open' : ''}}">
-                                    <a href="{{route('admin.node.pingLog')}}">
-                                        <span class="site-menu-title">测速日志</span>
                                     </a>
                                 </li>
                             @endcan

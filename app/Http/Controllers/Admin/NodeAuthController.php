@@ -25,7 +25,7 @@ class NodeAuthController extends Controller
         if ($nodes->isEmpty()) {
             return Response::json(['status' => 'success', 'message' => '没有需要生成授权的节点']);
         }
-        $nodes->each(static function ($node) {
+        $nodes->each(function ($node) {
             $node->auth()->create(['key' => Str::random(), 'secret' => Str::random(8)]);
         });
 

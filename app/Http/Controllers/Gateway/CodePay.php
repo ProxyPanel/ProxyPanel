@@ -38,7 +38,7 @@ class CodePay extends AbstractPayment
             && $this->verify($request->except('method'), sysConfig('codepay_key'), $request->input('sign'), false)) {
             $payment = Payment::whereTradeNo($trade_no)->first();
             if ($payment) {
-                $ret = $payment->order->update(['status' => 2]);
+                $ret = $payment->order->complete();
                 if ($ret) {
                     exit('success');
                 }

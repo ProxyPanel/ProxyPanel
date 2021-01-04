@@ -11,7 +11,6 @@ use App\Models\Node;
 use App\Models\NodeHeartBeat;
 use App\Models\Order;
 use App\Models\User;
-use App\Models\UserBanedLog;
 use App\Models\VerifyCode;
 use Cache;
 use Illuminate\Console\Command;
@@ -30,7 +29,7 @@ class AutoJob extends Command
         $jobStartTime = microtime(true);
 
         // 关闭超时未支付本地订单
-        $this->closeOrders();
+        Order::query()->recentUnPay()->update(['status' => -1]);
 
         //过期验证码、优惠券、邀请码无效化
         $this->expireCode();
@@ -61,16 +60,6 @@ class AutoJob extends Command
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
 
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
-    }
-
-    // 关闭超时未支付本地订单
-    private function closeOrders(): void
-    {
-        // 关闭超时未支付的本地支付订单
-        foreach (Order::recentUnPay()->get() as $order) {
-            // 关闭订单
-            $order->update(['status' => -1]);
-        }
     }
 
     // 注册验证码自动置无效 & 优惠券无效化
@@ -108,26 +97,10 @@ class AutoJob extends Command
                     ]);
 
                     // 记录封禁日志
-                    $this->addUserBanLog($user->id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
+                    Helpers::addUserBanLog($user->id, 0, '【完全封禁订阅】-订阅24小时内请求异常');
                 }
             }
         }
-    }
-
-    /**
-     * 添加用户封禁日志.
-     *
-     * @param  int  $userId  用户ID
-     * @param  int  $time  封禁时长，单位分钟
-     * @param  string  $description  封禁理由
-     */
-    private function addUserBanLog(int $userId, int $time, string $description): void
-    {
-        $log = new UserBanedLog();
-        $log->user_id = $userId;
-        $log->time = $time;
-        $log->description = $description;
-        $log->save();
     }
 
     // 封禁账号
@@ -138,7 +111,7 @@ class AutoJob extends Command
             $user->update(['enable' => 0]);
 
             // 写入日志
-            $this->addUserBanLog($user->id, 0, '【封禁代理】-流量已用完');
+            Helpers::addUserBanLog($user->id, 0, '【封禁代理】-流量已用完');
         }
 
         // 封禁1小时内流量异常账号
@@ -153,7 +126,7 @@ class AutoJob extends Command
                     ]);
 
                     // 写入日志
-                    $this->addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常');
+                    Helpers::addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常');
                 }
             }
         }
@@ -169,7 +142,7 @@ class AutoJob extends Command
                 $user->update(['enable' => 1, 'ban_time' => null]);
 
                 // 写入操作日志
-                $this->addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
+                Helpers::addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
             }
         }
 
@@ -184,7 +157,7 @@ class AutoJob extends Command
             $user->update(['enable' => 1]);
 
             // 写入操作日志
-            $this->addUserBanLog($user->id, 0, '【自动解封】-有流量解封');
+            Helpers::addUserBanLog($user->id, 0, '【自动解封】-有流量解封');
         }
     }
 
@@ -192,9 +165,9 @@ class AutoJob extends Command
     private function dispatchPort(): void
     {
         // 自动分配端口
-        foreach (User::activeUser()->wherePort(0)->get() as $user) {
+        User::activeUser()->wherePort(0)->get()->each(function ($user) {
             $user->update(['port' => Helpers::getPort()]);
-        }
+        });
 
         // 被封禁 / 过期一个月 的账号自动释放端口
         User::where('port', '<>', 0)

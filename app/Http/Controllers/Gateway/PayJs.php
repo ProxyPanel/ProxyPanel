@@ -45,7 +45,7 @@ class PayJs extends AbstractPayment
         if ($data['return_code'] == 1) {
             $payment = Payment::whereTradeNo($data['out_trade_no'])->first();
             if ($payment) {
-                $ret = $payment->order->update(['status' => 2]);
+                $ret = $payment->order->complete();
                 if ($ret) {
                     exit('success');
                 }

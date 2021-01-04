@@ -56,10 +56,6 @@ class TableImprovement extends Migration
             $table->rename('label_node');
         });
 
-        Schema::table('node_ping', function (Blueprint $table) {
-            $table->unsignedInteger('node_id')->comment('对应节点ID')->change();
-        });
-
         Order::whereGoodsId(0)->update(['goods_id' => null]);
         Order::whereCouponId(0)->orWhereNotIn('coupon_id', Coupon::withTrashed()->pluck('id')->toArray())->update(['coupon_id' => null]);
         Schema::table('order', function (Blueprint $table) {

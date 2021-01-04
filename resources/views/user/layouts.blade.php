@@ -123,7 +123,7 @@
                     </a>
                 </li>
                 @php
-                    $openTicket = App\Models\Ticket::uid()->whereStatus(1)->count()
+                    $openTicket = auth()->user()->tickets()->where('status','<>',2)->count()
                 @endphp
                 <li class="site-menu-item {{request()->routeIs('ticket', 'replyTicket') ? 'active open' : ''}}">
                     <a href="{{route('ticket')}}">

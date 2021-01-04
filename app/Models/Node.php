@@ -46,11 +46,6 @@ class Node extends Model
         return $this->hasMany(RuleLog::class);
     }
 
-    public function pingLogs(): HasMany
-    {
-        return $this->hasMany(NodePing::class);
-    }
-
     public function dailyDataFlows(): HasMany
     {
         return $this->hasMany(NodeDailyDataFlow::class);

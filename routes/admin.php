@@ -41,7 +41,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('monitor/{node}', 'NodeController@nodeMonitor')->name('monitor'); // 节点流量监控
             Route::post('check/{node}', 'NodeController@checkNode')->name('check'); // 节点阻断检测
             Route::post('ping/{node}', 'NodeController@pingNode')->name('ping'); // 节点ping测速
-            Route::get('pingLog', 'NodeController@pingLog')->name('pingLog'); // 节点Ping测速日志
             Route::get('refreshGeo/{id}', 'NodeController@refreshGeo')->name('geo'); // 更新节点
             Route::post('reload/{node}', 'NodeController@reload')->name('reload'); // 更新节点
 

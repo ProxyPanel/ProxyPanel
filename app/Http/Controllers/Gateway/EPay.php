@@ -52,7 +52,7 @@ class EPay extends AbstractPayment
             && $this->verify($request->except('method'), sysConfig('epay_key'), $request->input('sign'))) {
             $payment = Payment::whereTradeNo($request->input('out_trade_no'))->first();
             if ($payment) {
-                $ret = $payment->order->update(['status' => 2]);
+                $ret = $payment->order->complete();
                 if ($ret) {
                     exit('SUCCESS');
                 }

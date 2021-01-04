@@ -197,7 +197,7 @@ class PaymentController extends Controller
 
     public function close(Order $order): JsonResponse
     {
-        if (! $order->update(['status' => -1])) {
+        if (! $order->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
         }
 

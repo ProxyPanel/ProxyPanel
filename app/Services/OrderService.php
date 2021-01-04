@@ -31,7 +31,7 @@ class OrderService
             if (self::$payment->status === 1) {// 已处理
                 return true;
             }
-            self::$payment->update(['status' => 1]);
+            self::$payment->complete();
 
             // 余额充值
             if (self::$order->goods_id === 0 || self::$order->goods_id === null) {

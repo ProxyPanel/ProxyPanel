@@ -60,10 +60,6 @@ class ImproveTable extends Migration
             $table->foreign('label_id')->references('id')->on('label')->cascadeOnDelete();
         });
 
-        Schema::table('node_ping', function (Blueprint $table) {
-            $table->foreign('node_id')->references('id')->on('ss_node')->cascadeOnDelete();
-        });
-
         Schema::table('node_rule', function (Blueprint $table) {
             $table->index(['node_id', 'rule_id']);
             $table->foreign('node_id')->references('id')->on('ss_node')->cascadeOnDelete();
@@ -277,10 +273,6 @@ class ImproveTable extends Migration
             $table->dropForeign(['node_id']);
             $table->dropForeign(['label_id']);
             $table->dropIndex('node_label_label_id_foreign');
-        });
-
-        Schema::table('node_ping', function (Blueprint $table) {
-            $table->dropForeign(['node_id']);
         });
 
         Schema::table('node_rule', function (Blueprint $table) {

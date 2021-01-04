@@ -198,9 +198,7 @@
               if (ret.status === 'success') {
                 swal.fire({
                   icon: 'info',
-                  html: '<table class="my-20"><thead class="thead-default"><tr><th> 电信 </th> <th> 联通 </th> <th> 移动 </th> <th> 香港 </th></thead><tbody><tr><td>' +
-                      ret.message[0] + '</td><td>' + ret.message[1] + '</td><td>' + ret.message[2] + '</td><td>' +
-                      ret.message[3] + '</td></tr></tbody></table>',
+                  html: ret.message,
                   showConfirmButton: false,
                 });
               } else {

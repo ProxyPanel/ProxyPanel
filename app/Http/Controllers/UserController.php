@@ -12,10 +12,8 @@ use App\Models\Goods;
 use App\Models\Invite;
 use App\Models\Node;
 use App\Models\NodeHeartBeat;
-use App\Models\NodePing;
 use App\Models\Order;
 use App\Models\Ticket;
-use App\Models\TicketReply;
 use Cache;
 use DB;
 use Exception;
@@ -118,14 +116,7 @@ class UserController extends Controller
         // 获取当前用户可用节点
         $nodeList = $user->nodes()->with(['labels', 'level_table'])->get();
         $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
-        $pingNodeLogs = NodePing::whereMonth('created_at', date('m'))->get(['node_id', 'ct', 'cu', 'cm', 'hk']);
         foreach ($nodeList as $node) {
-            $data = $pingNodeLogs->where('node_id', $node->id);
-            $node->ct = round($data->pluck('ct')->filter()->avg(), 2);
-            $node->cu = round($data->pluck('cu')->filter()->avg(), 2);
-            $node->cm = round($data->pluck('cm')->filter()->avg(), 2);
-            $node->hk = round($data->pluck('hk')->filter()->avg(), 2);
-
             // 节点在线状态
             $node->offline = ! in_array($node->id, $onlineNode, true);
         }
@@ -291,12 +282,7 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'message' => '请输入标题和内容']);
         }
 
-        $obj = new Ticket();
-        $obj->user_id = $user->id;
-        $obj->title = $title;
-        $obj->content = $content;
-
-        if ($obj->save()) {
+        if ($user->tickets()->create(['title' => $title, 'content' => $content])) {
             $emailTitle = '新工单提醒';
             $content = '标题：【'.$title.'】<br>用户：'.$user->email.'<br>内容：'.$content;
 
@@ -332,12 +318,7 @@ class UserController extends Controller
                 return Response::json(['status' => 'fail', 'message' => '错误：该工单已关闭']);
             }
 
-            $obj = new TicketReply();
-            $obj->ticket_id = $id;
-            $obj->user_id = auth()->user()->id;
-            $obj->content = $content;
-
-            if ($obj->save()) {
+            if ($ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content])) {
                 // 重新打开工单
                 $ticket->status = 0;
                 $ticket->save();
