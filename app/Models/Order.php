@@ -168,6 +168,9 @@ class Order extends Model
             case 6:
                 $pay_type_label = 'Stripe';
                 break;
+            case 7:
+                $pay_type_label = 'PayBeaver';
+                break;
             default:
                 $pay_type_label = '';
         }
@@ -195,6 +198,9 @@ class Order extends Model
                 break;
             case 6:
                 $pay_type_icon = $base_path.'stripe.png';
+                break;
+            case 7:
+                $pay_type_icon = $base_path.'coin.png';
                 break;
             case 0:
             case 4:
@@ -232,6 +238,9 @@ class Order extends Model
                 break;
             case 'stripe':
                 $pay_way_label = 'Stripe';
+                break;
+            case 'paybeaver':
+                $pay_way_label = '海狸支付';
                 break;
             default:
                 $pay_way_label = '未知';
