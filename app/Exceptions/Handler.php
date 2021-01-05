@@ -127,12 +127,6 @@ class Handler extends ExceptionHandler
                     }
 
                     return Response::view('auth.error', ['message' => $exception->getMessage()], 408);
-                default:
-                    if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()]);
-                    }
-
-                    return Response::view('auth.error', ['message' => $exception->getMessage()]);
             }
         }
 
