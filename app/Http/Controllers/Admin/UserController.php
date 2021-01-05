@@ -194,10 +194,9 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user)
     {
         $data = $request->validated();
-        Arr::forget($data, 'roles');
         $data['passwd'] = $request->input('passwd') ?? Str::random();
         $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
-        Arr::forget($data, 'uuid');
+        Arr::forget($data, ['roles', 'uuid', 'password']);
         $data['transfer_enable'] *= GB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
