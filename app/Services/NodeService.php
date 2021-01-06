@@ -18,7 +18,7 @@ class NodeService
         $result = 0;
         foreach ($nodes as $node) {
             $data = IP::IPSB($node->is_ddns ? gethostbyname($node->server) : $node->ip);
-            if ($data && Node::whereId($node->id)->update(['geo' => $data['latitude'].','.$data['longitude']])) {
+            if ($data && $node->update(['geo' => $data['latitude'].','.$data['longitude']])) {
                 $result++;
             }
         }

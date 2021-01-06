@@ -6,8 +6,6 @@ use App\Components\DDNS;
 use App\Jobs\VNet\reloadNode;
 use App\Models\Node;
 use App\Models\NodeAuth;
-use App\Models\RuleGroup;
-use App\Models\UserGroup;
 use App\Services\NodeService;
 use Arr;
 use Log;
@@ -30,7 +28,7 @@ class NodeObserver
             Log::warning('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 
-        if ($node->is_ddns == 0 && $node->server && sysConfig('ddns_mode')) {
+        if ($node->is_ddns === 0 && $node->server && sysConfig('ddns_mode')) {
             if ($node->ip) {
                 DDNS::store($node->server, $node->ip);
             }
@@ -76,32 +74,14 @@ class NodeObserver
             }
         }
 
-        if ($node->type == 4) {
-            reloadNode::dispatch(Node::whereId($node->id)->get());
+        if ($node->type === 4) {
+            reloadNode::dispatch($node);
         }
     }
 
     public function deleted(Node $node): void
     {
-        // 断开审计规则分组节点联系
-        foreach (RuleGroup::all() as $ruleGroup) {
-            $nodes = $ruleGroup->nodes;
-            if ($nodes && in_array($node->id, $nodes)) {
-                $ruleGroup->nodes = array_merge(array_diff($nodes, [$node->id]));
-                $ruleGroup->save();
-            }
-        }
-
-        // 断开用户分组控制节点联系
-        foreach (UserGroup::all() as $userGroup) {
-            $nodes = $userGroup->nodes;
-            if ($nodes && in_array($node->id, $nodes)) {
-                $userGroup->nodes = array_merge(array_diff($nodes, [$node->id]));
-                $userGroup->save();
-            }
-        }
-
-        if ($node->is_ddns == 0 && $node->server && sysConfig('ddns_mode')) {
+        if ($node->is_ddns === 0 && $node->server && sysConfig('ddns_mode')) {
             DDNS::destroy($node->server);
         }
     }

@@ -71,7 +71,7 @@
                                 @endif
                             </td>
                             <td>
-                                @if(!$user->onlineIPList->isEmpty())
+                                @if($user->onlineIPList->isNotEmpty())
                                     <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                                         <thead>
                                         <tr>
@@ -82,13 +82,13 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($user->onlineIPList as $vo)
+                                        @foreach($user->onlineIPList as $log)
                                             <tr>
-                                                <td>{{$vo->created_at}}</td>
-                                                <td>{{$vo->node->name ?? '【节点已删除】'}}</td>
-                                                <td>{{$vo->type}}</td>
+                                                <td>{{$log->created_at}}</td>
+                                                <td>{{$log->node->name ?? '【节点已删除】'}}</td>
+                                                <td>{{$log->type}}</td>
                                                 <td>
-                                                    <a href="https://www.ipip.net/ip/{{$vo->ip}}.html" target="_blank">{{$vo->ip}}</a>
+                                                    <a href="https://www.ipip.net/ip/{{$log->ip}}.html" target="_blank">{{$log->ip}}</a>
                                                 </td>
                                             </tr>
                                         @endforeach

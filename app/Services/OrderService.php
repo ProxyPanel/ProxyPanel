@@ -100,7 +100,7 @@ class OrderService
     // 激活套餐
     private function activatePlan(): bool
     {
-        Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime('+'.self::$goods->days.' days'))]);
+        self::$order->update(['expired_at' => date('Y-m-d H:i:s', strtotime('+'.self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
