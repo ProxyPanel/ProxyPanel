@@ -16,7 +16,7 @@
 @if(sysConfig('is_otherPay') == 'bitpayx')
     <button class="btn btn-round btn-outline-default mt-2" onclick="pay('bitpayx','4')">
         <img src="/assets/images/payment/btc.svg" height="36px" alt="other"/>
-        <span class="font-size-24 black"> 虚拟货币</span>
+        <span class="font-size-24 black"> {{trans('common.payment.crypto')}} </span>
     </button>
 @elseif(sysConfig('is_otherPay') == 'paypal')
     <button class="btn btn-round btn-outline-default mt-2" onclick="pay('paypal','5')">

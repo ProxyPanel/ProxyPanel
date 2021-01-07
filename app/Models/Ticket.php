@@ -46,16 +46,16 @@ class Ticket extends Model
     {
         switch ($this->attributes['status']) {
             case 0:
-                $status_label = '<span class="badge badge-lg badge-success">'.trans('home.ticket_table_status_wait').'</span>';
+                $status_label = '<span class="badge badge-lg badge-success">'.trans('user.status.pending').'</span>';
                 break;
             case 1:
-                $status_label = '<span class="badge badge-lg badge-danger">'.trans('home.ticket_table_status_reply').'</span>';
+                $status_label = '<span class="badge badge-lg badge-danger">'.trans('user.status.reply').'</span>';
                 break;
             case 2:
-                $status_label = '<span class="badge badge-lg badge-default">'.trans('home.ticket_table_status_close').'</span>';
+                $status_label = '<span class="badge badge-lg badge-default">'.trans('user.status.closed').'</span>';
                 break;
             default:
-                $status_label = '<span class="badge badge-lg badge-default"> 未知 </span>';
+                $status_label = '<span class="badge badge-lg badge-default">'.trans('user.unknown').'</span>';
         }
 
         return $status_label;

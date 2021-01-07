@@ -10,21 +10,21 @@
                     <table class="table table-hover text-md-center">
                         <thead>
                         <tr>
-                            <th>{{trans('home.service_name')}}</th>
-                            <th>{{trans('home.service_desc')}} </th>
-                            <th>{{trans('home.service_price')}}</th>
-                            <th>{{trans('home.service_quantity')}}</th>
+                            <th>{{trans('user.shop.service')}}</th>
+                            <th>{{trans('user.shop.description')}} </th>
+                            <th>{{trans('user.shop.price')}}</th>
+                            <th>{{trans('user.shop.quantity')}}</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
                             <td class="text-middle">{{$goods->name}} </td>
-                            <td>{{trans('home.service_days')}}
-                                <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans('home.day')}}</strong>
+                            <td>{{trans('common.available_date')}}
+                                <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans('validation.attributes.day')}}</strong>
                                 <br>
-                                <strong>{{$goods->traffic_label}}</strong> {{trans('home.bandwidth')}}
+                                <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
                             </td>
-                            <td class="text-middle"> ￥{{$goods->price}} </td>
+                            <td class="text-middle"> ¥{{$goods->price}} </td>
                             <td class="text-middle"> x 1</td>
                         </tr>
                         </tbody>
@@ -34,20 +34,21 @@
                     @if($goods->type <= 2)
                         <div class="col-lg-3 pl-30">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('home.coupon')}}"/>
+                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('user.coupon.attribute')}}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-info" onclick="redeemCoupon()">
-                                        <i class="icon wb-loop" aria-hidden="true"></i> {{trans('home.redeem_coupon')}}
+                                        <i class="icon wb-loop" aria-hidden="true"></i> {{trans('common.apply')}}
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-3 offset-lg-6 text-right">
-                            <p>{{trans('home.service_subtotal_price')}}
-                                <span>￥{{$goods->price}}</span>
+                            <p id="discount"></p>
+                            <p>{{trans('user.shop.subtotal')}}
+                                <span>¥{{$goods->price}}</span>
                             </p>
-                            <p class="page-invoice-amount">{{trans('home.service_total_price')}}
-                                <span class="grand-total">￥{{$goods->price}}</span>
+                            <p class="page-invoice-amount">{{trans('user.shop.total')}}
+                            <span class="grand-total">¥{{$goods->price}}</span>
                             </p>
                         </div>
                     @endif
@@ -56,7 +57,7 @@
                             @include('user.components.purchase')
                             @if($goods->type <= 2)
                                 <button class="btn btn-flat mt-2 mx-0 p-0" onclick="pay('credit','0')">
-                                    <img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('home.service_pay_button')}}"/>
+                                    <img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('user.shop.pay_credit')}}"/>
                                 </button>
                             @endif
                         </div>
@@ -85,21 +86,22 @@
                   '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
               // 根据类型计算折扣后的总金额
               let total_price = 0;
+              let coupon_text = document.getElementById('discount');
               if (ret.data.type === 2) {
                 total_price = goods_price * (1 - ret.data.value / 100);
-                $('.page-invoice-amount').parent().prepend('<p>优惠码 - ' + ret.data.name + ' ' + ret.data.value + '折<br> 优惠 <span>￥ - ' +
-                    total_price.toFixed(2) + '</span></p>');
+                coupon_text.innerHTML = '【{{trans('user.coupon.attribute')}}】：' + ret.data.name + ' － '
+                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}} － ¥' + total_price.toFixed(2);
                 total_price = goods_price - total_price;
               } else {
                 total_price = goods_price - ret.data.value;
                 total_price = total_price > 0 ? total_price : 0;
                 if (ret.data.type === 1) {
-                  $('.page-invoice-amount').parent().prepend('优惠码-' + ret.data.name + ' <span>￥ - ' + ret.data.value + '</span>');
+                  coupon_text.innerHTML = '【{{trans('user.coupon.voucher')}}】：' + ret.data.name + ' －¥' + ret.data.value;
                 }
               }
 
               // 四舍五入，保留2位小数
-              $('.grand-total').text('￥' + total_price.toFixed(2));
+              $('.grand-total').text('¥' + total_price.toFixed(2));
               swal.fire({
                 title: ret.message,
                 icon: 'success',
@@ -107,7 +109,7 @@
                 showConfirmButton: false,
               });
             } else {
-              $('.grand-total').text('￥' + goods_price);
+              $('.grand-total').text('¥' + goods_price);
               $('#coupon_sn').parent().prepend(
                   '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
               swal.fire({
@@ -125,12 +127,12 @@
         // 存在套餐 和 购买类型为套餐时 出现提示
         if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
           swal.fire({
-            title: '套餐存在冲突',
-            html: '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
+            title: '{{trans('user.shop.conflict')}}',
+            html: '{!! trans('user.shop.conflict_tips') !!}',
             icon: 'info',
             showCancelButton: true,
-            cancelButtonText: '返 回',
-            confirmButtonText: '继 续',
+            cancelButtonText: '{{trans('common.back')}}',
+            confirmButtonText: '{{trans('common.continues')}}',
           }).then((result) => {
             if (result.value) {
               contiousPay(method, pay_type);
@@ -182,7 +184,7 @@
             }
           },
           error: function() {
-            swal.fire('未知错误', '请开工单通知客服', 'error');
+            swal.fire('{{trans('user.unknown').trans('common.error')}}', '{{trans('user.shop.call4help')}}', 'error');
           },
         });
       }

@@ -17,7 +17,7 @@
             <div class="alert alert-info" role="alert">
                 <button class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">{{trans('home.close')}}</span>
+                    <span class="sr-only">{{trans('common.close')}}</span>
                 </button>
                 <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
             </div>
@@ -576,7 +576,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
         });

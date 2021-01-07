@@ -105,19 +105,28 @@ class Order extends Model
     {
         switch ($this->attributes['status']) {
             case -1:
-                $status_label = trans('home.invoice_status_closed');
-                break;
-            case 1:
-                $status_label = trans('home.invoice_status_wait_confirm');
-                break;
-            case 2:
-                $status_label = trans('home.invoice_status_payment_confirm');
+                $status_label = '<span class="badge badge-default">'.trans('user.status.closed').'</span>';
                 break;
             case 0:
-                $status_label = trans('home.invoice_status_wait_payment');
+                $status_label = '<span class="badge badge-danger">'.trans('user.status.waiting_payment').'</span>';
+                break;
+            case 1:
+                $status_label = '<span class="badge badge-info">'.trans('user.status.waiting_confirm').'</span>';
+                break;
+            case 2:
+                if ($this->attributes['goods_id'] === 0) {
+                    $status_label = '<span class="badge badge-default">'.trans('user.status.completed').'</span>';
+                } elseif ($this->attributes['is_expire']) {
+                    $status_label = '<span class="badge badge-default">'.trans('user.status.expired').'</span>';
+                } else {
+                    $status_label = '<span class="badge badge-success">'.trans('user.status.using').'</span>';
+                }
+                break;
+            case 3:
+                $status_label = '<span class="badge badge-info">'.trans('user.status.prepaid').'</span>';
                 break;
             default:
-                $status_label = 'Unknown';
+                $status_label = trans('user.unknown');
         }
 
         return $status_label;
@@ -148,28 +157,25 @@ class Order extends Model
     {
         switch ($this->attributes['pay_type']) {
             case 0:
-                $pay_type_label = '余额';
+                $pay_type_label = trans('common.payment.credit');
                 break;
             case 1:
-                $pay_type_label = '支付宝';
+                $pay_type_label = trans('common.payment.alipay');
                 break;
             case 2:
                 $pay_type_label = 'QQ';
                 break;
             case 3:
-                $pay_type_label = '微信';
+                $pay_type_label = trans('common.payment.wechat');
                 break;
             case 4:
-                $pay_type_label = '虚拟货币';
+                $pay_type_label = trans('common.payment.crypto');
                 break;
             case 5:
                 $pay_type_label = 'PayPal';
                 break;
             case 6:
                 $pay_type_label = 'Stripe';
-                break;
-            case 7:
-                $pay_type_label = 'PayBeaver';
                 break;
             default:
                 $pay_type_label = '';

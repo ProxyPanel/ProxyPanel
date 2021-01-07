@@ -79,7 +79,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.user.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.user.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -93,9 +93,9 @@
                         <th> 流量使用</th>
                         <th> 最后使用</th>
                         <th> 有效期</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                         <th> 代理</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -249,8 +249,8 @@
           inputValue: 1,
           icon: 'question',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
@@ -269,12 +269,12 @@
       // 删除账号
       function delUser(url, email) {
         swal.fire({
-          title: '警告',
+          title: '{{trans('common.warning')}}',
           text: '确定删除用户 【' + email + '】 ？',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({
@@ -299,12 +299,12 @@
       // 重置流量
       function resetTraffic(id, email) {
         swal.fire({
-          title: '警告',
+          title: '{{trans('common.warning')}}',
           text: '确定重置 【' + email + '】 流量吗？',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
@@ -335,7 +335,7 @@
       const clipboard = new ClipboardJS('.copySubscribeLink');
       clipboard.on('success', function() {
         swal.fire({
-          title: '复制成功',
+          title: '{{trans('common.copy.success')}}',
           icon: 'success',
           timer: 1000,
           showConfirmButton: false,
@@ -343,7 +343,7 @@
       });
       clipboard.on('error', function() {
         swal.fire({
-          title: '复制失败，请手动复制',
+          title: '{{trans('common.copy.failed')}}',
           icon: 'error',
           timer: 1500,
           showConfirmButton: false,

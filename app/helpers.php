@@ -67,14 +67,14 @@ if (! function_exists('seconds2time')) {
         $hour = floor(($seconds % Day) / Hour);
         $minute = floor((($seconds % Day) % Hour) / Minute);
         if ($day > 0) {
-            return $day.'天'.$hour.'小时'.$minute.'分';
+            return $day.trans('validation.attributes.day').$hour.trans('validation.attributes.hour').$minute.trans('validation.attributes.minute');
         }
 
         if ($hour != 0) {
-            return $hour.'小时'.$minute.'分';
+            return $hour.trans('validation.attributes.hour').$minute.trans('validation.attributes.minute');
         }
 
-        return $minute.'分';
+        return $minute.trans('validation.attributes.minute');
     }
 }
 

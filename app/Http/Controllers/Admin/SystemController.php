@@ -141,10 +141,10 @@ class SystemController extends Controller
 
         // 更新配置
         if (Config::findOrFail($name)->update(['value' => $value])) {
-            return Response::json(['status' => 'success', 'message' => '修改成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.update_action', ['action' => trans('common.success')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '修改失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.update_action', ['action' => trans('common.failed')])]);
     }
 
     // 推送通知测试

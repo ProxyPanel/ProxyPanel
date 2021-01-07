@@ -40,7 +40,7 @@
                                 <thead class="thead-default">
                                 <tr>
                                     <th> 名称</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -74,7 +74,7 @@
                                 <thead class="thead-default">
                                 <tr>
                                     <th> 名称</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -108,7 +108,7 @@
                                 <thead class="thead-default">
                                 <tr>
                                     <th> 名称</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -143,7 +143,7 @@
                                 <tr>
                                     <th> 等级</th>
                                     <th> 名称</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -178,7 +178,7 @@
                                     <th> 图标</th>
                                     <th> 代码</th>
                                     <th> 国家/地区名称</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -218,7 +218,7 @@
                                     <th> 名称</th>
                                     <th> 关联节点数</th>
                                     <th> 排序</th>
-                                    <th> 操作</th>
+                                    <th> {{trans('common.action')}}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -451,8 +451,8 @@
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({
@@ -557,8 +557,8 @@
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({
@@ -653,8 +653,8 @@
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({
@@ -757,12 +757,12 @@
         // 删除标签
         function delLabel(id, name) {
           swal.fire({
-            title: '警告',
+            title: '{{trans('common.warning')}}',
             text: '确定删除标签 【' + name + '】 ?',
             icon: 'warning',
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             $.ajax({
               method: 'DELETE',

@@ -6,10 +6,10 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading p-20">
-                <h1 class="panel-title cyan-600"><i class="icon wb-bookmark"></i>{{trans('home.invoices')}}</h1>
+                <h1 class="panel-title cyan-600"><i class="icon wb-bookmark"></i>{{trans('user.menu.invoices')}}</h1>
                 @if($prepaidPlan)
                     <div class="panel-actions">
-                        <button onclick="closePlan()" class="btn btn-primary"> 激活预付单</button>
+                        <button onclick="closePlan()" class="btn btn-primary"> {{trans('active', ['attribute' => trans('user.status.prepaid')])}}</button>
                     </div>
                 @endif
             </div>
@@ -18,14 +18,14 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{trans('home.invoice_table_id')}} </th>
-                        <th> {{trans('home.invoice_table_name')}} </th>
-                        <th> {{trans('home.invoice_table_pay_way')}} </th>
-                        <th> {{trans('home.invoice_table_price')}} </th>
-                        <th> {{trans('home.invoice_table_create_date')}} </th>
-                        <th> {{trans('home.invoice_table_expired_at')}} </th>
-                        <th> {{trans('home.invoice_table_status')}} </th>
-                        <th> {{trans('home.invoice_table_actions')}} </th>
+                        <th> {{trans('user.invoice.id')}} </th>
+                        <th> {{trans('user.shop.service')}} </th>
+                        <th> {{trans('user.payment_method')}} </th>
+                        <th> {{trans('user.invoice.amount')}} </th>
+                        <th> {{trans('user.bought_at')}} </th>
+                        <th> {{trans('common.expired_at')}} </th>
+                        <th> {{trans('common.status')}} </th>
+                        <th> {{trans('common.action')}} </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -33,46 +33,21 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
-                            <td>{{$order->goods->name ?? ($order->goods_id === 0 ? '余额充值': trans('home.invoice_table_goods_deleted'))}}</td>
-                            <td>{{$order->pay_way === 1 ? trans('home.service_pay_button') : trans('home.online_pay')}}</td>
-                            <td>￥{{$order->amount}}</td>
+                            <td>{{$order->goods->name ?? ($order->goods_id === 0 ? trans('user.recharge_credit'): trans('home.invoice_table_goods_deleted'))}}</td>
+                            <td>{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</td>
+                            <td>¥{{$order->amount}}</td>
                             <td>{{$order->created_at}}</td>
                             <td>{{empty($order->goods) || $order->goods_id === 0 || $order->status === 3 ? '' : $order->expired_at}}</td>
-                            <td>
-                                @switch($order->status)
-                                    @case(-1)
-                                    <span class="badge badge-default">{{trans('home.invoice_status_closed')}}</span>
-                                    @break
-                                    @case(0)
-                                    <span class="badge badge-danger">{{trans('home.invoice_status_wait_payment')}}</span>
-                                    @break
-                                    @case(1)
-                                    <span class="badge badge-info">{{trans('home.invoice_status_wait_confirm')}}</span>
-                                    @break
-                                    @case(2)
-                                    @if ($order->goods_id === 0)
-                                        <span class="badge badge-default">{{trans('home.invoice_status_payment_confirm')}}</span>
-                                    @else
-                                        @if($order->is_expire)
-                                            <span class="badge badge-default">{{trans('home.invoice_table_expired')}}</span>
-                                        @else
-                                            <span class="badge badge-success">{{trans('home.invoice_table_active')}}</span>
-                                        @endif
-                                    @endif
-                                    @break
-                                    @case(3)
-                                    <span class="badge badge-info">{{trans('home.invoice_table_prepay')}}</span>
-                            @break
-                            @endswitch
+                            <td>{!! $order->status_label !!}</td>
                             <td>
                                 <div class="btn-group">
                                     @if($order->status === 0 && $order->payment)
                                         @if($order->payment->qr_code)
-                                            <a href="{{route('orderDetail', $order->payment->trade_no)}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+                                            <a href="{{route('orderDetail', $order->payment->trade_no)}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
                                         @elseif($order->payment->url)
-                                            <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('home.pay')}}</a>
+                                            <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
                                         @endif
-                                        <button onclick="closeOrder('{{$order->id}}')" class="btn btn-danger">{{trans('home.cancel')}}</button>
+                                        <button onclick="closeOrder('{{$order->id}}')" class="btn btn-danger">{{trans('common.cancel')}}</button>
                                     @elseif ($order->status === 1)
                                         <button onClick="window.location.reload();" class="btn btn-primary">
                                             <i class="icon wb-refresh" aria-hidden="true"></i></button>
@@ -102,12 +77,12 @@
     <script>
       function closePlan() {
         swal.fire({
-          title: '是否提前激活预支付套餐？',
-          html: '套餐激活后：<br>先前套餐将直接失效！<br>过期日期将由本日重新开始计算！',
+          title: '{{trans('user.invoice.active_prepaid_question')}}',
+          html: '{{trans('user.invoice.active_prepaid_tips')}}',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({
@@ -130,11 +105,11 @@
 
       function closeOrder(id) {
         swal.fire({
-          title: '关闭订单？',
+          title: '{{trans('common.close_item', ['attribute' => trans('user.invoice.attribute')])}}？',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({

@@ -27,12 +27,12 @@ class isSecurity
 
         if ($websiteSecurityCode && ! Cache::has($cacheKey)) {
             if ($code !== $websiteSecurityCode) {
-                Log::info('拒绝非安全入口访问('.$ip.')');
+                Log::info(trans('error.unsafe_enter').$ip);
 
                 return Response::view(
                     'auth.error',
                     [
-                        'message' => trans('error.SecurityError').','.trans('error.Visit').'<a href="'.route('login').'?securityCode=" target="_self">'.trans('error.SecurityEnter').'</a>',
+                        'message' => trans('error.unsafe_enter').','.trans('error.visit').'<a href="'.route('login').'?securityCode=" target="_self">'.trans('error.safe_enter').'</a>',
                     ],
                     403
                 );

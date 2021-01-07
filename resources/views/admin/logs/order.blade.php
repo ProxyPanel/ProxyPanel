@@ -79,7 +79,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.order')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.order')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -114,11 +114,11 @@
                                 @endif
                             </td>
                             <td> {{$order->order_sn}}</td>
-                            <td> {{empty($order->goods) ? ($order->goods_id === 0 ? '余额充值' : trans('home.invoice_table_goods_deleted')) : $order->goods->name}} </td>
+                            <td> {{empty($order->goods) ? ($order->goods_id === 0 ? trans('user.recharge_credit') : trans('home.invoice_table_goods_deleted')) : $order->goods->name}} </td>
                             <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
                             <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
-                            <td> ￥{{$order->origin_amount}} </td>
-                            <td> ￥{{$order->amount}} </td>
+                            <td> ¥{{$order->origin_amount}} </td>
+                            <td> ¥{{$order->amount}} </td>
                             <td>
                                 <span class="badge badge-lg badge-info"> {{$order->pay_way_label}} </span>
                             </td>

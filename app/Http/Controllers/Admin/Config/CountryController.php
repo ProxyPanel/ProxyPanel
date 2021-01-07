@@ -25,7 +25,7 @@ class CountryController extends Controller
         }
 
         if (Country::create($validator->validated())) {
-            return Response::json(['status' => 'success', 'message' => '生成成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
         }
 
         return Response::json(['status' => 'fail', 'message' => '生成失败']);

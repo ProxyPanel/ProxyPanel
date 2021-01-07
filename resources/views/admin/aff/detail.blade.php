@@ -22,7 +22,7 @@
                         <thead class="thead-default">
                         <tr>
                             <th colspan="6">
-                                申请单ID：{{$referral->id}} | 申请人：{{$referral->user->email}} | 申请提现金额：￥{{$referral->amount}} | 申请时间：{{$referral->created_at}}
+                                申请单ID：{{$referral->id}} | 申请人：{{$referral->user->email}} | 申请提现金额：¥{{$referral->amount}} | 申请时间：{{$referral->created_at}}
                             </th>
                         </tr>
                         <tr>
@@ -39,7 +39,7 @@
 
                             <tr>
                                 <td> {{$commission->id}} </td>
-                                <td> {{$commission->invitee->email ?? '【账号已删除】'}} </td>
+                                <td> {{$commission->invitee->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
                                 <td>
                                     @can('admin.order')
                                         <a href="{{route('admin.order', ['id' => $commission->order->id])}}" target="_blank">
@@ -49,8 +49,8 @@
                                         {{$commission->order->goods->name}}
                                     @endcan
                                 </td>
-                                <td> ￥{{$commission->amount}} </td>
-                                <td> ￥{{$commission->commission}} </td>
+                                <td> ¥{{$commission->amount}} </td>
+                                <td> ¥{{$commission->commission}} </td>
                                 <td> {{$commission->created_at}} </td>
                             </tr>
                         @endforeach

@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.aff.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.aff.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -34,9 +34,9 @@
                         <th> 申请时间</th>
                         <th> 申请账号</th>
                         <th> 申请提现金额</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                         <th> 处理时间</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,7 +46,7 @@
                             <td> {{$apply->created_at}} </td>
                             <td>
                                 @if(empty($apply->user))
-                                    【账号已删除】
+                                    【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
                                         <a href="{{route('admin.user.index', ['id'=>$apply->user_id])}}" target="_blank">
@@ -57,7 +57,7 @@
                                     @endcan
                                 @endif
                             </td>
-                            <td> ￥{{$apply->amount}} </td>
+                            <td> ¥{{$apply->amount}} </td>
                             <td>
                                 @if($apply->status === -1)
                                     <span class="badge badge-lg badge-danger"> 驳 回 </span>
@@ -158,7 +158,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
         });

@@ -2,8 +2,8 @@
     @case(1)<!-- Default Captcha -->
     <div class="form-group form-material floating input-group" data-plugin="formMaterial">
         <input type="text" class="form-control" name="captcha" required/>
-        <label class="floating-label" for="captcha">{{trans('auth.captcha')}}</label>
-        <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha')}}"/>
+        <label class="floating-label" for="captcha">{{trans('captcha')}}</label>
+        <img src="{{captcha_src()}}" class="float-right" onclick="this.src='/captcha/default?'+Math.random()" alt="{{trans('auth.captcha.attribute')}}"/>
     </div>
     @break
     @case(2)<!-- Geetest -->

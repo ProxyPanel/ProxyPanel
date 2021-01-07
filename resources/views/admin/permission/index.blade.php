@@ -22,7 +22,7 @@
                         <th> #</th>
                         <th> 名称</th>
                         <th> 行为</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -73,12 +73,12 @@
         <script>
           function delPermission(url, name) {
             swal.fire({
-              title: '警告',
+              title: '{{trans('common.warning')}}',
               text: '确定删除 【' + name + '】 权限行为？',
               icon: 'warning',
               showCancelButton: true,
-              cancelButtonText: '{{trans('home.close')}}',
-              confirmButtonText: '{{trans('home.ticket_confirm')}}',
+              cancelButtonText: '{{trans('common.close')}}',
+              confirmButtonText: '{{trans('common.confirm')}}',
             }).then((result) => {
               if (result.value) {
                 $.ajax({

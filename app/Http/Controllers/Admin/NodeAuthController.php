@@ -29,7 +29,7 @@ class NodeAuthController extends Controller
             $node->auth()->create(['key' => Str::random(), 'secret' => Str::random(8)]);
         });
 
-        return Response::json(['status' => 'success', 'message' => '生成成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
     }
 
     // 重置节点授权

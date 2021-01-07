@@ -21,7 +21,7 @@
                     <div class="col-md-12">
                         <div class="card card-block p-20  bg-indigo-500">
                             <div class="counter counter-lg counter-inverse">
-                                <div class="counter-label text-uppercase font-size-16">账号等级</div>
+                                <div class="counter-label text-uppercase font-size-16">{{trans('user.account.level')}}</div>
                                 <div class="counter-number-group">
                                     <span class="counter-icon"><i class="icon wb-user-circle" aria-hidden="true"></i></span>
                                     <span class="counter-number ml-10">{{Auth::getUser()->level}}</span>
@@ -34,7 +34,7 @@
                         <div class="col-md-12">
                             <div class="card card-block p-20 bg-indigo-500">
                                 <div class="counter counter-lg counter-inverse">
-                                    <div class="counter-label text-uppercase font-size-16">所属分组</div>
+                                    <div class="counter-label text-uppercase font-size-16">{{trans('user.account.group')}}</div>
                                     <div class="counter-number-group">
                                         <span class="counter-icon"><i class="icon wb-globe" aria-hidden="true"></i></span>
                                         <span class="counter-number ml-10">{{Auth::getUser()->group->name}}</span>
@@ -46,10 +46,10 @@
                     <div class="col-md-12">
                         <div class="card card-block p-20 bg-indigo-500">
                             <div class="counter counter-lg counter-inverse">
-                                <div class="counter-label text-uppercase font-size-16">限速</div>
+                                <div class="counter-label text-uppercase font-size-16">{{trans('user.account.speed_limit')}}</div>
                                 <div class="counter-number-group">
                                     <span class="counter-icon"><i class="icon wb-signal" aria-hidden="true"></i></span>
-                                    <span class="counter-number ml-10">{{Auth::getUser()->speed_limit ?? '无限制'}}</span>
+                                    <span class="counter-number ml-10">{{Auth::getUser()->speed_limit ?? trans('common.unlimited')}}</span>
                                 </div>
                                 <div class="counter-label font-size-16">Mbps</div>
                             </div>
@@ -70,11 +70,12 @@
                                 <p class="font-size-20 blue-600">
                                     <span class="badge badge-pill up m-0 badge-default">{{$node->level_table->name}}</span>
                                     @if($node->offline)
-                                        <i class="red-600 icon wb-warning" data-content="线路波动/维护中" data-trigger="hover" data-toggle="popover" data-placement="top"></i>
+                                        <i class="red-600 icon wb-warning" data-content="{{trans('user.node.unstable')}}"
+                                           data-trigger="hover" data-toggle="popover" data-placement="top"></i>
                                     @endif
                                     @if($node->traffic_rate != 1)
-                                        <i class="green-600 icon wb-info-circle" data-content="{{$node->traffic_rate}} 倍流量消耗" data-trigger="hover" data-toggle="popover"
-                                           data-placement="top"></i>
+                                        <i class="green-600 icon wb-info-circle" data-content="{{trans('user.node.rate', ['ratio' => $node->traffic_rate])}}"
+                                           data-trigger="hover" data-toggle="popover" data-placement="top"></i>
                                     @endif
                                     {{$node->name}}
                                 </p>
@@ -175,13 +176,13 @@
                 case 'code':
                   swal.fire({
                     html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data + '</textarea>' +
-                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' + ret.title + '</a>',
+                        '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">{{trans('common.open')}}' + ret.title + '</a>',
                     showConfirmButton: false,
                   });
                   break;
                 case 'qrcode':
                   swal.fire({
-                    title: '{{trans('home.scan_qrcode')}}',
+                    title: '{{trans('user.scan_qrcode')}}',
                     html: '<div id="qrcode"></div>',
                     onBeforeOpen: () => {
                       $('#qrcode').qrcode({text: ret.data});
@@ -191,7 +192,7 @@
                   break;
                 case 'text':
                   swal.fire({
-                    title: '{{trans('home.setting_info')}}',
+                    title: '{{trans('user.node.info')}}',
                     html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data + '</textarea>',
                     showConfirmButton: false,
                   });

@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.aff.rebate')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.aff.rebate')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -40,7 +40,7 @@
                         <th> 返利金额</th>
                         <th> 生成时间</th>
                         <th> 处理时间</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,14 +49,14 @@
                             <td> {{$referralLog->id}} </td>
                             <td>
                                 @if(empty($referralLog->invitee))
-                                    【账号已删除】
+                                    【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     <a href="{{route('admin.aff.rebate',['invitee_email' => $referralLog->invitee->email])}}"> {{$referralLog->invitee->email}} </a>
                                 @endif
                             </td>
                             <td>
                                 @if(empty($referralLog->inviter))
-                                    【账号已删除】
+                                    【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     <a href="{{route('admin.aff.rebate',['inviter_email' => $referralLog->inviter->email])}}"> {{$referralLog->inviter->email}} </a>
                                 @endif

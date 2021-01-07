@@ -11,11 +11,11 @@
                         <button type="button" class="btn btn-floating btn-sm btn-pure">
                             <i class="icon wb-payment green-500"></i>
                         </button>
-                        <span class="font-weight-400">{{trans('home.account_credit')}}</span>
+                        <span class="font-weight-400">{{trans('user.account.credit')}}</span>
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{Auth::getUser()->credit}}</span>
                             <br/>
-                            <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('home.recharge')}}</button>
+                            <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('user.recharge')}}</button>
                         </div>
                     </div>
                 </div>
@@ -25,11 +25,11 @@
                             <button type="button" class="btn btn-floating btn-sm btn-pure">
                                 <i class="icon wb-payment green-500"></i>
                             </button>
-                            <span class="font-weight-400">流量重置</span>
+                            <span class="font-weight-400">{{trans('user.reset_data.')}}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-20 font-weight-100">需要 <code>{{$renewTraffic}}</code> 元</span>
+                                <span class="font-size-20 font-weight-100">{{trans('user.reset_data.required')}} <code>¥{{$renewTraffic}}</code></span>
                                 <br/>
-                                <button class="btn btn-danger mt-10" onclick="resetTraffic()">重置</button>
+                                <button class="btn btn-danger mt-10" onclick="resetTraffic()">{{trans('common.reset')}}</button>
                             </div>
                         </div>
                     </div>
@@ -39,30 +39,32 @@
                 <div class="panel">
                     <div class="panel-heading p-20">
                         <h1 class="panel-title cyan-700">
-                            <i class="icon wb-shopping-cart"></i>{{trans('home.services')}}
+                            <i class="icon wb-shopping-cart"></i>{{trans('user.menu.shop')}}
                         </h1>
                     </div>
                     <div class="panel-body">
                         <div class="row">
                             @foreach($goodsList as $goods)
-                                <div class="col-md-6 col-xl-4 col-xxl-3 pb-30">
+                                <div class="col-md-6 col-xl-4 col-xxl-3">
+                                    <div class="position-relative">
+                                        @if($goods->limit_num)
+                                            <div class="ribbon ribbon-badge ribbon-danger ribbon-reverse">
+                                                <span class="ribbon-inner">{{trans('user.shop.limited')}}</span>
+                                            </div>
+                                        @elseif($goods->is_hot)
+                                            <div class="ribbon ribbon-badge ribbon-danger ribbon-reverse">
+                                                <span class="ribbon-inner">{{trans('user.shop.hot')}}</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                     <div class="pricing-list text-left">
                                         <div class="pricing-header text-white" style="background-color: {{$goods->color}}">
                                             <div class="pricing-title font-size-20">{{$goods->name}}</div>
-                                            @if($goods->limit_num)
-                                                <div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-primary mr-10">
-                                                    <span class="ribbon-inner h-auto">限<br>购</span>
-                                                </div>
-                                            @elseif($goods->is_hot)
-                                                <div class="ribbon ribbon-vertical ribbon-bookmark ribbon-reverse ribbon-danger mr-10">
-                                                    <span class="ribbon-inner h-auto">热<br>销</span>
-                                                </div>
-                                            @endif
                                             <div class="pricing-price text-white @if($goods->type === 1) text-center @endif">
                                                 <span class="pricing-currency">¥</span>
                                                 <span class="pricing-amount">{{$goods->price}}</span>
                                                 @if($goods->type === 2)
-                                                    <span class="pricing-period">/ {{$goods->days}}{{trans('home.day')}}</span>
+                                                    <span class="pricing-period">/ {{$goods->days.trans('validation.attributes.day')}}</span>
                                                 @endif
                                             </div>
                                             @if($goods->info)
@@ -71,16 +73,13 @@
                                         </div>
                                         <ul class="pricing-features">
                                             <li>
-                                                <strong>{{$goods->traffic_label}}</strong>{{trans('home.bandwidth')}}
-                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans('home.day'):'/'.trans('home.month')!!}
-                                            </li>
-                                            <li>
-                                                <strong>{{trans('home.service_unlimited')}}</strong> {{trans('home.service_device')}}
+                                                <strong>{{$goods->traffic_label}}</strong>{{trans('user.attribute.data')}}
+                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans('validation.attributes.day'):'/'.trans('validation.attributes.month')!!}
                                             </li>
                                             {!!$goods->info!!}
                                         </ul>
                                         <div class="pricing-footer text-center bg-blue-grey-100">
-                                            <a href="{{route('buy', $goods)}}" class="btn btn-lg btn-primary"> {{trans('home.service_buy_button')}}</a>
+                                            <a href="{{route('buy', $goods)}}" class="btn btn-lg btn-primary"> {{trans('user.shop.buy')}}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -98,7 +97,7 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">{{trans('home.recharge_credit')}}</h4>
+                    <h4 class="modal-title">{{trans('user.recharge_credit')}}</h4>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
@@ -107,20 +106,20 @@
                             <div class="mb-15 w-p50">
                                 <select class="form-control" name="charge_type" id="charge_type">
                                     @if(sysConfig('is_onlinePay'))
-                                        <option value="1">{{trans('home.online_pay')}}</option>
+                                        <option value="1">{{trans('user.shop.pay_online')}}</option>
                                     @endif
                                     @if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                                        <option value="2">二维码</option>
+                                        <option value="2">{{trans('common.qrcode', ['attribute' => ''])}}</option>
                                     @endif
-                                    <option value="3">{{trans('home.coupon_code')}}</option>
+                                    <option value="3">{{trans('user.coupon.recharge')}}</option>
                                 </select>
                             </div>
                         @endif
                         @if(sysConfig('is_onlinePay'))
                             <div class="form-group row charge_credit">
-                                <label for="amount" class="offset-md-1 col-md-2 col-form-label">充值金额</label>
+                                <label for="amount" class="offset-md-1 col-md-2 col-form-label">{{trans('user.shop.change_amount')}}</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="￥"/>
+                                    <input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="¥"/>
                                 </div>
                             </div>
                         @endif
@@ -134,13 +133,13 @@
                                     @if(sysConfig('wechat_qrcode'))
                                         <div class="col-md-6">
                                             <img class="w-p75 mb-10" src="{{sysConfig('wechat_qrcode')}}" alt=""/>
-                                            <p>微 信 | WeChat</p>
+                                            <p>{{trans('common.payment.wechat')}}</p>
                                         </div>
                                     @endif
                                     @if(sysConfig('alipay_qrcode'))
                                         <div class="col-md-6">
                                             <img class="w-p75 mb-10" src="{{sysConfig('alipay_qrcode')}}" alt=""/>
-                                            <p>支 付 宝 | AliPay</p>
+                                            <p>{{trans('common.payment.alipay')}}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -148,9 +147,9 @@
                         @endif
                         <div class="form-group row" id="charge_coupon_code">
                             <label for="charge_coupon"
-                                   class="offset-md-2 col-md-2 col-form-label"> {{trans('home.coupon_code')}} </label>
+                                   class="offset-md-2 col-md-2 col-form-label"> {{trans('user.coupon.recharge')}} </label>
                             <div class="col-md-6">
-                                <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('home.please_input_coupon')}}">
+                                <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('user.input_coupon')}}">
                             </div>
                         </div>
                     </form>
@@ -159,7 +158,7 @@
                     <div class="charge_credit">
                         @include('user.components.purchase')
                     </div>
-                    <button type="button" class="btn btn-primary" id="change_btn" onclick="pay()">{{trans('home.recharge')}}</button>
+                    <button type="button" class="btn btn-primary" id="change_btn" onclick="pay()">{{trans('user.recharge')}}</button>
                 </div>
             </div>
         </div>
@@ -208,12 +207,12 @@
       // 重置流量
       function resetTraffic() {
         swal.fire({
-          title: '重置流量',
-          text: '本次重置流量将扣除余额 {{$renewTraffic}} 元？',
+          title: '{{trans('user.reset_data.')}}',
+          text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
           icon: 'question',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
@@ -238,7 +237,7 @@
         const amount = parseInt($('#amount').val());
         if (paymentType === 1) {
           if (amount <= 0) {
-            swal.fire({title: '错误', text: '充值余额不合规', icon: 'warning', timer: 1000, showConfirmButton: false});
+            swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
             return false;
           }
 
@@ -248,7 +247,7 @@
             data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
             dataType: 'json',
             beforeSend: function() {
-              $('#charge_msg').show().html('创建支付单中...');
+              $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
             },
             success: function(ret) {
               if (ret.status === 'fail') {
@@ -263,12 +262,12 @@
               }
             },
             error: function() {
-              $('#charge_msg').show().html("{{trans('home.error_response')}}");
+              $('#charge_msg').show().html("{{trans('user.error_response')}}");
             },
           });
         } else if (paymentType === 3) {
           if (charge_coupon === '') {
-            $('#charge_msg').show().html("{{trans('home.coupon_not_empty')}}");
+            $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
             $('#charge_coupon').focus();
             return false;
           }
@@ -278,7 +277,7 @@
             url: '{{route('recharge')}}',
             data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
             beforeSend: function() {
-              $('#charge_msg').show().html("{{trans('home.recharging')}}");
+              $('#charge_msg').show().html("{{trans('user.recharging')}}");
             },
             success: function(ret) {
               if (ret.status === 'fail') {
@@ -290,7 +289,7 @@
               window.location.reload();
             },
             error: function() {
-              $('#charge_msg').show().html("{{trans('home.error_response')}}");
+              $('#charge_msg').show().html("{{trans('user.error_response')}}");
             },
           });
         }

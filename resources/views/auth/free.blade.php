@@ -1,15 +1,15 @@
 @extends('auth.layouts')
 @section('title',sysConfig('website_name'))
 @section('content')
-    <h4 class="caption-subject font-dark bold">{{trans('home.free_invite_codes_title')}}</h4>
+    <h4 class="caption-subject font-dark bold">{{trans('common.free').trans('auth.invite.attribute')}}</h4>
     <div class="table-responsive">
         <table class="table table-hover text-center">
             @if(sysConfig('is_invite_register'))
                 @if(sysConfig('is_free_code'))
                     <thead class="thead-default">
                     <tr>
-                        <th> {{trans('home.invite_code_table_name')}} </th>
-                        <th> {{trans('home.invite_code_table_date')}} </th>
+                        <th> {{trans('auth.invite.attribute')}} </th>
+                        <th> {{trans('common.available_date')}} </th>
                     </tr>
                     </thead>
                     <tbody>
@@ -22,17 +22,13 @@
                     </tbody>
                 @endif
             @else
-                <tbody>
-                <tr>
-                    <td colspan="2">{{trans('home.no_need_invite_codes')}}</td>
-                </tr>
-                </tbody>
+                {{trans('auth.invite.not_required')}}
             @endif
         </table>
     </div>
     @if(sysConfig('is_invite_register') && sysConfig('is_free_code'))
         <div class="mt-20">
-            <a href="{{route('login')}}" class="btn btn-danger btn-lg float-left">{{trans('auth.back')}}</a>
+            <a href="{{route('login')}}" class="btn btn-danger btn-lg float-left">{{trans('common.back')}}</a>
             <nav class="Page navigation float-right">
                 {{$inviteList->links()}}
             </nav>

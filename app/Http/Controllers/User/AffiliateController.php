@@ -16,7 +16,7 @@ class AffiliateController extends Controller
     public function referral()
     {
         if (ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()) {
-            return Response::view('auth.error', ['message' => '本功能对非付费用户禁用！请 <a class="btn btn-sm btn-danger" href="/">返 回</a>'], 402);
+            return Response::view('auth.error', ['message' => trans('user.purchase_required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
         return view('user.referral', [
@@ -37,20 +37,22 @@ class AffiliateController extends Controller
     {
         // 判断账户是否过期
         if (Auth::getUser()->expired_at < date('Y-m-d')) {
-            return Response::json(['status' => 'fail', 'message' => '申请失败：账号已过期，请先购买服务吧']);
+            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.account')]);
         }
 
         // 判断是否已存在申请
         $referralApply = ReferralApply::uid()->whereIn('status', [0, 1])->first();
         if ($referralApply) {
-            return Response::json(['status' => 'fail', 'message' => '申请失败：已存在申请，请等待之前的申请处理完']);
+            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.appliedd')]);
         }
 
         // 校验可以提现金额是否超过系统设置的阀值
         $commission = ReferralLog::uid()->whereStatus(0)->sum('commission');
         $commission /= 100;
         if ($commission < sysConfig('referral_money')) {
-            return Response::json(['status' => 'fail', 'message' => '申请失败：满'.sysConfig('referral_money').'元才可以提现，继续努力吧']);
+            return Response::json([
+                'status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => sysConfig('referral_money')]),
+            ]);
         }
 
         $ref = new ReferralApply();
@@ -59,9 +61,9 @@ class AffiliateController extends Controller
         $ref->amount = $commission;
         $ref->link_logs = ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray();
         if ($ref->save()) {
-            return Response::json(['status' => 'success', 'message' => '申请成功，请等待管理员审核']);
+            return Response::json(['status' => 'success', 'title' => trans('user.referral.success'), 'message' => trans('user.referral.msg.wait')]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '申请失败，返利单建立失败，请稍后尝试或通知管理员']);
+        return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.error')]);
     }
 }

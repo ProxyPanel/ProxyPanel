@@ -34,7 +34,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.log.ip')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.log.ip')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -43,7 +43,7 @@
                         <th> #</th>
                         <th> 用户名</th>
                         <th> 端口</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                         <th> 代理</th>
                         <th> 连接IP</th>
                     </tr>

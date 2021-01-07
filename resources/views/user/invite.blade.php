@@ -5,21 +5,21 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title cyan-600">
-            <i class="icon wb-extension"></i>{{trans('home.invite_code')}}
+            <i class="icon wb-extension"></i>{{trans('home.invitation_code')}}
         </h1>
     </div>
     <div class="page-content container-fluid">
-        <x-alert type="info" :message="trans('home.promote_invite_code', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
+        <x-alert type="info" :message="trans('user.invite.promotion', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
         <div class="row">
             <div class="col-xxl-3 col-lg-4">
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600">
-                            <i class="icon wb-plus"></i> {{trans('home.invite_code_make')}}
+                            <i class="icon wb-plus"></i> {{trans('common.generate_item', ['attribute' => trans('user.invite.attribute')])}}
                         </h4>
-                        <x-alert type="info" :message="trans('home.invite_code_tips', ['num'=>$num, 'days' => sysConfig('user_invite_days')])"/>
+                        <x-alert type="info" :message="trans('user.invite.tips', ['num' => $num, 'days' => sysConfig('user_invite_days')])"/>
                         <button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()" @if(!$num) disabled @endif>
-                            <i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
+                            <i class="icon wb-plus"></i> {{trans('common.generate')}}
                         </button>
                     </div>
                 </div>
@@ -28,16 +28,16 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600">
-                            <i class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
+                            <i class="icon wb-extension"></i>{{trans('user.invite.attribute')}}
                         </h4>
                         <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                             <thead class="thead-default">
                             <tr>
                                 <th data-cell-style="cellStyle"> #</th>
-                                <th> {{trans('home.invite_code_table_name')}} </th>
-                                <th> {{trans('home.invite_code_table_date')}} </th>
-                                <th> {{trans('home.invite_code_table_status')}} </th>
-                                <th> {{trans('home.invite_code_table_user')}} </th>
+                                <th> {{trans('user.invite.attribute')}} </th>
+                                <th> {{trans('common.available_date')}} </th>
+                                <th> {{trans('common.status')}} </th>
+                                <th> {{trans('user.invitee')}} </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -52,7 +52,7 @@
                                     <td>
                                         {!! $invite->status_label !!}
                                     </td>
-                                    {{$invite->status === 1 ? ($invite->invitee->email ?? '【账号已删除】') : ''}}
+                                    {{$invite->status === 1 ? ($invite->invitee->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
                                 </tr>
                             @endforeach
                             </tbody>
@@ -61,7 +61,7 @@
                     <div class="card-footer card-footer-transparent">
                         <div class="row">
                             <div class="col-md-4">
-                                {{trans('home.invite_code_summary', ['total' => $inviteList->total()])}}
+                                {{trans('user.invite.total', ['num' => $inviteList->total()])}}
                             </div>
                             <div class="col-md-8">
                                 <nav class="Page navigation float-right">
@@ -102,7 +102,7 @@
       const clipboard = new ClipboardJS('.mt-clipboard');
       clipboard.on('success', function() {
         swal.fire({
-          title: '复制成功',
+          title: '{{trans('common.copy.success')}}',
           icon: 'success',
           timer: 1300,
           showConfirmButton: false,
@@ -110,7 +110,7 @@
       });
       clipboard.on('error', function() {
         swal.fire({
-          title: '复制失败，请手动复制',
+          title: '{{trans('common.copy.failed')}}',
           icon: 'error',
           timer: 1500,
           showConfirmButton: false,

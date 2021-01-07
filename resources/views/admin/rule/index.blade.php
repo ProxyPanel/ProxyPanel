@@ -28,7 +28,7 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <a href="{{route('admin.rule.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.rule.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -38,7 +38,7 @@
                         <th> 类型</th>
                         <th> 描述</th>
                         <th> 值</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -176,7 +176,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
         });
@@ -209,7 +209,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
         });
@@ -220,12 +220,12 @@
       // 删除规则
       function delRule(url, name) {
         swal.fire({
-          title: '警告',
+          title: '{{trans('common.warning')}}',
           text: '确定删除规则 【' + name + '】 ？',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({

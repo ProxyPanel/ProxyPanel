@@ -1,5 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('auth.active_account'))
+@section('title', trans('common.active_item', ['attribute' => trans('common.account')]))
 @section('content')
     @if(Session::get('errorMsg'))
         <x-alert type="danger" :message="Session::get('errorMsg')"/>

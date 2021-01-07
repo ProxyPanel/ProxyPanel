@@ -5,7 +5,7 @@
 
 @section('content')
     <div>
-        <p style="text-align: center">Redirecting to Stripe Checkout ...</p>
+        <p style="text-align: center">{{trans('user.payment.redirect_stripe')}}</p>
     </div>
 @endsection
 

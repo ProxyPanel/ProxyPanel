@@ -38,13 +38,13 @@
                                         <div class="panel-heading" id="question-1" role="tab">
                                             <a class="panel-title cyan-600" aria-controls="answer-1" aria-expanded="true" data-toggle="collapse" href="#answer-1"
                                                data-parent="#accordion1">
-                                                <i class="icon wb-link" aria-hidden="true"></i>{{trans('home.subscribe_link')}}
+                                                <i class="icon wb-link" aria-hidden="true"></i>{{trans('user.subscribe.link')}}
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-1" aria-labelledby="question-1" role="tabpanel">
                                             <div class="panel-body">
                                                 @if($subscribe_status)
-                                                    <x-alert type="warning" :message="trans('home.subscribe_warning')"/>
+                                                    <x-alert type="warning" :message="trans('user.subscribe.tips')"/>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" id="sub_link" value="{{$link}}"/>
                                                         <div class="input-group-btn btn-group" role="group">
@@ -69,14 +69,14 @@
                                                             @endif
                                                             <button class="btn btn-outline-info" onclick="exchangeSubscribe();">
                                                                 <i class="icon wb-refresh" aria-hidden="true"></i>
-                                                                {{trans('home.exchange_subscribe')}}</button>
+                                                                {{trans('common.replace')}}</button>
                                                             <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#sub_link">
                                                                 <i class="icon wb-copy" aria-hidden="true"></i>
-                                                                {{trans('home.copy_subscribe_address')}}</button>
+                                                                {{trans('common.copy.attribute')}}</button>
                                                         </div>
                                                     </div>
                                                 @else
-                                                    <x-alert type="danger" :message="trans('home.subscribe_baned')"/>
+                                                    <x-alert type="danger" :message="trans('user.subscribe.baned')"/>
                                                 @endif
                                             </div>
                                         </div>
@@ -143,13 +143,13 @@
                                             <div class="panel-body">
                                                 <ol>
                                                     <li>在线支付，本支付方式支持支付宝。支付后即开即用。前往
-                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>
+                                                        <a href="{{route('shop')}}">【{{trans('user.menu.shop')}}】</a>
                                                         选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。
                                                     </li>
                                                     <li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。
                                                         ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在
-                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>页面查看您的账号余额。
-                                                        在<a href="{{route('shop')}}">【{{trans('home.services')}}】</a>
+                                                        <a href="{{route('shop')}}">【{{trans('user.menu.shop')}}】</a>页面查看您的账号余额。
+                                                        在<a href="{{route('shop')}}">【{{trans('user.menu.shop')}}】</a>
                                                         选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。
                                                     </li>
                                                 </ol>
@@ -173,7 +173,7 @@
                                                     请选择其一种方式联系客服，请勿重复发送请求!!!
                                                 </blockquote>
                                                 <ol>
-                                                    <li>在<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>界面，创建新的工单，客服人员在上线后会在第一时刻处理。
+                                                    <li>在<a href="{{route('ticket')}}">【{{trans('user.menu.tickets')}}】</a>界面，创建新的工单，客服人员在上线后会在第一时刻处理。
                                                     </li>
                                                 </ol>
                                             </div>
@@ -235,7 +235,7 @@
                                                 <ol>
                                                     <li>
                                                         套餐过期/流量枯竭；此情况您需要重新
-                                                        <a href="{{route('shop')}}">【{{trans('home.services')}}】</a>；
+                                                        <a href="{{route('shop')}}">【{{trans('user.menu.shop')}}】</a>；
                                                     </li>
                                                     <li>
                                                         近期流量使用异常；在<code>1小时</code>内使用流量超过
@@ -244,7 +244,7 @@
                                                         <code>{{sysConfig('traffic_ban_time')}}分钟</code>
                                                     </li>
                                                 </ol>
-                                                如您对禁用情况有疑问，可以创建<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>，联系售后人员。
+                                                如您对禁用情况有疑问，可以创建<a href="{{route('ticket')}}">【{{trans('user.menu.tickets')}}】</a>，联系售后人员。
                                             </div>
                                         </div>
                                     </div>
@@ -265,7 +265,7 @@
                                                     <code>24小时</code>内，订阅地址只允许请求
                                                     <code>{{sysConfig('subscribe_ban_times')}}次</code>
                                                 </p>
-                                                <p>解封，请在过一段时间并确定无误后，创建<a href="{{route('ticket')}}">【{{trans('home.tickets')}}】</a>，联系售后人员
+                                                <p>解封，请在过一段时间并确定无误后，创建<a href="{{route('ticket')}}">【{{trans('user.menu.tickets')}}】</a>，联系售后人员
                                                 </p>
                                                 <p>小知识：如果您无意间的截图忘记将订阅地址打码了，您可以
                                                     <button class="btn btn-sm btn-outline-info" onclick="exchangeSubscribe();">
@@ -303,12 +303,12 @@
       // 更换订阅地址
       function exchangeSubscribe() {
         swal.fire({
-          title: '警告',
-          text: '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
+          title: '{{trans('common.warning')}}',
+          text: '{{trans('user.subscribe.exchange_warning')}}',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
@@ -325,7 +325,7 @@
       const clipboard = new ClipboardJS('.mt-clipboard');
       clipboard.on('success', function() {
         swal.fire({
-          title: '复制成功',
+          title: '{{trans('common.copy.success')}}',
           icon: 'success',
           timer: 1300,
           showConfirmButton: false,
@@ -333,7 +333,7 @@
       });
       clipboard.on('error', function() {
         swal.fire({
-          title: '复制失败，请手动复制',
+          title: '{{trans('common.copy.failed')}}',
           icon: 'error',
           timer: 1500,
           showConfirmButton: false,

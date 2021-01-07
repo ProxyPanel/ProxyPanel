@@ -101,7 +101,7 @@ class PaymentController extends Controller
         // 充值余额
         if ($credit) {
             if (! is_numeric($credit) || $credit <= 0) {
-                return Response::json(['status' => 'fail', 'message' => '充值余额不合规']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.error')]);
             }
             $amount = $credit;
         // 购买服务
@@ -215,7 +215,7 @@ class PaymentController extends Controller
 
         return view('user.payment', [
             'payment' => $payment,
-            'name' => $goods->name ?? '余额充值',
+            'name' => $goods->name ?? trans('user.recharge_credit'),
             'days' => $goods->days ?? 0,
             'pay_type' => $payment->order->pay_type_label ?: 0,
             'pay_type_icon' => $payment->order->pay_type_icon,

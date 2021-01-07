@@ -9,12 +9,12 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600"><i class="icon wb-plus"></i>
-                            {{trans('home.invite_code_make')}}
+                            {{trans('common.generate_item', ['attribute' => trans('user.invite.attribute')])}}
                         </h4>
-                        <x-alert type="info" :message="trans('home.invite_code_tips', ['num'=>10, 'days' => sysConfig('user_invite_days')])"/>
+                        <x-alert type="info" :message="trans('user.invite.tips', ['num'=>10, 'days' => sysConfig('user_invite_days')])"/>
                         @can('admin.invite.create')
                             <button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()">
-                                <i class="icon wb-plus"></i> {{trans('home.invite_code_button')}}
+                                <i class="icon wb-plus"></i> {{trans('common.generate')}}
                             </button>
                         @endcan
                     </div>
@@ -24,7 +24,7 @@
                 <div class="panel">
                     <div class="panel-heading">
                         <h4 class="panel-title cyan-600">
-                            <i class="icon wb-extension"></i>{{trans('home.invite_code_my_codes')}}
+                            <i class="icon wb-extension"></i>{{trans('user.invite.attribute')}}
                         </h4>
                         @can('admin.invite.export')
                             <div class="panel-actions">
@@ -37,11 +37,11 @@
                             <thead class="thead-default">
                             <tr>
                                 <th> #</th>
-                                <th> {{trans('home.invite_code_table_name')}} </th>
-                                <th> {{trans('home.invite_code_table_date')}} </th>
-                                <th> 生成者</th>
-                                <th> {{trans('home.invite_code_table_status')}} </th>
-                                <th> {{trans('home.invite_code_table_user')}} </th>
+                                <th> {{trans('user.invite.attribute')}} </th>
+                                <th> {{trans('common.available_date')}} </th>
+                                <th> {{trans('user.inviter')}}</th>
+                                <th> {{trans('common.status')}} </th>
+                                <th> {{trans('user.invitee')}} </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -54,13 +54,13 @@
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
-                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->email ?? '【账号已删除】')}}
+                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】')}}
                                     </td>
                                     <td>
                                         {!!$invite->status_label!!}
                                     </td>
                                     <td>
-                                        {{$invite->status === 1 ? ($invite->invitee->email ?? '【账号已删除】') : ''}}
+                                        {{$invite->status === 1 ? ($invite->invitee->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
                                     </td>
                                 </tr>
                             @endforeach
@@ -70,7 +70,7 @@
                     <div class="panel-footer">
                         <div class="row">
                             <div class="col-md-4">
-                                {{trans('home.invite_code_summary', ['total' => $inviteList->total()])}}
+                                {{trans('user.invite.total', ['num' => $inviteList->total()])}}
                             </div>
                             <div class="col-md-8">
                                 <nav class="Page navigation float-right">
@@ -120,8 +120,8 @@
             text: '确定导出所有邀请码吗',
             icon: 'question',
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               window.location.href = '{{route('admin.invite.export')}}';
@@ -133,7 +133,7 @@
         const clipboard = new ClipboardJS('.mt-clipboard');
         clipboard.on('success', function() {
           swal.fire({
-            title: '复制成功',
+            title: '{{trans('common.copy.success')}}',
             icon: 'success',
             timer: 1300,
             showConfirmButton: false,
@@ -141,7 +141,7 @@
         });
         clipboard.on('error', function() {
           swal.fire({
-            title: '复制失败，请手动复制',
+            title: '{{trans('common.copy.failed')}}',
             icon: 'error',
             timer: 1500,
             showConfirmButton: false,

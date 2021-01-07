@@ -6,7 +6,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" data-toggle="tab" href="#ios_client" aria-controls="quantumult_client" role="tab">
-                <i class="icon fa-apple" aria-hidden="true"></i>iOS<span class="badge badge-danger up">进阶</span></a>
+                <i class="icon fa-apple" aria-hidden="true"></i>iOS<span class="badge badge-danger up">{{trans('common.advance')}}</span></a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" data-toggle="tab" href="#windows_client" aria-controls="windows_client" role="tab">
@@ -14,7 +14,7 @@
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" data-toggle="tab" href="#game_client" aria-controls="game_client_sstap" role="tab">
-                <i class="icon fa-windows" aria-hidden="true"></i>Windows<span class="badge badge-info up">游戏</span></a>
+                <i class="icon fa-windows" aria-hidden="true"></i>Windows<span class="badge badge-info up">{{trans('common.recommend')}}</span></a>
         </li>
         <li class="nav-item" role="presentation">
             <a class="nav-link" data-toggle="tab" href="#linux_client" aria-controls="game_client_netch" role="tab">

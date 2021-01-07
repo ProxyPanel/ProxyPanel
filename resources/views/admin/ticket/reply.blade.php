@@ -8,7 +8,7 @@
                     <a href="{{route('admin.ticket.index')}}" class="btn btn-default">返 回</a>
                     @if($ticket->status !== 2)
                         @can('admin.ticket.destroy')
-                            <button class="btn btn-danger" onclick="closeTicket()"> {{trans('home.ticket_close')}} </button>
+                            <button class="btn btn-danger" onclick="closeTicket()"> {{trans('common.close')}} </button>
                         @endcan
                     @endif
                 </div>
@@ -28,9 +28,9 @@
                     <div class="panel-footer pb-30">
                         <form>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="editor" placeholder="{{trans('home.ticket_reply_placeholder')}}"/>
+                                <input type="text" class="form-control" id="editor" placeholder="{{trans('user.ticket.reply_placeholder')}}"/>
                                 <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('home.ticket_reply')}}</button>
+                                <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('common.send')}}</button>
                             </span>
                             </div>
                         </form>
@@ -49,8 +49,8 @@
             title: '确定关闭工单？',
             icon: 'question',
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({
@@ -72,7 +72,7 @@
                   }
                 },
                 error: function() {
-                  swal.fire({title: '未知错误！请通知客服', icon: 'error'});
+                  swal.fire({title: '{{trans('user.ticket.error')}}', icon: 'error'});
                 },
               });
             }
@@ -94,16 +94,16 @@
           const content = document.getElementById('editor').value;
 
           if (content.trim() === '') {
-            swal.fire({title: '您未填写工单内容!', icon: 'warning', timer: 1500});
+            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning', timer: 1500});
             return false;
           }
           swal.fire({
-            title: '确定回复工单？',
+            title: '{{trans('user.ticket.reply_confirm')}}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({

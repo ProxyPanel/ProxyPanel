@@ -71,7 +71,7 @@ class CouponController extends Controller
                 Coupon::create($data);
             }
 
-            return Redirect::route('admin.coupon.index')->with('successMsg', '生成成功');
+            return Redirect::route('admin.coupon.index')->with('successMsg', trans('common.generate_item', ['attribute' => trans('common.success')]));
         } catch (Exception $e) {
             Log::error('生成优惠券失败：'.$e->getMessage());
 

@@ -41,7 +41,7 @@
                     </div>
                     <div class="form-group col-lg-3 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -55,8 +55,8 @@
                         <th> 使用次数</th>
                         <th> 优惠</th>
                         <th> 有效期</th>
-                        <th> 状态</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.status')}}</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -150,8 +150,8 @@
           text: '确定导出所有卡券吗？',
           icon: 'question',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             window.location.href = '{{route('admin.coupon.export')}}';
@@ -168,8 +168,8 @@
           icon: 'question',
           allowEnterKey: false,
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({

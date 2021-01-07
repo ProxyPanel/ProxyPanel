@@ -22,7 +22,7 @@
                         <th> #</th>
                         <th> 分组名称</th>
                         <th> 审计模式</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -76,12 +76,12 @@
           // 删除规则分组
           function delRuleGroup(url, name) {
             swal.fire({
-              title: '警告',
+              title: '{{trans('common.warning')}}',
               text: '确定删除分组 【' + name + '】 ？',
               icon: 'warning',
               showCancelButton: true,
-              cancelButtonText: '{{trans('home.ticket_close')}}',
-              confirmButtonText: '{{trans('home.ticket_confirm')}}',
+              cancelButtonText: '{{trans('common.close')}}',
+              confirmButtonText: '{{trans('common.confirm')}}',
             }).then((result) => {
               if (result.value) {
                 $.ajax({

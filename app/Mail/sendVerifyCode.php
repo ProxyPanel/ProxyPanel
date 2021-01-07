@@ -24,7 +24,7 @@ class sendVerifyCode extends Mailable implements ShouldQueue
 
     public function build(): sendVerifyCode
     {
-        return $this->view('emails.sendVerifyCode')->subject('发送注册验证码')->with(['code' => $this->code]);
+        return $this->view('emails.sendVerifyCode')->subject(trans('auth.register.code'))->with(['code' => $this->code]);
     }
 
     // 发件失败处理

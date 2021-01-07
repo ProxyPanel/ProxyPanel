@@ -28,38 +28,38 @@ class SubscribeController extends Controller
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
         if (! $subscribe) {
-            return $this->failed('使用链接错误！请重新获取！');
+            return $this->failed(trans('error.subscribe.unknown'));
         }
 
         if ($subscribe->status !== 1) {
-            return $this->failed('链接已被封禁，请前往官网查询原因！');
+            return $this->failed(trans('error.subscribe.sub_baned'));
         }
 
         // 检查用户是否有效
         $user = $subscribe->user;
         if (! $user) {
-            return $this->failed('错误链接，账号不存在！请重新获取链接');
+            return $this->failed(trans('error.subscribe.user'));
         }
 
         if ($user->status === -1) {
-            return $this->failed('账号被禁用!');
+            return $this->failed(trans('error.subscribe.user_disable'));
         }
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed('账号封禁至'.$user->ban_time.',请解封后再更新！');
+                return $this->failed(trans('error.subscribe.baned_until', ['time' => $user->ban_time]));
             }
 
             $unusedTraffic = $user->transfer_enable - $user->usedTraffic();
             if ($unusedTraffic <= 0) {
-                return $this->failed('流量耗尽！请重新购买或重置流量！');
+                return $this->failed(trans('error.subscribe.out'));
             }
 
             if ($user->expired_at < date('Y-m-d')) {
-                return $this->failed('账号过期！请续费！');
+                return $this->failed(trans('error.subscribe.expired'));
             }
 
-            return $this->failed('账号存在问题，请前往官网查询！');
+            return $this->failed(trans('error.subscribe.question'));
         }
 
         // 更新访问次数
@@ -79,7 +79,7 @@ class SubscribeController extends Controller
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->get();
         if (empty($nodeList)) {
-            return $this->failed('无可用节点');
+            return $this->failed(trans('error.subscribe.none'));
         }
 
         $servers = [];

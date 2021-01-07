@@ -96,7 +96,7 @@
                         break;
                       case 'qrcode':
                         swal.fire({
-                          title: '{{trans('home.scan_qrcode')}}',
+                          title: '{{trans('user.scan_qrcode')}}',
                           html: '<div id="qrcode"></div>',
                           onBeforeOpen: () => {
                             $('#qrcode').qrcode({text: ret.data});
@@ -106,7 +106,7 @@
                         break;
                       case 'text':
                         swal.fire({
-                          title: '{{trans('home.setting_info')}}',
+                          title: '{{trans('user.node.info')}}',
                           html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
                               '</textarea>',
                           showConfirmButton: false,

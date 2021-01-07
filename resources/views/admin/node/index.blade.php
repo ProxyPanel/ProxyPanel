@@ -39,12 +39,12 @@
                         <th> IP</th>
                         <th> 域名</th>
                         <th> 存活</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                         <th> 在线</th>
                         <th> 产生流量</th>
                         <th> 流量比例</th>
                         <th> 扩展</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -219,8 +219,8 @@
             text: '确定重载节点?',
             icon: 'question',
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({
@@ -274,12 +274,12 @@
         // 删除节点
         function delNode(id, name) {
           swal.fire({
-            title: '警告',
+            title: '{{trans('common.warning')}}',
             text: '确定删除节点 【' + name + '】 ?',
             icon: 'warning',
             showCancelButton: true,
-            cancelButtonText: '{{trans('home.ticket_close')}}',
-            confirmButtonText: '{{trans('home.ticket_confirm')}}',
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
           }).then((result) => {
             if (result.value) {
               $.ajax({

@@ -22,7 +22,7 @@
                         <th> 标题</th>
                         <th> 排序</th>
                         <th> 发布日期</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -94,8 +94,8 @@
               title: '确定删除文章?',
               icon: 'question',
               showCancelButton: true,
-              cancelButtonText: '{{trans('home.ticket_close')}}',
-              confirmButtonText: '{{trans('home.ticket_confirm')}}',
+              cancelButtonText: '{{trans('common.close')}}',
+              confirmButtonText: '{{trans('common.confirm')}}',
             }).then((result) => {
               if (result.value) {
                 $.ajax({

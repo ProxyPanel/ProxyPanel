@@ -40,7 +40,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.payment.callback')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.payment.callback')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -51,7 +51,7 @@
                         <th> 平台订单号</th>
                         <th> 本地订单号</th>
                         <th> 交易金额</th>
-                        <th> 状态</th>
+                        <th> {{trans('common.status')}}</th>
                     </tr>
                     </thead>
                     <tbody>

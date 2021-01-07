@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'lang' => 'zh-cn',
+    'lang' => app()->getLocale(),
     'server-get-config' => true,
     'id' => env('GEETEST_ID'),
     'key' => env('GEETEST_KEY'),

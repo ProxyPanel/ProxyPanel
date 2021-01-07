@@ -26,7 +26,7 @@
                         <th> 签发机构</th>
                         <th> 签发日期</th>
                         <th> 到期时间</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -87,8 +87,8 @@
               text: '确定删除该证书吗?',
               icon: 'info',
               showCancelButton: true,
-              cancelButtonText: '{{trans('home.ticket_close')}}',
-              confirmButtonText: '{{trans('home.ticket_confirm')}}',
+              cancelButtonText: '{{trans('common.close')}}',
+              confirmButtonText: '{{trans('common.confirm')}}',
             }).then((result) => {
               if (result.value) {
                 $.ajax({

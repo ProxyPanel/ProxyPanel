@@ -76,7 +76,7 @@ class AdminController extends Controller
             $obj->save();
         }
 
-        return Response::json(['status' => 'success', 'message' => '生成成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
     }
 
     // 导出邀请码

@@ -58,4 +58,21 @@ class ReferralApply extends Model
     {
         $this->attributes['amount'] = $value * 100;
     }
+
+    public function getStatusLabelAttribute(): string
+    {
+        switch ($this->attributes['status']) {
+            case 1:
+                $status_label = '<span class="badge badge-sm badge-info">'.trans('user.status.pending').'</span>';
+                break;
+            case 2:
+                $status_label = trans('user.status.withdrawn');
+                break;
+            case 0:
+            default:
+                $status_label = '<span class="badge badge-sm badge-warning">'.trans('user.status.applying').'</span>';
+        }
+
+        return $status_label;
+    }
 }

@@ -37,7 +37,7 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="password">密码</label>
                                 <div class="col-xl-6 col-sm-8">
                                     <input type="password" class="form-control" name="password" id="password" autocomplete="new-password"
-                                           placeholder="@isset($user)留空则自动生成随机密码 @else 不填则不变 @endisset"/>
+                                           placeholder="@isset($user)留空为不变 @else 留空则自动生成随机密码 @endisset"/>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -482,8 +482,8 @@
                 text: '更新成功，是否返回？',
                 icon: 'question',
                 showCancelButton: true,
-                cancelButtonText: '{{trans('home.ticket_close')}}',
-                confirmButtonText: '{{trans('home.ticket_confirm')}}',
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
               }).then((result) => {
                     if (result.value) {
                       window.location.href = '{!! route('admin.user.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') !!}';
@@ -501,7 +501,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
         });

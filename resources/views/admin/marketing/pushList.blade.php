@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.marketing.push')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.marketing.push')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <div class="alert alert-info alert-dismissible" role="alert">

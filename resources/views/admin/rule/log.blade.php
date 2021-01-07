@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.rule.log')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.rule.log')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -61,8 +61,8 @@
                     @foreach($ruleLogs as $ruleLog)
                         <tr>
                             <td> {{$ruleLog->id}} </td>
-                            <td> {{$ruleLog->user->id ?? '【账号已删除】'}} </td>
-                            <td> {{$ruleLog->user->username ?? '【账号已删除】'}} </td>
+                            <td> {{$ruleLog->user->id ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
+                            <td> {{$ruleLog->user->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
                             <td> {{empty($ruleLog->node) ? '【节点已删除】' : '【节点ID：' . $ruleLog->node_id . '】' . $ruleLog->node->name}} </td>
                             <td> {{$ruleLog->rule_id ? '⛔  ' . ($ruleLog->rule->name ?? '【规则已删除】') : '✅  访问非规则允许内容'}} </td>
                             <td> {{$ruleLog->reason}} </td>
@@ -101,12 +101,12 @@
       // 清除所有记录
       function clearLog() {
         swal.fire({
-          title: '警告',
+          title: '{{trans('common.warning')}}',
           text: '确定清空所有记录吗？',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {

@@ -1,5 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('auth.register'))
+@section('title', trans('auth.register.attribute'))
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
 @endsection
@@ -13,14 +13,14 @@
             <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
             <input type="hidden" name="aff" value="{{Session::get('register_aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="username" value="{{Request::old('username') ? : Request::input('username')}}" required/>
-                <label class="floating-label" for="username">{{trans('auth.username')}}</label>
+                <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username') ? : Request::input('username')}}" autocomplete="off" required/>
+                <label class="floating-label" for="username">{{trans('validation.attributes.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
                     <div class="input-group">
-                        <input type="text" class="form-control" autocomplete="off" name="emailHead" value="{{Request::old('emailHead')}}" id="emailHead" required/>
-                        <label class="floating-label" for="emailHead">{{trans('auth.email')}}</label>
+                        <input type="text" class="form-control" name="emailHead" id="emailHead" value="{{Request::old('emailHead')}}" required/>
+                        <label class="floating-label" for="emailHead">{{trans('validation.attributes.email')}}</label>
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-indigo-600 text-white">@</span>
                         </div>
@@ -32,15 +32,15 @@
                         <input type="text" name="email" id="email" hidden/>
                     </div>
                 @else
-                    <input type="email" class="form-control" autocomplete="off" name="email" value="{{Request::old('email')}}" id="email" required/>
-                    <label class="floating-label" for="email">{{trans('auth.email')}}</label>
+                    <input type="email" class="form-control" name="email" id="email" value="{{Request::old('email')}}" required/>
+                    <label class="floating-label" for="email">{{trans('validation.attributes.email')}}</label>
                 @endif
             </div>
             @if(sysConfig('is_activate_account') == 1)
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <div class="input-group" data-plugin="inputGroupFile">
                         <input type="text" class="form-control" name="verify_code" value="{{Request::old('verify_code')}}" required/>
-                        <label class="floating-label" for="verify_code">{{trans('auth.captcha')}}</label>
+                        <label class="floating-label" for="verify_code">{{trans('auth.captcha.attribute')}}</label>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="sendCode" onclick="sendVerifyCode()">
                                 {{trans('auth.request')}}
@@ -50,24 +50,24 @@
                 </div>
             @endif
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="password" class="form-control" autocomplete="off" name="password" required/>
-                <label class="floating-label" for="password">{{trans('auth.password')}}</label>
+                <input type="password" class="form-control" name="password" required/>
+                <label class="floating-label" for="password">{{trans('validation.attributes.password')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="password" class="form-control" autocomplete="off" name="password_confirmation" required/>
-                <label class="floating-label" for="password_confirmation">{{trans('auth.confirm_password')}}</label>
+                <input type="password" class="form-control" name="password_confirmation" required/>
+                <label class="floating-label" for="password_confirmation">{{trans('validation.attributes.password_confirmation')}}</label>
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::input('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
-                        {{trans('auth.code')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
+                        {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
                     </label>
                 </div>
                 @if(sysConfig('is_free_code'))
                     <p class="hint">
-                        <a href="{{route('freeInvitationCode')}}" target="_blank">{{trans('auth.get_free_code')}}</a>
+                        <a href="{{route('freeInvitationCode')}}" target="_blank">{{trans('auth.invite.get')}}</a>
                     </p>
                 @endif
             @endif
@@ -87,13 +87,13 @@
                 </div>
             </div>
         @else
-            <x-alert type="danger" :message="trans('auth.system_maintenance')"/>
+            <x-alert type="danger" :message="trans('auth.register.error.disable')"/>
         @endif
         <a href="{{route('login')}}" class="btn btn-danger btn-lg {{sysConfig('is_register')? 'float-left': 'btn-block'}}">
-            {{trans('auth.back')}}
+            {{trans('common.back')}}
         </a>
         @if(sysConfig('is_register'))
-            <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register')}}</button>
+            <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register.attribute')}}</button>
         @endif
     </form>
 @endsection
@@ -112,7 +112,7 @@
                     @include('auth.docs.tos')
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>
+                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('common.close')}}</button>
                 </div>
             </div>
         </div>
@@ -131,7 +131,7 @@
                     @include('auth.docs.aup')
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('auth.close')}}</button>
+                    <button type="button" class="btn btn-block bg-red-500 text-white mb-25" data-dismiss="modal">{{trans('common.close')}}</button>
                 </div>
             </div>
         </div>
@@ -150,7 +150,7 @@
           let email = $('#emailHead').val().trim();
           const emailTail = $('#emailTail').val();
           if (email === '') {
-            swal.fire({title: '{{trans('auth.email_null')}}', icon: 'warning', timer: 1500});
+            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
             return false;
           }
           email += '@' + emailTail;
@@ -168,7 +168,7 @@
             @endif
 
             if (email === '') {
-              swal.fire({title: '{{trans('auth.email_null')}}', icon: 'warning', timer: 1500});
+              swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
               return false;
             }
 
@@ -220,14 +220,14 @@
             @case(3)
           // 先检查Google reCAPTCHA有没有进行验证
           if ($('#g-recaptcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
+            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
             return false;
           }
             @break
             @case(4)
           // 先检查Google reCAPTCHA有没有进行验证
           if ($('#h-captcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.required_captcha')}}', icon: 'error'});
+            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
             return false;
           }
             @break

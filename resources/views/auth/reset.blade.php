@@ -1,5 +1,5 @@
 @extends('auth.layouts')
-@section('title', trans('auth.resetPassword'))
+@section('title', trans('auth.password.reset.attribute'))
 @section('content')
     <form action="{{url(Request::getRequestUri())}}" method="post" class="register-form">
         @csrf
@@ -8,26 +8,23 @@
         @endif
         @if($errors->any())
             <x-alert type="danger" :message="$errors->all()"/>
-        @endif
-        @if ($verify->status > 0 && count($errors) <= 0 && empty(Session::get('successMsg')))
-            <x-alert type="danger" :message="trans('auth.overtime')"/>
         @else
             <div class="form-title">
-                {{trans('auth.resetPassword')}}
+                {{trans('auth.password.reset.attribute')}}
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input class="form-control" type="password" autocomplete="off" name="password" required/>
-                <label class="floating-label" for="password">{{trans('auth.new_password')}}</label>
+                <label class="floating-label" for="password">{{trans('auth.password.new')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input class="form-control" type="password" autocomplete="off" name="password_confirmation" required/>
-                <label class="floating-label" for="password_confirmation">{{trans('auth.confirm_password')}}</label>
+                <label class="floating-label" for="password_confirmation">{{trans('validation.attributes.password_confirmation')}}</label>
             </div>
         @endif
-        <a href="/login"
-           class="btn btn-danger btn-lg {{$verify->status=== 0? 'float-left': 'btn-block'}}">{{trans('auth.back')}}</a>
+        <a href="{{route('login')}}"
+           class="btn btn-danger btn-lg {{$verify->status=== 0? 'float-left': 'btn-block'}}">{{trans('common.back')}}</a>
         @if ($verify->status === 0)
-            <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.submit')}}</button>
+            <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('common.submit')}}</button>
         @endif
     </form>
 @endsection

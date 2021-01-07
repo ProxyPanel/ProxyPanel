@@ -23,7 +23,7 @@
                         <th> #</th>
                         <th> 类型</th>
                         <th> 邮箱后缀</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -131,7 +131,7 @@
         // 删除邮箱后缀
         function delSuffix(id, name) {
           swal.fire({
-            title: '警告',
+            title: '{{trans('common.warning')}}',
             text: '确定删除邮箱后缀 【' + name + '】 ？',
             icon: 'warning',
             showCancelButton: true,

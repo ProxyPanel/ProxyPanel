@@ -31,7 +31,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.goods.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.goods.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -46,8 +46,8 @@
                         <th> 排序</th>
                         <th> 热销</th>
                         <th> 限购数</th>
-                        <th> 状态</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.status')}}</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -146,7 +146,7 @@
       // 删除商品
       function delGoods(url, name) {
         swal.fire({
-          title: '警告',
+          title: '{{trans('common.warning')}}',
           text: '确定删除商品 【' + name + '】 ?',
           icon: 'warning',
           showCancelButton: true,

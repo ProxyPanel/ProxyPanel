@@ -7,7 +7,7 @@
             </div>
             <div class="alert alert-info alert-dismissible">
                 <button class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('home.close')}}</span>
+                    <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('common.close')}}</span>
                 </button>
                 <h4 class="block">{{$nodeName}}
                     <small class="pl-10">{{$nodeServer}}</small>
@@ -70,7 +70,7 @@
                 },
                 scaleLabel: {
                   display: true,
-                  labelString: '{{trans('home.traffic_log_24hours')}}',
+                  labelString: '{{trans('user.traffic_logs.24hours')}}',
                 },
               }],
           },
@@ -117,7 +117,7 @@
                 },
                 scaleLabel: {
                   display: true,
-                  labelString: '{{trans('home.traffic_log_30days')}}',
+                  labelString: '{{trans('user.traffic_logs.30days')}}',
                 },
               }],
           },

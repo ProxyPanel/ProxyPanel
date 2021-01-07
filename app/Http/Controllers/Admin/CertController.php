@@ -37,7 +37,7 @@ class CertController extends Controller
     public function store(CertRequest $request)
     {
         if ($cert = NodeCertificate::create($request->validated())) {
-            return redirect(route('admin.node.cert.edit', $cert))->with('successMsg', '生成成功');
+            return redirect(route('admin.node.cert.edit', $cert))->with('successMsg', trans('common.generate_item', ['attribute' => trans('common.success')]));
         }
 
         return redirect()->back()->withInput()->withErrors('生成失败');
@@ -52,10 +52,10 @@ class CertController extends Controller
     public function update(CertRequest $request, NodeCertificate $cert)
     {
         if ($cert->update($request->validated())) {
-            return redirect()->back()->with('successMsg', '修改成功');
+            return redirect()->back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('修改失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
     }
 
     // 删除域名证书

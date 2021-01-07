@@ -27,7 +27,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.subscribe.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.subscribe.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -40,7 +40,7 @@
                         <th> 最后请求时间</th>
                         <th> 封禁时间</th>
                         <th> 封禁理由</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -49,7 +49,7 @@
                             <td> {{$subscribe->id}} </td>
                             <td>
                                 @if(empty($subscribe->user))
-                                    【账号已删除】
+                                    【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
                                         <a href="{{route('admin.user.index', ['id'=>$subscribe->user->id])}}" target="_blank">{{$subscribe->user->email}}</a>

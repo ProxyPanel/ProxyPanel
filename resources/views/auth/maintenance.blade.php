@@ -1,23 +1,17 @@
 @extends('_layout')
-@section('title', '维护 | Maintenance')
+@section('title', trans('auth.maintenance'))
 @section('body_class','page-login-v3 layout-full')
 @section('layout_content')
-   <!--[if lt IE 8]> <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-    <a href="http://browsehappy.com/" target="_blank">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong>
-    browser. Please
-    <a href="http://browsehappy.com/" target="_blank">upgrade your browser</a> to improve your experience.</p>
-<![endif]-->
-
-<div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
-    <div class="page-content vertical-align-middle">
-        <i class="icon wb-settings icon-spin font-size-70" aria-hidden="true"></i>
-        <h2>维护建设中</h2>
-        {!! $message !!}
-        <footer class="page-copyright">
-            <p id="countdown"></p>
-        </footer>
+    <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
+        <div class="page-content vertical-align-middle">
+            <i class="icon wb-settings icon-spin font-size-70" aria-hidden="true"></i>
+            <h2>{{trans('auth.maintenance_tip')}}</h2>
+            {!! $message !!}
+            <footer class="page-copyright">
+                <p id="countdown"></p>
+            </footer>
+        </div>
     </div>
-</div>
 @endsection
 @section('layout_javascript')
     <script>
@@ -29,8 +23,9 @@
         const hours = Math.floor(distance % 86400000 / 3600000);
         const minutes = Math.floor(distance % 3600000 / 60000);
         const seconds = Math.floor(distance % 60000 / 1000);
-        document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> 天 </span>: ' + hours +
-            ' <span>时</span>: ' + minutes + ' <span>分 </span>: ' + seconds + '<span> 秒</span> </h2>';
+        document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> {{trans('validation.attributes.date')}} </span>: ' +
+            hours + ' <span>{{trans('validation.attributes.hour')}}</span>: ' + minutes + ' <span>{{trans('validation.attributes.minute')}} </span>: ' +
+            seconds + '<span> {{trans('validation.attributes.second')}}</span> </h2>';
         if (distance <= 0) {
           clearInterval(x);
           document.getElementById('countdown').remove();

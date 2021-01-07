@@ -52,4 +52,20 @@ class ReferralLog extends Model
     {
         $this->attributes['commission'] = $value * 100;
     }
+
+    public function getStatusLabelAttribute(): string
+    {
+        switch ($this->attributes['status']) {
+            case 1:
+                $status_label = '<span class="badge badge-sm badge-info">'.trans('user.status.applying').'</span>';
+                break;
+            case 2:
+                $status_label = '<span class="badge badge-sm badge-default">'.trans('user.status.withdrawn').'</span>';
+                break;
+            default:
+                $status_label = '<span class="badge badge-sm badge-success">'.trans('user.status.not_withdrawn').'</span>';
+        }
+
+        return $status_label;
+    }
 }

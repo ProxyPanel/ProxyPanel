@@ -61,7 +61,7 @@
                                                         <a href="#"
                                                            style="Margin:0;color:#f3f3f3;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.3;margin:0;padding:0;text-align:left;text-decoration:none"
                                                            target="_blank">
-                                                            激活账号
+                                                            {{trans('common.active_item', ['attribute' => trans('common.account')])}}
                                                         </a>
                                                     </h6>
                                                 </th>
@@ -86,7 +86,7 @@
                                     <th style="Margin:0;color:#333;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-weight:400;line-height:19px;margin:0;padding:0;text-align:left">
                                         <div class="release"
                                              style="padding-top:5px;padding-left:20px;padding-bottom:20px;padding-right:20px;">
-                                            <p>点击这里去<a href="{{$activeUserUrl}}" target="_blank">【激活账号】</a>，或者点击下面的链接（30分钟内有效）。
+                                            <p>点击这里去<a href="{{$activeUserUrl}}" target="_blank">【{{trans('common.active_item', ['attribute' => trans('common.account')])}}】</a>，或者点击下面的链接（30分钟内有效）。
                                             </p>
                                             <p>
                                                 <a href="{{$activeUserUrl}}" target="_blank">{{$activeUserUrl}}</a>

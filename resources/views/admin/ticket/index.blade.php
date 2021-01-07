@@ -11,7 +11,7 @@
                     <div class="panel-actions">
                         <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
                         <span>
-                            <i class="icon wb-plus" aria-hidden="true"></i> {{trans('home.ticket_table_new_button')}}
+                            <i class="icon wb-plus" aria-hidden="true"></i> {{trans('user.ticket.new')}}
                         </span>
                         </button>
                     </div>
@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" onclick="Search()">搜 索</button>
-                        <a href="{{route('admin.ticket.index')}}" class="btn btn-danger">重 置</a>
+                        <a href="{{route('admin.ticket.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </div>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -33,8 +33,8 @@
                         <th> #</th>
                         <th> 用户名</th>
                         <th> 标题</th>
-                        <th> 状态</th>
-                        <th> 操作</th>
+                        <th> {{trans('common.status')}}</th>
+                        <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -43,7 +43,7 @@
                             <td> {{$ticket->id}} </td>
                             <td>
                                 @if(!$ticket->user)
-                                    【账号已删除】
+                                    【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
                                         <a href="{{route('admin.user.index', ['id'=>$ticket->user->id])}}" target="_blank">{{$ticket->user->email}}</a>
@@ -64,9 +64,9 @@
                                     <a href="{{route('admin.ticket.edit',$ticket)}}" class="btn btn-animate btn-animate-vertical btn-outline-info">
                                         <span>
                                             @if($ticket->status === 2)
-                                                <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_table_view')}}
+                                                <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{trans('common.view')}}
                                             @else
-                                                <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('home.ticket_open')}}
+                                                <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{trans('common.open')}}
                                             @endif
                                         </span>
                                     </a>
@@ -100,7 +100,7 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
-                        <h4 class="modal-title"> {{trans('home.ticket_table_new_button')}} </h4>
+                        <h4 class="modal-title"> {{trans('user.ticket.new')}} </h4>
                     </div>
                     <div class="modal-body">
                         <div class="form-group row">
@@ -121,8 +121,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('home.ticket_cancel')}} </button>
-                        <button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('home.ticket_confirm')}} </button>
+                        <button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('common.cancel')}} </button>
+                        <button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('common.confirm')}} </button>
                     </div>
                 </div>
             </div>
@@ -160,21 +160,21 @@
         }
 
         if (title.trim() === '') {
-          swal.fire({title: '您未填写工单标题!', icon: 'warning'});
+          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}', icon: 'warning'});
           return false;
         }
 
         if (content.trim() === '') {
-          swal.fire({title: '您未填写工单内容!', icon: 'warning'});
+          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}', icon: 'warning'});
           return false;
         }
 
         swal.fire({
-          title: '确定提交工单？',
+          title: '{{trans('user.ticket.submit_tips')}}',
           icon: 'question',
           showCancelButton: true,
-          cancelButtonText: '{{trans('home.ticket_close')}}',
-          confirmButtonText: '{{trans('home.ticket_confirm')}}',
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
         }).then((result) => {
           if (result.value) {
             $.ajax({
@@ -204,7 +204,7 @@
                   $.each(errors.errors, function(index, value) {
                     str += '<li>' + value + '</li>';
                   });
-                  swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('home.ticket_confirm')}}'});
+                  swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
                 }
               },
             });
