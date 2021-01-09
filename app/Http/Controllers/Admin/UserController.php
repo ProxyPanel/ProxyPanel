@@ -73,7 +73,7 @@ class UserController extends Controller
         }
 
         if (isset($group)) {
-            $query->whereGroupId($group);
+            $query->whereUserGroupId($group);
         }
 
         if (isset($level)) {

@@ -56,7 +56,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="level" name="level" onChange="Search()">
-                            <option value="" hidden>用户分组</option>
+                            <option value="" hidden>用户等级</option>
                             @foreach($levels as $key => $level)
                                 <option value="{{$key}}">{{$level}}</option>
                             @endforeach
