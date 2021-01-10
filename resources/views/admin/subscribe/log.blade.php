@@ -15,6 +15,7 @@
                         <th> #</th>
                         <th> 用户</th>
                         <th> 请求IP</th>
+                        <th> 归属地</th>
                         <th> 请求时间</th>
                         <th> 访问</th>
                     </tr>
@@ -23,8 +24,15 @@
                     @foreach($subscribeLog as $subscribe)
                         <tr>
                             <td>{{$subscribe->id}}</td>
-                            <td>{{empty($subscribe->user) ? '用户已删除' : $subscribe->user->email}}</td>
-                            <td>{{$subscribe->request_ip}}</td>
+                            <td>{{$subscribe->user->email ?? '用户已删除'}}</td>
+                            <td>
+                                @if ($subscribe->request_ip)
+                                    <a href="https://www.ipip.net/ip/{{$subscribe->request_ip}}.html" target="_blank">{{$subscribe->request_ip}}</a>
+                                @endif
+                            </td>
+                            <td>
+                                {{$subscribe->ipInfo}}
+                            </td>
                             <td>{{$subscribe->request_time}}</td>
                             <td>{{$subscribe->request_header}}</td>
                         </tr>

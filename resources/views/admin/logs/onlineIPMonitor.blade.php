@@ -59,8 +59,8 @@
                         <tr>
                             <td>{{$log->id}}</td>
                             <td>{{$log->type}}</td>
-                            <td>{{$log->node ? $log->node->name : '【节点已删除】'}}</td>
-                            <td>{{$log->user ? $log->user->email : '【用户已删除】'}}</td>
+                            <td>{{$log->node->name ?? '【节点已删除】'}}</td>
+                            <td>{{$log->user->email ?? '【用户已删除】'}}</td>
                             <td>
                                 @if (strpos($log->ip, ',') !== false)
                                     @foreach (explode(',', $log->ip) as $ip)

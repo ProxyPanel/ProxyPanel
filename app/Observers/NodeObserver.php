@@ -5,7 +5,6 @@ namespace App\Observers;
 use App\Components\DDNS;
 use App\Jobs\VNet\reloadNode;
 use App\Models\Node;
-use App\Models\NodeAuth;
 use App\Services\NodeService;
 use Arr;
 use Log;
@@ -20,11 +19,7 @@ class NodeObserver
 
     public function created(Node $node): void
     {
-        $auth = new NodeAuth();
-        $auth->node_id = $node->id;
-        $auth->key = Str::random();
-        $auth->secret = Str::random(8);
-        if (! $auth->save()) {
+        if (! $node->auth()->create(['key' => Str::random(), 'secret' => Str::random(8)])) {
             Log::warning('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 

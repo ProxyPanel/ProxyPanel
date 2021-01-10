@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
@@ -50,7 +51,15 @@ class SubscribeController extends Controller
             $query->whereUserSubscribeId($id);
         }
 
-        return view('admin.subscribe.log', ['subscribeLog' => $query->latest()->paginate(20)->appends(\request('page'))]);
+        $subscribeLogs = $query->latest()->paginate(20)->appends(\request('page'));
+        foreach ($subscribeLogs as $log) {
+            // 跳过上报多IP的
+            if ($log->request_ip) {
+                $log->ipInfo = implode(' ', IP::getIPInfo($log->request_ip));
+            }
+        }
+
+        return view('admin.subscribe.log', ['subscribeLog' => $subscribeLogs]);
     }
 
     // 设置用户的订阅的状态
