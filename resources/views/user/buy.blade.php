@@ -76,9 +76,8 @@
         $.ajax({
           method: 'POST',
           url: '{{route('redeemCoupon')}}',
-          async: false,
-          data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
           dataType: 'json',
+          data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
           success: function(ret) {
             $('.input-group-prepend').remove();
             if (ret.status === 'success') {
@@ -149,7 +148,7 @@
         $.ajax({
           method: 'POST',
           url: '{{route('purchase')}}',
-          async: false,
+          dataType: 'json',
           data: {
             _token: '{{csrf_token()}}',
             goods_id: goods_id,
@@ -157,7 +156,6 @@
             method: method,
             pay_type: pay_type,
           },
-          dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
               swal.fire({

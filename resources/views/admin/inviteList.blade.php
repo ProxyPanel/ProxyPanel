@@ -96,9 +96,8 @@
           $.ajax({
             method: 'POST',
             url: '{{route('admin.invite.create')}}',
-            async: false,
-            data: {_token: '{{csrf_token()}}'},
             dataType: 'json',
+            data: {_token: '{{csrf_token()}}'},
             success: function(ret) {
               if (ret.status === 'success') {
                 swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());

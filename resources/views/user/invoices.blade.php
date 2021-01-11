@@ -9,7 +9,7 @@
                 <h1 class="panel-title cyan-600"><i class="icon wb-bookmark"></i>{{trans('user.menu.invoices')}}</h1>
                 @if($prepaidPlan)
                     <div class="panel-actions">
-                        <button onclick="closePlan()" class="btn btn-primary"> {{trans('active', ['attribute' => trans('user.status.prepaid')])}}</button>
+                        <button onclick="closePlan()" class="btn btn-primary"> {{trans('common.active_item', ['attribute' => trans('user.status.prepaid')])}}</button>
                     </div>
                 @endif
             </div>
@@ -88,9 +88,8 @@
             $.ajax({
               method: 'POST',
               url: '{{route('cancelPlan')}}',
-              async: false,
-              data: {_token: '{{csrf_token()}}'},
               dataType: 'json',
+              data: {_token: '{{csrf_token()}}'},
               success: function(ret) {
                 if (ret.status === 'success') {
                   swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
@@ -115,9 +114,8 @@
             $.ajax({
               method: 'PUT',
               url: '{{route('closeOrder', '')}}/' + id,
-              async: false,
-              data: {_token: '{{csrf_token()}}'},
               dataType: 'json',
+              data: {_token: '{{csrf_token()}}'},
               success: function(ret) {
                 if (ret.status === 'success') {
                   swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());

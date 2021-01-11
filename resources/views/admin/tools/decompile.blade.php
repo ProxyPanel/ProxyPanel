@@ -46,9 +46,8 @@
             $.ajax({
               method: 'POST',
               url: '{{route('admin.tools.decompile')}}',
-              async: false,
-              data: {_token: '{{csrf_token()}}', content: content},
               dataType: 'json',
+              data: {_token: '{{csrf_token()}}', content: content},
               success: function(ret) {
                 if (ret.status === 'success') {
                   $('#result').val(ret.data);

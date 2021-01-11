@@ -511,7 +511,7 @@
         $.ajax({
           method: @isset($node) 'PUT' @else 'POST' @endisset,
           url: '{{isset($node)? route('admin.node.update', $node) : route('admin.node.store')}}',
-          async: false,
+          dataType: 'json',
           data: {
             _token: '{{csrf_token()}}',
             is_ddns: document.getElementById('is_ddns').checked ? 1 : 0,
@@ -556,7 +556,6 @@
             relay_port: $('#relay_port').val(),
             relay_server: $('#relay_server').val(),
           },
-          dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
               swal.fire({
@@ -573,9 +572,13 @@
             let str = '';
             const errors = data.responseJSON;
             if ($.isEmptyObject(errors) === false) {
-              $.each(errors.errors, function(index, value) {
-                str += '<li>' + value + '</li>';
-              });
+              if ($.isEmptyObject(errors.message) === false && typeof errors.message === 'string') {
+                str += errors.message;
+              } else {
+                $.each(errors.errors, function(index, value) {
+                  str += '<li>' + value + '</li>';
+                });
+              }
               swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
             }
           },
@@ -653,7 +656,7 @@
         }
       });
 
-      $('#obfs').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+      $('#obfs').on('changed.bs.select', function() {
         const obfs_param = $('.obfs_param');
         if ($('#obfs').val() === 'plain') {
           $('#obfs_param').val('');
@@ -663,12 +666,12 @@
         }
       });
 
-      $('#v2_ws').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+      $('#v2_ws').on('changed.bs.select', function() {
         $('#v2_host').val($('#v2_ws').val());
       });
 
       // 设置V2Ray详细设置
-      $('#v2_net').on('changed.bs.select', function(e, clickedIndex, isSelected, previousValue) {
+      $('#v2_net').on('changed.bs.select', function() {
         const type = $('.v2_type');
         const type_option = $('#type_option');
         const host = $('.v2_host');

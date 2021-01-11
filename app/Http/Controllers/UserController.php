@@ -543,10 +543,10 @@ class UserController extends Controller
         $user = auth()->loginUsingId(Session::get('admin'));
         Session::forget('admin');
         if ($user) {
-            return Response::json(['status' => 'success', 'message' => trans('toggle_action', ['action' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.toggle_action', ['action' => trans('common.success')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('toggle_action', ['action' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.toggle_action', ['action' => trans('common.failed')])]);
     }
 
     public function charge(Request $request): ?JsonResponse

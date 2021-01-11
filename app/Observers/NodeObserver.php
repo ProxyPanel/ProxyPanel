@@ -35,7 +35,7 @@ class NodeObserver
 
     public function updated(Node $node): void
     {
-        if ($node->is_ddns == 0 && sysConfig('ddns_mode')) {
+        if ($node->is_ddns === 0 && sysConfig('ddns_mode')) {
             $changes = $node->getChanges();
             if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) {
                 if (Arr::exists($changes, 'server')) {

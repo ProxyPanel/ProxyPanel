@@ -84,10 +84,9 @@
       function makeInvite() {
         $.ajax({
           method: 'POST',
-          async: false,
+          dataType: 'json',
           url: '{{route('createInvite')}}',
           data: {_token: '{{csrf_token()}}'},
-          dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
               swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());

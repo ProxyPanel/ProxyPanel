@@ -95,7 +95,7 @@
             $.ajax({
               method: 'POST',
               url: '{{route('admin.tools.convert')}}',
-              async: false,
+              dataType: 'json',
               data: {
                 _token: '{{csrf_token()}}',
                 method: $('#method').val(),
@@ -106,7 +106,6 @@
                 obfs_param: $('#obfs_param').val(),
                 content: content,
               },
-              dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
                   $('#result').val(ret.data);

@@ -175,9 +175,8 @@
           $.ajax({
             method: 'POST',
             url: '{{route('sendVerificationCode')}}',
-            async: false,
-            data: {_token: '{{csrf_token()}}', email: email},
             dataType: 'json',
+            data: {_token: '{{csrf_token()}}', email: email},
             success: function(ret) {
               if (ret.status === 'success') {
                 swal.fire({title: ret.message, icon: 'success'});

@@ -448,7 +448,7 @@
         $.ajax({
           method: @isset($user)'PUT' @else 'POST' @endisset,
           url: '{{isset($user)? route('admin.user.update', $user) : route('admin.user.store')}}',
-          async: false,
+          dataType: 'json',
           data: {
             _token: '{{csrf_token()}}',
             username: $('#username').val(),
@@ -474,7 +474,6 @@
             invite_num: $('#invite_num').val(),
             status: $('input:radio[name=\'status\']:checked').val(),
           },
-          dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
               swal.fire({
