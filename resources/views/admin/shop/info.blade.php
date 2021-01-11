@@ -86,7 +86,7 @@
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="traffic" id="traffic" value="100"/>
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="traffic_unit" id="traffic_unit">
-                                        <option value="" selected>MB</option>
+                                        <option value="1" selected>MB</option>
                                         <option value="1024">GB</option>
                                         <option value="1048576">TB</option>
                                         <option value="1073741824">PB</option>
