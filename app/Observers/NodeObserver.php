@@ -5,7 +5,6 @@ namespace App\Observers;
 use App\Components\DDNS;
 use App\Jobs\VNet\reloadNode;
 use App\Models\Node;
-use App\Services\NodeService;
 use Arr;
 use Log;
 use Str;
@@ -14,7 +13,7 @@ class NodeObserver
 {
     public function saved(Node $node): void
     {
-        (new NodeService())->getNodeGeo($node->id);
+        $node->refresh_geo();
     }
 
     public function created(Node $node): void

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\IP;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -85,48 +86,63 @@ class Node extends Model
             ->get();
     }
 
+    public function refresh_geo()
+    {
+        $data = IP::IPSB($this->is_ddns ? gethostbyname($this->server) : $this->ip);
+
+        if ($data) {
+            self::withoutEvents(function () use ($data) {
+                $this->update(['geo' => $data['latitude'].','.$data['longitude']]);
+            });
+
+            return 1;
+        }
+
+        return 0;
+    }
+
     public function config(User $user)
     {
         $config = [
-            'id' => $this->id,
-            'name' => $this->name,
-            'host' => $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip),
+            'id'    => $this->id,
+            'name'  => $this->name,
+            'host'  => $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip),
             'group' => sysConfig('website_name'),
         ];
         switch ($this->type) {
             case 2:
                 $config = array_merge($config, [
-                    'type' => 'v2ray',
-                    'port' => $this->is_relay ? $this->relay_port : $this->v2_port,
-                    'uuid' => $user->vmess_id,
-                    'method' => $this->v2_method,
+                    'type'        => 'v2ray',
+                    'port'        => $this->is_relay ? $this->relay_port : $this->v2_port,
+                    'uuid'        => $user->vmess_id,
+                    'method'      => $this->v2_method,
                     'v2_alter_id' => $this->v2_alter_id,
-                    'v2_net' => $this->v2_net,
-                    'v2_type' => $this->v2_type,
-                    'v2_host' => $this->v2_host,
-                    'v2_path' => $this->v2_path,
-                    'v2_tls' => $this->v2_tls ? 'tls' : '',
-                    'udp' => $this->is_udp,
+                    'v2_net'      => $this->v2_net,
+                    'v2_type'     => $this->v2_type,
+                    'v2_host'     => $this->v2_host,
+                    'v2_path'     => $this->v2_path,
+                    'v2_tls'      => $this->v2_tls ? 'tls' : '',
+                    'udp'         => $this->is_udp,
                 ]);
                 break;
             case 3:
                 $config = array_merge($config, [
-                    'type' => 'trojan',
-                    'port' => $this->is_relay ? $this->relay_port : $this->v2_port,
+                    'type'   => 'trojan',
+                    'port'   => $this->is_relay ? $this->relay_port : $this->v2_port,
                     'passwd' => $user->passwd,
-                    'sni' => $this->is_relay ? $this->server : '',
-                    'udp' => $this->is_udp,
+                    'sni'    => $this->is_relay ? $this->server : '',
+                    'udp'    => $this->is_udp,
                 ]);
                 break;
             case 1:
             case 4:
                 $config = array_merge($config, [
-                    'type' => $this->compatible ? 'shadowsocks' : 'shadowsocksr',
-                    'method' => $this->method,
-                    'protocol' => $this->protocol,
-                    'obfs' => $this->obfs,
+                    'type'       => $this->compatible ? 'shadowsocks' : 'shadowsocksr',
+                    'method'     => $this->method,
+                    'protocol'   => $this->protocol,
+                    'obfs'       => $this->obfs,
                     'obfs_param' => $this->obfs_param,
-                    'udp' => $this->is_udp,
+                    'udp'        => $this->is_udp,
                 ]);
                 if ($this->single) {
                     //单端口使用中转的端口

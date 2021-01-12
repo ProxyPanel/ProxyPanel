@@ -12,7 +12,6 @@ use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
-use App\Services\NodeService;
 use Arr;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -56,11 +55,11 @@ class NodeController extends Controller
     public function create()
     {
         return view('admin.node.info', [
-            'countries' => Country::orderBy('code')->get(),
-            'levels' => Level::orderBy('level')->get(),
+            'countries'  => Country::orderBy('code')->get(),
+            'levels'     => Level::orderBy('level')->get(),
             'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs' => NodeCertificate::orderBy('id')->get(),
+            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs'      => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -91,12 +90,12 @@ class NodeController extends Controller
     public function edit(Node $node)
     {
         return view('admin.node.info', [
-            'node' => $node,
-            'countries' => Country::orderBy('code')->get(),
-            'levels' => Level::orderBy('level')->get(),
+            'node'       => $node,
+            'countries'  => Country::orderBy('code')->get(),
+            'levels'     => Level::orderBy('level')->get(),
             'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs' => NodeCertificate::orderBy('id')->get(),
+            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs'      => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -158,7 +157,15 @@ class NodeController extends Controller
     // 刷新节点地理位置
     public function refreshGeo($id): JsonResponse
     {
-        if ((new NodeService())->getNodeGeo($id)) {
+        if ($id) {
+            $ret = Node::findOrFail($id)->refresh_geo();
+        } else {
+            foreach (Node::whereStatus(1)->get() as $node) {
+                $ret = $node->refresh_geo();
+            }
+        }
+
+        if ($ret) {
             return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
         }
 
@@ -186,7 +193,7 @@ class NodeController extends Controller
     {
         if ($result = (new NetworkDetection)->ping($node->is_ddns ? $node->server : $node->ip)) {
             return Response::json([
-                'status' => 'success',
+                'status'  => 'success',
                 'message' => $result,
             ]);
         }
