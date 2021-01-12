@@ -13,7 +13,7 @@ Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.chec
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
-    Route::get('login', 'AuthController@showLoginForm')->middleware('isSecurity')->name('login'); // 登录
+    Route::get('login', 'AuthController@showLoginForm')->middleware('isSecurity')->name('login'); // 登录页面
     Route::post('login', 'AuthController@login')->middleware('isSecurity'); // 登录
     Route::get('logout', 'AuthController@logout')->name('logout'); // 退出
     Route::get('register', 'AuthController@showRegistrationForm')->name('register'); // 注册
@@ -28,4 +28,5 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::get('create/uuid', '\Illuminate\Support\Str@uuid')->name('createUUID'); // 生成UUID
     Route::get('getPort', '\App\Components\Helpers@getPort')->name('getPort'); // 获取端口
 });
-Route::match(['get', 'post'], 'admin/login', 'AuthController@login')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录
+Route::get('admin/login', 'AuthController@showLoginForm')->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理登录页面
+Route::post('admin/login', 'AuthController@login')->middleware('isSecurity')->name('admin.login.post'); // 管理登录

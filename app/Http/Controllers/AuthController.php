@@ -41,7 +41,7 @@ class AuthController extends Controller
     {
         // 根据权限跳转
         if (Auth::check()) {
-            if (Auth::getUser()->hasPermissionTo('admin.index') || Auth::getUser()->hasRole('Super Admin')) {
+            if (Auth::getUser()->can('admin.index')) {
                 return Redirect::route('admin.index');
             }
 
@@ -73,6 +73,14 @@ class AuthController extends Controller
 
         if (! $user) {
             return Redirect::back()->withInput()->withErrors(trans('auth.error.login_error'));
+        }
+
+        if ($request->routeIs('admin.login.post') && $user->cannot('admin.index')) {
+            // 管理页面登录
+            // 非权限者清场
+            Auth::logout();
+
+            return Redirect::route('login');
         }
 
         // 校验普通用户账号状态

@@ -6,7 +6,6 @@ use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\Middleware\isAdminLogin;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
 use App\Http\Middleware\isMaintenance;
@@ -78,7 +77,7 @@ class Kernel extends HttpKernel
 
         'admin' => [
             isForbidden::class,
-            isAdminLogin::class,
+            isLogin::class,
             Permission::class,
         ],
 
