@@ -11,7 +11,7 @@ use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Invite;
 use App\Models\Node;
-use App\Models\NodeHeartBeat;
+use App\Models\NodeHeartbeat;
 use App\Models\Order;
 use App\Models\Ticket;
 use Cache;
@@ -115,7 +115,7 @@ class UserController extends Controller
 
         // 获取当前用户可用节点
         $nodeList = $user->nodes()->with(['labels', 'level_table'])->get();
-        $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
+        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
         foreach ($nodeList as $node) {
             // 节点在线状态
             $node->offline = ! in_array($node->id, $onlineNode, true);

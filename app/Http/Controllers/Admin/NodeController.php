@@ -42,7 +42,7 @@ class NodeController extends Controller
             $node->transfer = flowAutoShow($node->dailyDataFlows()->sum('total'));
 
             // 负载（10分钟以内）
-            $node_info = $node->heartBeats()->recently()->first();
+            $node_info = $node->heartbeats()->recently()->first();
             $node->isOnline = empty($node_info) || empty($node_info->load) ? 0 : 1;
             $node->load = $node->isOnline ? $node_info->load : '离线';
             $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);

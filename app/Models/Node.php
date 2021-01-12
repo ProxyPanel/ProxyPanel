@@ -22,9 +22,9 @@ class Node extends Model
         return $this->belongsToMany(Label::class);
     }
 
-    public function heartBeats(): HasMany
+    public function heartbeats(): HasMany
     {
-        return $this->hasMany(NodeHeartBeat::class);
+        return $this->hasMany(NodeHeartbeat::class);
     }
 
     public function onlineIps(): HasMany

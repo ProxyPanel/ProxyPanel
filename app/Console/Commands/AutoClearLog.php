@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\NodeDailyDataFlow;
-use App\Models\NodeHeartBeat;
+use App\Models\NodeHeartbeat;
 use App\Models\NodeHourlyDataFlow;
 use App\Models\NodeOnlineIp;
 use App\Models\NodeOnlineLog;
@@ -54,7 +54,7 @@ class AutoClearLog extends Command
             NotificationLog::where('updated_at', '<=', date('Y-m-d H:i:s', strtotime('-1 month')))->delete();
 
             // 清除节点负载信息日志
-            NodeHeartBeat::where('log_time', '<=', strtotime('-30 minutes'))->delete();
+            NodeHeartbeat::where('log_time', '<=', strtotime('-30 minutes'))->delete();
 
             // 清除节点在线用户数日志
             NodeOnlineLog::where('log_time', '<=', strtotime('-1 hour'))->delete();

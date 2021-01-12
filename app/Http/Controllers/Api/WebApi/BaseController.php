@@ -22,7 +22,7 @@ class BaseController
 
         $data = array_map('intval', $validator->validated());
 
-        if ($node->heartBeats()->create([
+        if ($node->heartbeats()->create([
             'uptime' => $data['uptime'],
             'load' => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
             'log_time' => time(),

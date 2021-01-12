@@ -8,7 +8,7 @@ use App\Models\Config;
 use App\Models\Coupon;
 use App\Models\Invite;
 use App\Models\Node;
-use App\Models\NodeHeartBeat;
+use App\Models\NodeHeartbeat;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\VerifyCode;
@@ -181,7 +181,7 @@ class AutoJob extends Command
     {
         if (sysConfig('is_node_offline')) {
             $offlineCheckTimes = sysConfig('offline_check_times');
-            $onlineNode = NodeHeartBeat::recently()->distinct()->pluck('node_id')->toArray();
+            $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
             foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
                 // 10分钟内无节点负载信息则认为是后端炸了
                 $nodeTTL = ! in_array($node->id, $onlineNode, true);
