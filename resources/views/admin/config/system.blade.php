@@ -306,13 +306,13 @@
                                                 <div class="input-group">
                                                     <label for="min_port"></label>
                                                     <input type="number" class="form-control" id="min_port" value="{{$min_port}}"
-                                                           onchange="updateFromInput('min_port','1000','{{$max_port}}')"/>
+                                                           onchange="updateFromInput('min_port','1000',$('#max_port').val())"/>
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"> ~ </span>
                                                     </div>
                                                     <label for="max_port"></label>
                                                     <input type="number" class="form-control" id="max_port" value="{{$max_port}}"
-                                                           onchange="updateFromInput('max_port','{{$max_port}}','65535')"/>
+                                                           onchange="updateFromInput('max_port',$('#min_port').val(),'65535')"/>
                                                 </div>
                                                 <span class="text-help"> 端口范围：1000 - 65535 </span>
                                             </div>
