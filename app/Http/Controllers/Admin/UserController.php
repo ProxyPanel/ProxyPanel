@@ -112,25 +112,25 @@ class UserController extends Controller
         }
 
         return view('admin.user.index', [
-            'userList' => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),
+            'userList'   => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels' => Level::all()->pluck('name', 'level')->toArray(),
+            'levels'     => Level::all()->pluck('name', 'level')->toArray(),
         ]);
     }
 
     // 添加账号页面
     public function create()
     {
-        if (Auth::getUser()->hasRole('Super Admin')) {
+        if (Auth::getUser()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
             $roles = Role::all()->pluck('description', 'name');
-        } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
-            $roles = Auth::getUser()->roles();
+        } elseif (Auth::getUser()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
+            $roles = Auth::getUser()->roles()->pluck('description', 'name');
         }
 
         return view('admin.user.info', [
-            'levels' => Level::orderBy('level')->get(),
+            'levels'     => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles ?? [],
+            'roles'      => $roles ?? null,
         ]);
     }
 
@@ -153,8 +153,9 @@ class UserController extends Controller
 
         $roles = $request->input('roles');
         try {
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
-                        && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
+            if ($roles && (Auth::getUser()->can('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin')))) {
+                // 编辑用户权限
+                // 只有超级管理员才有赋予超级管理的权限
                 $user->assignRole($roles);
             }
 
@@ -176,17 +177,17 @@ class UserController extends Controller
     // 编辑账号页面
     public function edit(User $user)
     {
-        if (Auth::getUser()->hasRole('Super Admin')) {
+        if (Auth::getUser()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
             $roles = Role::all()->pluck('description', 'name');
-        } elseif (Auth::getUser()->hasPermissionTo('give roles')) {
-            $roles = Auth::getUser()->roles();
+        } elseif (Auth::getUser()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
+            $roles = Auth::getUser()->roles()->pluck('description', 'name');
         }
 
         return view('admin.user.info', [
-            'user' => $user->load('inviter:id,email'),
-            'levels' => Level::orderBy('level')->get(),
+            'user'       => $user->load('inviter:id,email'),
+            'levels'     => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles ?? [],
+            'roles'      => $roles ?? null,
         ]);
     }
 
@@ -205,7 +206,7 @@ class UserController extends Controller
         // 只有超级管理员才能赋予超级管理员
         $roles = $request->input('roles');
         try {
-            if ($roles && (Auth::getUser()->hasPermissionTo('give roles') || (in_array('Super Admin', $roles, true)
+            if ($roles && (Auth::getUser()->can('give roles') || (in_array('Super Admin', $roles, true)
                         && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
                 $user->syncRoles($roles);
             }
@@ -323,7 +324,7 @@ class UserController extends Controller
     public function export(User $user)
     {
         return view('admin.user.export', [
-            'user' => $user,
+            'user'     => $user,
             'nodeList' => Node::whereStatus(1)->orderByDesc('sort')->orderBy('id')->paginate(15)->appends(\request('page')),
         ]);
     }

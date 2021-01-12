@@ -28,19 +28,19 @@
                     @isset($role)@method('PUT')@endisset
                     @csrf
                     <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="description">显示名称</label>
-                        <div class="col-md-5 col-sm-9">
-                            <input type="text" class="form-control" name="description" id="description" required/>
-                            <span class="text-help"> 名称，例如：管理员 </span>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="name">内部名称</label>
+                        <label class="col-md-2 col-sm-3 col-form-label" for="name">名称</label>
                         <div class="col-md-5 col-sm-9">
                             <input type="text" class="form-control" name="name" id="name" required/>
-                            <span class="text-help"> 名称，例如：Administrator </span>
+                            <span class="text-help"> 唯一标识名称，例如：Administrator </span>
                         </div>
                     </div>
+                        <div class="form-group row">
+                            <label class="col-md-2 col-sm-3 col-form-label" for="description">描述名称</label>
+                            <div class="col-md-5 col-sm-9">
+                                <input type="text" class="form-control" name="description" id="description" required/>
+                                <span class="text-help"> 面板显示名称，例如：管理员 </span>
+                            </div>
+                        </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-sm-3 col-form-label" for="permissions">选择权限</label>
                         <div class="col-md-9 col-sm-9">
