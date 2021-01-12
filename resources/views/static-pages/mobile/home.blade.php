@@ -9,8 +9,10 @@
 
 @section('content')
 
-        <div class="hero" aria-label="Fantastic Tv Shows and Movies on Netflix"></div>
-
+       <div class="hero">
+            <img src="{{ asset('assets/static/mobile/images/index/hero-bg.jpg') }}" alt="Fantastic Tv Shows and Movies on Netflix">
+        </div>
+        
         <main>
 
             <section class="section section--features">

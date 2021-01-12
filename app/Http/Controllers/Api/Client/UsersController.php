@@ -357,32 +357,31 @@ class UsersController extends Controller
 
 
 
+   public function vregister(Request $request){
 
+        $cacheKey = 'register_times_' . md5(getClientIp()); // 注册限制缓存key
 
-	public function vregister(Request $request){
-
-        $cacheKey = 'register_times_' . md5(IP::getClientIp()); // 注册限制缓存key
-
-      /*  $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'appkey'        => 'required',
-            'device'        => 'required',
+            'reg_device'    => 'required',
             'chanel'        => 'required',
             'agent'         => 'required',
-            'timestamp'     => 'required'
+            'sign'          => 'required',
+            'reg_time'      => 'required'
         ]);
 
         if ( $validator->fails() ){
             // return response()->json($validator->messages(), 422);
-        	$response['error_code'] = 003;
-        	$response['message']    = '提交缺失参数或者错误';
+        	$response['error_code'] = null;
+        	$response['message']    = '';
         	// $response['message']    = '';
-             $response['data']       = [
-                
-            ]; 
-		    return response()->json(['error' => $response]);
+
+		    return response()->json([
+		    	'error' => $response
+		    ]);
 
         }
-       */
+
         if (isset($request->aff)) {
         	$aff = $request->aff;
         	$affUser = User::query()->where('id', $aff)->first();
@@ -395,10 +394,6 @@ class UsersController extends Controller
         	$referral_uid = 0;
         }
 
- 
- 
- 
-        
 
         // check app key already there or not
         $is_app_key_exists = User::query()->where('appkey', $request->appkey)->first();
@@ -406,29 +401,19 @@ class UsersController extends Controller
 
             $tokenResult       = $is_app_key_exists->createToken('Personal Access Token');
             $token             = $tokenResult->token;
-           // $token->expires_at = Carbon::now()->addHours(1);
+            $token->expires_at = Carbon::now()->addHours(1);
             $token->save();
-           
-           
-            
-           
-            $server_data = $this->getServerList($is_app_key_exists->id);
 
-            $response['error_code'] = 0;
-            $response['message']    = '此设备之前注册过，自动登录成功';
-            $response['token_data']       = [
-                 'token_type'   =>  'Bearer',
+            $response['error_code'] = 1;
+            $response['message']    = '注册成功';
+            $response['data']       = [
                 'access_token' => $tokenResult->accessToken,
-                'expire_in'    => $tokenResult->token->expires_at,
-                'refresh_token' =>  ''
+                'expire_in'    => $tokenResult->token->expires_at
             ]; 
-           
-    		
-    		$response['server_data'] = $server_data ;
-            $response['clinet_smart_config'] = $this->getClientSmartConfig() ;
-            return response()->json($response);
-                 
             
+            return response()->json([
+                'success' => $response
+            ]);
 
         }else{
 
@@ -478,13 +463,13 @@ class UsersController extends Controller
             $user->transfer_enable   = $transfer_enable;
 
             $user->appkey            = $request->appkey;
-            $user->device            = $request->device;
+            $user->device            = $request->reg_device;
             $user->chanel            = $request->chanel;
             $user->referral_uid      = $referral_uid;
             $user->agent             = $request->agent;
             $user->enable            = 1; // not sure
             $user->user_type         = 1;
-            $user->created_at        = $request->timestamp;
+            $user->created_at        = $request->reg_time;
             $user->suspended_time    = 0;
             $user->save();
 
@@ -509,39 +494,30 @@ class UsersController extends Controller
                 }
 
                 // 生成用户标签
-               // $this->makeUserLabels($user->id, 1);
+                $this->makeUserLabels($user->id, 1);
 
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '自动注册用户');
+                Helpers::addUserTrafficModifyLog($user->id, 0, 0, toGB($request->get('transfer_enable', 0)), '后台手动添加用户');
 
 
                 $tokenResult = $user->createToken('Personal Access Token');
                 $token = $tokenResult->token;
                 if ($request->remember_me)
                     $token->expires_at = Carbon::now()->addHours(1);
-                   $token->save();
-            
-             
-           
-                $server_data = $this->getServerList($user->id);
+                $token->save();
+                $response['error_code'] = 1;
+                $response['message']    = '注册成功';
+                $response['data']       = ['token' => $tokenResult->accessToken]; //not clear
                 
-            
-                $response['error_code'] = 0;
-                $response['message']    = '自动注册成功';
-                $response['token_data'] = [
-            		'token_type'   =>  'Bearer',
-                	'access_token' => $tokenResult->accessToken,
-                	'expire_in'    => $tokenResult->token->expires_at,
-                	'refresh_token' =>  ''
-                ]; 
-                $response['server_data'] = $server_data ;
-                $response['clinet_smart_config'] = $this->getClientSmartConfig() ;
-                 return response()->json($response);
+                return response()->json([
+                    'success'      => $response,
+                    'expire_in'    => $tokenResult->token->expires_at
+                ]);
 
 
 
             } else {
-                return Response::json(['status' => 'fail', 'data' => '', 'message' => '自动注册失败']);
+                return Response::json(['status' => 'fail', 'data' => '', 'message' => '添加失败']);
             }
 
         }
@@ -551,6 +527,14 @@ class UsersController extends Controller
 
 
 	}
+
+
+	
+
+
+
+
+
 
 
     // 生成用户标签

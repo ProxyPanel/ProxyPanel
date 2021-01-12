@@ -28,11 +28,22 @@
                 <div class="subpage-content">
                     <div class="container">
                         <div class="app-download-items">
-                            <div class="app-download"  id="android">
+                            <div class="app-download" id="ios" style="display: none">
                                 <div class="app-download__left">
                                     <h2>{!! __('static.mbl_vpn_ios_title') !!}</h2>
                                     <div class="app-download__btn-group">
                                         <a href="#" class="cs-btn cs-btn--primary"><img src="{{ asset('assets/static/mobile/images/index/apple-store-graphics.png') }}" alt="Apple download"></a>
+                                    </div>
+                                </div>
+                                <div class="app-download__right">
+                                    <img src="{{ asset('assets/static/mobile/images/vpn-apps/devices.png') }}" alt="devices">
+                                </div>
+                            </div>
+                            <div class="app-download" id="android" style="display: none">
+                                <div class="app-download__left">
+                                    <h2>{!! __('static.mbl_vpn_android_title') !!}</h2>
+                                    <div class="app-download__btn-group">
+                                        <a href="#" class="cs-btn cs-btn--primary"><img src="{{ asset('assets/static/mobile/images/index/playe-store-graphics.png') }}" alt="Android download"></a>
                                     </div>
                                 </div>
                                 <div class="app-download__right">
@@ -52,15 +63,15 @@
                             </div>
                             <div class="benefits-list__item">
                                 <img src="{{ asset('assets/static/mobile/images/vpn-apps/graphics-02.svg') }}" alt="Do not log online activity">
-                                <h3>{!! __('static.mbl_vpn_service_2') !!}<</h3>
+                                <h3>{!! __('static.mbl_vpn_service_2') !!}</h3>
                             </div>
                             <div class="benefits-list__item">
                                 <img src="{{ asset('assets/static/mobile/images/vpn-apps/graphics-03.svg') }}" alt="Connect 4 devices simultaneously">
-                                <h3>{!! __('static.mbl_vpn_service_3') !!}<</h3>
+                                <h3>{!! __('static.mbl_vpn_service_3') !!}</h3>
                             </div>
                             <div class="benefits-list__item">
                                 <img src="{{ asset('assets/static/mobile/images/vpn-apps/graphics-04.svg') }}" alt="7-day money-back guarantee">
-                                <h3>{!! __('static.mbl_vpn_service_4') !!}<</h3>
+                                <h3>{!! __('static.mbl_vpn_service_4') !!}</h3>
                             </div>
                         </div>
                     </div>
@@ -81,4 +92,25 @@
         crossorigin="anonymous"></script>
 
     <script src="{{ asset('assets/static/mobile/js/app.js') }}"></script>
+    <script>
+        $(function() {
+            function getMobileOperatingSystem() {
+                var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                if (/android/i.test(userAgent)) {
+                    return "Android";
+                }
+                // iOS detection from: http://stackoverflow.com/a/9039885/177710
+                if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                    return "iOS";
+                }
+                return "unknown";
+            }
+            let mobileOperation = getMobileOperatingSystem();
+            if (mobileOperation === "Android") {
+                $("#android").show();
+            } else if (mobileOperation === "iOS") {
+                $("#ios").show();
+            }
+        });
+    </script>
 @endsection

@@ -5,12 +5,11 @@ return [
     // General
     'login' => '登录',
     'register' => '注册',
+    'homepage'  => '首页',
     'features'  => '功能',
     'price'  => '价格',
     'download'  => '下载',
     'help'  =>'帮助',
-    // DESKTOP
-    // DESKTOP
     'contact' => '联系我们',
      'tutorial' => '使用说明',
     'help' => '帮助',
@@ -132,14 +131,17 @@ return [
 
     // desktop vpn apps
     'dsktp_vpn_android_title' => '下载 77VPN<br><strong>for Android</strong>',
+    'dsktp_vpn_ios_title' => '下载 77VPN<br><strong>for IOS</strong>',
     'dsktp_vpn_android_btn' => 'Download.<span>apk</span>',
     'dsktp_vpn_win_title' => '下载 77VPN<br><strong>for Windows</strong>',
     'dsktp_vpn_win_btn' => 'Download',
 
-    'dsktp_vpn_service_1' => 'Get a Free trial via watching ads',
-    'dsktp_vpn_service_2' => 'Do not log online activity',
-    'dsktp_vpn_service_3' => 'Connect 4 devices simultaneously',
-    'dsktp_vpn_service_4' => '7-day money-back guarantee',
+   
+
+    'dsktp_vpn_service_1' => '签到即获得免费使用权',
+    'dsktp_vpn_service_2' => '安全隐私保护',
+    'dsktp_vpn_service_3' => '不限流量、多种设备稳定支持',
+    'dsktp_vpn_service_4' => '提供高速稳定的专线网络',
 
     // desktop contact
     'dsktp_contact-title-1' => '联系 77VPN',
@@ -215,12 +217,12 @@ return [
      'mbl_price_top_text' => 'Unconditional Refund Within 7 Days',
 
      // MOBILE vpns
-     'mbl_vpn_ios_title' => 'Download 77VPN<br><strong>for Android</strong>',
-
-     'mbl_vpn_service_1' => 'Get a Free trial via<br> watching ads',
-     'mbl_vpn_service_2' => 'Do not log online activity',
-     'mbl_vpn_service_3' => 'Connect 4 devices <br>simultaneously',
-     'mbl_vpn_service_4' => '7-day money-back<br> guarantee',
+     'mbl_vpn_ios_title' => '下载77VPN<br><strong> IOS版</strong>',
+     'mbl_vpn_android_title' => '下载77VPN<br><strong> 安卓版</strong>',
+     'mbl_vpn_service_1' => '签到即获得免费使用权',
+     'mbl_vpn_service_2' => '安全隐私保护',
+     'mbl_vpn_service_3' => '不限流量、多种设备稳定支持',
+     'mbl_vpn_service_4' => '提供高速稳定的专线网络',
 
     // MOBILE contact
     'mbl_contact-title-1' => 'Please fill in this form with as much detail as possible. It will help us provide you with the most accurate solution.',

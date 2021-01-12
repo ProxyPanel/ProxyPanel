@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Client;
 
-
+use App\Components\IP;
 use App\Components\Helpers;
 use App\Components\IPIP;
 use App\Components\QQWry;
@@ -18,6 +18,7 @@ use App\Mail\resetPassword;
 use App\Mail\sendVerifyCode;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 use Response;
 use Redirect;
 use Captcha;
@@ -38,11 +39,161 @@ use Illuminate\Support\Facades\Validator;
 class AuthsController extends Controller
 {
     protected static $systemConfig;
+    public $new_username='';
 
     function __construct()
     {
         self::$systemConfig = Helpers::systemConfig();
     }
+    
+    // 自动注册
+    
+   
+	
+    public function autoRegister(Request $request)
+    {
+           $cacheKey = 'register_times_'.md5(IP::getClientIp()); // 注册限制缓存key
+
+           	$password_str = Str::random(10);
+          
+
+           //更新用户名
+            $is_not_new = true;
+            while ($is_not_new) {
+                $is_not_new = $this->get_qnique_email();
+            }
+
+
+            $username = $this->new_username;
+            $email = $username;
+            $password = Hash::make($password_str);
+            $appkey = $request->input('appkey');
+            $aff = (int) $request->input('aff');
+
+           
+
+            // 是否开启注册
+            if (! sysConfig('is_register')) {
+                Session::flash('errorRegMsg', '系统维护，暂停注册');
+                return Redirect::back()->withErrors(trans('auth.register_close'));
+            }
+
+            // 校验域名邮箱黑白名单
+            if (sysConfig('is_email_filtering')) {
+                $result = $this->emailChecker($email, 1);
+                if ($result !== false) {
+                    return $result;
+                }
+            }
+
+            
+           
+
+          
+
+            // 获取可用端口
+            $port = Helpers::getPort();
+            if ($port > sysConfig('max_port')) {
+                return Redirect::back()->withInput()->withErrors(trans('auth.register_close'));
+            }
+
+            // 获取aff
+            $affArr = $this->getAff(10, $aff);
+            $inviter_id = $affArr['inviter_id'];
+
+            $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
+
+           
+
+            // 创建新用户
+            $uid = Helpers::addUser($email, $password, $transfer_enable, sysConfig('default_days'), $inviter_id);
+
+            // 注册失败，抛出异常
+            if (! $uid) {
+                return Redirect::back()->withInput()->withErrors(trans('auth.register_fail'));
+            }
+            // 更新昵称
+            User::find($uid)->update(['username' => $username]);
+            
+            
+            // 注册次数+1
+            if (Cache::has($cacheKey)) {
+                Cache::increment($cacheKey);
+            } else {
+                Cache::put($cacheKey, 1, Day); // 24小时
+            }
+
+            // 更新邀请码
+            if ($affArr['code_id'] && sysConfig('is_invite_register')) {
+                Invite::find($affArr['code_id'])->update(['invitee_id' => $uid, 'status' => 1]);
+            }
+            
+            $user= User::find($uid);
+           //  \Log::debug($user);
+            $tokenResult = $user->createToken('Personal Access Token');
+           //   \Log::debug($tokenResult);
+            $token = $tokenResult->token;
+            
+            
+                $response['error_code'] = 0;
+                $response['message']    = '自动注册成功';
+                $response['token_data'] = [
+            		'token_type'   =>  'Bearer',
+                	'access_token' => $tokenResult->accessToken,
+                	'expire_in'    => $tokenResult->token->expires_at,
+                	'refresh_token' =>  ''
+                ]; 
+            
+        return response()->json($response);
+    }
+    
+    
+     public function login(Request $request){ 
+  	
+  	 //\Log::debug($request->data);
+  	 
+  	  
+  	
+  	// \Log::debug($request->input('data.usename'));
+  //	$input_usename = $request->input('data.username');
+  //	$input_password = $request->input('data.password');
+      if(Auth::attempt(['username' => $request->username, 'password' =>$request->password])){ 
+            $user = Auth::user(); 
+            $tokenResult       = $user->createToken('Personal Access Token');
+            $token             = $tokenResult->token;
+         //  $token->expires_at = Carbon::now()->addHours(1);
+            $token->save();
+        
+        
+            $server_data = $this->getServerList($user->id);
+
+            $response['error_code'] = 0;
+            $response['message']    = '登录成功';
+            $response['token_data']       = [
+                'token_type'   =>  'Bearer',
+                'access_token' => $tokenResult->accessToken,
+                'expire_in'    => $tokenResult->token->expires_at,
+                'refresh_token' =>  ''
+            ]; 
+            
+            $response['server_data'] = $server_data ;
+            
+            $response['clinet_smart_config'] = $this->getClientSmartConfig() ;
+           
+    		//生成新的token事件
+            event(new GetNewToken($user));
+           
+            return response()->json( $response);
+            
+               
+            
+         
+            } else {
+                return Response::json(['error_code' => 3001,  'message' => '用户名或者密码错误']);
+            }
+    }
+
+
 
     public function updatePasswordWithAuth(Request $request){
 
@@ -266,6 +417,50 @@ class AuthsController extends Controller
         $verify->code = $code;
         $verify->status = 0;
         $verify->save();
+    }
+    
+     //获取自动注册唯一的用户名
+	private function get_qnique_email(){
+		$this->new_username = Str::random(15).'@77cloud.com';
+		if (User::where('username', $this->new_username)->count() == 0) {
+			return false;	
+		}
+		return true;
+	}
+	
+    /**
+     * 获取AFF.
+     *
+     * @param  string|null  $code  邀请码
+     * @param  int|null  $aff  URL中的aff参数
+     *
+     * @return array
+     */
+    private function getAff($code = null, $aff = null): array
+    {
+        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
+
+        // 有邀请码先用邀请码，用谁的邀请码就给谁返利
+        if ($code) {
+            $inviteCode = Invite::whereCode($code)->whereStatus(0)->first();
+            if ($inviteCode) {
+                $data['inviter_id'] = $inviteCode->inviter_id;
+                $data['code_id'] = $inviteCode->id;
+            }
+        }
+
+        // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
+        if (! $data['inviter_id']) {
+            // 检查一下cookie里有没有aff
+            $cookieAff = \Request::hasCookie('register_aff');
+            if ($cookieAff) {
+                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : null;
+            } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
+                $data['inviter_id'] = User::find($aff) ? $aff : null;
+            }
+        }
+
+        return $data;
     }
 
 }

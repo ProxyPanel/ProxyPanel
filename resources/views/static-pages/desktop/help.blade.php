@@ -24,7 +24,7 @@
                          @foreach($articleList as $article)
                         <div class="question">
                             <a href="{{url('help-subpage-n?id=') . $article->id}}">
-                                <h3>{{str_limit($article->title, 300)}}</h3>
+                                <h3>{{$article->title}}</h3>
                                 <span><i class="fas fa-chevron-right"></i></span>
                             </a>
                         </div>

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-param" content="_csrf">
     <meta name="csrf-token" content="">
-    <title>77加速器,高速稳定</title>
+    <title>{{sysConfig('website_name')}}</title>
     <meta name="keywords" content="">
     @yield('header-script')
     <link rel="shortcut icon" href="build//rita.ico">
@@ -21,9 +21,9 @@
         <!-- start header -->
         <header class="page-header {{ (Route::currentRouteName() !== 'home' && Request::segment(1) !== 'home' && Request::segment(1) !== 'feature') ? ' page-header--light' : '' }}">
             @if (Route::currentRouteName() === "home" || Request::segment(1) === "home" || Request::segment(1) === "feature")
-                <a href="{{ url('/home') }}" class="logo"><img src="{{ asset('assets/static/mobile/images/logos/ritavpn-logo.png') }}" alt="Rita VPN"></a>
+                <a href="{{ url('/') }}" class="logo"><img src="{{ asset('assets/static/mobile/images/logos/ritavpn-logo.png') }}" alt="77 VPN"></a>
             @else
-                <a href="{{ url('/home') }}" class="logo"><img src="{{ asset('assets/static/mobile/images/logos/ritavpn-logo-v2.png') }}" alt="Rita VPN"></a>
+                <a href="{{ url('/') }}" class="logo"><img src="{{ asset('assets/static/mobile/images/logos/ritavpn-logo-v2.png') }}" alt="77 VPN"></a>
             @endif
             <div class="page-header__right">
                 <button class="menu-btn">
@@ -41,11 +41,11 @@
 
             <nav class="m-menu__nav">
                 <ul>
-                    <li><a href="{{ route('home', app()->getLocale()) }}">Homepage</a></li>
-                    <li><a href="{{ route('feature', app()->getLocale()) }}">Features</a></li>
-                    <li><a href="{{ route('price', app()->getLocale()) }}">Price</a></li>
-                    <li><a href="{{ route('vpn-apps', app()->getLocale()) }}">VPN Apps</a></li>
-                    <li><a href="{{ route('account-n', app()->getLocale()) }}">Account</a></li>
+                    <li><a href="{{ route('home', app()->getLocale()) }}">{{ __('static.homepage') }}</a></li>
+                    <li><a href="{{ route('feature', app()->getLocale()) }}">{{ __('static.features') }}</a></li>
+                    <li><a href="{{ route('price', app()->getLocale()) }}">{{ __('static.price') }}</a></li>
+                    <li><a href="{{ route('vpn-apps', app()->getLocale()) }}">{{ __('static.download') }}</a></li>
+                    <li><a href="{{ route('contact', app()->getLocale()) }}">{{ __('static.contact') }}</a></li>
                 </ul>
             </nav>
 
@@ -58,9 +58,9 @@
 
             @if (Auth::check())
             <div class="m-menu__auth-info">
-                <div class="auth-email">fodordaniel89@gmail.com</div>
+                <div class="auth-email">{{Auth::user()->username}}</div>
                     <ul class="auth-list m-menu__btn-group">
-                        <li><a class="cs-btn cs-btn--outline" href="#">Account</a></li>
+                        <li><a class="cs-btn cs-btn--outline" href="{{url('usercenter')}}">Account</a></li>
                         <li><a class="cs-btn cs-btn--outline" href="{{url('logout')}}">Logout</a></li>
                     </ul>
              </div>

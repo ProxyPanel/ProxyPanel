@@ -12131,6 +12131,10 @@ textarea:active {
  Header
  -----------------------*/
 
+.page-header {
+    width: 100%;
+}
+
 .page-header .logo {
     left: 5vw;
     top: 5vw;
@@ -12145,9 +12149,9 @@ textarea:active {
 .page-header .menu-btn {
     color: #fff;
     position: absolute;
-    top: 2.4vw;
+    top: 15px;
     width: 6vw;
-    right: 5.6vw;
+    right: 15px;
     padding: 2vw 0;
 }
 
@@ -12165,12 +12169,14 @@ textarea:active {
  ----------------------*/
 
 .hero {
-    background: url("../images/index/hero-bg.jpg") no-repeat;
-    background-position: center;
-    background-size: cover;
-    height: 70vh;
     margin-bottom: 6.66777vh;
+    width: 100%;
     /* various of hero sections */
+}
+
+.hero img {
+    width: 100%;
+    height: auto;
 }
 
 .hero__title span {

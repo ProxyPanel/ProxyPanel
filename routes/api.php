@@ -70,10 +70,10 @@ Route::group(['middleware' => ['auth:api','checkPostPara']], function() {
 
 });
 
-Route::group(['middleware' => ['api']], function() {
+Route::group(['middleware' => ['api','checkPostPara']], function() {
   	
-    Route::post('user/ver1/vregister','Api\Client\UsersController@vregister');
-    Route::post('user/ver1/login','Api\Client\UsersController@login');
+    Route::post('user/ver1/vregister','Api\Client\AuthsController@autoRegister');
+    Route::post('user/ver1/login','Api\Client\AuthsController@login');
     Route::post('user/ver1/get_edpawdcode','Api\Client\AuthsController@sendCodeAPI');
     Route::post('user/ver1/updatepassword','Api\Client\AuthsController@updatePasswordWithCode');
   });

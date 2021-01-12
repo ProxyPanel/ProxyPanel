@@ -26,24 +26,24 @@
 
                 <div class="platform-chooser">
                     <div class="platform-chooser__inner">
-                        <a class="platform-chooser__link active" href="#android">
+                        <a class="platform-chooser__link active"   href="#android">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/android-platform.png') }}" alt="Android">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/android-platform-active.png') }}" alt="Android">
                             <span>Android</span>
                         </a>
-                        <a class="platform-chooser__link" href="#windows">
+                        <a class="platform-chooser__link"  href="#windows">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="Windows">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="Windows">
                             <span>Windows</span>
                         </a>
                       
-                        <a class="platform-chooser__link" href="#mac">
+                        <a class="platform-chooser__link"  href="#mac">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="mac">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="mac">
                             <span>MAC</span>
                         </a>
                       
-                         <a class="platform-chooser__link" href="#ios">
+                         <a class="platform-chooser__link"  href="#ios">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="ios">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="ios">
                             <span>IOS</span>
@@ -58,9 +58,10 @@
                     <div class="container">
 
                         <div class="app-download-items">
-                            <div class="app-download"  id="android">
+                            
+                             <div class="app-download" style="display: none"  id="android">
                                 <div class="app-download__left">
-                                    <h2>{!!  __('static.dsktp_vpn_android_title') !!}</h2>
+                                    <h2>{!! __('static.dsktp_vpn_android_title') !!}</h2>
                                     <div class="app-download__btn-group">
                                         <a href="#" class="app-download__btn app-download__btn--android" aria-label="Donwload for android"></a>
                                         <a href="#" class="app-download__link"><i class="icon-download"></i>{!! __('static.dsktp_vpn_android_btn') !!}</a>
@@ -70,7 +71,6 @@
                                     <img src="{{ asset('assets/static/desktop/images/vpn-apps/phones.jpg') }}" alt="download 77vpn">
                                 </div>
                             </div>
-                            
                          
 
                             <div class="app-download" style="display: none" id="windows">
@@ -87,7 +87,7 @@
                                 <div class="app-download__left">
                                     <h2>{!!  __('static.dsktp_vpn_mac_title') !!}</h2>
                                     <div class="app-download__btn-group">
-                                        <a href="#" class="app-download__btn app-download__btn--android" aria-label="Donwload for mac"></a>
+                                        <a href="#" class="app-download__btn app-download__btn--mac" aria-label="Donwload for mac"></a>
                                         <a href="#" class="app-download__link"><i class="icon-download"></i>{!! __('static.dsktp_vpn_mac_btn') !!}</a>
                                     </div>
                                 </div>
@@ -98,10 +98,10 @@
                             
                              <div class="app-download" style="display: none" id="ios">
                                 <div class="app-download__left">
-                                    <h2>{!!  __('static.dsktp_vpn_mac_title') !!}</h2>
+                                    <h2>{!!  __('static.dsktp_vpn_ios_title') !!}</h2>
                                     <div class="app-download__btn-group">
-                                        <a href="#" class="app-download__btn app-download__btn--android" aria-label="Donwload for ios"></a>
-                                        <a href="#" class="app-download__link"><i class="icon-download"></i>{!! __('static.dsktp_vpn_mac_btn') !!}</a>
+                                        <a href="##" class="app-download__btn app-download__btn--ios" aria-label="Donwload for ios"></a>
+                                      
                                     </div>
                                 </div>
                                 <div class="app-download__right">
@@ -154,5 +154,33 @@
         crossorigin="anonymous"></script>
 
     <script src="{{ asset('assets/static/desktop/js/app.js') }}"></script>
+    
+     <script>
+        $(function() {
+            function getMobileOperatingSystem() {
+                var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                if (/android/i.test(userAgent)) {
+                    return "Android";
+                }
+                
+                  if (/windows/i.test(userAgent)) {
+                    return "windows";
+                }
+                // iOS detection from: http://stackoverflow.com/a/9039885/177710
+                if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                    return "iOS";
+                }
+                return "unknown";
+            }
+            let mobileOperation = getMobileOperatingSystem();
+            if (mobileOperation === "Android") {
+                $("#android").show();
+            } else if (mobileOperation === "iOS") {
+                $("#ios").show();
+            } else if (mobileOperation === "windows") {
+                $("#windows").show();
+            }
+        });
+    </script>
 
 @endsection
