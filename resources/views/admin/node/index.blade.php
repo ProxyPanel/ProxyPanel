@@ -50,16 +50,8 @@
                     <tbody>
                     @foreach($nodeList as $node)
                         <tr>
-                            <td>
-                                {{$node->id}}
-                            </td>
-                            <td>
-                                @if($node->is_relay)
-                                    中转
-                                @else
-                                    {{$node->type_label}}
-                                @endif
-                            </td>
+                            <td> {{$node->id}} </td>
+                            <td> {{$node->type_label}} </td>
                             <td> {{$node->name}} </td>
                             <td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
                             <td> {{$node->server}} </td>
@@ -78,7 +70,8 @@
                             <td>
                                 @if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
                                 @if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
-                                @if(!$node->is_subscribe)<span class="badge badge-lg badge-danger"><del>订</del></span> @endif
+                                @if($node->is_relay) <span class="badge badge-lg badge-info">中转</span> @endif
+                                @if(!$node->is_subscribe) <span class="badge badge-lg badge-danger"><del>订</del></span> @endif
                             </td>
                             <td>
                                 @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
