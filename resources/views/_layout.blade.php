@@ -18,19 +18,13 @@
     <title>@yield('title')</title>
     <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/css/bootstrap-extend.min.css" rel="stylesheet">
-    <link href="/assets/css/site.min.css" rel="stylesheet">
-    <!-- 插件/Plugins -->
-    <link href="/assets/global/vendor/animsition/animsition.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/asscrollable/asScrollable.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/slidepanel/slidePanel.min.css" rel="stylesheet">
+    <link href="/assets/bundle/app.min.css" rel="stylesheet">
     <link href="https://cdnjs.loli.net/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
           integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous"/>
 @yield('layout_css')
 <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">
-    <link href="//fonts.loli.net/css?family=Roboto:300,400,500,300italic" rel="stylesheet">
+    <link href="https://fonts.loli.net/css?family=Roboto:300,400,500,300italic" rel="stylesheet">
     <!--[if lt IE 9]>
     <script src="https://cdnjs.loli.net/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"
             integrity="sha512-UDJtJXfzfsiPPgnI5S1000FPLBHMhvzAMX15I+qG2E2OAzC9P1JzUwJOfnypXiOH7MRPaqzhPbBGDNNj7zBfoA==" crossorigin="anonymous"></script>
@@ -44,6 +38,9 @@
     <script>
       Breakpoints();
     </script>
+    @if (config('theme.skin'))
+        <link id="skinStyle" href="/assets/css/skins/{{config('theme.skin')}}.min.css" rel="stylesheet" type="text/css">
+    @endif
 </head>
 
 <body class="animsition @yield('body_class')">

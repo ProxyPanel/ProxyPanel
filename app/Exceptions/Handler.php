@@ -53,7 +53,7 @@ class Handler extends ExceptionHandler
         Log::info('异常来源：'.get_class($exception));
 
         // 调试模式下记录错误详情
-        if (config('app.debug')) {
+        if (config('app.debug') || config('app.demo')) {
             Log::debug('来自链接：'.url()->full());
             Log::debug($exception);
         }

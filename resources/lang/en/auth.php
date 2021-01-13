@@ -38,13 +38,13 @@ return [
         'get'          => 'Click to get the invitation code',
         'not_required' => 'No invitation code is required, you can register directly!',
     ],
-    'login'           => 'Login',
+    'login'           => 'Sign in',
     'logout'          => 'Logout',
     'maintenance'     => 'Maintain',
     'maintenance_tip' => 'Website under maintenance',
     'optional'        => 'Optional',
     'password'        => [
-        'forget'   => 'forget password?',
+        'forget'   => 'Forgot password?',
         'new'      => 'Enter a new password',
         'original' => 'Original Password',
         'reset'    => [
@@ -62,13 +62,13 @@ return [
         ],
     ],
     'register'        => [
-        'attribute' => 'Register',
+        'attribute' => 'Sign up',
         'code'      => 'Registration Code',
         'error'     => [
             'disable'  => 'Sorry, The registration function has been disabled',
             'throttle' => 'Anti-bots shield is active! Please do not send multiple register from at short amount of times!',
         ],
-        'promotion' => 'No account yet? Please go to',
+        'promotion' => 'Still no account? Please go to ',
         'failed'    => 'Registration failed, please try later',
         'success'   => 'Registration successfully',
     ],

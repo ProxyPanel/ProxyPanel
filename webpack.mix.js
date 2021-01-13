@@ -11,5 +11,14 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+//css bundle
+mix.styles([
+  'public/assets/css/bootstrap.min.css',
+  'public/assets/css/bootstrap-ext  end.min.css',
+  'public/assets/css/site.min.css',
+  'public/assets/global/vendor/animsition/animsition.min.css',
+  'public/assets/global/vendor/asscrollable/asScrollable.min.css',
+  'public/assets/global/vendor/slidepanel/slidePanel.min.css',
+], 'public/assets/bundle/app.min.css').options({
+  processCssUrls: false,
+});

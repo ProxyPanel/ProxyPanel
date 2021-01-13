@@ -5,8 +5,7 @@
 @endsection
 @section('body_class', 'dashboard')
 @section('layout_content')
-    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega navbar-inverse bg-indigo-600"
-         role="navigation">
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega {{config('theme.navbar.inverse')}} {{config('theme.navbar.skin')}}" role="navigation">
         <div class="navbar-header">
             <button type="button" class="navbar-toggler hamburger hamburger-close navbar-toggler-left hided"
                     data-toggle="menubar">
@@ -86,7 +85,7 @@
             </div>
         </div>
     </nav>
-    <div class="site-menubar site-menubar-light">
+    <div class="site-menubar {{config('theme.sidebar')}}">
         <div class="site-menubar-body">
             <ul class="site-menu" data-plugin="menu">
                 <li class="site-menu-item {{request()->routeIs('home', 'profile' ,'article') ? 'active open' : ''}}">
