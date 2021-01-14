@@ -91,7 +91,7 @@ class AutoJob extends Command
                     ->count('request_ip');
                 if ($request_times >= $subscribe_ban_times) {
                     $user->subscribe->update([
-                        'status' => 0,
+                        'status'   => 0,
                         'ban_time' => strtotime('+'.sysConfig('traffic_ban_time').' minutes'),
                         'ban_desc' => '存在异常，自动封禁',
                     ]);
@@ -121,7 +121,7 @@ class AutoJob extends Command
                 // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
                 if ($user->isTrafficWarning()) {
                     $user->update([
-                        'enable' => 0,
+                        'enable'   => 0,
                         'ban_time' => strtotime('+'.$trafficBanTime.' minutes'),
                     ]);
 
@@ -136,14 +136,12 @@ class AutoJob extends Command
     private function unblockUsers(): void
     {
         // 解封被临时封禁的账号
-        $userList = User::whereEnable(0)->where('status', '>=', 0)->whereNotNull('ban_time')->get();
+        $userList = User::whereEnable(0)->where('status', '>=', 0)->whereNotNull('ban_time')->where('ban_time', '<', time())->get();
         foreach ($userList as $user) {
-            if ($user->getRawOriginal('ban_time') < time()) {
-                $user->update(['enable' => 1, 'ban_time' => null]);
+            $user->update(['enable' => 1, 'ban_time' => null]);
 
-                // 写入操作日志
-                Helpers::addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
-            }
+            // 写入操作日志
+            Helpers::addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期');
         }
 
         // 可用流量大于已用流量也解封（比如：邀请返利自动加了流量）

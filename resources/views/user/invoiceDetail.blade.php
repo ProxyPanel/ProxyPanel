@@ -40,7 +40,7 @@
                         <tbody>
                         <tr>
                             <td>
-                                <h3>{{$order->goods->name ?? ($order->goods_id === 0 ? trans('user.recharge_credit'): trans('home.invoice_table_goods_deleted'))}}</h3>
+                                <h3>{{$order->goods->name ?? trans('user.recharge_credit')}}</h3>
                             </td>
                             <td>
                                 @if($order->goods)

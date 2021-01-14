@@ -33,7 +33,7 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
-                            <td>{{$order->goods->name ?? ($order->goods_id === 0 ? trans('user.recharge_credit'): trans('home.invoice_table_goods_deleted'))}}</td>
+                            <td>{{$order->goods->name ?? trans('user.recharge_credit')}}</td>
                             <td>{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</td>
                             <td>¥{{$order->amount}}</td>
                             <td>{{$order->created_at}}</td>

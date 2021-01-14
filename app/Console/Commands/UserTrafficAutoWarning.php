@@ -35,7 +35,7 @@ class UserTrafficAutoWarning extends Command
         $trafficWarningPercent = sysConfig('traffic_warning_percent');
         foreach (User::activeUser()->where('transfer_enable', '>', 0)->get() as $user) {
             // 用户名不是邮箱的跳过
-            if (false === filter_var($user->email, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($user->email, FILTER_VALIDATE_EMAIL) === false) {
                 continue;
             }
 

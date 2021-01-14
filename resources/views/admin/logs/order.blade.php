@@ -114,7 +114,7 @@
                                 @endif
                             </td>
                             <td> {{$order->order_sn}}</td>
-                            <td> {{empty($order->goods) ? ($order->goods_id === 0 ? trans('user.recharge_credit') : trans('home.invoice_table_goods_deleted')) : $order->goods->name}} </td>
+                            <td> {{$order->goods->name  ?? trans('user.recharge_credit')}} </td>
                             <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
                             <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
                             <td> ¥{{$order->origin_amount}} </td>

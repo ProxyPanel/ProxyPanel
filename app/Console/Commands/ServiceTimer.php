@@ -29,13 +29,11 @@ class ServiceTimer extends Command
     private function decGoodsTraffic(): void
     {
         //获取失效的套餐
-        foreach (Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->with('user')->get() as $order) {
-            // 清理全部流量,重置重置日期和等级 TODO 可用流量变动日志加入至UserObserver
-            $user = $order->user;
+        foreach (Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->with('user')->whereHas('user')->get() as $order) {
             // 无用户订单，跳过
-            if (! $user) {
-                continue;
-            }
+            // 清理全部流量,重置重置日期和等级
+            $user = $order->user;
+
             $user->update([
                 'u' => 0,
                 'd' => 0,

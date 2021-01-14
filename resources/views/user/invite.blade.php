@@ -5,7 +5,7 @@
 @section('content')
     <div class="page-header">
         <h1 class="page-title cyan-600">
-            <i class="icon wb-extension"></i>{{trans('home.invitation_code')}}
+            <i class="icon wb-extension"></i>{{trans('user.menu.invites')}}
         </h1>
     </div>
     <div class="page-content container-fluid">

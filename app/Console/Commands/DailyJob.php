@@ -116,7 +116,7 @@ class DailyJob extends Command
             Order::userActivePackage($user->id)->update(['is_expire' => 1]);
 
             $oldData = $user->transfer_enable;
-            // 重置流量与重置日期 TODO 可用流量变动日志加入至UserObserver
+            // 重置流量与重置日期
             $ret = $user->update((new OrderService($order))->resetTimeAndData($user->expired_at));
             if ($ret) {
                 // 可用流量变动日志
