@@ -14,7 +14,9 @@
             <p>
                 {!! $ticket->content !!}
             </p>
-            <time class="chat-time">{{$ticket->created_at}}</time>
+            <time class="chat-time" datetime="{{$ticket->created_at}}">
+                {{($ticket->ticket && $ticket->ticket->status === 2) || $ticket->status === 2 ? $ticket->created_at : $ticket->created_at->diffForHumans()}}
+            </time>
         </div>
     </div>
 </div>

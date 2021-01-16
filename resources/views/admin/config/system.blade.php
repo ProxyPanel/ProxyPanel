@@ -1703,7 +1703,33 @@
         $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
         $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
         $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+
+        // Get all options within select
+        disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
+        disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
       });
+
+      function disablePayment(op) {
+        for (let i = 1; i < op.length; i++) {
+            @json($payments).
+          includes(op[i].value)
+              ? op[i].disabled = false
+              : op[i].disabled = true;
+        }
+      }
+
+      function disableCaptcha(op) {
+        console.log(@json($captcha))
+        for (let i = 2; i < op.length; i++) {
+            @json($captcha).
+          includes(op[i].value)
+              ? op[i].disabled = false
+              : op[i].disabled = true;
+        }
+      }
 
       // 系统设置更新
       function systemUpdate(systemItem, value) {

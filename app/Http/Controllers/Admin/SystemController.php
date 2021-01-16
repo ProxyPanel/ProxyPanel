@@ -6,7 +6,6 @@ use App\Components\PushNotification;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
-use App\Models\Label;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Response;
@@ -16,7 +15,52 @@ class SystemController extends Controller
     // 系统设置
     public function index()
     {
-        return view('admin.config.system', array_merge(['labelList' => Label::orderByDesc('sort')->orderBy('id')->get()], Config::pluck('value', 'name')->toArray()));
+        return view('admin.config.system', array_merge(['payments' => $this->getPayment(), 'captcha' => $this->getCaptcha()], Config::pluck('value', 'name')->toArray()));
+    }
+
+    private function getPayment()
+    {
+        if (sysConfig('f2fpay_app_id') && sysConfig('f2fpay_private_key') && sysConfig('f2fpay_public_key')) {
+            $payment[] = 'f2fpay';
+        }
+        if (sysConfig('codepay_url') && sysConfig('codepay_id') && sysConfig('codepay_key')) {
+            $payment[] = 'codepay';
+        }
+        if (sysConfig('epay_url') && sysConfig('epay_mch_id') && sysConfig('epay_key')) {
+            $payment[] = 'epay';
+        }
+        if (sysConfig('payjs_mch_id') && sysConfig('payjs_key')) {
+            $payment[] = 'payjs';
+        }
+        if (sysConfig('bitpay_secret')) {
+            $payment[] = 'bitpayx';
+        }
+        if (sysConfig('paypal_username') && sysConfig('paypal_password') && sysConfig('paypal_secret')) {
+            $payment[] = 'paypal';
+        }
+        if (sysConfig('stripe_public_key') && sysConfig('stripe_secret_key')) {
+            $payment[] = 'stripe';
+        }
+        if (sysConfig('paybeaver_app_id') && sysConfig('paybeaver_app_secret')) {
+            $payment[] = 'paybeaver';
+        }
+
+        return $payment ?? [];
+    }
+
+    private function getCaptcha()
+    {
+        if (sysConfig('geetest_id') && sysConfig('geetest_key')) {
+            $captcha[] = '2';
+        }
+        if (sysConfig('google_captcha_secret') && sysConfig('google_captcha_sitekey')) {
+            $captcha[] = '3';
+        }
+        if (sysConfig('hcaptcha_secret') && sysConfig('hcaptcha_sitekey')) {
+            $captcha[] = '4';
+        }
+
+        return $captcha ?? [];
     }
 
     // 设置系统扩展信息，例如客服、统计代码
@@ -121,6 +165,7 @@ class SystemController extends Controller
         if (config('app.demo')) {
             $denyConfig = [
                 'website_url',
+                'is_captcha',
                 'min_rand_traffic',
                 'max_rand_traffic',
                 'push_bear_send_key',

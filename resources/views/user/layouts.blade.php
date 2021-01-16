@@ -19,8 +19,7 @@
             <div class="navbar-brand navbar-brand-center">
                 <img src="{{sysConfig('website_logo') ? asset(sysConfig('website_logo')) : '/assets/images/logo64.png'}}"
                      class="navbar-brand-logo" alt="logo"/>
-                <span
-                        class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
+                <span class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
             </div>
         </div>
         <div class="navbar-container container-fluid">
