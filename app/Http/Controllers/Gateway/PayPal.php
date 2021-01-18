@@ -124,13 +124,11 @@ class PayPal extends AbstractPayment
         $response = (string) $this->provider->verifyIPN($post);
 
         if ($response === 'VERIFIED' && $request['invoice']) {
-            $payment = Payment::whereTradeNo($request['invoice'])->first();
-            if ($payment && $payment->status === 0) {
-                $ret = $payment->order->complete();
-                if ($ret) {
-                    exit('success');
-                }
+            if ($this->paymentReceived($request['invoice'])) {
+                exit('success');
             }
+        } else {
+            Log::info('Paypal：交易失败');
         }
         exit('fail');
     }

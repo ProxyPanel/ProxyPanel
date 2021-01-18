@@ -16,7 +16,7 @@
                     <div class="col-lg-3 offset-lg-6 text-right">
                         <h4>{{trans('user.invoice.detail')}}</h4>
                         <p>{{trans('user.invoice.id')}}：
-                            <a class="font-size-20" href="javascript:void(0)">{{$order->order_sn}}</a>
+                            <a class="font-size-20" href="javascript:void(0)">{{$order->sn}}</a>
                         </p>
                         <p>{{trans('user.payment_method')}}
                             ：{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</p>

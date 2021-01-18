@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Models\Payment;
 use Auth;
 use Illuminate\Http\JsonResponse;
+use Log;
 use Response;
 
 class CodePay extends AbstractPayment
@@ -14,12 +14,12 @@ class CodePay extends AbstractPayment
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'id' => sysConfig('codepay_id'),
-            'pay_id' => $payment->trade_no,
-            'type' => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
-            'price' => $payment->amount,
-            'page' => 1,
-            'outTime' => 900,
+            'id'         => sysConfig('codepay_id'),
+            'pay_id'     => $payment->trade_no,
+            'type'       => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
+            'price'      => $payment->amount,
+            'page'       => 1,
+            'outTime'    => 900,
             'notify_url' => route('payment.notify', ['method' => 'codepay']),
             'return_url' => route('invoice'),
         ];
@@ -33,16 +33,14 @@ class CodePay extends AbstractPayment
 
     public function notify($request): void
     {
-        $trade_no = $request->input('pay_id');
-        if ($trade_no && $request->input('pay_no')
+        $tradeNo = $request->input('pay_id');
+        if ($tradeNo && $request->input('pay_no')
             && $this->verify($request->except('method'), sysConfig('codepay_key'), $request->input('sign'), false)) {
-            $payment = Payment::whereTradeNo($trade_no)->first();
-            if ($payment) {
-                $ret = $payment->order->complete();
-                if ($ret) {
-                    exit('success');
-                }
+            if ($this->paymentReceived($tradeNo)) {
+                exit('success');
             }
+        } else {
+            Log::info('码支付：交易失败');
         }
         exit('fail');
     }

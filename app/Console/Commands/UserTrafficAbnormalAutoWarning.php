@@ -2,10 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Components\PushNotification;
+use App\Models\User;
 use App\Models\UserHourlyDataFlow;
+use App\Notifications\DataAnomaly;
 use Illuminate\Console\Command;
 use Log;
+use Notification;
 
 class UserTrafficAbnormalAutoWarning extends Command
 {
@@ -17,7 +19,9 @@ class UserTrafficAbnormalAutoWarning extends Command
         $jobStartTime = microtime(true);
 
         // 用户流量异常警告
-        $this->userTrafficAbnormalWarning();
+        if (sysConfig('data_anomaly_notification')) {
+            $this->userTrafficAbnormalWarning();
+        }
 
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
@@ -45,10 +49,9 @@ class UserTrafficAbnormalAutoWarning extends Command
                     ->selectRaw('user_id, sum(`u`) as totalU, sum(`d`) as totalD, sum(total) as totalTraffic')
                     ->first();
 
-                PushNotification::send(
-                    '流量异常用户提醒',
-                    "用户**{$user->email}(ID:{$user->id})**，最近1小时**上行流量：".flowAutoShow($traffic->totalU).'，下行流量：'.flowAutoShow($traffic->totalD).'，共计：'.flowAutoShow($traffic->totalTraffic).'**。'
-                );
+                Notification::send(User::permission('admin.user.edit,update')->orWhere(function ($query) {
+                    return $query->role('Super Admin');
+                })->get(), new DataAnomaly($user->id, flowAutoShow($traffic->totalU), flowAutoShow($traffic->totalD), flowAutoShow($traffic->totalTraffic)));
             }
         }
     }

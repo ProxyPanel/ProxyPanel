@@ -32,7 +32,7 @@
                     @foreach($orderList as $order)
                         <tr>
                             <td>{{$loop->iteration}}</td>
-                            <td><a href="/invoice/{{$order->order_sn}}" target="_blank">{{$order->order_sn}}</a></td>
+                            <td><a href="/invoice/{{$order->sn}}" target="_blank">{{$order->sn}}</a></td>
                             <td>{{$order->goods->name ?? trans('user.recharge_credit')}}</td>
                             <td>{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</td>
                             <td>¥{{$order->amount}}</td>

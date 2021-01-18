@@ -271,11 +271,13 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="is_reset_password">重置密码</label>
+                                            <label class="col-md-3 col-form-label" for="password_reset_notification">重置密码</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="is_reset_password" data-plugin="switchery" @if($is_reset_password) checked
-                                                       @endif onchange="updateFromOther('switch','is_reset_password')">
-                                                <span class="text-help"> 启用后用户可以通过邮件重置密码 </span>
+                                                <select id="password_reset_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','password_reset_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                </select>
+                                                <span class="text-help"> 启用后用户可以重置密码 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -862,10 +864,13 @@
                                 <div class="row">
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="expire_warning">用户过期警告</label>
+                                            <label class="col-md-3 col-form-label" for="account_expire_notification">用户过期警告</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="expire_warning" data-plugin="switchery" @if($expire_warning) checked
-                                                       @endif onchange="updateFromOther('switch','expire_warning')">
+                                                <select id="account_expire_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','account_expire_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                </select>
                                                 <span class="text-help"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
                                             </div>
                                         </div>
@@ -888,10 +893,13 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="traffic_warning">用户流量警告</label>
+                                            <label class="col-md-3 col-form-label" for="data_exhaust_notification">用户流量警告</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="traffic_warning" data-plugin="switchery" @if($traffic_warning) checked
-                                                       @endif onchange="updateFromOther('switch','traffic_warning')">
+                                                <select id="data_exhaust_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','data_exhaust_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                </select>
                                                 <span class="text-help"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
                                             </div>
                                         </div>
@@ -914,10 +922,16 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="is_node_offline">节点离线提醒</label>
+                                            <label class="col-md-3 col-form-label" for="node_offline_notification">节点离线提醒</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="is_node_offline" data-plugin="switchery" @if($is_node_offline) checked
-                                                       @endif onchange="updateFromOther('switch','is_node_offline')">
+                                                <select id="node_offline_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','node_offline_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
                                                 <span class="text-help"> 启用后如果节点离线会推送提醒 </span>
                                             </div>
                                         </div>
@@ -940,10 +954,16 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="nodes_detection">节点阻断检测</label>
+                                            <label class="col-md-3 col-form-label" for="node_blocked_notification">节点阻断检测</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="nodes_detection" data-plugin="switchery" @if($nodes_detection) checked
-                                                       @endif onchange="updateFromOther('switch','nodes_detection')">
+                                                <select id="node_blocked_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','node_blocked_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
                                                 <span class="text-help"> 每小时检测节点是否被阻断并提醒 </span>
                                             </div>
                                         </div>
@@ -966,16 +986,65 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="is_notification">推送通知</label>
+                                            <label class="col-md-3 col-form-label" for="payment_received_notification">支付成功通知</label>
                                             <div class="col-md-9">
-                                                <select id="is_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                                        onchange="updateFromOther('select','is_notification')">
-                                                    <option value="">关闭</option>
-                                                    <option value="serverChan">ServerChan</option>
-                                                    <option value="bark">Bark</option>
+                                                <select id="payment_received_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','payment_received_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
                                                 </select>
-                                                <span class="text-help">推送节点离线提醒、用户流量异常警告、节点使用报告 @can('admin.test.notify')（<a href="javascript:sendTestNotification();
-">发送测试消息</a>）@endcan </span>
+                                                <span class="text-help"> 用户支付订单后通知用户订单状态 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <div class="row">
+                                            <label class="col-md-3 col-form-label" for="ticket_closed_notification">工单关闭通知</label>
+                                            <div class="col-md-9">
+                                                <select id="ticket_closed_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','ticket_closed_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
+                                                <span class="text-help"> 工单关闭通知 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <div class="row">
+                                            <label class="col-md-3 col-form-label" for="ticket_created_notification">新工单通知</label>
+                                            <div class="col-md-9">
+                                                <select id="ticket_created_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','ticket_created_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
+                                                <span class="text-help"> 新工单通知 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <div class="row">
+                                            <label class="col-md-3 col-form-label" for="ticket_replied_notification">工单回复通知</label>
+                                            <div class="col-md-9">
+                                                <select id="ticket_replied_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','ticket_replied_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
+                                                <span class="text-help"> 工单回复通知 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -989,7 +1058,9 @@
                                                         <button class="btn btn-primary" type="button" onclick="update('server_chan_key')">{{trans('common.update')}}</button>
                                                     </span>
                                                 </div>
-                                                <span class="text-help">启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>）</span>
+                                                <span class="text-help">启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>） @can('admin.test.notify')（<a
+                                                            href="javascript:sendTestNotification('serverChan');
+">发送测试消息</a>）@endcan</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1003,7 +1074,8 @@
                                                         <button class="btn btn-primary" type="button" onclick="update('bark_key')">{{trans('common.update')}}</button>
                                                     </span>
                                                 </div>
-                                                <span class="text-help">推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值 </span>
+                                                <span class="text-help">推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值 @can('admin.test.notify')（<a href="javascript:sendTestNotification('bark');
+">发送测试消息</a>）@endcan </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1108,6 +1180,19 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
+                                            <label class="col-md-3 col-form-label" for="data_anomaly_notification">流量异常通知</label>
+                                            <div class="col-md-9">
+                                                <select id="data_anomaly_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','data_anomaly_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="database">站内通知</option>
+                                                </select>
+                                                <span class="text-help"> 1小时内流量超过异常阈值通知 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <div class="row">
                                             <label class="col-md-3 col-form-label" for="traffic_ban_value">流量异常阈值</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
@@ -1160,11 +1245,15 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="node_daily_report">节点使用报告</label>
+                                            <label class="col-md-3 col-form-label" for="node_daily_notification">节点使用报告</label>
                                             <div class="col-md-9">
-                                                <input type="checkbox" id="node_daily_report" data-plugin="switchery" @if($node_daily_report) checked
-                                                       @endif onchange="updateFromOther('switch','node_daily_report')">
-                                                <span class="text-help"> 每天早上9点推送昨天节点的使用情况 </span>
+                                                <select id="node_daily_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                        onchange="updateFromOther('select','node_daily_notification')" multiple>
+                                                    <option value="mail">邮箱</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="serverChan">ServerChan</option>
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -1698,11 +1787,21 @@
         $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
         $('#referral_type').selectpicker('val', '{{$referral_type}}');
         $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
-        $('#is_notification').selectpicker('val', '{{$is_notification}}');
         $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
         $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
         $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
         $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+        $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
+        $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
+        $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
+        $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
+        $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
+        $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
+        $('#password_reset_notification').selectpicker('val', {!! $password_reset_notification !!});
+        $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
+        $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
+        $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
+        $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
 
         // Get all options within select
         disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
@@ -1722,7 +1821,6 @@
       }
 
       function disableCaptcha(op) {
-        console.log(@json($captcha))
         for (let i = 2; i < op.length; i++) {
             @json($captcha).
           includes(op[i].value)
@@ -1787,8 +1885,8 @@
 
       // 发送Bark测试消息
       @can('admin.test.notify')
-      function sendTestNotification() {
-        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+      function sendTestNotification(channel) {
+        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {
           if (ret.status === 'success') {
             swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
           } else {

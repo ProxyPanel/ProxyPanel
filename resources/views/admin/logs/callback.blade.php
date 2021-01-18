@@ -62,7 +62,7 @@
                             <td> {{$log->trade_no}} </td>
                             <td>
                                 @can('admin.order')
-                                    <a href="{{route('admin.order', ['order_sn' => $log->out_trade_no])}}" target="_blank"> {{$log->out_trade_no}} </a>
+                                    <a href="{{route('admin.order', ['sn' => $log->out_trade_no])}}" target="_blank"> {{$log->out_trade_no}} </a>
                                 @else
                                     {{$log->out_trade_no}}
                                 @endcan

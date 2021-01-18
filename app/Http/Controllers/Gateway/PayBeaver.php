@@ -7,7 +7,6 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Models\Payment;
 use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
@@ -31,11 +30,11 @@ class PayBeaver extends AbstractPayment
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $result = $this->createOrder([
-            'app_id' => $this->appId,
+            'app_id'            => $this->appId,
             'merchant_order_id' => $payment->trade_no,
-            'price_amount' => $payment->amount * 100,
-            'notify_url' => route('payment.notify', ['method' => 'paybeaver']),
-            'return_url' => route('invoice'),
+            'price_amount'      => $payment->amount * 100,
+            'notify_url'        => route('payment.notify', ['method' => 'paybeaver']),
+            'return_url'        => route('invoice'),
         ]);
 
         if (isset($result['message'])) {
@@ -85,14 +84,11 @@ class PayBeaver extends AbstractPayment
             exit(json_encode(['status' => 400]));
         }
 
-        $tradeNo = $request->input(['merchant_order_id']);
-        $payment = Payment::whereTradeNo($tradeNo)->first();
-        if ($payment) {
-            $ret = $payment->order->update(['status' => 2]);
-            if ($ret) {
-                exit(json_encode(['status' => 200]));
-            }
+        if ($request->has(['merchant_order_id']) && $this->paymentReceived($request->input(['merchant_order_id']))) {
+            exit(json_encode(['status' => 200]));
         }
+
+        Log::info('海狸支付：交易失败');
 
         exit(json_encode(['status' => 500]));
     }

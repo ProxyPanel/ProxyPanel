@@ -5,15 +5,15 @@ namespace App\Http\Controllers;
 use App\Components\Helpers;
 use App\Components\IP;
 use App\Http\Requests\Auth\RegisterRequest;
-use App\Mail\activeUser;
-use App\Mail\resetPassword;
-use App\Mail\sendVerifyCode;
 use App\Models\EmailFilter;
 use App\Models\Invite;
 use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\Verify;
 use App\Models\VerifyCode;
+use App\Notifications\AccountActivation;
+use App\Notifications\PasswordReset;
+use App\Notifications\Verification;
 use Auth;
 use Cache;
 use Captcha;
@@ -22,18 +22,13 @@ use Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
-use Mail;
+use Notification;
 use Redirect;
 use Response;
 use Session;
 use Str;
 use Validator;
 
-/**
- * 认证控制器.
- *
- * Class AuthController
- */
 class AuthController extends Controller
 {
     // 登录
@@ -316,11 +311,10 @@ class AuthController extends Controller
             $token = $this->addVerifyUrl($user->id, $user->email);
             $activeUserUrl = route('activeAccount', $token);
 
-            $logId = Helpers::addNotificationLog(trans('common.active_item', ['attribute' => trans('auth.register.attribute')]),
-                trans('common.request_url').'：'.$activeUserUrl, 1, $user->email);
-            Mail::to($user->email)->send(new activeUser($logId, $activeUserUrl));
+            $user->notifyNow(new AccountActivation($activeUserUrl));
 
-            Session::flash('successMsg', trans('auth.active.sent'));
+            Session::flash('successMsg',
+                __("Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another."));
         } else {
             // 则直接给推荐人加流量
             if ($inviter_id) {
@@ -440,12 +434,12 @@ class AuthController extends Controller
             $email = $request->input('email');
 
             // 是否开启重设密码
-            if (! sysConfig('is_reset_password')) {
+            if (! sysConfig('password_reset_notification')) {
                 return Redirect::back()->withErrors(trans('auth.password.reset.error.disabled', ['email' => sysConfig('webmaster_email')]));
             }
 
             // 查找账号
-            $user = User::whereEmail($email)->first();
+            $user = User::whereEmail($email)->firstOrFail();
 
             // 24小时内重设密码次数限制
             $resetTimes = 0;
@@ -460,10 +454,8 @@ class AuthController extends Controller
             $token = $this->addVerifyUrl($user->id, $email);
 
             // 发送邮件
-            $resetPasswordUrl = route('resettingPasswd', $token);
-
-            $logId = Helpers::addNotificationLog(trans('auth.password.reset.attribute'), trans('common.request_url').'：'.$resetPasswordUrl, 1, $email);
-            Mail::to($email)->send(new resetPassword($logId, $resetPasswordUrl));
+            $resetUrl = route('resettingPasswd', $token);
+            $user->notifyNow(new PasswordReset($resetUrl));
 
             Cache::put('resetPassword_'.md5($email), $resetTimes + 1, Day);
 
@@ -577,8 +569,7 @@ class AuthController extends Controller
             // 发送邮件
             $activeUserUrl = route('activeAccount', $token);
 
-            $logId = Helpers::addNotificationLog(trans('common.active_item', ['attribute' => trans('common.account')]), trans('common.request_url').'：'.$activeUserUrl, 1, $email);
-            Mail::to($email)->send(new activeUser($logId, $activeUserUrl));
+            Notification::route('mail', $email)->notifyNow(new AccountActivation($activeUserUrl));
 
             Cache::put('activeUser_'.md5($email), $activeTimes + 1, Day);
 
@@ -677,10 +668,9 @@ class AuthController extends Controller
 
         // 发送邮件
         $code = Str::random(6);
-        $logId = Helpers::addNotificationLog(trans('auth.register.code'), trans('auth.captcha.attribute').'：'.$code, 1, $email);
-        Mail::to($email)->send(new sendVerifyCode($logId, $code));
-
-        VerifyCode::create(['address' => $email, 'code' => $code]); // 生成注册验证码
+        if (VerifyCode::create(['address' => $email, 'code' => $code])) { // 生成注册验证码
+            Notification::route('mail', $email)->notifyNow(new Verification($code));
+        }
 
         Cache::put('send_verify_code_'.md5($ip), $ip, Minute);
 

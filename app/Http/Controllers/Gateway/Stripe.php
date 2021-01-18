@@ -45,21 +45,21 @@ class Stripe extends AbstractPayment
 
         return [
             'payment_method_types' => ['card', 'alipay'],
-            'line_items' => [
+            'line_items'           => [
                 [
                     'price_data' => [
-                        'currency' => 'usd',
+                        'currency'     => 'usd',
                         'product_data' => ['name' => sysConfig('subject_name') ?: sysConfig('website_name')],
-                        'unit_amount' => $unitAmount,
+                        'unit_amount'  => $unitAmount,
                     ],
-                    'quantity' => 1,
+                    'quantity'   => 1,
                 ],
             ],
-            'mode' => 'payment',
-            'success_url' => route('invoice'),
-            'cancel_url' => route('invoice'),
-            'client_reference_id' => $tradeNo,
-            'customer_email' => Auth::getUser()->email,
+            'mode'                 => 'payment',
+            'success_url'          => route('invoice'),
+            'cancel_url'           => route('invoice'),
+            'client_reference_id'  => $tradeNo,
+            'customer_email'       => Auth::getUser()->email,
         ];
     }
 
@@ -103,13 +103,13 @@ class Stripe extends AbstractPayment
                 // account.
                 if ($session->payment_status == 'paid') {
                     // Fulfill the purchase
-                    $this->fulfillOrder($session);
+                    $this->paymentReceived($session->client_reference_id);
                 }
                 break;
             case 'checkout.session.async_payment_succeeded':
                 $session = $event->data->object;
                 // Fulfill the purchase
-                $this->fulfillOrder($session);
+                $this->paymentReceived($session->client_reference_id);
                 break;
             case 'checkout.session.async_payment_failed':
                 $session = $event->data->object;
@@ -120,14 +120,6 @@ class Stripe extends AbstractPayment
 
         http_response_code(200);
         exit();
-    }
-
-    public function fulfillOrder(Session $session)
-    {
-        $payment = Payment::whereTradeNo($session->client_reference_id)->first();
-        if ($payment) {
-            $payment->order->complete();
-        }
     }
 
     // 未支付成功则关闭订单

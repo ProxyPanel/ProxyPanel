@@ -2,8 +2,11 @@
 
 namespace App\Components;
 
+use App\Channels\BarkChannel;
+use App\Channels\ServerChanChannel;
 use App\Models\Config;
 use App\Models\CouponLog;
+use App\Models\Marketing;
 use App\Models\NotificationLog;
 use App\Models\SsConfig;
 use App\Models\User;
@@ -13,6 +16,8 @@ use App\Models\UserDataModifyLog;
 use App\Models\UserSubscribe;
 use Cache;
 use DateTime;
+use NotificationChannels\BearyChat\BearyChatChannel;
+use NotificationChannels\Telegram\TelegramChannel;
 use Str;
 
 class Helpers
@@ -65,20 +70,20 @@ class Helpers
     public static function addUser(string $email, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $username = null): User
     {
         return User::create([
-            'username' => $username ?? $email,
-            'email' => $email,
-            'password' => $password,
-            'port' => self::getPort(), // 生成一个可用端口
-            'passwd' => Str::random(),
-            'vmess_id' => Str::uuid(),
-            'method' => self::getDefaultMethod(),
-            'protocol' => self::getDefaultProtocol(),
-            'obfs' => self::getDefaultObfs(),
+            'username'        => $username ?? $email,
+            'email'           => $email,
+            'password'        => $password,
+            'port'            => self::getPort(), // 生成一个可用端口
+            'passwd'          => Str::random(),
+            'vmess_id'        => Str::uuid(),
+            'method'          => self::getDefaultMethod(),
+            'protocol'        => self::getDefaultProtocol(),
+            'obfs'            => self::getDefaultObfs(),
             'transfer_enable' => $transfer_enable,
-            'expired_at' => date('Y-m-d', strtotime('+'.$date.' days')),
-            'user_group_id' => null,
-            'reg_ip' => IP::getClientIp(),
-            'inviter_id' => $inviter_id,
+            'expired_at'      => date('Y-m-d', strtotime('+'.$date.' days')),
+            'user_group_id'   => null,
+            'reg_ip'          => IP::getClientIp(),
+            'inviter_id'      => $inviter_id,
         ]);
     }
 
@@ -142,15 +147,50 @@ class Helpers
     // 获取系统配置
     public static function cacheSysConfig($name)
     {
+        $notifications = [
+            'account_expire_notification',
+            'data_anomaly_notification',
+            'data_exhaust_notification',
+            'node_blocked_notification',
+            'node_daily_notification',
+            'node_offline_notification',
+            'password_reset_notification',
+            'payment_received_notification',
+            'ticket_closed_notification',
+            'ticket_created_notification',
+            'ticket_replied_notification',
+        ];
+
         if ($name === 'is_onlinePay') {
             $value = sysConfig('is_AliPay') || sysConfig('is_QQPay') || sysConfig('is_WeChatPay') || sysConfig('is_otherPay');
             Cache::tags('sysConfig')->put('is_onlinePay', $value);
         } else {
-            $value = Config::find($name)->value;
+            if (in_array($name, $notifications, true)) {
+                $value = self::setChannel(Config::find($name)->value);
+            } else {
+                $value = Config::find($name)->value;
+            }
             Cache::tags('sysConfig')->put($name, $value ?? false);
         }
 
         return $value;
+    }
+
+    private static function setChannel(array $channels)
+    {
+        $options = [
+            'telegram'   => TelegramChannel::class,
+            'beary'      => BearyChatChannel::class,
+            'bark'       => BarkChannel::class,
+            'serverChan' => ServerChanChannel::class,
+        ];
+        foreach ($options as $option => $str) {
+            if (($key = array_search($option, $channels, true)) !== false) {
+                $channels[$key] = $str;
+            }
+        }
+
+        return $channels;
     }
 
     public static function daysToNow($date): int
@@ -271,5 +311,29 @@ class Helpers
         $log->description = $description;
 
         return $log->save();
+    }
+
+    /**
+     * 推销信息推送
+     *
+     * @param  int  $type  渠道类型
+     * @param  string  $title  标题
+     * @param  string  $content  内容
+     * @param  int  $status  状态
+     * @param  string  $error  报错
+     * @param  string  $receiver  收件人
+     * @return int
+     */
+    public static function addMarketing(int $type, string $title, string $content, int $status = 1, string $error = '', string $receiver = ''): int
+    {
+        $marketing = new Marketing();
+        $marketing->type = $type;
+        $marketing->receiver = $receiver;
+        $marketing->title = $title;
+        $marketing->content = $content;
+        $marketing->error = $error;
+        $marketing->status = $status;
+
+        return $marketing->save();
     }
 }

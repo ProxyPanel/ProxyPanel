@@ -15,7 +15,7 @@
                         <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="order_sn" id="order_sn" value="{{Request::input('order_sn')}}" placeholder="订单号"/>
+                        <input type="number" class="form-control" name="sn" id="sn" value="{{Request::input('sn')}}" placeholder="订单号"/>
                     </div>
                     <div class="form-group col-lg-6 col-sm-12">
                         <div class="input-group input-daterange" data-plugin="datepicker">
@@ -113,7 +113,7 @@
                                     @endcan
                                 @endif
                             </td>
-                            <td> {{$order->order_sn}}</td>
+                            <td> {{$order->sn}}</td>
                             <td> {{$order->goods->name  ?? trans('user.recharge_credit')}} </td>
                             <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
                             <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
@@ -182,7 +182,7 @@
 
       // 搜索
       function Search() {
-        window.location.href = '{{route('admin.order')}}?email=' + $('#email').val() + '&order_sn=' + $('#order_sn').val() +
+        window.location.href = '{{route('admin.order')}}?email=' + $('#email').val() + '&sn=' + $('#sn').val() +
             '&is_expire=' + $('#is_expire').val() + '&is_coupon=' + $('#is_coupon').val() + '&pay_way=' +
             $('#pay_way').val() + '&status=' + $('#status').val() + '&sort=' +
             $('input:radio[name=\'sort\']:checked').val() + '&range_time=' + [$('#start').val(), $('#end').val()];

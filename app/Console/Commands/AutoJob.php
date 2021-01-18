@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Components\PushNotification;
 use App\Models\Config;
 use App\Models\Coupon;
 use App\Models\Invite;
@@ -12,9 +11,11 @@ use App\Models\NodeHeartbeat;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\VerifyCode;
+use App\Notifications\NodeOffline;
 use Cache;
 use Illuminate\Console\Command;
 use Log;
+use Notification;
 
 class AutoJob extends Command
 {
@@ -196,7 +197,9 @@ class AutoJob extends Command
 
                     if ($times < $offlineCheckTimes) {
                         Cache::increment($cacheKey);
-                        PushNotification::send('节点异常警告', "节点**{$node->name}【{$node->ip}】**异常：**心跳异常，可能离线了**");
+                        Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
+                            return $query->role('Super Admin');
+                        })->get(), new NodeOffline($node->name, $node->ip));
                     }
                 }
             }

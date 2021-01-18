@@ -22,7 +22,7 @@ class LogsController extends Controller
     public function orderList(Request $request)
     {
         $email = $request->input('email');
-        $order_sn = $request->input('order_sn');
+        $sn = $request->input('sn');
         $is_coupon = $request->input('is_coupon');
         $is_expire = $request->input('is_expire');
         $pay_way = $request->input('pay_way');
@@ -38,8 +38,8 @@ class LogsController extends Controller
                 $q->where('email', 'like', '%'.$email.'%');
             });
         }
-        if (isset($order_sn)) {
-            $query->where('order_sn', 'like', '%'.$order_sn.'%');
+        if (isset($sn)) {
+            $query->where('sn', 'like', '%'.$sn.'%');
         }
 
         if (isset($is_coupon)) {

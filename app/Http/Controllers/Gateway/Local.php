@@ -23,7 +23,7 @@ class Local extends AbstractPayment
             Helpers::addUserCreditLog($user->id, $order->id, $user->credit + $order->amount, $user->credit, -1 * $order->amount, '购买商品'.$goods->name);
         }
 
-        $order->update(['status' => 2]);
+        $order->complete();
 
         return Response::json(['status' => 'success', 'message' => '购买完成!']);
     }

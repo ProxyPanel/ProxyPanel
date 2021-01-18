@@ -2,23 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TicketRequest;
-use App\Mail\closeTicket;
-use App\Mail\replyTicket;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Notifications\TicketClosed;
+use App\Notifications\TicketReplied;
 use Auth;
 use Illuminate\Http\Request;
-use Mail;
 use Response;
 
-/**
- * 工单控制器.
- *
- * Class TicketController
- */
 class TicketController extends Controller
 {
     // 工单列表
@@ -58,7 +51,7 @@ class TicketController extends Controller
     public function edit(Ticket $ticket)
     {
         return view('admin.ticket.reply', [
-            'ticket' => $ticket,
+            'ticket'    => $ticket,
             'replyList' => $ticket->reply()->oldest()->get(),
         ]);
     }
@@ -72,12 +65,8 @@ class TicketController extends Controller
             // 将工单置为已回复
             $ticket->update(['status' => 1]);
 
-            $title = '工单回复提醒';
-            $content = '标题：'.$ticket->title.'<br>管理员回复：'.$content;
-
-            // 发通知邮件
-            $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-            Mail::to($ticket->user->email)->send(new replyTicket($logId, $title, $content));
+            // 通知用户
+            $ticket->user->notify(new TicketReplied($ticket->title, $content, route('replyTicket', $ticket)));
 
             return Response::json(['status' => 'success', 'message' => '回复成功']);
         }
@@ -91,13 +80,8 @@ class TicketController extends Controller
         if (! $ticket->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
-
-        $title = '工单关闭提醒';
-        $content = '工单【'.$ticket->title.'】已关闭';
-
-        // 发邮件通知用户
-        $logId = Helpers::addNotificationLog($title, $content, 1, $ticket->user->email);
-        Mail::to($ticket->user->email)->send(new closeTicket($logId, $title, $content));
+        // 通知用户
+        $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', $ticket), \request('reason')));
 
         return Response::json(['status' => 'success', 'message' => '关闭成功']);
     }

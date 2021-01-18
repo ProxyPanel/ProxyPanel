@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Channels\PushBearChannel;
 use App\Http\Controllers\Controller;
 use App\Models\Marketing;
-use DB;
-use Exception;
-use Http;
+use App\Notifications\Custom;
 use Illuminate\Http\Request;
-use Log;
+use Notification;
 use Response;
-use RuntimeException;
 
 class MarketingController extends Controller
 {
@@ -52,46 +50,8 @@ class MarketingController extends Controller
             return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
         }
 
-        try {
-            DB::beginTransaction();
+        Notification::send(PushBearChannel::class, new Custom($title, $content));
 
-            $response = Http::timeout(15)->get('https://pushbear.ftqq.com/sub', [
-                'sendkey' => sysConfig('push_bear_send_key'),
-                'text' => $title,
-                'desp' => $content,
-            ]);
-
-            $message = $response->json();
-            if (! $message || ! $message['code'] === 0 || $response->failed()) { // 失败
-                $this->addMarketing(2, $title, $content, -1, $message['message']);
-
-                throw new RuntimeException($message['message']);
-            }
-
-            $this->addMarketing(2, $title, $content);
-
-            DB::commit();
-
-            return Response::json(['status' => 'success', 'message' => '推送成功']);
-        } catch (Exception $e) {
-            Log::error('PushBear消息推送失败：'.$e->getMessage());
-
-            DB::rollBack();
-
-            return Response::json(['status' => 'fail', 'message' => '推送失败：'.$e->getMessage()]);
-        }
-    }
-
-    private function addMarketing($type = 1, $title = '', $content = '', $status = 1, $error = '', $receiver = ''): bool
-    {
-        $marketing = new Marketing();
-        $marketing->type = $type;
-        $marketing->receiver = $receiver;
-        $marketing->title = $title;
-        $marketing->content = $content;
-        $marketing->error = $error;
-        $marketing->status = $status;
-
-        return $marketing->save();
+        return Response::json(['status' => 'success', 'message' => '推送成功']);
     }
 }

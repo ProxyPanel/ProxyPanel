@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Components\Helpers;
-use App\Components\PushNotification;
 use App\Models\Order;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Notifications\TicketClosed;
 use App\Services\OrderService;
 use Illuminate\Console\Command;
 use Log;
@@ -45,14 +45,14 @@ class DailyJob extends Command
         foreach ($userList as $user) {
             if ($isBanStatus) {
                 $user->update([
-                    'u' => 0,
-                    'd' => 0,
+                    'u'               => 0,
+                    'd'               => 0,
                     'transfer_enable' => 0,
-                    'enable' => 0,
-                    'level' => 0,
-                    'reset_time' => null,
-                    'ban_time' => null,
-                    'status' => -1,
+                    'enable'          => 0,
+                    'level'           => 0,
+                    'reset_time'      => null,
+                    'ban_time'        => null,
+                    'status'          => -1,
                 ]);
 
                 Helpers::addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
@@ -64,13 +64,13 @@ class DailyJob extends Command
                 Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
             } else {
                 $user->update([
-                    'u' => 0,
-                    'd' => 0,
+                    'u'               => 0,
+                    'd'               => 0,
                     'transfer_enable' => 0,
-                    'enable' => 0,
-                    'level' => 0,
-                    'reset_time' => null,
-                    'ban_time' => null,
+                    'enable'          => 0,
+                    'level'           => 0,
+                    'reset_time'      => null,
+                    'ban_time'        => null,
                 ]);
 
                 Helpers::addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
@@ -86,7 +86,7 @@ class DailyJob extends Command
     {
         foreach (Ticket::where('updated_at', '<=', date('Y-m-d', strtotime('-3 days')))->whereStatus(1)->get() as $ticket) {
             if ($ticket->close()) {
-                PushNotification::send('工单关闭提醒', '工单：ID'.$ticket->id.'超过72小时未处理，系统已自动关闭');
+                $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]), __('You have not responded this ticket in :num hours, System has auto closed your ticket.', ['num' => '72'])));
             }
         }
     }

@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Components\PushNotification;
 use App\Models\Node;
-use App\Models\NodeDailyDataFlow;
+use App\Models\User;
+use App\Notifications\NodeDailyReport;
 use Illuminate\Console\Command;
 use Log;
+use Notification;
 
 class AutoReportNode extends Command
 {
@@ -17,23 +18,33 @@ class AutoReportNode extends Command
     {
         $jobStartTime = microtime(true);
 
-        if (sysConfig('node_daily_report')) {
-            $nodeList = Node::whereStatus(1)->get();
+        if (sysConfig('node_daily_notification')) {
+            $nodeList = Node::whereStatus(1)->with('dailyDataFlows')->get();
             if ($nodeList->isNotEmpty()) {
-                $msg = "|节点|上行流量|下行流量|合计|\r\n| :------ | :------ | :------ |\r\n";
+                $data = [];
+                $upload = 0;
+                $download = 0;
                 foreach ($nodeList as $node) {
-                    $log = NodeDailyDataFlow::whereNodeId($node->id)
-                        ->whereDate('created_at', date('Y-m-d', strtotime('-1 days')))
-                        ->first();
-
-                    if ($log) {
-                        $msg .= '|'.$node->name.'|'.flowAutoShow($log->u).'|'.flowAutoShow($log->d).'|'.$log->traffic."\r\n";
-                    } else {
-                        $msg .= '|'.$node->name.'|'.flowAutoShow(0).'|'.flowAutoShow(0)."|0B\r\n";
-                    }
+                    $log = $node->dailyDataFlows()->whereDate('created_at', date('Y-m-d', strtotime('-1 days')))->first();
+                    $data[] = [
+                        'name'     => $node->name,
+                        'upload'   => flowAutoShow($log->u ?? 0),
+                        'download' => flowAutoShow($log->d ?? 0),
+                        'total'    => $log->traffic ?? '',
+                    ];
+                    $upload += $log->u ?? 0;
+                    $download += $log->d ?? 0;
                 }
+                if ($data) {
+                    $data[] = [
+                        'name'     => trans('notification.node.total'),
+                        'total'    => flowAutoShow($upload + $download),
+                        'upload'   => flowAutoShow($upload),
+                        'download' => flowAutoShow($download),
+                    ];
 
-                PushNotification::send('节点昨日使用情况', $msg);
+                    Notification::send(User::role('Super Admin')->get(), new NodeDailyReport($data));
+                }
             }
         }
 

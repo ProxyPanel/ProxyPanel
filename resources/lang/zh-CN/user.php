@@ -57,11 +57,11 @@ return [
     'purchase_required'   => '本功能对非付费用户禁用！请',
     'more'                => '更多',
     'attribute'           => [
-        'node'    => '线路',
-        'data'    => '流量',
-        'ip'      => 'IP地址',
-        'isp'     => '运营商',
-        'address' => '地区',
+        'node'     => '线路',
+        'data'     => '流量',
+        'ip'       => 'IP地址',
+        'isp'      => '运营商',
+        'address'  => '地区',
     ],
     'purchase_promotion'  => '快 来 购 买 服 务 吧！',
     'menu'                => [

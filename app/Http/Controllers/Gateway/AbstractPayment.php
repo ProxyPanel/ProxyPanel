@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Gateway;
 
 use App\Models\Payment;
 use App\Models\PaymentCallback;
+use App\Notifications\PaymentReceived;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Str;
@@ -71,5 +72,20 @@ abstract class AbstractPayment
         reset($data);
 
         return md5(urldecode(http_build_query($data)).$key);
+    }
+
+    protected function paymentReceived(string $tradeNo)
+    {
+        $payment = Payment::whereTradeNo($tradeNo)->with('order')->first();
+        if ($payment) {
+            $ret = $payment->order->complete();
+            if ($ret) {
+                $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount));
+            }
+
+            return $ret;
+        }
+
+        return false;
     }
 }

@@ -23,11 +23,6 @@ use Illuminate\Http\Request;
 use Log;
 use Response;
 
-/**
- * 支付控制器.
- *
- * Class PaymentController
- */
 class PaymentController extends Controller
 {
     private static $method;
@@ -168,7 +163,7 @@ class PaymentController extends Controller
         // 生成订单
         try {
             $newOrder = Order::create([
-                'order_sn' => date('ymdHis').random_int(100000, 999999),
+                'sn' => date('ymdHis').random_int(100000, 999999),
                 'user_id' => auth()->id(),
                 'goods_id' => $credit ? null : $goods_id,
                 'coupon_id' => $coupon->id ?? null,

@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Components\PushNotification;
-use App\Mail\newTicket;
-use App\Mail\replyTicket;
 use App\Models\Article;
 use App\Models\Coupon;
 use App\Models\Goods;
@@ -14,6 +11,9 @@ use App\Models\Node;
 use App\Models\NodeHeartbeat;
 use App\Models\Order;
 use App\Models\Ticket;
+use App\Models\User;
+use App\Notifications\TicketCreated;
+use App\Notifications\TicketReplied;
 use Cache;
 use DB;
 use Exception;
@@ -22,7 +22,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Log;
-use Mail;
+use Notification;
 use Redirect;
 use Response;
 use Session;
@@ -266,7 +266,7 @@ class UserController extends Controller
     // 订单明细
     public function invoiceDetail($sn)
     {
-        return view('user.invoiceDetail', ['order' => Order::uid()->whereOrderSn($sn)->with(['goods', 'coupon', 'payment'])->firstOrFail()]);
+        return view('user.invoiceDetail', ['order' => Order::uid()->whereSn($sn)->with(['goods', 'coupon', 'payment'])->firstOrFail()]);
     }
 
     // 添加工单
@@ -283,17 +283,12 @@ class UserController extends Controller
             ]);
         }
 
-        if ($user->tickets()->create(compact('title', 'content'))) {
-            $emailTitle = trans('common.new').trans('user.ticket.attribute');
-            $content = trans('validation.attributes.title').'：【'.$title.'】<br>'.trans('validation.attributes.email').'：'.$user->email.'<br>'.trans('validation.attributes.content').'：'.$content;
-
-            // 发邮件通知管理员
-            if (sysConfig('webmaster_email')) {
-                $logId = Helpers::addNotificationLog($emailTitle, $content, 1, sysConfig('webmaster_email'));
-                Mail::to(sysConfig('webmaster_email'))->send(new newTicket($logId, $emailTitle, $content));
-            }
-
-            PushNotification::send($emailTitle, $content);
+        if ($ticket = $user->tickets()->create(compact('title', 'content'))) {
+            // 通知相关管理员
+            Notification::send(User::permission('admin.ticket.edit,update')->orWhere(function ($query) {
+                return $query->role('Super Admin');
+            })->get(),
+                new TicketCreated($ticket->title, $ticket->content, route('admin.ticket.edit', $ticket)));
 
             return Response::json(['status' => 'success', 'message' => trans('common.submit_item', ['attribute' => trans('common.success')])]);
         }
@@ -326,16 +321,11 @@ class UserController extends Controller
                 $ticket->status = 0;
                 $ticket->save();
 
-                $title = trans('user.ticket.attribute').trans('user.ticket.reply');
-                $content = trans('validation.attributes.title').'：【'.$ticket->title.'】<br>'.trans('user.ticket.reply').'：'.$content;
-
-                // 发邮件通知管理员
-                if (sysConfig('webmaster_email')) {
-                    $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-                    Mail::to(sysConfig('webmaster_email'))->send(new replyTicket($logId, $title, $content));
-                }
-
-                PushNotification::send($title, $content);
+                // 通知相关管理员
+                Notification::send(User::permission('admin.ticket.edit,update')->orWhere(function ($query) {
+                    return $query->role('Super Admin');
+                })->get(),
+                    new TicketReplied($ticket->title, $content, route('admin.ticket.edit', $ticket)));
 
                 return Response::json(['status' => 'success', 'message' => trans('user.ticket.reply').trans('common.success')]);
             }
@@ -355,8 +345,6 @@ class UserController extends Controller
         $id = $request->input('id');
 
         if (Ticket::uid()->whereId($id)->close()) {
-            PushNotification::send(trans('common.close_item', ['attribute' => trans('user.ticket.attribute')]), trans('user.ticket.close_msg', ['id' => $id]));
-
             return Response::json(['status' => 'success', 'message' => trans('common.close_item', ['attribute' => trans('common.success')])]);
         }
 

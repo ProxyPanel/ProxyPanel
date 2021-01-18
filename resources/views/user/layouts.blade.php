@@ -40,6 +40,7 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
+                    @include('user.components.notification')
                     <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
                            aria-expanded="false" role="button">
@@ -159,7 +160,7 @@
     </div>
     <footer class="site-footer">
         <div class="site-footer-legal">
-            Copyright ©️2017 - 2020 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}}</a>
+            © 2017 - 2021 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} {{__('All rights reserved.')}}</a>
             🚀 Version: <code> {{config('version.number')}} </code>
         </div>
         <div class="site-footer-right">

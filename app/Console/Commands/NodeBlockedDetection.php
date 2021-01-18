@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Helpers;
 use App\Components\NetworkDetection;
-use App\Components\PushNotification;
-use App\Mail\nodeCrashWarning;
 use App\Models\Node;
+use App\Models\User;
+use App\Notifications\NodeBlocked;
 use Cache;
 use Illuminate\Console\Command;
 use Log;
-use Mail;
+use Notification;
 
 class NodeBlockedDetection extends Command
 {
@@ -55,7 +54,6 @@ class NodeBlockedDetection extends Command
                     $node->ip = $ip;
                 } else {
                     Log::warning('【节点阻断检测】检测'.$node->server.'时，IP获取失败'.$ip.' | '.$node->server);
-                    $this->notifyMaster("{$node->name}动态IP获取失败", "节点 {$node->name} ： IP获取失败 ");
                 }
             }
             if ($node->detection_type !== 1) {
@@ -100,26 +98,14 @@ class NodeBlockedDetection extends Command
 
         //只有在出现阻断线路时，才会发出警报
         if ($sendText) {
-            $this->notifyMaster('节点阻断警告', "阻断日志: \r\n\r\n".$message.$additionalMessage);
+            Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
+                return $query->role('Super Admin');
+            })->get(), new NodeBlocked($message.$additionalMessage));
+
             Log::info("阻断日志: \r\n".$message.$additionalMessage);
         }
 
         // 随机生成下次检测时间
         Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700);
-    }
-
-    /**
-     * 通知管理员.
-     *
-     * @param  string  $title  消息标题
-     * @param  string  $content  消息内容
-     */
-    private function notifyMaster(string $title, string $content): void
-    {
-        $result = PushNotification::send($title, $content);
-        if (! $result && sysConfig('webmaster_email')) {
-            $logId = Helpers::addNotificationLog($title, $content, 1, sysConfig('webmaster_email'));
-            Mail::to(sysConfig('webmaster_email'))->send(new nodeCrashWarning($logId));
-        }
     }
 }

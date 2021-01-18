@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Gateway;
 
-use App\Models\Payment;
 use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Log;
 use Response;
 
 class EPay extends AbstractPayment
@@ -29,14 +29,14 @@ class EPay extends AbstractPayment
         }
 
         $data = [
-            'pid' => sysConfig('epay_mch_id'),
-            'type' => $type,
-            'notify_url' => route('payment.notify', ['method' => 'epay']),
-            'return_url' => route('invoice'),
+            'pid'          => sysConfig('epay_mch_id'),
+            'type'         => $type,
+            'notify_url'   => route('payment.notify', ['method' => 'epay']),
+            'return_url'   => route('invoice'),
             'out_trade_no' => $payment->trade_no,
-            'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
-            'money' => $payment->amount,
-            'sign_type' => 'MD5',
+            'name'         => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'money'        => $payment->amount,
+            'sign_type'    => 'MD5',
         ];
         $data['sign'] = $this->aliStyleSign($data, sysConfig('epay_key'));
 
@@ -48,15 +48,13 @@ class EPay extends AbstractPayment
 
     public function notify(Request $request): void
     {
-        if ($request->input('trade_status') === 'TRADE_SUCCESS'
+        if ($request->input('trade_status') === 'TRADE_SUCCESS' && $request->has('out_trade_no')
             && $this->verify($request->except('method'), sysConfig('epay_key'), $request->input('sign'))) {
-            $payment = Payment::whereTradeNo($request->input('out_trade_no'))->first();
-            if ($payment) {
-                $ret = $payment->order->complete();
-                if ($ret) {
-                    exit('SUCCESS');
-                }
+            if ($this->paymentReceived($request->input('out_trade_no'))) {
+                exit('SUCCESS');
             }
+        } else {
+            Log::info('易支付：交易失败');
         }
         exit('FAIL');
     }
