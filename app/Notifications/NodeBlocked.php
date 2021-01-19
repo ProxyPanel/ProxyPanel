@@ -31,10 +31,11 @@ class NodeBlocked extends Notification implements ShouldQueue
             ->line($this->content);
     }
 
-    public function toArray($notifiable)
+    public function toCustom($notifiable)
     {
         return [
-            //
+            'title'   => trans('notification.node_block'),
+            'content' => $this->content,
         ];
     }
 }

@@ -6,16 +6,11 @@ use App\Components\Helpers;
 use App\Models\Config;
 use App\Models\Coupon;
 use App\Models\Invite;
-use App\Models\Node;
-use App\Models\NodeHeartbeat;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\VerifyCode;
-use App\Notifications\NodeOffline;
-use Cache;
 use Illuminate\Console\Command;
 use Log;
-use Notification;
 
 class AutoJob extends Command
 {
@@ -48,9 +43,6 @@ class AutoJob extends Command
         if (sysConfig('auto_release_port')) {
             $this->dispatchPort();
         }
-
-        // 检测节点是否离线
-        $this->checkNodeStatus();
 
         // 检查维护模式
         if (sysConfig('maintenance_mode') && sysConfig('maintenance_time') && sysConfig('maintenance_time') <= date('c')) {
@@ -173,36 +165,5 @@ class AutoJob extends Command
             ->whereStatus(-1)
             ->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-1 months')))
             ->update(['port' => 0]);
-    }
-
-    // 检测节点是否离线
-    private function checkNodeStatus(): void
-    {
-        if (sysConfig('is_node_offline')) {
-            $offlineCheckTimes = sysConfig('offline_check_times');
-            $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
-            foreach (Node::whereIsRelay(0)->whereStatus(1)->get() as $node) {
-                // 10分钟内无节点负载信息则认为是后端炸了
-                $nodeTTL = ! in_array($node->id, $onlineNode, true);
-                if ($nodeTTL && $offlineCheckTimes) {
-                    // 已通知次数
-                    $cacheKey = 'offline_check_times'.$node->id;
-                    if (Cache::has($cacheKey)) {
-                        $times = Cache::get($cacheKey);
-                    } else {
-                        // 键将保留24小时
-                        Cache::put($cacheKey, 1, Day);
-                        $times = 1;
-                    }
-
-                    if ($times < $offlineCheckTimes) {
-                        Cache::increment($cacheKey);
-                        Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
-                            return $query->role('Super Admin');
-                        })->get(), new NodeOffline($node->name, $node->ip));
-                    }
-                }
-            }
-        }
     }
 }

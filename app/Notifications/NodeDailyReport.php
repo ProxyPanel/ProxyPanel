@@ -15,11 +15,11 @@ class NodeDailyReport extends Notification implements ShouldQueue
 
     public function __construct($nodes)
     {
-        $temp = '| '.trans('user.attribute.node').' | '.trans('notification.node.upload').' | '.trans('notification.node.download').' | '.trans('notification.node.total')." |\r\n| ------ | :------: | :------: | ------: |\r\n";
+        $content = '| '.trans('user.attribute.node').' | '.trans('notification.node.upload').' | '.trans('notification.node.download').' | '.trans('notification.node.total')." |\r\n| ------ | :------: | :------: | ------: |\r\n";
         foreach ($nodes as $node) {
-            $temp .= "| {$node['name']} | {$node['upload']} | {$node['download']} | {$node['total']} |\r\n";
+            $content .= "| {$node['name']} | {$node['upload']} | {$node['download']} | {$node['total']} |\r\n";
         }
-        $this->content = $temp;
+        $this->content = $content;
     }
 
     public function via($notifiable)

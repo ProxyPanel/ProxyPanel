@@ -166,7 +166,7 @@ class Helpers
             Cache::tags('sysConfig')->put('is_onlinePay', $value);
         } else {
             if (in_array($name, $notifications, true)) {
-                $value = self::setChannel(Config::find($name)->value);
+                $value = self::setChannel(json_decode(Config::find($name)->value, true));
             } else {
                 $value = Config::find($name)->value;
             }

@@ -4,26 +4,34 @@ namespace App\Console\Commands;
 
 use App\Components\NetworkDetection;
 use App\Models\Node;
+use App\Models\NodeHeartbeat;
 use App\Models\User;
 use App\Notifications\NodeBlocked;
+use App\Notifications\NodeOffline;
 use Cache;
 use Illuminate\Console\Command;
 use Log;
 use Notification;
 
-class NodeBlockedDetection extends Command
+class NodeStatusDetection extends Command
 {
-    protected $signature = 'nodeBlockedDetection';
-    protected $description = '节点阻断检测';
+    protected $signature = 'nodeStatusDetection';
+    protected $description = '节点状态检测';
 
     public function handle(): void
     {
         $jobStartTime = microtime(true);
-        if (sysConfig('nodes_detection')) {
+        // 检测节点心跳是否异常
+        if (sysConfig('node_offline_notification')) {
+            $this->checkNodeStatus();
+        }
+
+        // 监测节点网络状态
+        if (sysConfig('node_blocked_notification')) {
             if (! Cache::has('LastCheckTime')) {
-                $this->checkNodes();
+                $this->checkNodeNetwork();
             } elseif (Cache::get('LastCheckTime') <= time()) {
-                $this->checkNodes();
+                $this->checkNodeNetwork();
             } else {
                 Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
             }
@@ -35,8 +43,40 @@ class NodeBlockedDetection extends Command
         Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
     }
 
-    // 监测节点状态
-    private function checkNodes(): void
+    private function checkNodeStatus(): void
+    {
+        $offlineCheckTimes = sysConfig('offline_check_times');
+        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
+        foreach (Node::whereIsRelay(0)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
+            // 10分钟内无节点负载信息则认为是后端炸了
+            if ($offlineCheckTimes) {
+                // 已通知次数
+                $cacheKey = 'offline_check_times'.$node->id;
+                $times = 1;
+                if (Cache::has($cacheKey)) {
+                    $times = Cache::get($cacheKey);
+                } else {
+                    Cache::put($cacheKey, 1, Day); // 键将保留24小时
+                }
+                if ($times > $offlineCheckTimes) {
+                    continue;
+                }
+                Cache::increment($cacheKey);
+            }
+            $data[] = [
+                'name' => $node->name,
+                'ip'   => $node->ip,
+            ];
+        }
+
+        if (isset($data)) {
+            Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
+                return $query->role('Super Admin');
+            })->get(), new NodeOffline($data));
+        }
+    }
+
+    private function checkNodeNetwork(): void
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
         $sendText = false;

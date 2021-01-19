@@ -35,10 +35,11 @@ class DataAnomaly extends Notification implements ShouldQueue
             ->line(trans('notification.data_anomaly', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
     }
 
-    public function toArray($notifiable)
+    public function toCustom($notifiable)
     {
         return [
-            //
+            'title'   => trans('notification.data_anomaly'),
+            'content' => trans('notification.data_anomaly', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]),
         ];
     }
 }

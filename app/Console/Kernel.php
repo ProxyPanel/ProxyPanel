@@ -10,7 +10,7 @@ use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
 use App\Console\Commands\AutoStatisticsUserDailyTraffic;
 use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
 use App\Console\Commands\DailyJob;
-use App\Console\Commands\NodeBlockedDetection;
+use App\Console\Commands\NodeStatusDetection;
 use App\Console\Commands\ServiceTimer;
 use App\Console\Commands\UserExpireAutoWarning;
 use App\Console\Commands\UserTrafficAbnormalAutoWarning;
@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
         AutoStatisticsUserDailyTraffic::class,
         AutoStatisticsUserHourlyTraffic::class,
         DailyJob::class,
-        NodeBlockedDetection::class,
+        NodeStatusDetection::class,
         ServiceTimer::class,
         UserExpireAutoWarning::class,
         UserTrafficAbnormalAutoWarning::class,
@@ -52,7 +52,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('autoJob')->everyMinute();
         $schedule->command('serviceTimer')->everyTenMinutes();
         $schedule->command('autoClearLog')->everyThirtyMinutes();
-        $schedule->command('nodeBlockedDetection')->everyTenMinutes();
+        $schedule->command('nodeStatusDetection')->everyTenMinutes();
         $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
         $schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
         $schedule->command('userTrafficAbnormalAutoWarning')->hourly();

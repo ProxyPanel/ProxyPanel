@@ -864,14 +864,14 @@
                                 <div class="row">
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="account_expire_notification">用户过期警告</label>
+                                            <label class="col-md-3 col-form-label" for="account_expire_notification">账号过期通知</label>
                                             <div class="col-md-9">
                                                 <select id="account_expire_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','account_expire_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="database">站内通知</option>
                                                 </select>
-                                                <span class="text-help"> 启用后账号距到期还剩阈值设置的值时自动发邮件提醒用户 </span>
+                                                <span class="text-help"> 通知用户账号即将到期 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -887,20 +887,20 @@
                                                                 onclick="updateFromInput('expire_days','0')">{{trans('common.update')}}</button>
                                                     </div>
                                                 </div>
-                                                <span class="text-help"> 账号距离过期还差多少天时发警告邮件 </span>
+                                                <span class="text-help"> 【账号过期通知】开始阈值，每日通知用户 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="data_exhaust_notification">用户流量警告</label>
+                                            <label class="col-md-3 col-form-label" for="data_exhaust_notification">流量耗尽通知</label>
                                             <div class="col-md-9">
                                                 <select id="data_exhaust_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','data_exhaust_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="database">站内通知</option>
                                                 </select>
-                                                <span class="text-help"> 启用后账号已使用流量超过警告阈值时自动发邮件提醒用户 </span>
+                                                <span class="text-help"> 通知用户流量即将耗尽 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -916,7 +916,7 @@
                                                                 onclick="updateFromInput('traffic_warning_percent','0')">{{trans('common.update')}}</button>
                                                     </div>
                                                 </div>
-                                                <span class="text-help"> 建议设置在70%~90% </span>
+                                                <span class="text-help"> 【流量耗尽通知】开始阈值，每日通知用户 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -932,7 +932,7 @@
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 启用后如果节点离线会推送提醒 </span>
+                                                <span class="text-help"> 每10分钟检测节点离线并提醒管理员 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -945,26 +945,25 @@
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">次</span>
                                                         <button class="btn btn-primary" type="button"
-                                                                onclick="updateFromInput('offline_check_times','0','60')">{{trans('common.update')}}</button>
+                                                                onclick="updateFromInput('offline_check_times','0')">{{trans('common.update')}}</button>
                                                     </div>
                                                 </div>
-                                                <span class="text-help"> 提醒几次后不再提醒，为0时不限制，不超过60 </span>
+                                                <span class="text-help"> 24小时内提醒n次后不再提醒 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="node_blocked_notification">节点阻断检测</label>
+                                            <label class="col-md-3 col-form-label" for="node_blocked_notification">节点阻断提醒</label>
                                             <div class="col-md-9">
                                                 <select id="node_blocked_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','node_blocked_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="telegram">Telegram</option>
                                                     <option value="beary">BearyChat</option>
-                                                    <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 每小时检测节点是否被阻断并提醒 </span>
+                                                <span class="text-help"> 每小时检测节点是否被阻断并提醒管理员 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1010,7 +1009,7 @@
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 工单关闭通知 </span>
+                                                <span class="text-help"> 工单关闭通知用户 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1027,7 +1026,7 @@
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 新工单通知 </span>
+                                                <span class="text-help"> 新工单通知管理/用户，取决于谁创建了新工单， </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1044,7 +1043,7 @@
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 工单回复通知 </span>
+                                                <span class="text-help"> 工单回复通知对方 </span>
                                             </div>
                                         </div>
                                     </div>
@@ -1185,9 +1184,12 @@
                                                 <select id="data_anomaly_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','data_anomaly_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="database">站内通知</option>
+                                                    <option value="telegram">Telegram</option>
+                                                    <option value="beary">BearyChat</option>
+                                                    <option value="bark">Bark</option>
+                                                    <option value="serverChan">ServerChan</option>
                                                 </select>
-                                                <span class="text-help"> 1小时内流量超过异常阈值通知 </span>
+                                                <span class="text-help"> 1小时内流量超过异常阈值通知超管 </span>
                                             </div>
                                         </div>
                                     </div>
