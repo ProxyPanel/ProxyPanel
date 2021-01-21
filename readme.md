@@ -6,12 +6,16 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 - [Demo](https://demo.proxypanel.ml/) Demo will always on dev/latest code, rather than the stable version.
     - Account: test@test.com
     - Password: 123456
-- [Wiki](https://proxypanel.gitbook.io/wiki/)
+- [**WIKI**](https://proxypanel.gitbook.io/wiki/)
 - [Issues](https://github.com/ZBrettonYe/ProxyPanel/issues)
 - [UpdateLog](https://proxypanel.gitbook.io/wiki/updatelog)
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
 - [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
 
+## Funding
+Buy me a Coffee?
+- PayPal [paypal.me/brettonye](paypal.me/brettonye)
+- USDT-TRC20 TFMxq91oPCnoxDXBiEgRzab5N6GFnAbTT5
 
 ## Requirements
 - Memory 1G +
