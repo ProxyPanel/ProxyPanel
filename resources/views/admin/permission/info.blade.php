@@ -20,14 +20,14 @@
                     @isset($permission)@method('PUT')@endisset
                     @csrf
                     <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="description">名称</label>
+                        <label class="col-md-2 col-sm-3 col-form-label" for="description">行为描述</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="description" id="description" required/>
-                            <span class="text-help"> 填写名称，例：【A系统】编辑A </span>
+                            <span class="text-help"> 填写描述，例：【A系统】编辑A </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="name">行为</label>
+                        <label class="col-md-2 col-sm-3 col-form-label" for="name">路由名称</label>
                         <div class="col-md-7 col-sm-8">
                             <input type="text" class="form-control" name="name" id="name" required/>
                             <span class="text-help"> 填写路由名称，例：admin.permission.create,update </span>
@@ -48,9 +48,10 @@
           @isset($permission)
           $('#description').val(@json(old('description') ?? $permission->description));
         $('#name').val(@json(old('name') ?? $permission->name));
-          @endisset
+          @else
           $('#description').val(@json(old('description')));
         $('#name').val(@json(old('name')));
+          @endisset
       });
     </script>
 @endsection

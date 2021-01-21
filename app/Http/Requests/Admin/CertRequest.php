@@ -9,14 +9,14 @@ class CertRequest extends FormRequest
     public function rules()
     {
         $unq_domain = '';
-        if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
+        if (in_array($this->method(), ['PATCH', 'PUT'], true)) {
             $unq_domain = ','.$this->cert->id;
         }
 
         return [
             'domain' => 'required|string|unique:node_certificate,domain'.$unq_domain,
-            'key' => 'string|nullable',
-            'pem' => 'string|nullable',
+            'key'    => 'string|nullable',
+            'pem'    => 'string|nullable',
         ];
     }
 }

@@ -9,7 +9,7 @@ class RoleRequest extends FormRequest
     public function rules()
     {
         $unq_name = '';
-        if ($this->method() === 'PUT' || $this->method() === 'PATCH') {
+        if (in_array($this->method(), ['PATCH', 'PUT'], true)) {
             $unq_name = ','.$this->role->id;
         }
 

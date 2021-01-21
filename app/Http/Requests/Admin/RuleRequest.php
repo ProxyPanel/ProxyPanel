@@ -8,10 +8,15 @@ class RuleRequest extends FormRequest
 {
     public function rules()
     {
-        return [
-            'type' => 'required|numeric|between:1,4',
-            'name' => 'required|string',
+        $rules = [
+            'name'    => 'required|string',
             'pattern' => 'required|string',
         ];
+
+        if (! in_array($this->method(), ['PATCH', 'PUT'], true)) {
+            $rules = array_merge(['type' => 'required|numeric|between:1,4'], $rules);
+        }
+
+        return $rules;
     }
 }

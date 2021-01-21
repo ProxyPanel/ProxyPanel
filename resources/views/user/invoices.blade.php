@@ -47,7 +47,7 @@
                                         @elseif($order->payment->url)
                                             <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
                                         @endif
-                                        <button onclick="closeOrder('{{$order->id}}')" class="btn btn-danger">{{trans('common.cancel')}}</button>
+                                        <button onclick="closeOrder('{{route('closeOrder', $order)}}')" class="btn btn-danger">{{trans('common.cancel')}}</button>
                                     @elseif ($order->status === 1)
                                         <button onClick="window.location.reload();" class="btn btn-primary">
                                             <i class="icon wb-refresh" aria-hidden="true"></i></button>
@@ -102,7 +102,7 @@
         });
       }
 
-      function closeOrder(id) {
+      function closeOrder(url) {
         swal.fire({
           title: '{{trans('common.close_item', ['attribute' => trans('user.invoice.attribute')])}}？',
           icon: 'warning',
@@ -113,7 +113,7 @@
           if (result.value) {
             $.ajax({
               method: 'PUT',
-              url: '{{route('closeOrder', '')}}/' + id,
+              url: url,
               dataType: 'json',
               data: {_token: '{{csrf_token()}}'},
               success: function(ret) {

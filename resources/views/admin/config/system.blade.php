@@ -927,8 +927,8 @@
                                                 <select id="node_offline_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','node_offline_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
@@ -959,8 +959,8 @@
                                                 <select id="node_blocked_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','node_blocked_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
                                                 <span class="text-help"> 每小时检测节点是否被阻断并提醒管理员 </span>
@@ -1004,8 +1004,8 @@
                                                         onchange="updateFromOther('select','ticket_closed_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="database">站内通知</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
@@ -1021,8 +1021,8 @@
                                                         onchange="updateFromOther('select','ticket_created_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="database">站内通知</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
@@ -1038,8 +1038,8 @@
                                                         onchange="updateFromOther('select','ticket_replied_notification')" multiple>
                                                     <option value="mail">邮箱</option>
                                                     <option value="database">站内通知</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
@@ -1184,8 +1184,8 @@
                                                 <select id="data_anomaly_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','data_anomaly_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
@@ -1252,8 +1252,8 @@
                                                 <select id="node_daily_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','node_daily_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="telegram">Telegram</option>
-                                                    <option value="beary">BearyChat</option>
+                                                    <option value="telegram" disabled>Telegram</option>
+                                                    <option value="beary" disabled>BearyChat</option>
                                                     <option value="serverChan">ServerChan</option>
                                                 </select>
                                             </div>

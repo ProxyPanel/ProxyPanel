@@ -47,10 +47,10 @@
                             <td> {{$rule->id}} </td>
                             <td> {!! $rule->type_label !!} </td>
                             <td>
-                                <input type="text" class="form-control" name="rule_name" id="rule_name_{{$rule->id}}" value="{{$rule->name}}"/>
+                                <input type="text" class="form-control" name="name" id="name_{{$rule->id}}" value="{{$rule->name}}"/>
                             </td>
                             <td>
-                                <input type="text" class="form-control" name="rule_pattern" id="rule_pattern_{{$rule->id}}" value="{{$rule->pattern}}"/>
+                                <input type="text" class="form-control" name="pattern" id="pattern_{{$rule->id}}" value="{{$rule->pattern}}"/>
                             </td>
                             <td>
                                 @canany(['admin.rule.update', 'admin.rule.destroy'])
@@ -191,8 +191,8 @@
           url: '{{route('admin.rule.update','')}}/' + id,
           data: {
             _token: '{{csrf_token()}}',
-            rule_name: $('#rule_name_' + id).val(),
-            rule_pattern: $('#rule_pattern_' + id).val(),
+            name: $('#name_' + id).val(),
+            pattern: $('#pattern_' + id).val(),
           },
           dataType: 'json',
           success: function(ret) {
