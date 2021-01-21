@@ -14,17 +14,19 @@ class TicketReplied extends Notification implements ShouldQueue
     private $title;
     private $content;
     private $url;
+    private $is_user;
 
-    public function __construct($title, $content, $url)
+    public function __construct($title, $content, $url, $is_user = null)
     {
         $this->title = $title;
         $this->content = $content;
         $this->url = $url;
+        $this->is_user = $is_user;
     }
 
     public function via($notifiable)
     {
-        return sysConfig('ticket_replied_notification');
+        return $this->is_user ? ['mail'] : sysConfig('ticket_replied_notification');
     }
 
     public function toMail($notifiable)
@@ -32,14 +34,15 @@ class TicketReplied extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject(trans('notification.reply_ticket', ['title' => $this->title]))
             ->line(trans('notification.ticket_content'))
-            ->line($this->content)
+            ->line(strip_tags($this->content))
             ->action(trans('notification.view_ticket'), $this->url);
     }
 
-    public function toArray($notifiable)
+    public function toCustom($notifiable)
     {
         return [
-            //
+            'title'   => trans('notification.reply_ticket', ['title' => $this->title]),
+            'content' => trans('notification.ticket_content').strip_tags($this->content),
         ];
     }
 }

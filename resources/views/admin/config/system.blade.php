@@ -1003,7 +1003,6 @@
                                                 <select id="ticket_closed_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','ticket_closed_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="database">站内通知</option>
                                                     <option value="telegram" disabled>Telegram</option>
                                                     <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
@@ -1020,7 +1019,6 @@
                                                 <select id="ticket_created_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','ticket_created_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="database">站内通知</option>
                                                     <option value="telegram" disabled>Telegram</option>
                                                     <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>
@@ -1037,7 +1035,6 @@
                                                 <select id="ticket_replied_notification" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','ticket_replied_notification')" multiple>
                                                     <option value="mail">邮箱</option>
-                                                    <option value="database">站内通知</option>
                                                     <option value="telegram" disabled>Telegram</option>
                                                     <option value="beary" disabled>BearyChat</option>
                                                     <option value="bark">Bark</option>

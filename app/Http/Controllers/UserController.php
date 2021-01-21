@@ -274,8 +274,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $title = $request->input('title');
-        $content = clean($request->input('content'));
-        $content = str_replace(['atob', 'eval'], '', $content);
+        $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
         if (empty($title) || empty($content)) {
             return Response::json([

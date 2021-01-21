@@ -14,18 +14,20 @@ class TicketClosed extends Notification implements ShouldQueue
     private $title;
     private $url;
     private $reason;
+    private $is_user;
 
-    public function __construct($id, $title, $url, $reason)
+    public function __construct($id, $title, $url, $reason, $is_user = null)
     {
         $this->id = $id;
         $this->title = $title;
         $this->url = $url;
         $this->reason = $reason;
+        $this->is_user = $is_user;
     }
 
     public function via($notifiable)
     {
-        return sysConfig('ticket_closed_notification');
+        return $this->is_user ? ['mail'] : sysConfig('ticket_closed_notification');
     }
 
     public function toMail($notifiable)
@@ -37,10 +39,11 @@ class TicketClosed extends Notification implements ShouldQueue
             ->line(__('If your problem has not been solved, Feel free to open other one.'));
     }
 
-    public function toArray($notifiable)
+    public function toCustom($notifiable)
     {
         return [
-
+            'title'   => trans('close_ticket', ['id' => $this->id, 'title' => $this->title]),
+            'content' => $this->reason,
         ];
     }
 }

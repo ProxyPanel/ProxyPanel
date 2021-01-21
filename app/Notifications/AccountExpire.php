@@ -31,7 +31,7 @@ class AccountExpire extends Notification implements ShouldQueue
             ->action(trans('notification.view_web'), url('/'));
     }
 
-    public function toArray($notifiable)
+    public function toDataBase($notifiable)
     {
         return [
             'days' => $this->days,

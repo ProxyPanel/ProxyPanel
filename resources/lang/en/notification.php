@@ -20,7 +20,7 @@ return [
     'node_offline_content'    => 'Following Nodes abnormal: return heartbeats information are abnormal, Please pay attention.',
     'block_report'            => 'Blocked Report: ',
     'traffic_warning'         => 'Data Traffic Waring: ',
-    'traffic_remain'          => 'Data Traffic Consumption: :num%',
+    'traffic_remain'          => 'Data Traffic Consumption: :percent%',
     'traffic_tips'            => 'Please pay attention on the service reset day. You may also cloud consider reset your data before the reset day.',
     'verification_account'    => 'Account Verification',
     'verification'            => 'Your verification code: ',

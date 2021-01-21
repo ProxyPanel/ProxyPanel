@@ -20,7 +20,7 @@ return [
     'node_offline_content'    => '以下节点存在异常：心跳异常，可能离线了：',
     'block_report'            => '阻断日志：',
     'traffic_warning'         => '流量提醒',
-    'traffic_remain'          => '流量已使用：:num%，请保持关注。',
+    'traffic_remain'          => '流量已使用：:percent%，请保持关注。',
     'traffic_tips'            => '请注意套餐流量重置日，合理分配流量使用或在流量耗尽后，付费重置套餐流量',
     'verification_account'    => '账号验证',
     'verification'            => '您的验证码：',

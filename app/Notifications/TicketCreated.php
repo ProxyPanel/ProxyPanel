@@ -14,17 +14,19 @@ class TicketCreated extends Notification implements ShouldQueue
     private $title;
     private $content;
     private $url;
+    private $is_user;
 
-    public function __construct($title, $content, $url)
+    public function __construct($title, $content, $url, $is_user = null)
     {
         $this->title = $title;
         $this->content = $content;
         $this->url = $url;
+        $this->is_user = $is_user;
     }
 
     public function via($notifiable)
     {
-        return sysConfig('ticket_created_notification');
+        return $this->is_user ? ['mail'] : sysConfig('ticket_created_notification');
     }
 
     public function toMail($notifiable)
@@ -36,10 +38,11 @@ class TicketCreated extends Notification implements ShouldQueue
             ->action(trans('notification.view_ticket'), $this->url);
     }
 
-    public function toArray($notifiable)
+    public function toCustom($notifiable)
     {
         return [
-            //
+            'title'   => trans('notification.new_ticket', ['title' => $this->title]),
+            'content' => trans('notification.ticket_content').strip_tags($this->content),
         ];
     }
 }

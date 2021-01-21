@@ -33,14 +33,6 @@ class Custom extends Notification implements ShouldQueue
             ->markdown('mail.custom', ['content' => $this->content]);
     }
 
-    public function toArray($notifiable)
-    {
-        return [
-            'title'   => $this->title,
-            'content' => $this->content,
-        ];
-    }
-
     public function toCustom($notifiable)
     {
         return [

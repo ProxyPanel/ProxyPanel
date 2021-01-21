@@ -27,15 +27,15 @@ class DataExhaust extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(trans('notification.traffic_warning'))
-            ->line(trans('notification.traffic_remain', ['num' => $this->percent]))
+            ->line(trans('notification.traffic_remain', ['percent' => $this->percent]))
             ->line(trans('notification.traffic_tips'))
             ->action(trans('notification.view_web'), url('/'));
     }
 
-    public function toArray($notifiable)
+    public function toDataBase($notifiable)
     {
         return [
-            //
+            'percent' => $this->percent,
         ];
     }
 }
