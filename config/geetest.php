@@ -2,7 +2,7 @@
 
 return [
     'lang' => app()->getLocale(),
-    'server-get-config' => true,
+    'server-get-config' => false,
     'id' => env('GEETEST_ID'),
     'key' => env('GEETEST_KEY'),
     'url' => '/geetest',

@@ -1,7 +1,5 @@
 <?php
 
-use App\Components\Helpers;
-
 define('KB', 1024);
 define('MB', 1048576);
 define('GB', 1073741824);
@@ -92,11 +90,6 @@ if (! function_exists('filterEmoji')) {
 if (! function_exists('sysConfig')) {
     function sysConfig($name)
     {
-        $ret = Cache::tags('sysConfig')->get($name);
-        if (is_null($ret)) {
-            return Helpers::cacheSysConfig($name);
-        }
-
-        return $ret;
+        return config('settings.'.$name);
     }
 }

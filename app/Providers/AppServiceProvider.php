@@ -10,7 +10,6 @@ use App\Models\UserGroup;
 use App\Observers\ConfigObserver;
 use App\Observers\NodeObserver;
 use App\Observers\OrderObserver;
-use App\Observers\RuleGroupObserver;
 use App\Observers\UserGroupObserver;
 use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
@@ -31,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
+        $this->app->register(SettingServiceProvider::class);
     }
 
     /**

@@ -144,55 +144,6 @@ class Helpers
         return $config->name ?? 'plain';
     }
 
-    // 获取系统配置
-    public static function cacheSysConfig($name)
-    {
-        $notifications = [
-            'account_expire_notification',
-            'data_anomaly_notification',
-            'data_exhaust_notification',
-            'node_blocked_notification',
-            'node_daily_notification',
-            'node_offline_notification',
-            'password_reset_notification',
-            'payment_received_notification',
-            'ticket_closed_notification',
-            'ticket_created_notification',
-            'ticket_replied_notification',
-        ];
-
-        if ($name === 'is_onlinePay') {
-            $value = sysConfig('is_AliPay') || sysConfig('is_QQPay') || sysConfig('is_WeChatPay') || sysConfig('is_otherPay');
-            Cache::tags('sysConfig')->put('is_onlinePay', $value);
-        } else {
-            if (in_array($name, $notifications, true)) {
-                $value = self::setChannel(json_decode(Config::find($name)->value, true));
-            } else {
-                $value = Config::find($name)->value;
-            }
-            Cache::tags('sysConfig')->put($name, $value ?? false);
-        }
-
-        return $value;
-    }
-
-    private static function setChannel(array $channels)
-    {
-        $options = [
-            'telegram'   => TelegramChannel::class,
-            'beary'      => BearyChatChannel::class,
-            'bark'       => BarkChannel::class,
-            'serverChan' => ServerChanChannel::class,
-        ];
-        foreach ($options as $option => $str) {
-            if (($key = array_search($option, $channels, true)) !== false) {
-                $channels[$key] = $str;
-            }
-        }
-
-        return $channels;
-    }
-
     public static function daysToNow($date): int
     {
         return (new DateTime())->diff(new DateTime($date))->days;
