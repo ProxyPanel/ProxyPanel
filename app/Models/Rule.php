@@ -15,46 +15,22 @@ class Rule extends Model
 
     public function getTypeLabelAttribute(): string
     {
-        switch ($this->attributes['type']) {
-            case 1:
-                $type_label = '正则表达式';
-                break;
-            case 2:
-                $type_label = '域 名';
-                break;
-            case 3:
-                $type_label = 'I P';
-                break;
-            case 4:
-                $type_label = '协 议';
-                break;
-            default:
-                $type_label = '未 知';
-        }
-
-        return $type_label;
+        return [
+            1 => '正则表达式',
+            2 => '域 名',
+            3 => 'I P',
+            4 => '协 议',
+        ][$this->attributes['type']] ?? '未 知';
     }
 
     public function getTypeApiLabelAttribute(): string
     {
-        switch ($this->attributes['type']) {
-            case 1:
-                $type_api_label = 'reg';
-                break;
-            case 2:
-                $type_api_label = 'domain';
-                break;
-            case 3:
-                $type_api_label = 'ip';
-                break;
-            case 4:
-                $type_api_label = 'protocol';
-                break;
-            default:
-                $type_api_label = 'unknown';
-        }
-
-        return $type_api_label;
+        return [
+            1 => 'reg',
+            2 => 'domain',
+            3 => 'ip',
+            4 => 'protocol',
+        ][$this->attributes['type']] ?? 'unknown';
     }
 
     public function rule_groups()

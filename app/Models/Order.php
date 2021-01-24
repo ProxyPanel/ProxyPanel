@@ -155,98 +155,26 @@ class Order extends Model
     // 支付渠道
     public function getPayTypeLabelAttribute(): string
     {
-        switch ($this->attributes['pay_type']) {
-            case 0:
-                $pay_type_label = trans('common.payment.credit');
-                break;
-            case 1:
-                $pay_type_label = trans('common.payment.alipay');
-                break;
-            case 2:
-                $pay_type_label = 'QQ';
-                break;
-            case 3:
-                $pay_type_label = trans('common.payment.wechat');
-                break;
-            case 4:
-                $pay_type_label = trans('common.payment.crypto');
-                break;
-            case 5:
-                $pay_type_label = 'PayPal';
-                break;
-            case 6:
-                $pay_type_label = 'Stripe';
-                break;
-            default:
-                $pay_type_label = '';
-        }
-
-        return $pay_type_label;
+        return [
+            0 => trans('common.payment.credit'),
+            1 => trans('common.payment.alipay'),
+            2 => 'QQ',
+            3 => trans('common.payment.wechat'),
+            4 => trans('common.payment.crypto'),
+            5 => 'PayPal',
+            6 => 'Stripe',
+        ][$this->attributes['pay_type']] ?? '';
     }
 
     // 支付图标
     public function getPayTypeIconAttribute(): string
     {
-        $base_path = '/assets/images/payment/';
-
-        switch ($this->attributes['pay_type']) {
-            case 1:
-                $pay_type_icon = $base_path.'alipay.png';
-                break;
-            case 2:
-                $pay_type_icon = $base_path.'qq.png';
-                break;
-            case 3:
-                $pay_type_icon = $base_path.'wechat.png';
-                break;
-            case 5:
-                $pay_type_icon = $base_path.'paypal.png';
-                break;
-            case 6:
-                $pay_type_icon = $base_path.'stripe.png';
-                break;
-            default:
-                $pay_type_icon = $base_path.'coin.png';
-        }
-
-        return $pay_type_icon;
+        return '/assets/images/payment/'.config('common.payment.icon')[$this->attributes['pay_type']] ?? 'coin.png';
     }
 
     // 支付方式
     public function getPayWayLabelAttribute(): string
     {
-        switch ($this->attributes['pay_way']) {
-            case 'credit':
-                $pay_way_label = '余额';
-                break;
-            case 'youzan':
-                $pay_way_label = '有赞云';
-                break;
-            case 'f2fpay':
-                $pay_way_label = '支付宝当面付';
-                break;
-            case 'codepay':
-                $pay_way_label = '码支付';
-                break;
-            case 'payjs':
-                $pay_way_label = 'PayJs';
-                break;
-            case 'bitpayx':
-                $pay_way_label = '麻瓜宝';
-                break;
-            case 'paypal':
-                $pay_way_label = 'PayPal';
-                break;
-            case 'stripe':
-                $pay_way_label = 'Stripe';
-                break;
-            case 'paybeaver':
-                $pay_way_label = '海狸支付';
-                break;
-            default:
-                $pay_way_label = '未知';
-        }
-
-        return $pay_way_label;
+        return config('common.payment.labels')[$this->attributes['pay_way']] ?? '未知';
     }
 }

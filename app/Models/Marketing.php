@@ -13,19 +13,10 @@ class Marketing extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        $status_label = '';
-        switch ($this->attributes['status']) {
-            case -1:
-                $status_label = '失败';
-                break;
-            case 0:
-                $status_label = '待推送';
-                break;
-            case 1:
-                $status_label = '成功';
-                break;
-        }
-
-        return $status_label;
+        return [
+            -1 => '失败',
+            0  => '待推送',
+            1  => '成功',
+        ][$this->attributes['status']] ?? '';
     }
 }

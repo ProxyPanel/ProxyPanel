@@ -11,11 +11,6 @@ use NotificationChannels\Telegram\TelegramChannel;
 
 class SettingServiceProvider extends ServiceProvider
 {
-    /**
-     * Bootstrap services.
-     *
-     * @return void
-     */
     public function boot()
     {
         $toApp = collect([
@@ -26,7 +21,6 @@ class SettingServiceProvider extends ServiceProvider
             'hcaptcha_secret'        => 'HCaptcha.secret',
             'hcaptcha_sitekey'       => 'HCaptcha.sitekey',
         ]);
-
         $notifications = collect([
             'account_expire_notification',
             'data_anomaly_notification',
@@ -40,25 +34,22 @@ class SettingServiceProvider extends ServiceProvider
             'ticket_created_notification',
             'ticket_replied_notification',
         ]);
-
+        $payments = ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'];
         $settings = Config::all();
-
         $modified = $settings
             ->whereNotIn('name', $toApp->keys()->merge($notifications)) // 设置一般系统选项
             ->pluck('value', 'name')
             ->merge($settings->whereIn('name', $notifications)->pluck('value', 'name')->map(function ($item) {
                 return self::setChannel(json_decode($item, true) ?? []);
             })) // 设置通知相关选项
-            ->merge(collect(['is_onlinePay' => $settings->whereIn('name', ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'])->pluck('value')->filter()->isNotEmpty(),
-            ])) // 设置在线支付开关
-            ->sortKeys();
+            ->merge(collect(['is_onlinePay' => $settings->whereIn('name', $payments)->pluck('value')->filter()->isNotEmpty()])) // 设置在线支付开关
+            ->sortKeys()
+            ->toArray();
 
         config(['settings' => $modified]); // 设置系统参数
-
         $settings->whereIn('name', $toApp->keys())->pluck('value', 'name')->each(function ($item, $key) use ($toApp) {
             config([$toApp[$key] => $item]); // 设置PHP软件包相关配置
         });
-
         collect([
             'website_name' => 'app.name',
             'website_url'  => 'app.url',
@@ -69,18 +60,15 @@ class SettingServiceProvider extends ServiceProvider
 
     private static function setChannel(array $channels)
     {
-        $options = [
+        return collect([
             'telegram'   => TelegramChannel::class,
             'beary'      => BearyChatChannel::class,
             'bark'       => BarkChannel::class,
             'serverChan' => ServerChanChannel::class,
-        ];
-        foreach ($options as $option => $str) {
-            if (($key = array_search($option, $channels, true)) !== false) {
-                $channels[$key] = $str;
+        ])->each(function ($item, $key) use ($channels) {
+            if (array_key_exists($key, $channels)) {
+                $channels[$key] = $item;
             }
-        }
-
-        return $channels;
+        });
     }
 }

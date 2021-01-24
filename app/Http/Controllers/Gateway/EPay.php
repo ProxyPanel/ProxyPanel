@@ -15,22 +15,9 @@ class EPay extends AbstractPayment
     {
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
-        switch ($request->input('type')) {
-            case 2:
-                $type = 'qqpay';
-                break;
-            case 3:
-                $type = 'wxpay';
-                break;
-            case 1:
-            default:
-                $type = 'alipay';
-                break;
-        }
-
         $data = [
             'pid'          => sysConfig('epay_mch_id'),
-            'type'         => $type,
+            'type'         => [1 => 'alipay', 2 => 'qqpay', 3 => 'wxpay'][$request->input('type')] ?? 'alipay',
             'notify_url'   => route('payment.notify', ['method' => 'epay']),
             'return_url'   => route('invoice'),
             'out_trade_no' => $payment->trade_no,

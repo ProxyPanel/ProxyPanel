@@ -178,23 +178,11 @@ class Node extends Model
 
     public function getTypeLabelAttribute(): string
     {
-        switch ($this->attributes['type']) {
-            case 1:
-                $type_label = 'ShadowsocksR';
-                break;
-            case 2:
-                $type_label = 'V2Ray';
-                break;
-            case 3:
-                $type_label = 'Trojan';
-                break;
-            case 4:
-                $type_label = 'VNet';
-                break;
-            default:
-                $type_label = 'UnKnown';
-        }
-
-        return $type_label;
+        return [
+            1 => 'ShadowsocksR',
+            2 => 'V2Ray',
+            3 => 'Trojan',
+            4 => 'VNet',
+        ][$this->attributes['type']] ?? 'UnKnown';
     }
 }

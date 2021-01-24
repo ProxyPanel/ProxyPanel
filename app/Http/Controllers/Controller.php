@@ -107,18 +107,19 @@ class Controller extends BaseController
     // 节点信息
     public function getUserNodeInfo(array $server, bool $is_url): ?string
     {
+        $type = $is_url ? new URLSchemes() : new Text();
         switch ($server['type']) {
             case'shadowsocks':
-                $data = $is_url ? URLSchemes::buildShadowsocks($server) : Text::buildShadowsocks($server);
+                $data = $type->buildShadowsocks($server);
                 break;
             case 'shadowsocksr':
-                $data = $is_url ? URLSchemes::buildShadowsocksr($server) : Text::buildShadowsocksr($server);
+                $data = $type->buildShadowsocksr($server);
                 break;
             case 'v2ray':
-                $data = $is_url ? URLSchemes::buildVmess($server) : Text::buildVmess($server);
+                $data = $type->buildVmess($server);
                 break;
             case 'trojan':
-                $data = $is_url ? URLSchemes::buildTrojan($server) : Text::buildTrojan($server);
+                $data = $type->buildTrojan($server);
                 break;
             default:
         }

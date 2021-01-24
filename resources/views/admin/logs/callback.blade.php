@@ -23,12 +23,9 @@
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onChange="Search()">
                             <option value="" hidden>支付方式</option>
-                            <option value="f2fpay">当面付</option>
-                            <option value="codepay">码支付</option>
-                            <option value="payjs">PayJs</option>
-                            <option value="bitpayx">麻瓜宝</option>
-                            <option value="paypal">PayPal</option>
-                            <option value="epay">易支付</option>
+                            @foreach(config('common.payment.labels') as $key => $value)
+                                <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
