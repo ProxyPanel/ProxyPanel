@@ -80,7 +80,7 @@ class Helpers
             'protocol'        => self::getDefaultProtocol(),
             'obfs'            => self::getDefaultObfs(),
             'transfer_enable' => $transfer_enable,
-            'expired_at'      => date('Y-m-d', strtotime('+'.$date.' days')),
+            'expired_at'      => date('Y-m-d', strtotime($date.' days')),
             'user_group_id'   => null,
             'reg_ip'          => IP::getClientIp(),
             'inviter_id'      => $inviter_id,

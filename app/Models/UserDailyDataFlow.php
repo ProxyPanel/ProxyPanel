@@ -12,6 +12,7 @@ class UserDailyDataFlow extends Model
 {
     public const UPDATED_AT = null;
     protected $table = 'user_daily_data_flow';
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {

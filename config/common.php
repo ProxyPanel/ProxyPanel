@@ -23,6 +23,5 @@ return [
             5 => 'paypal.png',
             6 => 'stripe.png',
         ],
-
     ],
 ];

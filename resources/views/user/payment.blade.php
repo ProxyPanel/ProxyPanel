@@ -19,7 +19,7 @@
                             @if($days !== 0)
                                 <li class="list-group-item">{{trans('common.available_date').'：'.$days.trans('validation.attributes.day')}}</li>
                             @endif
-                            <li class="list-group-item"> {!! trans('user.payment.close_tips', ['minutes' => 15]) !!}</li>
+                            <li class="list-group-item"> {!! trans('user.payment.close_tips', ['minutes' => config('tasks.close.order')]) !!}</li>
                         </ul>
                     </div>
                     <div class="col-auto mx-auto">

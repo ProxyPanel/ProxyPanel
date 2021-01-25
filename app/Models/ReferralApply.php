@@ -13,6 +13,7 @@ class ReferralApply extends Model
 {
     protected $table = 'referral_apply';
     protected $casts = ['link_logs' => 'array'];
+    protected $guarded = [];
 
     public function scopeUid($query)
     {

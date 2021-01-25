@@ -119,7 +119,7 @@
                                     <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
                                 @elseif ($user->expired_at === date('Y-m-d'))
                                     <span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
-                                @elseif ($user->expired_at <= date('Y-m-d', strtotime('+30 days')))
+                                @elseif ($user->expired_at <= date('Y-m-d', strtotime('30 days')))
                                     <span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
                                 @else
                                     {{$user->expired_at}}

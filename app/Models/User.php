@@ -216,6 +216,11 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('status', '<>', -1)->whereEnable(1);
     }
 
+    public function scopeBannedUser($query)
+    {
+        return $query->where('status', '>=', 0)->whereEnable(0);
+    }
+
     public function nodes()
     {
         if ($this->attributes['user_group_id']) {
@@ -272,7 +277,7 @@ class User extends Authenticatable implements JWTSubject
             $expired_status = -1; // 已过期
         } elseif ($this->expired_at === date('Y-m-d')) {
             $expired_status = 0; // 今天过期
-        } elseif ($this->expired_at > date('Y-m-d') && $this->expired_at <= date('Y-m-d', strtotime('+30 days'))) {
+        } elseif ($this->expired_at > date('Y-m-d') && $this->expired_at <= date('Y-m-d', strtotime('30 days'))) {
             $expired_status = 1; // 最近一个月过期
         }
 

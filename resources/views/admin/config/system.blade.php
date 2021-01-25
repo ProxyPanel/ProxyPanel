@@ -1224,11 +1224,11 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="auto_release_port">端口自动释放</label>
+                                            <label class="col-md-3 col-form-label" for="auto_release_port">端口回收机制</label>
                                             <div class="col-md-9">
                                                 <input type="checkbox" id="auto_release_port" data-plugin="switchery" @if($auto_release_port) checked
                                                        @endif onchange="updateFromOther('switch','auto_release_port')">
-                                                <span class="text-help"> 被封禁和过期一个月的用户端口自动释放 </span>
+                                                <span class="text-help"> 被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放 </span>
                                             </div>
                                         </div>
                                     </div>

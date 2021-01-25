@@ -34,15 +34,10 @@ class NodeController extends Controller
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
         foreach ($nodeList as $node) {
-            // 在线人数
-            $online_log = $node->onlineLogs()->where('log_time', '>=', strtotime('-5 minutes'))->latest('log_time')->first();
+            $online_log = $node->onlineLogs()->where('log_time', '>=', strtotime('-5 minutes'))->latest('log_time')->first(); // 在线人数
             $node->online_users = $online_log->online_user ?? 0;
-
-            // 已产生流量
-            $node->transfer = flowAutoShow($node->dailyDataFlows()->sum('total'));
-
-            // 负载（10分钟以内）
-            $node_info = $node->heartbeats()->recently()->first();
+            $node->transfer = flowAutoShow($node->dailyDataFlows()->sum('total')); // 已产生流量
+            $node_info = $node->heartbeats()->recently()->first(); // 近期负载
             $node->isOnline = empty($node_info) || empty($node_info->load) ? 0 : 1;
             $node->load = $node->isOnline ? $node_info->load : '离线';
             $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);

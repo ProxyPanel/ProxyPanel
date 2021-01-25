@@ -18,19 +18,16 @@ class NodeStatusDetection extends Command
     protected $signature = 'nodeStatusDetection';
     protected $description = '节点状态检测';
 
-    public function handle(): void
+    public function handle()
     {
         $jobStartTime = microtime(true);
-        // 检测节点心跳是否异常
-        if (sysConfig('node_offline_notification')) {
+
+        if (sysConfig('node_offline_notification')) {// 检测节点心跳是否异常
             $this->checkNodeStatus();
         }
 
-        // 监测节点网络状态
-        if (sysConfig('node_blocked_notification')) {
-            if (! Cache::has('LastCheckTime')) {
-                $this->checkNodeNetwork();
-            } elseif (Cache::get('LastCheckTime') <= time()) {
+        if (sysConfig('node_blocked_notification')) {// 监测节点网络状态
+            if (! Cache::has('LastCheckTime') || Cache::get('LastCheckTime') <= time()) {
                 $this->checkNodeNetwork();
             } else {
                 Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
@@ -43,12 +40,12 @@ class NodeStatusDetection extends Command
         Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
     }
 
-    private function checkNodeStatus(): void
+    private function checkNodeStatus()
     {
         $offlineCheckTimes = sysConfig('offline_check_times');
         $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
         foreach (Node::whereIsRelay(0)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
-            // 10分钟内无节点负载信息则认为是后端炸了
+            // 近期无节点负载信息则认为是后端炸了
             if ($offlineCheckTimes) {
                 // 已通知次数
                 $cacheKey = 'offline_check_times'.$node->id;
@@ -136,8 +133,7 @@ class NodeStatusDetection extends Command
             }
         }
 
-        //只有在出现阻断线路时，才会发出警报
-        if ($sendText) {
+        if ($sendText) {//只有在出现阻断线路时，才会发出警报
             Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
                 return $query->role('Super Admin');
             })->get(), new NodeBlocked($message.$additionalMessage));
@@ -145,7 +141,6 @@ class NodeStatusDetection extends Command
             Log::info("阻断日志: \r\n".$message.$additionalMessage);
         }
 
-        // 随机生成下次检测时间
-        Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700);
+        Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700); // 随机生成下次检测时间
     }
 }

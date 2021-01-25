@@ -2,19 +2,18 @@
 
 namespace App\Console;
 
-use App\Console\Commands\AutoClearLog;
+use App\Console\Commands\AutoClearLogs;
 use App\Console\Commands\AutoJob;
-use App\Console\Commands\AutoReportNode;
-use App\Console\Commands\AutoStatisticsNodeDailyTraffic;
-use App\Console\Commands\AutoStatisticsNodeHourlyTraffic;
-use App\Console\Commands\AutoStatisticsUserDailyTraffic;
-use App\Console\Commands\AutoStatisticsUserHourlyTraffic;
 use App\Console\Commands\DailyJob;
+use App\Console\Commands\DailyNodeReport;
+use App\Console\Commands\NodeDailyTrafficStatistics;
+use App\Console\Commands\NodeHourlyTrafficStatistics;
 use App\Console\Commands\NodeStatusDetection;
 use App\Console\Commands\ServiceTimer;
-use App\Console\Commands\UserExpireAutoWarning;
-use App\Console\Commands\UserTrafficAbnormalAutoWarning;
-use App\Console\Commands\UserTrafficAutoWarning;
+use App\Console\Commands\UserDailyTrafficStatistics;
+use App\Console\Commands\UserExpireWarning;
+use App\Console\Commands\UserHourlyTrafficMonitoring;
+use App\Console\Commands\UserTrafficWarning;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -26,19 +25,18 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        AutoClearLog::class,
+        AutoClearLogs::class,
         AutoJob::class,
-        AutoReportNode::class,
-        AutoStatisticsNodeDailyTraffic::class,
-        AutoStatisticsNodeHourlyTraffic::class,
-        AutoStatisticsUserDailyTraffic::class,
-        AutoStatisticsUserHourlyTraffic::class,
         DailyJob::class,
+        DailyNodeReport::class,
+        NodeDailyTrafficStatistics::class,
+        NodeHourlyTrafficStatistics::class,
         NodeStatusDetection::class,
         ServiceTimer::class,
-        UserExpireAutoWarning::class,
-        UserTrafficAbnormalAutoWarning::class,
-        UserTrafficAutoWarning::class,
+        UserDailyTrafficStatistics::class,
+        UserExpireWarning::class,
+        UserHourlyTrafficMonitoring::class,
+        UserTrafficWarning::class,
     ];
 
     /**
@@ -50,18 +48,17 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('autoJob')->everyMinute();
-        $schedule->command('serviceTimer')->everyTenMinutes();
-        $schedule->command('autoClearLog')->everyThirtyMinutes();
         $schedule->command('nodeStatusDetection')->everyTenMinutes();
-        $schedule->command('autoStatisticsNodeHourlyTraffic')->hourly();
-        $schedule->command('autoStatisticsUserHourlyTraffic')->hourly();
-        $schedule->command('userTrafficAbnormalAutoWarning')->hourly();
+        $schedule->command('serviceTimer')->everyTenMinutes();
+        $schedule->command('autoClearLogs')->everyThirtyMinutes();
+        $schedule->command('nodeHourlyTrafficStatistics')->hourly();
+        $schedule->command('userHourlyTrafficMonitoring')->hourly();
         $schedule->command('dailyJob')->daily();
-        $schedule->command('autoReportNode')->dailyAt('09:00');
-        $schedule->command('userTrafficAutoWarning')->dailyAt('10:30');
-        $schedule->command('userExpireAutoWarning')->dailyAt('20:00');
-        $schedule->command('autoStatisticsUserDailyTraffic')->dailyAt('23:55');
-        $schedule->command('autoStatisticsNodeDailyTraffic')->dailyAt('23:57');
+        $schedule->command('dailyNodeReport')->dailyAt('09:00');
+        $schedule->command('userTrafficWarning')->dailyAt('10:30');
+        $schedule->command('userExpireWarning')->dailyAt('20:00');
+        $schedule->command('userDailyTrafficStatistics')->dailyAt('23:55');
+        $schedule->command('nodeDailyTrafficStatistics')->dailyAt('23:57');
     }
 
     /**

@@ -43,7 +43,7 @@ class Order extends Model
 
     public function scopeRecentUnPay($query)
     {
-        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-15 minutes')));
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.order').' minutes')));
     }
 
     public function scopeUserPrepay($query, $uid = null)

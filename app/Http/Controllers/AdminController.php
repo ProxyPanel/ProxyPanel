@@ -37,7 +37,7 @@ class AdminController extends Controller
             'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
             'unActiveUserCount' => User::whereEnable(1)->whereBetween('t', [1, $past])->count(), // 不活跃用户数
             'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
-            'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))])->count(), // 临近过期用户数
+            'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))])->count(), // 临近过期用户数
             'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
             'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
             'nodeCount' => Node::count(),
@@ -72,7 +72,7 @@ class AdminController extends Controller
         for ($i = 0; $i < 10; $i++) {
             $obj = new Invite();
             $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
-            $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('admin_invite_days').' days'));
+            $obj->dateline = date('Y-m-d H:i:s', strtotime(sysConfig('admin_invite_days').' days'));
             $obj->save();
         }
 

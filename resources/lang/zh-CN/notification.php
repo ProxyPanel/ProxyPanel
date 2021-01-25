@@ -24,6 +24,7 @@ return [
     'traffic_tips'            => '请注意套餐流量重置日，合理分配流量使用或在流量耗尽后，付费重置套餐流量',
     'verification_account'    => '账号验证',
     'verification'            => '您的验证码：',
+    'verification_limit'      => '请在:minutes分钟内完成验证操作',
     'data_anomaly'            => '流量异常用户提醒',
     'data_anomaly_content'    => '用户:id：最近1小时 [上行流量：:upload | 下行流量：:download | 共计：:total]',
     'node'                    => [

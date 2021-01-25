@@ -87,7 +87,7 @@ class UserController extends Controller
 
         // 临近过期提醒
         if ($expireWarning) {
-            $query->whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime('+'.sysConfig('expire_days').' days'))]);
+            $query->whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))]);
         }
 
         // 当前在线
@@ -145,7 +145,7 @@ class UserController extends Controller
         $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
         Arr::forget($data, 'uuid');
         $data['transfer_enable'] *= GB;
-        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('365 days'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
         $data['reg_ip'] = IP::getClientIp();
         $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
@@ -200,7 +200,7 @@ class UserController extends Controller
         Arr::forget($data, ['roles', 'uuid', 'password']);
         $data['transfer_enable'] *= GB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
-        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('+365 days'));
+        $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('365 days'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
 
         // 只有超级管理员才能赋予超级管理员

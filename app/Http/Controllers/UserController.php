@@ -380,7 +380,7 @@ class UserController extends Controller
         $obj = new Invite();
         $obj->inviter_id = $user->id;
         $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
-        $obj->dateline = date('Y-m-d H:i:s', strtotime('+'.sysConfig('user_invite_days').' days'));
+        $obj->dateline = date('Y-m-d H:i:s', strtotime(sysConfig('user_invite_days').' days'));
         $obj->save();
         if ($obj) {
             $user->update(['invite_num' => $user->invite_num - 1]);

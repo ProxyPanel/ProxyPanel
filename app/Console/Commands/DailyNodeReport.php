@@ -9,12 +9,12 @@ use Illuminate\Console\Command;
 use Log;
 use Notification;
 
-class AutoReportNode extends Command
+class DailyNodeReport extends Command
 {
-    protected $signature = 'autoReportNode';
+    protected $signature = 'dailyNodeReport';
     protected $description = '自动报告节点昨日使用情况';
 
-    public function handle(): void
+    public function handle()
     {
         $jobStartTime = microtime(true);
 

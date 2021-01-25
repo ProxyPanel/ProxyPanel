@@ -12,12 +12,11 @@ class ServiceTimer extends Command
     protected $signature = 'serviceTimer';
     protected $description = '服务计时器';
 
-    public function handle(): void
+    public function handle()
     {
         $jobStartTime = microtime(true);
 
-        // 扣减用户到期商品的流量
-        $this->decGoodsTraffic();
+        $this->decGoodsTraffic(); // 扣减用户到期商品的流量
 
         $jobEndTime = microtime(true);
         $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
@@ -26,25 +25,27 @@ class ServiceTimer extends Command
     }
 
     // 扣减用户到期商品的流量
-    private function decGoodsTraffic(): void
+    private function decGoodsTraffic()
     {
         //获取失效的套餐
-        foreach (Order::activePlan()->where('expired_at', '<=', date('Y-m-d H:i:s'))->with('user')->whereHas('user')->get() as $order) {
-            // 无用户订单，跳过
-            // 清理全部流量,重置重置日期和等级
-            $user = $order->user;
+        Order::activePlan()
+            ->where('expired_at', '<=', date('Y-m-d H:i:s'))
+            ->with('user')->whereHas('user') // 无用户订单，跳过
+            ->chunk(config('tasks.chunk'), function ($orders) {
+                foreach ($orders as $order) {
+                    $user = $order->user;
 
-            $user->update([
-                'u' => 0,
-                'd' => 0,
-                'transfer_enable' => 0,
-                'reset_time' => null,
-                'level' => 0,
-            ]);
-            Helpers::addUserTrafficModifyLog($user->id, $order->id, $user->transfer_enable, 0, '[定时任务]用户所购商品到期，扣减商品对应的流量');
+                    $user->update([ // 清理全部流量,重置重置日期和等级
+                        'u'               => 0,
+                        'd'               => 0,
+                        'transfer_enable' => 0,
+                        'reset_time'      => null,
+                        'level'           => 0,
+                    ]);
+                    Helpers::addUserTrafficModifyLog($user->id, $order->id, $user->transfer_enable, 0, '[定时任务]用户所购商品到期，扣减商品对应的流量');
 
-            // 过期本订单
-            $order->update(['is_expire' => 1]);
-        }
+                    $order->update(['is_expire' => 1]); // 过期本订单
+                }
+            });
     }
 }
