@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Channels\BarkChannel;
 use App\Channels\ServerChanChannel;
 use App\Models\Config;
+use Cache;
 use Illuminate\Support\ServiceProvider;
 use NotificationChannels\BearyChat\BearyChatChannel;
 use NotificationChannels\Telegram\TelegramChannel;
@@ -35,13 +36,16 @@ class SettingServiceProvider extends ServiceProvider
             'ticket_replied_notification',
         ]);
         $payments = ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'];
-        $settings = Config::all();
+        if (! Cache::has('settings')) {
+            Cache::forever('settings', Config::whereNotNull('value')->get());
+        }
+        $settings = Cache::get('settings');
         $modified = $settings
             ->whereNotIn('name', $toApp->keys()->merge($notifications)) // 设置一般系统选项
             ->pluck('value', 'name')
             ->merge($settings->whereIn('name', $notifications)->pluck('value', 'name')->map(function ($item) {
-                return self::setChannel(json_decode($item, true) ?? []);
-            })) // 设置通知相关选项
+                return self::setChannel(json_decode($item, true)); // 设置通知相关选项
+            }))
             ->merge(collect(['is_onlinePay' => $settings->whereIn('name', $payments)->pluck('value')->filter()->isNotEmpty()])) // 设置在线支付开关
             ->sortKeys()
             ->toArray();
