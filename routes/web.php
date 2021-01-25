@@ -1,6 +1,6 @@
 <?php
 
-if (env('APP_KEY') && \Illuminate\Support\Facades\Schema::hasTable('config')) {
+if (env('APP_KEY') && config('settings')) {
     Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))
         ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
