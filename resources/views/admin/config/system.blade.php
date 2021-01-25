@@ -434,9 +434,9 @@
                                                     <input type="number" class="form-control" id="user_invite_days" value="{{$user_invite_days}}"/>
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">天</span>
-                                                        <button class="btn btn-primary" type="button"
-                                                                onchange="updateFromOther('user_invite_days','1',false)">{{trans('common.update')}}</button>
                                                     </div>
+                                                    <button class="btn btn-primary" type="button"
+                                                            onclick="updateFromInput('user_invite_days','1',false)">{{trans('common.update')}}</button>
                                                 </div>
                                                 <span class="text-help"> 用户自行生成邀请的有效期 </span>
                                             </div>
