@@ -30,7 +30,9 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
-        $this->app->register(SettingServiceProvider::class);
+        if (Schema::hasTable('config')) {
+            $this->app->register(SettingServiceProvider::class);
+        }
     }
 
     /**
