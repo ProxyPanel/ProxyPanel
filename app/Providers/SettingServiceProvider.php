@@ -60,15 +60,19 @@ class SettingServiceProvider extends ServiceProvider
 
     private static function setChannel(array $channels)
     {
-        return collect([
-            'telegram'   => TelegramChannel::class,
-            'beary'      => BearyChatChannel::class,
-            'bark'       => BarkChannel::class,
-            'serverChan' => ServerChanChannel::class,
-        ])->each(function ($item, $key) use ($channels) {
-            if (array_key_exists($key, $channels)) {
-                $channels[$key] = $item;
+        foreach (
+            [
+                'telegram'   => TelegramChannel::class,
+                'beary'      => BearyChatChannel::class,
+                'bark'       => BarkChannel::class,
+                'serverChan' => ServerChanChannel::class,
+            ] as $key => $channel
+        ) {
+            if (($index = array_search($key, $channels, true)) && $index !== false) {
+                $channels[$index] = $channel;
             }
-        });
+        }
+
+        return $channels;
     }
 }
