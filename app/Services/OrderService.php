@@ -168,9 +168,9 @@ class OrderService
             }
             // 按照返利模式进行返利判断
             if ($referralType === '2' || $referral) {
-                return $user->commissionLogs()
+                return $inviter->commissionLogs()
                     ->create([
-                        'inviterId'  => $inviter->id,
+                        'invitee_id' => $user->id,
                         'order_id'   => self::$order->id,
                         'amount'     => self::$order->amount,
                         'commission' => self::$order->amount * sysConfig('referral_percent'),

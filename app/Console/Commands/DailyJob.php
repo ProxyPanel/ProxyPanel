@@ -98,7 +98,7 @@ class DailyJob extends Command
             ->where('expired_at', '>', date('Y-m-d'))
             ->where('reset_time', '<=', date('Y-m-d'))
             ->whereNotNull('reset_time')
-            ->with('order')->whereHas('order')
+            ->with('orders')->whereHas('orders')
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐
@@ -107,7 +107,7 @@ class DailyJob extends Command
                         continue;
                     }
 
-                    $user->order()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
+                    $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
 
                     $oldData = $user->transfer_enable;
                     // 重置流量与重置日期
