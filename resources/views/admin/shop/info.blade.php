@@ -210,8 +210,8 @@
           @endif
           $('#sort').val('{{$good->sort}}');
         $('#color').asColorPicker('val', '{{$good->color}}');
-        $('#description').val('{{$good->description}}');
-        $('#info').val('{!! $good->info !!}');
+        $('#description').val(@json($good->description));
+        $('#info').val(@json($good->info));
         const trafficUnit = $('#traffic_unit');
         const traffic = $('#traffic');
           @if($good->traffic >= 1073741824)

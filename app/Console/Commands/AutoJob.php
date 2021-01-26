@@ -74,7 +74,7 @@ class AutoJob extends Command
         User::activeUser()
             ->with(['subscribe', 'subscribeLogs'])
             ->whereHas('subscribe', function (Builder $query) {
-                $query->where('status', '==', 0); // 获取有订阅且未被封禁用户
+                $query->whereStatus(0); // 获取有订阅且未被封禁用户
             })
             ->chunk(config('tasks.chunk'), function ($users) use ($subscribe_ban_times) {
                 foreach ($users as $user) {

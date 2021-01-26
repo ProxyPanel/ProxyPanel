@@ -304,7 +304,7 @@ class UserController extends Controller
     // 操作用户余额
     public function handleUserCredit(Request $request, User $user): JsonResponse
     {
-        $amount = (int) $request->input('amount');
+        $amount = $request->input('amount');
 
         if (empty($amount)) {
             return Response::json(['status' => 'fail', 'message' => '充值异常']);

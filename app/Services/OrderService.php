@@ -104,12 +104,12 @@ class OrderService
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-            'level' => self::$goods->level,
-            'enable' => 1,
+            'level'      => self::$goods->level,
+            'enable'     => 1,
         ];
 
         // 无端口用户 添加端口
-        if (self::$user->port === null || self::$user->port === 0) {
+        if (empty(self::$user->port)) {
             $updateData['port'] = Helpers::getPort();
         }
 
@@ -149,68 +149,43 @@ class OrderService
 
         return array_merge($data, [
             'transfer_enable' => self::$goods->traffic * MB,
-            'reset_time' => $nextResetTime,
+            'reset_time'      => $nextResetTime,
         ]);
     }
 
-    // 佣金计算
-    private function setCommissionExpense(User $user): bool
+    private function setCommissionExpense(User $user) // 佣金计算
     {
         $referralType = sysConfig('referral_type');
 
         if ($referralType && $user->inviter_id) {// 是否需要支付佣金
             $inviter = $user->inviter;
             // 获取历史返利记录
-            $referral = ReferralLog::whereInviteeId(self::$order->user_id)->doesntExist();
+            $referral = ReferralLog::whereInviteeId($user->id)->doesntExist();
             // 无记录 / 首次返利
             if ($referral && sysConfig('is_invite_register')) {
                 // 邀请注册功能开启时，返还邀请者邀请名额
                 $inviter->update(['invite_num' => $inviter->invite_num + 1]);
             }
             // 按照返利模式进行返利判断
-            if ($referralType == 2 || $referral) {
-                return $this->addReferralLog(
-                    $user->id,
-                    $inviter->id,
-                    self::$order->id,
-                    self::$order->amount,
-                    self::$order->amount * sysConfig('referral_percent')
-                );
+            if ($referralType === '2' || $referral) {
+                return $user->commissionLogs()
+                    ->create([
+                        'inviterId'  => $inviter->id,
+                        'order_id'   => self::$order->id,
+                        'amount'     => self::$order->amount,
+                        'commission' => self::$order->amount * sysConfig('referral_percent'),
+                    ]);
             }
         }
 
         return true;
     }
 
-    /**
-     * 添加返利日志.
-     *
-     * @param  int  $inviteeId  用户ID
-     * @param  int  $inviterId  返利对象ID
-     * @param  int  $oid  订单ID
-     * @param  int  $amount  发生金额
-     * @param  int  $commission  返利金额
-     *
-     * @return bool
-     */
-    private function addReferralLog(int $inviteeId, int $inviterId, int $oid, int $amount, int $commission): bool
-    {
-        $log = new ReferralLog();
-        $log->invitee_id = $inviteeId;
-        $log->inviter_id = $inviterId;
-        $log->order_id = $oid;
-        $log->amount = $amount;
-        $log->commission = $commission;
-
-        return $log->save();
-    }
-
-    // 激活预支付套餐
-    public function activatePrepaidPlan(): bool
+    public function activatePrepaidPlan(): bool // 激活预支付套餐
     {
         self::$order->update([
             'expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days')),
-            'status' => 2,
+            'status'     => 2,
         ]);
 
         return $this->activatePlan();

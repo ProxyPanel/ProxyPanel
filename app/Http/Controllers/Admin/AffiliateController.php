@@ -33,7 +33,7 @@ class AffiliateController extends Controller
     public function detail(Request $request, ReferralApply $aff)
     {
         return view('admin.aff.detail', [
-            'referral' => $aff->load('user:id,email'),
+            'referral'    => $aff->load('user:id,email'),
             'commissions' => $aff->referral_logs()->with(['invitee:id,email', 'order.goods:id,name'])->paginate()->appends($request->except('page')),
         ]);
     }
@@ -41,16 +41,20 @@ class AffiliateController extends Controller
     // 设置提现申请状态
     public function setStatus(Request $request, ReferralApply $aff)
     {
-        $status = (int) $request->validate(['status' => 'required|numeric|between:-1,2']);
+        $status = (int) $request->input('status');
 
         if ($aff->update(['status' => $status])) {
             // 审核申请的时候将关联的
             if ($status === 1 || $status === 2) {
-                $aff->referral_logs()->update(['status' => $status]);
+                if ($aff->referral_logs()->update(['status' => $status])) {
+                    return response()->json(['status' => 'success', 'message' => '操作成功']);
+                }
             }
+
+            return response()->json(['status' => 'success', 'message' => '操作成功']);
         }
 
-        return response()->json(['status' => 'success', 'message' => '操作成功']);
+        return response()->json(['status' => 'fail', 'message' => '操作失败']);
     }
 
     // 用户返利流水记录

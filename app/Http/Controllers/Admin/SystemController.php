@@ -133,7 +133,7 @@ class SystemController extends Controller
 
         // 如果是返利比例，则需要除100
         if ($name === 'referral_percent') {
-            $value = (int) $value / 100;
+            $value /= 100;
         }
 
         // 更新配置
