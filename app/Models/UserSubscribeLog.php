@@ -14,6 +14,7 @@ class UserSubscribeLog extends Model
     public const CREATED_AT = 'request_time';
     public const UPDATED_AT = null;
     protected $table = 'user_subscribe_log';
+    protected $guarded = [];
 
     public function subscribe(): BelongsTo
     {

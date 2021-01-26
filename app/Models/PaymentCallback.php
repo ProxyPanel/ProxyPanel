@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentCallback extends Model
 {
     protected $table = 'payment_callback';
+    protected $guarded = [];
 
     public function getStatusLabelAttribute(): string
     {

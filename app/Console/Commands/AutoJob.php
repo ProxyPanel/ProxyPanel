@@ -89,8 +89,7 @@ class AutoJob extends Command
                             'ban_time' => strtotime(sysConfig('traffic_ban_time').' minutes'),
                             'ban_desc' => '存在异常，自动封禁',
                         ]);
-
-                        Helpers::addUserBanLog($user->id, 0, '【完全封禁订阅】-订阅24小时内请求异常'); // 记录封禁日志
+                        $user->banedLogs()->create(['description' => '【完全封禁订阅】-订阅24小时内请求异常']); // 记录封禁日志
                     }
                 }
             });
@@ -104,8 +103,7 @@ class AutoJob extends Command
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $user->update(['enable' => 0]);
-
-                    Helpers::addUserBanLog($user->id, 0, '【封禁代理】-流量已用完'); // 写入日志
+                    $user->banedLogs()->create(['description' => '【封禁代理】-流量已用完']); // 写入日志
                 }
             });
 
@@ -122,8 +120,7 @@ class AutoJob extends Command
                                 'enable'   => 0,
                                 'ban_time' => strtotime($trafficBanTime.' minutes'),
                             ]);
-
-                            Helpers::addUserBanLog($user->id, $trafficBanTime, '【临时封禁代理】-1小时内流量异常'); // 写入日志
+                            $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => '【临时封禁代理】-1小时内流量异常']); // 写入日志
                         }
                     }
                 });
@@ -139,8 +136,7 @@ class AutoJob extends Command
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $user->update(['enable' => 1, 'ban_time' => null]);
-
-                    Helpers::addUserBanLog($user->id, 0, '【自动解封】-临时封禁到期'); // 写入操作日志
+                    $user->banedLogs()->create(['description' => '【自动解封】-临时封禁到期']); // 写入操作日志
                 }
             });
 
@@ -152,8 +148,7 @@ class AutoJob extends Command
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $user->update(['enable' => 1]);
-
-                    Helpers::addUserBanLog($user->id, 0, '【自动解封】-有流量解封'); // 写入操作日志
+                    $user->banedLogs()->create(['description' => '【自动解封】-有流量解封']); // 写入操作日志
                 }
             });
     }

@@ -12,6 +12,7 @@ class NodeDailyDataFlow extends Model
 {
     public const UPDATED_AT = null;
     protected $table = 'node_daily_data_flow';
+    protected $guarded = [];
 
     public function node(): BelongsTo
     {

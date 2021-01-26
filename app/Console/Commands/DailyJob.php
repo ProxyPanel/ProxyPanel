@@ -50,8 +50,7 @@ class DailyJob extends Command
                             'ban_time'        => null,
                             'status'          => -1,
                         ]);
-
-                        Helpers::addUserBanLog($user->id, 0, '【禁止登录，清空账户】-账号已过期');
+                        $user->banedLogs()->create(['description' => '【禁止登录，清空账户】-账号已过期']);
 
                         // 废除其名下邀请码
                         $user->invites()->whereStatus(0)->update(['status' => 2]);
@@ -68,8 +67,7 @@ class DailyJob extends Command
                             'reset_time'      => null,
                             'ban_time'        => null,
                         ]);
-
-                        Helpers::addUserBanLog($user->id, 0, '【封禁代理，清空账户】-账号已过期');
+                        $user->banedLogs()->create(['description' => '【封禁代理，清空账户】-账号已过期']);
 
                         // 写入用户流量变动记录
                         Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(封禁代理，清空账户)');

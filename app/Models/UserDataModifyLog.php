@@ -12,6 +12,7 @@ class UserDataModifyLog extends Model
 {
     public const UPDATED_AT = null;
     protected $table = 'user_data_modify_log';
+    protected $guarded = [];
 
     // 关联账号
     public function user(): BelongsTo

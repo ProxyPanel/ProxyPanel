@@ -10,6 +10,7 @@ class NodeHourlyTrafficStatistics extends Command
 {
     protected $signature = 'nodeHourlyTrafficStatistics';
     protected $description = '节点每小时流量统计';
+    protected $guarded = [];
 
     public function handle()
     {

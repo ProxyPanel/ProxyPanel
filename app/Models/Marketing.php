@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Marketing extends Model
 {
     protected $table = 'marketing';
+    protected $guarded = [];
 
     public function getStatusLabelAttribute(): string
     {

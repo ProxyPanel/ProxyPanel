@@ -12,6 +12,7 @@ class UserLoginLog extends Model
 {
     public const UPDATED_AT = null;
     protected $table = 'user_login_log';
+    protected $guarded = [];
 
     public function user(): BelongsTo
     {
