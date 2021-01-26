@@ -1055,7 +1055,7 @@
                                                     </span>
                                                 </div>
                                                 <span class="text-help">启用ServerChan，请务必填入本值（<a href="http://sc.ftqq.com" target="_blank">申请SCKEY</a>） @can('admin.test.notify')（<a
-                                                            href="javascript:sendTestNotification('serverChan');
+                                                        href="javascript:sendTestNotification('serverChan');
 ">发送测试消息</a>）@endcan</span>
                                             </div>
                                         </div>
@@ -1425,8 +1425,8 @@
                                                     <span class="input-group-append">
                                                             <button class="btn btn-primary" type="button" onclick="update('f2fpay_public_key')">{{trans('common.update')}}</button>
                                                         </span>
-                                                    <span class="text-help"> 注意不是应用公钥！</span>
                                                 </div>
+                                                <span class="text-help"> 注意不是应用公钥！</span>
                                             </div>
                                         </div>
                                     </div>
@@ -1778,146 +1778,146 @@
     <script src="/assets/custom/jump-tab.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-        $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
-        $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
-        $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
-        $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
-        $('#referral_type').selectpicker('val', '{{$referral_type}}');
-        $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
-        $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
-        $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
-        $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-        $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
-        $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
-        $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
-        $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
-        $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
-        $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
-        $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
-        $('#password_reset_notification').selectpicker('val', {!! $password_reset_notification !!});
-        $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
-        $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
-        $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
-        $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
+        $(document).ready(function() {
+            $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
+            $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
+            $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
+            $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
+            $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
+            $('#referral_type').selectpicker('val', '{{$referral_type}}');
+            $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
+            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+            $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
+            $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
+            $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
+            $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
+            $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
+            $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
+            $('#password_reset_notification').selectpicker('val', {!! $password_reset_notification !!});
+            $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
+            $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
+            $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
+            $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
 
-        // Get all options within select
-        disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
-        disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
-        disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
-        disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
-        disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
-      });
+            // Get all options within select
+            disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
+            disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
+            disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
+            disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
+            disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
+        });
 
-      function disablePayment(op) {
-        for (let i = 1; i < op.length; i++) {
-            @json($payments).
-          includes(op[i].value)
-              ? op[i].disabled = false
-              : op[i].disabled = true;
-        }
-      }
-
-      function disableCaptcha(op) {
-        for (let i = 2; i < op.length; i++) {
-            @json($captcha).
-          includes(op[i].value)
-              ? op[i].disabled = false
-              : op[i].disabled = true;
-        }
-      }
-
-      // 系统设置更新
-      function systemUpdate(systemItem, value) {
-          @can('admin.system.update')
-          $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+        function disablePayment(op) {
+            for (let i = 1; i < op.length; i++) {
+                @json($payments).
+                includes(op[i].value)
+                    ? op[i].disabled = false
+                    : op[i].disabled = true;
             }
-          });
-          @else
-          swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
-          @endcan
-      }
-
-      // 正常input更新
-      function update(systemItem) {
-        systemUpdate(systemItem, $('#' + systemItem).val());
-      }
-
-      // 需要检查限制的更新
-      function updateFromInput(systemItem, lowerBound, upperBound) {
-        let value = parseInt($('#' + systemItem).val());
-        if (lowerBound !== false && value < lowerBound) {
-          swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-        } else if (upperBound !== false && value > upperBound) {
-          swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-        } else {
-          systemUpdate(systemItem, value);
         }
-      }
 
-      // 其他项更新选择
-      function updateFromOther(inputType, systemItem) {
-        let input = $('#' + systemItem);
-        switch (inputType) {
-          case 'select':
-            input.on('changed.bs.select', function() {
-              systemUpdate(systemItem, $(this).val());
-            });
-            break;
-          case 'multiSelect':
-            input.on('changed.bs.select', function() {
-              systemUpdate(systemItem, $(this).val().join(','));
-            });
-            break;
-          case 'switch':
-            systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-            break;
-          default:
-            break;
+        function disableCaptcha(op) {
+            for (let i = 2; i < op.length; i++) {
+                @json($captcha).
+                includes(op[i].value)
+                    ? op[i].disabled = false
+                    : op[i].disabled = true;
+            }
         }
-      }
 
-      // 发送Bark测试消息
-      @can('admin.test.notify')
-      function sendTestNotification(channel) {
-        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-          } else {
-            swal.fire({title: ret.message, icon: 'error'});
-          }
-        });
-      }
-      @endcan
-
-      // 生成网站安全码
-      function makeWebsiteSecurityCode() {
-        $.get('{{route('createStr')}}', function(ret) {
-          $('#website_security_code').val(ret);
-        });
-      }
-
-      @can('admin.test.epay')
-      function epayInfo() {
-        $.get('{{route('admin.test.epay')}}', function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({
-              title: '易支付信息(仅供参考)',
-              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-              icon: 'info',
+        // 系统设置更新
+        function systemUpdate(systemItem, value) {
+            @can('admin.system.update')
+            $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+                } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
             });
-          } else {
-            swal.fire({title: ret.message, icon: 'error'});
-          }
-        });
-      }
+            @else
+            swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+            @endcan
+        }
+
+        // 正常input更新
+        function update(systemItem) {
+            systemUpdate(systemItem, $('#' + systemItem).val());
+        }
+
+        // 需要检查限制的更新
+        function updateFromInput(systemItem, lowerBound, upperBound) {
+            let value = parseInt($('#' + systemItem).val());
+            if (lowerBound !== false && value < lowerBound) {
+                swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+            } else if (upperBound !== false && value > upperBound) {
+                swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+            } else {
+                systemUpdate(systemItem, value);
+            }
+        }
+
+        // 其他项更新选择
+        function updateFromOther(inputType, systemItem) {
+            let input = $('#' + systemItem);
+            switch (inputType) {
+                case 'select':
+                    input.on('changed.bs.select', function() {
+                        systemUpdate(systemItem, $(this).val());
+                    });
+                    break;
+                case 'multiSelect':
+                    input.on('changed.bs.select', function() {
+                        systemUpdate(systemItem, $(this).val().join(','));
+                    });
+                    break;
+                case 'switch':
+                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // 发送Bark测试消息
+        @can('admin.test.notify')
+        function sendTestNotification(channel) {
+            $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+                } else {
+                    swal.fire({title: ret.message, icon: 'error'});
+                }
+            });
+        }
+        @endcan
+
+        // 生成网站安全码
+        function makeWebsiteSecurityCode() {
+            $.get('{{route('createStr')}}', function(ret) {
+                $('#website_security_code').val(ret);
+            });
+        }
+
+        @can('admin.test.epay')
+        function epayInfo() {
+            $.get('{{route('admin.test.epay')}}', function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({
+                        title: '易支付信息(仅供参考)',
+                        html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
+                            '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
+                            '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+                        icon: 'info',
+                    });
+                } else {
+                    swal.fire({title: ret.message, icon: 'error'});
+                }
+            });
+        }
         @endcan
     </script>
 @endsection

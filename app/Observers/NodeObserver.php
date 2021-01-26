@@ -22,7 +22,7 @@ class NodeObserver
             Log::warning('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 
-        if ($node->is_ddns === 0 && $node->server && sysConfig('ddns_mode')) {
+        if ($node->is_ddns === '0' && $node->server && sysConfig('ddns_mode')) {
             if ($node->ip) {
                 DDNS::store($node->server, $node->ip);
             }
@@ -34,33 +34,33 @@ class NodeObserver
 
     public function updated(Node $node): void
     {
-        if ($node->is_ddns === 0 && sysConfig('ddns_mode')) {
+        if ($node->is_ddns === '0' && sysConfig('ddns_mode')) {
             $changes = $node->getChanges();
-            if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) {
-                if (Arr::exists($changes, 'server')) {
-                    DDNS::destroy($node->getOriginal('server'));
-                    if ($node->ip) {
+            if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) { // DDNS操作
+                if (Arr::exists($changes, 'server')) { // 域名变动
+                    DDNS::destroy($node->getOriginal('server')); // 删除原域名
+                    if ($node->ip) { // 添加IPV4至新域名
                         DDNS::store($node->server, $node->ip);
                     }
-                    if ($node->ipv6) {
+                    if ($node->ipv6) { // 添加IPV6至新域名
                         DDNS::store($node->server, $node->ipv6, 'AAAA');
                     }
                 } else {
-                    if (Arr::exists($changes, 'ip')) {
-                        if ($node->ip && $node->getOriginal('ip')) {
+                    if (Arr::exists($changes, 'ip')) { // 域名未改动，IP变动
+                        if ($node->ip && $node->getOriginal('ip')) { // IPV4变动
                             DDNS::update($node->server, $node->ip);
-                        } elseif ($node->ip) {
+                        } elseif ($node->ip) { // 新添加IPV4
                             DDNS::store($node->server, $node->ip);
-                        } else {
+                        } else { // 空值 删除原IPV4
                             DDNS::destroy($node->server, 'A');
                         }
                     }
-                    if (Arr::exists($changes, 'ipv6')) {
-                        if ($node->ipv6 && $node->getOriginal('ipv6')) {
+                    if (Arr::exists($changes, 'ipv6')) { // 域名未改动，IPV6变动
+                        if ($node->ipv6 && $node->getOriginal('ipv6')) { // IPV6变动
                             DDNS::update($node->server, $node->ipv6, 'AAAA');
-                        } elseif ($node->ipv6) {
+                        } elseif ($node->ipv6) { // 新添加IPV6
                             DDNS::store($node->server, $node->ipv6, 'AAAA');
-                        } else {
+                        } else { // 空值 删除原IPV6
                             DDNS::destroy($node->server, 'AAAA');
                         }
                     }
@@ -68,7 +68,7 @@ class NodeObserver
             }
         }
 
-        if ($node->type === 4) {
+        if ($node->type === '4') {
             reloadNode::dispatch($node);
         }
     }

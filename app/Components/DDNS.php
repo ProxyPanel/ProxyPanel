@@ -18,11 +18,14 @@ class DDNS
      *
      * @param  string  $domain  域名
      * @param  string|null  $type
-     * @return false|int
      */
     public static function destroy(string $domain, $type = null)
     {
-        return self::dnsProvider($domain)->destroy($type);
+        if (self::dnsProvider($domain)->destroy($type)) {
+            Log::info("【DDNS】删除：{$domain} 成功");
+        } else {
+            Log::info("【DDNS】删除：{$domain} 失败，请手动删除！");
+        }
     }
 
     private static function dnsProvider($domain)
@@ -37,7 +40,7 @@ class DDNS
             case 'cloudflare':
                 return new CloudFlare($domain);
             default:
-                Log::error('未知渠道：'.sysConfig('ddns_mode'));
+                Log::error('【DDNS】未知渠道：'.sysConfig('ddns_mode'));
 
                 return false;
         }
@@ -49,11 +52,14 @@ class DDNS
      * @param  string  $domain  域名
      * @param  string  $ip  ip地址
      * @param  string  $type  记录类型,默认为 A
-     * @return array|false|mixed
      */
     public static function update(string $domain, string $ip, string $type = 'A')
     {
-        return self::dnsProvider($domain)->update($ip, $type);
+        if (self::dnsProvider($domain)->update($ip, $type)) {
+            Log::info("【DDNS】更新：{$ip} => {$domain} 类型：{$type} 成功");
+        } else {
+            Log::info("【DDNS】更新：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
+        }
     }
 
     /**
@@ -62,10 +68,13 @@ class DDNS
      * @param  string  $domain  域名
      * @param  string  $ip  ip地址
      * @param  string  $type  记录类型,默认为 A
-     * @return array|false|mixed
      */
     public static function store(string $domain, string $ip, string $type = 'A')
     {
-        return self::dnsProvider($domain)->store($ip, $type);
+        if (self::dnsProvider($domain)->store($ip, $type)) {
+            Log::info("【DDNS】添加：{$ip} => {$domain} 类型：{$type} 成功");
+        } else {
+            Log::info("【DDNS】添加：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
+        }
     }
 }

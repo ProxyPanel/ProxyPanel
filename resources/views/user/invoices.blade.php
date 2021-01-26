@@ -41,11 +41,13 @@
                             <td>{!! $order->status_label !!}</td>
                             <td>
                                 <div class="btn-group">
-                                    @if($order->status === 0 && $order->payment)
-                                        @if($order->payment->qr_code)
-                                            <a href="{{route('orderDetail', $order->payment->trade_no)}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
-                                        @elseif($order->payment->url)
-                                            <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
+                                    @if($order->status === 0 && $order->pay_way !== 1)
+                                        @if ($order->payment)
+                                            @if($order->payment->qr_code)
+                                                <a href="{{route('orderDetail', $order->payment->trade_no)}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
+                                            @elseif($order->payment->url)
+                                                <a href="{{$order->payment->url}}" target="_blank" class="btn btn-primary">{{trans('user.pay')}}</a>
+                                            @endif
                                         @endif
                                         <button onclick="closeOrder('{{route('closeOrder', $order)}}')" class="btn btn-danger">{{trans('common.cancel')}}</button>
                                     @elseif ($order->status === 1)
