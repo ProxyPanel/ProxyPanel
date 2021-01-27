@@ -246,25 +246,6 @@ class Helpers
     }
 
     /**
-     * 添加用户封禁日志.
-     *
-     * @param  int  $userId  用户ID
-     * @param  int  $time  封禁时长，单位分钟
-     * @param  string  $description  封禁理由
-     *
-     * @return bool
-     */
-    public static function addUserBanLog(int $userId, int $time, string $description)
-    {
-        $log = new UserBanedLog();
-        $log->user_id = $userId;
-        $log->time = $time;
-        $log->description = $description;
-
-        return $log->save();
-    }
-
-    /**
      * 推销信息推送
      *
      * @param  int  $type  渠道类型

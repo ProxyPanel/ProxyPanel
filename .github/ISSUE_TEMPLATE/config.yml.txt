@@ -1,0 +1,7 @@
+contact_links:
+  - name: Telegram Channel
+    url: https://t.me/proxypanel
+    about: Telegram Channel
+  - name: Telegram Group
+    url: https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA
+    about: Telegram Group
