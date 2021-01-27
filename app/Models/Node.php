@@ -81,8 +81,9 @@ class Node extends Model
     {
         return User::activeUser()
             ->where('level', '>=', $this->attributes['level'])
-            ->whereNull('user_group_id')
-            ->orwhereIn('user_group_id', $this->userGroups->pluck('id')->toArray())
+            ->where(function ($query) {
+                $query->whereIn('user_group_id', $this->userGroups->pluck('id'))->orWhereNull('user_group_id');
+            })
             ->get();
     }
 

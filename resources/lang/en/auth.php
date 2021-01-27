@@ -9,6 +9,7 @@ return [
             'disable'   => 'The account activation subsystem has been disabled, you can login directly!',
             'throttle'  => 'Anti-bots Shield Active! Please do not send multiple activate from at short amount of times! If you have any questions, please contact :email',
         ],
+        'sent'      => 'Activation link has been sent to your email, please check the mailbox (the email may be in the Trash)',
         'promotion' => ['0' => 'Account has not been activated，Please', '1' => 'before login！'],
     ],
     'aup'             => 'Acceptable Use Policy',

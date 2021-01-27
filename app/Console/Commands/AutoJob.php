@@ -167,8 +167,9 @@ class AutoJob extends Command
 
         // 被封禁 / 过期xx天 的账号自动释放端口
         User::where('port', '<>', 0)
-            ->whereStatus(-1)
-            ->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')))
+            ->where(function ($query) {
+                $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')));
+            })
             ->update(['port' => 0]);
     }
 }

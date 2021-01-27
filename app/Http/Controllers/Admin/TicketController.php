@@ -20,11 +20,13 @@ class TicketController extends Controller
     {
         $email = $request->input('email');
 
-        $query = Ticket::whereAdminId(Auth::id())->orwhere('admin_id');
+        $query = Ticket::where(function ($query) {
+            $query->whereAdminId(Auth::id())->orwhere('admin_id');
+        });
 
         if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) {
-                $q->where('email', 'like', '%'.$email.'%');
+            $query->whereHas('user', function ($query) use ($email) {
+                $query->where('email', 'like', '%'.$email.'%');
             });
         }
 
