@@ -67,9 +67,7 @@ class NodeStatusDetection extends Command
         }
 
         if (isset($data)) {
-            Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
-                return $query->role('Super Admin');
-            })->get(), new NodeOffline($data));
+            Notification::send(User::find(1), new NodeOffline($data));
         }
     }
 
@@ -134,9 +132,7 @@ class NodeStatusDetection extends Command
         }
 
         if ($sendText) {//只有在出现阻断线路时，才会发出警报
-            Notification::send(User::permission('admin.node.edit,update')->orWhere(function ($query) {
-                return $query->role('Super Admin');
-            })->get(), new NodeBlocked($message.$additionalMessage));
+            Notification::send(User::find(1), new NodeBlocked($message.$additionalMessage));
 
             Log::info("阻断日志: \r\n".$message.$additionalMessage);
         }

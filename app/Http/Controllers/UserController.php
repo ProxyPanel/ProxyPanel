@@ -284,10 +284,7 @@ class UserController extends Controller
 
         if ($ticket = $user->tickets()->create(compact('title', 'content'))) {
             // 通知相关管理员
-            Notification::send(User::permission('admin.ticket.edit,update')->orWhere(function ($query) {
-                return $query->role('Super Admin');
-            })->get(),
-                new TicketCreated($ticket->title, $ticket->content, route('admin.ticket.edit', $ticket)));
+            Notification::send(User::find(1), new TicketCreated($ticket->title, $ticket->content, route('admin.ticket.edit', $ticket)));
 
             return Response::json(['status' => 'success', 'message' => trans('common.submit_item', ['attribute' => trans('common.success')])]);
         }
@@ -321,10 +318,7 @@ class UserController extends Controller
                 $ticket->save();
 
                 // 通知相关管理员
-                Notification::send(User::permission('admin.ticket.edit,update')->orWhere(function ($query) {
-                    return $query->role('Super Admin');
-                })->get(),
-                    new TicketReplied($ticket->title, $content, route('admin.ticket.edit', $ticket)));
+                Notification::send(User::find(1), new TicketReplied($ticket->title, $content, route('admin.ticket.edit', $ticket)));
 
                 return Response::json(['status' => 'success', 'message' => trans('user.ticket.reply').trans('common.success')]);
             }
