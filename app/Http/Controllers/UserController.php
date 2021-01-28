@@ -197,7 +197,7 @@ class UserController extends Controller
         // 余额充值商品，只取10个
         $renewOrder = Order::userActivePlan($user->id)->first();
         $renewPrice = $renewOrder->goods ?? 0;
-        // 有重置日时按照重置日为标准，否者就以过期日为标准
+        // 有重置日时按照重置日为标准，否则就以过期日为标准
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.services', [
@@ -337,7 +337,7 @@ class UserController extends Controller
     {
         $id = $request->input('id');
 
-        if (Ticket::uid()->whereId($id)->close()) {
+        if (Ticket::uid()->whereId($id)->firstOrFail()->close()) {
             return Response::json(['status' => 'success', 'message' => trans('common.close_item', ['attribute' => trans('common.success')])]);
         }
 
@@ -438,7 +438,7 @@ class UserController extends Controller
     public function buy(Goods $good)
     {
         $user = auth()->user();
-        // 有重置日时按照重置日为标准，否者就以过期日为标准
+        // 有重置日时按照重置日为标准，否则就以过期日为标准
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.buy', [

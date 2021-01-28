@@ -54,17 +54,7 @@ class SystemController extends Controller
 
     private function getCaptcha()
     {
-        if (sysConfig('geetest_id') && sysConfig('geetest_key')) {
-            $captcha[] = '2';
-        }
-        if (sysConfig('google_captcha_secret') && sysConfig('google_captcha_sitekey')) {
-            $captcha[] = '3';
-        }
-        if (sysConfig('hcaptcha_secret') && sysConfig('hcaptcha_sitekey')) {
-            $captcha[] = '4';
-        }
-
-        return $captcha ?? [];
+        return sysConfig('captcha_secret') && sysConfig('captcha_key');
     }
 
     public function setExtend(Request $request): RedirectResponse  // 设置系统扩展信息，例如客服、统计代码
@@ -111,6 +101,10 @@ class SystemController extends Controller
         // 支付设置判断
         if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true) && ! in_array($value, $this->getPayment(), true)) {
             return Response::json(['status' => 'fail', 'message' => '请先完善该支付渠道的必要参数！']);
+        }
+
+        if ($value > 1 && $name === 'is_captcha' && ! $this->getCaptcha()) {
+            return Response::json(['status' => 'fail', 'message' => '请先完善验证码的必要参数！']);
         }
 
         // 演示环境禁止修改特定配置项

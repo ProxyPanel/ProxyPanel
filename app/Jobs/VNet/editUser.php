@@ -41,7 +41,7 @@ class editUser implements ShouldQueue
             $host = ($node->server ?: $node->ip).':'.$node->push_port;
             $secret = $node->auth->secret;
 
-            // 如果用户已存在节点内，则执行修改；否者为添加
+            // 如果用户已存在节点内，则执行修改；否则为添加
             $list = $this->list($host, $secret);
             if ($list && in_array($this->data['uid'], $list)) {
                 $this->send($host, $secret);

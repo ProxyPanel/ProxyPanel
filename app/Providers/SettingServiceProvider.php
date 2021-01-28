@@ -15,14 +15,12 @@ class SettingServiceProvider extends ServiceProvider
     public function boot()
     {
         $toApp = collect([
-            'geetest_id'             => 'geetest.id',
-            'geetest_key'            => 'geetest.key',
-            'google_captcha_secret'  => 'NoCaptcha.secret',
-            'google_captcha_sitekey' => 'NoCaptcha.sitekey',
-            'hcaptcha_secret'        => 'HCaptcha.secret',
-            'hcaptcha_sitekey'       => 'HCaptcha.sitekey',
+            2 => ['geetest.id', 'geetest.key'],
+            3 => ['NoCaptcha.secret', 'NoCaptcha.sitekey'],
+            4 => ['HCaptcha.secret', 'HCaptcha.sitekey'],
         ]);
-        $notifications = collect([
+
+        $notifications = [
             'account_expire_notification',
             'data_anomaly_notification',
             'data_exhaust_notification',
@@ -34,14 +32,14 @@ class SettingServiceProvider extends ServiceProvider
             'ticket_closed_notification',
             'ticket_created_notification',
             'ticket_replied_notification',
-        ]);
+        ];
         $payments = ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'];
         if (! Cache::has('settings')) {
             Cache::forever('settings', Config::whereNotNull('value')->get());
         }
         $settings = Cache::get('settings');
         $modified = $settings
-            ->whereNotIn('name', $toApp->keys()->merge($notifications)) // 设置一般系统选项
+            ->whereNotIn('name', $notifications) // 设置一般系统选项
             ->pluck('value', 'name')
             ->merge($settings->whereIn('name', $notifications)->pluck('value', 'name')->map(function ($item) {
                 return self::setChannel(json_decode($item, true)); // 设置通知相关选项
@@ -51,9 +49,12 @@ class SettingServiceProvider extends ServiceProvider
             ->toArray();
 
         config(['settings' => $modified]); // 设置系统参数
-        $settings->whereIn('name', $toApp->keys())->pluck('value', 'name')->each(function ($item, $key) use ($toApp) {
-            config([$toApp[$key] => $item]); // 设置PHP软件包相关配置
-        });
+
+        if (config('settings.is_captcha') > 1) {
+            config([$toApp[config('settings.is_captcha')][0] => config('settings.captcha_secret')]);
+            config([$toApp[config('settings.is_captcha')][1] => config('settings.captcha_key')]);
+        }
+
         collect([
             'website_name' => 'app.name',
             'website_url'  => 'app.url',

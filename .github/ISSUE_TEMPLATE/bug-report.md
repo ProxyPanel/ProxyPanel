@@ -3,7 +3,7 @@ name: 错误报告 - Bug Report
 about: '创建错误报告以帮助我们改进 '
 title: "[BUG]"
 labels: ''
-assignees: ZBrettonYe
+assignees: ''
 
 ---
 

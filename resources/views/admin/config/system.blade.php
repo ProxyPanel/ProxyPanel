@@ -469,7 +469,7 @@
                                             <label class="col-md-3 col-form-label" for="subscribe_domain">节点订阅地址</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="url" class="form-control" id="subscribe_domain" value="{{$subscribe_domain}}"/>
+                                                    <input type="url" class="form-control" id="subscribe_domain" value="{{$subscribe_domain}}" placeholder="默认为 {{$website_url}}"/>
                                                     <span class="input-group-append">
                                                         <button class="btn btn-primary" type="button" onclick="update('subscribe_domain')">{{trans('common.update')}}</button>
                                                     </span>
@@ -495,16 +495,6 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="mix_subscribe">混合订阅</label>
-                                            <div class="col-md-9">
-                                                <input type="checkbox" id="mix_subscribe" data-plugin="switchery" @if($mix_subscribe) checked
-                                                       @endif onchange="updateFromOther('switch','mix_subscribe')">
-                                                <span class="text-help">启用后，订阅信息中将包含V2Ray节点信息（仅支持Shadowrocket、Quantumult、v2rayN） </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
                                             <label class="col-md-3 col-form-label" for="rand_subscribe">随机订阅</label>
                                             <div class="col-md-9">
                                                 <input type="checkbox" id="rand_subscribe" data-plugin="switchery" @if($rand_subscribe) checked
@@ -525,7 +515,7 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="web_api_url">授权域名</label>
+                                            <label class="col-md-3 col-form-label" for="web_api_url">授权/后端访问域名</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="web_api_url" value="{{$web_api_url}}"/>
@@ -533,7 +523,7 @@
                                                         <button class="btn btn-primary" type="button" onclick="update('web_api_url')">{{trans('common.update')}}</button>
                                                     </span>
                                                 </div>
-                                                <span class="text-help">用于 VNet后端授权，此域名需要解析A记录到面板，例：https://demo.proxypanel.ml</span>
+                                                <span class="text-help">例：https://demo.proxypanel.ml</span>
                                             </div>
                                         </div>
                                     </div>
@@ -626,9 +616,10 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <hr class="col-lg-12">
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="is_captcha">验证码</label>
+                                            <label class="col-md-3 col-form-label" for="is_captcha">验证码模式</label>
                                             <div class="col-md-9">
                                                 <select id="is_captcha" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                         onchange="updateFromOther('select','is_captcha')">
@@ -638,86 +629,32 @@
                                                     <option value="3">Google reCaptcha</option>
                                                     <option value="4">hCaptcha</option>
                                                 </select>
-                                                <span class="text-help"> 启用后登录、注册需要输入验证码 </span>
+                                                <span class="text-help"> 启用后 登录/注册 需要进行验证码认证 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="geetest_id">极验ID</label>
+                                            <label class="col-md-3 col-form-label" for="captcha_key">验证码 Key</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" id="geetest_id" value="{{$geetest_id}}"/>
+                                                    <input type="text" class="form-control" id="captcha_key" value="{{$captcha_key}}"/>
                                                     <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('geetest_id')">{{trans('common.update')}}</button>
+                                                        <button class="btn btn-primary" type="button" onclick="update('captcha_key')">{{trans('common.update')}}</button>
                                                     </span>
                                                 </div>
-                                                <span class="text-help">本功能需要<a href="https://auth.geetest.com/login/" target="_blank">极验后台</a>申请权限及应用</span>
+                                                <span class="text-help">浏览<a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">设置指南</a>来设置</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
-                                            <label class="col-md-3 col-form-label" for="geetest_key">极验Key</label>
+                                            <label class="col-md-3 col-form-label" for="captcha_secret">验证码 Secret/ID</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" id="geetest_key" value="{{$geetest_key}}"/>
+                                                    <input type="text" class="form-control" id="captcha_secret" value="{{$captcha_secret}}"/>
                                                     <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('geetest_key')">{{trans('common.update')}}</button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-md-3 control-label" for="google_captcha_secret">密钥</label>
-                                            <div class="col-md-7">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" id="google_captcha_secret" value="{{$google_captcha_secret}}"/>
-                                                    <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('google_captcha_secret')">{{trans('common.update')}}</button>
-                                                    </span>
-                                                </div>
-                                                <span class="text-help">本功能需要<a href="https://www.google.com/recaptcha/admin" target="_blank">GooglereCAPTCHA后台</a>申请权限及应用 （申请需科学上网，日常验证不用）</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-md-3 col-form-label" for="google_captcha_sitekey">网站密钥</label>
-                                            <div class="col-md-7">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" id="google_captcha_sitekey" value="{{$google_captcha_sitekey}}"/>
-                                                    <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('google_captcha_sitekey')">{{trans('common.update')}}</button>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-md-3 control-label" for="hcaptcha_secret">hCaptcha Secret密钥</label>
-                                            <div class="col-md-7">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" id="hcaptcha_secret" value="{{$hcaptcha_secret}}"/>
-                                                    <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('hcaptcha_secret')">{{trans('common.update')}}</button>
-                                                    </span>
-                                                </div>
-                                                <span class="text-help">本功能需要<a href="https://hCaptcha.com/?r=2d46d3aa7a4e" target="_blank">hCaptcha后台</a>申请权限及应用</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-lg-6">
-                                        <div class="row">
-                                            <label class="col-md-3 col-form-label" for="hcaptcha_sitekey">hCaptcha Site Key网站密钥</label>
-                                            <div class="col-md-7">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control" id="hcaptcha_sitekey" value="{{$hcaptcha_sitekey}}"/>
-                                                    <span class="input-group-append">
-                                                        <button class="btn btn-primary" type="button" onclick="update('hcaptcha_sitekey')">{{trans('common.update')}}</button>
+                                                        <button class="btn btn-primary" type="button" onclick="update('captcha_secret')">{{trans('common.update')}}</button>
                                                     </span>
                                                 </div>
                                             </div>
@@ -1374,7 +1311,8 @@
                                             <label class="col-md-3 col-form-label" for="website_callback_url">通用支付回调地址</label>
                                             <div class="col-md-7">
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" id="website_callback_url" value="{{$website_callback_url}}"/>
+                                                    <input type="text" class="form-control" id="website_callback_url" value="{{$website_callback_url}}"
+                                                           placeholder="默认为 {{$website_url}}"/>
                                                     <span class="input-group-append">
                                                             <button class="btn btn-primary" type="button"
                                                                     onclick="update('website_callback_url')">{{trans('common.update')}}</button>
@@ -1807,7 +1745,11 @@
             disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
             disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
             disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
+
+            @if (!$captcha)
             disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
+            @endif
+
         });
 
         function disablePayment(op) {
@@ -1821,10 +1763,7 @@
 
         function disableCaptcha(op) {
             for (let i = 2; i < op.length; i++) {
-                @json($captcha).
-                includes(op[i].value)
-                    ? op[i].disabled = false
-                    : op[i].disabled = true;
+                op[i].disabled = true;
             }
         }
 
