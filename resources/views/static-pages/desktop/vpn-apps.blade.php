@@ -26,26 +26,26 @@
 
                 <div class="platform-chooser">
                     <div class="platform-chooser__inner">
-                        <a class="platform-chooser__link active"   href="#android">
+                        <a class="platform-chooser__link android"   href="#android">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/android-platform.png') }}" alt="Android">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/android-platform-active.png') }}" alt="Android">
                             <span>Android</span>
                         </a>
-                        <a class="platform-chooser__link"  href="#windows">
+                        <a class="platform-chooser__link win"  href="#windows">
                             <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="Windows">
                             <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="Windows">
                             <span>Windows</span>
                         </a>
                       
-                        <a class="platform-chooser__link"  href="#mac">
-                            <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="mac">
-                            <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="mac">
+                        <a class="platform-chooser__link mac"  href="#mac">
+                            <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/apple-platform.png') }}" alt="mac">
+                            <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/apple-platform-active.png') }}" alt="mac">
                             <span>MAC</span>
                         </a>
                       
-                         <a class="platform-chooser__link"  href="#ios">
-                            <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform.png') }}" alt="ios">
-                            <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/windows-platform-active.png') }}" alt="ios">
+                         <a class="platform-chooser__link ios"  href="#ios">
+                            <img class="base" src="{{ asset('assets/static/desktop/images/vpn-apps/ios-platform.png') }}" alt="ios">
+                            <img class="active" src="{{ asset('assets/static/desktop/images/vpn-apps/ios-platform-active.png') }}" alt="ios">
                             <span>IOS</span>
                         </a>
                         
@@ -73,7 +73,7 @@
                             </div>
                          
 
-                            <div class="app-download" style="display: none" id="windows">
+                            <div class="app-download app-download--win" style="display: none" id="windows">
                                 <div class="app-download__left">
                                     <h2>{!! __('static.dsktp_vpn_win_title') !!}</h2>
                                     <a href="#" class="app-download__btn" aria-label="Donwload for Windows"></a>
@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                             
-                             <div class="app-download"   style="display: none" id="mac">
+                             <div class="app-download app-download--mac"   style="display: none" id="mac">
                                 <div class="app-download__left">
                                     <h2>{!!  __('static.dsktp_vpn_mac_title') !!}</h2>
                                     <div class="app-download__btn-group">
@@ -155,32 +155,32 @@
 
     <script src="{{ asset('assets/static/desktop/js/app.js') }}"></script>
     
-     <script>
+      <script>
         $(function() {
-            function getMobileOperatingSystem() {
-                var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-                if (/android/i.test(userAgent)) {
-                    return "Android";
-                }
-                
-                  if (/windows/i.test(userAgent)) {
-                    return "windows";
-                }
-                // iOS detection from: http://stackoverflow.com/a/9039885/177710
-                if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                    return "iOS";
-                }
-                return "unknown";
+            var OSName="Unknown OS";
+            if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+            if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+            if (OSName=="Windows") {
+                $('.platform-chooser__link.win').addClass('active');
+                $('.app-download--win').show();
+            } else if(OSName="MacOS") {
+                $('.platform-chooser__link.mac').addClass('active');
+                $('.app-download--mac').show();
+            } else {
+                $('.platform-chooser__link.win').addClass('active');
+                $('.app-download--win').show();
             }
-            let mobileOperation = getMobileOperatingSystem();
-            if (mobileOperation === "Android") {
-                $("#android").show();
-            } else if (mobileOperation === "iOS") {
-                $("#ios").show();
-            } else if (mobileOperation === "windows") {
-                $("#windows").show();
-            }
+            $(document).on('click', '.platform-chooser__link', function() {
+                if ($(this).hasClass('win')) {
+                    $('.app-download').hide();
+                    $('.app-download--win').show();
+                } else if($(this).hasClass('mac')) {
+                    $('.app-download').hide();
+                    $('.app-download--mac').show();
+                }
+            });
         });
     </script>
+
 
 @endsection
