@@ -32,14 +32,14 @@ class DataAnomaly extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(trans('notification.data_anomaly'))
-            ->line(trans('notification.data_anomaly', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
+            ->line(trans('notification.data_anomaly_content', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
     }
 
     public function toCustom($notifiable)
     {
         return [
             'title'   => trans('notification.data_anomaly'),
-            'content' => trans('notification.data_anomaly', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]),
+            'content' => trans('notification.data_anomaly_content', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]),
         ];
     }
 }

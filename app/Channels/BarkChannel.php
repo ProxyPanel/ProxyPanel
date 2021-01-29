@@ -11,7 +11,12 @@ class BarkChannel
 {
     public function send($notifiable, Notification $notification)
     {
-        $message = $notification->toCustom($notifiable);
+        if (method_exists($notification, 'toBark')) {
+            $message = $notification->toBark($notifiable);
+        } else {
+            $message = $notification->toCustom($notifiable);
+        }
+
         $response = Http::timeout(15)->get('https://api.day.app/'.sysConfig('bark_key').'/'.$message['title'].'/'.$message['content']);
 
         if ($response->ok()) {

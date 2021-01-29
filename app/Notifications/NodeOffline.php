@@ -11,15 +11,11 @@ class NodeOffline extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $content;
+    private $data;
 
-    public function __construct($nodes)
+    public function __construct($data)
     {
-        $content = '### '.trans('notification.node_offline_content')."\r\n";
-        foreach ($nodes as $node) {
-            $content .= "- {$node['name']} [{$node['ip']}]\r\n";
-        }
-        $this->content = $content;
+        $this->data = $data;
     }
 
     public function via($notifiable)
@@ -31,14 +27,42 @@ class NodeOffline extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(trans('notification.node_offline'))
-            ->markdown('mail.node.offline', ['content' => $this->content]);
+            ->markdown('mail.simpleMarkdown', ['title' => trans('notification.node_offline_content'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
+    }
+
+    private function markdownMessage()
+    {
+        $content = '';
+        foreach ($this->data as $node) {
+            $content .= "- {$node['name']} {$node['host']}\r\n";
+        }
+
+        return $content;
     }
 
     public function toCustom($notifiable)
     {
         return [
             'title'   => trans('notification.node_offline'),
-            'content' => $this->content,
+            'content' => $this->markdownMessage(),
         ];
+    }
+
+    public function toBark($notifiable)
+    {
+        return [
+            'title'   => trans('notification.node_offline'),
+            'content' => $this->stringMessage(),
+        ];
+    }
+
+    private function stringMessage()
+    {
+        $content = '';
+        foreach ($this->data as $node) {
+            $content .= "{$node['name']} {$node['host']}| ";
+        }
+
+        return $content;
     }
 }

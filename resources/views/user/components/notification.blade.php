@@ -17,7 +17,7 @@
             <div class="list-group">
                 <div data-role="container">
                     <div data-role="content">
-                        @foreach(auth()->user()->unreadNotifications as $notification)
+                        @foreach(tap(auth()->user()->unreadNotifications)->markAsRead() as $notification)
                             @include('user.components.notifications.'.Str::camel(class_basename($notification->type)))
                         @endforeach
                     </div>

@@ -62,7 +62,7 @@ class NodeStatusDetection extends Command
             }
             $data[] = [
                 'name' => $node->name,
-                'ip'   => $node->ip,
+                'host' => $node->host,
             ];
         }
 
@@ -74,11 +74,8 @@ class NodeStatusDetection extends Command
     private function checkNodeNetwork(): void
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
-        $sendText = false;
-        $message = "| 线路 | 协议 | 状态 |\r\n| ------ | ------ | ------ |\r\n";
-        $additionalMessage = '';
+        $data = [];
         foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node) {
-            $info = false;
             if ($node->detection_type === 0) {
                 continue;
             }
@@ -94,23 +91,18 @@ class NodeStatusDetection extends Command
             if ($node->detection_type !== 1) {
                 $icmpCheck = (new NetworkDetection)->networkCheck($node->ip, true);
                 if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
-                    $message .= '| '.$node->name.' | ICMP | '.$icmpCheck." |\r\n";
-                    $sendText = true;
-                    $info = true;
+                    $data[$node->id]['icmp'] = $icmpCheck;
                 }
             }
             if ($node->detection_type !== 2) {
                 $tcpCheck = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22);
                 if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
-                    $message .= '| '.$node->name.' | TCP | '.$tcpCheck." |\r\n";
-                    $sendText = true;
-                    $info = true;
+                    $data[$node->id]['tcp'] = $tcpCheck;
                 }
             }
-            sleep(5);
 
             // 节点检测次数
-            if ($info && $detectionCheckTimes) {
+            if ($data[$node->id] && $detectionCheckTimes) {
                 // 已通知次数
                 $cacheKey = 'detection_check_times'.$node->id;
                 if (Cache::has($cacheKey)) {
@@ -126,15 +118,21 @@ class NodeStatusDetection extends Command
                 } else {
                     Cache::forget($cacheKey);
                     $node->update(['status' => 0]);
-                    $additionalMessage .= "\r\n节点【{$node->name}】自动进入维护状态\r\n";
+                    $data[$node->id]['message'] = '自动进入维护状态';
                 }
             }
+
+            if ($data[$node->id]) {
+                $data[$node->id]['name'] = $node->name;
+            }
+
+            sleep(5);
         }
 
-        if ($sendText) {//只有在出现阻断线路时，才会发出警报
-            Notification::send(User::find(1), new NodeBlocked($message.$additionalMessage));
+        if ($data) { //只有在出现阻断线路时，才会发出警报
+            Notification::send(User::find(1), new NodeBlocked($data));
 
-            Log::info("阻断日志: \r\n".$message.$additionalMessage);
+            Log::info("节点状态日志: \r\n".var_export($data, true));
         }
 
         Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700); // 随机生成下次检测时间

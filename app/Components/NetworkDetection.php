@@ -145,7 +145,7 @@ class NetworkDetection
                 return '国内阻断'; // 被墙
             }
 
-            return '机器宕机'; // 服务器宕机
+            return '断连'; // 服务器宕机
         }
 
         return false;
@@ -182,7 +182,7 @@ class NetworkDetection
                 return '国内阻断'; // 被墙
             }
 
-            return '机器宕机'; // 服务器宕机
+            return '断连'; // 服务器宕机
         }
 
         return false;
@@ -221,7 +221,7 @@ class NetworkDetection
                 return '国内阻断'; // 被墙
             }
 
-            return '机器宕机'; // 服务器宕机
+            return '断连'; // 服务器宕机
         }
 
         return false;
@@ -263,7 +263,7 @@ class NetworkDetection
                 return '国内阻断'; // 被墙
             }
 
-            return '机器宕机'; // 服务器宕机
+            return '断连'; // 服务器宕机
         }
 
         return false;

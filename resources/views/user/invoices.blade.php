@@ -80,7 +80,7 @@
       function closePlan() {
         swal.fire({
           title: '{{trans('user.invoice.active_prepaid_question')}}',
-          html: '{{trans('user.invoice.active_prepaid_tips')}}',
+          html: @json(trans('user.invoice.active_prepaid_tips')),
           icon: 'warning',
           showCancelButton: true,
           cancelButtonText: '{{trans('common.close')}}',

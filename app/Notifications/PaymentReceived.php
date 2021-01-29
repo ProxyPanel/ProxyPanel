@@ -28,6 +28,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject(__('Payment Received'))
             ->line(__('Payment for #:sn has been received! Total amount: ¥:amount.', ['sn' => $this->sn, 'amount' => $this->amount]))
             ->action(__('Invoice Detail'), route('invoiceInfo', $this->sn));
     }

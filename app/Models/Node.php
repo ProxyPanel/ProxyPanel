@@ -107,7 +107,7 @@ class Node extends Model
         $config = [
             'id'    => $this->id,
             'name'  => $this->name,
-            'host'  => $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip),
+            'host'  => $this->host,
             'group' => sysConfig('website_name'),
         ];
         switch ($this->type) {
@@ -185,5 +185,10 @@ class Node extends Model
             3 => 'Trojan',
             4 => 'VNet',
         ][$this->attributes['type']] ?? 'UnKnown';
+    }
+
+    public function getHostAttribute(): string
+    {
+        return $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip);
     }
 }
