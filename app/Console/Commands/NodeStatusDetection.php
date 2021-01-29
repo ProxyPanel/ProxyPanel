@@ -102,7 +102,7 @@ class NodeStatusDetection extends Command
             }
 
             // 节点检测次数
-            if ($data[$node->id] && $detectionCheckTimes) {
+            if (isset($data[$node->id]) && $detectionCheckTimes) {
                 // 已通知次数
                 $cacheKey = 'detection_check_times'.$node->id;
                 if (Cache::has($cacheKey)) {
@@ -122,7 +122,7 @@ class NodeStatusDetection extends Command
                 }
             }
 
-            if ($data[$node->id]) {
+            if (isset($data[$node->id])) {
                 $data[$node->id]['name'] = $node->name;
             }
 
