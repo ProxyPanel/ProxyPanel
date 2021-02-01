@@ -58,14 +58,15 @@ class IP
 
         if ($ipInfo) {
             $location = explode('|', $ipInfo['region']);
-
-            return [
-                'country' => $location[0] ?: '',
-                'province' => $location[2] ?: '',
-                'city' => $location[3] ?: '',
-                'isp' => $location[4] ?: '',
-                'area' => $location[1] ?: '',
-            ];
+            if ($location) {
+                return [
+                    'country' => $location[0] ?: '',
+                    'province' => $location[2] ?: '',
+                    'city' => $location[3] ?: '',
+                    'isp' => $location[4] ?: '',
+                    'area' => $location[1] ?: '',
+                ];
+            }
         }
 
         return $ipInfo;

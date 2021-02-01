@@ -24,7 +24,7 @@ class URLSchemes
     // TODO: More study required about id usage https://shadowsocks.org/en/wiki/SIP008-Online-Configuration-Delivery.html
     public static function buildShadowsocksSIP008($server)
     {
-        $config = [
+        return [
             'id' => $server['id'],
             'remark' => $server['name'],
             'server' => $server['host'],
@@ -32,8 +32,6 @@ class URLSchemes
             'password' => $server['passwd'],
             'method' => $server['method'],
         ];
-
-        return $config;
     }
 
     public static function buildVmess($server)

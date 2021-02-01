@@ -20,11 +20,11 @@ class Namesilo
         $domainInfo = $this->analysisDomain();
         if ($domainInfo) {
             return $this->send('dnsAddRecord', [
-                'domain' => $domainInfo[0],
-                'rrtype' => $type,
-                'rrhost' => $domainInfo[1],
+                'domain'  => $domainInfo[0],
+                'rrtype'  => $type,
+                'rrhost'  => $domainInfo[1],
                 'rrvalue' => $ip,
-                'rrttl' => 3600,
+                'rrttl'   => 3600,
             ]);
         }
 
@@ -46,7 +46,7 @@ class Namesilo
             }
         }
 
-        return false;
+        return [];
     }
 
     public function domainList()
@@ -63,8 +63,8 @@ class Namesilo
     {
         $params = [
             'version' => 1,
-            'type' => 'xml',
-            'key' => sysConfig('ddns_key'),
+            'type'    => 'xml',
+            'key'     => sysConfig('ddns_key'),
         ];
         $query = array_merge($params, $data);
 
@@ -74,7 +74,6 @@ class Namesilo
         if ($result && $result['reply']['code'] === '300' && $result['reply']['detail'] === 'success') {
             return $result['reply'];
         }
-
         Log::error('[Namesilo API] - ['.$action.'] 请求失败：'.var_export($result, true));
 
         return false;
@@ -85,13 +84,18 @@ class Namesilo
         $recordId = $this->getRecordId($type);
         $domainInfo = $this->analysisDomain();
 
-        return $this->send('dnsUpdateRecord', [
-            'domain' => $domainInfo[0],
-            'rrid' => $recordId[0],
-            'rrhost' => $domainInfo[1],
-            'rrvalue' => $ip,
-            'rrttl' => 3600,
-        ]);
+        if ($domainInfo && $recordId) {
+            return $this->send('dnsUpdateRecord', [
+                'domain'  => $domainInfo[0],
+                'rrid'    => $recordId[0],
+                'rrhost'  => $domainInfo[1],
+                'rrvalue' => $ip,
+                'rrttl'   => 3600,
+            ]);
+        }
+        Log::error('[Namesilo API] - [更新] 处理失败：'.var_export($recordId, true).var_export($domainInfo, true));
+
+        return false;
     }
 
     private function getRecordId($type = null)

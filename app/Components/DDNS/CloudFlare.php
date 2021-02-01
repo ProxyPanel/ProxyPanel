@@ -32,7 +32,7 @@ class CloudFlare
             }
         }
 
-        return false;
+        return [];
     }
 
     public function store($ip, $type)

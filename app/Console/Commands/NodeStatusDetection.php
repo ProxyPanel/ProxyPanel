@@ -74,11 +74,12 @@ class NodeStatusDetection extends Command
     private function checkNodeNetwork(): void
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
-        $data = [];
+
         foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node) {
             if ($node->detection_type === 0) {
                 continue;
             }
+            $node_id = (int) $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             if ($node->is_ddns) {
                 $ip = gethostbyname($node->server);
@@ -91,20 +92,20 @@ class NodeStatusDetection extends Command
             if ($node->detection_type !== 1) {
                 $icmpCheck = (new NetworkDetection)->networkCheck($node->ip, true);
                 if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
-                    $data[$node->id]['icmp'] = $icmpCheck;
+                    $data[$node_id]['icmp'] = $icmpCheck;
                 }
             }
             if ($node->detection_type !== 2) {
                 $tcpCheck = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22);
                 if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
-                    $data[$node->id]['tcp'] = $tcpCheck;
+                    $data[$node_id]['tcp'] = $tcpCheck;
                 }
             }
 
             // 节点检测次数
-            if (isset($data[$node->id]) && $detectionCheckTimes) {
+            if (isset($data[$node_id]) && $detectionCheckTimes) {
                 // 已通知次数
-                $cacheKey = 'detection_check_times'.$node->id;
+                $cacheKey = 'detection_check_times'.$node_id;
                 if (Cache::has($cacheKey)) {
                     $times = Cache::get($cacheKey);
                 } else {
@@ -118,18 +119,18 @@ class NodeStatusDetection extends Command
                 } else {
                     Cache::forget($cacheKey);
                     $node->update(['status' => 0]);
-                    $data[$node->id]['message'] = '自动进入维护状态';
+                    $data[$node_id]['message'] = '自动进入维护状态';
                 }
             }
 
-            if (isset($data[$node->id])) {
-                $data[$node->id]['name'] = $node->name;
+            if (isset($data[$node_id])) {
+                $data[$node_id]['name'] = $node->name;
             }
 
             sleep(5);
         }
 
-        if ($data) { //只有在出现阻断线路时，才会发出警报
+        if (isset($data)) { //只有在出现阻断线路时，才会发出警报
             Notification::send(User::find(1), new NodeBlocked($data));
 
             Log::info("节点状态日志: \r\n".var_export($data, true));

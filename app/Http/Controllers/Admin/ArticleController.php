@@ -15,7 +15,7 @@ class ArticleController extends Controller
     // 文章列表
     public function index()
     {
-        return view('admin.article.index', ['articles' => Article::orderByDesc('sort')->paginate(15)->appends(request('page'))]);
+        return view('admin.article.index', ['articles' => Article::orderByDesc('sort')->paginate()->appends(request('page'))]);
     }
 
     // 添加文章页面

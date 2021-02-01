@@ -197,7 +197,7 @@ class ToolsController extends Controller
         }
 
         $logs = $this->tail($file, 10000);
-        if (false !== $logs) {
+        if ($logs) {
             foreach ($logs as $log) {
                 if (str_contains($log, 'TCP connecting')) {
                     continue;

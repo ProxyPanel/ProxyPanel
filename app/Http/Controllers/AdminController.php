@@ -96,7 +96,7 @@ class AdminController extends Controller
             $spreadsheet->setActiveSheetIndex(0);
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->setTitle('邀请码');
-            $sheet->fromArray(['邀请码', '有效期'], null);
+            $sheet->fromArray(['邀请码', '有效期']);
 
             foreach ($inviteList as $k => $vo) {
                 $sheet->fromArray([$vo->code, $vo->dateline], null, 'A'.($k + 2));

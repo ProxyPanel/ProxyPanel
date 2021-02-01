@@ -339,33 +339,36 @@ class AuthController extends Controller
     {
         $emailFilterList = EmailFilter::whereType(sysConfig('is_email_filtering'))->pluck('words')->toArray();
         $emailSuffix = explode('@', $email); // 提取邮箱后缀
-        switch (sysConfig('is_email_filtering')) {
-            // 黑名单
-            case 1:
-                if (in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
-                    if ($returnType) {
-                        return Redirect::back()->withErrors(trans('auth.email.error.banned'));
-                    }
 
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
-                }
-                break;
-            //白名单
-            case 2:
-                if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+        if ($emailSuffix) {
+            switch (sysConfig('is_email_filtering')) {
+                // 黑名单
+                case 1:
+                    if (in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                        if ($returnType) {
+                            return Redirect::back()->withErrors(trans('auth.email.error.banned'));
+                        }
+
+                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
+                    }
+                    break;
+                //白名单
+                case 2:
+                    if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                        if ($returnType) {
+                            return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
+                        }
+
+                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
+                    }
+                    break;
+                default:
                     if ($returnType) {
                         return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
                     }
 
                     return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
-                }
-                break;
-            default:
-                if ($returnType) {
-                    return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
-                }
-
-                return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
+            }
         }
 
         return false;

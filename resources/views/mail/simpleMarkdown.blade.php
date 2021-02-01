@@ -1,5 +1,6 @@
 @component('mail::message')
 # {{$title}}
+
 {!! $content !!}
 
 @component('mail::button', ['url' => $url])

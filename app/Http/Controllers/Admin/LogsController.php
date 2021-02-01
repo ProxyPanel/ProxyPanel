@@ -44,7 +44,7 @@ class LogsController extends Controller
 
         if (isset($is_coupon)) {
             if ($is_coupon) {
-                $query->where('coupon_id', '<>', null);
+                $query->where('coupon_id', '<>');
             } else {
                 $query->whereCouponId(null);
             }
@@ -64,7 +64,9 @@ class LogsController extends Controller
 
         if (isset($range_time) && $range_time !== ',') {
             $range_time = explode(',', $range_time);
-            $query->where('created_at', '>=', $range_time[0])->where('created_at', '<=', $range_time[1]);
+            if ($range_time) {
+                $query->where('created_at', '>=', $range_time[0])->where('created_at', '<=', $range_time[1]);
+            }
         }
 
         if (isset($order_id)) {

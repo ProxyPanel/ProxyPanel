@@ -44,7 +44,7 @@ class DNSPod
             }
         }
 
-        return false;
+        return [];
     }
 
     public function domainList()
@@ -57,13 +57,16 @@ class DNSPod
         return false;
     }
 
-    private function send($action, $data = [])
+    private function send($action, $data = null)
     {
-        $public = [
+        $parameters = [
             'login_token' => sysConfig('ddns_key').','.sysConfig('ddns_secret'),
             'format' => 'json',
         ];
-        $parameters = array_merge($data, $public);
+
+        if ($data) {
+            $parameters = array_merge($data, $parameters);
+        }
 
         $response = Http::timeout(15)->asForm()->post(self::$apiHost.$action, $parameters);
         $message = $response->json();

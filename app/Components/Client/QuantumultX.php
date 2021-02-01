@@ -55,10 +55,8 @@ class QuantumultX
             } else {
                 $config[] = 'obfs=wss';
             }
-        } else {
-            if ($server['v2_net'] === 'ws') {
-                $config[] = 'obfs=ws';
-            }
+        } elseif ($server['v2_net'] === 'ws') {
+            $config[] = 'obfs=ws';
         }
 
         if ($server['v2_tls']) {

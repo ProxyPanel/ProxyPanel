@@ -37,7 +37,7 @@ class BaseController
     public function returnData(string $message, string $status = 'fail', int $code = 400, array $data = [], array $addition = null): JsonResponse
     {
         $etag = self::abortIfNotModified($data);
-        $data = ['status' => $status, 'code' => $code, 'data' => $data, 'message' => $message];
+        $data = compact('status', 'code', 'data', 'message');
 
         if (isset($addition)) {
             $data = array_merge($data, $addition);

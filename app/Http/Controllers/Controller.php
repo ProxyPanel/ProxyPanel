@@ -146,7 +146,10 @@ class Controller extends BaseController
         // 节点一天内的流量
         $hourlyData = array_fill(0, date('G') + 1, 0);
         foreach ($hourlyFlow as $date => $dataFlow) {
-            $hourlyData[date('G', strtotime($date))] = round($dataFlow / GB, 3);
+            $date = date('G', strtotime($date));
+            if ($date) {
+                $hourlyData[$date] = round($dataFlow / GB, 3);
+            }
         }
         $hourlyData[date('G') + 1] = round($currentFlow / GB, 3);
 
@@ -160,8 +163,8 @@ class Controller extends BaseController
         return [
             'trafficDaily' => json_encode($dailyData),
             'trafficHourly' => json_encode($hourlyData),
-            'monthDays' => json_encode(range(1, date('j'), 1)), // 本月天数
-            'dayHours' => json_encode(range(0, date('G') + 1, 1)), // 本日小时
+            'monthDays' => json_encode(range(1, date('j'))), // 本月天数
+            'dayHours' => json_encode(range(0, date('G') + 1)), // 本日小时
         ];
     }
 }
