@@ -44,7 +44,7 @@ class Stripe extends AbstractPayment
         $unitAmount = $amount * 100;
 
         return [
-            'payment_method_types' => ['card', 'alipay'],
+            'payment_method_types' => ['card'],
             'line_items'           => [
                 [
                     'price_data' => [

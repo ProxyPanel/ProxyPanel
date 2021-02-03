@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e54f2dd2cc06b1714a2a49ba599c5449",
+    "content-hash": "2ee93ccff46fe286f1174eb0d199f128",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -4501,27 +4501,27 @@
         },
         {
             "name": "spatie/laravel-permission",
-            "version": "3.18.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/laravel-permission.git",
-                "reference": "1c51a5fa12131565fe3860705163e53d7a26258a"
+                "reference": "7936ea9ebbd0d91877109dfeda1659fc4570a6cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/1c51a5fa12131565fe3860705163e53d7a26258a",
-                "reference": "1c51a5fa12131565fe3860705163e53d7a26258a",
+                "url": "https://api.github.com/repos/spatie/laravel-permission/zipball/7936ea9ebbd0d91877109dfeda1659fc4570a6cc",
+                "reference": "7936ea9ebbd0d91877109dfeda1659fc4570a6cc",
                 "shasum": ""
             },
             "require": {
-                "illuminate/auth": "^5.8|^6.0|^7.0|^8.0",
-                "illuminate/container": "^5.8|^6.0|^7.0|^8.0",
-                "illuminate/contracts": "^5.8|^6.0|^7.0|^8.0",
-                "illuminate/database": "^5.8|^6.0|^7.0|^8.0",
+                "illuminate/auth": "^6.0|^7.0|^8.0",
+                "illuminate/container": "^6.0|^7.0|^8.0",
+                "illuminate/contracts": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0",
                 "php": "^7.2.5|^8.0"
             },
             "require-dev": {
-                "orchestra/testbench": "^3.8|^4.0|^5.0|^6.0",
+                "orchestra/testbench": "^4.0|^5.0|^6.0",
                 "phpunit/phpunit": "^8.0|^9.0",
                 "predis/predis": "^1.1"
             },
@@ -4553,7 +4553,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Permission handling for Laravel 5.8 and up",
+            "description": "Permission handling for Laravel 6.0 and up",
             "homepage": "https://github.com/spatie/laravel-permission",
             "keywords": [
                 "acl",
@@ -4567,7 +4567,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/laravel-permission/issues",
-                "source": "https://github.com/spatie/laravel-permission/tree/3.18.0"
+                "source": "https://github.com/spatie/laravel-permission/tree/4.0.0"
             },
             "funding": [
                 {
@@ -4575,7 +4575,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-09T14:08:36+00:00"
+            "time": "2021-01-27T23:03:34+00:00"
         },
         {
             "name": "srmklive/paypal",
@@ -7647,267 +7647,28 @@
     ],
     "packages-dev": [
         {
-            "name": "andrey-helldar/laravel-lang-publisher",
-            "version": "v6.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/andrey-helldar/laravel-lang-publisher.git",
-                "reference": "950458ca9d43dbbd0a8ec228a26b670c8f93cf94"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/andrey-helldar/laravel-lang-publisher/zipball/950458ca9d43dbbd0a8ec228a26b670c8f93cf94",
-                "reference": "950458ca9d43dbbd0a8ec228a26b670c8f93cf94",
-                "shasum": ""
-            },
-            "require": {
-                "andrey-helldar/pretty-array": "^1.4.2",
-                "andrey-helldar/support": "^1.4.1",
-                "ext-json": "*",
-                "illuminate/console": "^7.0|^8.0",
-                "illuminate/support": "^7.0|^8.0",
-                "laravel-lang/lang": "^7.0",
-                "php": "^7.2.5|^8.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "^1.3.1",
-                "orchestra/testbench": "^5.0|^6.0",
-                "phpunit/phpunit": "^8.4|^9.0"
-            },
-            "suggest": {
-                "andrey-helldar/lang-translations": "Translation of main messages",
-                "laravel/jetstream": "Tailwind scaffolding for the Laravel framework.",
-                "symfony/thanks": "Give thanks (in the form of a GitHub) to your fellow PHP package maintainers"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Helldar\\LaravelLangPublisher\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Helldar\\LaravelLangPublisher\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrey Helldar",
-                    "email": "helldar@ai-rus.com"
-                }
-            ],
-            "description": "Publisher lang files for the Laravel Framework + Laravel Jetstream from Laravel-Lang/lang",
-            "keywords": [
-                "fortify",
-                "i18n",
-                "jetstream",
-                "lang",
-                "languages",
-                "laravel",
-                "locale",
-                "localization",
-                "lpm",
-                "lumen",
-                "publisher",
-                "trans",
-                "translations",
-                "validations"
-            ],
-            "support": {
-                "issues": "https://github.com/andrey-helldar/laravel-lang-publisher/issues",
-                "source": "https://github.com/andrey-helldar/laravel-lang-publisher"
-            },
-            "funding": [
-                {
-                    "url": "https://money.yandex.ru/to/410012115955701",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://paypal.me/helldar",
-                    "type": "custom"
-                }
-            ],
-            "time": "2020-11-30T10:15:29+00:00"
-        },
-        {
-            "name": "andrey-helldar/pretty-array",
-            "version": "v1.5.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/andrey-helldar/pretty-array.git",
-                "reference": "925db552d4f7f9c0a31cbce0f58518260d80e543"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/andrey-helldar/pretty-array/zipball/925db552d4f7f9c0a31cbce0f58518260d80e543",
-                "reference": "925db552d4f7f9c0a31cbce0f58518260d80e543",
-                "shasum": ""
-            },
-            "require": {
-                "andrey-helldar/support": "^1.16.0",
-                "ext-dom": "*",
-                "ext-mbstring": "*",
-                "php": "^7.1.3|^8.0"
-            },
-            "require-dev": {
-                "phpstan/phpstan": "^0.12.7",
-                "phpunit/phpunit": "^7.0|^8.0"
-            },
-            "suggest": {
-                "symfony/thanks": "Give thanks (in the form of a GitHub) to your fellow PHP package maintainers"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Helldar\\PrettyArray\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrey Helldar",
-                    "email": "helldar@ai-rus.com"
-                }
-            ],
-            "description": "Simple conversion of an array to a pretty view.",
-            "keywords": [
-                "array",
-                "pretty",
-                "pretty array"
-            ],
-            "support": {
-                "issues": "https://github.com/andrey-helldar/pretty-array/issues",
-                "source": "https://github.com/andrey-helldar/pretty-array"
-            },
-            "funding": [
-                {
-                    "url": "https://money.yandex.ru/to/410012115955701",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://paypal.me/helldar",
-                    "type": "custom"
-                }
-            ],
-            "time": "2020-11-30T10:28:20+00:00"
-        },
-        {
-            "name": "andrey-helldar/support",
-            "version": "v1.30.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/andrey-helldar/support.git",
-                "reference": "6278f7ba38fdbfb3a22b602a67620e1133703464"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/andrey-helldar/support/zipball/6278f7ba38fdbfb3a22b602a67620e1133703464",
-                "reference": "6278f7ba38fdbfb3a22b602a67620e1133703464",
-                "shasum": ""
-            },
-            "require": {
-                "ext-ctype": "*",
-                "ext-dom": "*",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "php": "^7.1.3|^8.0",
-                "symfony/deprecation-contracts": "^2.0"
-            },
-            "require-dev": {
-                "ext-bcmath": "*",
-                "phpunit/phpunit": "^9.0"
-            },
-            "suggest": {
-                "andrey-helldar/laravel-support": "Various helper files for the Laravel and Lumen frameworks",
-                "ext-bcmath": "Require the extension if you will be using Helldar\\Support\\Facades\\Digit.",
-                "symfony/thanks": "Give thanks (in the form of a GitHub) to your fellow PHP package maintainers"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Helldar\\Support\\ServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Helldar\\Support\\": "src"
-                },
-                "files": [
-                    "src/helpers/digit.php",
-                    "src/helpers/dumper.php",
-                    "src/helpers/http.php",
-                    "src/helpers/strings.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andrey Helldar",
-                    "email": "helldar@ai-rus.com"
-                }
-            ],
-            "description": "Support package is a collection of helpers and tools for projects.",
-            "keywords": [
-                "framework",
-                "laravel",
-                "support",
-                "symfony",
-                "yii",
-                "yii2"
-            ],
-            "support": {
-                "issues": "https://github.com/andrey-helldar/support/issues",
-                "source": "https://github.com/andrey-helldar/support"
-            },
-            "funding": [
-                {
-                    "url": "https://money.yandex.ru/to/410012115955701",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://paypal.me/helldar",
-                    "type": "custom"
-                }
-            ],
-            "time": "2020-12-29T18:59:09+00:00"
-        },
-        {
             "name": "arcanedev/laravel-lang",
-            "version": "8.0.0",
+            "version": "8.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ARCANEDEV/LaravelLang.git",
-                "reference": "8b1711a37bbab081973920ad19a729dc0df2ca4b"
+                "reference": "b9a4a6d21aec778befca7594d34b1748354f43a2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ARCANEDEV/LaravelLang/zipball/8b1711a37bbab081973920ad19a729dc0df2ca4b",
-                "reference": "8b1711a37bbab081973920ad19a729dc0df2ca4b",
+                "url": "https://api.github.com/repos/ARCANEDEV/LaravelLang/zipball/b9a4a6d21aec778befca7594d34b1748354f43a2",
+                "reference": "b9a4a6d21aec778befca7594d34b1748354f43a2",
                 "shasum": ""
             },
             "require": {
                 "arcanedev/support": "^7.1.2",
-                "caouecs/laravel-lang": "^6.0",
+                "caouecs/laravel-lang": "^7.0.1",
                 "php": "^7.2.5"
             },
             "require-dev": {
                 "mockery/mockery": "^1.3.1",
                 "orchestra/testbench": "^5.0",
-                "phpunit/phpunit": "^8.5|^9.0"
+                "phpunit/phpunit": "^8.5"
             },
             "type": "library",
             "extra": {
@@ -7936,7 +7697,7 @@
                     "role": "Developer"
                 }
             ],
-            "description": "Translations manager and checker for Laravel 5 based on 'caouecs/laravel4-lang' package.",
+            "description": "Translations manager and checker for Laravel based on 'caouecs/laravel-lang' package.",
             "homepage": "https://github.com/ARCANEDEV/LaravelLang",
             "keywords": [
                 "arcanedev",
@@ -7953,7 +7714,7 @@
                 "issues": "https://github.com/ARCANEDEV/LaravelLang/issues",
                 "source": "https://github.com/ARCANEDEV/LaravelLang/tree/master"
             },
-            "time": "2020-03-21T21:29:29+00:00"
+            "time": "2020-07-14T10:10:34+00:00"
         },
         {
             "name": "arcanedev/support",
@@ -8238,16 +7999,16 @@
         },
         {
             "name": "caouecs/laravel-lang",
-            "version": "6.1.4",
+            "version": "7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/caouecs/lang.git",
-                "reference": "18a7845e813e737a56a7f164301d5014b536950c"
+                "reference": "2cb9932f781415f1669ce27d29e5b86399ab164a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/caouecs/lang/zipball/18a7845e813e737a56a7f164301d5014b536950c",
-                "reference": "18a7845e813e737a56a7f164301d5014b536950c",
+                "url": "https://api.github.com/repos/caouecs/lang/zipball/2cb9932f781415f1669ce27d29e5b86399ab164a",
+                "reference": "2cb9932f781415f1669ce27d29e5b86399ab164a",
                 "shasum": ""
             },
             "require": {
@@ -8277,10 +8038,10 @@
                 "lpm"
             ],
             "support": {
-                "source": "https://github.com/caouecs/lang/tree/6.1.4"
+                "source": "https://github.com/caouecs/lang/tree/7.0.3"
             },
             "abandoned": "https://github.com/Laravel-Lang/lang",
-            "time": "2020-07-13T14:35:32+00:00"
+            "time": "2020-08-23T08:17:21+00:00"
         },
         {
             "name": "composer/composer",
@@ -8738,16 +8499,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "2.5.9",
+            "version": "2.5.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "66b3138ecce38024723fb3bfc66ef8852a779ea9"
+                "reference": "98154e8b991fb616304c213cd405299ffedc26f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/66b3138ecce38024723fb3bfc66ef8852a779ea9",
-                "reference": "66b3138ecce38024723fb3bfc66ef8852a779ea9",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/98154e8b991fb616304c213cd405299ffedc26f5",
+                "reference": "98154e8b991fb616304c213cd405299ffedc26f5",
                 "shasum": ""
             },
             "require": {
@@ -8811,7 +8572,7 @@
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
-            "time": "2021-01-26T14:45:19+00:00"
+            "time": "2021-02-02T10:15:48+00:00"
         },
         {
             "name": "facade/ignition-contracts",
@@ -10461,16 +10222,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.5.1",
+            "version": "9.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "e7bdf4085de85a825f4424eae52c99a1cec2f360"
+                "reference": "f661659747f2f87f9e72095bb207bceb0f151cb4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/e7bdf4085de85a825f4424eae52c99a1cec2f360",
-                "reference": "e7bdf4085de85a825f4424eae52c99a1cec2f360",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f661659747f2f87f9e72095bb207bceb0f151cb4",
+                "reference": "f661659747f2f87f9e72095bb207bceb0f151cb4",
                 "shasum": ""
             },
             "require": {
@@ -10548,7 +10309,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.1"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.5.2"
             },
             "funding": [
                 {
@@ -10560,7 +10321,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-01-17T07:42:25+00:00"
+            "time": "2021-02-02T14:45:58+00:00"
         },
         {
             "name": "react/promise",

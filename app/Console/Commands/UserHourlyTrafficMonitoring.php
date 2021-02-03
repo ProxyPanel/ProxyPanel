@@ -59,7 +59,7 @@ class UserHourlyTrafficMonitoring extends Command
             if ($this->data_anomaly_notification) { // 用户流量异常警告
                 $traffic = $user->hourlyDataFlows()->whereNodeId(null)->latest()->first();
                 if ($traffic->total >= $this->traffic_ban_value) {
-                    Notification::send(User::find(1), new DataAnomaly($user->id, flowAutoShow($traffic->u), flowAutoShow($traffic->d), flowAutoShow($traffic->traffic)));
+                    Notification::send(User::find(1), new DataAnomaly($user->email, flowAutoShow($traffic->u), flowAutoShow($traffic->d), flowAutoShow($traffic->traffic)));
                 }
             }
         }
