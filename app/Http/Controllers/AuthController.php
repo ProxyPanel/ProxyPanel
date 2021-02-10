@@ -204,7 +204,7 @@ class AuthController extends Controller
         $register_token = $request->input('register_token');
         $code = $request->input('code');
         $verify_code = $request->input('verify_code');
-        $aff = (int) $request->input('aff');
+        $aff = $request->input('aff');
 
         // 防止重复提交
         if ($register_token !== Session::get('register_token')) {
@@ -398,7 +398,7 @@ class AuthController extends Controller
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
         if (! $data['inviter_id']) {
             // 检查一下cookie里有没有aff
-            $cookieAff = \Request::hasCookie('register_aff');
+            $cookieAff = \request()->cookie('register_aff');
             if ($cookieAff) {
                 $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : null;
             } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式

@@ -11,7 +11,7 @@
             @endif
             @csrf
             <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
-            <input type="hidden" name="aff" value="{{Session::get('register_aff')}}"/>
+            <input type="hidden" name="aff" value="{{Request::input('aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username') ? : Request::input('username')}}" autocomplete="off" required/>
                 <label class="floating-label" for="username">{{trans('validation.attributes.username')}}</label>
