@@ -64,7 +64,9 @@ class PayBeaver extends AbstractPayment
             return $response->json();
         }
 
-        return Response::json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);
+        Log::error(var_export($response->json(), true));
+
+        return ['status' => 'fail', 'message' => '获取失败！请检查配置信息'];
     }
 
     private function sign($params)

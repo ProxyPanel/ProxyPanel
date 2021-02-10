@@ -115,21 +115,6 @@ class PaymentController extends Controller
                 return Response::json(['status' => 'fail', 'message' => '购买加油包前，请先购买套餐']);
             }
 
-            //非余额付款下，检查在线支付是否开启
-            if (self::$method !== 'credit') {
-                // 判断是否开启在线支付
-                if (! sysConfig('is_onlinePay')) {
-                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
-                }
-
-                // 判断是否存在同个商品的未支付订单
-                if (Order::uid()->whereStatus(0)->exists()) {
-                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
-                }
-            } elseif (Auth::getUser()->credit < $amount) { // 验证账号余额是否充足
-                return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
-            }
-
             // 单个商品限购
             if ($goods->limit_num) {
                 $count = Order::uid()->where('status', '>=', 0)->whereGoodsId($goods_id)->count();
@@ -148,6 +133,21 @@ class PaymentController extends Controller
                 // 计算实际应支付总价
                 $amount = $coupon->type === 2 ? $goods->price * $coupon->value / 100 : $goods->price - $coupon->value;
                 $amount = $amount > 0 ? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
+            }
+
+            //非余额付款下，检查在线支付是否开启
+            if (self::$method !== 'credit') {
+                // 判断是否开启在线支付
+                if (! sysConfig('is_onlinePay')) {
+                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
+                }
+
+                // 判断是否存在同个商品的未支付订单
+                if (Order::uid()->whereStatus(0)->exists()) {
+                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
+                }
+            } elseif (Auth::getUser()->credit < $amount) { // 验证账号余额是否充足
+                return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
             }
 
             // 价格异常判断

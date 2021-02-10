@@ -283,7 +283,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 col-sm-3 col-form-label" for="inviter">邀请人</label>
                                     <div class="col-xl-6 col-sm-8">
-                                        <p class="form-control"> {{empty($user->inviter) ? '无邀请人' : $user->inviter->email}} </p>
+                                        <p class="form-control"> {{$user->inviter->email ?? '无邀请人'}} </p>
                                     </div>
                                 </div>
                                 <div class="form-group row">
