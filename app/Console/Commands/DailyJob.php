@@ -20,7 +20,7 @@ class DailyJob extends Command
         $jobStartTime = microtime(true);
 
         $this->expireUser(); // 过期用户处理
-        $this->closeTickets(); // 关闭超时未处理的工单
+        $this->closeTickets(); // 关闭用户超时未处理的工单
 
         if (sysConfig('reset_traffic')) {// 重置用户流量
             $this->resetUserTraffic();
@@ -76,15 +76,19 @@ class DailyJob extends Command
             });
     }
 
-    private function closeTickets()// 关闭超时未处理的工单
+    private function closeTickets()// 关闭用户超时未处理的工单
     {
         Ticket::whereStatus(1)
+            ->whereHas('reply', function ($q) {
+                $q->where('admin_id', '<>', null);
+            })
+            ->has('reply')
             ->where('updated_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.close.ticket').' hours')))
             ->chunk(config('tasks.chunk'), function ($tickets) {
                 foreach ($tickets as $ticket) {
                     if ($ticket->close()) {
                         $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]),
-                            __('You have not responded this ticket in :num hours, System has auto closed your ticket.', ['num' => config('tasks.close.ticket')])));
+                            __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => config('tasks.close.ticket')])));
                     }
                 }
             });

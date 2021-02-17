@@ -33,11 +33,11 @@
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.enabled')}}</span>
                                 <p class="font-weight-300 m-0 green-500">{{trans('user.account.reason.normal')}}</p>
-                            @elseif($remainDays === 0)
+                            @elseif($remainDays == 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.expired')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.expired')}}</p>
-                            @elseif($unusedTraffic === 0)
+                            @elseif($unusedTraffic == 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.disabled')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.traffic_exhausted')}}</p>
