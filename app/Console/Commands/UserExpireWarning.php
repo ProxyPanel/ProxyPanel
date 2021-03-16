@@ -33,7 +33,7 @@ class UserExpireWarning extends Command
             ->where('expired_at', '<', date('Y-m-d', strtotime(sysConfig('expire_days').' days')))
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
-                    if (filter_var($user->email, FILTER_VALIDATE_EMAIL) === false) { // 用户名不是邮箱的跳过
+                    if (filter_var($user->email, FILTER_VALIDATE_EMAIL) === false) { // 用户账号不是邮箱的跳过
                         continue;
                     }
                     $user->notify(new AccountExpire($user->expired_at));

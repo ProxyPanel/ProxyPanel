@@ -52,15 +52,15 @@
 @endsection
 @section('javascript')
     <script>
-      $(document).ready(function() {
-        $('#domain').val(@json(old('domain')));
-        $('#key').val(@json(old('key')));
-        $('#pem').val(@json(old('pem')));
-          @isset($cert)
-          $('#domain').val(@json(old('domain') ?? $cert->domain));
-        $('#key').val(@json(old('key') ?? $cert->key));
-        $('#pem').val(@json(old('pem') ?? $cert->pem));
-          @endisset
-      });
+        $(document).ready(function() {
+            $('#domain').val(@json(old('domain')));
+            $('#key').val(@json(old('key')));
+            $('#pem').val(@json(old('pem')));
+            @isset($cert)
+            $('#domain').val(@json(old('domain') ?? $cert->domain));
+            $('#key').val(@json(old('key') ?? $cert->key));
+            $('#pem').val(@json(old('pem') ?? $cert->pem));
+            @endisset
+        });
     </script>
 @endsection

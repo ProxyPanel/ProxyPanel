@@ -9,12 +9,12 @@
                 <h3 class="panel-title">提现申请列表</h3>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="text" class="form-control" name="email" value="{{Request::input('email')}}" id="email" placeholder="申请账号"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="申请账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" name="status" id="status" onChange="Search()">
+                        <select class="form-control" name="status" id="status" onchange="this.form.submit()">
                             <option value="" hidden>状态</option>
                             <option value="-1">驳回</option>
                             <option value="0">待审核</option>
@@ -23,10 +23,10 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.aff.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -116,53 +116,40 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#status').val({{Request::input('status')}});
-      });
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.aff.index')}}?email=' + $('#email').val() + '&status=' + $('#status option:selected').val();
-      }
-
-      @can('admin.aff.setStatus')
-      // 更改状态
-      function setStatus(id, status) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.aff.setStatus','')}}/' + id,
-          data: {
-            _token: '{{csrf_token()}}',
-            status: status,
-          },
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-          error: function(data) {
-            let str = '';
-            const errors = data.responseJSON;
-            if ($.isEmptyObject(errors) === false) {
-              $.each(errors.errors, function(index, value) {
-                str += '<li>' + value + '</li>';
-              });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
-            }
-          },
+        $(document).ready(function() {
+            $('#status').val({{Request::query('status')}});
         });
-      }
+
+        @can('admin.aff.setStatus')
+        // 更改状态
+        function setStatus(id, status) {
+            $.ajax({
+                method: 'PUT',
+                url: '{{route('admin.aff.setStatus','')}}/' + id,
+                data: {
+                    _token: '{{csrf_token()}}',
+                    status: status,
+                },
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+                error: function(data) {
+                    let str = '';
+                    const errors = data.responseJSON;
+                    if ($.isEmptyObject(errors) === false) {
+                        $.each(errors.errors, function(index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
+                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
+                    }
+                },
+            });
+        }
         @endcan
     </script>
 @endsection

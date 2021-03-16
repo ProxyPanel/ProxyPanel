@@ -17,12 +17,11 @@ class RuleController extends Controller
     // 审计规则列表
     public function index(Request $request)
     {
-        $type = $request->input('type');
         $query = Rule::query();
 
-        if ($type) {
-            $query->whereType($type);
-        }
+        $request->whenFilled('type', function ($value) use ($query) {
+            $query->whereType($value);
+        });
 
         return view('admin.rule.index', ['rules' => $query->paginate(15)->appends($request->except('page'))]);
     }
@@ -62,30 +61,23 @@ class RuleController extends Controller
     // 用户触发审计规则日志
     public function ruleLogList(Request $request)
     {
-        $uid = $request->input('uid');
-        $email = $request->input('email');
-        $nodeId = $request->input('node_id');
-        $ruleId = $request->input('rule_id');
         $query = RuleLog::query();
 
-        if ($uid) {
-            $query->whereUserId($uid);
-        }
-        if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) {
-                $q->where('email', 'like', '%'.$email.'%');
+        foreach (['user_id', 'node_id', 'rule_id'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, $value);
             });
         }
-        if ($nodeId) {
-            $query->whereNodeId($nodeId);
-        }
-        if ($ruleId) {
-            $query->whereRuleId($ruleId);
-        }
+
+        $request->whenFilled('email', function ($email) use ($query) {
+            $query->whereHas('user', function ($query) use ($email) {
+                $query->where('email', 'like', "%{$email}%");
+            });
+        });
 
         return view('admin.rule.log', [
-            'nodes' => Node::all(),
-            'rules' => Rule::all(),
+            'nodes'    => Node::all(),
+            'rules'    => Rule::all(),
             'ruleLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
         ]);
     }

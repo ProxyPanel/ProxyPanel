@@ -23,17 +23,12 @@ class ShopController extends Controller
     // 商品列表
     public function index(Request $request)
     {
-        $type = $request->input('type');
-        $status = $request->input('status');
-
         $query = Goods::query();
 
-        if (isset($type)) {
-            $query->whereType($type);
-        }
-
-        if (isset($status)) {
-            $query->whereStatus($status);
+        foreach (['type', 'status'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, $value);
+            });
         }
 
         return view('admin.shop.index', ['goodsList' => $query->orderByDesc('status')->paginate(10)->appends($request->except('page'))]);
@@ -95,7 +90,7 @@ class ShopController extends Controller
     public function edit(Goods $good)
     {
         return view('admin.shop.info', [
-            'good' => $good,
+            'good'   => $good,
             'levels' => Level::orderBy('level')->get(),
         ]);
     }

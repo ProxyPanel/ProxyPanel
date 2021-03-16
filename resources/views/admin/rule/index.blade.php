@@ -17,9 +17,9 @@
                 @endcan
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="type" name="type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onChange="Search()">
+                        <select class="form-control" name="type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="this.form.submit()">
                             <option value="" hidden>类型</option>
                             <option value="1">正则表达式</option>
                             <option value="2">域名</option>
@@ -30,7 +30,7 @@
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <a href="{{route('admin.rule.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -143,120 +143,107 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#type').selectpicker('val', {{Request::input('type')}});
-      });
-
-      @can('admin.rule.store')
-      // 添加规则
-      function addRule() {
-        $.ajax({
-          method: 'POST',
-          url: "{{route('admin.rule.store')}}",
-          data: {
-            _token: '{{csrf_token()}}',
-            type: $('#add_type').val(),
-            name: $('#name').val(),
-            pattern: $('#pattern').val(),
-          },
-          dataType: 'json',
-          success: function(ret) {
-            $('#add').modal('hide');
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-          error: function(data) {
-            $('#add').modal('hide');
-            let str = '';
-            const errors = data.responseJSON;
-            if ($.isEmptyObject(errors) === false) {
-              $.each(errors.errors, function(index, value) {
-                str += '<li>' + value + '</li>';
-              });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
-            }
-          },
+        $(document).ready(function() {
+            $('select').selectpicker('val', {{Request::query('type')}});
         });
-      }
-      @endcan
 
-      @can('admin.rule.update')
-      // 编辑规则
-      function editRule(id) {
-        $.ajax({
-          method: 'PUT',
-          url: '{{route('admin.rule.update','')}}/' + id,
-          data: {
-            _token: '{{csrf_token()}}',
-            name: $('#name_' + id).val(),
-            pattern: $('#pattern_' + id).val(),
-          },
-          dataType: 'json',
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-          error: function(data) {
-            let str = '';
-            const errors = data.responseJSON;
-            if ($.isEmptyObject(errors) === false) {
-              $.each(errors.errors, function(index, value) {
-                str += '<li>' + value + '</li>';
-              });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
-            }
-          },
-        });
-      }
-      @endcan
-
-      @can('admin.rule.destroy')
-      // 删除规则
-      function delRule(url, name) {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '确定删除规则 【' + name + '】 ？',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
+        @can('admin.rule.store')
+        // 添加规则
+        function addRule() {
             $.ajax({
-              method: 'DELETE',
-              url: url,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
+                method: 'POST',
+                url: "{{route('admin.rule.store')}}",
+                data: {
+                    _token: '{{csrf_token()}}',
+                    type: $('#add_type').val(),
+                    name: $('#name').val(),
+                    pattern: $('#pattern').val(),
+                },
+                dataType: 'json',
+                success: function(ret) {
+                    $('#add').modal('hide');
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+                error: function(data) {
+                    $('#add').modal('hide');
+                    let str = '';
+                    const errors = data.responseJSON;
+                    if ($.isEmptyObject(errors) === false) {
+                        $.each(errors.errors, function(index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
+                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
+                    }
+                },
             });
-          }
-        });
-      }
-      @endcan
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
         }
-      });
+        @endcan
 
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.rule.index')}}?type=' + $('#type').val();
-      }
+        @can('admin.rule.update')
+        // 编辑规则
+        function editRule(id) {
+            $.ajax({
+                method: 'PUT',
+                url: '{{route('admin.rule.update','')}}/' + id,
+                data: {
+                    _token: '{{csrf_token()}}',
+                    name: $('#name_' + id).val(),
+                    pattern: $('#pattern_' + id).val(),
+                },
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+                error: function(data) {
+                    let str = '';
+                    const errors = data.responseJSON;
+                    if ($.isEmptyObject(errors) === false) {
+                        $.each(errors.errors, function(index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
+                        swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
+                    }
+                },
+            });
+        }
+        @endcan
+
+        @can('admin.rule.destroy')
+        // 删除规则
+        function delRule(url, name) {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '确定删除规则 【' + name + '】 ？',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: url,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
+        }
+        @endcan
     </script>
 @endsection

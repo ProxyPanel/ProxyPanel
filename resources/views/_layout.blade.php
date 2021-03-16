@@ -36,7 +36,7 @@
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js"></script>
     <script>
-      Breakpoints();
+        Breakpoints();
     </script>
     @if (config('theme.skin'))
         <link id="skinStyle" href="/assets/css/skins/{{config('theme.skin')}}.min.css" rel="stylesheet" type="text/css">
@@ -70,20 +70,20 @@
 <!-- 设置/Config -->
 <script src="/assets/global/js/config/colors.js"></script>
 <script>
-  Config.set('assets', '/assets');
+    Config.set('assets', '/assets');
 </script>
 <!-- 页面/Page -->
 <script src="/assets/js/Site.js"></script>
 <script src="/assets/global/js/Plugin/asscrollable.js"></script>
 <script src="/assets/global/js/Plugin/slidepanel.js"></script>
 <script>
-  (function(document, window, $) {
-    'use strict';
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
+    (function(document, window, $) {
+        'use strict';
+        const Site = window.Site;
+        $(document).ready(function() {
+            Site.run();
+        });
+    })(document, window, jQuery);
 </script>
 @yield('layout_javascript')
 </body>

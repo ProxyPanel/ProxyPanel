@@ -11,37 +11,32 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-1 col-sm-4">
-                        <input type="number" class="form-control" id="id" name="id" value="{{Request::input('id')}}"
-                               placeholder="ID"/>
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="text" class="form-control" name="wechat" id="wechat"
-                               value="{{Request::input('wechat')}}" placeholder="微信"/>
+                        <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="微信"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="qq" id="qq" value="{{Request::input('qq')}}"
-                               placeholder="QQ"/>
+                        <input type="number" class="form-control" name="qq" value="{{Request::query('qq')}}" placeholder="QQ"/>
                     </div>
                     <div class="form-group col-lg-1 col-sm-6">
-                        <input type="number" class="form-control" name="port" id="port" value="{{Request::input('port')}}"
-                               placeholder="端口"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="端口"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.log.ip')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户名</th>
+                        <th> 用户账号</th>
                         <th> 端口</th>
                         <th> {{trans('common.status')}}</th>
                         <th> 代理</th>
@@ -75,21 +70,21 @@
                                     <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                                         <thead>
                                         <tr>
-                                            <th> 时间</th>
                                             <th> 节点</th>
                                             <th> 类型</th>
                                             <th> IP</th>
+                                            <th> 时间</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         @foreach($user->onlineIPList as $log)
                                             <tr>
-                                                <td>{{$log->created_at}}</td>
                                                 <td>{{$log->node->name ?? '【节点已删除】'}}</td>
                                                 <td>{{$log->type}}</td>
                                                 <td>
                                                     <a href="https://www.ipip.net/ip/{{$log->ip}}.html" target="_blank">{{$log->ip}}</a>
                                                 </td>
+                                                <td>{{date('Y-m-d H:i:s', $log->created_at)}}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>
@@ -119,19 +114,4 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
-    <script>
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.log.ip')}}?id' + $('#id').val() + '&email=' + $('#email').val() +
-            '&wechat=' + $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val();
-      }
-    </script>
 @endsection

@@ -29,87 +29,50 @@ class UserController extends Controller
     // 用户列表
     public function index(Request $request)
     {
-        $id = $request->input('id');
-        $email = $request->input('email');
-        $wechat = $request->input('wechat');
-        $qq = $request->input('qq');
-        $port = $request->input('port');
-        $group = $request->input('group');
-        $level = $request->input('level');
-        $status = $request->input('status');
-        $enable = $request->input('enable');
-        $online = $request->input('online');
-        $flowAbnormal = $request->input('flowAbnormal');
-        $expireWarning = $request->input('expireWarning');
-        $largeTraffic = $request->input('largeTraffic');
-
         $query = User::with('subscribe');
-        if (isset($id)) {
-            $query->whereId($id);
+
+        foreach (['id', 'port', 'status', 'enable', 'user_group_id', 'level'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, $value);
+            });
         }
 
-        if (isset($email)) {
-            $query->where('email', 'like', '%'.$email.'%');
-        }
-
-        if (isset($wechat)) {
-            $query->where('wechat', 'like', '%'.$wechat.'%');
-        }
-
-        if (isset($qq)) {
-            $query->where('qq', 'like', '%'.$qq.'%');
-        }
-
-        if (isset($port)) {
-            $query->wherePort($port);
-        }
-
-        if (isset($status)) {
-            $query->whereStatus($status);
-        }
-
-        if (isset($enable)) {
-            $query->whereEnable($enable);
-        }
-
-        if (isset($group)) {
-            $query->whereUserGroupId($group);
-        }
-
-        if (isset($level)) {
-            $query->whereLevel($level);
+        foreach (['email', 'wechat', 'qq'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, 'like', "%{$value}%");
+            });
         }
 
         // 流量超过100G的
-        if ($largeTraffic) {
+        $request->whenFilled('largeTraffic', function () use ($query) {
             $query->whereIn('status', [0, 1])->whereRaw('(u + d)/transfer_enable >= 0.9');
-        }
+        });
 
         // 临近过期提醒
-        if ($expireWarning) {
+        $request->whenFilled('expireWarning', function () use ($query) {
             $query->whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))]);
-        }
+        });
 
         // 当前在线
-        if ($online) {
+        $request->whenFilled('online', function () use ($query) {
             $query->where('t', '>=', strtotime('-10 minutes'));
-        }
+        });
 
         // 不活跃用户
-        if ($request->has('unActive')) {
+        $request->whenFilled('unActive', function () use ($query) {
             $query->whereBetween('t', [1, strtotime('-'.sysConfig('expire_days').' days')])->whereEnable(1);
-        }
+        });
 
         // 不活跃用户
-        if ($request->has('paying')) {
+        $request->whenFilled('paying', function () use ($query) {
             $payingUser = Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
             $query->whereIn('id', $payingUser);
-        }
+        });
 
         // 1小时内流量异常用户
-        if ($flowAbnormal) {
+        $request->whenFilled('flowAbnormal', function () use ($query) {
             $query->whereIn('id', (new UserHourlyDataFlow)->trafficAbnormal());
-        }
+        });
 
         return view('admin.user.index', [
             'userList'   => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),

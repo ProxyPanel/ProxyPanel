@@ -289,200 +289,200 @@
     @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
         <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script>
-          // Options
-          const options = {
-            text: @json(sysConfig('push_bear_qrcode')),
-            width: 150,
-            height: 150,
-            backgroundImage: '{{asset('/assets/images/wechat.png')}}',
-            autoColor: true,
-          };
+            // Options
+            const options = {
+                text: @json(sysConfig('push_bear_qrcode')),
+                width: 150,
+                height: 150,
+                backgroundImage: '{{asset('/assets/images/wechat.png')}}',
+                autoColor: true,
+            };
 
-          // Create QRCode Object
-          new QRCode(document.getElementById('qrcode'), options);
+            // Create QRCode Object
+            new QRCode(document.getElementById('qrcode'), options);
         </script>
     @endif
     <script>
-      // 更换订阅地址
-      function exchangeSubscribe() {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '{{trans('user.subscribe.exchange_warning')}}',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '{{trans('user.subscribe.exchange_warning')}}',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
-
-      const clipboard = new ClipboardJS('.mt-clipboard', {
-        text: function(trigger) {
-          let base = @json($subUrl);
-          const client = $('#client').val();
-          const subType = $('#subType').val();
-          if (subType && client) {
-            base += '?target=' + client + '&type=' + subType;
-          } else if (subType) {
-            base += '?type=' + subType;
-          } else if (client) {
-            base += '?target=' + client;
-          }
-          return base;
-        },
-      });
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '{{trans('common.copy.success')}}',
-          icon: 'success',
-          timer: 1300,
-          showConfirmButton: false,
-        });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '{{trans('common.copy.failed')}}',
-          icon: 'error',
-          timer: 1500,
-          showConfirmButton: false,
-        });
-      });
-
-      // 签到
-      function checkIn() {
-        $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire(ret.title, ret.message, 'success');
-          } else {
-            swal.fire(ret.title, ret.message, 'error');
-          }
-        });
-      }
-
-      const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: {{$dayHours}},
-          datasets: [
-            {
-              fill: true,
-              backgroundColor: 'rgba(98, 168, 234, .1)',
-              borderColor: Config.colors('primary', 600),
-              pointRadius: 4,
-              borderDashOffset: 2,
-              pointBorderColor: '#fff',
-              pointBackgroundColor: Config.colors('primary', 600),
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: Config.colors('primary', 600),
-              data: {{$trafficHourly}},
-            }],
-        },
-        options: {
-          legend: {
-            display: false,
-          },
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('validation.attributes.hour')}}',
-                },
-              }],
-            yAxes: [
-              {
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  userCallback: function(tick) {
-                    return tick.toString() + ' GB';
-                  },
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('user.traffic_logs.24hours')}}',
-                },
-              }],
-          },
-        },
-      });
-
-      const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
-        type: 'line',
-        data: {
-          labels: {{$monthDays}},
-          datasets: [
-            {
-              fill: true,
-              backgroundColor: 'rgba(98, 168, 234, .1)',
-              borderColor: Config.colors('primary', 600),
-              pointRadius: 4,
-              borderDashOffset: 2,
-              pointBorderColor: '#fff',
-              pointBackgroundColor: Config.colors('primary', 600),
-              pointHoverBackgroundColor: '#fff',
-              pointHoverBorderColor: Config.colors('primary', 600),
-              data: {{$trafficDaily}},
-            }],
-        },
-        options: {
-          legend: {
-            display: false,
-          },
-          responsive: true,
-          scales: {
-            xAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('validation.attributes.day')}}',
-                },
-              }],
-            yAxes: [
-              {
-                display: true,
-                ticks: {
-                  beginAtZero: true,
-                  userCallback: function(tick) {
-                    return tick.toString() + ' GB';
-                  },
-                },
-                scaleLabel: {
-                  display: true,
-                  labelString: '{{trans('user.traffic_logs.30days')}}',
-                },
-              }],
-          },
-        },
-      });
-
-      @if($banedTime)
-      // 每秒更新计时器
-      const countDownDate = new Date("{{$banedTime}}").getTime();
-      const x = setInterval(function() {
-        const distance = countDownDate - new Date().getTime();
-        const hours = Math.floor(distance % 86400000 / 3600000);
-        const minutes = Math.floor((distance % 3600000) / 60000);
-        const seconds = Math.floor((distance % 60000) / 1000);
-        document.getElementById('countdown').innerHTML = hours + '{{trans('validation.attributes.hour')}} ' + minutes
-            + '{{trans('validation.attributes.minute')}} ' + seconds + '{{trans('validation.attributes.second')}}';
-        if (distance <= 0) {
-          clearInterval(x);
-          document.getElementById('countdown').remove();
         }
-      }, 1000);
+
+        const clipboard = new ClipboardJS('.mt-clipboard', {
+            text: function(trigger) {
+                let base = @json($subUrl);
+                const client = $('#client').val();
+                const subType = $('#subType').val();
+                if (subType && client) {
+                    base += '?target=' + client + '&type=' + subType;
+                } else if (subType) {
+                    base += '?type=' + subType;
+                } else if (client) {
+                    base += '?target=' + client;
+                }
+                return base;
+            },
+        });
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
+        });
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
+        });
+
+        // 签到
+        function checkIn() {
+            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire(ret.title, ret.message, 'success');
+                } else {
+                    swal.fire(ret.title, ret.message, 'error');
+                }
+            });
+        }
+
+        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: {{$dayHours}},
+                datasets: [
+                    {
+                        fill: true,
+                        backgroundColor: 'rgba(98, 168, 234, .1)',
+                        borderColor: Config.colors('primary', 600),
+                        pointRadius: 4,
+                        borderDashOffset: 2,
+                        pointBorderColor: '#fff',
+                        pointBackgroundColor: Config.colors('primary', 600),
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: Config.colors('primary', 600),
+                        data: {{$trafficHourly}},
+                    }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [
+                        {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('validation.attributes.hour')}}',
+                            },
+                        }],
+                    yAxes: [
+                        {
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                userCallback: function(tick) {
+                                    return tick.toString() + ' GB';
+                                },
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('user.traffic_logs.24hours')}}',
+                            },
+                        }],
+                },
+            },
+        });
+
+        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: {{$monthDays}},
+                datasets: [
+                    {
+                        fill: true,
+                        backgroundColor: 'rgba(98, 168, 234, .1)',
+                        borderColor: Config.colors('primary', 600),
+                        pointRadius: 4,
+                        borderDashOffset: 2,
+                        pointBorderColor: '#fff',
+                        pointBackgroundColor: Config.colors('primary', 600),
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: Config.colors('primary', 600),
+                        data: {{$trafficDaily}},
+                    }],
+            },
+            options: {
+                legend: {
+                    display: false,
+                },
+                responsive: true,
+                scales: {
+                    xAxes: [
+                        {
+                            display: true,
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('validation.attributes.day')}}',
+                            },
+                        }],
+                    yAxes: [
+                        {
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                userCallback: function(tick) {
+                                    return tick.toString() + ' GB';
+                                },
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: '{{trans('user.traffic_logs.30days')}}',
+                            },
+                        }],
+                },
+            },
+        });
+
+        @if($banedTime)
+        // 每秒更新计时器
+        const countDownDate = new Date("{{$banedTime}}").getTime();
+        const x = setInterval(function() {
+            const distance = countDownDate - new Date().getTime();
+            const hours = Math.floor(distance % 86400000 / 3600000);
+            const minutes = Math.floor((distance % 3600000) / 60000);
+            const seconds = Math.floor((distance % 60000) / 1000);
+            document.getElementById('countdown').innerHTML = hours + '{{trans('validation.attributes.hour')}} ' + minutes
+                + '{{trans('validation.attributes.minute')}} ' + seconds + '{{trans('validation.attributes.second')}}';
+            if (distance <= 0) {
+                clearInterval(x);
+                document.getElementById('countdown').remove();
+            }
+        }, 1000);
         @endif
     </script>
 @endsection

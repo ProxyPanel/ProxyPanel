@@ -53,7 +53,7 @@
                                 @canany(['admin.article.edit', 'admin.article.destroy'])
                                     <div class="btn-group">
                                         @can('admin.article.edit')
-                                            <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::input('page')])}}" class="btn btn-outline-primary">
+                                            <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::query('page')])}}" class="btn btn-outline-primary">
                                                 <i class="icon wb-edit"></i></a>
                                         @endcan
                                         @can('admin.article.destroy')
@@ -88,32 +88,32 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.article.destroy')
         <script>
-          // 删除文章
-          function delArticle(url) {
-            swal.fire({
-              title: '确定删除文章?',
-              icon: 'question',
-              showCancelButton: true,
-              cancelButtonText: '{{trans('common.close')}}',
-              confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-              if (result.value) {
-                $.ajax({
-                  method: 'DELETE',
-                  url: url,
-                  data: {_token: '{{csrf_token()}}'},
-                  dataType: 'json',
-                  success: function(ret) {
-                    if (ret.status === 'success') {
-                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    } else {
-                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            // 删除文章
+            function delArticle(url) {
+                swal.fire({
+                    title: '确定删除文章?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    cancelButtonText: '{{trans('common.close')}}',
+                    confirmButtonText: '{{trans('common.confirm')}}',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: url,
+                            data: {_token: '{{csrf_token()}}'},
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.status === 'success') {
+                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                } else {
+                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                                }
+                            },
+                        });
                     }
-                  },
                 });
-              }
-            });
-          }
+            }
         </script>
     @endcan
 @endsection

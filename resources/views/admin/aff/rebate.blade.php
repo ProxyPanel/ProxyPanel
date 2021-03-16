@@ -9,15 +9,15 @@
                 <h2 class="panel-title">返利流水记录</h2>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="invitee_email" id="invitee_email" value="{{Request::input('invitee_email')}}" placeholder="消费者"/>
+                        <input type="text" class="form-control" name="invitee_email" value="{{Request::query('invitee_email')}}" placeholder="消费者"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="inviter_email" id="inviter_email" value="{{Request::input('inviter_email')}}" placeholder="邀请人"/>
+                        <input type="text" class="form-control" name="inviter_email" value="{{Request::query('inviter_email')}}" placeholder="邀请人"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select name="status" id="status" class="form-control" onChange="Search()">
+                        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
                             <option value="" hidden>状态</option>
                             <option value="0">未提现</option>
                             <option value="1">申请中</option>
@@ -25,10 +25,10 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.aff.rebate')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -100,22 +100,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#status').val({{Request::input('status')}});
-      });
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.aff.rebate')}}?invitee_email=' + $('#invitee_email').val() +
-            '&inviter_email=' + $('#inviter_email').val() + '&status=' + $('#status option:selected').val();
-      }
+        $(document).ready(function() {
+            $('#status').val({{Request::query('status')}});
+        });
     </script>
 @endsection

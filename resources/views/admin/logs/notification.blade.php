@@ -9,13 +9,12 @@
                 <h2 class="panel-title">邮件投递记录</h2>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
-                        <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" name="type" id="type" onChange="Search()">
+                        <select class="form-control" name="type" id="type" onchange="this.form.submit()">
                             <option value="" hidden>类型</option>
                             <option value="1">邮件</option>
                             <option value="2">ServerChan</option>
@@ -24,10 +23,10 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.log.notify')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -82,14 +81,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#type').val({{Request::input('type')}});
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.log.notify')}}?email=' + $('#email').val() + '&type=' +
-            $('#type option:selected').val();
-      }
+        $(document).ready(function() {
+            $('#type').val({{Request::query('type')}});
+        });
     </script>
 @endsection

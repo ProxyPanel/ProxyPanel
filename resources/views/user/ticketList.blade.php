@@ -24,7 +24,7 @@
                             <table class="table table-hover text-center">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th data-cell-style="cellStyle"> # </th>
+                                    <th data-cell-style="cellStyle"> #</th>
                                     <th> {{trans('validation.attributes.title')}} </th>
                                     <th> {{trans('common.status')}} </th>
                                     <th></th>
@@ -129,42 +129,42 @@
 @endsection
 @section('javascript')
     <script>
-      // 发起工单
-      function createTicket() {
-        const title = $('#title').val();
-        const content = $('#content').val();
+        // 发起工单
+        function createTicket() {
+            const title = $('#title').val();
+            const content = $('#content').val();
 
-        if (title.trim() === '') {
-          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}!', icon: 'warning'});
-          return false;
-        }
+            if (title.trim() === '') {
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}!', icon: 'warning'});
+                return false;
+            }
 
-        if (content.trim() === '') {
-          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning'});
-          return false;
-        }
+            if (content.trim() === '') {
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning'});
+                return false;
+            }
 
-        swal.fire({
-          title: '{{trans('user.ticket.submit_tips')}}',
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('openTicket')}}', {
-              _token: '{{csrf_token()}}',
-              title: title,
-              content: content,
-            }, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
+            swal.fire({
+                title: '{{trans('user.ticket.submit_tips')}}',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('openTicket')}}', {
+                        _token: '{{csrf_token()}}',
+                        title: title,
+                        content: content,
+                    }, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

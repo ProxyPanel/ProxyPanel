@@ -94,40 +94,40 @@
     <script>
         @if(old('type'))
         $(document).ready(function() {
-          $("input[name='type'][value='{{old('type')}}']").click();
+            $("input[name='type'][value='{{old('type')}}']").click();
         });
         @endif
 
         $('input:radio[name=\'type\']').on('change', function() {
-          const summary = $('#summary');
-          const sort = $('#sort');
-          const allLogo = $('#all_logo');
-          const icon = $('#icon');
-          const logoUpload = $('#logoUpload');
-          summary.hide();
-          sort.hide();
-          allLogo.show();
-          switch (parseInt($(this).val())) {
-            case 1:
-              summary.show();
-              sort.show();
-              icon.hide();
-              logoUpload.show();
-              break;
-            case 2:
-              allLogo.hide();
-              break;
-            case 3:
-              sort.show();
-              icon.show();
-              logoUpload.hide();
-              break;
-            case 4:
-              icon.show();
-              logoUpload.hide();
-              break;
-            default:
-          }
+            const summary = $('#summary');
+            const sort = $('#sort');
+            const allLogo = $('#all_logo');
+            const icon = $('#icon');
+            const logoUpload = $('#logoUpload');
+            summary.hide();
+            sort.hide();
+            allLogo.show();
+            switch (parseInt($(this).val())) {
+                case 1:
+                    summary.show();
+                    sort.show();
+                    icon.hide();
+                    logoUpload.show();
+                    break;
+                case 2:
+                    allLogo.hide();
+                    break;
+                case 3:
+                    sort.show();
+                    icon.show();
+                    logoUpload.hide();
+                    break;
+                case 4:
+                    icon.show();
+                    logoUpload.hide();
+                    break;
+                default:
+            }
         });
     </script>
 @endsection

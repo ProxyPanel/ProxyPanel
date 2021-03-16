@@ -16,9 +16,9 @@
                 @endcan
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <select class="form-control" name="status" id="status" onChange="Search()">
+                        <select class="form-control" name="status" id="status">
                             <option value="" hidden>状态</option>
                             <option value="0">待发送</option>
                             <option value="-1">失败</option>
@@ -26,10 +26,10 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.marketing.push')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <div class="alert alert-info alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">×</span></button>
@@ -125,53 +125,49 @@
     <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.js"></script>
     <script src="/assets/global/vendor/marked/marked.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#status').val({{Request::input('status')}});
-      });
+        $(document).ready(function() {
+            $('#status').val({{Request::query('status')}});
+        });
 
-      function Search() {
-        window.location.href = '{{route('admin.marketing.push')}}?status=' + $('#status').val();
-      }
+        @can('admin.marketing.add')
+        // 发送通道消息
+        function send() {
+            const title = $('#title').val();
 
-      @can('admin.marketing.add')
-      // 发送通道消息
-      function send() {
-        const title = $('#title').val();
-
-        if (title.trim() === '') {
-          $('#msg').show().html('标题不能为空');
-          title.focus();
-          return false;
-        }
-
-        $.ajax({
-          url: '{{route('admin.marketing.add')}}',
-          method: 'POST',
-          data: {_token: '{{csrf_token()}}', title: title, content: $('#content').val()},
-          beforeSend: function() {
-            $('#msg').show().html('正在添加...');
-          },
-          success: function(ret) {
-            if (ret.status === 'fail') {
-              $('#msg').show().html(ret.message);
-              return false;
+            if (title.trim() === '') {
+                $('#msg').show().html('标题不能为空');
+                title.focus();
+                return false;
             }
 
-            $('#send_modal').modal('hide');
+            $.ajax({
+                url: '{{route('admin.marketing.add')}}',
+                method: 'POST',
+                data: {_token: '{{csrf_token()}}', title: title, content: $('#content').val()},
+                beforeSend: function() {
+                    $('#msg').show().html('正在添加...');
+                },
+                success: function(ret) {
+                    if (ret.status === 'fail') {
+                        $('#msg').show().html(ret.message);
+                        return false;
+                    }
 
-          },
-          error: function() {
-            $('#msg').show().html('请求错误，请重试');
-          },
-          complete: function() {
-          },
+                    $('#send_modal').modal('hide');
+
+                },
+                error: function() {
+                    $('#msg').show().html('请求错误，请重试');
+                },
+                complete: function() {
+                },
+            });
+        }
+
+        // 关闭modal触发
+        $('#send_modal').on('hide.bs.modal', function() {
+            window.location.reload();
         });
-      }
-
-      // 关闭modal触发
-      $('#send_modal').on('hide.bs.modal', function() {
-        window.location.reload();
-      });
         @endcan
     </script>
 @endsection

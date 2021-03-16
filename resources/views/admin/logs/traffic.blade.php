@@ -10,23 +10,21 @@
                 <h2 class="panel-title">流量日志</h2>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="user_id" id="user_id" value="{{Request::input('user_id')}}" placeholder="用户ID"/>
+                        <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="port" id="port" value="{{Request::input('port')}}" placeholder="用户端口"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="用户端口"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <select class="form-control" name="nodeId" id="nodeId" onChange="Search()">
-                            <option value="" @if(Request::input('nodeId') == '') selected @endif hidden>选择节点</option>
+                        <select class="form-control" name="node_id" id="node_id" onchange="this.form.submit()">
+                            <option value="" hidden>选择节点</option>
                             @foreach($nodes as $node)
-                                <option value="{{$node->id}}" @if(Request::input('nodeId') == $node->id) selected @endif>
-                                    {{$node->name}}
-                                </option>
+                                <option value="{{$node->id}}">{{$node->name}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -37,19 +35,18 @@
                                     <i class="icon wb-calendar" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" name="start" id="start" value="{{Request::input('startTime')}}" placeholder="{{date("Y-m-d")}}"/>
+                            <input type="text" class="form-control" name="start" value="{{Request::query('start')}}" autocomplete="off"/>
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
-                            <input type="text" class="form-control" name="end" id="end" value="{{Request::input('endTime')}}"
-                                   placeholder="{{date("Y-m-d",strtotime("+1 month"))}}"/>
+                            <input type="text" class="form-control" name="end" value="{{Request::query('end')}}" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.log.traffic')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -111,21 +108,12 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-      $('.input-daterange').datepicker({
-        format: 'yyyy-mm-dd',
-      });
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
+        $('.input-daterange').datepicker({
+            format: 'yyyy-mm-dd',
+        });
 
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.log.traffic')}}?port=' + $('#port').val() + '&user_id=' + $('#user_id').val() + '&email=' + $('#email').val()
-            + '&nodeId=' + $('#nodeId option:selected').val() + '&startTime=' + $('#start').val() + '&endTime=' + $('#end').val();
-      }
+        $(document).ready(function() {
+            $('#node_id').val({{Request::query('node_id')}});
+        });
     </script>
 @endsection

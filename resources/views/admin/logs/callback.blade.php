@@ -11,35 +11,25 @@
                 </h2>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="number" class="form-control" name="out_trade_no" id="out_trade_no"
-                               value="{{Request::input('out_trade_no')}}" placeholder="本地订单号" autocomplete="off"/>
+                        <input type="text" class="form-control" name="out_trade_no" value="{{Request::query('out_trade_no')}}" placeholder="本地订单号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="number" class="form-control" name="trade_no" id="trade_no"
-                               value="{{Request::input('trade_no')}}" placeholder="外部订单号" autocomplete="off"/>
+                        <input type="text" class="form-control" name="trade_no" value="{{Request::query('trade_no')}}" placeholder="外部订单号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" name="type" id="type" onChange="Search()">
-                            <option value="" hidden>支付方式</option>
-                            @foreach(config('common.payment.labels') as $key => $value)
-                                <option value="{{$key}}">{{$value}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" name="trade_status" id="trade_status" onChange="Search()">
+                        <select class="form-control" name="status" id="status" onchange="this.form.submit()">
                             <option value="" hidden>交易状态</option>
                             <option value="1">成功</option>
                             <option value="0">失败</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.payment.callback')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -92,23 +82,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#type').val({{Request::input('type')}});
-        $('#trade_status').val({{Request::input('trade_status')}});
-      });
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.payment.callback')}}?out_trade_no=' + $('#trade_no').val() + '&trade_no=' +
-            $('#out_trade_no').val() + '&type=' + $('#type option:selected').val() + '&trade_status=' + $('#trade_status option:selected').val();
-      }
+        $(document).ready(function() {
+            $('#status').val({{Request::query('status')}});
+        });
     </script>
 @endsection

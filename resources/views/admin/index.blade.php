@@ -303,8 +303,8 @@
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
     <script>
-      $(function() {
-        $('.card').matchHeight();
-      });
+        $(function() {
+            $('.card').matchHeight();
+        });
     </script>
 @endsection

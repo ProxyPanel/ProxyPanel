@@ -1,8 +1,8 @@
 <div class="chat
 @if (isset($ticket->admin_id) && $ticket->admin_id !== $user->id)
-        chat-left
+    chat-left
 @elseif(isset($ticket->user_id) && !isset($ticket->admin_id)  && $ticket->user_id !== $user->id)
-        chat-left
+    chat-left
 @endif">
     <div class="chat-avatar">
         <p class="avatar" data-toggle="tooltip" href="#" data-placement="right" title="" data-original-title="{{($ticket->admin ?? $ticket->user)->email}}">

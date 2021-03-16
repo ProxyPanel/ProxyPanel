@@ -85,7 +85,7 @@
                                         <div class="panel-heading" id="question-2" role="tab">
                                             <a class="panel-title" aria-controls="answer-2" aria-expanded="true"
                                                data-toggle="collapse" href="#answer-2" data-parent="#accordion1"><i
-                                                        class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
+                                                    class="icon md-help-outline" aria-hidden="true"></i>客户端 下载与使用教程
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse show" id="answer-2"
@@ -99,7 +99,7 @@
                                         <div class="panel-heading" id="question-3" role="tab">
                                             <a class="panel-title" aria-controls="answer-3" aria-expanded="false"
                                                data-toggle="collapse" href="#answer-3" data-parent="#accordion1"><i
-                                                        class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
+                                                    class="icon wb-extension" aria-hidden="true"></i>客户端 相关问题解决
                                             </a>
                                         </div>
                                         <div class="panel-collapse collapse" id="answer-3" aria-labelledby="question-3"
@@ -295,49 +295,49 @@
     <script src="/assets/global/js/Plugin/tabs.js"></script>
     <script src="/assets/custom/jump-tab.js"></script>
     <script>
-      function linkManager($type) {
-        $('#sub_link').val('{{$link}}?type=' + $type);
-        return false;
-      }
+        function linkManager($type) {
+            $('#sub_link').val('{{$link}}?type=' + $type);
+            return false;
+        }
 
-      // 更换订阅地址
-      function exchangeSubscribe() {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '{{trans('user.subscribe.exchange_warning')}}',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
+        // 更换订阅地址
+        function exchangeSubscribe() {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '{{trans('user.subscribe.exchange_warning')}}',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
             });
-          }
-        });
-      }
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '{{trans('common.copy.success')}}',
-          icon: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '{{trans('common.copy.failed')}}',
-          icon: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

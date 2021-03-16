@@ -114,7 +114,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600"><i
-                                    class="icon wb-star-outline"></i> {{trans('user.withdraw_logs')}}</h4>
+                                class="icon wb-star-outline"></i> {{trans('user.withdraw_logs')}}</h4>
                         <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                             <thead class="thead-default">
                             <tr>
@@ -153,35 +153,35 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
-      // 申请提现
-      function extractMoney() {
-        $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-              window.location.reload();
+        // 申请提现
+        function extractMoney() {
+            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    swal.fire(ret.title, ret.message, 'error');
+                }
             });
-          } else {
-            swal.fire(ret.title, ret.message, 'error');
-          }
-        });
-      }
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '{{trans('common.copy.success')}}',
-          icon: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '{{trans('common.copy.failed')}}',
-          icon: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

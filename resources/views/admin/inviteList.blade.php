@@ -93,58 +93,58 @@
         @can('admin.invite.create')
         // 生成邀请码
         function makeInvite() {
-          $.ajax({
-            method: 'POST',
-            url: '{{route('admin.invite.create')}}',
-            dataType: 'json',
-            data: {_token: '{{csrf_token()}}'},
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
-            },
-          });
+            $.ajax({
+                method: 'POST',
+                url: '{{route('admin.invite.create')}}',
+                dataType: 'json',
+                data: {_token: '{{csrf_token()}}'},
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+            });
 
-          return false;
+            return false;
         }
         @endcan
 
         @can('admin.invite.export')
         // 导出邀请码
         function exportInvite() {
-          swal.fire({
-            title: '提示',
-            text: '确定导出所有邀请码吗',
-            icon: 'question',
-            showCancelButton: true,
-            cancelButtonText: '{{trans('common.close')}}',
-            confirmButtonText: '{{trans('common.confirm')}}',
-          }).then((result) => {
-            if (result.value) {
-              window.location.href = '{{route('admin.invite.export')}}';
-            }
-          });
+            swal.fire({
+                title: '提示',
+                text: '确定导出所有邀请码吗',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = '{{route('admin.invite.export')}}';
+                }
+            });
         }
         @endcan
 
         const clipboard = new ClipboardJS('.mt-clipboard');
         clipboard.on('success', function() {
-          swal.fire({
-            title: '{{trans('common.copy.success')}}',
-            icon: 'success',
-            timer: 1300,
-            showConfirmButton: false,
-          });
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
         clipboard.on('error', function() {
-          swal.fire({
-            title: '{{trans('common.copy.failed')}}',
-            icon: 'error',
-            timer: 1500,
-            showConfirmButton: false,
-          });
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
     </script>
 @endsection

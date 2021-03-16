@@ -44,14 +44,14 @@
 @endsection
 @section('javascript')
     <script>
-      $(document).ready(function() {
-          @isset($permission)
-          $('#description').val(@json(old('description') ?? $permission->description));
-        $('#name').val(@json(old('name') ?? $permission->name));
-          @else
-          $('#description').val(@json(old('description')));
-        $('#name').val(@json(old('name')));
-          @endisset
-      });
+        $(document).ready(function() {
+            @isset($permission)
+            $('#description').val(@json(old('description') ?? $permission->description));
+            $('#name').val(@json(old('name') ?? $permission->name));
+            @else
+            $('#description').val(@json(old('description')));
+            $('#name').val(@json(old('name')));
+            @endisset
+        });
     </script>
 @endsection

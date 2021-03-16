@@ -14,26 +14,26 @@
                 @endcan
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" id="type" name="type" onChange="Search()">
+                        <select class="form-control" id="type" name="type">
                             <option value="" hidden>类型</option>
                             <option value="1">流量包</option>
                             <option value="2">套餐</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <select class="form-control" id="status" name="status" onChange="Search()">
+                        <select class="form-control" id="status" name="status">
                             <option value="" hidden>状态</option>
                             <option value="1">上架</option>
                             <option value="0">下架</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.goods.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -131,45 +131,41 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#type').val({{Request::input('type')}});
-        $('#status').val({{Request::input('status')}});
-      });
+        $(document).ready(function() {
+            $('#type').val({{Request::query('type')}});
+            $('#status').val({{Request::query('status')}});
 
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.goods.index')}}?type=' + $('#type option:selected').val() + '&status=' +
-            $('#status option:selected').val();
-      }
-
-      @can('admin.goods.destroy')
-      // 删除商品
-      function delGoods(url, name) {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '确定删除商品 【' + name + '】 ?',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '取消',
-          confirmButtonText: '确定',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              url: url,
-              method: 'DELETE',
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
-          }
+            $('select').on('change', function() { this.form.submit(); });
         });
-      }
+
+        @can('admin.goods.destroy')
+        // 删除商品
+        function delGoods(url, name) {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '确定删除商品 【' + name + '】 ?',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: url,
+                        method: 'DELETE',
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
+        }
         @endcan
     </script>
 @endsection

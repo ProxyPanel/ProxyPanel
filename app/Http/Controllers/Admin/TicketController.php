@@ -18,17 +18,15 @@ class TicketController extends Controller
     // 工单列表
     public function index(Request $request)
     {
-        $email = $request->input('email');
-
         $query = Ticket::where(function ($query) {
             $query->whereAdminId(Auth::id())->orwhere('admin_id');
         });
 
-        if (isset($email)) {
+        $request->whenFilled('email', function ($email) use ($query) {
             $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', '%'.$email.'%');
+                $query->where('email', 'like', "%{$email}%");
             });
-        }
+        });
 
         return view('admin.ticket.index', ['ticketList' => $query->latest()->paginate(10)->appends($request->except('page'))]);
     }

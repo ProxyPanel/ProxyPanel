@@ -185,94 +185,94 @@
     <script src="/assets/global/js/Plugin/ascolorpicker.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
-      $('[data-toggle="switch"]').bootstrapSwitch();
-      @isset($good)
-      $(document).ready(function() {
-        const type = $('input[name=\'type\']');
-        $('#id').val('{{$good->id}}');
-        $("input[name='type'][value='{{$good->type}}']").click();
-        type.attr('disabled', true);
-        $('#name').val('{{$good->name}}');
-        $('#price').val('{{$good->price}}');
-        $('#level').selectpicker('val', '{{$good->level}}');
-          @if ($good->type == 2)
-          $('#renew').val('{{$good->renew}}');
-        $('#period').val('{{$good->period}}');
-        $('#days').val('{{$good->days}}').attr('disabled', true);
-          @endif
-          $('#invite_num').val('{{$good->invite_num}}');
-        $('#limit_num').val('{{$good->limit_num}}');
-          @if ($good->is_hot)
-          $('#is_hot').click();
-          @endif
-          @if ($good->status)
-          $('#status').click();
-          @endif
-          $('#sort').val('{{$good->sort}}');
-        $('#color').asColorPicker('val', '{{$good->color}}');
-        $('#description').val(@json($good->description));
-        $('#info').val(@json($good->info));
-        const trafficUnit = $('#traffic_unit');
-        const traffic = $('#traffic');
-          @if($good->traffic >= 1073741824)
-          traffic.val('{{$good->traffic/1073741824}}');
-        trafficUnit.selectpicker('val', '1073741824');
-          @elseif($good->traffic >= 1048576)
-          traffic.val('{{$good->traffic/1048576}}');
-        trafficUnit.selectpicker('val', '1048576');
-          @elseif($good->traffic >= 1024)
-          traffic.val('{{$good->traffic/1024}}');
-        trafficUnit.selectpicker('val', '1024');
-          @else
-          traffic.val('{{$good->traffic}}');
-          @endif
-          traffic.attr('disabled', true);
-        trafficUnit.attr('disabled', true).selectpicker('refresh');
-      });
-      @elseif(old('type'))
-      $(document).ready(function() {
-        const type = $('input[name=\'type\']');
-        $('#id').val('{{old('id')}}');
-        $("input[name='type'][value='{{old('type')}}']").click();
-        $('#name').val('{{old('name')}}');
-        $('#price').val('{{old('price')}}');
-        $('#level').selectpicker('val', '{{old('level')}}');
-          @if (old('type') == 2)
-          $('#renew').val('{{old('renew',0)}}');
-        $('#period').val('{{old('period',0)}}');
-        $('#days').val('{{old('days',0)}}');
-          @endif
-          $('#traffic').val('{{old('traffic')}}');
-        $('#traffic_unit').selectpicker('val', '{{old('traffic_unit')}}');
-        $('#invite_num').val('{{old('invite_num')}}');
-        $('#limit_num').val('{{old('limit_num')}}');
-          @if (old('is_hot'))
-          $('#is_hot').click();
-          @endif
-          @if (old('status'))
-          $('#status').click();
-          @endif
-          $('#sort').val('{{old('sort')}}');
-        $('#color').asColorPicker('val', '{{old('color')}}');
-        $('#description').val('{{old('description')}}');
-        $('#info').val('{{old('info')}}');
-      });
-      @else
-      $('#status').click();
+        $('[data-toggle="switch"]').bootstrapSwitch();
+        @isset($good)
+        $(document).ready(function() {
+            const type = $('input[name=\'type\']');
+            $('#id').val('{{$good->id}}');
+            $("input[name='type'][value='{{$good->type}}']").click();
+            type.attr('disabled', true);
+            $('#name').val('{{$good->name}}');
+            $('#price').val('{{$good->price}}');
+            $('#level').selectpicker('val', '{{$good->level}}');
+            @if ($good->type == 2)
+            $('#renew').val('{{$good->renew}}');
+            $('#period').val('{{$good->period}}');
+            $('#days').val('{{$good->days}}').attr('disabled', true);
+            @endif
+            $('#invite_num').val('{{$good->invite_num}}');
+            $('#limit_num').val('{{$good->limit_num}}');
+            @if ($good->is_hot)
+            $('#is_hot').click();
+            @endif
+            @if ($good->status)
+            $('#status').click();
+            @endif
+            $('#sort').val('{{$good->sort}}');
+            $('#color').asColorPicker('val', '{{$good->color}}');
+            $('#description').val(@json($good->description));
+            $('#info').val(@json($good->info));
+            const trafficUnit = $('#traffic_unit');
+            const traffic = $('#traffic');
+            @if($good->traffic >= 1073741824)
+            traffic.val('{{$good->traffic/1073741824}}');
+            trafficUnit.selectpicker('val', '1073741824');
+            @elseif($good->traffic >= 1048576)
+            traffic.val('{{$good->traffic/1048576}}');
+            trafficUnit.selectpicker('val', '1048576');
+            @elseif($good->traffic >= 1024)
+            traffic.val('{{$good->traffic/1024}}');
+            trafficUnit.selectpicker('val', '1024');
+            @else
+            traffic.val('{{$good->traffic}}');
+            @endif
+            traffic.attr('disabled', true);
+            trafficUnit.attr('disabled', true).selectpicker('refresh');
+        });
+        @elseif(old('type'))
+        $(document).ready(function() {
+            const type = $('input[name=\'type\']');
+            $('#id').val('{{old('id')}}');
+            $("input[name='type'][value='{{old('type')}}']").click();
+            $('#name').val('{{old('name')}}');
+            $('#price').val('{{old('price')}}');
+            $('#level').selectpicker('val', '{{old('level')}}');
+            @if (old('type') == 2)
+            $('#renew').val('{{old('renew',0)}}');
+            $('#period').val('{{old('period',0)}}');
+            $('#days').val('{{old('days',0)}}');
+            @endif
+            $('#traffic').val('{{old('traffic')}}');
+            $('#traffic_unit').selectpicker('val', '{{old('traffic_unit')}}');
+            $('#invite_num').val('{{old('invite_num')}}');
+            $('#limit_num').val('{{old('limit_num')}}');
+            @if (old('is_hot'))
+            $('#is_hot').click();
+            @endif
+            @if (old('status'))
+            $('#status').click();
+            @endif
+            $('#sort').val('{{old('sort')}}');
+            $('#color').asColorPicker('val', '{{old('color')}}');
+            $('#description').val('{{old('description')}}');
+            $('#info').val('{{old('info')}}');
+        });
+        @else
+        $('#status').click();
 
-      @endisset
+        @endisset
 
-      function itemControl(value) {
-        if (value === 1) {
-          $('.package-renew').hide();
-        } else {
-          $('.package-renew').show();
+        function itemControl(value) {
+            if (value === 1) {
+                $('.package-renew').hide();
+            } else {
+                $('.package-renew').show();
+            }
         }
-      }
 
-      // 选择商品类型
-      $('input[name=\'type\']').change(function() {
-        itemControl(parseInt($(this).val()));
-      });
+        // 选择商品类型
+        $('input[name=\'type\']').change(function() {
+            itemControl(parseInt($(this).val()));
+        });
     </script>
 @endsection

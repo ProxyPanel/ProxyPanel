@@ -80,40 +80,40 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      // 生成邀请码
-      function makeInvite() {
-        $.ajax({
-          method: 'POST',
-          dataType: 'json',
-          url: '{{route('createInvite')}}',
-          data: {_token: '{{csrf_token()}}'},
-          success: function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());
-            } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-            }
-          },
-        });
-        return false;
-      }
+        // 生成邀请码
+        function makeInvite() {
+            $.ajax({
+                method: 'POST',
+                dataType: 'json',
+                url: '{{route('createInvite')}}',
+                data: {_token: '{{csrf_token()}}'},
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+            });
+            return false;
+        }
 
-      const clipboard = new ClipboardJS('.mt-clipboard');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '{{trans('common.copy.success')}}',
-          icon: 'success',
-          timer: 1300,
-          showConfirmButton: false,
+        const clipboard = new ClipboardJS('.mt-clipboard');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '{{trans('common.copy.failed')}}',
-          icon: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

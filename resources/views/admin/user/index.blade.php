@@ -30,24 +30,24 @@
                 @endcanany
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-xxl-1 col-lg-1 col-md-1 col-sm-4">
-                        <input type="number" class="form-control" id="id" name="id" value="{{Request::input('id')}}" placeholder="ID"/>
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" id="email" name="email" value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" id="wechat" name="wechat" value="{{Request::input('wechat')}}" placeholder="微信"/>
+                        <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="微信"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="number" class="form-control" id="qq" name="qq" value="{{Request::input('qq')}}" placeholder="QQ"/>
+                        <input type="number" class="form-control" name="qq" value="{{Request::query('qq')}}" placeholder="QQ"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 col-md-2 col-sm-4">
-                        <input type="number" class="form-control" id="port" name="port" value="{{Request::input('port')}}" placeholder="端口"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="端口"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="group" name="group" onChange="Search()">
+                        <select class="form-control" id="group" name="group">
                             <option value="" hidden>用户分组</option>
                             @foreach($userGroups as $key => $group)
                                 <option value="{{$key}}">{{$group}}</option>
@@ -55,7 +55,7 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="level" name="level" onChange="Search()">
+                        <select class="form-control" id="level" name="level">
                             <option value="" hidden>用户等级</option>
                             @foreach($levels as $key => $level)
                                 <option value="{{$key}}">{{$level}}</option>
@@ -63,7 +63,7 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="status" name="status" onChange="Search()">
+                        <select class="form-control" id="status" name="status">
                             <option value="" hidden>账号状态</option>
                             <option value="-1">禁用</option>
                             <option value="0">未激活</option>
@@ -71,22 +71,22 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="enable" name="enable" onChange="Search()">
+                        <select class="form-control" id="enable" name="enable">
                             <option value="" hidden>代理状态</option>
                             <option value="1">启用</option>
                             <option value="0">禁用</option>
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.user.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户名</th>
+                        <th> 用户账号</th>
                         <th> 余额</th>
                         <th> 端口</th>
                         <th> 订阅码</th>
@@ -216,138 +216,124 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#group').val({{Request::input('group')}});
-        $('#level').val({{Request::input('level')}});
-        $('#pay_way').val({{Request::input('pay_way')}});
-        $('#status').val({{Request::input('status')}});
-        $('#enable').val({{Request::input('enable')}});
-      });
+        $(document).ready(function() {
+            $('#group').val({{Request::query('group')}});
+            $('#level').val({{Request::query('level')}});
+            $('#status').val({{Request::query('status')}});
+            $('#enable').val({{Request::query('enable')}});
 
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.user.index')}}' + '?id=' + $('#id').val() + '&email=' + $('#email').val() + '&wechat=' +
-            $('#wechat').val() + '&qq=' + $('#qq').val() + '&port=' + $('#port').val() + '&group=' + $('#group option:selected').val() + '&level='
-            + $('#level option:selected').val() + '&status=' + $('#status option:selected').val() + '&enable=' + $('#enable option:selected').val();
-      }
-
-      @can('admin.user.batch')
-      // 批量生成账号
-      function batchAddUsers() {
-        swal.fire({
-          title: '用户生成数量',
-          input: 'range',
-          inputAttributes: {min: 1, max: 10},
-          inputValue: 1,
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
-            });
-          }
+            $('select').on('change', function() { this.form.submit(); });
         });
-      }
-      @endcan
 
-      @can('admin.user.destroy')
-      // 删除账号
-      function delUser(url, email) {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '确定删除用户 【' + email + '】 ？',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: url,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+        @can('admin.user.batch')
+        // 批量生成账号
+        function batchAddUsers() {
+            swal.fire({
+                title: '用户生成数量',
+                input: 'range',
+                inputAttributes: {min: 1, max: 10},
+                inputValue: 1,
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                        }
+                    });
                 }
-              },
             });
-          }
-        });
-      }
-      @endcan
+        }
+        @endcan
 
-      @can('admin.user.reset')
-      // 重置流量
-      function resetTraffic(id, email) {
-        swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '确定重置 【' + email + '】 流量吗？',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
+        @can('admin.user.destroy')
+        // 删除账号
+        function delUser(url, email) {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '确定删除用户 【' + email + '】 ？',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: url,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
             });
-          }
-        });
-      }
-      @endcan
+        }
+        @endcan
 
-      @can('admin.user.switch')
-      // 切换用户身份
-      function switchToUser(id) {
-        $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
-          } else {
-            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-          }
-        });
-      }
-      @endcan
+        @can('admin.user.reset')
+        // 重置流量
+        function resetTraffic(id, email) {
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '确定重置 【' + email + '】 流量吗？',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                        }
+                    });
+                }
+            });
+        }
+        @endcan
 
-      const clipboard = new ClipboardJS('.copySubscribeLink');
-      clipboard.on('success', function() {
-        swal.fire({
-          title: '{{trans('common.copy.success')}}',
-          icon: 'success',
-          timer: 1000,
-          showConfirmButton: false,
+        @can('admin.user.switch')
+        // 切换用户身份
+        function switchToUser(id) {
+            $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
+                } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+            });
+        }
+        @endcan
+
+        const clipboard = new ClipboardJS('.copySubscribeLink');
+        clipboard.on('success', function() {
+            swal.fire({
+                title: '{{trans('common.copy.success')}}',
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+            });
         });
-      });
-      clipboard.on('error', function() {
-        swal.fire({
-          title: '{{trans('common.copy.failed')}}',
-          icon: 'error',
-          timer: 1500,
-          showConfirmButton: false,
+        clipboard.on('error', function() {
+            swal.fire({
+                title: '{{trans('common.copy.failed')}}',
+                icon: 'error',
+                timer: 1500,
+                showConfirmButton: false,
+            });
         });
-      });
     </script>
 @endsection

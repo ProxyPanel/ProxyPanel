@@ -81,7 +81,7 @@
                                         </button>
                                         <div class="dropdown-menu" role="menu">
                                             @can('admin.node.edit')
-                                                <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::input('page', 1)])}}" role="menuitem">
+                                                <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::query('page', 1)])}}" role="menuitem">
                                                     <i class="icon wb-edit" aria-hidden="true"></i> 编辑
                                                 </a>
                                             @endcan
@@ -150,146 +150,146 @@
         @can('admin.node.check')
         // 节点连通性测试
         function checkNode(id) {
-          $.ajax({
-            method: 'POST',
-            url: '{{route('admin.node.check', '')}}/' + id,
-            data: {_token: '{{csrf_token()}}'},
-            beforeSend: function() {
-              $('#node' + id).removeClass('wb-signal').addClass('wb-loop icon-spin');
-            },
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({
-                  title: ret.title,
-                  icon: 'info',
-                  html: '<table class="my-20"><thead class="thead-default"><tr><th> ICMP </th> <th> TCP </th></thead><tbody><tr><td>' +
-                      ret.message[0] + '</td><td>' + ret.message[1] + '</td></tr></tbody></table>',
-                  showConfirmButton: false,
-                });
-              } else {
-                swal.fire({title: ret.title, text: ret.message, icon: 'error'});
-              }
-            },
-            complete: function() {
-              $('#node' + id).removeClass('wb-loop icon-spin').addClass('wb-signal');
-            },
-          });
+            $.ajax({
+                method: 'POST',
+                url: '{{route('admin.node.check', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                beforeSend: function() {
+                    $('#node' + id).removeClass('wb-signal').addClass('wb-loop icon-spin');
+                },
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({
+                            title: ret.title,
+                            icon: 'info',
+                            html: '<table class="my-20"><thead class="thead-default"><tr><th> ICMP </th> <th> TCP </th></thead><tbody><tr><td>' +
+                                ret.message[0] + '</td><td>' + ret.message[1] + '</td></tr></tbody></table>',
+                            showConfirmButton: false,
+                        });
+                    } else {
+                        swal.fire({title: ret.title, text: ret.message, icon: 'error'});
+                    }
+                },
+                complete: function() {
+                    $('#node' + id).removeClass('wb-loop icon-spin').addClass('wb-signal');
+                },
+            });
         }
         @endcan
 
         @can('admin.node.ping')
         // Ping节点获取延迟
         function pingNode(id) {
-          $.ajax({
-            method: 'POST',
-            url: '{{route('admin.node.ping', '')}}/' + id,
-            data: {_token: '{{csrf_token()}}'},
-            beforeSend: function() {
-              $('#ping' + id).removeClass('wb-order').addClass('wb-loop icon-spin');
-            },
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({
-                  icon: 'info',
-                  html: ret.message,
-                  showConfirmButton: false,
-                });
-              } else {
-                swal.fire({title: ret.message, icon: 'error'});
-              }
-            },
-            complete: function() {
-              $('#ping' + id).removeClass('wb-loop icon-spin').addClass('wb-order');
-            },
-          });
+            $.ajax({
+                method: 'POST',
+                url: '{{route('admin.node.ping', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                beforeSend: function() {
+                    $('#ping' + id).removeClass('wb-order').addClass('wb-loop icon-spin');
+                },
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({
+                            icon: 'info',
+                            html: ret.message,
+                            showConfirmButton: false,
+                        });
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'});
+                    }
+                },
+                complete: function() {
+                    $('#ping' + id).removeClass('wb-loop icon-spin').addClass('wb-order');
+                },
+            });
         }
         @endcan
 
         @can('admin.node.reload')
         // 发送节点重载请求
         function reload(id) {
-          swal.fire({
-            text: '确定重载节点?',
-            icon: 'question',
-            showCancelButton: true,
-            cancelButtonText: '{{trans('common.close')}}',
-            confirmButtonText: '{{trans('common.confirm')}}',
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                method: 'POST',
-                url: '{{route('admin.node.reload', '')}}/' + id,
-                data: {_token: '{{csrf_token()}}'},
-                beforeSend: function() {
-                  $('#reload' + id).removeClass('wb-reload').addClass('wb-loop icon-spin');
-                },
-                success: function(ret) {
-                  if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
-                  } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                  }
-                },
-                complete: function() {
-                  $('#reload' + id).removeClass('wb-loop icon-spin').addClass('wb-reload');
-                },
-              });
-            }
-          });
+            swal.fire({
+                text: '确定重载节点?',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('admin.node.reload', '')}}/' + id,
+                        data: {_token: '{{csrf_token()}}'},
+                        beforeSend: function() {
+                            $('#reload' + id).removeClass('wb-reload').addClass('wb-loop icon-spin');
+                        },
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'});
+                            }
+                        },
+                        complete: function() {
+                            $('#reload' + id).removeClass('wb-loop icon-spin').addClass('wb-reload');
+                        },
+                    });
+                }
+            });
         }
         @endcan
 
         @can('admin.node.geo')
         // 刷新节点地理信息
         function refreshGeo(id = 0) {
-          $.ajax({
-            method: 'GET',
-            url: '{{route('admin.node.geo', '')}}/' + id,
-            data: {_token: '{{csrf_token()}}'},
-            beforeSend: function() {
-              $('#geo' + id).removeClass('wb-map').addClass('wb-loop icon-spin');
-            },
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
-              } else {
-                swal.fire({title: ret.message, icon: 'error'});
-              }
-            },
-            complete: function() {
-              $('#geo' + id).removeClass('wb-loop icon-spin').addClass('wb-map');
-            },
-          });
+            $.ajax({
+                method: 'GET',
+                url: '{{route('admin.node.geo', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                beforeSend: function() {
+                    $('#geo' + id).removeClass('wb-map').addClass('wb-loop icon-spin');
+                },
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'info', showConfirmButton: false});
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'});
+                    }
+                },
+                complete: function() {
+                    $('#geo' + id).removeClass('wb-loop icon-spin').addClass('wb-map');
+                },
+            });
         }
         @endcan
 
         @can('admin.node.destroy')
         // 删除节点
         function delNode(id, name) {
-          swal.fire({
-            title: '{{trans('common.warning')}}',
-            text: '确定删除节点 【' + name + '】 ?',
-            icon: 'warning',
-            showCancelButton: true,
-            cancelButtonText: '{{trans('common.close')}}',
-            confirmButtonText: '{{trans('common.confirm')}}',
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                method: 'DELETE',
-                url: '{{route('admin.node.destroy', '')}}/' + id,
-                data: {_token: '{{csrf_token()}}'},
-                dataType: 'json',
-                success: function(ret) {
-                  if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                  } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                  }
-                },
-              });
-            }
-          });
+            swal.fire({
+                title: '{{trans('common.warning')}}',
+                text: '确定删除节点 【' + name + '】 ?',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: '{{route('admin.node.destroy', '')}}/' + id,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
         }
         @endcan
     </script>

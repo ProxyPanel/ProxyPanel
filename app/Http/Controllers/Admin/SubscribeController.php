@@ -19,24 +19,18 @@ class SubscribeController extends Controller
     // 订阅码列表
     public function index(Request $request)
     {
-        $user_id = $request->input('user_id');
-        $email = $request->input('email');
-        $status = $request->input('status');
-
         $query = UserSubscribe::with(['user:id,email']);
 
-        if (isset($user_id)) {
-            $query->whereUserId($user_id);
-        }
-
-        if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) {
-                $q->where('email', 'like', '%'.$email.'%');
+        $request->whenFilled('email', function ($value) use ($query) {
+            $query->whereHas('user', function ($query) use ($value) {
+                $query->where('email', 'like', "%{$value}%");
             });
-        }
+        });
 
-        if (isset($status)) {
-            $query->whereStatus($status);
+        foreach (['user_id', 'status'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, $value);
+            });
         }
 
         return view('admin.subscribe.index', ['subscribeList' => $query->latest()->paginate(20)->appends($request->except('page'))]);

@@ -19,12 +19,12 @@
                 @endcanany
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
-                        <input type="text" class="form-control" name="sn" id="sn" value="{{Request::input('sn')}}" placeholder="券码" autocomplete="off"/>
+                        <input type="text" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="券码" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
-                        <select class="form-control" name="type" id="type" onChange="Search()">
+                        <select class="form-control" name="type" id="type">
                             <option value="" hidden>类型</option>
                             <option value="1">现金券</option>
                             <option value="2">折扣券</option>
@@ -32,7 +32,7 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
-                        <select class="form-control" name="status" id="status" onChange="Search()">
+                        <select class="form-control" name="status" id="status">
                             <option value="" hidden>状态</option>
                             <option value="0">生效中</option>
                             <option value="1">已使用</option>
@@ -40,10 +40,10 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -122,72 +122,59 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#sn').val({{Request::input('sn')}});
-        $('#type').val({{Request::input('type')}});
-        $('#status').val({{Request::input('status')}});
-      });
+        $(document).ready(function() {
+            $('#type').val({{Request::query('type')}});
+            $('#status').val({{Request::query('status')}});
 
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.coupon.index')}}?sn=' + $('#sn').val() + '&type=' + $('#type').val() + '&status=' +
-            $('#status').val();
-      }
-
-      @can('admin.coupon.export')
-      // 批量导出卡券
-      function exportCoupon() {
-        swal.fire({
-          title: '卡券导出',
-          text: '确定导出所有卡券吗？',
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            window.location.href = '{{route('admin.coupon.export')}}';
-          }
+            $('select').on('change', function() { this.form.submit(); });
         });
-      }
-      @endcan
 
-      @can('admin.coupon.destroy')
-      // 删除卡券
-      function delCoupon(id, name) {
-        swal.fire({
-          title: '确定删除卡券 【' + name + '】 吗？',
-          icon: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: '{{route('admin.coupon.destroy', '')}}/' + id,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+        @can('admin.coupon.export')
+        // 批量导出卡券
+        function exportCoupon() {
+            swal.fire({
+                title: '卡券导出',
+                text: '确定导出所有卡券吗？',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    window.location.href = '{{route('admin.coupon.export')}}';
                 }
-              },
             });
-          }
-        });
-      }
+        }
+        @endcan
+
+        @can('admin.coupon.destroy')
+        // 删除卡券
+        function delCoupon(id, name) {
+            swal.fire({
+                title: '确定删除卡券 【' + name + '】 吗？',
+                icon: 'question',
+                allowEnterKey: false,
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: '{{route('admin.coupon.destroy', '')}}/' + id,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
+        }
         @endcan
     </script>
 @endsection

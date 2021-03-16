@@ -75,48 +75,48 @@
 @endsection
 @section('javascript')
     <script>
-      // 转换
-      function Convert() {
-        const content = $('#content').val();
+        // 转换
+        function Convert() {
+            const content = $('#content').val();
 
-        if (content.trim() === '') {
-          swal.fire({title: '请填入要转换的配置信息', icon: 'warning', timer: 1000, showConfirmButton: false});
-          return;
-        }
-        swal.fire({
-          title: '确定继续转换吗？',
-          icon: 'question',
-          allowEnterKey: false,
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'POST',
-              url: '{{route('admin.tools.convert')}}',
-              dataType: 'json',
-              data: {
-                _token: '{{csrf_token()}}',
-                method: $('#method').val(),
-                transfer_enable: $('#transfer_enable').val(),
-                protocol: $('#protocol').val(),
-                protocol_param: $('#protocol_param').val(),
-                obfs: $('#obfs').val(),
-                obfs_param: $('#obfs_param').val(),
-                content: content,
-              },
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  $('#result').val(ret.data);
-                } else {
-                  $('#result').val(ret.message);
+            if (content.trim() === '') {
+                swal.fire({title: '请填入要转换的配置信息', icon: 'warning', timer: 1000, showConfirmButton: false});
+                return;
+            }
+            swal.fire({
+                title: '确定继续转换吗？',
+                icon: 'question',
+                allowEnterKey: false,
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('admin.tools.convert')}}',
+                        dataType: 'json',
+                        data: {
+                            _token: '{{csrf_token()}}',
+                            method: $('#method').val(),
+                            transfer_enable: $('#transfer_enable').val(),
+                            protocol: $('#protocol').val(),
+                            protocol_param: $('#protocol_param').val(),
+                            obfs: $('#obfs').val(),
+                            obfs_param: $('#obfs_param').val(),
+                            content: content,
+                        },
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                $('#result').val(ret.data);
+                            } else {
+                                $('#result').val(ret.message);
+                            }
+                        },
+                    });
                 }
-              },
             });
-          }
-        });
-        return false;
-      }
+            return false;
+        }
     </script>
 @endsection

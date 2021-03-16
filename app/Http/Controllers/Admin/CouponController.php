@@ -20,22 +20,16 @@ class CouponController extends Controller
     // 优惠券列表
     public function index(Request $request)
     {
-        $sn = $request->input('sn');
-        $type = $request->input('type');
-        $status = $request->input('status');
-
         $query = Coupon::query();
 
-        if (isset($sn)) {
-            $query->where('sn', 'like', '%'.$sn.'%');
-        }
+        $request->whenFilled('sn', function ($sn) use ($query) {
+            $query->where('sn', 'like', "%{$sn}%");
+        });
 
-        if (isset($type)) {
-            $query->whereType($type);
-        }
-
-        if (isset($status)) {
-            $query->whereStatus($status);
+        foreach (['type', 'status'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, $value);
+            });
         }
 
         return view('admin.coupon.index', ['couponList' => $query->latest()->paginate(15)->appends($request->except('page'))]);

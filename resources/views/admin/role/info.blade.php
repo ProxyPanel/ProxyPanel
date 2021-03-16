@@ -34,13 +34,13 @@
                             <span class="text-help"> 唯一标识名称，例如：Administrator </span>
                         </div>
                     </div>
-                        <div class="form-group row">
-                            <label class="col-md-2 col-sm-3 col-form-label" for="description">描述名称</label>
-                            <div class="col-md-5 col-sm-9">
-                                <input type="text" class="form-control" name="description" id="description" required/>
-                                <span class="text-help"> 面板显示名称，例如：管理员 </span>
-                            </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-sm-3 col-form-label" for="description">描述名称</label>
+                        <div class="col-md-5 col-sm-9">
+                            <input type="text" class="form-control" name="description" id="description" required/>
+                            <span class="text-help"> 面板显示名称，例如：管理员 </span>
                         </div>
+                    </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-sm-3 col-form-label" for="permissions">选择权限</label>
                         <div class="col-md-9 col-sm-9">
@@ -70,56 +70,56 @@
     <script>
         @isset($role)
         $(document).ready(function() {
-          $('#description').val('{{$role->description}}');
-          $('#name').val('{{$role->name}}');
-          $('#permissions').multiSelect('select',@json($role->permissions->pluck('name')));
+            $('#description').val('{{$role->description}}');
+            $('#name').val('{{$role->name}}');
+            $('#permissions').multiSelect('select',@json($role->permissions->pluck('name')));
         });
         @endisset
         // 权限列表
         $('#permissions').multiSelect({
-          selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配规则，此处可搜索\'>',
-          selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配规则，此处可搜索\'>',
-          afterInit: function() {
-            const that = this,
-                $selectableSearch = that.$selectableUl.prev(),
-                $selectionSearch = that.$selectionUl.prev(),
-                selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
-                selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
+            selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'待分配规则，此处可搜索\'>',
+            selectionHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'已分配规则，此处可搜索\'>',
+            afterInit: function() {
+                const that = this,
+                    $selectableSearch = that.$selectableUl.prev(),
+                    $selectionSearch = that.$selectionUl.prev(),
+                    selectableSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selectable:not(.ms-selected)',
+                    selectionSearchString = '#' + that.$container.attr('id') + ' .ms-elem-selection.ms-selected';
 
-            that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function(e) {
-              if (e.which === 40) {
-                that.$selectableUl.focus();
-                return false;
-              }
-            });
+                that.qs1 = $selectableSearch.quicksearch(selectableSearchString).on('keydown', function(e) {
+                    if (e.which === 40) {
+                        that.$selectableUl.focus();
+                        return false;
+                    }
+                });
 
-            that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function(e) {
-              if (e.which === 40) {
-                that.$selectionUl.focus();
-                return false;
-              }
-            });
-          },
-          afterSelect: function() {
-            this.qs1.cache();
-            this.qs2.cache();
-          },
-          afterDeselect: function() {
-            this.qs1.cache();
-            this.qs2.cache();
-          },
+                that.qs2 = $selectionSearch.quicksearch(selectionSearchString).on('keydown', function(e) {
+                    if (e.which === 40) {
+                        that.$selectionUl.focus();
+                        return false;
+                    }
+                });
+            },
+            afterSelect: function() {
+                this.qs1.cache();
+                this.qs2.cache();
+            },
+            afterDeselect: function() {
+                this.qs1.cache();
+                this.qs2.cache();
+            },
         });
 
         // 全选
         $('#select-all').click(function() {
-          $('#permissions').multiSelect('select_all');
-          return false;
+            $('#permissions').multiSelect('select_all');
+            return false;
         });
 
         // 反选
         $('#deselect-all').click(function() {
-          $('#permissions').multiSelect('deselect_all');
-          return false;
+            $('#permissions').multiSelect('deselect_all');
+            return false;
         });
     </script>
 @endsection

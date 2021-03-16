@@ -11,9 +11,10 @@
             @endif
             @csrf
             <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
-            <input type="hidden" name="aff" value="{{Request::input('aff')}}"/>
+            <input type="hidden" name="aff" value="{{Request::query('aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username') ? : Request::input('username')}}" autocomplete="off" required/>
+                <input type="text" class="form-control" name="username" id="username" 
+		value="{{Request::old('username') ? : Request::query('username')}}" autocomplete="off" required/>
                 <label class="floating-label" for="username">{{trans('validation.attributes.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
@@ -59,7 +60,7 @@
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
-                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::input('code')}}"
+                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::query('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
                         {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
@@ -147,67 +148,67 @@
     <script>
         @if($emailList)
         function getEmail() {
-          let email = $('#emailHead').val().trim();
-          const emailTail = $('#emailTail').val();
-          if (email === '') {
-            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
-            return false;
-          }
-          email += '@' + emailTail;
-          $('#email').val(email);
-          return email;
+            let email = $('#emailHead').val().trim();
+            const emailTail = $('#emailTail').val();
+            if (email === '') {
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+                return false;
+            }
+            email += '@' + emailTail;
+            $('#email').val(email);
+            return email;
         }
         @endif
 
         // 发送注册验证码
         function sendVerifyCode() {
-          let flag = true; // 请求成功与否标记
-          let email = $('#email').val().trim();
+            let flag = true; // 请求成功与否标记
+            let email = $('#email').val().trim();
             @if($emailList)
                 email = getEmail();
             @endif
 
             if (email === '') {
-              swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
-              return false;
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+                return false;
             }
 
-          $.ajax({
-            method: 'POST',
-            url: '{{route('sendVerificationCode')}}',
-            dataType: 'json',
-            data: {_token: '{{csrf_token()}}', email: email},
-            success: function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success'});
-                $('#sendCode').attr('disabled', true);
-                flag = true;
-              } else {
-                swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
-                $('#sendCode').attr('disabled', false);
-                flag = false;
-              }
-            },
-            error: function() {
-              swal.fire({title: '发送失败', icon: 'error'});
-              flag = false;
-            },
-          });
+            $.ajax({
+                method: 'POST',
+                url: '{{route('sendVerificationCode')}}',
+                dataType: 'json',
+                data: {_token: '{{csrf_token()}}', email: email},
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success'});
+                        $('#sendCode').attr('disabled', true);
+                        flag = true;
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
+                        $('#sendCode').attr('disabled', false);
+                        flag = false;
+                    }
+                },
+                error: function() {
+                    swal.fire({title: '发送失败', icon: 'error'});
+                    flag = false;
+                },
+            });
 
-          // 请求成功才开始倒计时
-          if (flag) {
-            // 60秒后才能重新申请发送
-            let left_time = 60;
-            const tt = window.setInterval(function() {
-              left_time--;
-              if (left_time <= 0) {
-                window.clearInterval(tt);
-                $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
-              } else {
-                $('#sendCode').text(left_time + ' s');
-              }
-            }, 1000);
-          }
+            // 请求成功才开始倒计时
+            if (flag) {
+                // 60秒后才能重新申请发送
+                let left_time = 60;
+                const tt = window.setInterval(function() {
+                    left_time--;
+                    if (left_time <= 0) {
+                        window.clearInterval(tt);
+                        $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
+                    } else {
+                        $('#sendCode').text(left_time + ' s');
+                    }
+                }, 1000);
+            }
         }
 
         $('#register-form').submit(function(event) {
@@ -217,18 +218,18 @@
 
             @switch(sysConfig('is_captcha'))
             @case(3)
-          // 先检查Google reCAPTCHA有没有进行验证
-          if ($('#g-recaptcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-            return false;
-          }
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#g-recaptcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+                return false;
+            }
             @break
             @case(4)
-          // 先检查Google reCAPTCHA有没有进行验证
-          if ($('#h-captcha-response').val() === '') {
-            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-            return false;
-          }
+            // 先检查Google reCAPTCHA有没有进行验证
+            if ($('#h-captcha-response').val() === '') {
+                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+                return false;
+            }
             @break
             @default
             @endswitch

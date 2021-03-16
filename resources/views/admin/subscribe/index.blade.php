@@ -9,27 +9,25 @@
                 <h3 class="panel-title">订阅列表</h3>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="user_id" id="user_id"
-                               value="{{Request::input('user_id')}}" placeholder="ID"/>
+                        <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="email" id="email"
-                               value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
-                        <select name="status" id="status" class="form-control" onChange="Search()">
+                        <select name="status" id="status" class="form-control" onchange="this.form.submit()">
                             <option value="" hidden>状态</option>
                             <option value="0">禁用</option>
                             <option value="1">正常</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.subscribe.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -99,39 +97,25 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#status').val({{Request::input('status')}});
-      });
-
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
-
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.subscribe.index')}}' + '?user_id=' + $('#user_id').val() + '&email=' + $('#email').val() + '&status=' +
-            $('#status option:selected').val();
-      }
-
-      @can('admin.subscribe.set')
-      // 启用禁用用户的订阅
-      function setSubscribeStatus(url) {
-        $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-              window.location.reload();
-            });
-          } else {
-            swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
-              window.location.reload();
-            });
-          }
+        $(document).ready(function() {
+            $('#status').val({{Request::query('status')}});
         });
-      }
+
+        @can('admin.subscribe.set')
+        // 启用禁用用户的订阅
+        function setSubscribeStatus(url) {
+            $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
+                        window.location.reload();
+                    });
+                }
+            });
+        }
         @endcan
     </script>
 @endsection

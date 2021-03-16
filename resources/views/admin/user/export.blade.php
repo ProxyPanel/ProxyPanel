@@ -80,44 +80,44 @@
     <script src="/assets/global/js/Plugin/webui-popover.js"></script>
     @can('admin.user.exportProxy')
         <script>
-          function getInfo(id, type) {
-            $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
-                function(ret) {
-                  if (ret.status === 'success') {
-                    switch (type) {
-                      case 'code':
-                        swal.fire({
-                          html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
-                              '</textarea>' +
-                              '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
-                              ret.title + '</a>',
-                          showConfirmButton: false,
-                        });
-                        break;
-                      case 'qrcode':
-                        swal.fire({
-                          title: '{{trans('user.scan_qrcode')}}',
-                          html: '<div id="qrcode"></div>',
-                          onBeforeOpen: () => {
-                            $('#qrcode').qrcode({text: ret.data});
-                          },
-                          showConfirmButton: false,
-                        });
-                        break;
-                      case 'text':
-                        swal.fire({
-                          title: '{{trans('user.node.info')}}',
-                          html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
-                              '</textarea>',
-                          showConfirmButton: false,
-                        });
-                        break;
-                      default:
-                        swal.fire({title: ret.title, text: ret.data});
-                    }
-                  }
-                });
-          }
+            function getInfo(id, type) {
+                $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
+                    function(ret) {
+                        if (ret.status === 'success') {
+                            switch (type) {
+                                case 'code':
+                                    swal.fire({
+                                        html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
+                                            '</textarea>' +
+                                            '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
+                                            ret.title + '</a>',
+                                        showConfirmButton: false,
+                                    });
+                                    break;
+                                case 'qrcode':
+                                    swal.fire({
+                                        title: '{{trans('user.scan_qrcode')}}',
+                                        html: '<div id="qrcode"></div>',
+                                        onBeforeOpen: () => {
+                                            $('#qrcode').qrcode({text: ret.data});
+                                        },
+                                        showConfirmButton: false,
+                                    });
+                                    break;
+                                case 'text':
+                                    swal.fire({
+                                        title: '{{trans('user.node.info')}}',
+                                        html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
+                                            '</textarea>',
+                                        showConfirmButton: false,
+                                    });
+                                    break;
+                                default:
+                                    swal.fire({title: ret.title, text: ret.data});
+                            }
+                        }
+                    });
+            }
         </script>
     @endcan
 @endsection

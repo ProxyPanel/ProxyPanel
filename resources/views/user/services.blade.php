@@ -168,131 +168,131 @@
     <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
     <script>
-      function itemControl(value) {
-        if (value === 1) {
-          $('.charge_credit').show();
-          $('#change_btn').hide();
-          $('#charge_qrcode').hide();
-          $('#charge_coupon_code').hide();
-        } else if (value === 2) {
-          $('.charge_credit').hide();
-          $('#change_btn').hide();
-          $('#charge_qrcode').show();
-          $('#charge_coupon_code').hide();
-        } else {
-          $('.charge_credit').hide();
-          $('#charge_qrcode').hide();
-          $('#charge_coupon_code').show();
-          $('#change_btn').show();
+        function itemControl(value) {
+            if (value === 1) {
+                $('.charge_credit').show();
+                $('#change_btn').hide();
+                $('#charge_qrcode').hide();
+                $('#charge_coupon_code').hide();
+            } else if (value === 2) {
+                $('.charge_credit').hide();
+                $('#change_btn').hide();
+                $('#charge_qrcode').show();
+                $('#charge_coupon_code').hide();
+            } else {
+                $('.charge_credit').hide();
+                $('#charge_qrcode').hide();
+                $('#charge_coupon_code').show();
+                $('#change_btn').show();
+            }
         }
-      }
 
-      $(document).ready(function() {
-        let which_selected = 3;
-          @if(sysConfig('is_onlinePay'))
-              which_selected = 1;
-          @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-              which_selected = 2;
-          @endif
+        $(document).ready(function() {
+            let which_selected = 3;
+            @if(sysConfig('is_onlinePay'))
+                which_selected = 1;
+            @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
+                which_selected = 2;
+            @endif
 
-          itemControl(which_selected);
-        $('charge_type').val(which_selected);
-      });
-
-      // 切换充值方式
-      $('#charge_type').change(function() {
-        itemControl(parseInt($(this).val()));
-      });
-
-      // 重置流量
-      function resetTraffic() {
-        swal.fire({
-          title: '{{trans('user.reset_data.')}}',
-          text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-              } else {
-                swal.fire({
-                  title: ret.message,
-                  text: ret.data,
-                  icon: 'error',
-                }).then(() => window.location.reload());
-              }
-            });
-          }
+            itemControl(which_selected);
+            $('charge_type').val(which_selected);
         });
-      }
 
-      // 充值
-      function pay(method, pay_type) {
-        const paymentType = parseInt($('#charge_type').val() ?? 3);
-        const charge_coupon = $('#charge_coupon').val().trim();
-        const amount = parseInt($('#amount').val());
-        if (paymentType === 1) {
-          if (amount <= 0) {
-            swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
-            return false;
-          }
+        // 切换充值方式
+        $('#charge_type').change(function() {
+            itemControl(parseInt($(this).val()));
+        });
 
-          $.ajax({
-            method: 'POST',
-            url: '{{route('purchase')}}',
-            data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
-            dataType: 'json',
-            beforeSend: function() {
-              $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
-            },
-            success: function(ret) {
-              if (ret.status === 'fail') {
-                return false;
-              } else {
-                $('#charge_msg').show().html(ret.message);
-                if (ret.data) {
-                  window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
-                } else if (ret.url) {
-                  window.location.href = ret.url;
+        // 重置流量
+        function resetTraffic() {
+            swal.fire({
+                title: '{{trans('user.reset_data.')}}',
+                text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+                        if (ret.status === 'success') {
+                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                        } else {
+                            swal.fire({
+                                title: ret.message,
+                                text: ret.data,
+                                icon: 'error',
+                            }).then(() => window.location.reload());
+                        }
+                    });
                 }
-              }
-            },
-            error: function() {
-              $('#charge_msg').show().html("{{trans('user.error_response')}}");
-            },
-          });
-        } else if (paymentType === 3) {
-          if (charge_coupon === '') {
-            $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
-            $('#charge_coupon').focus();
-            return false;
-          }
-
-          $.ajax({
-            method: 'POST',
-            url: '{{route('recharge')}}',
-            data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
-            beforeSend: function() {
-              $('#charge_msg').show().html("{{trans('user.recharging')}}");
-            },
-            success: function(ret) {
-              if (ret.status === 'fail') {
-                $('#charge_msg').show().html(ret.message);
-                return false;
-              }
-
-              $('#charge_modal').modal('hide');
-              window.location.reload();
-            },
-            error: function() {
-              $('#charge_msg').show().html("{{trans('user.error_response')}}");
-            },
-          });
+            });
         }
-      }
+
+        // 充值
+        function pay(method, pay_type) {
+            const paymentType = parseInt($('#charge_type').val() ?? 3);
+            const charge_coupon = $('#charge_coupon').val().trim();
+            const amount = parseInt($('#amount').val());
+            if (paymentType === 1) {
+                if (amount <= 0) {
+                    swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
+                    return false;
+                }
+
+                $.ajax({
+                    method: 'POST',
+                    url: '{{route('purchase')}}',
+                    data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
+                    dataType: 'json',
+                    beforeSend: function() {
+                        $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
+                    },
+                    success: function(ret) {
+                        if (ret.status === 'fail') {
+                            return false;
+                        } else {
+                            $('#charge_msg').show().html(ret.message);
+                            if (ret.data) {
+                                window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
+                            } else if (ret.url) {
+                                window.location.href = ret.url;
+                            }
+                        }
+                    },
+                    error: function() {
+                        $('#charge_msg').show().html("{{trans('user.error_response')}}");
+                    },
+                });
+            } else if (paymentType === 3) {
+                if (charge_coupon === '') {
+                    $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
+                    $('#charge_coupon').focus();
+                    return false;
+                }
+
+                $.ajax({
+                    method: 'POST',
+                    url: '{{route('recharge')}}',
+                    data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
+                    beforeSend: function() {
+                        $('#charge_msg').show().html("{{trans('user.recharging')}}");
+                    },
+                    success: function(ret) {
+                        if (ret.status === 'fail') {
+                            $('#charge_msg').show().html(ret.message);
+                            return false;
+                        }
+
+                        $('#charge_modal').modal('hide');
+                        window.location.reload();
+                    },
+                    error: function() {
+                        $('#charge_msg').show().html("{{trans('user.error_response')}}");
+                    },
+                });
+            }
+        }
     </script>
 @endsection

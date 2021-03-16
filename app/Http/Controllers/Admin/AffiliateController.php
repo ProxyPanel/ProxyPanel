@@ -12,19 +12,16 @@ class AffiliateController extends Controller
     // 提现申请列表
     public function index(Request $request)
     {
-        $email = $request->input('email');
-        $status = $request->input('status');
-
         $query = ReferralApply::with('user:id,email');
-        if (isset($email)) {
-            $query->whereHas('user', static function ($q) use ($email) {
-                $q->where('email', 'like', '%'.$email.'%');
+        $request->whenFilled('email', function ($email) use ($query) {
+            $query->whereHas('user', function ($query) use ($email) {
+                $query->where('email', 'like', "%{$email}%");
             });
-        }
+        });
 
-        if ($status) {
+        $request->whenFilled('status', function ($status) use ($query) {
             $query->whereStatus($status);
-        }
+        });
 
         return view('admin.aff.index', ['applyList' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
@@ -60,27 +57,23 @@ class AffiliateController extends Controller
     // 用户返利流水记录
     public function rebate(Request $request)
     {
-        $invitee_email = $request->input('invitee_email');
-        $inviter_email = $request->input('inviter_email');
-        $status = $request->input('status');
-
         $query = ReferralLog::with(['invitee:id,email', 'inviter:id,email'])->orderBy('status')->latest();
 
-        if (isset($invitee_email)) {
-            $query->whereHas('invitee', static function ($q) use ($invitee_email) {
-                $q->where('email', 'like', '%'.$invitee_email.'%');
+        $request->whenFilled('invitee_email', function ($email) use ($query) {
+            $query->whereHas('invitee', function ($query) use ($email) {
+                $query->where('email', 'like', "%{$email}%");
             });
-        }
+        });
 
-        if (isset($inviter_email)) {
-            $query->whereHas('inviter', static function ($q) use ($inviter_email) {
-                $q->where('email', 'like', '%'.$inviter_email.'%');
+        $request->whenFilled('inviter_email', function ($email) use ($query) {
+            $query->whereHas('inviter', function ($query) use ($email) {
+                $query->where('email', 'like', "%{$email}%");
             });
-        }
+        });
 
-        if (isset($status)) {
+        $request->whenFilled('status', function ($status) use ($query) {
             $query->whereStatus($status);
-        }
+        });
 
         return view('admin.aff.rebate', ['referralLogs' => $query->paginate(15)->appends($request->except('page'))]);
     }

@@ -78,32 +78,32 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.role.destroy')
         <script>
-          function delRole(url, name) {
-            swal.fire({
-              title: '{{trans('common.warning')}}',
-              text: '确定删除 【' + name + '】 权限角色？',
-              icon: 'warning',
-              showCancelButton: true,
-              cancelButtonText: '{{trans('common.close')}}',
-              confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-              if (result.value) {
-                $.ajax({
-                  method: 'DELETE',
-                  url: url,
-                  data: {_token: '{{csrf_token()}}'},
-                  dataType: 'json',
-                  success: function(ret) {
-                    if (ret.status === 'success') {
-                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    } else {
-                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            function delRole(url, name) {
+                swal.fire({
+                    title: '{{trans('common.warning')}}',
+                    text: '确定删除 【' + name + '】 权限角色？',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: '{{trans('common.close')}}',
+                    confirmButtonText: '{{trans('common.confirm')}}',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: url,
+                            data: {_token: '{{csrf_token()}}'},
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.status === 'success') {
+                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                                } else {
+                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                                }
+                            },
+                        });
                     }
-                  },
                 });
-              }
-            });
-          }
+            }
         </script>
     @endcan
 @endsection

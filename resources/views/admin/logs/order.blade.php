@@ -10,41 +10,41 @@
                 <h2 class="panel-title">订单列表</h2>
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="sn" id="sn" value="{{Request::input('sn')}}" placeholder="订单号"/>
+                        <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="订单号"/>
                     </div>
                     <div class="form-group col-lg-6 col-sm-12">
                         <div class="input-group input-daterange" data-plugin="datepicker">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                             </div>
-                            <input type="text" class="form-control" name="start" id="start" placeholder="{{date('Y-m-d')}}"/>
+                            <input type="text" class="form-control" name="start" value="{{Request::query('start')}}" autocomplete="off"/>
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
-                            <input type="text" class="form-control" name="end" id="end" placeholder="{{date('Y-m-d', strtotime('1 month'))}}"/>
+                            <input type="text" class="form-control" name="end" value="{{Request::query('end')}}" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" name="is_expire" id="is_expire" onChange="Search()">
+                        <select class="form-control" id="is_expire" name="is_expire">
                             <option value="" hidden>是否过期</option>
                             <option value="0">否</option>
                             <option value="1">是</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" name="is_coupon" id="is_coupon" onChange="Search()">
+                        <select class="form-control" id="is_coupon" name="is_coupon">
                             <option value="" hidden>是否使用优惠券</option>
                             <option value="0">否</option>
                             <option value="1">是</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" name="pay_way" id="pay_way" onChange="Search()">
+                        <select class="form-control" id="pay_way" name="pay_way">
                             <option value="" hidden>支付方式</option>
                             @foreach(config('common.payment.labels') as $key => $value)
                                 <option value="{{$key}}">{{$value}}</option>
@@ -52,7 +52,7 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" name="status" id="status" onChange="Search()">
+                        <select class="form-control" name="status" id="status">
                             <option value="" hidden>订单状态</option>
                             <option value="-1">已关闭</option>
                             <option value="0">待支付</option>
@@ -67,21 +67,21 @@
                                 <label for="type">降序</label>
                             </div>
                             <div class="radio-custom radio-primary radio-inline">
-                                <input type="radio" name="sort" value="1" @if(Request::input('sort') === '1') checked @endif/>
+                                <input type="radio" name="sort" value="1"/>
                                 <label for="type">升序</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.order')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户名</th>
+                        <th> 用户账号</th>
                         <th> 订单号</th>
                         <th> 商品</th>
                         <th> 过期时间</th>
@@ -156,31 +156,17 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-      $(document).ready(function() {
-        $('#is_expire').val({{Request::input('is_expire')}});
-        $('#is_coupon').val({{Request::input('is_coupon')}});
-        $('#pay_way').val({{Request::input('pay_way')}});
-        $('#status').val({{Request::input('status')}});
-      });
+        $(document).ready(function() {
+            $('#is_expire').val({{Request::query('is_expire')}});
+            $('#is_coupon').val({{Request::query('is_coupon')}});
+            $('#pay_way').val({{Request::query('pay_way')}});
+            $('#status').val({{Request::query('status')}});
+            $("input[name='sort'][value='{{Request::query('sort')}}']").click();
 
-      // 有效期
-      $('.input-daterange').datepicker({
-        format: 'yyyy-mm-dd',
-      });
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
+            $('select').on('change', function() { this.form.submit(); });
+        });
 
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.order')}}?email=' + $('#email').val() + '&sn=' + $('#sn').val() +
-            '&is_expire=' + $('#is_expire').val() + '&is_coupon=' + $('#is_coupon').val() + '&pay_way=' +
-            $('#pay_way').val() + '&status=' + $('#status').val() + '&sort=' +
-            $('input:radio[name=\'sort\']:checked').val() + '&range_time=' + [$('#start').val(), $('#end').val()];
-      }
+        // 有效期
+        $('.input-daterange').datepicker({format: 'yyyy-mm-dd'});
     </script>
 @endsection

@@ -15,13 +15,11 @@ class MarketingController extends Controller
     // 邮件群发消息列表
     public function emailList(Request $request)
     {
-        $status = $request->input('status');
-
         $query = Marketing::whereType(1);
 
-        if (isset($status)) {
-            $query->whereStatus($status);
-        }
+        $request->whenFilled('status', function ($value) use ($query) {
+            $query->whereStatus($value);
+        });
 
         return view('admin.marketing.emailList', ['emails' => $query->paginate(15)->appends($request->except('page'))]);
     }
@@ -29,13 +27,11 @@ class MarketingController extends Controller
     // 消息通道群发列表
     public function pushList(Request $request)
     {
-        $status = $request->input('status');
-
         $query = Marketing::whereType(2);
 
-        if (isset($status)) {
-            $query->whereStatus($status);
-        }
+        $request->whenFilled('status', function ($value) use ($query) {
+            $query->whereStatus($value);
+        });
 
         return view('admin.marketing.pushList', ['pushes' => $query->paginate(15)->appends($request->except('page'))]);
     }

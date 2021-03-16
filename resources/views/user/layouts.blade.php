@@ -186,30 +186,30 @@
         @yield('javascript')
         @if(Session::get('admin'))
             <script>
-              $('#return_to_admin').click(function() {
-                $.ajax({
-                  method: 'POST',
-                  url: '{{route('switch')}}',
-                  data: {'_token': '{{csrf_token()}}'},
-                  dataType: 'json',
-                  success: function(ret) {
-                    swal.fire({
-                      title: ret.message,
-                      icon: 'success',
-                      timer: 1000,
-                      showConfirmButton: false,
-                    }).then(() => window.location.href = '{{route('admin.index')}}');
-                  },
-                  error: function(ret) {
-                    swal.fire({
-                      title: ret.message,
-                      icon: 'error',
-                      timer: 1500,
-                      showConfirmButton: false,
+                $('#return_to_admin').click(function() {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('switch')}}',
+                        data: {'_token': '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            swal.fire({
+                                title: ret.message,
+                                icon: 'success',
+                                timer: 1000,
+                                showConfirmButton: false,
+                            }).then(() => window.location.href = '{{route('admin.index')}}');
+                        },
+                        error: function(ret) {
+                            swal.fire({
+                                title: ret.message,
+                                icon: 'error',
+                                timer: 1500,
+                                showConfirmButton: false,
+                            });
+                        },
                     });
-                  },
                 });
-              });
             </script>
         @endif
         <!-- 统计 -->

@@ -122,31 +122,31 @@
     <script>
         @if(old('type'))
         $(document).ready(function() {
-          $("input[name='type'][value='{{old('type')}}']").click();
+            $("input[name='type'][value='{{old('type')}}']").click();
         });
         @endif
 
         $('.input-daterange>input').datepicker({
-          format: 'yyyy-mm-dd',
+            format: 'yyyy-mm-dd',
         });
 
         $('input[name=\'type\']').change(function() {
-          if ($(this).val() === '2') {
-            $('#rule').attr('required', true);
-            $('.discount').show();
-            $('.usage').show();
-            $('.amount').hide();
-          } else if ($(this).val() === '3') {
-            $('#rule').attr('required', false);
-            $('.discount').hide();
-            $('.usage').hide();
-            $('.amount').show();
-          } else {
-            $('#rule').attr('required', true);
-            $('.discount').hide();
-            $('.usage').show();
-            $('.amount').show();
-          }
+            if ($(this).val() === '2') {
+                $('#rule').attr('required', true);
+                $('.discount').show();
+                $('.usage').show();
+                $('.amount').hide();
+            } else if ($(this).val() === '3') {
+                $('#rule').attr('required', false);
+                $('.discount').hide();
+                $('.usage').hide();
+                $('.amount').show();
+            } else {
+                $('#rule').attr('required', true);
+                $('.discount').hide();
+                $('.usage').show();
+                $('.amount').show();
+            }
         });
     </script>
 @endsection

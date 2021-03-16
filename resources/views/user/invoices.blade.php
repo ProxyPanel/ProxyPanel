@@ -77,57 +77,57 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      function closePlan() {
-        swal.fire({
-          title: '{{trans('user.invoice.active_prepaid_question')}}',
-          html: @json(trans('user.invoice.active_prepaid_tips')),
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'POST',
-              url: '{{route('cancelPlan')}}',
-              dataType: 'json',
-              data: {_token: '{{csrf_token()}}'},
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'});
+        function closePlan() {
+            swal.fire({
+                title: '{{trans('user.invoice.active_prepaid_question')}}',
+                html: @json(trans('user.invoice.active_prepaid_tips')),
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: '{{route('cancelPlan')}}',
+                        dataType: 'json',
+                        data: {_token: '{{csrf_token()}}'},
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'});
+                            }
+                        },
+                    });
                 }
-              },
             });
-          }
-        });
-      }
+        }
 
-      function closeOrder(url) {
-        swal.fire({
-          title: '{{trans('common.close_item', ['attribute' => trans('user.invoice.attribute')])}}？',
-          icon: 'warning',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'PUT',
-              url: url,
-              dataType: 'json',
-              data: {_token: '{{csrf_token()}}'},
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'});
+        function closeOrder(url) {
+            swal.fire({
+                title: '{{trans('common.close_item', ['attribute' => trans('user.invoice.attribute')])}}？',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'PUT',
+                        url: url,
+                        dataType: 'json',
+                        data: {_token: '{{csrf_token()}}'},
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'});
+                            }
+                        },
+                    });
                 }
-              },
             });
-          }
-        });
-      }
+        }
     </script>
 @endsection

@@ -18,20 +18,20 @@
                 @endcan
             </div>
             <div class="panel-body">
-                <div class="form-row">
+                <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="email" id="email" value="{{Request::input('email')}}" placeholder="用户名" autocomplete="off"/>
+                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button class="btn btn-primary" onclick="Search()">搜 索</button>
+                        <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.ticket.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
-                </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户名</th>
+                        <th> 用户账号</th>
                         <th> 标题</th>
                         <th> {{trans('common.status')}}</th>
                         <th> {{trans('common.action')}}</th>
@@ -133,84 +133,71 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      //回车检测
-      $(document).on('keypress', 'input', function(e) {
-        if (e.which === 13) {
-          Search();
-          return false;
-        }
-      });
+        @can('admin.ticket.store')
+        // 发起工单
+        function createTicket() {
+            const id = $('#user_id').val();
+            const email = $('#user_email').val();
+            const title = $('#title').val();
+            const content = $('#content').val();
 
-      // 搜索
-      function Search() {
-        window.location.href = '{{route('admin.ticket.index')}}?email=' + $('#email').val();
-      }
+            if (id.trim() === '' && email.trim() === '') {
+                swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
+                return false;
+            }
 
-      @can('admin.ticket.store')
-      // 发起工单
-      function createTicket() {
-        const id = $('#user_id').val();
-        const email = $('#user_email').val();
-        const title = $('#title').val();
-        const content = $('#content').val();
+            if (title.trim() === '') {
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}', icon: 'warning'});
+                return false;
+            }
 
-        if (id.trim() === '' && email.trim() === '') {
-          swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
-          return false;
-        }
+            if (content.trim() === '') {
+                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}', icon: 'warning'});
+                return false;
+            }
 
-        if (title.trim() === '') {
-          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}', icon: 'warning'});
-          return false;
-        }
-
-        if (content.trim() === '') {
-          swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}', icon: 'warning'});
-          return false;
-        }
-
-        swal.fire({
-          title: '{{trans('user.ticket.submit_tips')}}',
-          icon: 'question',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'POST',
-              url: "{{route('admin.ticket.store')}}",
-              data: {
-                _token: '{{csrf_token()}}',
-                id: id,
-                email: email,
-                title: title,
-                content: content,
-              },
-              dataType: 'json',
-              success: function(ret) {
-                $('#add_ticket_modal').modal('hide');
-                if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            swal.fire({
+                title: '{{trans('user.ticket.submit_tips')}}',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'POST',
+                        url: "{{route('admin.ticket.store')}}",
+                        data: {
+                            _token: '{{csrf_token()}}',
+                            id: id,
+                            email: email,
+                            title: title,
+                            content: content,
+                        },
+                        dataType: 'json',
+                        success: function(ret) {
+                            $('#add_ticket_modal').modal('hide');
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                        error: function(data) {
+                            $('#add_ticket_modal').modal('hide');
+                            let str = '';
+                            const errors = data.responseJSON;
+                            if ($.isEmptyObject(errors) === false) {
+                                $.each(errors.errors, function(index, value) {
+                                    str += '<li>' + value + '</li>';
+                                });
+                                swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
+                            }
+                        },
+                    });
                 }
-              },
-              error: function(data) {
-                $('#add_ticket_modal').modal('hide');
-                let str = '';
-                const errors = data.responseJSON;
-                if ($.isEmptyObject(errors) === false) {
-                  $.each(errors.errors, function(index, value) {
-                    str += '<li>' + value + '</li>';
-                  });
-                  swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
-                }
-              },
             });
-          }
-        });
-      }
+        }
         @endcan
     </script>
 @endsection
