@@ -11,13 +11,14 @@ class DataAnomaly extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    private $userId;
     private $upload;
     private $download;
     private $total;
 
     public function __construct($id, $upload, $download, $total)
     {
-        $this->id = $id;
+        $this->userId = $id;
         $this->upload = $upload;
         $this->download = $download;
         $this->total = $total;
@@ -32,14 +33,14 @@ class DataAnomaly extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(trans('notification.data_anomaly'))
-            ->line(trans('notification.data_anomaly_content', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
+            ->line(trans('notification.data_anomaly_content', ['id' => $this->userId, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
     }
 
     public function toCustom($notifiable)
     {
         return [
             'title'   => trans('notification.data_anomaly'),
-            'content' => trans('notification.data_anomaly_content', ['id' => $this->id, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]),
+            'content' => trans('notification.data_anomaly_content', ['id' => $this->userId, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]),
         ];
     }
 }

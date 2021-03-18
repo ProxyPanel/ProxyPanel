@@ -11,6 +11,7 @@ class TicketClosed extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    private $ticketId;
     private $title;
     private $url;
     private $reason;
@@ -18,7 +19,7 @@ class TicketClosed extends Notification implements ShouldQueue
 
     public function __construct($id, $title, $url, $reason, $is_user = null)
     {
-        $this->id = $id;
+        $this->ticketId = $id;
         $this->title = $title;
         $this->url = $url;
         $this->reason = $reason;
@@ -33,7 +34,7 @@ class TicketClosed extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(trans('notification.close_ticket', ['id' => $this->id, 'title' => $this->title]))
+            ->subject(trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]))
             ->line($this->reason)
             ->action(trans('notification.view_ticket'), $this->url)
             ->line(__('If your problem has not been solved, Feel free to open other one.'));
@@ -42,7 +43,7 @@ class TicketClosed extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.close_ticket', ['id' => $this->id, 'title' => $this->title]),
+            'title'   => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
             'content' => $this->reason,
         ];
     }
