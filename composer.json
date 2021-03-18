@@ -18,6 +18,7 @@
     "fruitcake/laravel-cors": "^2.0",
     "geoip2/geoip2": "^v2.11",
     "guzzlehttp/guzzle": "^6.3.1|^7.0.1",
+    "hashids/hashids": "^4.1",
     "ip2location/ip2location-laravel": "^1.2",
     "ipip/db": "^1.0",
     "jenssegers/agent": "^2.6",

@@ -19,6 +19,7 @@ use Cache;
 use Captcha;
 use Cookie;
 use Hash;
+use Hashids\Hashids;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -202,7 +203,7 @@ class AuthController extends Controller
         }
         $data = $request->validated();
         $register_token = $request->input('register_token');
-        $code = $request->input('code');
+        $invite_code = $request->input('invite_code');
         $verify_code = $request->input('verify_code');
         $aff = $request->input('aff');
 
@@ -229,8 +230,8 @@ class AuthController extends Controller
         // 如果需要邀请注册
         if (sysConfig('is_invite_register')) {
             // 校验邀请码合法性
-            if ($code) {
-                if (Invite::whereCode($code)->whereStatus(0)->doesntExist()) {
+            if ($invite_code) {
+                if (Invite::whereCode($invite_code)->whereStatus(0)->doesntExist()) {
                     return Redirect::back()->withInput($request->except('code'))->withErrors(trans('auth.invite.error.unavailable'));
                 }
             } elseif ((int) sysConfig('is_invite_register') === 2) { // 必须使用邀请码
@@ -267,14 +268,14 @@ class AuthController extends Controller
             }
         }
 
-        // 获取可用端口 TODO: 修改判断&提示
+        // 获取可用端口
         $port = Helpers::getPort();
         if ($port > sysConfig('max_port')) {
             return Redirect::back()->withInput()->withErrors(trans('auth.register.error.disable'));
         }
 
         // 获取aff
-        $affArr = $this->getAff($code, $aff);
+        $affArr = $this->getAff($invite_code, $aff);
         $inviter_id = $affArr['inviter_id'];
 
         $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
@@ -400,13 +401,29 @@ class AuthController extends Controller
             // 检查一下cookie里有没有aff
             $cookieAff = \request()->cookie('register_aff');
             if ($cookieAff) {
-                $data['inviter_id'] = User::find($cookieAff) ? $cookieAff : null;
+                $cookieAff = $this->affConvert($cookieAff);
+                $data['inviter_id'] = $cookieAff && User::find($cookieAff) ? $cookieAff : null;
             } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-                $data['inviter_id'] = User::find($aff) ? $aff : null;
+                $aff = $this->affConvert($aff);
+                $data['inviter_id'] = $aff && User::find($aff) ? $aff : null;
             }
         }
 
         return $data;
+    }
+
+    private function affConvert($aff)
+    {
+        if (is_numeric($aff)) {
+            return $aff;
+        } else {
+            $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
+            if (isset($decode)) {
+                return $decode[0];
+            }
+        }
+
+        return false;
     }
 
     // 生成申请的请求地址

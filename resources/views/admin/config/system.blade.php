@@ -293,6 +293,20 @@
                                     </div>
                                     <div class="form-group col-lg-6">
                                         <div class="row">
+                                            <label class="col-md-3" for="aff_salt">邀请链接 用户信息字符化</label>
+                                            <div class="col-md-6">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="aff_salt" value="{{$aff_salt}}"/>
+                                                    <span class="input-group-append">
+                                                        <button class="btn btn-primary" type="button" onclick="update('aff_salt')">{{trans('common.update')}}</button>
+                                                    </span>
+                                                </div>
+                                                <span class="text-help"> 留空时，邀请链接将显示用户ID；填入任意英文/数字 即可对用户链接ID进行加密 </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-lg-6">
+                                        <div class="row">
                                             <label class="col-md-3 col-form-label" for="is_rand_port">随机端口</label>
                                             <div class="col-md-9">
                                                 <input type="checkbox" id="is_rand_port" data-plugin="switchery" @if($is_rand_port) checked
