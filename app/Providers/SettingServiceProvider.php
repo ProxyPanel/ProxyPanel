@@ -73,7 +73,8 @@ class SettingServiceProvider extends ServiceProvider
                 'serverChan' => ServerChanChannel::class,
             ] as $key => $channel
         ) {
-            if (($index = array_search($key, $channels, true)) && $index !== false) {
+            $index = array_search($key, $channels, true);
+            if ($index !== false) {
                 $channels[$index] = $channel;
             }
         }

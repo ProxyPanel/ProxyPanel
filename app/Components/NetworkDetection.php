@@ -71,7 +71,7 @@ class NetworkDetection
      */
     public function networkCheck(string $ip, bool $is_icmp, int $port = null)
     {
-        $round = 0;
+        $round = 1;
         // 依次尝试接口
         while (true) {
             switch ($round) {
