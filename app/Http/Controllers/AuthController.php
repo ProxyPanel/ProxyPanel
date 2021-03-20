@@ -203,7 +203,7 @@ class AuthController extends Controller
         }
         $data = $request->validated();
         $register_token = $request->input('register_token');
-        $invite_code = $request->input('invite_code');
+        $invite_code = $request->input('code');
         $verify_code = $request->input('verify_code');
         $aff = $request->input('aff');
 

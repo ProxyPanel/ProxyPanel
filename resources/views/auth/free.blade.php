@@ -15,7 +15,7 @@
                     <tbody>
                     @foreach($inviteList as $invite)
                         <tr>
-                            <td><a href="{{route('register', ['invite_code' => $invite->code])}}" target="_blank">{{$invite->code}}</a></td>
+                            <td><a href="{{route('register', ['code' => $invite->code])}}" target="_blank">{{$invite->code}}</a></td>
                             <td> {{$invite->dateline}} </td>
                         </tr>
                     @endforeach

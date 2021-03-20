@@ -50,7 +50,7 @@
                                     <td> {{$invite->id}} </td>
                                     <td>
                                         <a href="javascript:void(0)" class="mt-clipboard" data-clipboard-action="copy"
-                                           data-clipboard-text="{{route('register',['invite_code' => $invite->code])}}">{{$invite->code}}</a>
+                                           data-clipboard-text="{{route('register',['code' => $invite->code])}}">{{$invite->code}}</a>
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
