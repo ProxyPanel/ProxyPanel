@@ -17,9 +17,9 @@ class TicketClosed extends Notification implements ShouldQueue
     private $reason;
     private $is_user;
 
-    public function __construct($id, $title, $url, $reason, $is_user = null)
+    public function __construct($ticketId, $title, $url, $reason, $is_user = null)
     {
-        $this->ticketId = $id;
+        $this->ticketId = $ticketId;
         $this->title = $title;
         $this->url = $url;
         $this->reason = $reason;

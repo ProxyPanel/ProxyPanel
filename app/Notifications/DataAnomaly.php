@@ -16,9 +16,9 @@ class DataAnomaly extends Notification implements ShouldQueue
     private $download;
     private $total;
 
-    public function __construct($id, $upload, $download, $total)
+    public function __construct($userId, $upload, $download, $total)
     {
-        $this->userId = $id;
+        $this->userId = $userId;
         $this->upload = $upload;
         $this->download = $download;
         $this->total = $total;
