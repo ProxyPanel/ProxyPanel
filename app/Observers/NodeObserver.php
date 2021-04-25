@@ -24,10 +24,14 @@ class NodeObserver
 
         if ($node->is_ddns === '0' && $node->server && sysConfig('ddns_mode')) {
             if ($node->ip) {
-                DDNS::store($node->server, $node->ip);
+                foreach ($node->ips() as $ip) {
+                    DDNS::store($node->server, $ip);
+                }
             }
             if ($node->ipv6) {
-                DDNS::store($node->server, $node->ipv6, 'AAAA');
+                foreach ($node->ips(6) as $ip) {
+                    DDNS::store($node->server, $ip, 'AAAA');
+                }
             }
         }
     }
@@ -40,28 +44,30 @@ class NodeObserver
                 if (Arr::exists($changes, 'server')) { // 域名变动
                     DDNS::destroy($node->getOriginal('server')); // 删除原域名
                     if ($node->ip) { // 添加IPV4至新域名
-                        DDNS::store($node->server, $node->ip);
-                    }
-                    if ($node->ipv6) { // 添加IPV6至新域名
-                        DDNS::store($node->server, $node->ipv6, 'AAAA');
-                    }
-                } else {
-                    if (Arr::exists($changes, 'ip')) { // 域名未改动，IP变动
-                        if ($node->ip && $node->getOriginal('ip')) { // IPV4变动
-                            DDNS::update($node->server, $node->ip);
-                        } elseif ($node->ip) { // 新添加IPV4
-                            DDNS::store($node->server, $node->ip);
-                        } else { // 空值 删除原IPV4
-                            DDNS::destroy($node->server, 'A');
+                        foreach ($node->ips() as $ip) {
+                            DDNS::store($node->server, $ip);
                         }
                     }
-                    if (Arr::exists($changes, 'ipv6')) { // 域名未改动，IPV6变动
-                        if ($node->ipv6 && $node->getOriginal('ipv6')) { // IPV6变动
-                            DDNS::update($node->server, $node->ipv6, 'AAAA');
-                        } elseif ($node->ipv6) { // 新添加IPV6
-                            DDNS::store($node->server, $node->ipv6, 'AAAA');
-                        } else { // 空值 删除原IPV6
-                            DDNS::destroy($node->server, 'AAAA');
+                    if ($node->ipv6) { // 添加IPV6至新域名
+                        foreach ($node->ips(6) as $ip) {
+                            DDNS::store($node->server, $ip, 'AAAA');
+                        }
+                    }
+                } else { // 域名未改动
+                    if (Arr::exists($changes, 'ip')) { // IPV4变动
+                        DDNS::destroy($node->server, 'A');
+                        if ($node->ip) { // 非空值 重新设置IPV4
+                            foreach ($node->ips() as $ip) {
+                                DDNS::store($node->server, $ip);
+                            }
+                        }
+                    }
+                    if (Arr::exists($changes, 'ipv6')) { // IPV6变动
+                        DDNS::destroy($node->server, 'AAAA');
+                        if ($node->ipv6) { // 非空值 重新设置IPV6
+                            foreach ($node->ips(6) as $ip) {
+                                DDNS::store($node->server, $ip, 'AAAA');
+                            }
                         }
                     }
                 }

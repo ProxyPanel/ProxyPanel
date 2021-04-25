@@ -72,6 +72,13 @@ class Node extends Model
         return $this->hasOne(NodeAuth::class);
     }
 
+    public function ips(int $type = 4)
+    {
+        $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6'];
+
+        return array_map('trim', explode(',', $ip));
+    }
+
     public function level_table(): HasOne
     {
         return $this->hasOne(Level::class, 'level', 'level');

@@ -49,10 +49,12 @@
                                     <div class="form-group row">
                                         <label for="ip" class="col-md-3 col-form-label"> IPv4地址 </label>
                                         <input type="text" class="form-control col-md-4" name="ip" id="ip" placeholder="服务器IPv4地址" required>
+                                        <span class="text-help offset-md-3">多IP使用“, ”分割，例：1.1.1.1, 8.8.8.8</span>
                                     </div>
                                     <div class="form-group row">
                                         <label for="ipv6" class="col-md-3 col-form-label"> IPv6地址 </label>
                                         <input type="text" class="form-control col-md-4" name="ipv6" id="ipv6" placeholder="服务器IPv6地址，填写则用户可见，域名无效">
+                                        <span class="text-help offset-md-3">多IP使用“, ”分割，例：1.1.1.1, 8.8.8.8</span>
                                     </div>
                                     <div class="form-group row">
                                         <label for="push_port" class="col-md-3 col-form-label"> 消息推送端口 </label>
