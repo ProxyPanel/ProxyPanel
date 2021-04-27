@@ -175,7 +175,7 @@ class PresetSeeder extends Seeder
         ];
 
         foreach ($presetDates as $key => $value) {
-            Config::find($key)->update(['value' => $value]);
+            Config::whereName($key)->update(['value' => $value]);
         }
 
         // 生成最初的等级
