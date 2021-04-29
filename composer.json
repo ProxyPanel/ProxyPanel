@@ -28,7 +28,7 @@
     "laravel/tinker": "^2.6",
     "mews/captcha": "^3.2",
     "mews/purifier": "^3.3",
-    "overtrue/laravel-lang": "^4.2",
+    "overtrue/laravel-lang": "~5.0",
     "phpoffice/phpspreadsheet": "^1.16",
     "rap2hpoutre/laravel-log-viewer": "^1.7",
     "riverslei/payment": "^5.1",

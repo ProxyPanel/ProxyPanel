@@ -47,7 +47,7 @@
                         <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="端口"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" id="group" name="group">
+                        <select class="form-control" id="user_group_id" name="user_group_id">
                             <option value="" hidden>用户分组</option>
                             @foreach($userGroups as $key => $group)
                                 <option value="{{$key}}">{{$group}}</option>
@@ -217,11 +217,10 @@
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#group').val({{Request::query('group')}});
+            $('#user_group_id').val({{Request::query('user_group_id')}});
             $('#level').val({{Request::query('level')}});
             $('#status').val({{Request::query('status')}});
             $('#enable').val({{Request::query('enable')}});
-
             $('select').on('change', function() { this.form.submit(); });
         });
 
