@@ -169,9 +169,13 @@ class UserController extends Controller
         // 只有超级管理员才能赋予超级管理员
         $roles = $request->input('roles');
         try {
-            if ($roles && (Auth::getUser()->can('give roles') || (in_array('Super Admin', $roles, true)
-                        && Auth::getUser()->hasRole('Super Admin')) || Auth::getUser()->hasRole('Super Admin'))) {
-                $user->syncRoles($roles);
+            if (isset($roles)) {
+                if (Auth::getUser()->can('give roles') || Auth::getUser()->hasRole('Super Admin')
+                    || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
+                    $user->syncRoles($roles);
+                }
+            } else {
+                $user->roles()->detach();
             }
 
             // Input checking for dummy
