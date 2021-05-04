@@ -94,7 +94,7 @@ return [
     |
     */
 
-    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'zh-CN'),
+    'fallback_locale' => env('APP_FALLBACK_LOCALE', 'zh_CN'),
 
     /*
     |--------------------------------------------------------------------------
