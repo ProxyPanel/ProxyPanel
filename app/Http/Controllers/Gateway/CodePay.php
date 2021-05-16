@@ -40,7 +40,7 @@ class CodePay extends AbstractPayment
                 exit('success');
             }
         } else {
-            Log::info('码支付：交易失败');
+            Log::error('码支付：交易失败');
         }
         exit('fail');
     }

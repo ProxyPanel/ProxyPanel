@@ -27,14 +27,12 @@ class PaymentController extends Controller
 {
     private static $method;
 
-    public static function notify(Request $request): int
+    public static function notify(Request $request): void
     {
-        self::$method = $request->input('method');
+        self::$method = $request->query('method');
 
         Log::info(self::$method.'回调接口[POST]：'.self::$method.var_export($request->all(), true));
         self::getClient()->notify($request);
-
-        return 0;
     }
 
     public static function getClient()
@@ -163,14 +161,14 @@ class PaymentController extends Controller
         // 生成订单
         try {
             $newOrder = Order::create([
-                'sn' => date('ymdHis').random_int(100000, 999999),
-                'user_id' => auth()->id(),
-                'goods_id' => $credit ? null : $goods_id,
-                'coupon_id' => $coupon->id ?? null,
+                'sn'            => date('ymdHis').random_int(100000, 999999),
+                'user_id'       => auth()->id(),
+                'goods_id'      => $credit ? null : $goods_id,
+                'coupon_id'     => $coupon->id ?? null,
                 'origin_amount' => $credit ?: $goods->price ?? 0,
-                'amount'=>$amount,
-                'pay_type'=>$pay_type,
-                'pay_way'=>self::$method,
+                'amount'        => $amount,
+                'pay_type'      => $pay_type,
+                'pay_way'       => self::$method,
             ]);
 
             // 使用优惠券，减少可使用次数
@@ -209,10 +207,10 @@ class PaymentController extends Controller
         $goods = $payment->order->goods;
 
         return view('user.payment', [
-            'payment' => $payment,
-            'name' => $goods->name ?? trans('user.recharge_credit'),
-            'days' => $goods->days ?? 0,
-            'pay_type' => $payment->order->pay_type_label ?: 0,
+            'payment'       => $payment,
+            'name'          => $goods->name ?? trans('user.recharge_credit'),
+            'days'          => $goods->days ?? 0,
+            'pay_type'      => $payment->order->pay_type_label ?: 0,
             'pay_type_icon' => $payment->order->pay_type_icon,
         ]);
     }

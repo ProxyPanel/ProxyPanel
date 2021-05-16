@@ -1632,7 +1632,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="tab-pane" id="paybeaver" role="tabpanel">
+                                <div class="tab-pane" id="PayBeaver" role="tabpanel">
                                     <div class="row">
                                         <div class="form-group col-lg-6 d-flex">
                                             <label class="col-md-3 col-form-label">海狸支付 PayBeaver</label>
@@ -1695,7 +1695,7 @@
                                     <a class="nav-link" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#paybeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
+                                    <a class="nav-link" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
                                 </li>
                                 <li class="nav-item dropdown" style="display: none;">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">菜单</a>
@@ -1708,7 +1708,7 @@
                                         <a class="dropdown-item" data-toggle="tab" href="#MugglePay" aria-controls="MugglePay" role="tab">MugglePay</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#PayPal" aria-controls="PayPal" role="tab">PayPal</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#paybeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
                                     </div>
                                 </li>
                             </ul>
