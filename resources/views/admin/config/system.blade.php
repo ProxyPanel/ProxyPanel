@@ -1277,6 +1277,7 @@
                                                 <option value="codepay">码支付</option>
                                                 <option value="epay">易支付</option>
                                                 <option value="paybeaver">海狸支付</option>
+                                                <option value="theadpay">平头哥支付</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-lg-6">
@@ -1659,11 +1660,53 @@
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" id="paybeaver_app_secret" value="{{$paybeaver_app_secret}}"/>
                                                     <span class="input-group-append">
-                                                            <button class="btn btn-primary" type="button"
-                                                                    onclick="update('paybeaver_app_secret')">{{trans('common.update')}}</button>
-                                                        </span>
+                                                        <button class="btn btn-primary" type="button" onclick="update('paybeaver_app_secret')">{{trans('common.update')}}</button>
+                                                    </span>
                                                 </div>
                                                 <span class="text-help"><a href="https://merchant.paybeaver.com/" target="_blank">商户中心</a> -&gt; 开发者 -&gt; App Secret</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="tab-pane" id="THeadPay" role="tabpanel">
+                                    <div class="row">
+                                        <div class="form-group col-lg-6 d-flex">
+                                            <label class="col-md-3 col-form-label">平头哥支付 THeadPay</label>
+                                            <div class="col-md-7">
+                                                请到<a href="https://theadpay.com/" target="_blank">平头哥支付 THeadPay</a>申请账号
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6 d-flex">
+                                            <label class="col-md-3 col-form-label" for="theadpay_url">接口地址</label>
+                                            <div class="col-md-7">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="theadpay_url" value="{{$theadpay_url}}"/>
+                                                    <span class="input-group-append">
+                                                        <button class="btn btn-primary" type="button" onclick="update('theadpay_url')">{{trans('common.update')}}</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6 d-flex">
+                                            <label class="col-md-3 col-form-label" for="theadpay_mchid">商家ID</label>
+                                            <div class="col-md-7">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="theadpay_mchid" value="{{$theadpay_mchid}}"/>
+                                                    <span class="input-group-append">
+                                                        <button class="btn btn-primary" type="button" onclick="update('theadpay_mchid')">{{trans('common.update')}}</button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-lg-6 d-flex">
+                                            <label class="col-md-3 col-form-label" for="theadpay_key">商家密钥</label>
+                                            <div class="col-md-7">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="theadpay_key" value="{{$theadpay_key}}"/>
+                                                    <span class="input-group-append">
+                                                        <button class="btn btn-primary" type="button" onclick="update('theadpay_key')">{{trans('common.update')}}</button>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1697,6 +1740,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
+                                </li>
                                 <li class="nav-item dropdown" style="display: none;">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">菜单</a>
                                     <div class="dropdown-menu" role="menu">
@@ -1709,6 +1755,7 @@
                                         <a class="dropdown-item" data-toggle="tab" href="#PayPal" aria-controls="PayPal" role="tab">PayPal</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
                                     </div>
                                 </li>
                             </ul>

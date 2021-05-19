@@ -12,6 +12,7 @@ use App\Http\Controllers\Gateway\PayBeaver;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Controllers\Gateway\PayPal;
 use App\Http\Controllers\Gateway\Stripe;
+use App\Http\Controllers\Gateway\THeadPay;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
@@ -56,6 +57,8 @@ class PaymentController extends Controller
                 return new Stripe();
             case 'paybeaver':
                 return new PayBeaver();
+            case 'theadpay':
+                return new THeadPay();
             default:
                 Log::warning('未知支付：'.self::$method);
 

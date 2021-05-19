@@ -12,6 +12,7 @@ return [
             'payjs'     => 'PayJs',
             'paypal'    => 'PayPal',
             'stripe'    => 'Stripe',
+            'theadpay'  => '平头哥支付',
             'youzan'    => '有赞云',
         ],
         'icon'   => [

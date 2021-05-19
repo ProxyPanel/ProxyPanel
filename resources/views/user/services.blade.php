@@ -250,10 +250,10 @@
                         $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
                     },
                     success: function(ret) {
+                        $('#charge_msg').show().html(ret.message);
                         if (ret.status === 'fail') {
                             return false;
                         } else {
-                            $('#charge_msg').show().html(ret.message);
                             if (ret.data) {
                                 window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
                             } else if (ret.url) {

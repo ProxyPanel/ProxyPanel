@@ -48,6 +48,9 @@ class SystemController extends Controller
         if (sysConfig('paybeaver_app_id') && sysConfig('paybeaver_app_secret')) {
             $payment[] = 'paybeaver';
         }
+        if (sysConfig('theadpay_mchid') && sysConfig('theadpay_key')) {
+            $payment[] = 'theadpay';
+        }
 
         return $payment ?? [];
     }
