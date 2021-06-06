@@ -33,11 +33,13 @@ class NodeBlocked extends Notification implements ShouldQueue
 
     private function markdownMessage()
     {
-        $content = '| '.trans('user.attribute.node').' | ICMP | TCP'." |\r\n| ------ | :------: | :------: |\r\n";
+        $content = '| '.trans('user.attribute.node').' | IP | ICMP | TCP'." |\r\n| ------ | :------: | :------: |\r\n";
         $tail = '';
         foreach ($this->data as $node) {
-            if (Arr::hasAny($node, ['icmp', 'tcp'])) {
-                $content .= "| {$node['name']} | ".($node['icmp'] ?? '✔️').' | '.($node['tcp'] ?? '✔️')." |\r\n";
+            $case = $node;
+            Arr::forget($case, ['message', 'name']);
+            foreach ($case as $ip => $info) {
+                $content .= "| {$node['name']} | {$ip} | ".($info['icmp'] ?? '✔️').' | '.($info['tcp'] ?? '✔️')." |\r\n";
             }
             if (Arr::hasAny($node, ['message'])) {
                 $tail .= "- {$node['name']}: {$node['message']}\r\n";

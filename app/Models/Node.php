@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Log;
 
 /**
  * 节点配置信息.
@@ -72,9 +73,18 @@ class Node extends Model
         return $this->hasOne(NodeAuth::class);
     }
 
-    public function ips(int $type = 4)
+    public function ips(int $type = 4): array
     {
-        $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6'];
+        // 使用DDNS的node先通过gethostbyname获取ip地址
+        if ($this->attributes['is_ddns']) { // When ddns is enable, only domain can be used to check the ip
+            $ip = gethostbyname($this->attributes['server']);
+            if (strcmp($ip, $this->attributes['server']) === 0) {
+                Log::warning('获取 【'.$this->attributes['server'].'】 IP失败'.$ip);
+                $ip = '';
+            }
+        } else {
+            $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6']; // check the multiple existing of ip
+        }
 
         return array_map('trim', explode(',', $ip));
     }
@@ -94,19 +104,22 @@ class Node extends Model
             ->get();
     }
 
-    public function refresh_geo()
+    public function refresh_geo(): bool
     {
-        $data = IP::IPSB($this->is_ddns ? gethostbyname($this->server) : $this->ip);
+        $ip = $this->ips();
+        if ($ip !== []) {
+            $data = IP::IPSB($ip[0]);
 
-        if ($data) {
-            self::withoutEvents(function () use ($data) {
-                $this->update(['geo' => $data['latitude'].','.$data['longitude']]);
-            });
+            if ($data) {
+                self::withoutEvents(function () use ($data) {
+                    $this->update(['geo' => $data['latitude'].','.$data['longitude']]);
+                });
 
-            return 1;
+                return true;
+            }
         }
 
-        return 0;
+        return false;
     }
 
     public function config(User $user)

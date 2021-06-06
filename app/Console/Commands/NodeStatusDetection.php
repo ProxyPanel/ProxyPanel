@@ -81,24 +81,18 @@ class NodeStatusDetection extends Command
             }
             $node_id = (int) $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
-            if ($node->is_ddns) {
-                $ip = gethostbyname($node->server);
-                if (strcmp($ip, $node->server) !== 0) {
-                    $node->ip = $ip;
-                } else {
-                    Log::warning('【节点阻断检测】检测'.$node->server.'时，IP获取失败'.$ip.' | '.$node->server);
+            foreach ($node->ips() as $ip) {
+                if ($node->detection_type !== 1) {
+                    $icmpCheck = (new NetworkDetection)->networkCheck($ip, true);
+                    if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
+                        $data[$node_id][$ip]['icmp'] = $icmpCheck;
+                    }
                 }
-            }
-            if ($node->detection_type !== 1) {
-                $icmpCheck = (new NetworkDetection)->networkCheck($node->ip, true);
-                if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
-                    $data[$node_id]['icmp'] = $icmpCheck;
-                }
-            }
-            if ($node->detection_type !== 2) {
-                $tcpCheck = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22);
-                if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
-                    $data[$node_id]['tcp'] = $tcpCheck;
+                if ($node->detection_type !== 2) {
+                    $tcpCheck = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22);
+                    if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
+                        $data[$node_id][$ip]['tcp'] = $tcpCheck;
+                    }
                 }
             }
 
