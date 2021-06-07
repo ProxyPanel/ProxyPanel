@@ -42,7 +42,7 @@ class TicketController extends Controller
         }
 
         if ($ticket = Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content'])])) {
-            if (in_array('mail', sysConfig('ticket_created_notification'), true)) {
+            if (in_array('mail', sysConfig('ticket_created_notification') ?? [], true)) {
                 $user->notify(new TicketCreated($data['title'], $data['content'], route('replyTicket', $ticket), true));
             }
 
@@ -71,7 +71,7 @@ class TicketController extends Controller
             $ticket->update(['status' => 1]);
 
             // 通知用户
-            if (in_array('mail', sysConfig('ticket_replied_notification'), true)) {
+            if (in_array('mail', sysConfig('ticket_replied_notification') ?? [], true)) {
                 $ticket->user->notify(new TicketReplied($ticket->title, $content, route('replyTicket', $ticket), true));
             }
 
@@ -88,7 +88,7 @@ class TicketController extends Controller
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);
         }
         // 通知用户
-        if (in_array('mail', sysConfig('ticket_closed_notification'), true)) {
+        if (in_array('mail', sysConfig('ticket_closed_notification') ?? [], true)) {
             $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', $ticket), \request('reason'), true));
         }
 
