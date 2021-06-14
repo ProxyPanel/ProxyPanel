@@ -29,8 +29,7 @@ class isForbidden
         }
 
         // 拒绝通过订阅链接域名访问网站，防止网站被探测
-        if (strpos(sysConfig('subscribe_domain'), $request->getHost()) !== false
-            && ! str_contains(sysConfig('subscribe_domain'), sysConfig('website_url'))) {
+        if (strpos(sysConfig('subscribe_domain'), $request->getHost()) !== false && strpos(sysConfig('website_url'), $request->getHost()) === false) {
             Log::info('识别到通过订阅链接访问，强制跳转至百度('.IP::getClientIp().')');
 
             return redirect('https://www.baidu.com');
