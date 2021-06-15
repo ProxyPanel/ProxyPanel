@@ -55,13 +55,12 @@ class LogsController extends Controller
             });
         }
 
-        $request->whenFilled('sort', function ($value) use ($query) {
-            if ($value) { // 0-按创建时间降序、1-按创建时间升序
-                $query->oldest();
-            } else {
-                $query->latest();
-            }
-        });
+        // 0-按创建时间降序、1-按创建时间升序 默认为按创建时间降序
+        if ($request->filled('sort') && $request->input('sort') === '1') {
+            $query->oldest();
+        } else {
+            $query->latest();
+        }
 
         return view('admin.logs.order', ['orders' => $query->paginate(15)->appends($request->except('page'))]);
     }
