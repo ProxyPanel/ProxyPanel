@@ -130,7 +130,7 @@ class UserController extends Controller
     // 公告详情
     public function article(Article $article)
     {
-        return view('user.article', compact($article));
+        return view('user.article', compact('article'));
     }
 
     // 修改个人资料
