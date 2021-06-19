@@ -13,6 +13,7 @@ return [
     'refresh_page' => '请刷新页面后，再访问',
     'report'       => '错❌误携带了报告：',
     'safe_enter'   => '安全入口访问',
+    'safe_code'    => '请输入安全码',
     'system'       => '系统错误',
     'title'        => '⚠️错误触发',
     'unauthorized' => '未授权访问',
