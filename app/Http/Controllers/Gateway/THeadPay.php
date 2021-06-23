@@ -51,7 +51,7 @@ class THeadPay extends AbstractPayment
 
     public function notify($request): void
     {
-        if ($this->verify_notify($request)) {
+        if ($this->verify_notify($request->post())) {
             $tradeNo = $request->input('out_trade_no');
             if ($tradeNo) {
                 if ($this->paymentReceived($tradeNo)) {
