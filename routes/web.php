@@ -9,6 +9,7 @@ if (env('APP_KEY') && config('settings')) {
 }
 
 Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
+Route::post('api/telegram/webhook', 'TelegramController@webhook'); // Telegram fallback
 
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {

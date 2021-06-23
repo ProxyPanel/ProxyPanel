@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramMessage;
 
 class NodeDailyReport extends Notification implements ShouldQueue
 {
@@ -46,5 +47,16 @@ class NodeDailyReport extends Notification implements ShouldQueue
             'title'   => __('Nodes Daily Report'),
             'content' => $this->markdownMessage(),
         ];
+    }
+
+    /**
+     * @param $notifiable
+     * @return TelegramMessage|\NotificationChannels\Telegram\Traits\HasSharedLogic
+     */
+    public function toTelegram($notifiable)
+    {
+        return TelegramMessage::create()
+            ->token(sysConfig('telegram_token'))
+            ->content($this->markdownMessage());
     }
 }
