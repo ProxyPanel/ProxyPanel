@@ -7,6 +7,7 @@ use App\Components\Client\QuantumultX;
 use App\Components\Client\Surfboard;
 use App\Components\Client\Surge;
 use App\Components\Client\URLSchemes;
+use App\Components\Client\V2rayN;
 use App\Models\User;
 use File;
 use Symfony\Component\Yaml\Yaml;
@@ -32,6 +33,15 @@ class ClientController extends Controller
         }
         if (strpos($target, 'shadowrocket') !== false) {
             return $this->shadowrocket($user, $servers);
+        }
+        if (strpos($target, 'v2rayn') !== false) {
+            return $this->v2rayN($servers);
+        }
+        if (strpos($target, 'v2rayng') !== false) {
+            return $this->v2rayN($servers);
+        }
+        if (strpos($target, 'v2rayu') !== false) {
+            return $this->v2rayN($servers);
         }
 //            if (strpos($target, 'shadowsocks') !== false) {
 //                exit($this->shaodowsocksSIP008($servers));
@@ -221,5 +231,23 @@ class ClientController extends Controller
         }
 
         return json_encode(['version' => 1, 'remark' => sysConfig('website_name'), 'servers' => $configs ?? []], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+    }
+
+    private function v2rayN($servers)
+    {
+        $uri = '';
+        foreach ($servers as $server) {
+            if ($server['type'] === 'shadowsocksr') {
+                $uri .= V2rayN::buildShadowsocksr($server);
+            }
+            if ($server['type'] === 'v2ray') {
+                $uri .= V2rayN::buildVmess($server);
+            }
+            if ($server['type'] === 'trojan') {
+                $uri .= V2rayN::buildTrojan($server);
+            }
+        }
+
+        return base64_encode($uri);
     }
 }

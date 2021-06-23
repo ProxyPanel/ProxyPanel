@@ -170,6 +170,7 @@
                                                     <option value="surfboard">Surfboard</option>
                                                     <option value="surge">Surge</option>
                                                     <option value="shadowrocket">Shadowrocket</option>
+                                                    <option value="v2rayn">v2rayN</option>
                                                     {{--                                                    <option value="shadowsocks">SS路由器</option>--}}
                                                 </select>
                                             </div>
