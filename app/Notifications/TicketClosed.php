@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramMessage;
 
 class TicketClosed extends Notification implements ShouldQueue
 {
@@ -17,7 +18,7 @@ class TicketClosed extends Notification implements ShouldQueue
     private $reason;
     private $is_user;
 
-    public function __construct($ticketId, $title, $url, $reason, $is_user = null)
+    public function __construct($ticketId, $title, $url, $reason, $is_user = false)
     {
         $this->ticketId = $ticketId;
         $this->title = $title;
@@ -28,7 +29,7 @@ class TicketClosed extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return $this->is_user ? ['mail'] : sysConfig('ticket_closed_notification');
+        return $this->is_user ? ['mail'] : sysConfig('ticket_replied_notification');
     }
 
     public function toMail($notifiable)
@@ -46,5 +47,16 @@ class TicketClosed extends Notification implements ShouldQueue
             'title'   => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
             'content' => $this->reason,
         ];
+    }
+
+    /**
+     * @param $notifiable
+     * @return TelegramMessage|\NotificationChannels\Telegram\Traits\HasSharedLogic
+     */
+    public function toTelegram($notifiable)
+    {
+        return TelegramMessage::create()
+            ->token(sysConfig('telegram_token'))
+            ->content($this->reason);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
 use App\Notifications\Custom;
+use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Notification;
@@ -133,6 +134,12 @@ class SystemController extends Controller
             $value /= 100;
         }
 
+        // 设置TG机器人
+        if ($name === 'telegram_token' && $value) {
+            $telegramService = new TelegramService($value);
+            $telegramService->getMe();
+            $telegramService->setWebhook(rtrim(sysConfig('website_url'), '/') . '/api/telegram/webhook?access_token=' . md5($value));
+        }
         // 更新配置
         if (Config::findOrFail($name)->update(['value' => $value])) {
             return Response::json(['status' => 'success', 'message' => trans('common.update_action', ['action' => trans('common.success')])]);
