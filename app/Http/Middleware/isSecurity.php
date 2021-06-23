@@ -29,13 +29,7 @@ class isSecurity
             if ($code !== $websiteSecurityCode) {
                 Log::info(trans('error.unsafe_enter').$ip);
 
-                return Response::view(
-                    'auth.error',
-                    [
-                        'message' => trans('error.unsafe_enter').','.trans('error.visit').'<a href="'.route('login').'?securityCode=" target="_self">'.trans('error.safe_enter').'</a>',
-                    ],
-                    403
-                );
+                return Response::view('auth.safe');
             }
 
             Cache::put($cacheKey, $ip, 7200); // 2小时之内无需再次输入安全码访问

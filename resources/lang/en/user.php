@@ -92,7 +92,7 @@ return [
         'total'           => 'Total: num invitation codes',
         'tips'            => 'Can generate <strong> :num <strong> invitation codes, valid within :days',
         'logs'            => 'Invitation Record',
-        'promotion'       => 'Register and activate with your invitation code, Both sides will get <mark>:traffic<mark> traffic as rewards; when invitees purchase services, you will get <mark>:referral percent%<mark> of their spend amount as commission.',
+        'promotion'       => 'Register and activate with your invitation code, Both sides will get <mark>:traffic</mark> traffic as rewards; when invitees purchase services, you will get <mark>:referral_percent%</mark> of their spend amount as commission.',
         'generate_failed' => 'Failed to generate',
     ],
     'reset_data'          => [

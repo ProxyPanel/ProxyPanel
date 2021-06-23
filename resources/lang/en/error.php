@@ -13,6 +13,7 @@ return [
     'refresh_page' => 'Please Refresh Page, Then Try Again',
     'report'       => 'Error comes back with log: ',
     'safe_enter'   => 'Secure Entrance',
+    'safe_code'    => 'Please enter the security code',
     'system'       => 'System Error',
     'title'        => '⚠️Error Detected',
     'unauthorized' => 'Unauthorized Access',
