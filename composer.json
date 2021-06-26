@@ -6,7 +6,7 @@
     "laravel",
     "proxypanel"
   ],
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "require": {
     "php": "^7.2.5|^8.0",
     "ext-json": "*",
@@ -25,6 +25,7 @@
     "laravel-notification-channels/bearychat": "^1.4",
     "laravel-notification-channels/telegram": "^0.5",
     "laravel/framework": "^7.30",
+    "laravel/socialite": "^5.2",
     "laravel/tinker": "^2.6",
     "mews/captcha": "^3.2",
     "mews/purifier": "^3.3",
