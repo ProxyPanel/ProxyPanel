@@ -249,9 +249,9 @@ class ClientController extends Controller
                 $text .= '账户已过期，请续费后使用';
             }
             $uri .= 'vmess://'.base64url_encode(json_encode([
-                    'v' => '2', 'ps' => $text, 'add' => sysConfig('website_url'), 'port' => 0, 'id' => $user->vmess_id, 'aid' => 0, 'net' => 'tcp',
-                    'type' => 'none', 'host' => sysConfig('website_url'), 'path' => '/', 'tls' => 'tls',
-                ], JSON_PRETTY_PRINT)).PHP_EOL;
+                'v' => '2', 'ps' => $text, 'add' => sysConfig('website_url'), 'port' => 0, 'id' => $user->vmess_id, 'aid' => 0, 'net' => 'tcp',
+                'type' => 'none', 'host' => sysConfig('website_url'), 'path' => '/', 'tls' => 'tls',
+            ], JSON_PRETTY_PRINT)).PHP_EOL;
         }
 
         foreach ($servers as $server) {
