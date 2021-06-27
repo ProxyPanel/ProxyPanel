@@ -45,6 +45,7 @@ class NodeRequest extends FormRequest
             'v2_type' => 'required_if:type,2',
             'v2_host' => 'string|nullable',
             'v2_path' => 'string|nullable',
+            'v2_sni' => 'string|nullable',
             'v2_tls' => 'required_if:type,2|boolean',
             'tls_provider' => 'json|nullable',
             'is_relay' => 'required|boolean',

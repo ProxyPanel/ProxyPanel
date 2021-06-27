@@ -314,6 +314,10 @@
                                             <input type="text" class="form-control col-md-4" name="v2_path" id="v2_path">
                                         </div>
                                         <div class="form-group row">
+                                            <label for="v2_sni" class="col-md-3 col-form-label">SNI</label>
+                                            <input type="text" class="form-control col-md-4" name="v2_sni" id="v2_sni">
+                                        </div>
+                                        <div class="form-group row">
                                             <label for="v2_tls" class="col-md-3 col-form-label">连接TLS</label>
                                             <div class="col-md-9">
                                                 <input type="checkbox" id="v2_tls" name="v2_tls" data-plugin="switchery" onchange="switchSetting('v2_tls')">
@@ -470,6 +474,7 @@
             $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
             $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
             $('#v2_host').val('{{$node->v2_host}}');
+            $('#v2_sni').val('{{$node->v2_sni}}');
             v2_path.val('{{$node->v2_path}}');
             @if($node->v2_tls)
             $('#v2_tls').click();
@@ -552,6 +557,7 @@
                     v2_type: $('#v2_type').val(),
                     v2_host: $('#v2_host').val(),
                     v2_path: $('#v2_path').val(),
+                    v2_sni: $('#v2_sni').val(),
                     v2_tls: document.getElementById('v2_tls').checked ? 1 : 0,
                     tls_provider: $('#tls_provider').val(),
                     is_relay: document.getElementById('is_relay').checked ? 1 : 0,

@@ -143,6 +143,7 @@ class Node extends Model
                     'v2_host'     => $this->v2_host,
                     'v2_path'     => $this->v2_path,
                     'v2_tls'      => $this->v2_tls ? 'tls' : '',
+                    'v2_sni'      => $this->v2_sni,
                     'udp'         => $this->is_udp,
                 ]);
                 break;

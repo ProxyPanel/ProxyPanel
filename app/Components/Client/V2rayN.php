@@ -25,6 +25,7 @@ class V2rayN
             'host' => $server['v2_host'],
             'path' => $server['v2_path'],
             'tls' => $server['v2_tls'],
+            'sni' => $server['v2_sni'],
             'remark' => $server['name'],
         ];
 
