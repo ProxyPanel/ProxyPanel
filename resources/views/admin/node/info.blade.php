@@ -246,10 +246,6 @@
                                             <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" required/>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="v2ray_port" class="col-md-3 col-form-label">连接端口</label>
-                                            <input type="number" class="form-control col-md-4" name="port" id="v2ray_port" value="443"/>
-                                        </div>
-                                        <div class="form-group row">
                                             <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
                                             <input type="number" class="form-control col-md-4" name="v2_port" id="v2_port" value="10053" required/>
                                         </div>
@@ -502,11 +498,9 @@
         // ajax同步提交
         function Submit() {
             const type = $('input[name=\'type\']:checked').val();
-            let port;
+            let port = null;
             switch (type) {
-                case '2':
-                    port = $('#v2ray_port').val();
-                    break;
+                case '2': break;
                 case '3':
                     port = $('#trojan_port').val();
                     break;
