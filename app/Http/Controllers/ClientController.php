@@ -35,13 +35,13 @@ class ClientController extends Controller
             return $this->shadowrocket($user, $servers);
         }
         if (strpos($target, 'v2rayn') !== false) {
-            return $this->v2rayN($servers);
+            return $this->v2rayN($user, $servers);
         }
         if (strpos($target, 'v2rayng') !== false) {
-            return $this->v2rayN($servers);
+            return $this->v2rayN($user, $servers);
         }
         if (strpos($target, 'v2rayu') !== false) {
-            return $this->v2rayN($servers);
+            return $this->v2rayN($user, $servers);
         }
 //            if (strpos($target, 'shadowsocks') !== false) {
 //                exit($this->shaodowsocksSIP008($servers));
@@ -233,9 +233,27 @@ class ClientController extends Controller
         return json_encode(['version' => 1, 'remark' => sysConfig('website_name'), 'servers' => $configs ?? []], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     }
 
-    private function v2rayN($servers)
+    private function v2rayN(User $user, $servers)
     {
         $uri = '';
+        if (sysConfig('is_custom_subscribe')) {
+            $text = '';
+            if (strtotime($user->expired_at) > time()) {
+                if ($user->transfer_enable == 0) {
+                    $text .= '剩余流量：0';
+                } else {
+                    $text .= '剩余流量：'.flowAutoShow($user->transfer_enable);
+                }
+                $text .= ', 过期时间：'.$user->expired_at;
+            } else {
+                $text .= '账户已过期，请续费后使用';
+            }
+            $uri .= 'vmess://'.base64url_encode(json_encode([
+                    'v' => '2', 'ps' => $text, 'add' => sysConfig('website_url'), 'port' => 0, 'id' => $user->vmess_id, 'aid' => 0, 'net' => 'tcp',
+                    'type' => 'none', 'host' => sysConfig('website_url'), 'path' => '/', 'tls' => 'tls',
+                ], JSON_PRETTY_PRINT)).PHP_EOL;
+        }
+
         foreach ($servers as $server) {
             if ($server['type'] === 'shadowsocksr') {
                 $uri .= V2rayN::buildShadowsocksr($server);
