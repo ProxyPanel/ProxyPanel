@@ -157,20 +157,20 @@
                             <x-system.select title="流量耗尽通知" code="data_exhaust_notification" :list="['邮箱' => 'mail', '站内通知' => 'database']"
                                              help="通知用户流量即将耗尽" multiple="1"/>
                             <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="节点离线提醒" code="node_offline_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan']"
+                            <x-system.select title="节点离线提醒" code="node_offline_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
                                              help="每10分钟检测节点离线并提醒管理员" multiple="1"/>
                             <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
-                            <x-system.select title="节点阻断提醒" code="node_blocked_notification" :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan']"
+                            <x-system.select title="节点阻断提醒" code="node_blocked_notification" :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
                                              help="每小时检测节点是否被阻断并提醒管理员" multiple="1"/>
                             <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
                                                   help="提醒N次后自动下线节点，为0时不限制，不超过12"/>
-                            <x-system.select title="支付成功通知" code="payment_received_notification" :list="['邮箱' => 'mail', '站内通知' => 'database']"
+                            <x-system.select title="支付成功通知" code="payment_received_notification" :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"
                                              help="用户支付订单后通知用户订单状态" multiple="1"/>
-                            <x-system.select title="工单关闭通知" code="ticket_closed_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan']"
+                            <x-system.select title="工单关闭通知" code="ticket_closed_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
                                              help="工单关闭通知用户" multiple="1"/>
-                            <x-system.select title="新工单通知" code="ticket_created_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan']"
+                            <x-system.select title="新工单通知" code="ticket_created_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
                                              help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"/>
-                            <x-system.select title="工单回复通知" code="ticket_replied_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan']"
+                            <x-system.select title="工单回复通知" code="ticket_replied_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
                                              help="工单回复通知对方" multiple="1"/>
                             <x-system.input-test title="SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
                                     target=_blank>申请SCKEY</a>）' holder="请到ServerChan申请" test="serverChan"/>
@@ -179,6 +179,7 @@
                             <x-system.switch title="PushBear" code="is_push_bear" :check="$is_push_bear"
                                              help='使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）'/>
                             <x-system.input title="PushBear SendKey" :value="$push_bear_send_key" code="push_bear_send_key" help="启用PushBear，请务必填入本值" holder="创建消息通道后即可获取"/>
+                            <x-system.input title="TelegramToken" :value="$telegram_token" code="telegram_token" help="启用telegram_bot，请务必填入本值" holder="在@BotFather创建后即可获取"/>
                             <x-system.input title="PushBear订阅二维码" :value="$push_bear_qrcode" code="push_bear_qrcode" help="创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处"
                                             holder="填入消息通道的二维码URL" type="url"/>
                         </x-system.tab-pane>
