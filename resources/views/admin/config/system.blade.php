@@ -217,10 +217,10 @@
                             <div class="tab-content pb-100">
                                 <x-system.tab-pane id="paymentSetting" :active="true">
                                     <x-system.select title="支付宝支付" code="is_AliPay"
-                                                     :list="['关闭' => '', 'F2F' => 'f2fpay', '码支付' => 'codepay', '易支付' => 'epay', '海狸支付' => 'paybeaver', '平头哥支付' => 'theadpay']"/>
+                                                     :list="['关闭' => '', 'F2F' => 'f2fpay', '码支付' => 'codepay', '易支付' => 'epay', '海狸支付' => 'paybeaver', '平头哥支付' => 'theadpay', '麻瓜宝' => 'bitpayx']"/>
                                     <x-system.select title="QQ钱包" code="is_QQPay" :list="['关闭' => '', '码支付' => 'codepay', '易支付' => 'epay']"/>
                                     <x-system.select title="微信支付" code="is_WeChatPay"
-                                                     :list="['关闭' => '', '码支付' => 'codepay', 'PayJS' => 'payjs', '易支付' => 'epay', '海狸支付' => 'paybeaver']"/>
+                                                     :list="['关闭' => '', '码支付' => 'codepay', 'PayJS' => 'payjs', '易支付' => 'epay', '海狸支付' => 'paybeaver', '麻瓜宝' => 'bitpayx']"/>
                                     <x-system.select title="特殊支付" code="is_otherPay" :list="['关闭' => '', '麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
                                     <x-system.input title="自定义商品名称" :value="$subject_name" code="subject_name" help="用于在支付渠道的商品标题显示"/>
                                     <x-system.input title="通用支付回调地址" :value="$website_callback_url" code="website_callback_url"
