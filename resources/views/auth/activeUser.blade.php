@@ -14,7 +14,7 @@
                 <span class="form-title">{{trans('common.active_item', ['attribute' => trans('common.account')])}}</span>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="email" class="form-control" name="email" value="{{Request::query('email')}}" required/>
+                <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" required/>
                 <label class="floating-label" for="email">{{trans('validation.attributes.email')}}</label>
             </div>
         @else

@@ -10,8 +10,8 @@
             <x-alert type="success" :message="Session::get('successMsg')"/>
         @endif
         <div class="form-group form-material floating" data-plugin="formMaterial">
-            <input type="email" class="form-control" name="email" value="{{Request::old('email')}}" required/>
-            <label class="floating-label" for="email">{{trans('validation.attributes.email')}}</label>
+            <input type="text" class="form-control" name="username" value="{{Request::old('username')}}" required/>
+            <label class="floating-label" for="username">{{trans('validation.attributes.email')}}</label>
         </div>
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input type="password" class="form-control" name="password" value="{{Request::old('password')}}" autocomplete required/>
@@ -28,6 +28,13 @@
             </a>
         </div>
         <button type="submit" class="btn btn-lg btn-block mt-40 bg-indigo-500 text-white">{{trans('auth.login')}}</button>
+        @if(sysConfig('oauth_path'))
+                @foreach (sysConfig('oauth_path') as $item)
+                <a href="{{route('oauth.route', ['type' => $item, 'action' => 'login'])}}" class="btn btn-lg btn-block mt-40 bg-blue-500 text-white">{{trans('auth.sign_in_with', ['app'
+         => config('common.oauth')[$item]])}}</a>
+                @endforeach
+        @endif
+
     </form>
     @if(sysConfig('is_register'))
         <p>

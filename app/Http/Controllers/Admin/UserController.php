@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
+use App\Models\UserOauth;
 use Arr;
 use Auth;
 use Exception;
@@ -37,7 +38,7 @@ class UserController extends Controller
             });
         }
 
-        foreach (['email', 'wechat', 'qq'] as $field) {
+        foreach (['username', 'wechat', 'qq'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
                 $query->where($field, 'like', "%{$value}%");
             });
@@ -147,7 +148,7 @@ class UserController extends Controller
         }
 
         return view('admin.user.info', [
-            'user'       => $user->load('inviter:id,email'),
+            'user'       => $user->load('inviter:id,username'),
             'levels'     => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
             'roles'      => $roles ?? null,
@@ -301,5 +302,12 @@ class UserController extends Controller
         $server = Node::findOrFail($request->input('id'))->config($user); // 提取节点信息
 
         return Response::json(['status' => 'success', 'data' => $this->getUserNodeInfo($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
+    }
+
+    public function oauth()
+    {
+        $list = UserOauth::paginate(15)->appends(\request('page'));
+
+        return view('admin.user.oauth', compact('list'));
     }
 }

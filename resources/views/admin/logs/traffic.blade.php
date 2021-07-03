@@ -15,7 +15,7 @@
                         <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="用户端口"/>
@@ -69,9 +69,9 @@
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['id' => $log->user->id])}}" target="_blank"> {{$log->user->email}} </a>
+                                        <a href="{{route('admin.user.index', ['id' => $log->user->id])}}" target="_blank"> {{$log->user->username}} </a>
                                     @else
-                                        {{$log->user->email}}
+                                        {{$log->user->username}}
                                     @endcan
                                 @endif
                             </td>

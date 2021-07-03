@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button type="submit" class="btn btn-primary">搜 索</button>
@@ -39,7 +39,7 @@
                                 @if(empty($log->user))
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
-                                    <a href="{{route('admin.log.credit', ['email'=>$log->user->email])}}"> {{$log->user->email}} </a>
+                                    <a href="{{route('admin.log.credit', ['username'=>$log->user->username])}}"> {{$log->user->username}} </a>
                                 @endif
                             </td>
                             <td> {{$log->order_id}} </td>

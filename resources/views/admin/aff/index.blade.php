@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="申请账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="申请账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="status" id="status" onchange="this.form.submit()">
@@ -50,10 +50,10 @@
                                 @else
                                     @can('admin.user.index')
                                         <a href="{{route('admin.user.index', ['id'=>$apply->user_id])}}" target="_blank">
-                                            {{$apply->user->email}}
+                                            {{$apply->user->username}}
                                         </a>
                                     @else
-                                        {{$apply->user->email}}
+                                        {{$apply->user->username}}
                                     @endcan
                                 @endif
                             </td>

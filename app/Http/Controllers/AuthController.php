@@ -49,7 +49,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), ['email' => 'required|email', 'password' => 'required']);
+        $validator = Validator::make($request->all(), ['username' => 'required', 'password' => 'required']);
 
         if ($validator->fails()) {
             return Redirect::back()->withInput()->withErrors($validator->errors());
@@ -89,7 +89,7 @@ class AuthController extends Controller
         if ($user->status === 0 && sysConfig('is_activate_account')) {
             Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion.0').'<a href="'.route('active').'?email='.$user->email.
+            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion.0').'<a href="'.route('active').'?username='.$user->username.
                 '" target="_blank">👉【'.trans('common.active_item', ['attribute' => trans('common.account')]).'】👈</span></a><br>'.trans('auth.active.promotion.1'));
         }
 
@@ -192,8 +192,9 @@ class AuthController extends Controller
         $cacheKey = 'register_times_'.md5(IP::getClientIp()); // 注册限制缓存key
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required',
-            'email'    => 'required|email|unique:user',
+            'nickname' => 'required',
+            // todo: 需要修改
+            'username'    => 'required|unique:user',
             'password' => 'required|min:6|confirmed',
             'term'     => 'accepted',
         ]);
@@ -245,7 +246,7 @@ class AuthController extends Controller
                 return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha.required'));
             }
 
-            $verifyCode = VerifyCode::whereAddress($data['email'])->whereCode($verify_code)->whereStatus(0)->first();
+            $verifyCode = VerifyCode::whereAddress($data['username'])->whereCode($verify_code)->whereStatus(0)->first();
             if (! $verifyCode) {
                 return Redirect::back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha.error.timeout'));
             }
@@ -281,7 +282,7 @@ class AuthController extends Controller
         $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
         // 创建新用户
-        $user = Helpers::addUser($data['email'], $data['password'], $transfer_enable, sysConfig('default_days'), $inviter_id, $data['username']);
+        $user = Helpers::addUser($data['username'], $data['password'], $transfer_enable, sysConfig('default_days'), $inviter_id, $data['nickname']);
 
         // 注册失败，抛出异常
         if (! $user) {
@@ -309,7 +310,7 @@ class AuthController extends Controller
         // 注册后发送激活码
         if ((int) sysConfig('is_activate_account') === 2) {
             // 生成激活账号的地址
-            $token = $this->addVerifyUrl($user->id, $user->email);
+            $token = $this->addVerifyUrl($user->id, $user->username);
             $activeUserUrl = route('activeAccount', $token);
 
             $user->notifyNow(new AccountActivation($activeUserUrl));
@@ -451,7 +452,7 @@ class AuthController extends Controller
                 return Redirect::back()->withInput()->withErrors($validator->errors());
             }
 
-            $email = $request->input('email');
+            $username = $request->input('username');
 
             // 是否开启重设密码
             if (! sysConfig('password_reset_notification')) {
@@ -459,25 +460,25 @@ class AuthController extends Controller
             }
 
             // 查找账号
-            $user = User::whereEmail($email)->firstOrFail();
+            $user = User::whereUsername($username)->firstOrFail();
 
             // 24小时内重设密码次数限制
             $resetTimes = 0;
-            if (Cache::has('resetPassword_'.md5($email))) {
-                $resetTimes = Cache::get('resetPassword_'.md5($email));
+            if (Cache::has('resetPassword_'.md5($username))) {
+                $resetTimes = Cache::get('resetPassword_'.md5($username));
                 if ($resetTimes >= sysConfig('reset_password_times')) {
                     return Redirect::back()->withErrors(trans('auth.password.reset.error.throttle', ['time' => sysConfig('reset_password_times')]));
                 }
             }
 
             // 生成取回密码的地址
-            $token = $this->addVerifyUrl($user->id, $email);
+            $token = $this->addVerifyUrl($user->id, $username);
 
             // 发送邮件
             $resetUrl = route('resettingPasswd', $token);
             $user->notifyNow(new PasswordReset($resetUrl));
 
-            Cache::put('resetPassword_'.md5($email), $resetTimes + 1, Day);
+            Cache::put('resetPassword_'.md5($username), $resetTimes + 1, Day);
 
             return Redirect::back()->with('successMsg', trans('auth.password.reset.sent'));
         }
@@ -557,7 +558,7 @@ class AuthController extends Controller
                 return Redirect::back()->withInput()->withErrors($validator->errors());
             }
 
-            $email = $request->input('email');
+            $username = $request->input('username');
 
             // 是否开启账号激活
             if (! sysConfig('is_activate_account')) {
@@ -565,7 +566,7 @@ class AuthController extends Controller
             }
 
             // 查找账号
-            $user = User::whereEmail($email)->firstOrFail();
+            $user = User::whereUsername($username)->firstOrFail();
             if ($user->status === -1) {
                 return Redirect::back()->withErrors(trans('auth.error.account_baned'));
             }
@@ -576,22 +577,22 @@ class AuthController extends Controller
 
             // 24小时内激活次数限制
             $activeTimes = 0;
-            if (Cache::has('activeUser_'.md5($email))) {
-                $activeTimes = Cache::get('activeUser_'.md5($email));
+            if (Cache::has('activeUser_'.md5($username))) {
+                $activeTimes = Cache::get('activeUser_'.md5($username));
                 if ($activeTimes >= sysConfig('active_times')) {
                     return Redirect::back()->withErrors(trans('auth.active.error.throttle', ['email' => sysConfig('webmaster_email')]));
                 }
             }
 
             // 生成激活账号的地址
-            $token = $this->addVerifyUrl($user->id, $email);
+            $token = $this->addVerifyUrl($user->id, $username);
 
             // 发送邮件
             $activeUserUrl = route('activeAccount', $token);
 
-            Notification::route('mail', $email)->notifyNow(new AccountActivation($activeUserUrl));
+            Notification::route('mail', $username)->notifyNow(new AccountActivation($activeUserUrl));
 
-            Cache::put('activeUser_'.md5($email), $activeTimes + 1, Day);
+            Cache::put('activeUser_'.md5($username), $activeTimes + 1, Day);
 
             return Redirect::back()->with('successMsg', trans('auth.active.sent'));
         }

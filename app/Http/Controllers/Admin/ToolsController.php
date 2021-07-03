@@ -156,8 +156,8 @@ class ToolsController extends Controller
                 DB::beginTransaction();
                 foreach ($data as $user) {
                     $obj = new User();
+                    $obj->nickname = $user->user;
                     $obj->username = $user->user;
-                    $obj->email = $user->user;
                     $obj->password = '123456';
                     $obj->port = $user->port;
                     $obj->passwd = $user->passwd;

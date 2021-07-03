@@ -9,8 +9,8 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required',
-            'email' => 'required|unique:user,email,'.$this->user->id,
+            'nickname' => 'required',
+            'username' => 'required|unique:user,username,'.$this->user->id,
             'password' => 'nullable|string',
             'port' => 'required|numeric|exclude_if:port,0|gt:0|unique:user,port,'.$this->user->id,
             'passwd' => 'required|string',

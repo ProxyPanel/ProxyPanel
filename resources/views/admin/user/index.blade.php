@@ -35,7 +35,7 @@
                         <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
                         <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="微信"/>
@@ -102,7 +102,7 @@
                     @foreach ($userList as $user)
                         <tr class="{{$user->isTrafficWarning() ? ' table-danger' : ''}}">
                             <td> {{$user->id}} </td>
-                            <td> {{$user->email}} </td>
+                            <td> {{$user->username}} </td>
                             <td> {{$user->credit}} </td>
                             <td>
                                 {!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}
@@ -158,7 +158,7 @@
                                                 </a>
                                             @endcan
                                             @can('admin.user.destroy')
-                                                <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->email}}')" role="menuitem">
+                                                <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->username}}')" role="menuitem">
                                                     <i class="icon wb-trash" aria-hidden="true"></i> 删除
                                                 </a>
                                             @endcan
@@ -178,7 +178,7 @@
                                                 </a>
                                             @endcan
                                             @can('admin.user.reset')
-                                                <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->email}}')" role="menuitem">
+                                                <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}')" role="menuitem">
                                                     <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
                                                 </a>
                                             @endcan
@@ -252,10 +252,10 @@
 
         @can('admin.user.destroy')
         // 删除账号
-        function delUser(url, email) {
+        function delUser(url, username) {
             swal.fire({
                 title: '{{trans('common.warning')}}',
-                text: '确定删除用户 【' + email + '】 ？',
+                text: '确定删除用户 【' + username + '】 ？',
                 icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('common.close')}}',
@@ -282,10 +282,10 @@
 
         @can('admin.user.reset')
         // 重置流量
-        function resetTraffic(id, email) {
+        function resetTraffic(id, username) {
             swal.fire({
                 title: '{{trans('common.warning')}}',
-                text: '确定重置 【' + email + '】 流量吗？',
+                text: '确定重置 【' + username + '】 流量吗？',
                 icon: 'warning',
                 showCancelButton: true,
                 cancelButtonText: '{{trans('common.close')}}',

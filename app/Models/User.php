@@ -37,28 +37,33 @@ class User extends Authenticatable implements JWTSubject
     public function profile()
     {
         return [
-            'id' => $this->id,
-            'nickname' => $this->username,
-            'account' => $this->email,
-            'port' => $this->port,
-            'passwd' => $this->passwd,
-            'uuid' => $this->vmess_id,
+            'id'              => $this->id,
+            'nickname'        => $this->nickname,
+            'account'         => $this->username,
+            'port'            => $this->port,
+            'passwd'          => $this->passwd,
+            'uuid'            => $this->vmess_id,
             'transfer_enable' => $this->transfer_enable,
-            'u' => $this->u,
-            'd' => $this->d,
-            't' => $this->t,
-            'enable' => $this->enable,
-            'speed_limit' => $this->speed_limit,
-            'credit' => $this->credit,
-            'expired_at' => $this->expired_at,
-            'ban_time' => $this->ban_time,
-            'level' => $this->level_name,
-            'group' => $this->userGroup->name ?? null,
-            'last_login' => $this->last_login,
-            'reset_time' => $this->reset_time,
-            'invite_num' => $this->invite_num,
-            'status' => $this->status,
+            'u'               => $this->u,
+            'd'               => $this->d,
+            't'               => $this->t,
+            'enable'          => $this->enable,
+            'speed_limit'     => $this->speed_limit,
+            'credit'          => $this->credit,
+            'expired_at'      => $this->expired_at,
+            'ban_time'        => $this->ban_time,
+            'level'           => $this->level_name,
+            'group'           => $this->userGroup->name ?? null,
+            'last_login'      => $this->last_login,
+            'reset_time'      => $this->reset_time,
+            'invite_num'      => $this->invite_num,
+            'status'          => $this->status,
         ];
+    }
+
+    public function userAuths(): HasMany
+    {
+        return $this->hasMany(UserOauth::class);
     }
 
     public function onlineIpLogs(): HasMany

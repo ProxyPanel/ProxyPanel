@@ -26,6 +26,7 @@ return [
         'account_baned'  => '您的账号已被禁止登录！',
         'login_error'    => '登录错误，请稍后重试！',
         'login_failed'   => '登录失败，请检查邮箱或密码是否输入正确！',
+        'not_found_user' => '未找到关联账号，请使用其他方式登录',
         'repeat_request' => '请勿重复请求，请刷新后重试',
         'url_timeout'    => '链接已失效, 请重新操作',
     ],
@@ -68,5 +69,6 @@ return [
     ],
     'remember_me'     => '记住我',
     'request'         => '获 取',
+    'sign_in_with'    => ':app账号登录',
     'tos'             => '用户条款',
 ];

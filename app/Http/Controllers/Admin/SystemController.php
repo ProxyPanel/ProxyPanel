@@ -11,8 +11,9 @@ use App\Notifications\Custom;
 use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Notification;
-use Request;
+use NotificationChannels\Telegram\TelegramChannel;
 use Response;
 
 class SystemController extends Controller
@@ -157,6 +158,9 @@ class SystemController extends Controller
                 break;
             case 'bark':
                 Notification::sendNow(BarkChannel::class, new Custom('这是测试的标题', 'ProxyPanel测试内容'));
+                break;
+            case 'telegram':
+                Notification::sendNow(TelegramChannel::class, new Custom('这是测试的标题', 'ProxyPanel测试内容'));
                 break;
             default:
                 return Response::json(['status' => 'fail', 'message' => '未知渠道']);

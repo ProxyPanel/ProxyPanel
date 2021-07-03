@@ -16,7 +16,7 @@
                         <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <input type="text" class="form-control" name="ip" value="{{Request::query('ip')}}" placeholder="IP"/>
@@ -55,7 +55,7 @@
                             <td>{{$log->id}}</td>
                             <td>{{$log->type}}</td>
                             <td>{{$log->node->name ?? '【节点已删除】'}}</td>
-                            <td>{{$log->user->email ?? '【用户已删除】'}}</td>
+                            <td>{{$log->user->username ?? '【用户已删除】'}}</td>
                             <td>
                                 @if (strpos($log->ip, ',') !== false)
                                     @foreach (explode(',', $log->ip) as $ip)

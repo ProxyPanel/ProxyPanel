@@ -11,7 +11,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button type="submit" class="btn btn-primary">搜 索</button>
@@ -38,9 +38,9 @@
                             <td>
                                 @if ($log->user)
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['email'=>$log->user->email])}}" target="_blank"> {{$log->user->email}}</a>
+                                        <a href="{{route('admin.user.index', ['username'=>$log->user->username])}}" target="_blank"> {{$log->user->username}}</a>
                                     @else
-                                        {{$log->user->email}}
+                                        {{$log->user->username}}
                                     @endcan
                                 @else
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】

@@ -15,6 +15,14 @@ Route::post('api/telegram/webhook', 'TelegramController@webhook'); // Telegram f
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
     Route::get('login', 'AuthController@showLoginForm')->middleware('isSecurity')->name('login'); // 登录页面
+
+    Route::namespace('OAuth')->prefix('oauth/')->name('oauth.')->group(function () { // 用户第三方登录默认登录/转跳方式
+        Route::get('{type}/redirect', 'BaseController@redirect')->name('redirect');
+        Route::get('{type}/bind', 'BaseController@bind')->name('bind');
+        Route::get('{type}/register', 'BaseController@register')->name('register');
+        Route::get('{type}/{action}', 'BaseController@route')->name('route');
+    });
+
     Route::post('login', 'AuthController@login')->middleware('isSecurity'); // 登录
     Route::get('logout', 'AuthController@logout')->name('logout'); // 退出
     Route::get('register', 'AuthController@showRegistrationForm')->name('register'); // 注册

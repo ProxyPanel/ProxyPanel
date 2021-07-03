@@ -85,6 +85,13 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('admin.user.oauth')
+                                <li class="site-menu-item {{request()->routeIs('admin.user.oauth') ? 'active open' : ''}}">
+                                    <a href="{{route('admin.user.oauth')}}">
+                                        <span class="site-menu-title">用户授权</span>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('admin.user.group.index')
                                 <li class="site-menu-item {{request()->routeIs('admin.user.group.*') ? 'active open' : ''}}">
                                     <a href="{{route('admin.user.group.index')}}">

@@ -81,8 +81,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <x-system.select title="禁止访问模式" code="forbid_mode" :list="['关闭' => '', '阻拦大陆'=> 'ban_mainland', '阻拦中国' => 'ban_china', '阻拦海外' => 'ban_oversea']"
-                                             help="依据IP对对应地区进行阻拦，非阻拦地区可正常访问"/>
+                            <x-system.select title="禁止访问模式" code="forbid_mode" help="依据IP对对应地区进行阻拦，非阻拦地区可正常访问"
+                                             :list="['关闭' => '', '阻拦大陆'=> 'ban_mainland', '阻拦中国' => 'ban_china', '阻拦海外' => 'ban_oversea']"/>
                             <x-system.switch title="阻止机器人访问" code="is_forbid_robot" :check="$is_forbid_robot" help="如果是机器人、爬虫、代理访问网站则会抛出404错误"/>
                             <x-system.switch title="维护模式" code="maintenance_mode" :check="$maintenance_mode"
                                              help="启用后，用户访问转移至维护界面 | 管理员使用 <a href='javascript:(0)'>{{route('admin.login')}}</a> 登录"/>
@@ -92,6 +92,8 @@
                         </x-system.tab-pane>
                         <x-system.tab-pane id="account">
                             <x-system.switch title="用户注册" code="is_register" :check="$is_register" help="关闭后无法注册"/>
+                            <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台"  multiple="1"
+                                             :list="array_flip(config('common.oauth'))"/>
                             <x-system.select title="邀请注册" code="is_invite_register" :list="['关闭' => '', '可选'=> 1, '必须' => 2]"/>
                             <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]" help="启用后用户需要通过邮件来激活账号"/>
                             <x-system.select title="重置密码" code="password_reset_notification" :list="['关闭' => '', '邮箱'=> 'mail']" help="启用后用户可以重置密码"/>
@@ -104,8 +106,8 @@
                             <x-system.input-limit title="初始流量" code="default_traffic" :value="$default_traffic" unit="MB" help="用户注册时默认可用流量"/>
                             <x-system.input-limit title="可生成邀请码数" code="invite_num" :value="$invite_num" help="用户可以生成的邀请码数"/>
                             <x-system.input-limit title="重置密码次数" code="reset_password_times" :value="$reset_password_times" help="24小时内可以通过邮件重置密码次数"/>
-                            <x-system.select title="邮箱过滤机制" code="is_email_filtering" :list="['关闭' => '', '黑名单' => 1, '白名单' => 2]"
-                                             help="黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:用户只能选择使用白名单中的邮箱后缀注册"/>
+                            <x-system.select title="邮箱过滤机制" code="is_email_filtering" help="黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:用户只能选择使用白名单中的邮箱后缀注册"
+                                             :list="['关闭' => '', '黑名单' => 1, '白名单' => 2]"/>
                             <x-system.input-limit title="激活账号次数" code="active_times" :value="$active_times" help="24小时内可以通过邮件激活账号次数"/>
                             <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0时不限制"/>
                             <x-system.input-limit title="用户-邀请码有效期" code="user_invite_days" :value="$user_invite_days" min="1" unit="天" help="用户自行生成邀请的有效期"/>
@@ -123,9 +125,8 @@
                             <x-system.input title="V2Ray TLS配置" :value="$v2ray_tls_provider" code="v2ray_tls_provider" help="后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
-                            <x-system.select title="DDNS模式" code="ddns_mode"
-                                             :list="['关闭' => '', 'Namesilo' => 'namesilo', '阿里云(国际&国内)' => 'aliyun', 'DNSPod' => 'dnspod', 'CloudFlare' => 'cloudflare']"
-                                             help="添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商"/>
+                            <x-system.select title="DDNS模式" code="ddns_mode" help="添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商"
+                                             :list="['关闭' => '', 'Namesilo' => 'namesilo', '阿里云(国际&国内)' => 'aliyun', 'DNSPod' => 'dnspod', 'CloudFlare' => 'cloudflare']"/>
                             <x-system.input title="DNS服务商Key" :value="$ddns_key" code="ddns_key"
                                             help="浏览<a href='https://proxypanel.gitbook.io/wiki/ddns' target='_blank'>设置指南</a>来设置"/>
                             <x-system.input title="DNS服务商Secret" :value="$ddns_secret" code="ddns_secret"/>
@@ -151,37 +152,37 @@
                             <x-system.input-limit title="提现限制" code="referral_money" :value="$referral_money" unit="元" help="满多少元才可以申请提现"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="notify">
-                            <x-system.select title="账号过期通知" code="account_expire_notification" :list="['邮箱' => 'mail', '站内通知' => 'database']"
-                                             help="通知用户账号即将到期" multiple="1"/>
-                            <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="元" help="【账号过期通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="流量耗尽通知" code="data_exhaust_notification" :list="['邮箱' => 'mail', '站内通知' => 'database']"
-                                             help="通知用户流量即将耗尽" multiple="1"/>
-                            <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="节点离线提醒" code="node_offline_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
-                                             help="每10分钟检测节点离线并提醒管理员" multiple="1"/>
-                            <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
-                            <x-system.select title="节点阻断提醒" code="node_blocked_notification" :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
-                                             help="每小时检测节点是否被阻断并提醒管理员" multiple="1"/>
-                            <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
-                                                  help="提醒N次后自动下线节点，为0时不限制，不超过12"/>
-                            <x-system.select title="支付成功通知" code="payment_received_notification" :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"
-                                             help="用户支付订单后通知用户订单状态" multiple="1"/>
-                            <x-system.select title="工单关闭通知" code="ticket_closed_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
-                                             help="工单关闭通知用户" multiple="1"/>
-                            <x-system.select title="新工单通知" code="ticket_created_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
-                                             help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"/>
-                            <x-system.select title="工单回复通知" code="ticket_replied_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"
-                                             help="工单回复通知对方" multiple="1"/>
                             <x-system.input-test title="SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
                                     target=_blank>申请SCKEY</a>）' holder="请到ServerChan申请" test="serverChan"/>
                             <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="安装并打开Bark后取得" type="url"
                                                  help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值" test="bark"/>
+                            <x-system.input-test title="Telegram Token" :value="$telegram_token" code="telegram_token" help="找 <a href=https://t.me/BotFather
+                                    target=_blank>@BotFather</a> 申请机器人"  test="telegram"/>
                             <x-system.switch title="PushBear" code="is_push_bear" :check="$is_push_bear"
                                              help='使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）'/>
                             <x-system.input title="PushBear SendKey" :value="$push_bear_send_key" code="push_bear_send_key" help="启用PushBear，请务必填入本值" holder="创建消息通道后即可获取"/>
-                            <x-system.input title="TelegramToken" :value="$telegram_token" code="telegram_token" help="启用telegram_bot，请务必填入本值" holder="在@BotFather创建后即可获取"/>
                             <x-system.input title="PushBear订阅二维码" :value="$push_bear_qrcode" code="push_bear_qrcode" help="创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处"
                                             holder="填入消息通道的二维码URL" type="url"/>
+                            <hr class="col-10"/>
+                            <x-system.select title="账号过期通知" code="account_expire_notification" help="通知用户账号即将到期" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
+                            <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="元" help="【账号过期通知】开始阈值，每日通知用户"/>
+                            <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
+                            <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
+                            <x-system.select title="节点离线提醒" code="node_offline_notification" help="每10分钟检测节点离线并提醒管理员" multiple="1"
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                            <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
+                            <x-system.select title="节点阻断提醒" code="node_blocked_notification" help="每小时检测节点是否被阻断并提醒管理员" multiple="1"
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                            <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
+                                                  help="提醒N次后自动下线节点，为0时不限制，不超过12"/>
+                            <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
+                                             :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
+                            <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                            <x-system.select title="新工单通知" code="ticket_created_notification" help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                            <x-system.select title="工单回复通知" code="ticket_replied_notification" help="工单回复通知对方" multiple="1"
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="auto">
                             <x-system.switch title="自动清除日志" code="is_clear_log" :check="$is_clear_log" help='（推荐）启用后自动清除无用日志'/>
@@ -189,14 +190,14 @@
                             <x-system.switch title="订阅异常自动封禁" code="is_subscribe_ban" :check="$is_subscribe_ban" help='启用后用户订阅链接请求超过设定阈值则自动封禁'/>
                             <x-system.input-limit title="订阅请求阈值" code="subscribe_ban_times" :value="$subscribe_ban_times" help="24小时内订阅链接请求次数限制"/>
                             <x-system.switch title="异常自动封号" code="is_traffic_ban" :check="$is_traffic_ban" help='1小时内流量超过异常阈值则自动封号（仅禁用代理）'/>
-                            <x-system.select title="流量异常通知" code="data_anomaly_notification" :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan']"
-                                             help="1小时内流量超过异常阈值通知超管" multiple="1"/>
+                            <x-system.select title="流量异常通知" code="data_anomaly_notification" help="1小时内流量超过异常阈值通知超管" multiple="1"
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
                             <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB" help="1小时内超过该值，则触发自动封号"/>
                             <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟" help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
                             <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port" help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
                             <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status" help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
-                            <x-system.select title="节点使用报告" code="node_daily_notification" :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan']"
-                                             help="报告各节点流量昨日消耗情况" multiple="1"/>
+                            <x-system.select title="节点使用报告" code="node_daily_notification" help="报告各节点流量昨日消耗情况" multiple="1"
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="other">
                             @if($errors->any())
@@ -404,6 +405,7 @@
             $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
             $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
             $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+            $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
             $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
             $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
             $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
@@ -497,7 +499,7 @@
             }
         }
 
-        // 发送Bark测试消息
+        // 使用通知渠道 发送测试消息
         @can('admin.test.notify')
         function sendTestNotification(channel) {
             $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {

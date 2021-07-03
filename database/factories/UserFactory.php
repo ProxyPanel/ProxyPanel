@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Factory;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-        'username' => $faker->name,
-        'email' => $faker->unique()->safeEmail,
+        'nickname' => $faker->name,
+        'username' => $faker->unique()->safeEmail,
         'password' => Hash::make(Str::random()),
         'port' => Helpers::getPort(),
         'passwd' => Str::random(),

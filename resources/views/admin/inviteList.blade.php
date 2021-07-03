@@ -54,13 +54,13 @@
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
-                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】')}}
+                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】')}}
                                     </td>
                                     <td>
                                         {!!$invite->status_label!!}
                                     </td>
                                     <td>
-                                        {{$invite->status === 1 ? ($invite->invitee->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
+                                        {{$invite->status === 1 ? ($invite->invitee->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
                                     </td>
                                 </tr>
                             @endforeach

@@ -12,7 +12,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="订单号"/>
@@ -102,9 +102,9 @@
                                     【账号不存在】
                                 @else
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->email}} </a>
+                                        <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->username}} </a>
                                     @else
-                                        {{$order->user->email}}
+                                        {{$order->user->username}}
                                     @endcan
                                 @endif
                             </td>

@@ -19,11 +19,11 @@ class SubscribeController extends Controller
     // 订阅码列表
     public function index(Request $request)
     {
-        $query = UserSubscribe::with(['user:id,email']);
+        $query = UserSubscribe::with(['user:id,username']);
 
-        $request->whenFilled('email', function ($value) use ($query) {
-            $query->whereHas('user', function ($query) use ($value) {
-                $query->where('email', 'like', "%{$value}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -39,7 +39,7 @@ class SubscribeController extends Controller
     //订阅记录
     public function subscribeLog($id)
     {
-        $query = UserSubscribeLog::with('user:email');
+        $query = UserSubscribeLog::with('user:username');
 
         if (isset($id)) {
             $query->whereUserSubscribeId($id);

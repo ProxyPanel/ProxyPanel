@@ -5,7 +5,7 @@
     chat-left
 @endif">
     <div class="chat-avatar">
-        <p class="avatar" data-toggle="tooltip" href="#" data-placement="right" title="" data-original-title="{{($ticket->admin ?? $ticket->user)->email}}">
+        <p class="avatar" data-toggle="tooltip" href="#" data-placement="right" title="" data-original-title="{{($ticket->admin ?? $ticket->user)->username}}">
             <x-avatar :user="$ticket->admin ?? $ticket->user"/>
         </p>
     </div>

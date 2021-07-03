@@ -106,11 +106,11 @@
                         <div class="form-group row">
                             <label for="domain" class="col-2 col-form-label">域名</label>
                             <div class="input-group col-10">
-                                <input type="number" class="form-control col-md-4" name="user_id" id="user_id" placeholder="用户ID"/>
+                                <input type="number" class="form-control col-md-4" name="uid" id="uid" placeholder="用户ID"/>
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">或</span>
                                 </div>
-                                <input type="email" class="form-control col-md-8" name="user_email" id="user_email" placeholder="用户邮箱"/>
+                                <input type="text" class="form-control col-md-8" name="username" id="username" placeholder="用户邮箱"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -136,12 +136,12 @@
         @can('admin.ticket.store')
         // 发起工单
         function createTicket() {
-            const id = $('#user_id').val();
-            const email = $('#user_email').val();
+            const uid = $('#uid').val();
+            const username = $('#username').val();
             const title = $('#title').val();
             const content = $('#content').val();
 
-            if (id.trim() === '' && email.trim() === '') {
+            if (uid.trim() === '' && username.trim() === '') {
                 swal.fire({title: '请填入目标用户信息!', icon: 'warning'});
                 return false;
             }
@@ -169,8 +169,8 @@
                         url: "{{route('admin.ticket.store')}}",
                         data: {
                             _token: '{{csrf_token()}}',
-                            id: id,
-                            email: email,
+                            uid: uid,
+                            username: username,
                             title: title,
                             content: content,
                         },

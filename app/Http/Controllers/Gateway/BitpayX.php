@@ -12,6 +12,7 @@ class BitpayX extends AbstractPayment
     public function purchase($request): JsonResponse
     {
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+
         $data = [
             'merchant_order_id'  => $payment->trade_no,
             'price_amount'       => (float) $payment->amount,
@@ -29,12 +30,14 @@ class BitpayX extends AbstractPayment
             $data['pay_currency'] = 'WECHAT';
         }
         $result = $this->sendRequest($data);
+
         if ($result['status'] === 200 || $result['status'] === 201) {
             $result['payment_url'] .= '&lang=zh';
             $payment->update(['url' => $result['payment_url']]);
 
             return Response::json(['status' => 'success', 'url' => $result['payment_url'], 'message' => '创建订单成功!']);
         }
+
         Log::warning('创建订单错误：'.var_export($result, true));
 
         return Response::json(['status' => 'fail', 'message' => '创建订单失败!'.$result['error']]);
@@ -44,8 +47,8 @@ class BitpayX extends AbstractPayment
     {
         $data = [
             'merchant_order_id' => $tradeNo,
-            'secret' => sysConfig('bitpay_secret'),
-            'type' => 'FIAT',
+            'secret'            => sysConfig('bitpay_secret'),
+            'type'              => 'FIAT',
         ];
         ksort($data);
 
@@ -90,7 +93,6 @@ class BitpayX extends AbstractPayment
         return $mySign === $signature;
     }
 
-    //Todo: Postman虚拟测试通过，需要真实数据参考验证
     public function notify($request): void
     {
         $tradeNo = $request->input(['merchant_order_id']);

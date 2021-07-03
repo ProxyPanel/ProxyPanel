@@ -11,10 +11,10 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="invitee_email" value="{{Request::query('invitee_email')}}" placeholder="消费者"/>
+                        <input type="text" class="form-control" name="invitee_username" value="{{Request::query('invitee_username')}}" placeholder="消费者"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="inviter_email" value="{{Request::query('inviter_email')}}" placeholder="邀请人"/>
+                        <input type="text" class="form-control" name="inviter_username" value="{{Request::query('inviter_username')}}" placeholder="邀请人"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <select name="status" id="status" class="form-control" onchange="this.form.submit()">
@@ -51,14 +51,14 @@
                                 @if(empty($referralLog->invitee))
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
-                                    <a href="{{route('admin.aff.rebate',['invitee_email' => $referralLog->invitee->email])}}"> {{$referralLog->invitee->email}} </a>
+                                    <a href="{{route('admin.aff.rebate',['invitee_username' => $referralLog->invitee->username])}}"> {{$referralLog->invitee->username}} </a>
                                 @endif
                             </td>
                             <td>
                                 @if(empty($referralLog->inviter))
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
-                                    <a href="{{route('admin.aff.rebate',['inviter_email' => $referralLog->inviter->email])}}"> {{$referralLog->inviter->email}} </a>
+                                    <a href="{{route('admin.aff.rebate',['inviter_username' => $referralLog->inviter->username])}}"> {{$referralLog->inviter->username}} </a>
                                 @endif
                             </td>
                             <td> {{$referralLog->order_id}} </td>

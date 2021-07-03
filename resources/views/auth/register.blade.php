@@ -2,6 +2,7 @@
 @section('title', trans('auth.register.attribute'))
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <form action="{{route('register')}}" method="post" id="register-form">
@@ -13,8 +14,8 @@
             <input type="hidden" name="register_token" value="{{Session::get('register_token')}}"/>
             <input type="hidden" name="aff" value="{{Request::query('aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="username" id="username" 
-		value="{{Request::old('username') ? : Request::query('username')}}" autocomplete="off" required/>
+                <input type="text" class="form-control" name="nickname" id="nickname"
+                       value="{{Request::old('nickname') ? : Request::query('nickname')}}" autocomplete="off" required/>
                 <label class="floating-label" for="username">{{trans('validation.attributes.username')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
@@ -30,11 +31,11 @@
                                 <option value="{{$email->words}}">{{$email->words}}</option>
                             @endforeach
                         </select>
-                        <input type="text" name="email" id="email" hidden/>
+                        <input type="text" name="username" id="username" hidden/>
                     </div>
                 @else
-                    <input type="email" class="form-control" name="email" id="email" value="{{Request::old('email')}}" required/>
-                    <label class="floating-label" for="email">{{trans('validation.attributes.email')}}</label>
+                    <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username')}}" required/>
+                    <label class="floating-label" for="username">{{trans('validation.attributes.email')}}</label>
                 @endif
             </div>
             @if(sysConfig('is_activate_account') == 1)
@@ -97,6 +98,16 @@
             <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register.attribute')}}</button>
         @endif
     </form>
+    @if(sysConfig('is_register') && sysConfig('oauth_path'))
+        <div class="row" style="display: inline-block;">
+            <h6>快速注册</h6>
+            @foreach (sysConfig('oauth_path') as $item)
+                <a class="btn btn-info" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
+                    {{config('common.oauth')[$item]}}
+                </a>
+            @endforeach
+        </div>
+    @endif
 @endsection
 @section('modal')
     <div class="modal fade modal-info text-left" id="tos" aria-hidden="true" aria-labelledby="tos" role="dialog"

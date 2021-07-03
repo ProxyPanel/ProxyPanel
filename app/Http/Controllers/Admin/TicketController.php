@@ -22,9 +22,9 @@ class TicketController extends Controller
             $query->whereAdminId(Auth::id())->orwhere('admin_id');
         });
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -35,7 +35,7 @@ class TicketController extends Controller
     public function store(TicketRequest $request)
     {
         $data = $request->validated();
-        $user = User::find($data['id']) ?: User::whereEmail($data['email'])->first();
+        $user = User::find($data['uid']) ?: User::whereUsername($data['username'])->first();
 
         if ($user === Auth::user()) {
             return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);

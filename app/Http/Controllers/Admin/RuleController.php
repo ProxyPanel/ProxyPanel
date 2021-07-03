@@ -69,9 +69,9 @@ class RuleController extends Controller
             });
         }
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 

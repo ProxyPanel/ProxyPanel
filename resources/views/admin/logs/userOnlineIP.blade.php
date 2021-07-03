@@ -16,7 +16,7 @@
                         <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="微信"/>
@@ -47,7 +47,7 @@
                     @foreach ($userList as $user)
                         <tr>
                             <td> {{$user->id}} </td>
-                            <td> {{$user->email}} </td>
+                            <td> {{$user->username}} </td>
                             <td> {{$user->port}} </td>
                             <td>
                                 @if ($user->status > 0)

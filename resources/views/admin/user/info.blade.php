@@ -22,15 +22,15 @@
                         <div class="col-lg-6">
                             <h4 class="example-title">账号信息</h4>
                             <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="username">昵称</label>
+                                <label class="col-md-2 col-sm-3 col-form-label" for="nickname">昵称</label>
                                 <div class="col-xl-6 col-sm-8">
-                                    <input type="text" class="form-control" name="username" id="username" required/>
+                                    <input type="text" class="form-control" name="nickname" id="nickname" required/>
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="email">邮箱</label>
+                                <label class="col-md-2 col-sm-3 col-form-label" for="username">账号</label>
                                 <div class="col-xl-6 col-sm-8">
-                                    <input type="email" class="form-control" name="email" id="email" required/>
+                                    <input type="text" class="form-control" name="username" id="username" required/>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -283,7 +283,7 @@
                                 <div class="form-group row">
                                     <label class="col-md-2 col-sm-3 col-form-label" for="inviter">邀请人</label>
                                     <div class="col-xl-6 col-sm-8">
-                                        <p class="form-control"> {{$user->inviter->email ?? '无邀请人'}} </p>
+                                        <p class="form-control"> {{$user->inviter->username ?? '无邀请人'}} </p>
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -341,8 +341,8 @@
     <script>
         $(document).ready(function() {
             @isset($user)
+            $('#nickname').val('{{$user->nickname}}');
             $('#username').val('{{$user->username}}');
-            $('#email').val('{{$user->email}}');
             $('#level').selectpicker('val', '{{$user->level}}');
             $('#group').selectpicker('val', '{{$user->user_group_id}}');
             $('#invite_num').val('{{$user->invite_num}}');
@@ -451,8 +451,8 @@
                 dataType: 'json',
                 data: {
                     _token: '{{csrf_token()}}',
+                    nickname: $('#nickname').val(),
                     username: $('#username').val(),
-                    email: $('#email').val(),
                     password: $('#password').val(),
                     port: $('#port').val(),
                     passwd: $('#passwd').val(),

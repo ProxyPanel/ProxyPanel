@@ -14,7 +14,7 @@ class AppendV2SniToNodeTable extends Migration
     public function up()
     {
         Schema::table('node', function (Blueprint $table) {
-            $table->string('v2_sni', 191)->nullable()->comment('V2Ray的SNI配置');
+            $table->string('v2_sni', 191)->nullable()->comment('V2Ray的SNI配置')->after('v2_tls');
         });
     }
 

@@ -52,19 +52,19 @@ class Helpers
     /**
      * 添加用户.
      *
-     * @param  string  $email  用户邮箱
+     * @param  string  $username  用户
      * @param  string  $password  用户密码
      * @param  int  $transfer_enable  可用流量
      * @param  int|null  $date  可使用天数
      * @param  int|null  $inviter_id  邀请人
-     * @param  string|null  $username  昵称
+     * @param  string|null  $nickname  昵称
      * @return User
      */
-    public static function addUser(string $email, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $username = null): User
+    public static function addUser(string $username, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $nickname = null): User
     {
         return User::create([
-            'username'        => $username ?? $email,
-            'email'           => $email,
+            'nickname'        => $nickname ?? $username,
+            'username'        => $username,
             'password'        => $password,
             'port'            => self::getPort(), // 生成一个可用端口
             'passwd'          => Str::random(),

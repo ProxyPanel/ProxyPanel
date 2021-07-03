@@ -62,7 +62,7 @@ class AdminController extends Controller
     public function inviteList()
     {
         return view('admin.inviteList', [
-            'inviteList' => Invite::with(['invitee:id,email', 'inviter:id,email'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page')),
+            'inviteList' => Invite::with(['invitee:id,username', 'inviter:id,username'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page')),
         ]);
     }
 

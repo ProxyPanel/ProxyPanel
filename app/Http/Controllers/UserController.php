@@ -173,9 +173,9 @@ class UserController extends Controller
             }
 
             // 修改联系方式
-            if ($request->has(['username', 'wechat', 'qq'])) {
-                $data = $request->only(['username', 'wechat', 'qq']);
-                if (empty($data['username'])) {
+            if ($request->has(['nickname', 'wechat', 'qq'])) {
+                $data = $request->only(['nickname', 'wechat', 'qq']);
+                if (empty($data['nickname'])) {
                     return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('validation.attributes.username')]));
                 }
 

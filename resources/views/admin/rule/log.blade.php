@@ -21,7 +21,7 @@
                         <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="用户ID"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="node_id" name="node_id">
@@ -61,7 +61,7 @@
                         <tr>
                             <td> {{$ruleLog->id}} </td>
                             <td> {{$ruleLog->user->id ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
-                            <td> {{$ruleLog->user->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
+                            <td> {{$ruleLog->user->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】'}} </td>
                             <td> {{empty($ruleLog->node) ? '【节点已删除】' : '【节点ID：' . $ruleLog->node_id . '】' . $ruleLog->node->name}} </td>
                             <td> {{$ruleLog->rule_id ? '⛔  ' . ($ruleLog->rule->name ?? '【规则已删除】') : '✅  访问非规则允许内容'}} </td>
                             <td> {{$ruleLog->reason}} </td>

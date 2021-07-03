@@ -21,11 +21,11 @@ class LogsController extends Controller
     // 订单列表
     public function orderList(Request $request)
     {
-        $query = Order::with(['user:id,email', 'goods:id,name', 'coupon:id,name,sn']);
+        $query = Order::with(['user:id,username', 'goods:id,name', 'coupon:id,name,sn']);
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -82,9 +82,9 @@ class LogsController extends Controller
             });
         }
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -113,8 +113,8 @@ class LogsController extends Controller
     {
         $query = NotificationLog::query();
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->where('address', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->where('address', 'like', "%{$username}%");
         });
 
         $request->whenFilled('type', function ($type) use ($query) {
@@ -127,7 +127,7 @@ class LogsController extends Controller
     // 在线IP监控（实时）
     public function onlineIPMonitor(Request $request, $id = null)
     {
-        $query = NodeOnlineIp::with(['node:id,name', 'user:id,email'])->where('created_at', '>=', strtotime('-2 minutes'));
+        $query = NodeOnlineIp::with(['node:id,name', 'user:id,username'])->where('created_at', '>=', strtotime('-2 minutes'));
 
         if ($id !== null) {
             $query->whereHas('user', static function ($query) use ($id) {
@@ -139,9 +139,9 @@ class LogsController extends Controller
             $query->whereIp($ip);
         });
 
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -177,11 +177,11 @@ class LogsController extends Controller
     // 用户余额变动记录
     public function userCreditLogList(Request $request)
     {
-        $query = UserCreditLog::with('user:id,email')->latest();
+        $query = UserCreditLog::with('user:id,username')->latest();
 
-        $request->whenFilled('email', function ($value) use ($query) {
-            $query->whereHas('user', function ($query) use ($value) {
-                $query->where('email', 'like', "%{$value}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -191,11 +191,11 @@ class LogsController extends Controller
     // 用户封禁记录
     public function userBanLogList(Request $request)
     {
-        $query = UserBanedLog::with('user:id,email,t');
+        $query = UserBanedLog::with('user:id,username,t');
 
-        $request->whenFilled('email', function ($value) use ($query) {
-            $query->whereHas('user', function ($query) use ($value) {
-                $query->where('email', 'like', "%{$value}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -205,11 +205,11 @@ class LogsController extends Controller
     // 用户流量变动记录
     public function userTrafficLogList(Request $request)
     {
-        $query = UserDataModifyLog::with(['user:id,email', 'order.goods:id,name']);
+        $query = UserDataModifyLog::with(['user:id,username', 'order.goods:id,name']);
 
-        $request->whenFilled('email', function ($value) use ($query) {
-            $query->whereHas('user', function ($query) use ($value) {
-                $query->where('email', 'like', "%{$value}%");
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -221,7 +221,7 @@ class LogsController extends Controller
     {
         $query = User::activeUser();
 
-        foreach (['email', 'wechat', 'qq'] as $field) {
+        foreach (['username', 'wechat', 'qq'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
                 $query->where($field, 'like', "%{$value}%");
             });
@@ -248,7 +248,7 @@ class LogsController extends Controller
     // 用户流量监控
     public function userTrafficMonitor(User $user)
     {
-        return view('admin.logs.userMonitor', array_merge(['email' => $user->email], $this->dataFlowChart($user->id)));
+        return view('admin.logs.userMonitor', array_merge(['username' => $user->username], $this->dataFlowChart($user->id)));
     }
 
     // 回调日志

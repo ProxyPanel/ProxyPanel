@@ -44,7 +44,7 @@
                             @foreach($referralUserList as $user)
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
-                                    <td> {{str_replace(mb_substr($user->email, 3, 4), "****", $user->email)}}  </td>
+                                    <td> {{str_replace(mb_substr($user->username, 3, 4), "****", $user->username)}}  </td>
                                     <td> {{$user->created_at}} </td>
                                 </tr>
                             @endforeach
@@ -87,7 +87,7 @@
                             @foreach($referralLogList as $referralLog)
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
-                                    <td> {{empty($referralLog->invitee) ? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】' : str_replace(mb_substr($referralLog->invitee->email, 3, 4), "****", $referralLog->invitee->email)}} </td>
+                                    <td> {{empty($referralLog->invitee) ? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】' : str_replace(mb_substr($referralLog->invitee->username, 3, 4), "****", $referralLog->invitee->username)}} </td>
                                     <td> ¥{{$referralLog->amount}} </td>
                                     <td> ¥{{$referralLog->commission}} </td>
                                     <td> {{$referralLog->created_at}} </td>

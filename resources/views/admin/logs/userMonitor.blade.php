@@ -9,7 +9,7 @@
                 <button class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('common.close')}}</span>
                 </button>
-                <h4 class="block">{{$email}}</h4>
+                <h4 class="block">{{$username}}</h4>
                 <strong>提示：</strong> 如果无统计数据，请检查定时任务是否正常。
             </div>
             <div class="panel-body">

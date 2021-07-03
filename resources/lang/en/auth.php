@@ -29,6 +29,7 @@ return [
         'account_baned'  => 'Your account has been banned!',
         'login_error'    => 'Login error, please try again later!',
         'login_failed'   => 'Login failed, please check whether the email or password is entered correctly!',
+        'not_found_user' => 'Did not find your account base on your account email, Please find a other way to login',
         'repeat_request' => 'Please refresh the page and try again',
         'url_timeout'    => 'The link has expired, please try again',
     ],
@@ -74,5 +75,6 @@ return [
     ],
     'remember_me'     => 'Remember me',
     'request'         => 'Request',
+    'sign_in_with'    => 'Sign in with :app',
     'tos'             => 'Terms of Service',
 ];

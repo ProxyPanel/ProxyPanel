@@ -7,6 +7,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Telegram\TelegramChannel;
+use NotificationChannels\Telegram\TelegramMessage;
 
 class Custom extends Notification implements ShouldQueue
 {
@@ -23,7 +25,7 @@ class Custom extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return $notifiable ?? ['mail', BarkChannel::class];
+        return $notifiable ?? ['mail', BarkChannel::class, TelegramChannel::class];
     }
 
     public function toMail($notifiable)
@@ -39,5 +41,12 @@ class Custom extends Notification implements ShouldQueue
             'title'   => $this->title,
             'content' => $this->content,
         ];
+    }
+
+    public function toTelegram($notifiable)
+    {
+        return TelegramMessage::create()
+            ->token(sysConfig('telegram_token'))
+            ->content($this->content);
     }
 }

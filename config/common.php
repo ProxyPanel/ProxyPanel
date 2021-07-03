@@ -25,4 +25,14 @@ return [
             6 => 'stripe.png',
         ],
     ],
+
+    'oauth' => [
+        'facebook'  => 'FaceBook',
+        'twitter'   => 'Twitter',
+        'linkedin'  => 'Linkedin',
+        'google'    => 'Google',
+        'github'    => 'GitHub',
+        'gitlab'    => 'GitLab',
+        'bitbucket' => 'Bitbucket',
+    ],
 ];

@@ -14,7 +14,7 @@
                 {{trans('auth.password.reset.attribute')}}
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="email" class="form-control" name="email" value="{{Request::old('email')}}" required="required" autofocus="autofocus"/>
+                <input type="text" class="form-control" name="username" value="{{Request::old('username')}}" required="required" autofocus="autofocus"/>
                 <label class="floating-label">{{trans('validation.attributes.email')}}</label>
             </div>
         @else

@@ -9,8 +9,8 @@ class UserStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'username' => 'required',
-            'email' => 'required|unique:user,email,'.$this->user,
+            'nickname' => 'required',
+            'username' => 'required|unique:user,username,'.$this->user,
             'password' => 'nullable|string|nullable',
             'port' => 'nullable|numeric',
             'passwd' => 'nullable|string',

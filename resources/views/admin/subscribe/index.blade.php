@@ -14,7 +14,7 @@
                         <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="ID"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
                         <select name="status" id="status" class="form-control" onchange="this.form.submit()">
@@ -50,9 +50,9 @@
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['id'=>$subscribe->user->id])}}" target="_blank">{{$subscribe->user->email}}</a>
+                                        <a href="{{route('admin.user.index', ['id'=>$subscribe->user->id])}}" target="_blank">{{$subscribe->user->username}}</a>
                                     @else
-                                        {{$subscribe->user->email}}
+                                        {{$subscribe->user->username}}
                                     @endcan
                                 @endif
                             </td>

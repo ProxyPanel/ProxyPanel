@@ -1,15 +1,18 @@
 @extends('user.layouts')
+@section('css')
+    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" rel="stylesheet">
+@endsection
 @section('content')
     <div class="page-content container">
         <div class="row">
             <div class="col-lg-5">
-                <div class="card">
-                    <div class="card-header white bg-cyan-600 p-30 clearfix">
+                <div class="card mb-0">
+                    <div class="card-header white bg-cyan-400 p-30 clearfix">
                         <span class="avatar avatar-100 float-left mr-20">
                             <x-avatar :user="Auth::getUser()"/>
                         </span>
                         <div class="float-left">
-                            <div class="font-size-20 mb-15">{{Auth::getUser()->username}}</div>
+                            <div class="font-size-20 mb-15">{{Auth::getUser()->nickname}}</div>
                             <p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
                                 <span class="text-break">{{trans('common.payment.wechat')}}：
                                     @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif
@@ -23,6 +26,20 @@
                         </div>
                     </div>
                 </div>
+                @if(sysConfig('oauth_path'))
+                    <div class="card">
+                        <div class="card-header white bg-indigo-400 p-30 clearfix">
+                            <div class="float-left">
+                                <div class="font-size-20 mb-15"><i class="icon wb-user-circle"></i> 绑定社交账号</div>
+                                @foreach (sysConfig('oauth_path') as $item)
+                                    <a class="btn btn-info" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
+                                        {{config('common.oauth')[$item]}}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
             <div class="col-lg-7">
                 <div class="panel">
@@ -65,8 +82,8 @@
                                 <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="username" class="col-md-2 col-form-label">{{trans('validation.attributes.username')}}</label>
-                                        <input type="text" class="form-control col-md-5 round" name="username" id="username" value="{{Auth::getUser()->username}}"/>
+                                        <label for="nickname" class="col-md-2 col-form-label">{{trans('validation.attributes.username')}}</label>
+                                        <input type="text" class="form-control col-md-5 round" name="nickname" id="nickname" value="{{Auth::getUser()->nickname}}"/>
                                     </div>
                                     <div class="form-group row">
                                         <label for="wechat" class="col-md-2 col-form-label">{{trans('common.payment.wechat')}}</label>

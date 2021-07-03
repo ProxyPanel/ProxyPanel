@@ -12,10 +12,10 @@ class AffiliateController extends Controller
     // 提现申请列表
     public function index(Request $request)
     {
-        $query = ReferralApply::with('user:id,email');
-        $request->whenFilled('email', function ($email) use ($query) {
-            $query->whereHas('user', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $query = ReferralApply::with('user:id,username');
+        $request->whenFilled('username', function ($username) use ($query) {
+            $query->whereHas('user', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
@@ -30,8 +30,8 @@ class AffiliateController extends Controller
     public function detail(Request $request, ReferralApply $aff)
     {
         return view('admin.aff.detail', [
-            'referral'    => $aff->load('user:id,email'),
-            'commissions' => $aff->referral_logs()->with(['invitee:id,email', 'order.goods:id,name'])->paginate()->appends($request->except('page')),
+            'referral'    => $aff->load('user:id,username'),
+            'commissions' => $aff->referral_logs()->with(['invitee:id,username', 'order.goods:id,name'])->paginate()->appends($request->except('page')),
         ]);
     }
 
@@ -57,17 +57,17 @@ class AffiliateController extends Controller
     // 用户返利流水记录
     public function rebate(Request $request)
     {
-        $query = ReferralLog::with(['invitee:id,email', 'inviter:id,email'])->orderBy('status')->latest();
+        $query = ReferralLog::with(['invitee:id,username', 'inviter:id,username'])->orderBy('status')->latest();
 
-        $request->whenFilled('invitee_email', function ($email) use ($query) {
-            $query->whereHas('invitee', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('invitee_username', function ($username) use ($query) {
+            $query->whereHas('invitee', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 
-        $request->whenFilled('inviter_email', function ($email) use ($query) {
-            $query->whereHas('inviter', function ($query) use ($email) {
-                $query->where('email', 'like', "%{$email}%");
+        $request->whenFilled('inviter_username', function ($username) use ($query) {
+            $query->whereHas('inviter', function ($query) use ($username) {
+                $query->where('username', 'like', "%{$username}%");
             });
         });
 

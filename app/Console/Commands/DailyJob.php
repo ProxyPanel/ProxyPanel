@@ -116,9 +116,9 @@ class DailyJob extends Command
                     if ($user->update((new OrderService($order))->resetTimeAndData($user->expired_at))) {
                         // 可用流量变动日志
                         Helpers::addUserTrafficModifyLog($order->user_id, $order->id, $oldData, $user->transfer_enable, '【流量重置】重置可用流量');
-                        Log::info('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time ?: '【无】'));
+                        Log::info('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time ?: '【无】'));
                     } else {
-                        Log::warning('用户[ID：'.$user->id.'  昵称： '.$user->username.'  邮箱： '.$user->email.'] 流量重置失败');
+                        Log::warning('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置失败');
                     }
                 }
             });

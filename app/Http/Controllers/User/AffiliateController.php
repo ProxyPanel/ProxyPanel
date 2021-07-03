@@ -34,9 +34,9 @@ class AffiliateController extends Controller
             'totalAmount'       => ReferralLog::uid()->sum('commission') / 100,
             'canAmount'         => ReferralLog::uid()->whereStatus(0)->sum('commission') / 100,
             'aff_link'          => $aff_link,
-            'referralLogList'   => ReferralLog::uid()->with('invitee:id,email')->latest()->paginate(10, ['*'], 'log_page'),
+            'referralLogList'   => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
             'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
-            'referralUserList'  => Auth::getUser()->invitees()->select(['email', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),
+            'referralUserList'  => Auth::getUser()->invitees()->select(['username', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),
         ]);
     }
 

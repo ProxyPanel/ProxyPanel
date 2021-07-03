@@ -11,6 +11,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::namespace('Admin')->group(function () {
         Route::resource('user', 'UserController')->except('show');
         Route::name('user.')->group(function () {
+            Route::get('oauth', 'UserController@oauth')->name('oauth'); // 第三方登录信息
             Route::post('batchAdd', 'UserController@batchAddUsers')->name('batch'); // 批量生成账号
             Route::resource('group', 'UserGroupController')->except('show'); // 用户分组管理
             Route::get('monitor/{user}', 'LogsController@userTrafficMonitor')->name('monitor'); // 用户流量监控
