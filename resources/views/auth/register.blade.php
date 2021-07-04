@@ -2,7 +2,6 @@
 @section('title', trans('auth.register.attribute'))
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <form action="{{route('register')}}" method="post" id="register-form">
@@ -99,11 +98,13 @@
         @endif
     </form>
     @if(sysConfig('is_register') && sysConfig('oauth_path'))
-        <div class="row" style="display: inline-block;">
-            <h6>快速注册</h6>
-            @foreach (sysConfig('oauth_path') as $item)
-                <a class="btn btn-info" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
-                    {{config('common.oauth')[$item]}}
+        <div class="pt-20" style="display: inline-block;">
+            <div class="line">
+                <span> 快速注册 </span>
+            </div>
+            @foreach (json_decode(sysConfig('oauth_path')) as $item)
+                <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
+                    <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
                 </a>
             @endforeach
         </div>

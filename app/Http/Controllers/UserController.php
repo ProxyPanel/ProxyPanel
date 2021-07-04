@@ -186,8 +186,9 @@ class UserController extends Controller
 
             return Redirect::back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
         }
+        $auth = $user->userAuths()->pluck('type')->toArray();
 
-        return view('user.profile');
+        return view('user.profile', compact('auth'));
     }
 
     // 商品列表

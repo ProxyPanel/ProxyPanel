@@ -28,14 +28,19 @@
             </a>
         </div>
         <button type="submit" class="btn btn-lg btn-block mt-40 bg-indigo-500 text-white">{{trans('auth.login')}}</button>
-        @if(sysConfig('oauth_path'))
-                @foreach (sysConfig('oauth_path') as $item)
-                <a href="{{route('oauth.route', ['type' => $item, 'action' => 'login'])}}" class="btn btn-lg btn-block mt-40 bg-blue-500 text-white">{{trans('auth.sign_in_with', ['app'
-         => config('common.oauth')[$item]])}}</a>
-                @endforeach
-        @endif
-
     </form>
+    @if(sysConfig('oauth_path'))
+        <div class="pb-5">
+            <div class="line">
+                <span> 一键登录 </span>
+            </div>
+            @foreach (json_decode(sysConfig('oauth_path')) as $item)
+                <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'login'])}}">
+                    <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
+                </a>
+            @endforeach
+        </div>
+    @endif
     @if(sysConfig('is_register'))
         <p>
             {{trans('auth.register.promotion')}}

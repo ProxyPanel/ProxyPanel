@@ -1,13 +1,14 @@
 @extends('_layout')
 @section('title', sysConfig('website_name'))
 @section('layout_css')
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/css/login-v3.min.css" rel="stylesheet">
     @yield('css')
 @endsection
 @section('body_class', 'page-login-v3 layout-full position-relative')
 @section('layout_content')
     @if(Agent::isMobile() && Agent::is('iOS') && strpos(Agent::getUserAgent(), 'MicroMessenger') !== false)
-        <style type="text/css">
+        <style>
             .cover-up {
                 opacity: 0.1;
                 filter: alpha(opacity=10);

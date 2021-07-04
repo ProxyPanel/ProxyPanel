@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\UserLoginLog;
 use App\Models\UserOauth;
 use Auth;
-use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Log;
 use Redirect;
@@ -17,25 +16,22 @@ use Str;
 
 class BaseController extends Controller
 {
-    private $type;
-
     public function route($type, $action = null)
     {
-        $this->type = $type;
         if ($action === 'binding') {
-            return Socialite::driver($this->type)->with(['redirect_uri' => route('oauth.bind', ['type' => $type])])->redirect();
+            return Socialite::driver($type)->with(['redirect_uri' => route('oauth.bind', ['type' => $type])])->redirect();
         }
 
         if ($action === 'register') {
-            return Socialite::driver($this->type)->with(['redirect_uri' => route('oauth.register', ['type' => $type])])->redirect();
+            return Socialite::driver($type)->with(['redirect_uri' => route('oauth.register', ['type' => $type])])->redirect();
         }
 
-        return Socialite::driver($this->type)->with(['redirect_uri' => route('oauth.redirect', ['type' => $type])])->redirect();
+        return Socialite::driver($type)->with(['redirect_uri' => route('oauth.redirect', ['type' => $type])])->redirect();
     }
 
-    public function redirect()
+    public function redirect($type)
     {
-        $info = Socialite::driver($this->type)->user();
+        $info = Socialite::driver($type)->user();
         if ($info) {
             $user = User::whereUsername($info->getEmail())->first();
             if (! $user) {
@@ -86,14 +82,15 @@ class BaseController extends Controller
         $log->save();
     }
 
-    public function bbind()
+    public function bind($type)
     {
-        $user = Auth::getUser();
-        $info = Socialite::driver($this->type)->stateless()->user();
+        $user = Auth::user();
+        $info = Socialite::driver($type)->stateless()->user();
+
         if ($user) {
             if ($info) {
                 $user->userAuths()->create([
-                    'type'       => $this->type,
+                    'type'       => $type,
                     'identifier' => $info->getId(),
                     'credential' => $info->token,
                 ]);
@@ -107,9 +104,9 @@ class BaseController extends Controller
         return redirect()->route('profile')->withErrors('无用户');
     }
 
-    public function register()
+    public function register($type)
     {
-        $info = Socialite::driver($this->type)->stateless()->user();
+        $info = Socialite::driver($type)->stateless()->user();
 
         // 排除重复用户注册
         if ($info) {
@@ -121,7 +118,7 @@ class BaseController extends Controller
 
                     if ($user) {
                         $user->userAuths()->create([
-                            'type'       => $this->type,
+                            'type'       => $type,
                             'identifier' => $info->getId(),
                             'credential' => $info->token,
                         ]);

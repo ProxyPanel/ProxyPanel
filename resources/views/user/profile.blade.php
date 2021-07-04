@@ -1,45 +1,58 @@
 @extends('user.layouts')
 @section('css')
-    <link href="/assets/global/fonts/brand-icons/brand-icons.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
+    <style>
+        .line {
+            height: 1px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            padding-bottom: 15px;
+        }
+
+        .line span {
+            position: relative;
+            top: -8px;
+            background: #fff;
+            padding: 0 20px;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container">
         <div class="row">
             <div class="col-lg-5">
-                <div class="card mb-0">
-                    <div class="card-header white bg-cyan-400 p-30 clearfix">
-                        <span class="avatar avatar-100 float-left mr-20">
+                <div class="user-info card card-shadow text-center">
+                    <div class="user-base card-block">
+                        <a class="avatar img-bordered avatar-100" href="javascript:void(0)">
                             <x-avatar :user="Auth::getUser()"/>
-                        </span>
-                        <div class="float-left">
-                            <div class="font-size-20 mb-15">{{Auth::getUser()->nickname}}</div>
-                            <p class="mb-5 text-nowrap"><i class="icon bd-webchat mr-10" aria-hidden="true"></i>
-                                <span class="text-break">{{trans('common.payment.wechat')}}：
-                                    @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif
-                                </span>
-                            </p>
-                            <p class="mb-5 text-nowrap"><i class="icon bd-qq mr-10" aria-hidden="true"></i>
-                                <span class="text-break">QQ：
-                                    @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif
-                                </span>
-                            </p>
-                        </div>
+                        </a>
+                        <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
+                        <p class="user-job"> <i class="fab fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
+                            @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif</p>
+                        <p class="user-location"><i class="fab fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
+                            @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif</p>
                     </div>
-                </div>
-                @if(sysConfig('oauth_path'))
-                    <div class="card">
-                        <div class="card-header white bg-indigo-400 p-30 clearfix">
-                            <div class="float-left">
-                                <div class="font-size-20 mb-15"><i class="icon wb-user-circle"></i> 绑定社交账号</div>
-                                @foreach (sysConfig('oauth_path') as $item)
-                                    <a class="btn btn-info" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
-                                        {{config('common.oauth')[$item]}}
+                    @if(sysConfig('oauth_path'))
+                        <div class="line">
+                            <span> 绑定社交账号 </span>
+                        </div>
+                        <div class="user-socials list-group-gap list-group-full">
+                            @foreach (json_decode(sysConfig('oauth_path')) as $item)
+                                @if (in_array($item, $auth))
+                                    <a class="list-group-item justify-content-center" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
+                                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                        <span class="red-600">重新绑定</span>
                                     </a>
-                                @endforeach
-                            </div>
+                                @else
+                                    <a class="list-group-item justify-content-center" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
+                                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                        <span class="grey-500">未绑定</span>
+                                    </a>
+                                @endif
+                            @endforeach
                         </div>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
             <div class="col-lg-7">
                 <div class="panel">

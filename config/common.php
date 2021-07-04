@@ -27,12 +27,23 @@ return [
     ],
 
     'oauth' => [
-        'facebook'  => 'FaceBook',
-        'twitter'   => 'Twitter',
-        'linkedin'  => 'Linkedin',
-        'google'    => 'Google',
-        'github'    => 'GitHub',
-        'gitlab'    => 'GitLab',
-        'bitbucket' => 'Bitbucket',
+        'labels' => [
+            'facebook'  => 'FaceBook',
+            'twitter'   => 'Twitter',
+            'linkedin'  => 'Linkedin',
+            'google'    => 'Google',
+            'github'    => 'GitHub',
+            'gitlab'    => 'GitLab',
+            'bitbucket' => 'Bitbucket',
+        ],
+        'icon'   => [
+            'facebook'  => 'fa-facebook',
+            'twitter'   => 'fa-twitter',
+            'linkedin'  => 'fa-linkedin',
+            'google'    => 'fa-google',
+            'github'    => 'fa-github',
+            'gitlab'    => 'fa-gitlab',
+            'bitbucket' => 'fa-bitbucket',
+        ],
     ],
 ];

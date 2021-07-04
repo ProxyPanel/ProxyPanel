@@ -93,7 +93,7 @@
                         <x-system.tab-pane id="account">
                             <x-system.switch title="用户注册" code="is_register" :check="$is_register" help="关闭后无法注册"/>
                             <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台"  multiple="1"
-                                             :list="array_flip(config('common.oauth'))"/>
+                                             :list="array_flip(config('common.oauth.labels'))"/>
                             <x-system.select title="邀请注册" code="is_invite_register" :list="['关闭' => '', '可选'=> 1, '必须' => 2]"/>
                             <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]" help="启用后用户需要通过邮件来激活账号"/>
                             <x-system.select title="重置密码" code="password_reset_notification" :list="['关闭' => '', '邮箱'=> 'mail']" help="启用后用户可以重置密码"/>

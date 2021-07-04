@@ -1,7 +1,7 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -43,13 +43,13 @@
                                 @can('admin.user.exportProxy')
                                     <div class="btn-group">
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','code')"><i class="icon fa-code"></i>
+                                                onclick="getInfo('{{$node->id}}','code')"><i class="fas fa-code"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','qrcode')"><i class="icon fa-qrcode"></i>
+                                                onclick="getInfo('{{$node->id}}','qrcode')"><i class="fas fa-qrcode"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','text')"><i class="icon fa-list"></i>
+                                                onclick="getInfo('{{$node->id}}','text')"><i class="fas fa-list"></i>
                                         </button>
                                     </div>
                                 @endcan

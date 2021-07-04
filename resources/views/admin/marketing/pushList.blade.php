@@ -2,7 +2,6 @@
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">

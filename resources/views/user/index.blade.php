@@ -1,7 +1,7 @@
 @extends('user.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/aspieprogress/asPieProgress.min.css" rel="stylesheet">
 @endsection
 @section('content')

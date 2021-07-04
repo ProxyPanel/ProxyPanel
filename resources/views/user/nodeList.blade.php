@@ -1,7 +1,7 @@
 @extends('user.layouts')
 @section('css')
     <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
-    <link href="/assets/global/fonts/font-awesome/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/webui-popover/webui-popover.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/jvectormap/jquery-jvectormap.min.css" type="text/css" rel="stylesheet">
 @endsection
@@ -88,13 +88,13 @@
                                 </blockquote>
                                 <p class="font-size-14">
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','code')">
-                                        <i id="code{{$node->id}}" class="icon fa-code"></i>
+                                        <i id="code{{$node->id}}" class="fas fa-code"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')">
-                                        <i id="qrcode{{$node->id}}" class="icon fa-qrcode"></i>
+                                        <i id="qrcode{{$node->id}}" class="fas fa-qrcode"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')">
-                                        <i id="text{{$node->id}}" class="icon fa-list"></i>
+                                        <i id="text{{$node->id}}" class="fas fa-list"></i>
                                     </button>
                                 </p>
                             </div>
