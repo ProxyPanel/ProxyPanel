@@ -92,8 +92,9 @@
                         </x-system.tab-pane>
                         <x-system.tab-pane id="account">
                             <x-system.switch title="用户注册" code="is_register" :check="$is_register" help="关闭后无法注册"/>
-                            <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台"  multiple="1"
+                            <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台" multiple="1"
                                              :list="array_flip(config('common.oauth.labels'))"/>
+                            <x-system.select title="账号类型" help="规范站点用户账号的类型，默认为电子邮箱" code="username_type" :list="['电子邮箱'=> 'email', '手机号码' => 'numeric', '任意用户名' => 'string']"/>
                             <x-system.select title="邀请注册" code="is_invite_register" :list="['关闭' => '', '可选'=> 1, '必须' => 2]"/>
                             <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]" help="启用后用户需要通过邮件来激活账号"/>
                             <x-system.select title="重置密码" code="password_reset_notification" :list="['关闭' => '', '邮箱'=> 'mail']" help="启用后用户可以重置密码"/>
@@ -157,7 +158,7 @@
                             <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="安装并打开Bark后取得" type="url"
                                                  help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值" test="bark"/>
                             <x-system.input-test title="Telegram Token" :value="$telegram_token" code="telegram_token" help="找 <a href=https://t.me/BotFather
-                                    target=_blank>@BotFather</a> 申请机器人"  test="telegram"/>
+                                    target=_blank>@BotFather</a> 申请机器人" test="telegram"/>
                             <x-system.switch title="PushBear" code="is_push_bear" :check="$is_push_bear"
                                              help='使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）'/>
                             <x-system.input title="PushBear SendKey" :value="$push_bear_send_key" code="push_bear_send_key" help="启用PushBear，请务必填入本值" holder="创建消息通道后即可获取"/>
@@ -395,6 +396,7 @@
     <script>
         $(document).ready(function() {
             $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
+            $('#username_type').selectpicker('val', '{{$username_type}}');
             $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
             $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
             $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');

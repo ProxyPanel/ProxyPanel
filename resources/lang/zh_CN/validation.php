@@ -115,7 +115,8 @@ return [
 
     'attributes' => [
         'name'                  => '名称',
-        'username'              => '昵称',
+        'nickname'              => '昵称',
+        'username'              => '用户名',
         'email'                 => '邮箱',
         'password'              => '密码',
         'password_confirmation' => '确认密码',

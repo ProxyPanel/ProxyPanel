@@ -15,7 +15,7 @@
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="nickname" id="nickname"
                        value="{{Request::old('nickname') ? : Request::query('nickname')}}" autocomplete="off" required/>
-                <label class="floating-label" for="username">{{trans('validation.attributes.username')}}</label>
+                <label class="floating-label" for="username">{{trans('validation.attributes.nickname')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
@@ -34,7 +34,9 @@
                     </div>
                 @else
                     <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username')}}" required/>
-                    <label class="floating-label" for="username">{{trans('validation.attributes.email')}}</label>
+                    <label class="floating-label" for="username">
+                        {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
+                    </label>
                 @endif
             </div>
             @if(sysConfig('is_activate_account') == 1)
@@ -60,7 +62,7 @@
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
-                    <input type="password" class="form-control" name="code" value="{{Request::old('code') ?: Request::query('code')}}"
+                    <input type="text" class="form-control" name="code" value="{{Request::old('code') ?: Request::query('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
                         {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif

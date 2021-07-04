@@ -15,7 +15,9 @@
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" required/>
-                <label class="floating-label" for="email">{{trans('validation.attributes.email')}}</label>
+                <label class="floating-label" for="username">
+                    {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
+                </label>
             </div>
         @else
             <x-alert type="danger" :message="trans('auth.active.error.disable')"/>

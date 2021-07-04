@@ -176,7 +176,7 @@ class UserController extends Controller
             if ($request->has(['nickname', 'wechat', 'qq'])) {
                 $data = $request->only(['nickname', 'wechat', 'qq']);
                 if (empty($data['nickname'])) {
-                    return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('validation.attributes.username')]));
+                    return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('validation.attributes.nickname')]));
                 }
 
                 if (! $user->update($data)) {

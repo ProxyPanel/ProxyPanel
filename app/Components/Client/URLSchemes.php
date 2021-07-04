@@ -2,8 +2,6 @@
 
 namespace App\Components\Client;
 
-use App\Models\Server;
-
 class URLSchemes
 {
     public static function buildShadowsocks($server)
@@ -25,29 +23,29 @@ class URLSchemes
     public static function buildShadowsocksSIP008($server)
     {
         return [
-            'id' => $server['id'],
-            'remark' => $server['name'],
-            'server' => $server['host'],
+            'id'          => $server['id'],
+            'remark'      => $server['name'],
+            'server'      => $server['host'],
             'server_port' => $server['port'],
-            'password' => $server['passwd'],
-            'method' => $server['method'],
+            'password'    => $server['passwd'],
+            'method'      => $server['method'],
         ];
     }
 
     public static function buildVmess($server)
     {
         $config = [
-            'v' => '2',
-            'ps' => $server['name'],
-            'add' => $server['host'],
+            'v'    => '2',
+            'ps'   => $server['name'],
+            'add'  => $server['host'],
             'port' => $server['port'],
-            'id' => $server['uuid'],
-            'aid' => $server['v2_alter_id'],
-            'net' => $server['v2_net'],
+            'id'   => $server['uuid'],
+            'aid'  => $server['v2_alter_id'],
+            'net'  => $server['v2_net'],
             'type' => $server['v2_type'],
             'host' => $server['v2_host'],
             'path' => $server['v2_path'],
-            'tls' => $server['v2_tls'],
+            'tls'  => $server['v2_tls'],
         ];
 
         return 'vmess://'.base64_encode(json_encode($config)).PHP_EOL;

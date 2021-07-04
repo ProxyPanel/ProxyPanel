@@ -95,7 +95,7 @@
                                 <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="nickname" class="col-md-2 col-form-label">{{trans('validation.attributes.username')}}</label>
+                                        <label for="nickname" class="col-md-2 col-form-label">{{trans('validation.attributes.nickname')}}</label>
                                         <input type="text" class="form-control col-md-5 round" name="nickname" id="nickname" value="{{Auth::getUser()->nickname}}"/>
                                     </div>
                                     <div class="form-group row">

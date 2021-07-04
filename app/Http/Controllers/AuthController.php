@@ -191,17 +191,6 @@ class AuthController extends Controller
     {
         $cacheKey = 'register_times_'.md5(IP::getClientIp()); // 注册限制缓存key
 
-        $validator = Validator::make($request->all(), [
-            'nickname' => 'required',
-            // todo: 需要修改
-            'username'    => 'required|unique:user',
-            'password' => 'required|min:6|confirmed',
-            'term'     => 'accepted',
-        ]);
-
-        if ($validator->fails()) {
-            return Redirect::back()->withInput()->withErrors($validator->errors());
-        }
         $data = $request->validated();
         $register_token = $request->input('register_token');
         $invite_code = $request->input('code');

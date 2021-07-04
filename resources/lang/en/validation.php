@@ -113,7 +113,8 @@ return [
     ],
     'attributes'           => [
         'name'                  => 'Name',
-        'username'              => 'Nick Name',
+        'nickname'              => 'Nickname',
+        'username'              => 'Username',
         'email'                 => 'Email',
         'password'              => 'Password',
         'password_confirmation' => 'Password Confirmation',
