@@ -9,8 +9,10 @@ use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
+use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
 use DateTime;
+use Log;
 use Str;
 
 class Helpers
@@ -260,5 +262,33 @@ class Helpers
         $marketing->status = $status;
 
         return $marketing->save();
+    }
+
+    /**
+     * 用户登录后操作.
+     *
+     * @param  User  $user  用户ID
+     * @param  string  $ip  IP地址
+     */
+    public static function userLoginAction(User $user, string $ip): void
+    {
+        $ipLocation = IP::getIPInfo($ip);
+
+        if (empty($ipLocation) || empty($ipLocation['country'])) {
+            Log::warning(trans('error.get_ip').'：'.$ip);
+        }
+
+        $log = new UserLoginLog();
+        $log->user_id = $user->id;
+        $log->ip = $ip;
+        $log->country = $ipLocation['country'] ?? '';
+        $log->province = $ipLocation['province'] ?? '';
+        $log->city = $ipLocation['city'] ?? '';
+        $log->county = $ipLocation['county'] ?? '';
+        $log->isp = $ipLocation['isp'] ?? ($ipLocation['organization'] ?? '');
+        $log->area = $ipLocation['area'] ?? '';
+        $log->save();
+
+        $user->update(['last_login' => time()]); // 更新登录信息
     }
 }

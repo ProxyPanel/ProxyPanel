@@ -6,12 +6,9 @@ use App\Components\Helpers;
 use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\UserLoginLog;
 use App\Models\UserOauth;
 use Auth;
 use Laravel\Socialite\Facades\Socialite;
-use Log;
-use Redirect;
 use Str;
 
 class BaseController extends Controller
@@ -26,82 +23,80 @@ class BaseController extends Controller
             return Socialite::driver($type)->with(['redirect_uri' => route('oauth.register', ['type' => $type])])->redirect();
         }
 
-        return Socialite::driver($type)->with(['redirect_uri' => route('oauth.redirect', ['type' => $type])])->redirect();
+        return Socialite::driver($type)->with(['redirect_uri' => route('oauth.login', ['type' => $type])])->redirect();
     }
 
-    public function redirect($type)
+    public function simple(string $type)
     {
         $info = Socialite::driver($type)->user();
         if ($info) {
-            $user = User::whereUsername($info->getEmail())->first();
-            if (! $user) {
-                $user = UserOauth::whereIdentifier($info->getId())->first();
-                if ($user) {
-                    $user = $user->user;
-                }
+            $user = Auth::user();
+
+            if ($user) {
+                return $this->bind($type, $user, $info);
+            }
+
+            return $this->login($type, $info);
+        }
+
+        return redirect()->route('login')->withErrors('第三方登录失败！');
+    }
+
+    private function bind(string $type, $user, $info)
+    {
+        $user->userAuths()->create([
+            'type'       => $type,
+            'identifier' => $info->getId(),
+            'credential' => $info->token,
+        ]);
+
+        return redirect()->route('profile')->with('successMsg', '绑定成功');
+    }
+
+    private function login(string $type, $info)
+    {
+        $user = User::whereUsername($info->getEmail())->first();
+        if (! isset($user)) {
+            $auth = UserOauth::whereType($type)->whereIdentifier($info->getId())->first();
+            if (isset($auth)) {
+                $user = $auth->user;
             }
         }
 
         if (isset($user)) {
             Auth::login($user);
-            // 写入登录日志
-            $this->addUserLoginLog($user->id, IP::getClientIp());
+            Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
 
-            // 更新登录信息
-            $user->update(['last_login' => time()]);
-
-            return Redirect::route('login');
+            return redirect()->route('login');
         }
 
-        return Redirect::route('login')->withErrors(trans('auth.error.not_found_user'));
+        return redirect()->route('login')->withErrors(trans('auth.error.not_found_user'));
     }
 
-    /**
-     * 添加用户登录日志.
-     *
-     * @param  int  $userId  用户ID
-     * @param  string  $ip  IP地址
-     */
-    private function addUserLoginLog(int $userId, string $ip): void
+    public function binding($type)
     {
-        $ipLocation = IP::getIPInfo($ip);
-
-        if (empty($ipLocation) || empty($ipLocation['country'])) {
-            Log::warning(trans('error.get_ip').'：'.$ip);
-        }
-
-        $log = new UserLoginLog();
-        $log->user_id = $userId;
-        $log->ip = $ip;
-        $log->country = $ipLocation['country'] ?? '';
-        $log->province = $ipLocation['province'] ?? '';
-        $log->city = $ipLocation['city'] ?? '';
-        $log->county = $ipLocation['county'] ?? '';
-        $log->isp = $ipLocation['isp'] ?? ($ipLocation['organization'] ?? '');
-        $log->area = $ipLocation['area'] ?? '';
-        $log->save();
-    }
-
-    public function bind($type)
-    {
-        $user = Auth::user();
         $info = Socialite::driver($type)->stateless()->user();
 
-        if ($user) {
-            if ($info) {
-                $user->userAuths()->create([
-                    'type'       => $type,
-                    'identifier' => $info->getId(),
-                    'credential' => $info->token,
-                ]);
-
-                return redirect()->route('profile')->with('successMsg', '绑定成功');
+        if ($info) {
+            $user = Auth::user();
+            if ($user) {
+                return $this->bind($type, $user, $info);
             }
 
             return redirect()->route('profile')->withErrors('绑定失败');
         }
 
-        return redirect()->route('profile')->withErrors('无用户');
+        return redirect()->route('login')->withErrors('第三方登录失败！');
+    }
+
+    public function logining($type)
+    {
+        $info = Socialite::driver($type)->user();
+        if ($info) {
+            return $this->login($type, $info);
+        }
+
+        return redirect()->route('login')->withErrors('第三方登录失败！');
     }
 
     public function register($type)
@@ -135,6 +130,6 @@ class BaseController extends Controller
             return redirect()->route('login')->withErrors('已注册，请直接登录');
         }
 
-        return redirect()->route('register')->withErrors('绑定失败');
+        return redirect()->route('login')->withErrors('第三方登录失败！');
     }
 }

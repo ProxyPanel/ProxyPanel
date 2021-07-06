@@ -93,11 +93,7 @@ class AuthController extends Controller
                 '" target="_blank">👉【'.trans('common.active_item', ['attribute' => trans('common.account')]).'】👈</span></a><br>'.trans('auth.active.promotion.1'));
         }
 
-        // 写入登录日志
-        $this->addUserLoginLog($user->id, IP::getClientIp());
-
-        // 更新登录信息
-        $user->update(['last_login' => time()]);
+        Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
 
         return redirect()->back();
     }
@@ -143,32 +139,6 @@ class AuthController extends Controller
         }
 
         return false;
-    }
-
-    /**
-     * 添加用户登录日志.
-     *
-     * @param  int  $userId  用户ID
-     * @param  string  $ip  IP地址
-     */
-    private function addUserLoginLog(int $userId, string $ip): void
-    {
-        $ipLocation = IP::getIPInfo($ip);
-
-        if (empty($ipLocation) || empty($ipLocation['country'])) {
-            Log::warning(trans('error.get_ip').'：'.$ip);
-        }
-
-        $log = new UserLoginLog();
-        $log->user_id = $userId;
-        $log->ip = $ip;
-        $log->country = $ipLocation['country'] ?? '';
-        $log->province = $ipLocation['province'] ?? '';
-        $log->city = $ipLocation['city'] ?? '';
-        $log->county = $ipLocation['county'] ?? '';
-        $log->isp = $ipLocation['isp'] ?? ($ipLocation['organization'] ?? '');
-        $log->area = $ipLocation['area'] ?? '';
-        $log->save();
     }
 
     // 退出

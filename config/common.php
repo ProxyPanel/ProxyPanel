@@ -35,6 +35,7 @@ return [
             'github'    => 'GitHub',
             'gitlab'    => 'GitLab',
             'bitbucket' => 'Bitbucket',
+            'telegram'  => 'Telegram',
         ],
         'icon'   => [
             'facebook'  => 'fa-facebook',
@@ -44,6 +45,7 @@ return [
             'github'    => 'fa-github',
             'gitlab'    => 'fa-gitlab',
             'bitbucket' => 'fa-bitbucket',
+            'telegram'  => 'fa-telegram',
         ],
     ],
 ];
