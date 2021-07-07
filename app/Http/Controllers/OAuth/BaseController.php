@@ -44,11 +44,15 @@ class BaseController extends Controller
 
     private function bind(string $type, $user, $info)
     {
-        $user->userAuths()->create([
-            'type'       => $type,
-            'identifier' => $info->getId(),
-            'credential' => $info->token,
-        ]);
+        $auth = $user->userAuths()->whereType($type)->first();
+        $data = ['type' => $type, 'identifier' => $info->getId(), 'credential' => $info->token];
+        if ($auth) {
+            $user->userAuths()->whereType($type)->update($data);
+
+            return redirect()->route('profile')->with('successMsg', '重新绑定成功');
+        }
+
+        $user->userAuths()->create($data);
 
         return redirect()->route('profile')->with('successMsg', '绑定成功');
     }

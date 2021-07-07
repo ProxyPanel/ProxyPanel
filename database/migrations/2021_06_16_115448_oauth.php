@@ -16,12 +16,13 @@ class Oauth extends Migration
     {
         Schema::create('user_oauth', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id')->unique()->comment('用户ID');
+            $table->unsignedInteger('user_id')->comment('用户ID');
             $table->string('type', 10)->comment('登录类型');
             $table->string('identifier', 128)->unique()->comment('手机号/邮箱/第三方的唯一标识');
-            $table->string('credential', 128)->comment('密码/Token凭证');
+            $table->string('credential', 128)->nullable()->comment('密码/Token凭证');
             $table->dateTime('created_at')->comment('创建时间');
             $table->dateTime('updated_at')->comment('最后更新时间');
+            $table->unique(['user_id', 'type']);
             $table->foreign('user_id')->references('id')->on('user')->cascadeOnDelete();
         });
 

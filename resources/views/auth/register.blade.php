@@ -105,9 +105,11 @@
                 <span> 快速注册 </span>
             </div>
             @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
-                    <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
-                </a>
+                @if ($item !== 'telegram')
+                    <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
+                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
+                    </a>
+                @endif
             @endforeach
         </div>
     @endif

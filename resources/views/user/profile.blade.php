@@ -27,7 +27,7 @@
                             <x-avatar :user="Auth::getUser()"/>
                         </a>
                         <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
-                        <p class="user-job"> <i class="fab fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
+                        <p class="user-job"><i class="fab fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
                             @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif</p>
                         <p class="user-location"><i class="fab fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
                             @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif</p>
@@ -38,17 +38,18 @@
                         </div>
                         <div class="user-socials list-group-gap list-group-full">
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                                @if (in_array($item, $auth))
-                                    <a class="list-group-item justify-content-center" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
-                                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                <a class="list-group-item justify-content-center"
+                                   @if($item !== 'telegram') href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}" @endif>
+                                    <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                    @if(in_array($item, $auth))
                                         <span class="red-600">重新绑定</span>
-                                    </a>
-                                @else
-                                    <a class="list-group-item justify-content-center" href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}">
-                                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                    @else
                                         <span class="grey-500">未绑定</span>
-                                    </a>
-                                @endif
+                                    @endif
+                                    @if($item === 'telegram')
+                                        {!! Socialite::driver('telegram')->getButton() !!}
+                                    @endif
+                                </a>
                             @endforeach
                         </div>
                     @endif
