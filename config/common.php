@@ -28,9 +28,9 @@ return [
 
     'oauth' => [
         'labels' => [
-            'facebook'  => 'FaceBook',
+            'facebook'  => 'Facebook',
             'twitter'   => 'Twitter',
-            'linkedin'  => 'Linkedin',
+            'linkedin'  => 'LinkedIn',
             'google'    => 'Google',
             'github'    => 'GitHub',
             'gitlab'    => 'GitLab',

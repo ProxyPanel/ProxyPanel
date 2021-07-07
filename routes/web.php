@@ -21,6 +21,7 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
         Route::get('{type}/bind', 'BaseController@binding')->name('bind');
         Route::get('{type}/register', 'BaseController@register')->name('register');
         Route::get('{type}/redirect', 'BaseController@simple')->name('simple');
+        Route::get('{type}/unsubscribe', 'BaseController@unsubscribe')->name('unsubscribe');
         Route::get('{type}/{action}', 'BaseController@route')->name('route');
     });
 

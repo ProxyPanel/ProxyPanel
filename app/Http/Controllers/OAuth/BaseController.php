@@ -77,6 +77,16 @@ class BaseController extends Controller
         return redirect()->route('login')->withErrors(trans('auth.error.not_found_user'));
     }
 
+    public function unsubscribe(string $type)
+    {
+        $user = Auth::user();
+        if ($user && $user->userAuths()->whereType($type)->delete()) {
+            return redirect()->route('profile')->with('successMsg', '解绑成功');
+        }
+
+        return redirect()->route('profile')->with('successMsg', '解绑失败');
+    }
+
     public function binding($type)
     {
         $info = Socialite::driver($type)->stateless()->user();

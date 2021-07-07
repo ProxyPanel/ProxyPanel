@@ -36,9 +36,9 @@
                         <div class="line">
                             <span> 绑定社交账号 </span>
                         </div>
-                        <div class="user-socials list-group-gap list-group-full">
+                        <div class="user-socials list-group-gap list-group-full row m-0">
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                                <a class="list-group-item justify-content-center"
+                                <a class="list-group-item justify-content-center @if(in_array($item, $auth)) col-10 @else col-12 @endif"
                                    @if($item !== 'telegram') href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}" @endif>
                                     <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
                                     @if(in_array($item, $auth))
@@ -50,6 +50,9 @@
                                         {!! Socialite::driver('telegram')->getButton() !!}
                                     @endif
                                 </a>
+                                @if(in_array($item, $auth))
+                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unsubscribe', ['type' => $item])}}">解绑</a>
+                                @endif
                             @endforeach
                         </div>
                     @endif
