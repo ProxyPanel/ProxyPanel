@@ -150,7 +150,7 @@ class Node extends Model
             case 3:
                 $config = array_merge($config, [
                     'type'   => 'trojan',
-                    'port'   => $this->is_relay ? $this->relay_port : $this->v2_port,
+                    'port'   => $this->is_relay ? $this->relay_port : $this->port,
                     'passwd' => $user->passwd,
                     'sni'    => $this->is_relay ? $this->server : '',
                     'udp'    => $this->is_udp,
