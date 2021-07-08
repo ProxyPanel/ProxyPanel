@@ -289,17 +289,6 @@
                                             <label for="v2_host" class="col-md-3 col-form-label">伪装域名</label>
                                             <div class="col-md-4 pl-0">
                                                 <input type="text" class="form-control" name="v2_other" id="v2_host">
-                                                <div name="v2_ws">
-                                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" id="v2_ws">
-                                                        <option value="" hidden></option>
-                                                        @foreach($certs as $cert)
-                                                            <option value="{{$cert->domain}}"
-                                                                    @if(isset($node) && $node->v2_net === "ws" && $node->v2_host === $cert->domain) selected @endif>
-                                                                {{$cert->domain}}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
                                             </div>
                                             <div class="text-help offset-md-3">
                                                 伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个
@@ -668,31 +657,23 @@
             }
         });
 
-        $('#v2_ws').on('changed.bs.select', function() {
-            $('#v2_host').val($('#v2_ws').val());
-        });
-
         // 设置V2Ray详细设置
         $('#v2_net').on('changed.bs.select', function() {
             const type = $('.v2_type');
             const type_option = $('#type_option');
             const host = $('.v2_host');
             const path = $('#v2_path');
-            const v2_ws = $('[name="v2_ws"]');
             const v2_other = $('[name="v2_other"]');
             type.show();
             host.show();
             v2_other.show();
-            v2_ws.hide();
             path.val('/' + string);
             switch ($(this).val()) {
                 case 'kcp':
                     type_option.attr('disabled', false);
                     break;
                 case 'ws':
-                    v2_ws.show();
                     type.hide();
-                    v2_other.hide();
                     break;
                 case 'http':
                     type.hide();
