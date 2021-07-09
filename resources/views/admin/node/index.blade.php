@@ -159,11 +159,14 @@
                 },
                 success: function(ret) {
                     if (ret.status === 'success') {
+                        let str = '';
+                        for (let i in ret.message) {
+                            str += '<tr><td>' + i + '</td><td>' + ret.message[i][0] + '</td><td>' + ret.message[i][1] + '</td></tr>';
+                        }
                         swal.fire({
                             title: ret.title,
                             icon: 'info',
-                            html: '<table class="my-20"><thead class="thead-default"><tr><th> ICMP </th> <th> TCP </th></thead><tbody><tr><td>' +
-                                ret.message[0] + '</td><td>' + ret.message[1] + '</td></tr></tbody></table>',
+                            html: '<table class="my-20"><thead class="thead-default"><tr><th> IP </th><th> ICMP </th> <th> TCP </th></thead><tbody>' + str + '</tbody></table>',
                             showConfirmButton: false,
                         });
                     } else {

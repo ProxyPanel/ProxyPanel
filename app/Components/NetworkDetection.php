@@ -279,7 +279,7 @@ class NetworkDetection
     // 来源：https://ping.gd/
     private function gd(string $ip, bool $is_icmp, int $port = 443)
     {
-        $url = "https://ping.gd/api/ip-test/{$ip}:{$port}";
+        $url = "https://ping.gd/api/ip-test/{$ip}:".($port ?? 443);
 
         $checkName = $is_icmp ? 'ping_alive' : 'telnet_alive';
 

@@ -75,15 +75,12 @@ class NodeStatusDetection extends Command
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
 
-        foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '>', 0)->get() as $node) {
-            if ($node->detection_type === 0) {
-                continue;
-            }
+        foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
             $node_id = (int) $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
                 if ($node->detection_type !== 1) {
-                    $icmpCheck = (new NetworkDetection)->networkCheck($ip, true);
+                    $icmpCheck = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22);
                     if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
                         $data[$node_id][$ip]['icmp'] = $icmpCheck;
                     }
