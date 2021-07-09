@@ -131,22 +131,15 @@ class NodeController extends Controller
         return Response::json(['status' => 'fail', 'message' => '删除线路失败']);
     }
 
-    // 节点信息验证
+    // 节点IP阻断检测
     public function checkNode(Node $node): JsonResponse
     {
-        // 使用DDNS的node先获取ipv4地址
-        if ($node->is_ddns) {
-            $ip = gethostbyname($node->server);
-            if (strcmp($ip, $node->server) !== 0) {
-                $node->ip = $ip;
-            } else {
-                return Response::json(['status' => 'fail', 'title' => 'IP获取错误', 'message' => $node->name.'IP获取失败']);
-            }
+        foreach ($node->ips() as $ip) {
+            $data[$ip][0] = (new NetworkDetection)->networkCheck($ip, true); // ICMP
+            $data[$ip][1] = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22); // TCP
         }
-        $data[0] = (new NetworkDetection)->networkCheck($node->ip, true); //ICMP
-        $data[1] = (new NetworkDetection)->networkCheck($node->ip, false, $node->single ? $node->port : 22); //TCP
 
-        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data]);
+        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);
     }
 
     // 刷新节点地理位置

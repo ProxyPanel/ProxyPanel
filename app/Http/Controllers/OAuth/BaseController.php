@@ -8,13 +8,15 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserOauth;
 use Auth;
+use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
 
 class BaseController extends Controller
 {
-    public function route($type, $action = null)
+    public function route(Request $request, string $type)
     {
+        $action = $request->input('action');
         if ($action === 'binding') {
             return Socialite::driver($type)->with(['redirect_uri' => route('oauth.bind', ['type' => $type])])->redirect();
         }
