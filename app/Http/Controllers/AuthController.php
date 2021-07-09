@@ -8,7 +8,6 @@ use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\EmailFilter;
 use App\Models\Invite;
 use App\Models\User;
-use App\Models\UserLoginLog;
 use App\Models\Verify;
 use App\Models\VerifyCode;
 use App\Notifications\AccountActivation;
@@ -22,7 +21,6 @@ use Hash;
 use Hashids\Hashids;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Log;
 use Notification;
 use Redirect;
 use Response;
@@ -181,7 +179,7 @@ class AuthController extends Controller
 
         // 校验域名邮箱黑白名单
         if (sysConfig('is_email_filtering')) {
-            $result = $this->emailChecker($data['email'], 1);
+            $result = $this->emailChecker($data['username'], 1);
             if ($result !== false) {
                 return $result;
             }
@@ -619,13 +617,12 @@ class AuthController extends Controller
     // 发送注册验证码
     public function sendCode(Request $request)
     {
-        $validator = Validator::make($request->all(), ['email' => 'required|email|unique:user,email']);
-
-        $email = $request->input('email');
+        $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user,username']);
 
         if ($validator->fails()) {
             return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
         }
+        $email = $request->input('username');
         $ip = IP::getClientIP();
 
         // 校验域名邮箱黑白名单

@@ -32,7 +32,7 @@ class UserTrafficWarning extends Command
         User::activeUser()->where('transfer_enable', '>', 0)->chunk(config('tasks.chunk'), function ($users) use ($trafficWarningPercent) {
             foreach ($users as $user) {
                 // 用户账号不是邮箱的跳过
-                if (filter_var($user->email, FILTER_VALIDATE_EMAIL) === false) {
+                if (filter_var($user->username, FILTER_VALIDATE_EMAIL) === false) {
                     continue;
                 }
 

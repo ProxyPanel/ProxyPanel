@@ -52,7 +52,7 @@
                                     <td>
                                         {!! $invite->status_label !!}
                                     </td>
-                                    {{$invite->status === 1 ? ($invite->invitee->email ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
+                                    {{$invite->status === 1 ? ($invite->invitee->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】') : ''}}
                                 </tr>
                             @endforeach
                             </tbody>

@@ -171,7 +171,7 @@
                 return false;
             }
             email += '@' + emailTail;
-            $('#email').val(email);
+            $('#username').val(email);
             return email;
         }
         @endif
@@ -179,7 +179,7 @@
         // 发送注册验证码
         function sendVerifyCode() {
             let flag = true; // 请求成功与否标记
-            let email = $('#email').val().trim();
+            let email = $('#username').val().trim();
             @if($emailList)
                 email = getEmail();
             @endif
@@ -193,7 +193,7 @@
                 method: 'POST',
                 url: '{{route('sendVerificationCode')}}',
                 dataType: 'json',
-                data: {_token: '{{csrf_token()}}', email: email},
+                data: {_token: '{{csrf_token()}}', username: email},
                 success: function(ret) {
                     if (ret.status === 'success') {
                         swal.fire({title: ret.message, icon: 'success'});

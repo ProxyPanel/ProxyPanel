@@ -19,7 +19,7 @@ class V1Controller extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'username' => 'required|'.(sysConfig('username_type') ?? 'email'),
             'password' => 'required|string|min:6',
         ]);
 
@@ -37,19 +37,19 @@ class V1Controller extends Controller
     protected function createNewToken($token)
     {
         return response()->json([
-            'ret' => 1,
+            'ret'          => 1,
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()->profile(),
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
+            'user'         => auth()->user()->profile(),
         ]);
     }
 
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
+            'name'     => 'required|string|between:2,100',
+            'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|max:100|unique:user,username',
             'password' => 'required|string|confirmed|min:6',
         ]);
 

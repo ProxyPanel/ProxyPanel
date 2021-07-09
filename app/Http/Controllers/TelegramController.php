@@ -100,7 +100,7 @@ class TelegramController extends Controller
         if (! isset($msg->args[0])) {
             abort(500, '参数有误，请携带邮箱地址发送');
         }
-        $user = User::where('email', $msg->args[0])->first();
+        $user = User::whereUsername($msg->args[0])->first();
         if (! $user) {
             abort(500, '用户不存在');
         }

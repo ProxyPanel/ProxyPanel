@@ -20,7 +20,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="email" value="{{Request::query('email')}}" placeholder="用户账号" autocomplete="off"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button type="submit" class="btn btn-primary">搜 索</button>
@@ -46,9 +46,9 @@
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @else
                                     @can('admin.user.index')
-                                        <a href="{{route('admin.user.index', ['id'=>$ticket->user->id])}}" target="_blank">{{$ticket->user->email}}</a>
+                                        <a href="{{route('admin.user.index', ['id'=>$ticket->user->id])}}" target="_blank">{{$ticket->user->username}}</a>
                                     @else
-                                        {{$ticket->user->email}}
+                                        {{$ticket->user->username}}
                                     @endcan
                                 @endif
                             </td>

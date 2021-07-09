@@ -10,7 +10,7 @@ class RegisterRequest extends FormRequest
     {
         return [
             'nickname' => 'required',
-            'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user',
+            'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user,username',
             'password' => 'required|min:6|confirmed',
             'term'     => 'accepted',
         ];

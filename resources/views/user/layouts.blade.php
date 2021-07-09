@@ -170,7 +170,7 @@
     @if(Session::get("admin"))
         <div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0;">
             <div class="panel-body text-right">
-                <h5>{{trans('user.current_role')}}：{{Auth::getUser()->email}}</h5>
+                <h5>{{trans('user.current_role')}}：{{Auth::getUser()->username}}</h5>
                 <button type="button" class="btn btn-danger btn-block mt-20" id="return_to_admin">
                     {{trans('common.back').trans('user.menu.admin_dashboard')}}
                 </button>
