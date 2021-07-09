@@ -85,7 +85,13 @@ class NetworkDetection
                     $ret = $this->vps234($ip, $is_icmp);
                     break;
                 case 3:
-                    $ret = $this->vpsaff($ip, $is_icmp, $port);
+                    $ret = $this->idcoffer($ip, $is_icmp, $port);
+                    break;
+                case 4:
+                    $ret = $this->gd($ip, $is_icmp, $port);
+                    break;
+                case 5:
+                    $ret = $this->ip112($ip, $is_icmp, $port);
                     break;
                 default:
                     return false;
@@ -227,10 +233,11 @@ class NetworkDetection
         return false;
     }
 
-    private function vpsaff(string $ip, bool $is_icmp, int $port = null)
+    // 来源：https://www.idcoffer.com/ipcheck
+    private function idcoffer(string $ip, bool $is_icmp, int $port = null)
     {
         $cn = "https://api.24kplus.com/ipcheck?host={$ip}&port={$port}";
-        $us = "https://api.vpsaff.net/ipcheck?host={$ip}&port={$port}";
+        $us = "https://api.idcoffer.com/ipcheck?host={$ip}&port={$port}";
         $checkName = $is_icmp ? 'ping' : 'tcp';
 
         $response_cn = Http::timeout(15)->get($cn);
@@ -260,6 +267,78 @@ class NetworkDetection
             }
 
             if (! $cn['data'][$checkName] && $us['data'][$checkName]) {
+                return '国内阻断'; // 被墙
+            }
+
+            return '断连'; // 服务器宕机
+        }
+
+        return false;
+    }
+
+    // 来源：https://ping.gd/
+    private function gd(string $ip, bool $is_icmp, int $port = 443)
+    {
+        $url = "https://ping.gd/api/ip-test/{$ip}:{$port}";
+
+        $checkName = $is_icmp ? 'ping_alive' : 'telnet_alive';
+
+        $response = Http::timeout(15)->get($url);
+
+        if ($response->ok()) {
+            $message = $response->json();
+            if (! $message) {
+                Log::warning("【{$checkName}阻断检测】检测{$ip}时，接口返回异常访问链接：{$url}");
+
+                return false;
+            }
+
+            if ($message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
+                return '通讯正常'; // 正常
+            }
+
+            if ($message[0]['result'][$checkName] && ! $message[1]['result'][$checkName]) {
+                return '海外阻断'; // 国外访问异常
+            }
+
+            if (! $message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
+                return '国内阻断'; // 被墙
+            }
+
+            return '断连'; // 服务器宕机
+        }
+
+        return false;
+    }
+
+    // 来源：https://ip112.cn/
+    private function ip112(string $ip, bool $is_icmp, int $port = 443)
+    {
+        $cn = 'https://api.zhujiquanzi.com/ipcheck/ipcheck.php';
+        $us = 'https://api.52bwg.com/ipcheck/ipcheck.php';
+        $checkName = $is_icmp ? 'icmp' : 'tcp';
+
+        $response_cn = Http::asForm()->post($cn, ['ip' => $ip, 'port' => $port]);
+        $response_us = Http::asForm()->post($us, ['ip' => $ip, 'port' => $port]);
+
+        if ($response_cn->ok() && $response_us->ok()) {
+            $cn = $response_cn->json();
+            $us = $response_us->json();
+            if (! $cn || ! $us) {
+                Log::warning("【{$checkName}阻断检测】检测{$ip}时，接口返回异常访问链接：{$cn} | {$us}");
+
+                return false;
+            }
+
+            if (str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
+                return '通讯正常'; // 正常
+            }
+
+            if (str_contains($cn[$checkName], 'green') && ! str_contains($us[$checkName], 'green')) {
+                return '海外阻断'; // 国外访问异常
+            }
+
+            if (! str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
                 return '国内阻断'; // 被墙
             }
 

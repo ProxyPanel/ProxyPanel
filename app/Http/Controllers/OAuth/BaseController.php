@@ -28,7 +28,7 @@ class BaseController extends Controller
 
     public function simple(string $type)
     {
-        $info = Socialite::driver($type)->user();
+        $info = Socialite::driver($type)->stateless()->user();
         if ($info) {
             $user = Auth::user();
 
@@ -105,7 +105,7 @@ class BaseController extends Controller
 
     public function logining($type)
     {
-        $info = Socialite::driver($type)->user();
+        $info = Socialite::driver($type)->stateless()->user();
         if ($info) {
             return $this->login($type, $info);
         }
