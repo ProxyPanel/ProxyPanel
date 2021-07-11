@@ -66,13 +66,13 @@
                         <div class="dropdown-menu" role="menu">
                             @can('admin.index')
                                 <a href="{{route('admin.index')}}" class="dropdown-item" role="menuitem">
-                                    <i class="icon wb-user" aria-hidden="true"></i>
+                                    <i class="icon wb-dashboard" aria-hidden="true"></i>
                                     {{trans('user.menu.admin_dashboard')}}
                                 </a>
                             @endcan
                             <a href="{{route('profile')}}" class="dropdown-item" role="menuitem">
-                                <i class="icon wb-user" aria-hidden="true"></i>
-                                {{trans('user.user_profile')}}
+                                <i class="icon wb-settings" aria-hidden="true"></i>
+                                {{trans('user.menu.profile')}}
                             </a>
                             <div class="dropdown-divider" role="presentation"></div>
                             <a href="{{route('logout')}}" class="dropdown-item" role="menuitem">
@@ -90,7 +90,7 @@
             <ul class="site-menu" data-plugin="menu">
                 <li class="site-menu-item {{request()->routeIs('home', 'profile' ,'article') ? 'active open' : ''}}">
                     <a href="{{route('home')}}">
-                        <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
+                        <i class="site-menu-icon wb-home" aria-hidden="true"></i>
                         <span class="site-menu-title">{{trans('user.menu.home')}}</span>
                     </a>
                 </li>
@@ -110,6 +110,12 @@
                     <a href="{{route('help')}}">
                         <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
                         <span class="site-menu-title">{{trans('user.menu.helps')}}</span>
+                    </a>
+                </li>
+                <li class="site-menu-item {{request()->routeIs('profile') ? 'active open' : ''}}">
+                    <a href="{{route('profile')}}">
+                        <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
+                        <span class="site-menu-title">{{trans('user.menu.profile')}}</span>
                     </a>
                 </li>
                 @php
@@ -150,6 +156,21 @@
                         </li>
                     @endif
                 @endif
+                <hr>
+                @can('admin.index')
+                    <li class="site-menu-item">
+                        <a href="{{route('admin.index')}}">
+                            <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
+                            <span class="site-menu-title">{{trans('user.menu.admin_dashboard')}}</span>
+                        </a>
+                    </li>
+                @endcan
+                <li class="site-menu-item">
+                    <a href="{{route('logout')}}">
+                        <i class="site-menu-icon wb-power" aria-hidden="true"></i>
+                        <span class="site-menu-title">{{trans('auth.logout')}}</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

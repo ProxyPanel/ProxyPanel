@@ -40,6 +40,17 @@ return [
     'logout'          => '登 出',
     'maintenance'     => '维护',
     'maintenance_tip' => '网站维护中',
+    'oauth'           => [
+        'bind_success'    => '绑定成功',
+        'bind_failed'     => '绑定失败',
+        'login_failed'    => '第三方登录失败！',
+        'register'        => '快速注册',
+        'registered'      => '已注册，请直接登录',
+        'register_failed' => '注册失败',
+        'rebind_success'  => '重新绑定成功',
+        'unbind_success'  => '解绑成功',
+        'unbind_failed'   => '解绑失败',
+    ],
     'optional'        => '可选',
     'password'        => [
         'forget'   => '忘记密码？',
@@ -69,6 +80,5 @@ return [
     ],
     'remember_me'     => '记住我',
     'request'         => '获 取',
-    'sign_in_with'    => ':app账号登录',
     'tos'             => '用户条款',
 ];
