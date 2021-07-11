@@ -17,15 +17,16 @@ class BaseController extends Controller
     public function route(Request $request, string $type)
     {
         $action = $request->input('action');
+        $key = "services.{$type}.redirect";
         if ($action === 'binding') {
-            return Socialite::driver($type)->with(['redirect_uri' => route('oauth.bind', ['type' => $type])])->redirect();
+            config([$key => route('oauth.bind', ['type' => $type])]);
+        } elseif ($action === 'register') {
+            config([$key => route('oauth.register', ['type' => $type])]);
+        } else {
+            config([$key => route('oauth.login', ['type' => $type])]);
         }
 
-        if ($action === 'register') {
-            return Socialite::driver($type)->with(['redirect_uri' => route('oauth.register', ['type' => $type])])->redirect();
-        }
-
-        return Socialite::driver($type)->with(['redirect_uri' => route('oauth.login', ['type' => $type])])->redirect();
+        return Socialite::driver($type)->redirect();
     }
 
     public function simple(string $type)
@@ -91,6 +92,7 @@ class BaseController extends Controller
 
     public function binding($type)
     {
+        config(["services.{$type}.redirect" => route('oauth.bind', ['type' => $type])]);
         $info = Socialite::driver($type)->stateless()->user();
 
         if ($info) {
@@ -107,6 +109,7 @@ class BaseController extends Controller
 
     public function logining($type)
     {
+        config(["services.{$type}.redirect" => route('oauth.login', ['type' => $type])]);
         $info = Socialite::driver($type)->stateless()->user();
         if ($info) {
             return $this->login($type, $info);
@@ -117,6 +120,7 @@ class BaseController extends Controller
 
     public function register($type)
     {
+        config(["services.{$type}.redirect" => route('oauth.register', ['type' => $type])]);
         $info = Socialite::driver($type)->stateless()->user();
 
         // 排除重复用户注册
