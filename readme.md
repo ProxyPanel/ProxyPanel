@@ -14,7 +14,7 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 
 ## Funding
 Buy me a Coffee?
-- PayPal [paypal.me/brettonye](paypal.me/brettonye)
+- PayPal [paypal.me/brettonye](https://www.paypal.com/paypalme/brettonye)
 - USDT-TRC20 TFMxq91oPCnoxDXBiEgRzab5N6GFnAbTT5
 
 ## Requirements
