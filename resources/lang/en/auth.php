@@ -43,6 +43,17 @@ return [
     'logout'          => 'Logout',
     'maintenance'     => 'Maintain',
     'maintenance_tip' => 'Website under maintenance',
+    'oauth'           => [
+        'bind_success'    => 'Binding success',
+        'bind_failed'     => 'Binding failed',
+        'login_failed'    => 'Sign in failed!',
+        'register'        => 'Quick registration',
+        'registered'      => 'Already registered, please login directly',
+        'register_failed' => 'Registration failed',
+        'rebind_success'  => 'Rebinding success',
+        'unbind_success'  => 'Unbinding success',
+        'unbind_failed'   => 'Unbinding failed',
+    ],
     'optional'        => 'Optional',
     'password'        => [
         'forget'   => 'Forgot password?',
@@ -75,6 +86,5 @@ return [
     ],
     'remember_me'     => 'Remember me',
     'request'         => 'Request',
-    'sign_in_with'    => 'Sign in with :app',
     'tos'             => 'Terms of Service',
 ];

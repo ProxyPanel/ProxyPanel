@@ -34,7 +34,7 @@
                     </div>
                     @if(sysConfig('oauth_path'))
                         <div class="line">
-                            <span> 绑定社交账号 </span>
+                            <span> {{trans('user.oauth.bind_title')}} </span>
                         </div>
                         <div class="user-socials list-group-gap list-group-full row m-0">
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
@@ -42,16 +42,16 @@
                                    @if($item !== 'telegram') href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}" @endif>
                                     <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
                                     @if(in_array($item, $auth))
-                                        <span class="red-600">重新绑定</span>
+                                        <span class="red-600">{{trans('user.oauth.rebind')}}</span>
                                     @else
-                                        <span class="grey-500">未绑定</span>
+                                        <span class="grey-500">{{trans('user.oauth.not_bind')}}</span>
                                     @endif
                                     @if($item === 'telegram')
                                         {!! Socialite::driver('telegram')->getButton() !!}
                                     @endif
                                 </a>
                                 @if(in_array($item, $auth))
-                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unsubscribe', ['type' => $item])}}">解绑</a>
+                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unsubscribe', ['type' => $item])}}">{{trans('user.oauth.unbind')}}</a>
                                 @endif
                             @endforeach
                         </div>

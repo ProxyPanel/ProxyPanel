@@ -102,7 +102,7 @@
     @if(sysConfig('is_register') && sysConfig('oauth_path'))
         <div class="pt-20" style="display: inline-block;">
             <div class="line">
-                <span> 快速注册 </span>
+                <span> {{trans('auth.oauth.register')}} </span>
             </div>
             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                 @if ($item !== 'telegram')

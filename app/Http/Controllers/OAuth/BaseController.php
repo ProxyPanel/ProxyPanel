@@ -42,7 +42,7 @@ class BaseController extends Controller
             return $this->login($type, $info);
         }
 
-        return redirect()->route('login')->withErrors('第三方登录失败！');
+        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 
     private function bind(string $type, $user, $info)
@@ -52,12 +52,12 @@ class BaseController extends Controller
         if ($auth) {
             $user->userAuths()->whereType($type)->update($data);
 
-            return redirect()->route('profile')->with('successMsg', '重新绑定成功');
+            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.rebind_success'));
         }
 
         $user->userAuths()->create($data);
 
-        return redirect()->route('profile')->with('successMsg', '绑定成功');
+        return redirect()->route('profile')->with('successMsg', trans('auth.oauth.bind_success'));
     }
 
     private function login(string $type, $info)
@@ -84,10 +84,10 @@ class BaseController extends Controller
     {
         $user = Auth::user();
         if ($user && $user->userAuths()->whereType($type)->delete()) {
-            return redirect()->route('profile')->with('successMsg', '解绑成功');
+            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_success'));
         }
 
-        return redirect()->route('profile')->with('successMsg', '解绑失败');
+        return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_failed'));
     }
 
     public function binding($type)
@@ -101,10 +101,10 @@ class BaseController extends Controller
                 return $this->bind($type, $user, $info);
             }
 
-            return redirect()->route('profile')->withErrors('绑定失败');
+            return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
         }
 
-        return redirect()->route('login')->withErrors('第三方登录失败！');
+        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 
     public function logining($type)
@@ -115,7 +115,7 @@ class BaseController extends Controller
             return $this->login($type, $info);
         }
 
-        return redirect()->route('login')->withErrors('第三方登录失败！');
+        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 
     public function register($type)
@@ -143,13 +143,13 @@ class BaseController extends Controller
                         return redirect()->route('login');
                     }
 
-                    return redirect()->route('register')->withErrors('注册失败');
+                    return redirect()->route('register')->withErrors(trans('auth.oauth.register_failed'));
                 }
             }
 
-            return redirect()->route('login')->withErrors('已注册，请直接登录');
+            return redirect()->route('login')->withErrors(trans('auth.oauth.registered'));
         }
 
-        return redirect()->route('login')->withErrors('第三方登录失败！');
+        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 }
