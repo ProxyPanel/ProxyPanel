@@ -6,12 +6,16 @@ use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Kyslik\ColumnSortable\Sortable;
 
 /**
  * 订单.
  */
 class Order extends Model
 {
+    use Sortable;
+
+    public $sortable = ['id', 'sn', 'expired_at', 'created_at'];
     protected $table = 'order';
     protected $dates = ['expired_at'];
     protected $guarded = [];

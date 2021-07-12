@@ -85,14 +85,14 @@
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
-                        <th> #</th>
+                        <th> @sortablelink('id', '#')</th>
                         <th> 用户账号</th>
-                        <th> 余额</th>
-                        <th> 端口</th>
+                        <th> @sortablelink('credit', '余额')</th>
+                        <th> @sortablelink('port', '端口')</th>
                         <th> 订阅码</th>
                         <th> 流量使用</th>
-                        <th> 最后使用</th>
-                        <th> 有效期</th>
+                        <th> @sortablelink('t', '最后使用')</th>
+                        <th> @sortablelink('expired_at', '有效期')</th>
                         <th> {{trans('common.status')}}</th>
                         <th> 代理</th>
                         <th> {{trans('common.action')}}</th>
@@ -111,7 +111,7 @@
                                 <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy"
                                    data-clipboard-text="{{$user->subUrl()}}">{{$user->subscribe->code}}</a>
                             </td>
-                            <td> {{flowAutoShow($user->usedTraffic())}} / {{$user->transfer_enable_formatted}} </td>
+                            <td> {{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}} </td>
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>
 
                             <td>

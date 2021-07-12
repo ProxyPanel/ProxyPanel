@@ -2,6 +2,12 @@
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
+    <style>
+        .table a {
+            color: #76838f;
+            text-decoration: none;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -60,18 +66,6 @@
                             <option value="2">已完成</option>
                         </select>
                     </div>
-                    <div class="form-group col-lg-3 col-sm-6">
-                        <div class="d-flex align-items-center">
-                            <div class="radio-custom radio-primary radio-inline">
-                                <input type="radio" name="sort" value="0" checked/>
-                                <label for="type">降序</label>
-                            </div>
-                            <div class="radio-custom radio-primary radio-inline">
-                                <input type="radio" name="sort" value="1"/>
-                                <label for="type">升序</label>
-                            </div>
-                        </div>
-                    </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button type="submit" class="btn btn-primary">搜 索</button>
                         <a href="{{route('admin.order')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
@@ -80,17 +74,17 @@
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
-                        <th> #</th>
+                        <th> @sortablelink('id', '#')</th>
                         <th> 用户账号</th>
-                        <th> 订单号</th>
+                        <th> @sortablelink('sn', '订单号')</th>
                         <th> 商品</th>
-                        <th> 过期时间</th>
+                        <th> @sortablelink('expired_at', '过期时间')</th>
                         <th> 优惠券</th>
                         <th> 原价</th>
                         <th> 实价</th>
                         <th> 支付方式</th>
                         <th> 订单状态</th>
-                        <th> 创建时间</th>
+                        <th> @sortablelink('created_at', '创建时间')</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -161,8 +155,6 @@
             $('#is_coupon').val({{Request::query('is_coupon')}});
             $('#pay_way').val({{Request::query('pay_way')}});
             $('#status').val({{Request::query('status')}});
-            $("input[name='sort'][value='{{Request::query('sort')}}']").click();
-
             $('select').on('change', function() { this.form.submit(); });
         });
 
