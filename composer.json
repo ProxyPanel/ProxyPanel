@@ -22,6 +22,7 @@
     "ip2location/ip2location-laravel": "^1.2",
     "ipip/db": "^1.0",
     "jenssegers/agent": "^2.6",
+    "kyslik/column-sortable": "^6.4",
     "laravel-notification-channels/bearychat": "^1.4",
     "laravel-notification-channels/telegram": "^0.5",
     "laravel/framework": "^7.30",

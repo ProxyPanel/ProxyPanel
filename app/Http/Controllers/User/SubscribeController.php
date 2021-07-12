@@ -50,7 +50,7 @@ class SubscribeController extends Controller
                 return $this->failed(trans('error.subscribe.baned_until', ['time' => $user->ban_time]));
             }
 
-            $unusedTraffic = $user->transfer_enable - $user->usedTraffic();
+            $unusedTraffic = $user->transfer_enable - $user->used_traffic;
             if ($unusedTraffic <= 0) {
                 return $this->failed(trans('error.subscribe.out'));
             }

@@ -1,6 +1,7 @@
 @extends('_layout')
 @section('title', sysConfig('website_name'))
 @section('layout_css')
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     @yield('css')
 @endsection
 @section('body_class', 'dashboard')

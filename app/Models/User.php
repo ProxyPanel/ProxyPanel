@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Kyslik\ColumnSortable\Sortable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -17,8 +18,9 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
  */
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable, HasRoles;
+    use Notifiable, HasRoles, Sortable;
 
+    public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
     protected $table = 'user';
     protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
     protected $dates = ['expired_at', 'reset_time'];
@@ -26,10 +28,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function usedTrafficPercentage()
     {
-        return round(($this->usedTraffic()) / $this->transfer_enable, 2);
+        return round(($this->used_traffic) / $this->transfer_enable, 2);
     }
 
-    public function usedTraffic(): int
+    public function getUsedTrafficAttribute(): int
     {
         return $this->d + $this->u;
     }

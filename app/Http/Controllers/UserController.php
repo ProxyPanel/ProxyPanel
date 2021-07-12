@@ -40,7 +40,7 @@ class UserController extends Controller
         }
         $user = auth()->user();
         $totalTransfer = $user->transfer_enable;
-        $usedTransfer = $user->usedTraffic();
+        $usedTransfer = $user->used_traffic;
         $unusedTraffic = $totalTransfer - $usedTransfer > 0 ? $totalTransfer - $usedTransfer : 0;
         $expireTime = $user->expired_at;
 

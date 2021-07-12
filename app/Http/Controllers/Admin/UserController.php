@@ -76,7 +76,7 @@ class UserController extends Controller
         });
 
         return view('admin.user.index', [
-            'userList'   => $query->orderByDesc('id')->paginate(15)->appends($request->except('page')),
+            'userList'   => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
             'levels'     => Level::all()->pluck('name', 'level')->toArray(),
         ]);
