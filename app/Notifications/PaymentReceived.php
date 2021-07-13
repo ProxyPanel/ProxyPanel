@@ -43,10 +43,7 @@ class PaymentReceived extends Notification implements ShouldQueue
         ];
     }
 
-    /**
-     * @param $notifiable
-     * @return TelegramMessage|\NotificationChannels\Telegram\Traits\HasSharedLogic
-     */
+    // todo: 需要重新审视发送对象
     public function toTelegram($notifiable)
     {
         foreach (User::role('Super Admin')->get() as $admin) {
@@ -57,7 +54,7 @@ class PaymentReceived extends Notification implements ShouldQueue
             );
 
             return TelegramMessage::create()
-                ->to($admin->telegram_id)
+                ->to($admin->telegram_user_id)
                 ->token(sysConfig('telegram_token'))
                 ->content($message);
         }

@@ -67,10 +67,6 @@ class NodeOffline extends Notification implements ShouldQueue
         return $content;
     }
 
-    /**
-     * @param $notifiable
-     * @return TelegramMessage|\NotificationChannels\Telegram\Traits\HasSharedLogic
-     */
     public function toTelegram($notifiable)
     {
         return TelegramMessage::create()
