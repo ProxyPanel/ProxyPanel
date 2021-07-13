@@ -36,6 +36,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->d + $this->u;
     }
 
+    public function getTelegramUserIdAttribute()
+    {
+        $telegram = $this->userAuths()->whereType('telegram')->first();
+
+        return $telegram->identifier ?? null;
+    }
+
     public function profile()
     {
         return [
@@ -321,13 +328,8 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    /**
-     * Route notifications for the Telegram channel.
-     *
-     * @return int
-     */
     public function routeNotificationForTelegram()
     {
-        return $this->telegram_id;
+        return $this->telegram_user_id;
     }
 }

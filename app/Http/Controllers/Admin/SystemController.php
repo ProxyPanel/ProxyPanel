@@ -9,6 +9,7 @@ use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
 use App\Notifications\Custom;
 use App\Services\TelegramService;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -152,15 +153,16 @@ class SystemController extends Controller
 
     public function sendTestNotification(): JsonResponse  // 推送通知测试
     {
+        $data = ['这是测试的标题', 'ProxyPanel测试内容'];
         switch (request('channel')) {
             case 'serverChan':
-                Notification::sendNow(ServerChanChannel::class, new Custom('这是测试的标题', 'ProxyPanel测试内容'));
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [ServerChanChannel::class]);
                 break;
             case 'bark':
-                Notification::sendNow(BarkChannel::class, new Custom('这是测试的标题', 'ProxyPanel测试内容'));
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [BarkChannel::class]);
                 break;
             case 'telegram':
-                Notification::sendNow(TelegramChannel::class, new Custom('这是测试的标题', 'ProxyPanel测试内容'));
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TelegramChannel::class]);
                 break;
             default:
                 return Response::json(['status' => 'fail', 'message' => '未知渠道']);

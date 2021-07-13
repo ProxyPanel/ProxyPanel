@@ -46,10 +46,6 @@ class TicketReplied extends Notification implements ShouldQueue
         ];
     }
 
-    /**
-     * @param $notifiable
-     * @return TelegramMessage|\NotificationChannels\Telegram\Traits\HasSharedLogic
-     */
     public function toTelegram($notifiable)
     {
         return TelegramMessage::create()
