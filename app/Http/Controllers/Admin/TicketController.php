@@ -64,13 +64,14 @@ class TicketController extends Controller
     {
         $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
-        if ($ticket->reply()->create(['admin_id' => Auth::id(), 'content' => $content])) {
+        $reply = $ticket->reply()->create(['admin_id' => Auth::id(), 'content' => $content]);
+        if ($reply) {
             // 将工单置为已回复
             $ticket->update(['status' => 1]);
 
             // 通知用户
             if (sysConfig('ticket_replied_notification')) {
-                $ticket->user->notify(new TicketReplied($ticket, route('replyTicket', $ticket), true));
+                $ticket->user->notify(new TicketReplied($reply, route('replyTicket', $ticket), true));
             }
 
             return Response::json(['status' => 'success', 'message' => '回复成功']);
