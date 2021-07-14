@@ -312,14 +312,14 @@ class UserController extends Controller
             if ($ticket->status === 2) {
                 return Response::json(['status' => 'fail', 'message' => trans('user.ticket.failed_closed')]);
             }
-
-            if ($ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content])) {
+            $reply = $ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content]);
+            if ($reply) {
                 // 重新打开工单
                 $ticket->status = 0;
                 $ticket->save();
 
                 // 通知相关管理员
-                Notification::send(User::find(1), new TicketReplied($ticket, route('admin.ticket.edit', $ticket)));
+                Notification::send(User::find(1), new TicketReplied($reply, route('admin.ticket.edit', $ticket)));
 
                 return Response::json(['status' => 'success', 'message' => trans('user.ticket.reply').trans('common.success')]);
             }
