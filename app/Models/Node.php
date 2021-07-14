@@ -134,7 +134,7 @@ class Node extends Model
             case 2:
                 $config = array_merge($config, [
                     'type'        => 'v2ray',
-                    'port'        => $this->is_relay ? $this->relay_port : $this->v2_port,
+                    'port'        => $this->is_relay ? $this->relay_port : $this->port,
                     'uuid'        => $user->vmess_id,
                     'method'      => $this->v2_method,
                     'v2_alter_id' => $this->v2_alter_id,
