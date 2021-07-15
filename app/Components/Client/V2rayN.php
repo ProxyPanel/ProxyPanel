@@ -36,8 +36,8 @@ class V2rayN
     {
         $name = rawurlencode($server['name']);
         $query = '';
-        if (array_key_exists('relay_server', $server)) {
-            $query = "?sni={$server['relay_server']}";
+        if (array_key_exists('sni', $server)) {
+            $query = "?sni={$server['sni']}";
         }
 
         return "trojan://{$server['passwd']}@{$server['host']}:{$server['port']}{$query}#{$name}".PHP_EOL;
