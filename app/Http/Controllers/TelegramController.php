@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\UserOauth;
 use App\Services\TelegramService;
 use Exception;
 use Illuminate\Http\Request;
@@ -115,17 +116,17 @@ class TelegramController extends Controller
         if (! $msg->is_private) {
             return;
         }
-        $user = User::with(['userAuths' => function ($query) use ($msg) {
-            $query->whereType('telegram')->whereIdentifier($msg->chat_id);
-        }])->first();
-
         $telegramService = new TelegramService();
-        if (! $user) {
+        if (! $oauth = UserOauth::query()->where([
+            'type' => 'telegram',
+            'identifier' => $msg->chat_id,
+        ])->first()) {
             $this->help();
             $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
 
             return;
         }
+        $user = $oauth->user;
         $transferEnable = flowAutoShow($user->transfer_enable);
         $up = flowAutoShow($user->u);
         $down = flowAutoShow($user->d);
