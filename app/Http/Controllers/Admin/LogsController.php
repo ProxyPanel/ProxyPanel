@@ -38,7 +38,7 @@ class LogsController extends Controller
         });
 
         $request->whenFilled('end', function ($value) use ($query) {
-            $query->where('created_at', '<=', $value);
+            $query->where('created_at', '<=', $value.' 23:59:59');
         });
 
         $request->whenFilled('is_coupon', function ($value) use ($query) {
@@ -86,7 +86,7 @@ class LogsController extends Controller
         });
 
         $request->whenFilled('end', function ($value) use ($query) {
-            $query->where('log_time', '<=', strtotime($value));
+            $query->where('log_time', '<=', strtotime($value) + 86399);
         });
 
         $totalTraffic = flowAutoShow($query->sum('u') + $query->sum('d')); // 在分页前，计算总使用流量
