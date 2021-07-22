@@ -65,7 +65,7 @@ class Clash
             $array['ws-path'] = $server['v2_path'];
             if ($server['v2_host']) {
                 $array['ws-headers'] = ['Host' => $server['v2_host']];
-            };
+            }
         }
 
         return $array;
