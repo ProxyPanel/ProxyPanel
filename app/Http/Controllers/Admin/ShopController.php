@@ -109,7 +109,6 @@ class ShopController extends Controller
                 return $path;
             }
         }
-
         try {
             $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
             $data['status'] = array_key_exists('status', $data) ? 1 : 0;

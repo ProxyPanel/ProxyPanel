@@ -32,6 +32,12 @@ class VNetController extends BaseController
     public function getUserList(Node $node): JsonResponse
     {
         foreach ($node->users() as $user) {
+            $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐
+            if ($order) {
+                $speed_limit = $order->goods->getRawOriginal('speed_limit');
+            } else {
+                $speed_limit = $user->getRawOriginal('speed_limit');
+            }
             $data[] = [
                 'uid' => $user->id,
                 'port' => $user->port,
@@ -40,7 +46,7 @@ class VNetController extends BaseController
                 'protocol' => $user->protocol,
                 'obfs' => $user->obfs,
                 'obfs_param' => $node->obfs_param,
-                'speed_limit' => $user->getRawOriginal('speed_limit'),
+                'speed_limit' => $speed_limit,
                 'enable' => $user->enable,
             ];
         }

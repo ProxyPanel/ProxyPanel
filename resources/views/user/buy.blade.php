@@ -23,6 +23,8 @@
                                 <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans('validation.attributes.day')}}</strong>
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
+                                <br>
+                                {{trans('user.account.speed_limit')}}<strong>{{$goods->speed_limit}} MB</strong>
                             </td>
                             <td class="text-middle"> ¥{{$goods->price}} </td>
                             <td class="text-middle"> x 1</td>

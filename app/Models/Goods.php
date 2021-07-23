@@ -45,4 +45,14 @@ class Goods extends Model
     {
         return flowAutoShow($this->attributes['traffic'] * MB);
     }
+
+    public function getSpeedLimitAttribute($value)
+    {
+        return $value / Mbps;
+    }
+
+    public function setSpeedLimitAttribute($value)
+    {
+        return $this->attributes['speed_limit'] = $value * Mbps;
+    }
 }

@@ -73,8 +73,11 @@
                                         </div>
                                         <ul class="pricing-features">
                                             <li>
-                                                <strong>{{$goods->traffic_label}}</strong>{{trans('user.attribute.data')}}
+                                                <strong>{{$goods->traffic_label}} </strong>{{trans('user.attribute.data')}}
                                                 {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans('validation.attributes.day'):'/'.trans('validation.attributes.month')!!}
+                                            </li>
+                                            <li>
+                                                {{trans('user.account.speed_limit')}}<strong> {{ $goods->speed_limit > 0 ? $goods->speed_limit.' MB' : '不限速' }} </strong>
                                             </li>
                                             {!!$goods->info!!}
                                         </ul>
