@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Country;
+use App\Models\GoodsCategory;
 use App\Models\Invite;
 use App\Models\Label;
 use App\Models\Level;
@@ -118,6 +119,7 @@ class AdminController extends Controller
         return view('admin.config.config', [
             'methods' => SsConfig::type(1)->get(),
             'protocols' => SsConfig::type(2)->get(),
+            'categories' => GoodsCategory::all(),
             'obfsList' => SsConfig::type(3)->get(),
             'countries' => Country::all(),
             'levels' => Level::all(),

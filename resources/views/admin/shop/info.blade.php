@@ -57,6 +57,16 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="level" class="col-md-2 col-form-label">分类</label>
+                                <div class="col-md-4">
+                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="category_id" id="category_id">
+                                        @foreach ($categories as $category)
+                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="level" class="col-md-2 col-form-label">等级</label>
                                 <div class="col-md-4">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="level" id="level">
@@ -221,6 +231,7 @@
             $('#color').asColorPicker('val', '{{$good->color}}');
             $('#description').val(@json($good->description));
             $('#info').val(@json($good->info));
+            $('#category_id').selectpicker('val', '{{$good->category_id}}');
             const trafficUnit = $('#traffic_unit');
             const traffic = $('#traffic');
             @if($good->traffic >= 1073741824)

@@ -49,14 +49,21 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function (
 });
 
 // 客户端API
-Route::group(['namespace' => 'Api\Client', 'middleware' => 'api', 'prefix' => 'client/v1'], function () {
+Route::group(['namespace' => 'Api\Client', 'prefix' => 'client/v1'], function () {
+    Route::get('config', 'V1Controller@getConfig'); // 获取配置
     Route::post('login', 'V1Controller@login'); // 登录
-    Route::get('logout', 'V1Controller@logout'); // 退出
-    Route::get('refresh', 'V1Controller@refresh'); // 刷新令牌
-    Route::get('profile', 'V1Controller@userProfile'); // 获取账户信息
-    Route::get('nodes', 'V1Controller@nodeList'); // 获取账户全部节点
-    Route::get('node/{id}', 'V1Controller@nodeList'); // 获取账户个别节点
-
     Route::post('register', 'V1Controller@register'); // 注册
-    Route::get('shop', 'V1Controller@shop'); // 获取商品信息
+
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('logout', 'V1Controller@logout'); // 退出
+        Route::get('refresh', 'V1Controller@refresh'); // 刷新令牌
+        Route::get('profile', 'V1Controller@userProfile'); // 获取账户信息
+        Route::get('nodes', 'V1Controller@nodeList'); // 获取账户全部节点
+        Route::get('node/{id}', 'V1Controller@nodeList'); // 获取账户个别节点
+        Route::get('shop', 'V1Controller@shop'); // 获取商品信息
+        Route::get('gift', 'V1Controller@gift'); // 获取邀请信息
+        Route::post('checkIn', 'V1Controller@checkIn'); // 签到
+        Route::post('payment/purchase', 'V1Controller@purchase'); // 获取商品信息
+        Route::get('payment/getStatus', 'V1Controller@getStatus'); // 获取商品信息
+    });
 });

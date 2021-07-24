@@ -30,6 +30,9 @@
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" data-toggle="tab" href="#label" aria-controls="label" role="tab">标签</a>
                         </li>
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" data-toggle="tab" href="#category" aria-controls="category" role="tab">商品分类</a>
+                        </li>
                     </ul>
                     <div class="tab-content py-15">
                         <div class="tab-pane active" id="method" role="tabpanel">
@@ -160,6 +163,40 @@
                                                 <button type="button" class="btn btn-primary" onclick="updateLevel('{{$level->id}}')">
                                                     <i class="icon wb-edit" aria-hidden="true"></i></button>
                                                 <button type="button" class="btn btn-danger" onclick="delLevel('{{$level->id}}','{{$level->name}}')">
+                                                    <i class="icon wb-trash"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane" id="category" role="tabpanel">
+                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_category_modal">
+                                新增<i class="icon wb-plus"></i>
+                            </button>
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                                <thead class="thead-default">
+                                <tr>
+                                    <th> 名称</th>
+                                    <th> 排序</th>
+                                    <th> {{trans('common.action')}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach($categories as $category)
+                                    <tr>
+                                        <td>
+                                            <input type="text" class="form-control" name="name" id="category_name_{{$category->id}}" value="{{$category->name}}"/>
+                                        </td>
+                                        <td>
+                                            <input type="text" class="form-control" name="sort" id="category_sort_{{$category->id}}" value="{{$category->sort}}"/>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-primary" onclick="updateCategory('{{$category->id}}')">
+                                                    <i class="icon wb-edit" aria-hidden="true"></i></button>
+                                                <button type="button" class="btn btn-danger" onclick="delCategory('{{$category->id}}','{{$category->name}}')">
                                                     <i class="icon wb-trash"></i></button>
                                             </div>
                                         </td>
@@ -305,6 +342,34 @@
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
                     <button class="btn btn-primary" onclick="addLevel()">提 交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="add_category_modal" aria-hidden="true" role="dialog" tabindex="-1">
+        <div class="modal-dialog modal-simple modal-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">新增分类</h4>
+                </div>
+                <form action="#" method="post" class="modal-body">
+                    <div class="alert alert-danger" style="display: none;" id="category_msg"></div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <input type="text" class="form-control" name="name" id="add_category_name" placeholder="分类名称">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <input type="text" class="form-control" name="sort" id="add_category_sort" placeholder="分类排序">
+                        </div>
+                    </div>
+                </form>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                    <button class="btn btn-primary" onclick="addCategory()">提 交</button>
                 </div>
             </div>
         </div>
@@ -458,6 +523,111 @@
                     $.ajax({
                         method: 'DELETE',
                         url: '{{route('admin.config.level.destroy', '')}}/' + id,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                    });
+                }
+            });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.category.store')
+        // 添加分类
+        function addCategory() {
+            const name = $('#add_category_name').val();
+            const sort = $('#add_category_sort').val();
+
+            if (name.trim() === '') {
+                $('#category_msg').show().html('分类名称不能为空');
+                $('#category_name').focus();
+                return false;
+            }
+
+            if (sort.trim() === '') {
+                $('#category_msg').show().html('分类排序不能为空');
+                $('#category_sort').focus();
+                return false;
+            }
+
+            $.ajax({
+                url: '{{route('admin.config.category.store')}}',
+                method: 'POST',
+                data: {_token: '{{csrf_token()}}', name: name, sort: sort},
+                beforeSend: function() {
+                    $('#category_msg').show().html('正在添加');
+                },
+                success: function(ret) {
+                    if (ret.status === 'fail') {
+                        $('#category_msg').show().html(ret.message);
+                        return false;
+                    }
+                    $('#add_category_modal').modal('hide');
+                    window.location.reload();
+                },
+                error: function() {
+                    $('#category_msg').show().html('请求错误，请重试');
+                },
+                complete: function() {
+                    swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                },
+            });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.category.update')
+        // 更新分类
+        function updateCategory(id) {
+            $.ajax({
+                method: 'PUT',
+                url: '{{route('admin.config.category.update', '')}}/' + id,
+                data: {
+                    _token: '{{csrf_token()}}',
+                    name: $('#category_name_' + id).val(),
+                    sort: $('#category_sort_' + id).val(),
+                },
+                dataType: 'json',
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+            });
+        }
+
+        @else
+        swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+        @endcan
+
+        @can('admin.config.category.destroy')
+        // 删除分类
+        function delCategory(id, name) {
+            swal.fire({
+                title: '确定删除分类 【' + name + '】 ？',
+                icon: 'question',
+                allowEnterKey: false,
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: '{{route('admin.config.category.destroy', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
                         dataType: 'json',
                         success: function(ret) {

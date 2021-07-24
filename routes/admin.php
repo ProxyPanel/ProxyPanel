@@ -94,6 +94,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('label', 'LabelController')->only('store', 'update', 'destroy'); // 标签配置
             Route::resource('level', 'LevelController')->only('store', 'update', 'destroy'); // 等级配置
             Route::resource('ss', 'SsConfigController')->only('store', 'update', 'destroy'); // ss配置
+            Route::resource('category', 'CategoryController')->only('store', 'update', 'destroy'); // 商品分类配置
         });
 
         Route::resource('permission', 'PermissionController')->except('show');

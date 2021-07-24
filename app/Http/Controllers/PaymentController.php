@@ -26,7 +26,7 @@ use Response;
 
 class PaymentController extends Controller
 {
-    private static $method;
+    public static $method;
 
     public static function notify(Request $request): void
     {
