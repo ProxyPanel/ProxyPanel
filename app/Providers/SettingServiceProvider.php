@@ -42,7 +42,7 @@ class SettingServiceProvider extends ServiceProvider
             ->whereNotIn('name', $notifications) // 设置一般系统选项
             ->pluck('value', 'name')
             ->merge($settings->whereIn('name', $notifications)->pluck('value', 'name')->map(function ($item) {
-                return self::setChannel(json_decode($item, true)); // 设置通知相关选项
+                return self::setChannel(json_decode($item, true) ?? (is_array($item) ? $item : [$item])); // 设置通知相关选项
             }))
             ->merge(collect(['is_onlinePay' => $settings->whereIn('name', $payments)->pluck('value')->filter()->isNotEmpty()])) // 设置在线支付开关
             ->sortKeys()
