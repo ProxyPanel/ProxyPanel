@@ -29,7 +29,7 @@ class V2RayController extends BaseController
             'pem' => $cert ? $cert->pem : '',
             'v2_license' => (string) sysConfig('v2ray_license'),
             'v2_alter_id' => $node->v2_alter_id,
-            'v2_port' => $node->v2_port,
+            'v2_port' => $node->port,
             'v2_method' => $node->v2_method,
             'v2_net' => $node->v2_net,
             'v2_type' => $node->v2_type,

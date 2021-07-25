@@ -454,9 +454,11 @@ class UserController extends Controller
     {
         //$view['articleList'] = Article::type(1)->orderByDesc('sort')->latest()->limit(10)->paginate(5);
         $data = [];
-        if (Node::whereIn('type', [1, 4])->whereStatus(1)->exists()) {
+        if (Node::whereType(0)->whereStatus(1)->exists()) {
             $data[] = 'ss';
-            //array_push
+        }
+        if (Node::whereIn('type', [1, 4])->whereStatus(1)->exists()) {
+            $data[] = 'ssr';
         }
         if (Node::whereType(2)->whereStatus(1)->exists()) {
             $data[] = 'v2';

@@ -56,7 +56,10 @@
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="sublink" role="menu">
                                                                         @if(in_array('ss',$sub))
-                                                                            <a class="dropdown-item" onclick="linkManager('1')" role="menuitem">只订阅SS/SSR</a>
+                                                                            <a class="dropdown-item" onclick="linkManager('0')" role="menuitem">只订阅SS</a>
+                                                                        @endif
+                                                                        @if(in_array('ssr',$sub))
+                                                                            <a class="dropdown-item" onclick="linkManager('1')" role="menuitem">只订阅SSR (包含ss)</a>
                                                                         @endif
                                                                         @if(in_array('v2',$sub))
                                                                             <a class="dropdown-item" onclick="linkManager('2')" role="menuitem">只订阅V2Ray</a>

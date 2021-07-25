@@ -34,8 +34,6 @@ class Clash
             'cipher' => $server['method'],
             'obfs' => $server['obfs'],
             'protocol' => $server['protocol'],
-            'obfsparam' => $server['obfs_param'],
-            'protocolparam' => $server['protocol_param'],
             'obfs-param' => $server['obfs_param'],
             'protocol-param' => $server['protocol_param'],
             'udp' => $server['udp'],

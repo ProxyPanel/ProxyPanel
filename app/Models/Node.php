@@ -73,22 +73,6 @@ class Node extends Model
         return $this->hasOne(NodeAuth::class);
     }
 
-    public function ips(int $type = 4): array
-    {
-        // 使用DDNS的node先通过gethostbyname获取ip地址
-        if ($this->attributes['is_ddns']) { // When ddns is enable, only domain can be used to check the ip
-            $ip = gethostbyname($this->attributes['server']);
-            if (strcmp($ip, $this->attributes['server']) === 0) {
-                Log::warning('获取 【'.$this->attributes['server'].'】 IP失败'.$ip);
-                $ip = '';
-            }
-        } else {
-            $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6']; // check the multiple existing of ip
-        }
-
-        return array_map('trim', explode(',', $ip));
-    }
-
     public function level_table(): HasOne
     {
         return $this->hasOne(Level::class, 'level', 'level');
@@ -122,6 +106,22 @@ class Node extends Model
         return false;
     }
 
+    public function ips(int $type = 4): array
+    {
+        // 使用DDNS的node先通过gethostbyname获取ip地址
+        if ($this->attributes['is_ddns']) { // When ddns is enable, only domain can be used to check the ip
+            $ip = gethostbyname($this->attributes['server']);
+            if (strcmp($ip, $this->attributes['server']) === 0) {
+                Log::warning('获取 【'.$this->attributes['server'].'】 IP失败'.$ip);
+                $ip = '';
+            }
+        } else {
+            $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6']; // check the multiple existing of ip
+        }
+
+        return array_map('trim', explode(',', $ip));
+    }
+
     public function config(User $user)
     {
         $config = [
@@ -131,10 +131,23 @@ class Node extends Model
             'group' => sysConfig('website_name'),
         ];
         switch ($this->type) {
+            case 0:
+                $config = array_merge($config, [
+                    'type'   => 'shadowsocks',
+                    'method' => $this->method,
+                    'udp'    => $this->is_udp,
+                    'passwd' => $user->passwd,
+                ]);
+                if ($this->single) {
+                    $config['port'] = $this->is_relay ? $this->relay_port : $this->port;
+                } else {
+                    $config['port'] = $user->port;
+                }
+                break;
             case 2:
                 $config = array_merge($config, [
                     'type'        => 'v2ray',
-                    'port'        => $this->is_relay ? $this->relay_port : $this->v2_port,
+                    'port'        => $this->is_relay ? $this->relay_port : $this->port,
                     'uuid'        => $user->vmess_id,
                     'method'      => $this->v2_method,
                     'v2_alter_id' => $this->v2_alter_id,

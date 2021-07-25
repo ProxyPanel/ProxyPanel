@@ -13,6 +13,7 @@ use App\Http\Middleware\isSecurity;
 use App\Http\Middleware\Permission;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\Telegram;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -103,6 +104,7 @@ class Kernel extends HttpKernel
         'guest' => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
         'signed' => ValidateSignature::class,
+        'telegram'=>Telegram::class,
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'webApi' => WebApi::class,

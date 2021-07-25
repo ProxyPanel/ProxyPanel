@@ -2,12 +2,23 @@
 
 // 后端WEBAPI
 Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function () {
-    // VNet后端WEBAPI V1版
-    Route::group(['prefix' => 'web/v1'], function () {
-        Route::get('node/{node}', 'VNetController@getNodeInfo'); // 获取节点信息
+    // ss后端WEBAPI V1版
+    Route::group(['prefix' => 'ss/v1'], function () {
+        Route::get('node/{node}', 'SSController@getNodeInfo'); // 获取节点信息
         Route::post('nodeStatus/{node}', 'BaseController@setNodeStatus'); // 上报节点心跳信息
         Route::post('nodeOnline/{node}', 'BaseController@setNodeOnline'); // 上报节点在线人数
-        Route::get('userList/{node}', 'VNetController@getUserList'); // 获取节点可用的用户列表
+        Route::get('userList/{node}', 'SSController@getUserList'); // 获取节点可用的用户列表
+        Route::post('userTraffic/{node}', 'BaseController@setUserTraffic'); // 上报用户流量日志
+        Route::get('nodeRule/{node}', 'BaseController@getNodeRule'); // 获取节点的审计规则
+        Route::post('trigger/{node}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录
+    });
+
+    // VNet后端WEBAPI V1版
+    Route::group(['prefix' => 'web/v1'], function () {
+        Route::get('node/{node}', 'SSRController@getNodeInfo'); // 获取节点信息
+        Route::post('nodeStatus/{node}', 'BaseController@setNodeStatus'); // 上报节点心跳信息
+        Route::post('nodeOnline/{node}', 'BaseController@setNodeOnline'); // 上报节点在线人数
+        Route::get('userList/{node}', 'SSRController@getUserList'); // 获取节点可用的用户列表
         Route::post('userTraffic/{node}', 'BaseController@setUserTraffic'); // 上报用户流量日志
         Route::get('nodeRule/{node}', 'BaseController@getNodeRule'); // 获取节点的审计规则
         Route::post('trigger/{node}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录
@@ -15,10 +26,10 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function (
 
     // VNet后端WEBAPI V2版
     Route::group(['prefix' => 'vnet/v2'], function () {
-        Route::get('node/{node}', 'VNetController@getNodeInfo'); // 获取节点信息
+        Route::get('node/{node}', 'SSRController@getNodeInfo'); // 获取节点信息
         Route::post('nodeStatus/{node}', 'BaseController@setNodeStatus'); // 上报节点心跳信息
         Route::post('nodeOnline/{node}', 'BaseController@setNodeOnline'); // 上报节点在线人数
-        Route::get('userList/{node}', 'VNetController@getUserList'); // 获取节点可用的用户列表
+        Route::get('userList/{node}', 'SSRController@getUserList'); // 获取节点可用的用户列表
         Route::post('userTraffic/{node}', 'BaseController@setUserTraffic'); // 上报用户流量日志
         Route::get('nodeRule/{node}', 'BaseController@getNodeRule'); // 获取节点的审计规则
         Route::post('trigger/{node}', 'BaseController@addRuleLog'); // 上报用户触发的审计规则记录

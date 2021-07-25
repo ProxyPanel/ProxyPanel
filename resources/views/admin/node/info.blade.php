@@ -147,8 +147,14 @@
                                         <ul class="col-md-9 list-unstyled list-inline">
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="shadowsocks" name="type" value="1" checked>
-                                                    <label for="shadowsocks">Shadowsocks(R)</label>
+                                                    <input type="radio" id="shadowsocks" name="type" value="0">
+                                                    <label for="shadowsocks">Shadowsocks</label>
+                                                </div>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" id="shadowsocksR" name="type" value="1">
+                                                    <label for="shadowsocksR">ShadowsocksR</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
@@ -173,7 +179,7 @@
                                     </div>
                                     <hr/>
                                     <!-- SS/SSR 设置部分 -->
-                                    <div class="ssr-setting">
+                                    <div class="ss-setting">
                                         <div class="form-group row">
                                             <label for="method" class="col-md-3 col-form-label">加密方式</label>
                                             <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
@@ -182,38 +188,40 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="protocol" class="col-md-3 col-form-label">协议</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol" id="protocol">
-                                                @foreach (Helpers::protocolList() as $protocol)
-                                                    <option value="{{$protocol->name}}" @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="protocol_param" class="col-md-3 col-form-label"> 协议参数 </label>
-                                            <input type="text" class="form-control col-md-4" name="protocol_param" id="protocol_param">
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="obfs" class="col-md-3 col-form-label">混淆</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
-                                                @foreach (Helpers::obfsList() as $obfs)
-                                                    <option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="form-group row obfs_param">
-                                            <label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
-                                            <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
-                                                      placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="compatible" class="col-md-3 col-form-label">兼容SS</label>
-                                            <div class="col-md-9">
-                                                <input type="checkbox" id="compatible" name="compatible" data-plugin="switchery">
+                                        <div class="ssr-setting">
+                                            <div class="form-group row">
+                                                <label for="protocol" class="col-md-3 col-form-label">协议</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol" id="protocol">
+                                                    @foreach (Helpers::protocolList() as $protocol)
+                                                        <option value="{{$protocol->name}}" @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
-                                            <div class="text-help offset-md-3">
-                                                如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
+                                            <div class="form-group row">
+                                                <label for="protocol_param" class="col-md-3 col-form-label"> 协议参数 </label>
+                                                <input type="text" class="form-control col-md-4" name="protocol_param" id="protocol_param">
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="obfs" class="col-md-3 col-form-label">混淆</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
+                                                    @foreach (Helpers::obfsList() as $obfs)
+                                                        <option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group row obfs_param">
+                                                <label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
+                                                <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
+                                                          placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="compatible" class="col-md-3 col-form-label">兼容SS</label>
+                                                <div class="col-md-9">
+                                                    <input type="checkbox" id="compatible" name="compatible" data-plugin="switchery">
+                                                </div>
+                                                <div class="text-help offset-md-3">
+                                                    如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
+                                                </div>
                                             </div>
                                         </div>
                                         <hr/>
@@ -226,28 +234,28 @@
                                                 如果启用请配置服务端的<span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span>信息
                                             </div>
                                         </div>
-                                        <div class="single-setting hidden">
+                                        <div class="single-setting">
                                             <div class="form-group row">
                                                 <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
                                                 <input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
                                                 <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
                                                     严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
                                             </div>
-                                            <div class="form-group row">
+                                            <div class="form-group row ssr-setting">
                                                 <label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
                                                 <input type="text" class="form-control col-md-4" name="passwd" id="passwd" placeholder="password">
                                             </div>
                                         </div>
                                     </div>
                                     <!-- V2ray 设置部分 -->
-                                    <div class="v2ray-setting hidden">
+                                    <div class="v2ray-setting">
                                         <div class="form-group row">
                                             <label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
                                             <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" required/>
                                         </div>
                                         <div class="form-group row">
                                             <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
-                                            <input type="number" class="form-control col-md-4" name="v2_port" id="v2_port" value="10053" required/>
+                                            <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" required/>
                                         </div>
                                         <div class="form-group row">
                                             <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
@@ -319,7 +327,7 @@
                                         </div>
                                     </div>
                                     <!-- Trojan 设置部分 -->
-                                    <div class="trojan-setting hidden">
+                                    <div class="trojan-setting">
                                         <div class="form-group row">
                                             <label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
                                             <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443"/>
@@ -369,7 +377,7 @@
                                             <input type="checkbox" id="is_relay" name="is_relay" data-plugin="switchery" onchange="switchSetting('is_relay')">
                                         </div>
                                     </div>
-                                    <div class="relay-setting hidden">
+                                    <div class="relay-setting">
                                         <div class="form-group row">
                                             <label for="relay_port" class="col-md-3 col-form-label"> 中转端口 </label>
                                             <input type="number" class="form-control col-md-4" name="relay_port" id="relay_port" value="443">
@@ -403,6 +411,9 @@
         const string = "{{strtolower(Str::random())}}";
         $(document).ready(function() {
             let v2_path = $('#v2_path');
+            switchSetting('single');
+            switchSetting('is_relay');
+            switchSetting('is_ddns');
             @isset($node)
 
             @if($node->is_ddns)
@@ -439,33 +450,34 @@
             $('#passwd').val('{{$node->passwd}}');
             $("input[name='type'][value='{{$node->type}}']").click();
 
-            @if($node->type == 1 || $node->type == 4)
-            // ShadowsocksR
-            $('#method').selectpicker('val', '{{$node->method}}');
-            $('#protocol').selectpicker('val', '{{$node->protocol}}');
-            $('#protocol_param').val('{{$node->protocol_param}}');
-            $('#obfs').selectpicker('val', '{{$node->obfs}}');
-            $('#obfs_param').val('{{$node->obfs_param}}');
-            @if($node->compatible)
-            $('#compatible').click();
-            @endif
-            @endif
-
-            @if($node->type === 2)
-            //V2Ray
-            $('#v2_alter_id').val('{{$node->v2_alter_id}}');
-            $('#v2_port').val('{{$node->v2_port}}');
-            $('#v2_method').selectpicker('val', '{{$node->v2_method}}');
-            $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
-            $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
-            $('#v2_host').val('{{$node->v2_host}}');
-            $('#v2_sni').val('{{$node->v2_sni}}');
-            v2_path.val('{{$node->v2_path}}');
-            @if($node->v2_tls)
-            $('#v2_tls').click();
-            @endif
-            $('#tls_provider').val('{!! $node->tls_provider !!}');
-            @endif
+            switch ({{$node->type}}) {
+                case 1:
+                case 4:
+                    @if ($node->compatible)
+                    $('#compatible').click();
+                    @endif
+                    $('#protocol').selectpicker('val', '{{$node->protocol}}');
+                    $('#protocol_param').val('{{$node->protocol_param}}');
+                    $('#obfs').selectpicker('val', '{{$node->obfs}}');
+                    $('#obfs_param').val('{{$node->obfs_param}}');
+                case 0:
+                    $('#method').selectpicker('val', '{{$node->method}}');
+                    break;
+                case 2:
+                    //V2Ray
+                    $('#v2_alter_id').val('{{$node->v2_alter_id}}');
+                    $('#v2_method').selectpicker('val', '{{$node->v2_method}}');
+                    $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
+                    $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
+                    $('#v2_host').val('{{$node->v2_host}}');
+                    $('#v2_sni').val('{{$node->v2_sni}}');
+                    v2_path.val('{{$node->v2_path}}');
+                    @if($node->v2_tls)
+                    $('#v2_tls').click();
+                    @endif
+                    $('#tls_provider').val('{!! $node->tls_provider !!}');
+                default:
+            }
 
             @if($node->is_relay)
             // 中转
@@ -474,6 +486,7 @@
             $('#relay_server').val('{{$node->relay_server}}');
             @endif
             @else
+            $('input[name=\'type\'][value=\'0\']').click();
             $('#status').click();
             $('#is_udp').click();
             $('#is_subscribe').click();
@@ -487,12 +500,15 @@
         // ajax同步提交
         function Submit() {
             const type = $('input[name=\'type\']:checked').val();
-            let port = null;
+            let port;
             switch (type) {
-                case '2': break;
+                case '2':
+                    port = $('#v2_port').val();
+                    break;
                 case '3':
                     port = $('#trojan_port').val();
                     break;
+                case '0':
                 case '1':
                 case '4':
                 default:
@@ -534,7 +550,6 @@
                     port: port,
                     passwd: $('#passwd').val(),
                     v2_alter_id: $('#v2_alter_id').val(),
-                    v2_port: $('#v2_port').val(),
                     v2_method: $('#v2_method').val(),
                     v2_net: $('#v2_net').val(),
                     v2_type: $('#v2_type').val(),
@@ -563,13 +578,9 @@
                     let str = '';
                     const errors = data.responseJSON;
                     if ($.isEmptyObject(errors) === false) {
-                        if ($.isEmptyObject(errors.message) === false && typeof errors.message === 'string') {
-                            str += errors.message;
-                        } else {
-                            $.each(errors.errors, function(index, value) {
-                                str += '<li>' + value + '</li>';
-                            });
-                        }
+                        $.each(errors.errors, function(index, value) {
+                            str += '<li>' + value + '</li>';
+                        });
                         swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
                     }
                 },
@@ -585,8 +596,9 @@
                 case 'single':
                     if (check) {
                         $('.single-setting').show();
+                        $('#single_port').attr('required', true);
                     } else {
-                        $('#single_port').val('');
+                        $('#single_port').val('').removeAttr('required');
                         $('#passwd').val('');
                         $('.single-setting').hide();
                     }
@@ -623,24 +635,32 @@
         // 设置服务类型
         $('input:radio[name=\'type\']').on('change', function() {
             const type = parseInt($(this).val());
+            const $ss_setting = $('.ss-setting');
             const $ssr_setting = $('.ssr-setting');
             const $v2ray_setting = $('.v2ray-setting');
             const $trojan_setting = $('.trojan-setting');
             $ssr_setting.hide();
+            $ss_setting.hide();
             $v2ray_setting.hide();
             $trojan_setting.hide();
+            $('#v2_port').removeAttr('required');
+            $('#trojan_port').removeAttr('required');
             switch (type) {
-                case 1:
-                    $ssr_setting.show();
+                case 0:
+                    $ss_setting.show();
                     break;
                 case 2:
                     $v2ray_setting.show();
+                    $('#v2_port').val('').attr('required', true);
                     $('#v2_net').selectpicker('val', 'tcp');
                     break;
                 case 3:
                     $trojan_setting.show();
+                    $('#trojan_port').val('').attr('required', true);
                     break;
+                case 1:
                 case 4:
+                    $ss_setting.show();
                     $ssr_setting.show();
                     break;
                 default:
