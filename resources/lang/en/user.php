@@ -177,6 +177,10 @@ return [
         'active_prepaid_question' => 'Are you sure to active prepaid order?',
         'active_prepaid_tips'     => 'After active：<br>Current order will be set to expired! <br> Expired dates will be recalculated!',
     ],
+    'service'             => [
+        'node_count' => 'Include <code>:num</code> Nodes',
+        'unlimited'  => 'Unlimited Speed',
+    ],
     'node'                => [
         'info'     => 'Configuration information',
         'setting'  => 'Proxy settings',

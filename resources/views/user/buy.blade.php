@@ -24,7 +24,7 @@
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
                                 <br>
-                                {{trans('user.account.speed_limit')}}<strong>{{$goods->speed_limit}} MB</strong>
+                                {{trans('user.account.speed_limit')}}<strong> {{ $goods->speed_limit ? $goods->speed_limit.' Mbps' : trans('user.service.unlimited') }} </strong>
                             </td>
                             <td class="text-middle"> ¥{{$goods->price}} </td>
                             <td class="text-middle"> x 1</td>

@@ -161,6 +161,10 @@ return [
         'conflict_tips' => '<p>当前购买套餐将自动设置为 <code>预支付套餐</code><p><ol class="text-left"><li> 预支付套餐会在生效中的套餐失效后自动开通！</li><li> 您可以在支付后手动激活套餐！</li></ol>',
         'call4help'     => '请开工单通知客服',
     ],
+    'service'             => [
+        'node_count' => '<code>:num</code>条优质线路',
+        'unlimited'  => '不限速',
+    ],
     'payment'             => [
         'error'           => '充值余额不合规',
         'creating'        => '创建支付单中...',
