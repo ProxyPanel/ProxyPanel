@@ -16,7 +16,7 @@ class Telegram
      */
     public function handle($request, Closure $next)
     {
-        if (hash_equals(sysConfig('telegram_token'), $request->input('access_token'))) {
+        if (sysConfig('telegram_token') && hash_equals(sysConfig('telegram_token'), $request->input('access_token'))) {
             abort(500, 'authentication failed');
         }
 
