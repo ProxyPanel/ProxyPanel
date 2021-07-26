@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Config;
 
 use App\Http\Controllers\Controller;
 use App\Models\GoodsCategory;
-use App\Models\Level;
 use Exception;
 use Illuminate\Http\Request;
 use Log;
@@ -16,9 +15,7 @@ class CategoryController extends Controller
     // 添加等级
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-        ]);
+        $validator = Validator::make($request->all(), ['name' => 'required']);
 
         if ($validator->fails()) {
             return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);

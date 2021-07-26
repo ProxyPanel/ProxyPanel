@@ -9,14 +9,14 @@ use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\GoodsCategory;
 use App\Models\Order;
-use App\Models\Payback;
-use App\Models\Payment;
 use App\Models\ReferralLog;
 use App\Models\User;
+use Exception;
 use Hashids\Hashids;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Log;
 use Validator;
 
 class V1Controller extends Controller
@@ -27,6 +27,29 @@ class V1Controller extends Controller
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'shop', 'config', 'getConfig']]);
         auth()->shouldUse('api');
+    }
+
+    /**
+     * @param  Request  $request
+     * @return JsonResponse
+     */
+    public static function getStatus(Request $request): JsonResponse
+    {
+        $order_id = $request->input('order_id');
+        $payment = Order::query()->find($order_id)->payment;
+        if ($payment) {
+            if ($payment->status === 1) {
+                return response()->json(['ret' => 1, 'msg' => '支付成功']);
+            }
+
+            if ($payment->status === -1) {
+                return response()->json(['ret' => 0, 'msg' => '订单超时未支付，已自动关闭']);
+            }
+
+            return response()->json(['ret' => 0, 'msg' => '等待支付']);
+        }
+
+        return response()->json(['ret' => 0, 'msg' => '未知订单']);
     }
 
     public function login(Request $request)
@@ -40,7 +63,7 @@ class V1Controller extends Controller
             return response()->json(['ret' => 0, 'msg' => $validator->errors()->all()], 422);
         }
 
-        if ($token = auth('api')->attempt($validator->validated())) {
+        if ($token = auth()->attempt($validator->validated())) {
             return $this->createNewToken($token);
         }
 
@@ -50,12 +73,12 @@ class V1Controller extends Controller
     protected function createNewToken($token)
     {
         return response()->json([
-            'ret' => 1,
+            'ret'  => 1,
             'data' => [
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60,
-                'user' => auth('api')->user()->profile(),
+                'token_type'   => 'bearer',
+                'expires_in'   => auth()->factory()->getTTL() * 60,
+                'user'         => auth()->user()->profile(),
             ],
         ]);
     }
@@ -63,7 +86,7 @@ class V1Controller extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
+            'name'     => 'required|string|between:2,100',
             'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|max:100|unique:user,username',
             'password' => 'required|string|confirmed|min:6',
         ]);
@@ -82,19 +105,19 @@ class V1Controller extends Controller
 
     public function logout()
     {
-        auth('api')->logout();
+        auth()->logout();
 
         return response()->json(['ret' => 1]);
     }
 
     public function refresh()
     {
-        return $this->createNewToken(auth('api')->refresh());
+        return $this->createNewToken(auth()->refresh());
     }
 
     public function userProfile()
     {
-        $user = auth('api')->user();
+        $user = auth()->user();
         $userInfo = $user->profile();
         $userInfo['subUrl'] = $user->subUrl();
         $totalTransfer = $user->transfer_enable;
@@ -107,7 +130,7 @@ class V1Controller extends Controller
 
     public function nodeList(int $id = null)
     {
-        $user = auth('api')->user();
+        $user = auth()->user();
         $nodes = $user->nodes()->get();
 
         return response()->json(['ret' => 1, 'data' => $nodes]);
@@ -119,9 +142,8 @@ class V1Controller extends Controller
             'keys' => [],
             'data' => [],
         ];
-        $shop_plan = GoodsCategory::query()->where('status', 1)->get();
-        foreach ($shop_plan as $item) {
-            array_push($shops['keys'], $item['name']);
+        foreach (GoodsCategory::query()->whereStatus(1)->get() as $item) {
+            $shops['keys'][] = $item['name'];
             $shops['data'][$item['name']] = $item->goods()->get()->append('traffic_label')->toArray();
         }
 
@@ -141,7 +163,6 @@ class V1Controller extends Controller
         return response()->json(['ret' => 1, 'data' => $config]);
     }
 
-    // 创建支付订单
     public function purchase(Request $request)
     {
         $goods_id = $request->input('goods_id');
@@ -221,14 +242,14 @@ class V1Controller extends Controller
         // 生成订单
         try {
             $newOrder = Order::create([
-                'sn' => date('ymdHis').random_int(100000, 999999),
-                'user_id' => auth()->id(),
-                'goods_id' => $credit ? null : $goods_id,
-                'coupon_id' => $coupon->id ?? null,
-                'origin_amount' => $credit ?: $goods->price ?? 0,
-                'amount' => $amount,
-                'pay_type' => $pay_type,
-                'pay_way' => self::$method,
+                'sn'            => date('ymdHis').random_int(100000, 999999),
+                'user_id'       => auth()->id(),
+                'goods_id'      => $credit ? null : $goods_id,
+                'coupon_id'     => $coupon->id ?? null,
+                'origin_amount' => $credit ?: ($goods->price ?? 0),
+                'amount'        => $amount,
+                'pay_type'      => $pay_type,
+                'pay_way'       => self::$method,
             ]);
 
             // 使用优惠券，减少可使用次数
@@ -255,29 +276,6 @@ class V1Controller extends Controller
         return response()->json(['ret' => 0, 'msg' => '订单创建失败']);
     }
 
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public static function getStatus(Request $request): JsonResponse
-    {
-        $order_id = $request->input('order_id');
-        $payment = Order::query()->find($order_id)->payment;
-        if ($payment) {
-            if ($payment->status === 1) {
-                return response()->json(['ret' => 1, 'msg' => '支付成功']);
-            }
-
-            if ($payment->status === -1) {
-                return response()->json(['ret' => 0, 'msg' => '订单超时未支付，已自动关闭']);
-            }
-
-            return response()->json(['ret' => 0, 'msg' => '等待支付']);
-        }
-
-        return response()->json(['ret' => 0, 'msg' => '未知订单']);
-    }
-
     public function gift(Request $request)
     {
         $user = $request->user('api');
@@ -287,7 +285,7 @@ class V1Controller extends Controller
         $code = $user->invites()->whereStatus(1)->value('code');
 
         $data['invite_gift'] = trans('user.invite.promotion', [
-            'traffic' => $referral_traffic,
+            'traffic'          => $referral_traffic,
             'referral_percent' => $referral_percent * 100,
         ]);
         $affSalt = sysConfig('aff_salt');
