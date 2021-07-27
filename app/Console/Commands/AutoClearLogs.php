@@ -72,7 +72,7 @@ class AutoClearLogs extends Command
             UserBanedLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_baned_logs'))))->delete();
 
             // 清除用户各节点 / 节点总计的每天流量数据日志
-            UserDailyDataFlow::where('node_id', '<>')
+            UserDailyDataFlow::where('node_id', '<>', null)
                 ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_nodes'))))
                 ->orWhere('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_total'))))
                 ->delete();

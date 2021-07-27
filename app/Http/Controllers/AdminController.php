@@ -35,7 +35,7 @@ class AdminController extends Controller
             'todayRegister' => User::whereDate('created_at', date('Y-m-d'))->count(), // 今日注册用户
             'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
             'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数,
-            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
+            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
             'unActiveUserCount' => User::whereEnable(1)->whereBetween('t', [1, $past])->count(), // 不活跃用户数
             'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
             'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))])->count(), // 临近过期用户数

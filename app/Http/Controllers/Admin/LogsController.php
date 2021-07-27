@@ -43,9 +43,9 @@ class LogsController extends Controller
 
         $request->whenFilled('is_coupon', function ($value) use ($query) {
             if ($value) {
-                $query->where('coupon_id', '<>');
+                $query->where('coupon_id', '<>', null);
             } else {
-                $query->where('coupon_id');
+                $query->where('coupon_id', 'null');
             }
         });
 
