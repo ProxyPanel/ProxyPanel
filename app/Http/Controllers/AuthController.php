@@ -401,9 +401,7 @@ class AuthController extends Controller
     {
         if ($request->isMethod('POST')) {
             // 校验请求
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email|exists:user,email',
-            ]);
+            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
 
             if ($validator->fails()) {
                 return Redirect::back()->withInput()->withErrors($validator->errors());
@@ -509,7 +507,7 @@ class AuthController extends Controller
     public function activeUser(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $validator = Validator::make($request->all(), ['email' => 'required|email|exists:user,email']);
+            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
 
             if ($validator->fails()) {
                 return Redirect::back()->withInput()->withErrors($validator->errors());
