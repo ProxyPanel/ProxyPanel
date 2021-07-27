@@ -14,10 +14,7 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $subscribe = new UserSubscribe();
-        $subscribe->user_id = $user->id;
-        $subscribe->code = Helpers::makeSubscribeCode();
-        $subscribe->save();
+        $user->subscribe()->create(['code' => Helpers::makeSubscribeCode()]);
 
         $allowNodes = $user->nodes()->whereType(4)->get()->pluck('id');
         if ($allowNodes) {

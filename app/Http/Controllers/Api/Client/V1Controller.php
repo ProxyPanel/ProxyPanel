@@ -10,7 +10,6 @@ use App\Models\Goods;
 use App\Models\GoodsCategory;
 use App\Models\Order;
 use App\Models\ReferralLog;
-use App\Models\User;
 use Exception;
 use Hashids\Hashids;
 use Illuminate\Http\JsonResponse;
@@ -86,7 +85,7 @@ class V1Controller extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'     => 'required|string|between:2,100',
+            'nickname' => 'required|string|between:2,100',
             'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|max:100|unique:user,username',
             'password' => 'required|string|confirmed|min:6',
         ]);
@@ -94,11 +93,10 @@ class V1Controller extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors()->all(), 400);
         }
+        $data = $validator->validated();
 
-        $user = User::create(array_merge(
-            $validator->validated(),
-            ['password' => $request->password]
-        ));
+        // 创建新用户
+        $user = Helpers::addUser($data['username'], $data['password'], (int) sysConfig('default_traffic'), sysConfig('default_days'), null, $data['nickname']);
 
         return response()->json(['ret' => 1, 'user' => $user], 201);
     }
@@ -172,14 +170,12 @@ class V1Controller extends Controller
         $pay_type = $request->input('pay_type');
         $amount = 0;
 
-        // 充值余额
-        if ($credit) {
+        if ($credit) { // 充值余额
             if (! is_numeric($credit) || $credit <= 0) {
                 return response()->json(['ret' => 0, 'msg' => trans('user.payment.error')]);
             }
             $amount = $credit;
-        // 购买服务
-        } elseif ($goods_id && self::$method) {
+        } elseif ($goods_id && self::$method) { // 购买服务
             $goods = Goods::find($goods_id);
             if (! $goods || ! $goods->status) {
                 return response()->json(['ret' => 0, 'msg' => '订单创建失败：商品已下架']);
