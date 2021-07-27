@@ -400,30 +400,35 @@ class UserController extends Controller
 
         $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
         if (! $coupon) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.unknown').trans('user.coupon.attribute')]);
+            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
         }
 
         if ($coupon->status === 1) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.attribute').trans('user.status.used')]);
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.used')]);
         }
-
-        if ($coupon->status === 2) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.attribute').trans('user.status.expired')]);
-        }
-
         if ($coupon->getRawOriginal('end_time') < time()) {
             $coupon->status = 2;
             $coupon->save();
 
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.attribute').trans('user.status.expired')]);
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
+        }
+
+        if ($coupon->status === 2) {
+            if ($coupon->usable_times === 0) {
+                return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.run_out')]);
+            }
+
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
         }
 
         if ($coupon->start_time > date('Y-m-d H:i:s')) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.coupon.inactive'), 'message' => trans('user.coupon.wait_active', ['time' => $coupon->start_time])]);
+            return Response::json(['status'  => 'fail', 'title' => trans('user.coupon.error.inactive'),
+                'message' => trans('user.coupon.error.wait', ['time' => $coupon->start_time]),
+            ]);
         }
 
         if ($good_price < $coupon->rule) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.coupon.limit'), 'message' => trans('user.coupon.higher', ['amount' => $coupon->rule])]);
+            return Response::json(['status' => 'fail', 'title' => trans('user.coupon.error.limit'), 'message' => trans('user.coupon.error.higher', ['amount' => $coupon->rule])]);
         }
 
         $data = [
