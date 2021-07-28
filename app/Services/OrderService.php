@@ -34,7 +34,7 @@ class OrderService
             self::$payment->complete();
 
             // 余额充值
-            if (self::$order->goods_id === 0 || self::$order->goods_id === null) {
+            if (self::$order->goods_id === null) {
                 return $this->chargeCredit();
             }
         }

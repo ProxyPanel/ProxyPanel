@@ -118,7 +118,7 @@ class Order extends Model
                 $status_label = '<span class="badge badge-info">'.trans('user.status.waiting_confirm').'</span>';
                 break;
             case 2:
-                if ($this->attributes['goods_id'] === 0) {
+                if ($this->attributes['goods_id'] === null) {
                     $status_label = '<span class="badge badge-default">'.trans('user.status.completed').'</span>';
                 } elseif ($this->attributes['is_expire']) {
                     $status_label = '<span class="badge badge-default">'.trans('user.status.expired').'</span>';

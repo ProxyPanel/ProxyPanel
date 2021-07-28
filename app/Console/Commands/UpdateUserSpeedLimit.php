@@ -15,7 +15,7 @@ class UpdateUserSpeedLimit extends Command
     {
         $jobStartTime = microtime(true);
 
-        foreach (Order::whereStatus(2)->whereIsExpire(0)->where('goods_id', '>', '0')->oldest()->with(['user', 'goods'])->has('goods')->has('user')->get() as $order) {
+        foreach (Order::whereStatus(2)->whereIsExpire(0)->where('goods_id', '<>', null)->oldest()->with(['user', 'goods'])->has('goods')->has('user')->get() as $order) {
             $order->user->update(['speed_limit' => $order->goods->speed_limit]);
         }
 
