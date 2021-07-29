@@ -197,7 +197,7 @@
                 @canany(['admin.node.index', 'admin.node.auth.index', 'admin.node.cert.index'])
                     <li class="site-menu-item has-sub {{request()->routeIs('admin.node.*') ? 'active open' : ''}}">
                         <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
+                            <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
                             <span class="site-menu-title">线路系统</span>
                         </a>
                         <ul class="site-menu-sub">
@@ -327,6 +327,23 @@
                                 <li class="site-menu-item {{request()->routeIs('admin.aff.rebate') ? 'active open' : ''}}">
                                     <a href="{{route('admin.aff.rebate')}}">
                                         <span class="site-menu-title">返利流水</span>
+                                    </a>
+                                </li>
+                            @endcan
+                        </ul>
+                    </li>
+                @endcanany
+                @canany(['admin.report.accounting'])
+                    <li class="site-menu-item has-sub {{request()->routeIs('admin.report.*') ? 'active open' : ''}}">
+                        <a href="javascript:void(0)">
+                            <i class="site-menu-icon wb-stats-bars" aria-hidden="true"></i>
+                            <span class="site-menu-title">分析报告</span>
+                        </a>
+                        <ul class="site-menu-sub">
+                            @can('admin.report.accounting')
+                                <li class="site-menu-item {{request()->routeIs('admin.report.accounting') ? 'active open' : ''}}">
+                                    <a href="{{route('admin.report.accounting')}}">
+                                        <span class="site-menu-title">流水账簿</span>
                                     </a>
                                 </li>
                             @endcan

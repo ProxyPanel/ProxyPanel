@@ -68,6 +68,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::get('order', 'LogsController@orderList')->name('order'); // 订单列表
+        Route::prefix('report')->name('report.')->group(function () {
+            Route::get('accounting', 'ReportController@accounting')->name('accounting'); // 流水账簿
+        });
         Route::prefix('log')->name('log.')->group(function () {
             Route::get('traffic', 'LogsController@trafficLog')->name('traffic'); // 流量日志
             Route::get('userCredit', 'LogsController@userCreditLogList')->name('credit'); // 余额变动记录
