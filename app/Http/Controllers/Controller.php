@@ -161,10 +161,10 @@ class Controller extends BaseController
         $dailyData[date('j', strtotime(now())) - 1] = round((array_sum($hourlyFlow) + $currentFlow) / GB, 3);
 
         return [
-            'trafficDaily' => json_encode($dailyData),
-            'trafficHourly' => json_encode($hourlyData),
-            'monthDays' => json_encode(range(1, date('j'))), // 本月天数
-            'dayHours' => json_encode(range(0, date('G') + 1)), // 本日小时
+            'trafficDaily' => $dailyData,
+            'trafficHourly' => $hourlyData,
+            'monthDays' => range(1, date('j')), // 本月天数
+            'dayHours' => range(0, date('G') + 1), // 本日小时
         ];
     }
 }

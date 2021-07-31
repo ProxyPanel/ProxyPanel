@@ -93,7 +93,7 @@
                         <span class="font-weight-400">{{trans('user.account.time')}}</span>
                         <div class="content-text text-center mb-0">
                             @if($remainDays !== -1)
-                                <span class="font-size-40 font-weight-100">{{$remainDays.' '.trans('validation.attributes.day')}}</span>
+                                <span class="font-size-40 font-weight-100">{{$remainDays.' '.trans_choice('validation.attributes.day', 1)}}</span>
                                 <p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
                             @else
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.expired')}}</span>
@@ -249,7 +249,7 @@
                                     <ul class="nav nav-pills" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" data-toggle="tab" href="#daily" aria-controls="daily" role="tab" aria-expanded="true"
-                                               aria-selected="false">{{trans('validation.attributes.day')}}</a>
+                                               aria-selected="false">{{trans_choice('validation.attributes.day', 1)}}</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#monthly" aria-controls="monthly" role="tab"
@@ -280,7 +280,7 @@
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
-    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
@@ -367,104 +367,74 @@
             });
         }
 
-        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$dayHours}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficHourly}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
+        function common_options(tail) {
+            return {
                 responsive: true,
                 scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('validation.attributes.hour')}}',
+                    x: {
+                        ticks: {
+                            callback: function(value) {
+                                return this.getLabelForValue(value) + tail;
                             },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function(tick) {
-                                    return tick.toString() + ' GB';
-                                },
+                        },
+                        grid: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return this.getLabelForValue(value) + ' GB';
                             },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('user.traffic_logs.24hours')}}',
-                            },
-                        }],
+                        },
+                        grid: {
+                            display: false,
+                        },
+                        min: 0,
+                    },
+
                 },
-            },
+                plugins: {
+                    legend: false,
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label + tail;
+                            },
+                            label: function(context) {
+                                return context.parsed.y + ' GB';
+                            },
+                        },
+                    },
+                },
+            };
+        }
+
+        function datasets(label, data) {
+            return {
+                labels: label,
+                datasets: [
+                    {
+                        backgroundColor: 'rgba(184, 215, 255)',
+                        borderColor: 'rgba(184, 215, 255)',
+                        data: data,
+                        tension: 0.4,
+                    }],
+            };
+        }
+
+        new Chart(document.getElementById('dailyChart'), {
+            type: 'line',
+            data: datasets(@json($dayHours), @json($trafficHourly)),
+            options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
         });
 
-        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+        new Chart(document.getElementById('monthlyChart'), {
             type: 'line',
-            data: {
-                labels: {{$monthDays}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficDaily}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('validation.attributes.day')}}',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function(tick) {
-                                    return tick.toString() + ' GB';
-                                },
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('user.traffic_logs.30days')}}',
-                            },
-                        }],
-                },
-            },
+            data: datasets(@json($monthDays), @json($trafficDaily)),
+            options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
         });
 
         @if($banedTime)
@@ -475,7 +445,7 @@
             const hours = Math.floor(distance % 86400000 / 3600000);
             const minutes = Math.floor((distance % 3600000) / 60000);
             const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById('countdown').innerHTML = hours + '{{trans('validation.attributes.hour')}} ' + minutes
+            document.getElementById('countdown').innerHTML = hours + '{{trans_choice('validation.attributes.hour', 1)}} ' + minutes
                 + '{{trans('validation.attributes.minute')}} ' + seconds + '{{trans('validation.attributes.second')}}';
             if (distance <= 0) {
                 clearInterval(x);

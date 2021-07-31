@@ -45,7 +45,7 @@
                             <td>
                                 @if($order->goods)
                                     {{trans('common.available_date')}}
-                                    <code>{{$order->goods->days}}</code> {{trans('validation.attributes.day')}}
+                                    <code>{{$order->goods->days}}</code> {{trans_choice('validation.attributes.day', 1)}}
                                     <br/>
                                     @if($order->goods->type === 2)
                                         <code>{{$order->goods->traffic_label}}</code>
@@ -54,7 +54,7 @@
                                         <code>{{$order->goods->traffic_label}}</code>
                                         {{trans('user.attribute.data')}}/
                                         <code>{{$order->goods->days}}</code>
-                                        {{trans('validation.attributes.day')}}
+                                        {{trans_choice('validation.attributes.day', 1)}}
                                     @endif
                                 @else
                                     {{trans('user.recharge_credit')}}

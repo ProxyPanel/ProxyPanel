@@ -1,29 +1,4 @@
 @extends('admin.layouts')
-@section('css')
-    <link rel="stylesheet" href="/assets/global/vendor/chartist/chartist.min.css">
-    <style>
-        #widgetLinearea .ct-label.ct-vertical, #widgetLinearea .ct-label.ct-horizontal {
-            font-size: 14px;
-        }
-
-        #widgetLinearea .ct-area {
-            fill-opacity: 1;
-        }
-
-        #widgetLinearea .ct-series.ct-series-a .ct-area {
-            fill: #b8d7ff;
-        }
-
-        #widgetLinearea .ct-series.ct-series-b .ct-area {
-            fill: #92f0e6;
-        }
-
-        #widgetLinearea ul .icon {
-            vertical-align: text-bottom;
-        }
-
-    </style>
-@endsection
 @section('content')
     <div class="page-content container" id="widgetLinearea">
         <div class="card card-shadow">
@@ -33,15 +8,7 @@
                         <div class="blue-grey-700 font-size-26 font-weight-500">月流水账簿</div>
                     </div>
                 </div>
-                <div class="days mb-30" style="height:270px;"></div>
-                <ul class="list-inline text-center mb-0">
-                    <li class="list-inline-item">
-                        <i class="icon wb-large-point blue-200 mr-10" aria-hidden="true"></i> 本月
-                    </li>
-                    <li class="list-inline-item ml-35">
-                        <i class="icon wb-large-point teal-200 mr-10" aria-hidden="true"></i> 上月
-                    </li>
-                </ul>
+                <canvas id="days"></canvas>
             </div>
         </div>
         <div class="card card-shadow">
@@ -51,15 +18,7 @@
                         <div class="blue-grey-700 font-size-26 font-weight-500">年流水账簿</div>
                     </div>
                 </div>
-                <div class="month mb-30" style="height:270px;"></div>
-                <ul class="list-inline text-center mb-0">
-                    <li class="list-inline-item">
-                        <i class="icon wb-large-point blue-200 mr-10" aria-hidden="true"></i> 今年
-                    </li>
-                    <li class="list-inline-item ml-35">
-                        <i class="icon wb-large-point teal-200 mr-10" aria-hidden="true"></i> 去年
-                    </li>
-                </ul>
+                <canvas id="months"></canvas>
             </div>
         </div>
         <div class="card card-shadow">
@@ -69,71 +28,116 @@
                         <div class="blue-grey-700 font-size-26 font-weight-500">历史流水账簿</div>
                     </div>
                 </div>
-                <div class="year mb-30" style="height:270px;"></div>
+                <canvas id="years"></canvas>
             </div>
         </div>
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chartist/chartist.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
     <script type="text/javascript">
-        new Chartist.Line('#widgetLinearea .days', {
-            labels: @json($data['days']),
-            series: [@json($data['currentMonth']), @json($data['lastMonth'])],
-        }, {
-            low: 0,
-            showArea: true,
-            showPoint: false,
-            showLine: false,
-            fullWidth: true,
-            chartPadding: {top: 0, right: 10, bottom: 0, left: 20},
-            axisX: {
-                showGrid: false,
-                labelOffset: {x: -14, y: 0},
+        function label_callbacks(tail) {
+            return {
+                mode: 'index',
+                intersect: false,
+                callbacks: {
+                    title: function(context) {
+                        return context[0].label + tail;
+                    },
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+
+                        if (label) {
+                            label += ': ';
+                        }
+                        if (context.parsed.y !== null) {
+                            label += new Intl.NumberFormat('ch-CN', {style: 'currency', currency: 'CNY'}).format(context.parsed.y);
+                        }
+                        return label;
+                    },
+                },
+            };
+        }
+
+        const common_options = {
+            plugins: {
+                responsive: true,
+                legend: {
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: {size: 14},
+                    },
+                },
+                tooltip: label_callbacks(' 月'),
             },
-            axisY: {
-                labelOffset: {x: -10, y: 0},
-                labelInterpolationFnc: function labelInterpolationFnc(num) {return num % 1 === 0 ? num : false;},
+        };
+
+        function area_a(label, data) {
+            return {
+                label: label,
+                backgroundColor: 'rgba(184, 215, 255)',
+                borderColor: 'rgba(184, 215, 255)',
+                data: data,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(184, 215, 255, 0.5)',
+                },
+                tension: 0.4,
+            };
+        }
+
+        function area_b(label, data) {
+            return {
+                label: label,
+                backgroundColor: 'rgba(146, 240, 230)',
+                borderColor: 'rgba(146, 240, 230)',
+                data: data,
+                fill: {
+                    target: 'origin',
+                    above: 'rgba(146, 240, 230, 0.5)',
+                },
+                tension: 0.4,
+            };
+        }
+
+        new Chart(document.getElementById('days'), {
+            type: 'line',
+            data: {
+                labels: @json($data['days']),
+                datasets: [area_a(' 本 月 ',@json($data['currentYear'])), area_b(' 上 月 ',@json($data['lastMonth']))],
             },
+            options: common_options,
         });
 
-        new Chartist.Line('#widgetLinearea .month', {
-            labels: @json($data['years']),
-            series: [@json($data['currentYear']), @json($data['lastYear'])],
-        }, {
-            low: 0,
-            showArea: true,
-            showPoint: false,
-            showLine: false,
-            fullWidth: true,
-            chartPadding: {top: 0, right: 10, bottom: 0, left: 20},
-            axisX: {
-                showGrid: false,
-                labelOffset: {x: -14, y: 0},
+        new Chart(document.getElementById('months'), {
+            type: 'line',
+            data: {
+                labels: @json($data['years']),
+                datasets: [area_a(' 今 年 ',@json($data['currentYear'])), area_b(' 去 年 ',@json($data['lastYear']))],
             },
-            axisY: {
-                labelOffset: {x: -10, y: 0},
-                labelInterpolationFnc: function labelInterpolationFnc(num) {return num % 1 === 0 ? num : false;},
-            },
+            options: common_options,
         });
 
-        new Chartist.Line('#widgetLinearea .year', {
-            labels: @json(array_keys($data['ordersByYear'])),
-            series: [@json(array_values($data['ordersByYear']))],
-        }, {
-            low: 0,
-            showArea: true,
-            showPoint: false,
-            showLine: false,
-            fullWidth: true,
-            chartPadding: {top: 0, right: 20, bottom: 0, left: 20},
-            axisX: {
-                showGrid: false,
-                labelOffset: {x: -14, y: 0},
+        new Chart(document.getElementById('years'), {
+            type: 'line',
+            data: {
+                labels: @json(array_keys($data['ordersByYear'])),
+                datasets: [
+                    {
+                        backgroundColor: 'rgba(184, 215, 255)',
+                        borderColor: 'rgba(184, 215, 255)',
+                        data: @json(array_values($data['ordersByYear'])),
+                        fill: {target: 'origin'},
+                        tension: 0.4,
+                    }],
             },
-            axisY: {
-                labelOffset: {x: -10, y: 0},
-                labelInterpolationFnc: function labelInterpolationFnc(num) {return num % 1 === 0 ? num : false;},
+            options: {
+                plugins: {
+                    legend: false,
+                    tooltip: label_callbacks(' 年'),
+                },
             },
         });
     </script>

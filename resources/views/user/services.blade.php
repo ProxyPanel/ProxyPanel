@@ -64,7 +64,7 @@
                                                 <span class="pricing-currency">¥</span>
                                                 <span class="pricing-amount">{{$goods->price}}</span>
                                                 @if($goods->type === 2)
-                                                    <span class="pricing-period">/ {{$goods->days.trans('validation.attributes.day')}}</span>
+                                                    <span class="pricing-period">/ {{$goods->days.trans_choice('validation.attributes.day', 1)}}</span>
                                                 @endif
                                             </div>
                                             @if($goods->info)
@@ -74,7 +74,7 @@
                                         <ul class="pricing-features">
                                             <li>
                                                 <strong>{{$goods->traffic_label}}</strong>{{trans('user.attribute.data')}}
-                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans('validation.attributes.day'):'/'.trans('validation.attributes.month')!!}
+                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans_choice('validation.attributes.day', 1):'/'.trans('validation.attributes.month')!!}
                                             </li>
                                             <li>
                                                 {!!trans('user.service.node_count', ['num' => Auth::user()->nodes()->where('level', '<=', $goods->level)->count()])!!}

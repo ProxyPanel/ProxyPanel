@@ -20,7 +20,7 @@
                         <tr>
                             <td class="text-middle">{{$goods->name}} </td>
                             <td>{{trans('common.available_date')}}
-                                <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans('validation.attributes.day')}}</strong>
+                                <strong>{{$goods->type === 1? $dataPlusDays:$goods->days}} {{trans_choice('validation.attributes.day', 1)}}</strong>
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
                                 <br>
