@@ -10,13 +10,13 @@ class ReportController extends Controller
     public function accounting()
     {
         $orders = Order::where('status', '>=', 2)->whereHas('goods')->latest()->get(['created_at', 'amount']);
-        $ordersByDay = $orders->groupBy(function ($item) {
+        $ordersByDay = $orders->where('created_at', '>=', date('Y-m-01', strtotime('-1 months')))->groupBy(function ($item) {
             return $item->created_at->format('Y-m-d');
         })->map(function ($row) {
             return $row->sum('amount');
         })->toArray();
 
-        $ordersByMonth = $orders->groupBy(function ($item) {
+        $ordersByMonth = $orders->where('created_at', '>=', date('Y-01-01', strtotime('-1 years')))->groupBy(function ($item) {
             return $item->created_at->format('Y-m');
         })->map(function ($row) {
             return $row->sum('amount');
@@ -36,9 +36,11 @@ class ReportController extends Controller
         for ($i = 1; $i <= $currentDays; $i++) {
             $data['currentMonth'][] = $ordersByDay[date(sprintf('Y-m-%02u', $i))] ?? 0;
         }
+
         for ($i = 1; $i <= $lastDays; $i++) {
             $data['lastMonth'][] = $ordersByDay[date(sprintf('Y-m-%02u', $i), strtotime('-1 months'))] ?? 0;
         }
+
         for ($i = 1; $i <= date('m'); $i++) {
             $data['currentYear'][] = $ordersByMonth[date(sprintf('Y-%02u', $i))] ?? 0;
         }

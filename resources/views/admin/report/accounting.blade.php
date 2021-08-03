@@ -1,6 +1,6 @@
 @extends('admin.layouts')
 @section('content')
-    <div class="page-content container" id="widgetLinearea">
+    <div class="page-content container">
         <div class="card card-shadow">
             <div class="card-block p-30">
                 <div class="row pb-20">
@@ -59,20 +59,35 @@
             };
         }
 
-        const common_options = {
-            plugins: {
+        function common_options(label) {
+            return {
                 responsive: true,
-                legend: {
-                    labels: {
-                        padding: 20,
-                        usePointStyle: true,
-                        pointStyle: 'circle',
-                        font: {size: 14},
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        grid: {
+                            display: false,
+                        },
+                        min: 0,
                     },
                 },
-                tooltip: label_callbacks(' 月'),
-            },
-        };
+                plugins: {
+                    legend: {
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {size: 14},
+                        },
+                    },
+                    tooltip: label_callbacks(label),
+                },
+            };
+        }
 
         function area_a(label, data) {
             return {
@@ -106,9 +121,9 @@
             type: 'line',
             data: {
                 labels: @json($data['days']),
-                datasets: [area_a(' 本 月 ',@json($data['currentYear'])), area_b(' 上 月 ',@json($data['lastMonth']))],
+                datasets: [area_a(' 本 月 ',@json($data['currentMonth'])), area_b(' 上 月 ',@json($data['lastMonth']))],
             },
-            options: common_options,
+            options: common_options(' 日'),
         });
 
         new Chart(document.getElementById('months'), {
@@ -117,7 +132,7 @@
                 labels: @json($data['years']),
                 datasets: [area_a(' 今 年 ',@json($data['currentYear'])), area_b(' 去 年 ',@json($data['lastYear']))],
             },
-            options: common_options,
+            options: common_options(' 月'),
         });
 
         new Chart(document.getElementById('years'), {
@@ -134,6 +149,20 @@
                     }],
             },
             options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        grid: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        grid: {
+                            display: false,
+                        },
+                        min: 0,
+                    },
+                },
                 plugins: {
                     legend: false,
                     tooltip: label_callbacks(' 年'),
