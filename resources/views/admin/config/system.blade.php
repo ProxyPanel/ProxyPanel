@@ -396,7 +396,7 @@
     <script>
         $(document).ready(function() {
             $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-            $('#username_type').selectpicker('val', '{{$username_type}}');
+            $('#username_type').selectpicker('val', '{{$username_type ?? 'email'}}');
             $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
             $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
             $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');

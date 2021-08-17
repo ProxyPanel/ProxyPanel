@@ -470,6 +470,7 @@
                     $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
                     $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
                     $('#v2_host').val('{{$node->v2_host}}');
+                    $('#v2_port').val('{{$node->port}}');
                     $('#v2_sni').val('{{$node->v2_sni}}');
                     v2_path.val('{{$node->v2_path}}');
                     @if($node->v2_tls)
