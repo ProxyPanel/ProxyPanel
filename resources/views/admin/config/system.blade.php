@@ -414,7 +414,7 @@
             $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
             $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
             $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
-            $('#password_reset_notification').selectpicker('val', {!! $password_reset_notification !!});
+            $('#password_reset_notification').selectpicker('val', '{{$password_reset_notification}}');
             $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
             $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
             $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
