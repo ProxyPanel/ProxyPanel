@@ -477,6 +477,10 @@
                     $('#v2_tls').click();
                     @endif
                     $('#tls_provider').val('{!! $node->tls_provider !!}');
+                    break;
+                case 3:
+                    $('#trojan_port').val('{{$node->port}}');
+                    break;
                 default:
             }
 

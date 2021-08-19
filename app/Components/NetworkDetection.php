@@ -130,7 +130,7 @@ class NetworkDetection
             }
 
             if (! $message['success']) {
-                if ($message['error'] && $message['error'] === 'execute timeout (3s)') {
+                if (isset($message['error']) && $message['error'] === 'execute timeout (3s)') {
                     return false;
                 }
 
@@ -233,9 +233,8 @@ class NetworkDetection
         return false;
     }
 
-    // 来源：https://www.idcoffer.com/ipcheck
     private function idcoffer(string $ip, bool $is_icmp, int $port = null)
-    {
+    { // 来源：https://www.idcoffer.com/ipcheck
         $cn = "https://api.24kplus.com/ipcheck?host={$ip}&port={$port}";
         $us = "https://api.idcoffer.com/ipcheck?host={$ip}&port={$port}";
         $checkName = $is_icmp ? 'ping' : 'tcp';
@@ -276,9 +275,8 @@ class NetworkDetection
         return false;
     }
 
-    // 来源：https://ping.gd/
     private function gd(string $ip, bool $is_icmp, int $port = 443)
-    {
+    { // 来源：https://ping.gd/
         $url = "https://ping.gd/api/ip-test/{$ip}:".($port ?? 443);
 
         $checkName = $is_icmp ? 'ping_alive' : 'telnet_alive';
@@ -311,9 +309,8 @@ class NetworkDetection
         return false;
     }
 
-    // 来源：https://ip112.cn/
     private function ip112(string $ip, bool $is_icmp, int $port = 443)
-    {
+    { // 来源：https://ip112.cn/
         $cn = 'https://api.zhujiquanzi.com/ipcheck/ipcheck.php';
         $us = 'https://api.52bwg.com/ipcheck/ipcheck.php';
         $checkName = $is_icmp ? 'icmp' : 'tcp';

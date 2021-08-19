@@ -57,8 +57,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('dailyNodeReport')->dailyAt('09:00');
         $schedule->command('userTrafficWarning')->dailyAt('10:30');
         $schedule->command('userExpireWarning')->dailyAt('20:00');
-        $schedule->command('userDailyTrafficStatistics')->dailyAt('23:58');
-        $schedule->command('nodeDailyTrafficStatistics')->dailyAt('23:59');
+        $schedule->command('userDailyTrafficStatistics')->daily();
+        $schedule->command('nodeDailyTrafficStatistics')->daily();
     }
 
     /**

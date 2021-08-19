@@ -17,7 +17,7 @@ class DailyJob extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         $this->expireUser(); // 过期用户处理
         $this->closeTickets(); // 关闭用户超时未处理的工单
@@ -26,10 +26,9 @@ class DailyJob extends Command
             $this->resetUserTraffic();
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
 
     private function expireUser()// 过期用户处理

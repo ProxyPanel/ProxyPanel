@@ -23,7 +23,7 @@ class AutoJob extends Command
      */
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         Order::recentUnPay()->update(['status' => -1]); // 关闭超时未支付本地订单
         $this->expireCode(); //过期验证码、优惠券、邀请码无效化
@@ -43,10 +43,9 @@ class AutoJob extends Command
             Config::whereIn('name', ['maintenance_mode', 'maintenance_content', 'maintenance_time'])->update(['value' => null]);
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
 
     private function expireCode()// 注册验证码自动置无效 & 优惠券无效化

@@ -20,7 +20,7 @@ class NodeStatusDetection extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         if (sysConfig('node_offline_notification')) {// 检测节点心跳是否异常
             $this->checkNodeStatus();
@@ -34,10 +34,9 @@ class NodeStatusDetection extends Command
             }
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
+        Log::info("---【{$this->description}】完成---，耗时 {$jobTime} 秒");
     }
 
     private function checkNodeStatus()
