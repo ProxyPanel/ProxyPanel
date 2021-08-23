@@ -26,6 +26,11 @@ class User extends Authenticatable implements JWTSubject
     protected $dates = ['expired_at', 'reset_time'];
     protected $guarded = [];
 
+    public function routeNotificationForMail($notification)
+    {
+        return $this->username;
+    }
+
     public function usedTrafficPercentage()
     {
         return round(($this->used_traffic) / $this->transfer_enable, 2);
