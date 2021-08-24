@@ -10,13 +10,13 @@ class ReportController extends Controller
     public function accounting()
     {
         $orders = Order::where('status', '>=', 2)->whereHas('goods')->latest()->get(['created_at', 'amount']);
-        $ordersByDay = $orders->where('created_at', '>=', date('Y-m-01', strtotime('-1 months')))->groupBy(function ($item) {
+        $ordersByDay = $orders->groupBy(function ($item) {
             return $item->created_at->format('Y-m-d');
         })->map(function ($row) {
             return $row->sum('amount');
         })->toArray();
 
-        $ordersByMonth = $orders->where('created_at', '>=', date('Y-01-01', strtotime('-1 years')))->groupBy(function ($item) {
+        $ordersByMonth = $orders->groupBy(function ($item) {
             return $item->created_at->format('Y-m');
         })->map(function ($row) {
             return $row->sum('amount');
