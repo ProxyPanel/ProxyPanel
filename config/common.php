@@ -26,7 +26,7 @@ return [
         ],
     ],
 
-    'oauth' => [
+    'oauth'          => [
         'labels' => [
             'facebook'  => 'Facebook',
             'twitter'   => 'Twitter',
@@ -47,5 +47,11 @@ return [
             'bitbucket' => 'fa-bitbucket',
             'telegram'  => 'fa-telegram',
         ],
+    ],
+    'network_status' => [
+        1 => '✔️ 通讯正常',
+        2 => '🛑 海外阻断',
+        3 => '🛑 国内阻断',
+        4 => '❌ 断连',
     ],
 ];

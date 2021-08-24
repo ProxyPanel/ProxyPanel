@@ -7,11 +7,6 @@ use Log;
 
 class NetworkDetection
 {
-    public const success = '✔️ 通讯正常';
-    public const oversea_blocked = '🛑 海外阻断';
-    public const china_blocked = '🛑 国内阻断';
-    public const disconnected = '❌ 断连';
-
     /**
      * 用外部API进行Ping检测.
      *
@@ -72,7 +67,7 @@ class NetworkDetection
      * @param  bool  $is_icmp  TRUE 为ICMP,FALSE 为tcp
      * @param  int|null  $port  检测端口，默认为空
      *
-     * @return bool|string
+     * @return bool
      */
     public function networkCheck(string $ip, bool $is_icmp, int $port = null)
     {
@@ -145,18 +140,18 @@ class NetworkDetection
             }
 
             if ($message['firewall-enable'] && $message['firewall-disable']) {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if ($message['firewall-enable'] && ! $message['firewall-disable']) {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message['firewall-enable'] && $message['firewall-disable']) {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -182,18 +177,18 @@ class NetworkDetection
             }
 
             if ($cn[$checkName] === 'success' && $us['outside_'.$checkName] === 'success') {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if ($cn[$checkName] === 'success' && $us['outside_'.$checkName] !== 'success') {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if ($cn[$checkName] !== 'success' && $us['outside_'.$checkName] === 'success') {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -221,18 +216,18 @@ class NetworkDetection
             }
 
             if ($message['data']['data']['inner'.$checkName] && $message['data']['data']['out'.$checkName]) {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if ($message['data']['data']['inner'.$checkName] && ! $message['data']['data']['out'.$checkName]) {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message['data']['data']['inner'.$checkName] && $message['data']['data']['out'.$checkName]) {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -263,18 +258,18 @@ class NetworkDetection
             }
 
             if ($cn['data'][$checkName] && $us['data'][$checkName]) {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if ($cn['data'][$checkName] && ! $us['data'][$checkName]) {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $cn['data'][$checkName] && $us['data'][$checkName]) {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -297,18 +292,18 @@ class NetworkDetection
             }
 
             if ($message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if ($message[0]['result'][$checkName] && ! $message[1]['result'][$checkName]) {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -333,18 +328,18 @@ class NetworkDetection
             }
 
             if (str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
-                return self::success; // 正常
+                return 1; // 正常
             }
 
             if (str_contains($cn[$checkName], 'green') && ! str_contains($us[$checkName], 'green')) {
-                return self::oversea_blocked; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
-                return self::china_blocked; // 被墙
+                return 3; // 被墙
             }
 
-            return self::disconnected; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
