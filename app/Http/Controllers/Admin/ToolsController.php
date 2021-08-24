@@ -221,4 +221,57 @@ class ToolsController extends Controller
 
         return view('admin.tools.analysis', ['urlList' => array_unique($url ?? [])]);
     }
+
+    // 类似Linux中的tail命令
+    private function tail($file, $n, $base = 5)
+    {
+        $fileLines = $this->countLine($file);
+        if ($fileLines < 15000) {
+            return false;
+        }
+
+        $fp = fopen($file, 'rb+');
+        assert($n > 0);
+        $pos = $n + 1;
+        $lines = [];
+        while (count($lines) <= $n) {
+            try {
+                fseek($fp, -$pos, SEEK_END);
+            } catch (Exception $e) {
+                break;
+            }
+
+            $pos *= $base;
+            while (! feof($fp)) {
+                array_unshift($lines, fgets($fp));
+            }
+        }
+
+        return array_slice($lines, 0, $n);
+    }
+
+    /**
+     * 计算文件行数.
+     *
+     * @param $file
+     *
+     * @return int
+     */
+    private function countLine($file): int
+    {
+        $fp = fopen($file, 'rb');
+        $i = 0;
+        while (! feof($fp)) {
+            //每次读取2M
+            if ($data = fread($fp, 1024 * 1024 * 2)) {
+                //计算读取到的行数
+                $num = substr_count($data, "\n");
+                $i += $num;
+            }
+        }
+
+        fclose($fp);
+
+        return $i;
+    }
 }
