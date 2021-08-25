@@ -15,11 +15,11 @@ class OrderObserver
         $changes = $order->getChanges();
         if (Arr::exists($changes, 'status')) {
             if ($changes['status'] === -1) { // 本地订单-在线订单 关闭互联
-                if ($order->has('payment')) {
+                if ($order->payment) {
                     $order->payment->close(); // 关闭在线订单
                 }
 
-                if ($order->has('coupon') && $this->returnCoupon($order->coupon)) { // 退回优惠券
+                if ($order->coupon && $this->returnCoupon($order->coupon)) { // 退回优惠券
                     Helpers::addCouponLog('订单超时未支付，自动退回', $order->coupon_id, $order->goods_id, $order->id);
                 }
             }
