@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
@@ -53,5 +55,55 @@ class ReportController extends Controller
         $data['ordersByYear'] = $ordersByYear;
 
         return view('admin.report.accounting', compact('data'));
+    }
+
+    public function userAnalysis(Request $request)
+    {
+        $uid = $request->input('uid');
+        $username = $request->input('username');
+        if ($uid) {
+            $user = User::find($uid);
+        } elseif ($username) {
+            $user = User::whereUsername($username)->first();
+        }
+
+        $data = null;
+        if (isset($user)) {
+            // 用户当前小时在各线路消耗流量
+            $data['currentHourlyFlow'] = $user->dataFlowLogs()
+                ->where('log_time', '>=', strtotime(date('Y-m-d H:00')))
+                ->groupBy('node_id')
+                ->selectRaw('node_id, sum(u + d) as total')
+                ->get()->toArray();
+
+            // 用户今天各小时在各线路消耗流量
+            $data['hours'] = range(0, 23);
+            $data['hourlyFlow'] = $user->hourlyDataFlows()->whereNotNull('node_id')
+                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 days')))
+                ->selectRaw('node_id, (DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, total')
+                ->get()->transform(function ($item, $key) {
+                    return [
+                        'node_id' => $item->node_id,
+                        'date'    => (int) $item->date,
+                        'total'   => round($item->total / GB, 2),
+                    ];
+                })->toArray();
+
+            // 用户本月每天在各线路消耗流量
+            $data['days'] = range(1, date('j'));
+            $data['dailyFlow'] = $user->dailyDataFlows()->whereNotNull('node_id')
+                ->whereMonth('created_at', date('n'))
+                ->where('total', '>', 6000000)
+                ->selectRaw('node_id, (DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, total')
+                ->get()->transform(function ($item, $key) {
+                    return [
+                        'node_id' => $item->node_id,
+                        'date'    => (int) $item->date,
+                        'total'   => round($item->total / GB, 2),
+                    ];
+                })->toArray();
+        }
+
+        return view('admin.report.userDataAnalysis', compact('data'));
     }
 }

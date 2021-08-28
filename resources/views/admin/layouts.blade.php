@@ -333,7 +333,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['admin.report.accounting'])
+                @canany(['admin.report.accounting', 'admin.report.userAnalysis'])
                     <li class="site-menu-item has-sub {{request()->routeIs('admin.report.*') ? 'active open' : ''}}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon wb-stats-bars" aria-hidden="true"></i>
@@ -344,6 +344,13 @@
                                 <li class="site-menu-item {{request()->routeIs('admin.report.accounting') ? 'active open' : ''}}">
                                     <a href="{{route('admin.report.accounting')}}">
                                         <span class="site-menu-title">流水账簿</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('admin.report.userAnalysis')
+                                <li class="site-menu-item {{request()->routeIs('admin.report.userAnalysis') ? 'active open' : ''}}">
+                                    <a href="{{route('admin.report.userAnalysis')}}">
+                                        <span class="site-menu-title">用户分析</span>
                                     </a>
                                 </li>
                             @endcan
