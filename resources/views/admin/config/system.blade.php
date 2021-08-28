@@ -110,14 +110,14 @@
                             <x-system.select title="邮箱过滤机制" code="is_email_filtering" help="黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:用户只能选择使用白名单中的邮箱后缀注册"
                                              :list="['关闭' => '', '黑名单' => 1, '白名单' => 2]"/>
                             <x-system.input-limit title="激活账号次数" code="active_times" :value="$active_times" help="24小时内可以通过邮件激活账号次数"/>
-                            <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0时不限制"/>
+                            <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0/留空时不限制"/>
                             <x-system.input-limit title="用户-邀请码有效期" code="user_invite_days" :value="$user_invite_days" min="1" unit="天" help="用户自行生成邀请的有效期"/>
                             <x-system.input-limit title="管理员-邀请码有效期" code="admin_invite_days" :value="$admin_invite_days" min="1" unit="天" help="管理员生成邀请码的有效期"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="node">
                             <x-system.input title="节点订阅地址" :value="$subscribe_domain" code="subscribe_domain" help="（推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https://"
                                             :holder="'默认为 '.$website_url" type="url"/>
-                            <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0时返回全部节点"/>
+                            <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0/留空时返回全部节点"/>
                             <x-system.switch title="随机订阅" code="rand_subscribe" :check="$rand_subscribe" help="启用后，订阅时将随机返回节点信息，否则按节点排序返回"/>
                             <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe" help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
                             <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.ml" type="url"/>
@@ -186,11 +186,11 @@
                                              :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus'
                                              => 'pushPlus']"/>
                             <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
-                                                  help="提醒N次后自动下线节点，为0时不限制，不超过12"/>
+                                                  help="提醒N次后自动下线节点，为0/留空时不限制，不超过12"/>
                             <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
                                              :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
                             <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.select title="新工单通知" code="ticket_created_notification" help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"
                                              :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
@@ -239,7 +239,7 @@
                                     <x-system.select title="QQ钱包" code="is_QQPay" :list="['关闭' => '', '码支付' => 'codepay', '易支付' => 'epay']"/>
                                     <x-system.select title="微信支付" code="is_WeChatPay"
                                                      :list="['关闭' => '', '码支付' => 'codepay', 'PayJS' => 'payjs', '易支付' => 'epay', '海狸支付' => 'paybeaver', '麻瓜宝' => 'bitpayx']"/>
-                                    <x-system.select title="特殊支付" code="is_otherPay" :list="['关闭' => '', '麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
+                                    <x-system.select title="特殊支付" code="is_otherPay" multiple="1" :list="['麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
                                     <x-system.input title="自定义商品名称" :value="$subject_name" code="subject_name" help="用于在支付渠道的商品标题显示"/>
                                     <x-system.input title="通用支付回调地址" :value="$website_callback_url" code="website_callback_url"
                                                     help="防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https://" :holder="'默认为 '.$website_url" type="url"/>
@@ -422,7 +422,7 @@
             $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
             $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
             $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+            $('#is_otherPay').selectpicker('val', {!! $is_otherPay !!});
             $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
             $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
             $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});

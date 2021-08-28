@@ -103,12 +103,12 @@ class SystemController extends Controller
         $name = $request->input('name');
         $value = $request->input('value');
 
-        if (empty($value)) { // 关闭 或 空值 自动设NULL，减少系统设置存储
+        if (empty($value) || $value === 'NaN') { // 关闭 或 空值 自动设NULL，减少系统设置存储
             $value = null;
         }
 
         // 支付设置判断
-        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true) && ! in_array($value, $this->getPayment(), true)) {
+        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayment(), true)) {
             return Response::json(['status' => 'fail', 'message' => '请先完善该支付渠道的必要参数！']);
         }
 
