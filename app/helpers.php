@@ -1,20 +1,20 @@
 <?php
 
-define('KB', 1024);
-define('MB', 1048576);
-define('GB', 1073741824);
-define('TB', 1099511627776);
-define('PB', 1125899906842624);
+const KB = 1024;
+const MB = 1048576;
+const GB = 1073741824;
+const TB = 1099511627776;
+const PB = 1125899906842624;
 
-define('Minute', 60);
-define('Hour', 3600);
-define('Day', 86400);
+const Minute = 60;
+const Hour = 3600;
+const Day = 86400;
 
-define('Mbps', 125000);
+const Mbps = 125000;
 
 // base64加密（处理URL）
 if (! function_exists('base64url_encode')) {
-    function base64url_encode($data)
+    function base64url_encode($data): string
     {
         return strtr(base64_encode($data), ['+' => '-', '/' => '_', '=' => '']);
     }
@@ -30,7 +30,7 @@ if (! function_exists('base64url_decode')) {
 
 // 根据流量值自动转换单位输出
 if (! function_exists('flowAutoShow')) {
-    function flowAutoShow($value)
+    function flowAutoShow($value): string
     {
         $value = abs($value);
         if ($value >= PB) {
@@ -59,7 +59,7 @@ if (! function_exists('flowAutoShow')) {
 
 // 秒转时间
 if (! function_exists('seconds2time')) {
-    function seconds2time($seconds)
+    function seconds2time($seconds): string
     {
         $day = floor($seconds / Day);
         $hour = floor(($seconds % Day) / Hour);

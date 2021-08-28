@@ -24,7 +24,7 @@ class ServerChanChannel
         // 一天仅可发送不超过500条
         if (Cache::get($cacheKey) < 500) {
             $response = Http::timeout(15)
-                ->get('https://sc.ftqq.com/'.sysConfig('server_chan_key').'.send?text='.$message['title'].'&desp='.urlencode($message['content']));
+                ->get('https://sctapi.ftqq.com/'.sysConfig('server_chan_key').'.send?title='.$message['title'].'&desp='.urlencode($message['content']));
         } else {
             Log::error('ServerChan消息推送异常：今日500条限额已耗尽！');
 

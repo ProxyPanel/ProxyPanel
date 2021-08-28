@@ -26,7 +26,7 @@ return [
         ],
     ],
 
-    'oauth'          => [
+    'oauth' => [
         'labels' => [
             'facebook'  => 'Facebook',
             'twitter'   => 'Twitter',
@@ -48,10 +48,23 @@ return [
             'telegram'  => 'fa-telegram',
         ],
     ],
+
     'network_status' => [
         1 => '✔️ 通讯正常',
         2 => '🛑 海外阻断',
         3 => '🛑 国内阻断',
         4 => '❌ 断连',
+    ],
+
+    'notification' => [
+        'labels' => [
+            1 => '邮件',
+            2 => 'ServerChan',
+            3 => 'Bark',
+            4 => 'Telegram',
+            5 => '微信企业',
+            6 => 'TG酱',
+            7 => 'PushPlus',
+        ],
     ],
 ];

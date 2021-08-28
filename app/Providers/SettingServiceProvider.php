@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Channels\BarkChannel;
+use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
+use App\Channels\TgChatChannel;
+use App\Channels\WeChatChannel;
 use App\Models\Config;
 use Cache;
 use Illuminate\Support\ServiceProvider;
@@ -70,7 +73,10 @@ class SettingServiceProvider extends ServiceProvider
                 'telegram'   => TelegramChannel::class,
                 'beary'      => BearyChatChannel::class,
                 'bark'       => BarkChannel::class,
+                'pushPlus'   => PushPlusChannel::class,
                 'serverChan' => ServerChanChannel::class,
+                'tgChat'     => TgChatChannel::class,
+                'weChat'     => WeChatChannel::class,
             ] as $key => $channel
         ) {
             $index = array_search($key, $channels, true);

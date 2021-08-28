@@ -156,7 +156,7 @@ class Helpers
      *
      * @return int
      */
-    public static function addNotificationLog(string $title, string $content, int $type, $address = 'admin', $status = 1, $error = ''): int
+    public static function addNotificationLog(string $title, string $content, int $type, string $address = 'admin', int $status = 1, string $error = ''): int
     {
         $log = new NotificationLog();
         $log->type = $type;

@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Channels\BarkChannel;
+use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
+use App\Channels\TgChatChannel;
+use App\Channels\WeChatChannel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
@@ -163,6 +166,15 @@ class SystemController extends Controller
                 break;
             case 'telegram':
                 Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TelegramChannel::class]);
+                break;
+            case 'weChat':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [WeChatChannel::class]);
+                break;
+            case 'tgChat':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TgChatChannel::class]);
+                break;
+            case 'pushPlus':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushPlusChannel::class]);
                 break;
             default:
                 return Response::json(['status' => 'fail', 'message' => '未知渠道']);
