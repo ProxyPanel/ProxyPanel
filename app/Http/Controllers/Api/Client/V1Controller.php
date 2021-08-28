@@ -24,7 +24,7 @@ class V1Controller extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'shop', 'config', 'getConfig']]);
+        $this->middleware('auth:api')->except('login', 'register', 'shop', 'getConfig');
         auth()->shouldUse('api');
     }
 
@@ -128,10 +128,7 @@ class V1Controller extends Controller
 
     public function nodeList(int $id = null)
     {
-        $user = auth()->user();
-        $nodes = $user->nodes()->get();
-
-        return response()->json(['ret' => 1, 'data' => $nodes]);
+        return response()->json(['ret' => 1, 'data' => auth()->user()->nodes()->get()]);
     }
 
     public function shop()

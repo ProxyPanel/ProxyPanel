@@ -1,17 +1,18 @@
 <?php
-
-// ┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐ \\
-// │ BobVPN                                                                                                │ \\
-// ├───────────────────────────────────────────────────────────────────────────────────────────────────────┤ \\
-// │ Copyright © 2021 (https://t.me/Bobs9)                                                                 │ \\
-// └───────────────────────────────────────────────────────────────────────────────────────────────────────┘ \\
+/*
+ * ┌─────────────────────────────────────────┐
+ * │ BobVPN                                  │
+ * ├─────────────────────────────────────────┤
+ * │ Copyright © 2021 (https://t.me/Bobs9)   │
+ * └─────────────────────────────────────────┘
+ */
 
 return [
     // 登录页面配置
     'login'        => [
-        'telegram_url'   => 'https://t.me/Bobs9',  // 留空的话则不展示telegram群
-        'qq_url'         => 'https://t.me/Bobs9',  // 留空的话则不展示QQ群
-        'background_img' => 'https://shige.group/such/pic.php/forum/pic/item/00e93901213fb80e3d28759b21d12f2eb8389484/mlike.jpg', // 背景图片地址,图片宽高不超过 860px * 544px 就行 （留空为默认的背景图）
+        'telegram_url'   => '',  // 留空的话则不展示telegram群
+        'qq_url'         => '',  // 留空的话则不展示QQ群
+        'background_img' => 'https://demo.proxypanel.ml/assets/images/logo64.png', // 背景图片地址,图片宽高不超过 860px * 544px 就行 （留空为默认的背景图）
         'text'           => '一键开启<br>极速上网体验',
         'text_color'     => 'rgba(255, 255, 255, 0.8);',    // 文字和按钮颜色   默认颜色 rgba(255, 255, 255, 0.8);
         'button_color'   => '#8077f1',    // 文字和按钮颜色 默认颜色：#8077f1(v2版本配置)
@@ -25,7 +26,7 @@ return [
 
     // Crisp在线客服
     'crisp_enable' => false,  // 是否开启
-    'crisp_id'     => '2c3c28c2-9265-45ea-8e85-0xxxxx',       // Crisp 的网站ID
+    'crisp_id'     => '',       // Crisp 的网站ID
 
     // 弹窗公告
     'notice'       => [
@@ -49,5 +50,5 @@ return [
     ],
 
     // 个人中心头像
-    'user_avatar'  => 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=4109802972,297162689&fm=11&gp=0.jpg',
+    'user_avatar'  => 'https://demo.proxypanel.ml/assets/images/avatar.svg',
 ];
