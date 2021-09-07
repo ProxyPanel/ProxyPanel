@@ -27,7 +27,7 @@ class isSecurity
 
         if ($websiteSecurityCode && ! Cache::has($cacheKey)) {
             if ($code !== $websiteSecurityCode) {
-                Log::info(trans('error.unsafe_enter').$ip);
+                Log::warning(trans('error.unsafe_enter').$ip);
 
                 return Response::view('auth.safe');
             }

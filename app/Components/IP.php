@@ -19,7 +19,7 @@ class IP
     {
         // IPv6 推荐使用ip.sb
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            Log::info('识别到IPv6，尝试解析：'.$ip);
+            Log::notice('识别到IPv6，尝试解析：'.$ip);
             $ipInfo = self::IPSB($ip);
         } else {
             $ipInfo = self::ip2Region($ip);

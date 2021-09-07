@@ -19,7 +19,7 @@ class NodeObserver
     public function created(Node $node): void
     {
         if (! $node->auth()->create(['key' => Str::random(), 'secret' => Str::random(8)])) {
-            Log::warning('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
+            Log::error('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 
         if ($node->is_ddns === '0' && $node->server && sysConfig('ddns_mode')) {

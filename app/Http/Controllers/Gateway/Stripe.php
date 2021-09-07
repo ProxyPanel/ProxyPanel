@@ -89,7 +89,7 @@ class Stripe extends AbstractPayment
             exit();
         }
 
-        Log::info('Passed signature verification!');
+        Log::info('【Stripe】Passed signature verification!');
         switch ($event->type) {
             case 'checkout.session.completed':
 

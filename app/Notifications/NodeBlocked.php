@@ -34,7 +34,7 @@ class NodeBlocked extends Notification implements ShouldQueue
 
     private function markdownMessage()
     {
-        $content = '| '.trans('user.attribute.node').' | IP | ICMP | TCP'." |\r\n| ------ | :------: | :------: |\r\n";
+        $content = '| '.trans('user.attribute.node').' | IP | ICMP | TCP'." |\r\n| :------ | :------: | :------: | :------: | \r\n";
         $tail = '';
         foreach ($this->data as $node) {
             $case = $node;

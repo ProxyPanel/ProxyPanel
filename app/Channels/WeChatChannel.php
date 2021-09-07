@@ -22,7 +22,7 @@ class WeChatChannel
             if ($response->ok() && isset($response->json()['access_token'])) {
                 Cache::put('wechat_access_token', $response->json()['access_token'], 7200); // 2小时
             } else {
-                Log::error('Wechat消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
+                Log::critical('Wechat消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
                 abort(400);
             }
         }
@@ -55,7 +55,7 @@ class WeChatChannel
             return false;
         }
         // 发送错误
-        Log::error('Wechat消息推送异常：'.var_export($response, true));
+        Log::critical('Wechat消息推送异常：'.var_export($response, true));
 
         return false;
     }

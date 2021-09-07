@@ -73,7 +73,7 @@ class reloadNode implements ShouldQueue
                 return false;
             }
 
-            Log::info('【重载节点】成功：'.$host.' 反馈：'.$message['content']);
+            Log::notice('【重载节点】成功：'.$host.' 反馈：'.$message['content']);
 
             return true;
         }
@@ -85,6 +85,6 @@ class reloadNode implements ShouldQueue
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::error('【重载节点】推送异常：'.$exception);
+        Log::error('【重载节点】推送异常：'.$exception->getMessage());
     }
 }

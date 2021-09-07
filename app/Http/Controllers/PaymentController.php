@@ -32,7 +32,7 @@ class PaymentController extends Controller
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
-        Log::info(self::$method.'回调接口[POST]：'.self::$method.var_export($request->all(), true));
+        Log::notice(self::$method.'回调接口：'.self::$method.var_export($request->all(), true));
         self::getClient()->notify($request);
     }
 
@@ -60,7 +60,7 @@ class PaymentController extends Controller
             case 'theadpay':
                 return new THeadPay();
             default:
-                Log::warning('未知支付：'.self::$method);
+                Log::emergency('未知支付：'.self::$method);
 
                 return false;
         }
@@ -188,7 +188,7 @@ class PaymentController extends Controller
             // 生成支付单
             return self::getClient()->purchase($request);
         } catch (Exception $e) {
-            Log::error('订单生成错误：'.$e->getMessage());
+            Log::emergency('订单生成错误：'.$e->getMessage());
         }
 
         return Response::json(['status' => 'fail', 'message' => '订单创建失败']);

@@ -45,13 +45,13 @@ class F2Fpay extends AbstractPayment
         try {
             $result = (new Client(Client::ALIPAY, self::$aliConfig))->pay(Client::ALI_CHANNEL_QR, $data);
         } catch (InvalidArgumentException $e) {
-            Log::error('【支付宝当面付】输入信息错误: '.$e->getMessage());
+            Log::alert('【支付宝当面付】输入信息错误：'.$e->getMessage());
             exit;
         } catch (ClassNotFoundException $e) {
-            Log::error('【支付宝当面付】未知类型: '.$e->getMessage());
+            Log::alert('【支付宝当面付】未知类型：'.$e->getMessage());
             exit;
         } catch (Exception $e) {
-            Log::error('【支付宝当面付】错误: '.$e->getMessage());
+            Log::alert('【支付宝当面付】错误：'.$e->getMessage());
             exit;
         }
 
@@ -69,28 +69,28 @@ class F2Fpay extends AbstractPayment
 
         try {
             $result = (new Client(Client::ALIPAY, self::$aliConfig))->tradeQuery($data);
-            Log::info('【支付宝当面付】回调验证查询：'.var_export($result, true));
+            Log::notice('【支付宝当面付】回调验证查询：'.var_export($result, true));
         } catch (InvalidArgumentException $e) {
-            Log::error('【支付宝当面付】回调信息错误: '.$e->getMessage());
+            Log::alert('【支付宝当面付】回调信息错误: '.$e->getMessage());
             exit;
         } catch (ClassNotFoundException $e) {
-            Log::error('【支付宝当面付】未知类型: '.$e->getMessage());
+            Log::alert('【支付宝当面付】未知类型: '.$e->getMessage());
             exit;
         } catch (Exception $e) {
-            Log::error('【支付宝当面付】错误: '.$e->getMessage());
+            Log::alert('【支付宝当面付】错误: '.$e->getMessage());
             exit;
         }
 
         if ($result['code'] == 10000 && $result['msg'] === 'Success') {
-            if (($_POST['trade_status'] === 'TRADE_FINISHED' || $_POST['trade_status'] === 'TRADE_SUCCESS') && $request->has('out_trade_no')) {
+            if ($request->has('out_trade_no') && in_array($request->input('trade_status'), ['TRADE_FINISHED', 'TRADE_SUCCESS'])) {
                 if ($this->paymentReceived($request->input('out_trade_no'))) {
                     exit('success');
                 }
             } else {
-                Log::info('支付宝当面付-POST:交易失败');
+                Log::error('【支付宝当面付】交易失败：'.var_export($request->all(), true));
             }
         } else {
-            Log::info('支付宝当面付-POST:验证失败');
+            Log::error('【支付宝当面付】验证失败：'.var_export($result, true));
         }
 
         // 返回验证结果

@@ -22,9 +22,9 @@ class DDNS
     public static function destroy(string $domain, $type = null)
     {
         if (self::dnsProvider($domain)->destroy($type)) {
-            Log::info("【DDNS】删除：{$domain} 成功");
+            Log::notice("【DDNS】删除：{$domain} 成功");
         } else {
-            Log::info("【DDNS】删除：{$domain} 失败，请手动删除！");
+            Log::alert("【DDNS】删除：{$domain} 失败，请手动删除！");
         }
     }
 
@@ -40,7 +40,7 @@ class DDNS
             case 'cloudflare':
                 return new CloudFlare($domain);
             default:
-                Log::error('【DDNS】未知渠道：'.sysConfig('ddns_mode'));
+                Log::emergency('【DDNS】未知渠道：'.sysConfig('ddns_mode'));
 
                 return false;
         }

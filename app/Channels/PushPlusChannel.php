@@ -4,6 +4,7 @@ namespace App\Channels;
 
 use Helpers;
 use Http;
+use Illuminate\Mail\Markdown;
 use Illuminate\Notifications\Notification;
 use Log;
 
@@ -16,8 +17,8 @@ class PushPlusChannel
         $response = Http::timeout(15)->post('https://www.pushplus.plus/send', [
             'token'    => sysConfig('pushplus_token'),
             'title'    => $message['title'],
-            'content'  => $message['content'],
-            'template' => 'markdown',
+            'content'  => Markdown::parse($message['content'])->toHtml(),
+            'template' => 'html',
         ]);
 
         // 发送成功
@@ -34,7 +35,7 @@ class PushPlusChannel
             return false;
         }
         // 发送错误
-        Log::error('PushPlus消息推送异常：'.var_export($response, true));
+        Log::critical('PushPlus消息推送异常：'.var_export($response, true));
 
         return false;
     }

@@ -47,7 +47,7 @@ class PayJs extends AbstractPayment
                 exit('success');
             }
         } else {
-            Log::info('PayJs：交易失败');
+            Log::error('【PayJs】交易失败：'.var_export($data, true));
         }
         exit('fail');
     }

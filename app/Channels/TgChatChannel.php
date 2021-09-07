@@ -13,7 +13,7 @@ class TgChatChannel
     {
         $message = $notification->toCustom($notifiable);
 
-        $response = Http::timeout(15)->get('https://tgbot-red.vercel.app/api?token='.sysConfig('tg_chat_token').'&message='.$message['content']);
+        $response = Http::timeout(15)->get('https://tgbot-red.vercel.app/api?token='.sysConfig('tg_chat_token').'&message='.$message['title'].PHP_EOL.'=========='.PHP_EOL.$message['content']);
 
         // 发送成功
         if ($response->ok()) {
@@ -29,7 +29,7 @@ class TgChatChannel
             return false;
         }
         // 发送错误
-        Log::error('TG酱消息推送异常：'.var_export($response, true));
+        Log::critical('TG酱消息推送异常：'.var_export($response, true));
 
         return false;
     }

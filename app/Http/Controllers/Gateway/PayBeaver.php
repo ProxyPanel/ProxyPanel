@@ -38,13 +38,13 @@ class PayBeaver extends AbstractPayment
         ]);
 
         if (isset($result['message'])) {
-            Log::warning('创建订单错误：'.$result['message']);
+            Log::alert('【海狸支付】创建订单错误：'.$result['message']);
 
             return Response::json(['status' => 'fail', 'message' => '创建订单失败：'.$result['message']]);
         }
 
         if (! isset($result['data']['pay_url'])) {
-            Log::warning('创建订单错误：未知错误');
+            Log::alert('【海狸支付】创建订单错误：未获取到支付链接'.var_export($result, true));
 
             return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
         }
@@ -64,7 +64,7 @@ class PayBeaver extends AbstractPayment
             return $response->json();
         }
 
-        Log::error(var_export($response->json(), true));
+        Log::alert('【海狸支付】创建订单失败：'.var_export($response->json(), true));
 
         return ['status' => 'fail', 'message' => '获取失败！请检查配置信息'];
     }
@@ -74,7 +74,7 @@ class PayBeaver extends AbstractPayment
         if (isset($params['sign'])) {
             unset($params['sign']);
         }
-        ksort($params);
+        ksort($params, SORT_STRING);
         reset($params);
 
         return strtolower(md5(http_build_query($params).$this->appSecret));
@@ -90,7 +90,7 @@ class PayBeaver extends AbstractPayment
             exit(json_encode(['status' => 200]));
         }
 
-        Log::info('海狸支付：交易失败');
+        Log::error('【海狸支付】交易失败：'.var_export($request->all(), true));
 
         exit(json_encode(['status' => 500]));
     }
