@@ -217,12 +217,16 @@
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="other">
-                            @if($errors->any())
-                                <x-alert type="danger" :message="$errors->all()"/>
-                            @endif
-                            @if (Session::has('successMsg'))
-                                <x-alert type="success" :message="Session::get('successMsg')"/>
-                            @endif
+                            <div class="col-12">
+                                @if($errors->any())
+                                    <x-alert type="danger" :message="$errors->all()"/>
+                                @endif
+                                @if (Session::has('successMsg'))
+                                    <x-alert type="success" :message="Session::get('successMsg')"/>
+                                @endif
+                            </div>
+                            <x-system.input title="首页LOGO" :value="$website_home_logo" code="website_home_logo" type="url"/>
+                            <x-system.input title="站内LOGO" :value="$website_logo" code="website_logo" type="url"/>
                             <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
                                   id="setExtend">@csrf
                                 <x-system.input-file title="首页LOGO" code="website_home_logo" :value="$website_home_logo"/>
