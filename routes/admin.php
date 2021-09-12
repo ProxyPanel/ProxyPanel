@@ -68,6 +68,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::get('order', 'LogsController@orderList')->name('order'); // 订单列表
+        Route::post('order/edit', 'LogsController@changeOrderStatus')->name('order.edit'); // 订单列表
 
         Route::prefix('report')->name('report.')->group(function () {
             Route::get('accounting', 'ReportController@accounting')->name('accounting'); // 流水账簿

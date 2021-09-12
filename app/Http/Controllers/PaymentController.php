@@ -8,6 +8,7 @@ use App\Http\Controllers\Gateway\CodePay;
 use App\Http\Controllers\Gateway\EPay;
 use App\Http\Controllers\Gateway\F2Fpay;
 use App\Http\Controllers\Gateway\Local;
+use App\Http\Controllers\Gateway\Manual;
 use App\Http\Controllers\Gateway\PayBeaver;
 use App\Http\Controllers\Gateway\PayJs;
 use App\Http\Controllers\Gateway\PayPal;
@@ -59,10 +60,11 @@ class PaymentController extends Controller
                 return new PayBeaver();
             case 'theadpay':
                 return new THeadPay();
+            case 'manual':
+                return new Manual();
             default:
                 Log::emergency('未知支付：'.self::$method);
-
-                return false;
+                exit();
         }
     }
 
@@ -100,8 +102,7 @@ class PaymentController extends Controller
                 return Response::json(['status' => 'fail', 'message' => trans('user.payment.error')]);
             }
             $amount = $credit;
-        // 购买服务
-        } elseif ($goods_id && self::$method) {
+        } elseif ($goods_id && self::$method) { // 购买服务
             $goods = Goods::find($goods_id);
             if (! $goods || ! $goods->status) {
                 return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);
@@ -209,7 +210,7 @@ class PaymentController extends Controller
         $payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->firstOrFail();
         $goods = $payment->order->goods;
 
-        return view('user.payment', [
+        return view('user.components.payment.default', [
             'payment'       => $payment,
             'name'          => $goods->name ?? trans('user.recharge_credit'),
             'days'          => $goods->days ?? 0,

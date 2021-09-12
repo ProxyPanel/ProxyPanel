@@ -11,7 +11,6 @@ class NetworkDetection
      * 用外部API进行Ping检测.
      *
      * @param  string  $ip  被检测的IP或者域名
-     *
      * @return bool
      */
     public function ping(string $ip)
@@ -66,7 +65,6 @@ class NetworkDetection
      * @param  string  $ip  被检测的IP
      * @param  bool  $is_icmp  TRUE 为ICMP,FALSE 为tcp
      * @param  int|null  $port  检测端口，默认为空
-     *
      * @return bool
      */
     public function networkCheck(string $ip, bool $is_icmp, int $port = null)

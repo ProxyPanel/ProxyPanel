@@ -170,7 +170,7 @@ return [
     'payment'             => [
         'error'           => 'The recharge balance is not compliant',
         'creating'        => 'Creating payment order...',
-        'redirect_stripe' => 'Redirect to Stripe ...',
+        'redirect_stripe' => 'Redirect to Stripe',
         'qrcode_tips'     => 'Please using <strong class="red-600">:software</strong> to scan QrCode',
         'close_tips'      => 'Please complete payment in <code>:minutes minutes</code>, otherwise it will be auto-closed by system',
         'mobile_tips'     => '<strong>Mobile User</strong>：Press QrCode image for a short amount of time -> Save Images -> Open payment software -> Scan it',

@@ -31,7 +31,6 @@ abstract class AbstractPayment
      * @param  string  $trade_no  本地订单号
      * @param  string  $out_trade_no  外部订单号
      * @param  int  $amount  交易金额
-     *
      * @return int
      */
     protected function addPamentCallback(string $trade_no, string $out_trade_no, int $amount): int
@@ -56,7 +55,6 @@ abstract class AbstractPayment
      * @param  array  $data  需要加密的数组
      * @param  string  $key  尾部的密钥
      * @param  bool  $filter  是否清理空值
-     *
      * @return string md5加密后的数据
      */
     protected function aliStyleSign(array $data, string $key, bool $filter = true): string

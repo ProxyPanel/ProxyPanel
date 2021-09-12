@@ -25,3 +25,4 @@ _ide_helper.php
 .php_cs.cache
 node_modules/*
 composer.phar
+public/uploads/*

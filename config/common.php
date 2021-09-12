@@ -8,6 +8,7 @@ return [
             'credit'    => '余额',
             'epay'      => '易支付',
             'f2fpay'    => '支付宝当面付',
+            'manual'    => '人工支付',
             'paybeaver' => '海狸支付',
             'payjs'     => 'PayJs',
             'paypal'    => 'PayPal',
@@ -23,6 +24,7 @@ return [
             4 => 'coin.png',
             5 => 'paypal.png',
             6 => 'stripe.png',
+            7 => 'pay.svg',
         ],
     ],
 

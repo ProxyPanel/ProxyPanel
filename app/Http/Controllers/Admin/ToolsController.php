@@ -254,7 +254,6 @@ class ToolsController extends Controller
      * 计算文件行数.
      *
      * @param $file
-     *
      * @return int
      */
     private function countLine($file): int

@@ -5,8 +5,11 @@ namespace App\Observers;
 use App\Components\Helpers;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\PaymentConfirm;
 use App\Services\OrderService;
 use Arr;
+use Notification;
 
 class OrderObserver
 {
@@ -24,6 +27,10 @@ class OrderObserver
                 }
             }
 
+            if ($changes['status'] === 1) { // 待确认支付
+                Notification::send(User::find(1), new PaymentConfirm($order));
+            }
+
             // 本地订单-在线订单 支付成功互联
             if ($changes['status'] === 2 && $order->getOriginal('status') !== 3) {
                 (new OrderService($order))->receivedPayment();
@@ -39,7 +46,7 @@ class OrderObserver
             $prepaidOrder = Order::userPrepay($order->user_id)->oldest()->first();
 
             if ($prepaidOrder) {
-                (new OrderService($prepaidOrder))->activatePrepaidPlan();
+                (new OrderService($prepaidOrder))->activatePrepaidPlan(); // 激活预支付
             }
         }
     }

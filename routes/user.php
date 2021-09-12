@@ -35,4 +35,9 @@ Route::prefix('payment')->group(function () {
     Route::get('{trade_no}', 'PaymentController@detail')->name('orderDetail'); // 支付单详情
 });
 
-Route::get('/stripe-checkout/{session_id}', 'Gateway\Stripe@redirectPage')->name('stripe-checkout'); // Stripe Checkout page
+Route::prefix('pay')->group(function () {
+    Route::get('/manual/{payment}', 'Gateway\Manual@redirectPage')->name('manual.checkout'); // 人工支付详细
+    Route::post('/manual/{payment}/inform', 'Gateway\Manual@inform')->name('manual.inform'); // 人工支付通知
+
+    Route::get('/stripe/{session_id}', 'Gateway\Stripe@redirectPage')->name('stripe.checkout'); // Stripe Checkout page
+});

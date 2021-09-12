@@ -348,6 +348,29 @@
                                     <x-system.input title="商家ID" :value="$theadpay_mchid" code="theadpay_mchid"/>
                                     <x-system.input title="商家密钥" :value="$theadpay_key" code="theadpay_key"/>
                                 </x-system.tab-pane>
+                                <x-system.tab-pane id="Manual">
+                                    <div class="form-group col-lg-12 d-flex">
+                                        <label class="col-md-3 col-form-label">人工支付</label>
+                                        <div class="col-md-7">
+                                            设置后会自动开启对应显示
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        @if($errors->any())
+                                            <x-alert type="danger" :message="$errors->all()"/>
+                                        @endif
+                                        @if (Session::has('successMsg'))
+                                            <x-alert type="success" :message="Session::get('successMsg')"/>
+                                        @endif
+                                    </div>
+                                    <x-system.input title="支付宝二维码" :value="$alipay_qrcode" code="alipay_qrcode" type="url"/>
+                                    <x-system.input title="微 信二维码" :value="$wechat_qrcode" code="wechat_qrcode" type="url"/>
+                                    <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
+                                          id="setExtend">@csrf
+                                        <x-system.input-file title="支付宝二维码" code="alipay_qrcode" :value="$alipay_qrcode"/>
+                                        <x-system.input-file title="微 信二维码" code="wechat_qrcode" :value="$wechat_qrcode"/>
+                                    </form>
+                                </x-system.tab-pane>
                             </div>
                             <ul class="nav nav-tabs nav-tabs-bottom nav-tabs-line dropup" role="tablist">
                                 <li class="nav-item">
@@ -380,6 +403,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
+                                </li>
                                 <li class="nav-item dropdown" style="display: none;">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">菜单</a>
                                     <div class="dropdown-menu" role="menu">
@@ -393,6 +419,7 @@
                                         <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
                                     </div>
                                 </li>
                             </ul>

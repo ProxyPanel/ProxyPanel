@@ -75,51 +75,49 @@
                             </td>
                             <td>
                                 @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
-                                            <i class="icon wb-wrench" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-menu" role="menu">
-                                            @can('admin.node.edit')
-                                                <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::query('page', 1)])}}" role="menuitem">
-                                                    <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="icon wb-wrench" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="dropdown-menu" role="menu">
+                                        @can('admin.node.edit')
+                                            <a class="dropdown-item" href="{{route('admin.node.edit', [$node->id, 'page' => Request::query('page', 1)])}}" role="menuitem">
+                                                <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                            </a>
+                                        @endcan
+                                        @can('admin.node.destroy')
+                                            <a class="dropdown-item" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">
+                                                <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                            </a>
+                                        @endcan
+                                        @can('admin.node.monitor')
+                                            <a class="dropdown-item" href="{{route('admin.node.monitor', $node)}}" role="menuitem">
+                                                <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
+                                            </a>
+                                        @endcan
+                                        <hr/>
+                                        @can('admin.node.geo')
+                                            <a class="dropdown-item" href="javascript:refreshGeo('{{$node->id}}')" role="menuitem">
+                                                <i id="geo{{$node->id}}" class="icon wb-map" aria-hidden="true"></i> 刷新地理
+                                            </a>
+                                        @endcan
+                                        @can('admin.node.ping')
+                                            <a class="dropdown-item" href="javascript:pingNode('{{$node->id}}')" role="menuitem">
+                                                <i id="ping{{$node->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
+                                            </a>
+                                        @endcan
+                                        @can('admin.node.check')
+                                            <a class="dropdown-item" href="javascript:checkNode('{{$node->id}}')" role="menuitem">
+                                                <i id="node{{$node->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
+                                            </a>
+                                        @endcan
+                                        @if($node->type === 4)
+                                            @can('admin.node.reload')
+                                                <hr/>
+                                                <a class="dropdown-item" href="javascript:reload('{{$node->id}}')" role="menuitem">
+                                                    <i id="reload{{$node->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
                                                 </a>
                                             @endcan
-                                            @can('admin.node.destroy')
-                                                <a class="dropdown-item" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">
-                                                    <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                                </a>
-                                            @endcan
-                                            @can('admin.node.monitor')
-                                                <a class="dropdown-item" href="{{route('admin.node.monitor', $node)}}" role="menuitem">
-                                                    <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
-                                                </a>
-                                            @endcan
-                                            <hr/>
-                                            @can('admin.node.geo')
-                                                <a class="dropdown-item" href="javascript:refreshGeo('{{$node->id}}')" role="menuitem">
-                                                    <i id="geo{{$node->id}}" class="icon wb-map" aria-hidden="true"></i> 刷新地理
-                                                </a>
-                                            @endcan
-                                            @can('admin.node.ping')
-                                                <a class="dropdown-item" href="javascript:pingNode('{{$node->id}}')" role="menuitem">
-                                                    <i id="ping{{$node->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
-                                                </a>
-                                            @endcan
-                                            @can('admin.node.check')
-                                                <a class="dropdown-item" href="javascript:checkNode('{{$node->id}}')" role="menuitem">
-                                                    <i id="node{{$node->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
-                                                </a>
-                                            @endcan
-                                            @if($node->type === 4)
-                                                @can('admin.node.reload')
-                                                    <hr/>
-                                                    <a class="dropdown-item" href="javascript:reload('{{$node->id}}')" role="menuitem">
-                                                        <i id="reload{{$node->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
-                                                    </a>
-                                                @endcan
-                                            @endif
-                                        </div>
+                                        @endif
                                     </div>
                                 @endcan
                             </td>

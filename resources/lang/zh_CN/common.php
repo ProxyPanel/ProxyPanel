@@ -77,6 +77,7 @@ return [
         'wechat' => '微信',
         'alipay' => '支付宝',
         'crypto' => '虚拟货币',
+        'manual' => '人工支付',
     ],
     'recommend'      => '推荐',
     'advance'        => '进阶',

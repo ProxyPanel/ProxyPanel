@@ -29,7 +29,7 @@ class Stripe extends AbstractPayment
         try {
             $session = Session::create($data);
 
-            $url = route('stripe-checkout', ['session_id' => $session->id]);
+            $url = route('stripe.checkout', ['session_id' => $session->id]);
             $payment->update(['url' => $url]);
 
             return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
@@ -66,7 +66,7 @@ class Stripe extends AbstractPayment
     // redirect to Stripe Payment url
     public function redirectPage($session_id)
     {
-        return view('user.stripe-checkout', ['session_id' => $session_id]);
+        return view('user.components.payment.stripe', ['session_id' => $session_id]);
     }
 
     // url = '/callback/notify?method=stripe'

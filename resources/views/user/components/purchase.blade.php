@@ -29,3 +29,8 @@
         <img src="/assets/images/payment/stripe.svg" height="40px" alt="stripe"/>
     </button>
 @endif
+@if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
+    <button class="btn btn-round btn-outline-default mt-2" onclick="pay('manual','7')">
+        <img src="/assets/images/payment/pay.svg" height="40px" alt="pay"/> <span class="font-size-18 font-weight-bold"> 人工支付 </span>
+    </button>
+@endif

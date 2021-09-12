@@ -112,43 +112,18 @@
                         @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                             <div class="mb-15 w-p50">
                                 <select class="form-control" name="charge_type" id="charge_type">
-                                    @if(sysConfig('is_onlinePay'))
+                                    @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                                         <option value="1">{{trans('user.shop.pay_online')}}</option>
                                     @endif
-                                    @if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                                        <option value="2">{{trans('common.qrcode', ['attribute' => ''])}}</option>
-                                    @endif
-                                    <option value="3">{{trans('user.coupon.recharge')}}</option>
+                                    <option value="2">{{trans('user.coupon.recharge')}}</option>
                                 </select>
                             </div>
                         @endif
-                        @if(sysConfig('is_onlinePay'))
+                        @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                             <div class="form-group row charge_credit">
                                 <label for="amount" class="offset-md-1 col-md-2 col-form-label">{{trans('user.shop.change_amount')}}</label>
                                 <div class="col-md-8">
                                     <input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="¥"/>
-                                </div>
-                            </div>
-                        @endif
-                        @if(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                            <div class="text-center" id="charge_qrcode">
-                                <div class="row">
-                                    <p class="col-md-12 mb-10">付款时，请
-                                        <mark>备注邮箱账号</mark>
-                                        ，充值会在<code>24</code>小时内受理!
-                                    </p>
-                                    @if(sysConfig('wechat_qrcode'))
-                                        <div class="col-md-6">
-                                            <img class="w-p75 mb-10" src="{{sysConfig('wechat_qrcode')}}" alt=""/>
-                                            <p>{{trans('common.payment.wechat')}}</p>
-                                        </div>
-                                    @endif
-                                    @if(sysConfig('alipay_qrcode'))
-                                        <div class="col-md-6">
-                                            <img class="w-p75 mb-10" src="{{sysConfig('alipay_qrcode')}}" alt=""/>
-                                            <p>{{trans('common.payment.alipay')}}</p>
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
                         @endif
@@ -179,27 +154,18 @@
             if (value === 1) {
                 $('.charge_credit').show();
                 $('#change_btn').hide();
-                $('#charge_qrcode').hide();
-                $('#charge_coupon_code').hide();
-            } else if (value === 2) {
-                $('.charge_credit').hide();
-                $('#change_btn').hide();
-                $('#charge_qrcode').show();
                 $('#charge_coupon_code').hide();
             } else {
                 $('.charge_credit').hide();
-                $('#charge_qrcode').hide();
                 $('#charge_coupon_code').show();
                 $('#change_btn').show();
             }
         }
 
         $(document).ready(function() {
-            let which_selected = 3;
-            @if(sysConfig('is_onlinePay'))
+            let which_selected = 2;
+            @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                 which_selected = 1;
-            @elseif(sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                which_selected = 2;
             @endif
 
             itemControl(which_selected);
@@ -239,7 +205,7 @@
 
         // 充值
         function pay(method, pay_type) {
-            const paymentType = parseInt($('#charge_type').val() ?? 3);
+            const paymentType = parseInt($('#charge_type').val() ?? 2);
             const charge_coupon = $('#charge_coupon').val().trim();
             const amount = parseInt($('#amount').val());
             if (paymentType === 1) {
@@ -272,7 +238,7 @@
                         $('#charge_msg').show().html("{{trans('user.error_response')}}");
                     },
                 });
-            } else if (paymentType === 3) {
+            } else if (paymentType === 2) {
                 if (charge_coupon === '') {
                     $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
                     $('#charge_coupon').focus();

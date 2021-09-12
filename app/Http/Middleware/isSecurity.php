@@ -13,9 +13,8 @@ class isSecurity
     /**
      * 是否需要安全码才访问(仅用于登录页).
      *
-     * @param           $request
+     * @param  $request
      * @param  Closure  $next
-     *
      * @return mixed
      */
     public function handle($request, Closure $next)

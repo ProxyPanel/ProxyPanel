@@ -77,6 +77,7 @@ return [
         'wechat' => 'Wechat',
         'alipay' => 'Alipay',
         'crypto' => 'Cryptocurrency',
+        'manual' => 'Manual Pay',
     ],
     'recommend'      => 'Recommend',
     'advance'        => 'Advance',

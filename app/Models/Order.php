@@ -167,6 +167,7 @@ class Order extends Model
             4 => trans('common.payment.crypto'),
             5 => 'PayPal',
             6 => 'Stripe',
+            7 => trans('common.payment.manual'),
         ][$this->attributes['pay_type']] ?? '';
     }
 

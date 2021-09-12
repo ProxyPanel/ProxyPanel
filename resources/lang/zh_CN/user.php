@@ -174,7 +174,7 @@ return [
     'payment'             => [
         'error'           => '充值余额不合规',
         'creating'        => '创建支付单中...',
-        'redirect_stripe' => '转跳至Stripe支付界面...',
+        'redirect_stripe' => '转跳至Stripe支付界面',
         'qrcode_tips'     => '请使用<strong class="red-600">:software</strong>扫描二维码',
         'close_tips'      => '请在<code>:minutes分钟</code>内完成支付，否则订单将会自动关闭',
         'mobile_tips'     => '<strong>手机用户</strong>：长按二维码 -> 保存图片 ->打开支付软件 -> 扫一扫 -> 选择相册 进行付款',
