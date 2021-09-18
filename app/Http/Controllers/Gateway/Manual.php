@@ -50,11 +50,19 @@ class Manual extends AbstractPayment
     {
         $code = $request->input('sign');
         $status = $request->input('status');
-        if ($code && $status) {
+        if (isset($status, $code)) {
             $payment = Payment::findOrFail((int) string_decrypt($code));
-            if ($payment && $payment->order) {
-                $payment->order->complete();
+            if ($payment && $payment->order && $payment->order->status === 1) {
+                if ($status) {
+                    $payment->order->complete();
+                } else {
+                    $payment->order->close();
+                }
+
+                exit('success');
             }
+            exit('fail');
         }
+        exit('No enough information');
     }
 }

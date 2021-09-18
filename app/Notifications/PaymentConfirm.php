@@ -30,7 +30,7 @@ class PaymentConfirm extends Notification
         $order = $this->order;
         $goods = $this->order->goods;
         $sign = string_encrypt($order->payment->id);
-        $message = sprintf("🛒 人工支付\n————————\n\t💰 金额：%s\n\t📦 商品：%s\n\t", $order->amount, $goods->name ?? '余额充值');
+        $message = sprintf("🛒 人工支付\n———————————————\n\t\tℹ️账号：%s\n\t\t💰 金额：%s\n\t\t📦 商品：%s\n\t\t", $order->user->username, $order->amount, $goods->name ?? '余额充值');
         foreach (User::role('Super Admin')->get() as $admin) {
             if (! $admin->telegram_user_id) {
                 continue;
