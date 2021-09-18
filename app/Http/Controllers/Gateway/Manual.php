@@ -51,16 +51,10 @@ class Manual extends AbstractPayment
         $code = $request->input('sign');
         $status = $request->input('status');
         if ($code && $status) {
-            $id = openssl_decrypt(base64url_decode($code), 'aes-128-ctr', config('app.key'), OPENSSL_RAW_DATA);
-            $payment = Payment::findOrFail($id);
+            $payment = Payment::findOrFail((int) string_decrypt($code));
             if ($payment && $payment->order) {
                 $payment->order->complete();
             }
         }
-    }
-
-    public function decode($string)
-    {
-        return openssl_decrypt(base64url_decode($string), 'aes-128-ctr', config('app.key'), OPENSSL_RAW_DATA);
     }
 }

@@ -93,3 +93,19 @@ if (! function_exists('sysConfig')) {
         return config('settings.'.$name);
     }
 }
+
+// 字段加密
+if (! function_exists('string_encrypt')) {
+    function string_encrypt(string $data): string
+    {
+        return base64url_encode(openssl_encrypt($data, 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16)));
+    }
+}
+
+// 字段解密
+if (! function_exists('string_decrypt')) {
+    function string_decrypt(string $data): string
+    {
+        return openssl_decrypt(base64url_decode($data), 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16));
+    }
+}
