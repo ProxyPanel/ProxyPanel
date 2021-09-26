@@ -192,7 +192,7 @@ class ClientController extends Controller
                 $proxyGroup .= $server['name'].', ';
             }
         }
-        
+
         if (str_contains($target, 'list')) {
             return $proxies;
         }
