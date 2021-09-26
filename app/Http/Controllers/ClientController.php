@@ -16,7 +16,7 @@ class ClientController extends Controller
 {
     public function config(string $target, User $user, array $servers)
     {
-        if (str_contains($target, 'quantumult%20x')) {
+        if (str_contains($target, 'quantumult x')) {
             return $this->quantumultX($user, $servers);
         }
         if (str_contains($target, 'quantumult')) {
@@ -29,7 +29,7 @@ class ClientController extends Controller
             return $this->surfboard($user, $servers);
         }
         if (str_contains($target, 'surge')) {
-            return $this->surge($user, $servers);
+            return $this->surge($target, $user, $servers);
         }
         if (str_contains($target, 'shadowrocket')) {
             return $this->shadowrocket($user, $servers);
@@ -173,7 +173,7 @@ class ClientController extends Controller
         return str_replace(['$subs_link', '$proxies', '$proxy_group'], [$subsURL, $proxies, rtrim($proxyGroup, ', ')], $config);
     }
 
-    private function surge(User $user, array $servers = [])
+    private function surge(string $target, User $user, array $servers = [])
     {
         $proxies = '';
         $proxyGroup = '';
@@ -191,6 +191,10 @@ class ClientController extends Controller
                 $proxies .= Surge::buildTrojan($server);
                 $proxyGroup .= $server['name'].', ';
             }
+        }
+
+        if (str_contains($target, 'list')) {
+            return $proxies;
         }
 
         $defaultConfig = base_path().'/resources/rules/default.surge.conf';
