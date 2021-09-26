@@ -66,10 +66,10 @@
                     </div>
                     <div class="alipay hide">
                         <div class="mx-auto text-center">
-                            <h5>备注1账号</h5>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat1.png')}}" alt=""/>
-                            <h5>填入登录使用的账号</h5>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat2.png')}}" alt=""/>
+                            <h4>备注账号</h4>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay1.png')}}" alt=""/>
+                            <h4>填入登录使用的账号</h4>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay2.png')}}" alt=""/>
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,6 @@
                             <div class="alert alert-info">
                                 {!! trans('user.payment.qrcode_tips', ['software' => trans('common.payment.alipay')]) !!}
                             </div>
-                            <p>{{trans('common.payment.alipay')}}</p>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset(sysConfig('alipay_qrcode'))}}" alt=""/>
                         </div>
                     </div>
@@ -125,7 +124,7 @@
     <script>
         let currentTab = 0; // Current tab is set to be the first tab (0)
         showTab(currentTab); // Display the current tab
-        show(0);
+        show({{sysConfig('wechat_qrcode')? 0 : 1}});
 
         function showTab(n) {
             // This function will display the specified tab of the form ...
@@ -157,11 +156,8 @@
             const x = document.getElementsByClassName('tab');
             // Hide the current tab:
             x[currentTab].style.display = 'none';
-            // Increase or decrease the current tab by 1:
-            currentTab += n;
-
             // if you have reached the end of the form... :
-            if (currentTab >= x.length) {
+            if (currentTab === x.length - 1) {
                 //...the form gets submitted:
                 $.post('{{route('manual.inform', ['payment' => $payment->trade_no])}}', {_token: '{{csrf_token()}}'}, function(ret) {
                     if (ret.status === 'success') {
@@ -172,6 +168,8 @@
                 });
                 return false;
             } else {
+                // Increase or decrease the current tab by 1:
+                currentTab += n;
                 showTab(currentTab);
             }
 
@@ -188,25 +186,36 @@
         }
 
         function show(check) {
+            @if(sysConfig('wechat_qrcode'))
             const $wechat = document.getElementsByClassName('wechat');
             const $btn_wechat = document.getElementById('btn-wechat');
-            const $alipay = document.getElementsByClassName('alipay');
-            const $btn_alipay = document.getElementById('btn-alipay');
             if (check) {
                 for (let i = 0; i < $wechat.length; i++) {
                     $wechat[i].style.display = 'none';
-                    $alipay[i].style.display = 'inline';
                 }
                 $btn_wechat.classList.remove('btn-success');
-                $btn_alipay.classList.add('btn-primary');
             } else {
                 for (let i = 0; i < $wechat.length; i++) {
                     $wechat[i].style.display = 'inline';
-                    $alipay[i].style.display = 'none';
                 }
                 $btn_wechat.classList.add('btn-success');
+            }
+            @endif
+            @if(sysConfig('alipay_qrcode'))
+            const $alipay = document.getElementsByClassName('alipay');
+            const $btn_alipay = document.getElementById('btn-alipay');
+            if (check) {
+                for (let i = 0; i < $alipay.length; i++) {
+                    $alipay[i].style.display = 'inline';
+                }
+                $btn_alipay.classList.add('btn-primary');
+            } else {
+                for (let i = 0; i < $alipay.length; i++) {
+                    $alipay[i].style.display = 'none';
+                }
                 $btn_alipay.classList.remove('btn-primary');
             }
+            @endif
         }
     </script>
 @endsection
