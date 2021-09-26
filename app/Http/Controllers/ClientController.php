@@ -193,8 +193,8 @@ class ClientController extends Controller
             }
         }
         
-        if(str_contains($target, 'list')) {
-      		return $proxies;
+        if (str_contains($target, 'list')) {
+            return $proxies;
         }
 
         $defaultConfig = base_path().'/resources/rules/default.surge.conf';
