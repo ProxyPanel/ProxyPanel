@@ -85,14 +85,20 @@ return [
         'unbind'     => 'Unbind',
     ],
     'coupon'              => [
-        'attribute'   => 'Coupon',
-        'voucher'     => 'Voucher',
-        'recharge'    => 'Gift Card',
-        'inactive'    => 'Coupon Inactive',
-        'wait_active' => 'The Event will begin until :time, Please wait',
-        'limit'       => 'Coupon Not Satisfied',
-        'higher'      => 'The minimum requirement of this coupon is ¥:amount',
-        'discount'    => 'Discount',
+        'attribute' => 'Coupon',
+        'voucher'   => 'Voucher',
+        'recharge'  => 'Gift Card',
+        'discount'  => 'Discount',
+        'error'     => [
+            'unknown'  => 'unKnown Coupon',
+            'used'     => 'This Coupon has been used.',
+            'expired'  => 'Out of Date',
+            'run_out'  => 'Run Out of Usage',
+            'inactive' => 'Coupon Inactive yet',
+            'wait'     => 'The Event will begin until :time, Please wait',
+            'limit'    => 'Order\'s price is reach the minimum requirement of this coupon',
+            'higher'   => 'The minimum requirement of this coupon is ¥:amount',
+        ],
     ],
     'error_response'      => 'Something went wrong, please try again later.',
     'invite'              => [
@@ -164,7 +170,7 @@ return [
     'payment'             => [
         'error'           => 'The recharge balance is not compliant',
         'creating'        => 'Creating payment order...',
-        'redirect_stripe' => 'Redirect to Stripe ...',
+        'redirect_stripe' => 'Redirect to Stripe',
         'qrcode_tips'     => 'Please using <strong class="red-600">:software</strong> to scan QrCode',
         'close_tips'      => 'Please complete payment in <code>:minutes minutes</code>, otherwise it will be auto-closed by system',
         'mobile_tips'     => '<strong>Mobile User</strong>：Press QrCode image for a short amount of time -> Save Images -> Open payment software -> Scan it',
@@ -176,6 +182,10 @@ return [
         'amount'                  => 'Amount',
         'active_prepaid_question' => 'Are you sure to active prepaid order?',
         'active_prepaid_tips'     => 'After active：<br>Current order will be set to expired! <br> Expired dates will be recalculated!',
+    ],
+    'service'             => [
+        'node_count' => 'Include <code>:num</code> Nodes',
+        'unlimited'  => 'Unlimited Speed',
     ],
     'node'                => [
         'info'     => 'Configuration information',

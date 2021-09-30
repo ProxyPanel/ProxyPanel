@@ -57,6 +57,16 @@
                                 </div>
                             </div>
                             <div class="form-group row">
+                                <label for="level" class="col-md-2 col-form-label">分类</label>
+                                <div class="col-md-4">
+                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="category_id" id="category_id">
+                                        @foreach ($categories as $category)
+                                        <option value="{{$category->id}}">{{$category->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="level" class="col-md-2 col-form-label">等级</label>
                                 <div class="col-md-4">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="level" id="level">
@@ -71,6 +81,14 @@
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="renew" id="renew" step="0.01" value="0"/>
                                     <span class="input-group-text">元</span>
+                                </div>
+                            </div>
+                            <div class="form-group row package-renew">
+                                <label class="col-md-2 col-form-label" for="speed_limit">用户限速</label>
+                                <div class="col-md-4 input-group">
+                                    <input type="number" style="width: 30%" class="form-control" name="speed_limit" id="speed_limit" value="0"/>
+                                    <span class="input-group-text"> Mbps</span>
+                                    <span class="text-help">为 0 时不限速 </span>
                                 </div>
                             </div>
                             <div class="form-group row package-renew">
@@ -116,6 +134,8 @@
                                     <span class="text-help"> 到期后会自动从总流量扣减对应的流量 </span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="is_hot">热销</label>
                                 <div class="col-md-10">
@@ -130,8 +150,6 @@
                                            data-on-text="上架" data-off-text="下架" data-size="small">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-6 col-md-12">
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="sort">排序</label>
                                 <div class="col-md-4">
@@ -197,6 +215,7 @@
             $('#level').selectpicker('val', '{{$good->level}}');
             @if ($good->type == 2)
             $('#renew').val('{{$good->renew}}');
+            $('#speed_limit').val('{{$good->speed_limit}}');
             $('#period').val('{{$good->period}}');
             $('#days').val('{{$good->days}}').attr('disabled', true);
             @endif
@@ -212,6 +231,7 @@
             $('#color').asColorPicker('val', '{{$good->color}}');
             $('#description').val(@json($good->description));
             $('#info').val(@json($good->info));
+            $('#category_id').selectpicker('val', '{{$good->category_id}}');
             const trafficUnit = $('#traffic_unit');
             const traffic = $('#traffic');
             @if($good->traffic >= 1073741824)
@@ -239,6 +259,7 @@
             $('#level').selectpicker('val', '{{old('level')}}');
             @if (old('type') == 2)
             $('#renew').val('{{old('renew',0)}}');
+            $('#speed_limit').val('{{old('speed_limit',0)}}');
             $('#period').val('{{old('period',0)}}');
             $('#days').val('{{old('days',0)}}');
             @endif

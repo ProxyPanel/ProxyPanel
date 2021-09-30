@@ -31,7 +31,7 @@ class PushBearChannel
             return false;
         }
         // 发送错误
-        Log::error('Bark消息推送异常：'.var_export($response, true));
+        Log::critical('PushBear消息推送异常：'.var_export($response, true));
 
         return false;
     }

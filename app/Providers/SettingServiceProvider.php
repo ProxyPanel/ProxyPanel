@@ -3,7 +3,10 @@
 namespace App\Providers;
 
 use App\Channels\BarkChannel;
+use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
+use App\Channels\TgChatChannel;
+use App\Channels\WeChatChannel;
 use App\Models\Config;
 use Cache;
 use Illuminate\Support\ServiceProvider;
@@ -42,7 +45,7 @@ class SettingServiceProvider extends ServiceProvider
             ->whereNotIn('name', $notifications) // 设置一般系统选项
             ->pluck('value', 'name')
             ->merge($settings->whereIn('name', $notifications)->pluck('value', 'name')->map(function ($item) {
-                return self::setChannel(json_decode($item, true)); // 设置通知相关选项
+                return self::setChannel(json_decode($item, true) ?? (is_array($item) ? $item : [$item])); // 设置通知相关选项
             }))
             ->merge(collect(['is_onlinePay' => $settings->whereIn('name', $payments)->pluck('value')->filter()->isNotEmpty()])) // 设置在线支付开关
             ->sortKeys()
@@ -70,7 +73,10 @@ class SettingServiceProvider extends ServiceProvider
                 'telegram'   => TelegramChannel::class,
                 'beary'      => BearyChatChannel::class,
                 'bark'       => BarkChannel::class,
+                'pushPlus'   => PushPlusChannel::class,
                 'serverChan' => ServerChanChannel::class,
+                'tgChat'     => TgChatChannel::class,
+                'weChat'     => WeChatChannel::class,
             ] as $key => $channel
         ) {
             $index = array_search($key, $channels, true);

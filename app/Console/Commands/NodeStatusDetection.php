@@ -20,7 +20,7 @@ class NodeStatusDetection extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         if (sysConfig('node_offline_notification')) {// 检测节点心跳是否异常
             $this->checkNodeStatus();
@@ -34,10 +34,9 @@ class NodeStatusDetection extends Command
             }
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info("---【{$this->description}】完成---，耗时 {$jobUsedTime} 秒");
+        Log::info("---【{$this->description}】完成---，耗时 {$jobTime} 秒");
     }
 
     private function checkNodeStatus()
@@ -76,19 +75,19 @@ class NodeStatusDetection extends Command
         $detectionCheckTimes = sysConfig('detection_check_times');
 
         foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
-            $node_id = (int) $node->id;
+            $node_id = $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
                 if ($node->detection_type !== 1) {
                     $icmpCheck = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22);
-                    if ($icmpCheck !== false && $icmpCheck !== '通讯正常') {
-                        $data[$node_id][$ip]['icmp'] = $icmpCheck;
+                    if ($icmpCheck !== false && $icmpCheck !== 1) {
+                        $data[$node_id][$ip]['icmp'] = config('common.network_status')[$icmpCheck];
                     }
                 }
                 if ($node->detection_type !== 2) {
                     $tcpCheck = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22);
-                    if ($tcpCheck !== false && $tcpCheck !== '通讯正常') {
-                        $data[$node_id][$ip]['tcp'] = $tcpCheck;
+                    if ($tcpCheck !== false && $tcpCheck !== 1) {
+                        $data[$node_id][$ip]['tcp'] = config('common.network_status')[$tcpCheck];
                     }
                 }
             }

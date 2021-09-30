@@ -40,9 +40,12 @@ class EPay extends AbstractPayment
             if ($this->paymentReceived($request->input('out_trade_no'))) {
                 exit('SUCCESS');
             }
+
+            Log::error('【易支付】验签失败：'.var_export($request->all(), true));
         } else {
-            Log::error('易支付：交易失败');
+            Log::error('【易支付】交易失败：'.var_export($request->all(), true));
         }
+
         exit('FAIL');
     }
 

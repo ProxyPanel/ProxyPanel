@@ -135,8 +135,18 @@ class NodeController extends Controller
     public function checkNode(Node $node): JsonResponse
     {
         foreach ($node->ips() as $ip) {
-            $data[$ip][0] = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22); // ICMP
-            $data[$ip][1] = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22); // TCP
+            $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22); // ICMP
+            $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22); // TCP
+            if ($icmp) {
+                $data[$ip][0] = config('common.network_status')[$icmp];
+            } else {
+                $data[$ip][0] = ' ';
+            }
+            if ($tcp) {
+                $data[$ip][1] = config('common.network_status')[$tcp];
+            } else {
+                $data[$ip][1] = ' ';
+            }
         }
 
         return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);

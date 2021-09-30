@@ -34,7 +34,7 @@ class OrderService
             self::$payment->complete();
 
             // 余额充值
-            if (self::$order->goods_id === 0 || self::$order->goods_id === null) {
+            if (self::$order->goods_id === null) {
                 return $this->chargeCredit();
             }
         }
@@ -53,7 +53,7 @@ class OrderService
                 $this->setCommissionExpense(self::$user); // 返利
                 break;
             default:
-                Log::warning('【处理订单】出现错误-未知套餐类型');
+                Log::emergency('【处理订单】出现错误-未知套餐类型');
         }
 
         return true;
@@ -103,9 +103,10 @@ class OrderService
         Order::whereId(self::$order->id)->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
-            'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-            'level'      => self::$goods->level,
-            'enable'     => 1,
+            'invite_num'  => self::$user->invite_num + (self::$goods->invite_num ?: 0),
+            'level'       => self::$goods->level,
+            'speed_limit' => self::$goods->speed_limit,
+            'enable'      => 1,
         ];
 
         // 无端口用户 添加端口

@@ -33,7 +33,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
 
     private function markdownMessage()
     {
-        $content = '| '.trans('user.attribute.node').' | '.trans('notification.node.upload').' | '.trans('notification.node.download').' | '.trans('notification.node.total')." |\r\n| ------ | :------: | :------: | ------: |\r\n";
+        $content = '| '.trans('user.attribute.node').' | '.trans('notification.node.upload').' | '.trans('notification.node.download').' | '.trans('notification.node.total')." |\r\n| :------ | :------: | :------: | ------: |\r\n";
         foreach ($this->data as $node) {
             $content .= "| {$node['name']} | {$node['upload']} | {$node['download']} | {$node['total']} |\r\n";
         }

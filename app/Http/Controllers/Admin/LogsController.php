@@ -15,6 +15,7 @@ use App\Models\UserCreditLog;
 use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use Illuminate\Http\Request;
+use Response;
 
 class LogsController extends Controller
 {
@@ -43,9 +44,9 @@ class LogsController extends Controller
 
         $request->whenFilled('is_coupon', function ($value) use ($query) {
             if ($value) {
-                $query->where('coupon_id', '<>');
+                $query->where('coupon_id', '<>', null);
             } else {
-                $query->where('coupon_id');
+                $query->where('coupon_id', 'null');
             }
         });
 
@@ -56,6 +57,18 @@ class LogsController extends Controller
         }
 
         return view('admin.logs.order', ['orders' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page'))]);
+    }
+
+    public function changeOrderStatus(Request $request)
+    {
+        $order = Order::findOrFail($request->input('oid'));
+        $status = $request->input('status');
+
+        if ($order->update(['status' => $status])) {
+            return Response::json(['status' => 'success', 'message' => '更新成功']);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '更新失败']);
     }
 
     // 流量日志

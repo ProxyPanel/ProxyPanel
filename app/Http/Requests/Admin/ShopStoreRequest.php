@@ -19,6 +19,7 @@ class ShopStoreRequest extends FormRequest
             'traffic_unit' => 'numeric|nullable',
             'invite_num' => 'numeric',
             'limit_num' => 'numeric',
+            'speed_limit' => 'numeric',
             'days' => 'required|numeric',
             'is_hot' => 'nullable|string',
             'status' => 'nullable|string',

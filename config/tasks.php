@@ -14,7 +14,7 @@ return [
         'user_baned_logs'       => '-3 month', // 清除用户封禁日志
         'user_daily_logs_nodes' => '-1 month', // 清除用户各节点的每天流量数据日志
         'user_daily_logs_total' => '-3 month', // 清除用户节点总计的每天流量数据日志
-        'user_hourly_logs'      => '-3 days', // 清除用户每时各流量数据日志
+        'user_hourly_logs'      => '-3 days', // 清除用户每时各流量数据日志 最少值为 2
         'login_logs'            => '-3 month', // 清除用户登陆日志
         'subscribe_logs'        => '-1 month', // 清理用户订阅请求日志
         'traffic_logs'          => '-3 days', // 清除用户流量日志

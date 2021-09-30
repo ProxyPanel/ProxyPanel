@@ -16,31 +16,31 @@ class ClientController extends Controller
 {
     public function config(string $target, User $user, array $servers)
     {
-        if (strpos($target, 'quantumult%20x') !== false) {
+        if (str_contains($target, 'quantumult x')) {
             return $this->quantumultX($user, $servers);
         }
-        if (strpos($target, 'quantumult') !== false) {
+        if (str_contains($target, 'quantumult')) {
             return $this->quantumult($user, $servers);
         }
-        if (strpos($target, 'clash') !== false) {
+        if (str_contains($target, 'clash')) {
             return $this->clash($servers);
         }
-        if (strpos($target, 'surfboard') !== false) {
+        if (str_contains($target, 'surfboard')) {
             return $this->surfboard($user, $servers);
         }
-        if (strpos($target, 'surge') !== false) {
-            return $this->surge($user, $servers);
+        if (str_contains($target, 'surge')) {
+            return $this->surge($target, $user, $servers);
         }
-        if (strpos($target, 'shadowrocket') !== false) {
+        if (str_contains($target, 'shadowrocket')) {
             return $this->shadowrocket($user, $servers);
         }
-        if (strpos($target, 'v2rayn') !== false) {
+        if (str_contains($target, 'v2rayn')) {
             return $this->v2rayN($user, $servers);
         }
-        if (strpos($target, 'v2rayng') !== false) {
+        if (str_contains($target, 'v2rayng')) {
             return $this->v2rayN($user, $servers);
         }
-        if (strpos($target, 'v2rayu') !== false) {
+        if (str_contains($target, 'v2rayu')) {
             return $this->v2rayN($user, $servers);
         }
 //            if (strpos($target, 'shadowsocks') !== false) {
@@ -173,7 +173,7 @@ class ClientController extends Controller
         return str_replace(['$subs_link', '$proxies', '$proxy_group'], [$subsURL, $proxies, rtrim($proxyGroup, ', ')], $config);
     }
 
-    private function surge(User $user, array $servers = [])
+    private function surge(string $target, User $user, array $servers = [])
     {
         $proxies = '';
         $proxyGroup = '';
@@ -191,6 +191,10 @@ class ClientController extends Controller
                 $proxies .= Surge::buildTrojan($server);
                 $proxyGroup .= $server['name'].', ';
             }
+        }
+
+        if (str_contains($target, 'list')) {
+            return $proxies;
         }
 
         $defaultConfig = base_path().'/resources/rules/default.surge.conf';

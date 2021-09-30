@@ -66,7 +66,7 @@ class UserController extends Controller
 
         // 不活跃用户
         $request->whenFilled('paying', function () use ($query) {
-            $payingUser = Order::whereStatus(2)->where('goods_id', '<>', 0)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
+            $payingUser = Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
             $query->whereIn('id', $payingUser);
         });
 
@@ -188,7 +188,7 @@ class UserController extends Controller
 
             // 非演示环境才可以修改管理员密码
             $password = $request->input('password');
-            if (! empty($password) && ! (env('APP_DEMO') && $user->id === 1)) {
+            if (! empty($password) && ! (config('app.demo') && $user->id === 1)) {
                 $data['password'] = $password;
             }
 

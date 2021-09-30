@@ -19,6 +19,7 @@ class ShopUpdateRequest extends FormRequest
             'is_hot' => 'nullable|string',
             'status' => 'nullable|string',
             'sort' => 'numeric',
+            'speed_limit' => 'numeric',
             'color' => 'nullable|string',
             'logo' => 'nullable|image',
             'description' => 'nullable|string',

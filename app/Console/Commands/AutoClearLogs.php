@@ -27,17 +27,16 @@ class AutoClearLogs extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         // 清除日志
         if (sysConfig('is_clear_log')) {
             $this->clearLog();
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
 
     // 清除日志
@@ -72,7 +71,7 @@ class AutoClearLogs extends Command
             UserBanedLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_baned_logs'))))->delete();
 
             // 清除用户各节点 / 节点总计的每天流量数据日志
-            UserDailyDataFlow::where('node_id', '<>')
+            UserDailyDataFlow::where('node_id', '<>', null)
                 ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_nodes'))))
                 ->orWhere('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_total'))))
                 ->delete();
@@ -89,7 +88,7 @@ class AutoClearLogs extends Command
             // 清除用户流量日志
             UserDataFlowLog::where('log_time', '<=', strtotime(config('tasks.clean.traffic_logs')))->delete();
         } catch (Exception $e) {
-            Log::error('【清理日志】错误： '.$e->getMessage());
+            Log::emergency('【清理日志】错误： '.$e->getMessage());
         }
     }
 }

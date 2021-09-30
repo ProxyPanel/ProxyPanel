@@ -11,8 +11,7 @@ class NetworkDetection
      * 用外部API进行Ping检测.
      *
      * @param  string  $ip  被检测的IP或者域名
-     *
-     * @return bool|array
+     * @return bool
      */
     public function ping(string $ip)
     {
@@ -66,8 +65,7 @@ class NetworkDetection
      * @param  string  $ip  被检测的IP
      * @param  bool  $is_icmp  TRUE 为ICMP,FALSE 为tcp
      * @param  int|null  $port  检测端口，默认为空
-     *
-     * @return bool|string
+     * @return bool
      */
     public function networkCheck(string $ip, bool $is_icmp, int $port = null)
     {
@@ -130,7 +128,7 @@ class NetworkDetection
             }
 
             if (! $message['success']) {
-                if ($message['error'] && $message['error'] === 'execute timeout (3s)') {
+                if (isset($message['error']) && $message['error'] === 'execute timeout (3s)') {
                     return false;
                 }
 
@@ -140,18 +138,18 @@ class NetworkDetection
             }
 
             if ($message['firewall-enable'] && $message['firewall-disable']) {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if ($message['firewall-enable'] && ! $message['firewall-disable']) {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message['firewall-enable'] && $message['firewall-disable']) {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -177,18 +175,18 @@ class NetworkDetection
             }
 
             if ($cn[$checkName] === 'success' && $us['outside_'.$checkName] === 'success') {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if ($cn[$checkName] === 'success' && $us['outside_'.$checkName] !== 'success') {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if ($cn[$checkName] !== 'success' && $us['outside_'.$checkName] === 'success') {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
@@ -216,26 +214,25 @@ class NetworkDetection
             }
 
             if ($message['data']['data']['inner'.$checkName] && $message['data']['data']['out'.$checkName]) {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if ($message['data']['data']['inner'.$checkName] && ! $message['data']['data']['out'.$checkName]) {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message['data']['data']['inner'.$checkName] && $message['data']['data']['out'.$checkName]) {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
     }
 
-    // 来源：https://www.idcoffer.com/ipcheck
     private function idcoffer(string $ip, bool $is_icmp, int $port = null)
-    {
+    { // 来源：https://www.idcoffer.com/ipcheck
         $cn = "https://api.24kplus.com/ipcheck?host={$ip}&port={$port}";
         $us = "https://api.idcoffer.com/ipcheck?host={$ip}&port={$port}";
         $checkName = $is_icmp ? 'ping' : 'tcp';
@@ -259,26 +256,25 @@ class NetworkDetection
             }
 
             if ($cn['data'][$checkName] && $us['data'][$checkName]) {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if ($cn['data'][$checkName] && ! $us['data'][$checkName]) {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $cn['data'][$checkName] && $us['data'][$checkName]) {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
     }
 
-    // 来源：https://ping.gd/
     private function gd(string $ip, bool $is_icmp, int $port = 443)
-    {
+    { // 来源：https://ping.gd/
         $url = "https://ping.gd/api/ip-test/{$ip}:".($port ?? 443);
 
         $checkName = $is_icmp ? 'ping_alive' : 'telnet_alive';
@@ -294,26 +290,25 @@ class NetworkDetection
             }
 
             if ($message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if ($message[0]['result'][$checkName] && ! $message[1]['result'][$checkName]) {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! $message[0]['result'][$checkName] && $message[1]['result'][$checkName]) {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;
     }
 
-    // 来源：https://ip112.cn/
     private function ip112(string $ip, bool $is_icmp, int $port = 443)
-    {
+    { // 来源：https://ip112.cn/
         $cn = 'https://api.zhujiquanzi.com/ipcheck/ipcheck.php';
         $us = 'https://api.52bwg.com/ipcheck/ipcheck.php';
         $checkName = $is_icmp ? 'icmp' : 'tcp';
@@ -331,18 +326,18 @@ class NetworkDetection
             }
 
             if (str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
-                return '通讯正常'; // 正常
+                return 1; // 正常
             }
 
             if (str_contains($cn[$checkName], 'green') && ! str_contains($us[$checkName], 'green')) {
-                return '海外阻断'; // 国外访问异常
+                return 2; // 国外访问异常
             }
 
             if (! str_contains($cn[$checkName], 'green') && str_contains($us[$checkName], 'green')) {
-                return '国内阻断'; // 被墙
+                return 3; // 被墙
             }
 
-            return '断连'; // 服务器宕机
+            return 4; // 服务器宕机
         }
 
         return false;

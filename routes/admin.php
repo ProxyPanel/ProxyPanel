@@ -68,6 +68,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::get('order', 'LogsController@orderList')->name('order'); // 订单列表
+        Route::post('order/edit', 'LogsController@changeOrderStatus')->name('order.edit'); // 订单列表
+
+        Route::prefix('report')->name('report.')->group(function () {
+            Route::get('accounting', 'ReportController@accounting')->name('accounting'); // 流水账簿
+            Route::get('user/analysis', 'ReportController@userAnalysis')->name('userAnalysis'); // 用户流量分析
+        });
+
         Route::prefix('log')->name('log.')->group(function () {
             Route::get('traffic', 'LogsController@trafficLog')->name('traffic'); // 流量日志
             Route::get('userCredit', 'LogsController@userCreditLogList')->name('credit'); // 余额变动记录
@@ -94,6 +101,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::resource('label', 'LabelController')->only('store', 'update', 'destroy'); // 标签配置
             Route::resource('level', 'LevelController')->only('store', 'update', 'destroy'); // 等级配置
             Route::resource('ss', 'SsConfigController')->only('store', 'update', 'destroy'); // ss配置
+            Route::resource('category', 'CategoryController')->only('store', 'update', 'destroy'); // 商品分类配置
         });
 
         Route::resource('permission', 'PermissionController')->except('show');

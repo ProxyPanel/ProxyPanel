@@ -29,12 +29,12 @@ class THeadPay extends AbstractPayment
                 $payment->update(['qr_code' => 1, 'url' => $result['code_url']]);
 
                 return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
-            } else {
-                Log::error('【平头哥支付】 返回错误信息：'.$result['message']);
             }
+
+            Log::error('【平头哥支付】 返回错误信息：'.$result['message']);
         }
 
-        Log::error('【平头哥支付】 支付渠道建立订单出现问题');
+        Log::alert('【平头哥支付】 支付渠道建立订单出现问题!');
 
         return Response::json(['status' => 'fail', 'message' => '创建在线订单失败，请工单通知管理员！']);
     }

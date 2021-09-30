@@ -8,6 +8,7 @@ return [
             'credit'    => '余额',
             'epay'      => '易支付',
             'f2fpay'    => '支付宝当面付',
+            'manual'    => '人工支付',
             'paybeaver' => '海狸支付',
             'payjs'     => 'PayJs',
             'paypal'    => 'PayPal',
@@ -23,6 +24,7 @@ return [
             4 => 'coin.png',
             5 => 'paypal.png',
             6 => 'stripe.png',
+            7 => 'pay.svg',
         ],
     ],
 
@@ -46,6 +48,25 @@ return [
             'gitlab'    => 'fa-gitlab',
             'bitbucket' => 'fa-bitbucket',
             'telegram'  => 'fa-telegram',
+        ],
+    ],
+
+    'network_status' => [
+        1 => '✔️ 通讯正常',
+        2 => '🛑 海外阻断',
+        3 => '🛑 国内阻断',
+        4 => '❌ 断连',
+    ],
+
+    'notification' => [
+        'labels' => [
+            1 => '邮件',
+            2 => 'ServerChan',
+            3 => 'Bark',
+            4 => 'Telegram',
+            5 => '微信企业',
+            6 => 'TG酱',
+            7 => 'PushPlus',
         ],
     ],
 ];

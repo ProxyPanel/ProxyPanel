@@ -17,7 +17,7 @@ class DailyJob extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         $this->expireUser(); // 过期用户处理
         $this->closeTickets(); // 关闭用户超时未处理的工单
@@ -26,10 +26,9 @@ class DailyJob extends Command
             $this->resetUserTraffic();
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
 
     private function expireUser()// 过期用户处理
@@ -116,9 +115,9 @@ class DailyJob extends Command
                     if ($user->update((new OrderService($order))->resetTimeAndData($user->expired_at))) {
                         // 可用流量变动日志
                         Helpers::addUserTrafficModifyLog($order->user_id, $order->id, $oldData, $user->transfer_enable, '【流量重置】重置可用流量');
-                        Log::info('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time ?: '【无】'));
+                        Log::notice('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置为 '.flowAutoShow($user->transfer_enable).'. 重置日期为 '.($user->reset_time ?: '【无】'));
                     } else {
-                        Log::warning('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置失败');
+                        Log::alert('用户[ID：'.$user->id.'  昵称： '.$user->nickname.'  邮箱： '.$user->username.'] 流量重置失败');
                     }
                 }
             });

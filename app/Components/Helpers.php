@@ -153,10 +153,9 @@ class Helpers
      * @param  string  $address  收信方
      * @param  int  $status  投递状态
      * @param  string  $error  投递失败时记录的异常信息
-     *
      * @return int
      */
-    public static function addNotificationLog(string $title, string $content, int $type, $address = 'admin', $status = 1, $error = ''): int
+    public static function addNotificationLog(string $title, string $content, int $type, string $address = 'admin', int $status = 1, string $error = ''): int
     {
         $log = new NotificationLog();
         $log->type = $type;
@@ -177,7 +176,6 @@ class Helpers
      * @param  int  $couponId  优惠券ID
      * @param  int|null  $goodsId  商品ID
      * @param  int|null  $orderId  订单ID
-     *
      * @return bool
      */
     public static function addCouponLog($description, $couponId, $goodsId = null, $orderId = null): bool
@@ -200,7 +198,6 @@ class Helpers
      * @param  int  $after  记录后余额
      * @param  int  $amount  发生金额
      * @param  string  $description  描述
-     *
      * @return bool
      */
     public static function addUserCreditLog($userId, $orderId, $before, $after, $amount, $description = ''): bool
@@ -225,7 +222,6 @@ class Helpers
      * @param  int  $before  记录前的值
      * @param  int  $after  记录后的值
      * @param  string  $description  描述
-     *
      * @return bool
      */
     public static function addUserTrafficModifyLog($userId, $orderId, $before, $after, $description = ''): bool

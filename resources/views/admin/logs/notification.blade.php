@@ -16,10 +16,9 @@
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onchange="this.form.submit()">
                             <option value="" hidden>类型</option>
-                            <option value="1">邮件</option>
-                            <option value="2">ServerChan</option>
-                            <option value="3">Bark</option>
-                            <option value="4">Telegram</option>
+                            @foreach(config('common.notification.labels') as $key => $value)
+                                <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
@@ -43,7 +42,7 @@
                     @foreach($notificationLogs as $log)
                         <tr>
                             <td> {{$log->id}} </td>
-                            <td> {{$log->type === 1 ? 'Email' : ($log->type === 2? 'ServerChan': 'Bark')}} </td>
+                            <td> {{$log->type_label}} </td>
                             <td> {{$log->address}} </td>
                             <td> {{$log->title}} </td>
                             <td> {{$log->content}} </td>

@@ -56,9 +56,9 @@ class addUser implements ShouldQueue
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
-                Log::warning('【新增用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
+                Log::alert('【新增用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
             } else {
-                Log::info('【新增用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->data, true).'）');
+                Log::notice('【新增用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->data, true).'）');
             }
         }
     }
@@ -66,6 +66,6 @@ class addUser implements ShouldQueue
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::error('【新增用户】推送异常：'.$exception->getMessage());
+        Log::alert('【新增用户】推送异常：'.$exception->getMessage());
     }
 }

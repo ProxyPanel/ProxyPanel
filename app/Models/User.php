@@ -26,6 +26,11 @@ class User extends Authenticatable implements JWTSubject
     protected $dates = ['expired_at', 'reset_time'];
     protected $guarded = [];
 
+    public function routeNotificationForMail($notification)
+    {
+        return $this->username;
+    }
+
     public function usedTrafficPercentage()
     {
         return round(($this->used_traffic) / $this->transfer_enable, 2);
@@ -41,6 +46,11 @@ class User extends Authenticatable implements JWTSubject
         $telegram = $this->userAuths()->whereType('telegram')->first();
 
         return $telegram->identifier ?? null;
+    }
+
+    public function userAuths(): HasMany
+    {
+        return $this->hasMany(UserOauth::class);
     }
 
     public function profile()
@@ -68,11 +78,6 @@ class User extends Authenticatable implements JWTSubject
             'invite_num'      => $this->invite_num,
             'status'          => $this->status,
         ];
-    }
-
-    public function userAuths(): HasMany
-    {
-        return $this->hasMany(UserOauth::class);
     }
 
     public function onlineIpLogs(): HasMany
@@ -264,7 +269,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function incrementData(int $data): bool
-    {// 添加用户流量
+    { // 添加用户流量
         $this->transfer_enable += $data;
 
         return $this->save();
@@ -272,7 +277,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function isNotCompleteOrderByUserId(int $userId): bool
     { // 添加用户余额
-
         return Order::uid($userId)->whereIn('status', [0, 1])->exists();
     }
 
@@ -299,7 +303,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function isTrafficWarning(): bool
-    {// 流量异常警告
+    { // 流量异常警告
         return $this->recentTrafficUsed() >= (sysConfig('traffic_ban_value') * GB);
     }
 

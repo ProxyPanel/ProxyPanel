@@ -507,6 +507,7 @@ class PresetSeeder extends Seeder
 
         // 生成初始管理账号
         $user = Helpers::addUser('test@test.com', '123456', 100 * GB, sysConfig('default_days'), null, '管理员');
+        $user->update(['status' => 1]);
         $user->assignRole('Super Admin');
     }
 }

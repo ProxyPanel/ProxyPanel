@@ -14,13 +14,6 @@ class TelegramController extends Controller
 {
     protected $msg;
 
-    public function __construct(Request $request)
-    {
-        if (hash_equals(sysConfig('telegram_token'), $request->input('access_token'))) {
-            abort(500, 'authentication failed');
-        }
-    }
-
     public function webhook(Request $request)
     {
         $this->msg = $this->getMessage($request->input());
@@ -118,7 +111,7 @@ class TelegramController extends Controller
         }
         $telegramService = new TelegramService();
         if (! $oauth = UserOauth::query()->where([
-            'type' => 'telegram',
+            'type'       => 'telegram',
             'identifier' => $msg->chat_id,
         ])->first()) {
             $this->help();

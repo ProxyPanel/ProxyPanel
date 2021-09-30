@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Channels\BarkChannel;
+use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
+use App\Channels\TgChatChannel;
+use App\Channels\WeChatChannel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
@@ -63,36 +66,66 @@ class SystemController extends Controller
         return sysConfig('captcha_secret') && sysConfig('captcha_key');
     }
 
-    public function setExtend(Request $request): RedirectResponse  // 设置系统扩展信息，例如客服、统计代码
+    public function setExtend(Request $request): RedirectResponse  // 设置涉及到上传的设置
     {
-        if ($request->hasFile('website_home_logo')) {
-            $validator = validator()->make($request->all(), ['website_home_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+        if ($request->hasAny(['website_home_logo', 'website_home_logo'])) { // 首页LOGO
+            if ($request->hasFile('website_home_logo')) {
+                $validator = validator()->make($request->all(), ['website_home_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
-            if ($validator->fails()) {
-                return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
+                if ($validator->fails()) {
+                    return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
+                }
+                $file = $request->file('website_home_logo');
+                $ret = $file->move('uploads/logo', $file->getClientOriginalName());
+                if ($ret && Config::find('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+                }
             }
-            $file = $request->file('website_home_logo');
-            $ret = $file->move('uploads/logo', $file->getClientOriginalName());
-            if ($ret && Config::find('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
-                return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+            if ($request->hasFile('website_logo')) { // 站内LOGO
+                $validator = validator()->make($request->all(), ['website_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+                if ($validator->fails()) {
+                    return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
+                }
+                $file = $request->file('website_logo');
+                $ret = $file->move('uploads/logo', $file->getClientOriginalName());
+                if ($ret && Config::findOrFail('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+                }
             }
+
+            return redirect()->route('admin.system.index', '#other')->withErrors('更新失败');
+        } elseif ($request->hasAny(['alipay_qrcode', 'wechat_qrcode'])) {
+            if ($request->hasFile('alipay_qrcode')) {
+                $validator = validator()->make($request->all(), ['alipay_qrcode' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+                if ($validator->fails()) {
+                    return redirect()->route('admin.system.index', '#payment')->withErrors($validator->errors());
+                }
+                $file = $request->file('alipay_qrcode');
+                $ret = $file->move('uploads/images', $file->getClientOriginalName());
+                if ($ret && Config::find('alipay_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', '更新成功');
+                }
+            }
+
+            if ($request->hasFile('wechat_qrcode')) { // 站内LOGO
+                $validator = validator()->make($request->all(), ['wechat_qrcode' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+                if ($validator->fails()) {
+                    return redirect()->route('admin.system.index', '#payment')->withErrors($validator->errors());
+                }
+                $file = $request->file('wechat_qrcode');
+                $ret = $file->move('uploads/images', $file->getClientOriginalName());
+                if ($ret && Config::findOrFail('wechat_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', '更新成功');
+                }
+            }
+
+            return redirect()->route('admin.system.index', '#payment')->withErrors('更新失败');
         }
 
-        // 站内LOGO
-        if ($request->hasFile('website_logo')) {
-            $validator = validator()->make($request->all(), ['website_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
-
-            if ($validator->fails()) {
-                return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
-            }
-            $file = $request->file('website_logo');
-            $ret = $file->move('uploads/logo', $file->getClientOriginalName());
-            if ($ret && Config::findOrFail('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
-                return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
-            }
-        }
-
-        return redirect()->route('admin.system.index', '#other')->withErrors('更新失败');
+        return redirect()->route('admin.system.index');
     }
 
     public function setConfig(SystemRequest $request): JsonResponse // 设置某个配置项
@@ -100,12 +133,12 @@ class SystemController extends Controller
         $name = $request->input('name');
         $value = $request->input('value');
 
-        if (empty($value)) { // 关闭 或 空值 自动设NULL，减少系统设置存储
+        if (empty($value) || $value === 'NaN') { // 关闭 或 空值 自动设NULL，减少系统设置存储
             $value = null;
         }
 
         // 支付设置判断
-        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'], true) && ! in_array($value, $this->getPayment(), true)) {
+        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayment(), true)) {
             return Response::json(['status' => 'fail', 'message' => '请先完善该支付渠道的必要参数！']);
         }
 
@@ -163,6 +196,15 @@ class SystemController extends Controller
                 break;
             case 'telegram':
                 Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TelegramChannel::class]);
+                break;
+            case 'weChat':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [WeChatChannel::class]);
+                break;
+            case 'tgChat':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TgChatChannel::class]);
+                break;
+            case 'pushPlus':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushPlusChannel::class]);
                 break;
             default:
                 return Response::json(['status' => 'fail', 'message' => '未知渠道']);

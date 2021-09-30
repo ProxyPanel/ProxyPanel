@@ -1,20 +1,20 @@
 <?php
 
-define('KB', 1024);
-define('MB', 1048576);
-define('GB', 1073741824);
-define('TB', 1099511627776);
-define('PB', 1125899906842624);
+const KB = 1024;
+const MB = 1048576;
+const GB = 1073741824;
+const TB = 1099511627776;
+const PB = 1125899906842624;
 
-define('Minute', 60);
-define('Hour', 3600);
-define('Day', 86400);
+const Minute = 60;
+const Hour = 3600;
+const Day = 86400;
 
-define('Mbps', 125000);
+const Mbps = 125000;
 
 // base64加密（处理URL）
 if (! function_exists('base64url_encode')) {
-    function base64url_encode($data)
+    function base64url_encode($data): string
     {
         return strtr(base64_encode($data), ['+' => '-', '/' => '_', '=' => '']);
     }
@@ -30,7 +30,7 @@ if (! function_exists('base64url_decode')) {
 
 // 根据流量值自动转换单位输出
 if (! function_exists('flowAutoShow')) {
-    function flowAutoShow($value)
+    function flowAutoShow($value): string
     {
         $value = abs($value);
         if ($value >= PB) {
@@ -59,17 +59,17 @@ if (! function_exists('flowAutoShow')) {
 
 // 秒转时间
 if (! function_exists('seconds2time')) {
-    function seconds2time($seconds)
+    function seconds2time($seconds): string
     {
         $day = floor($seconds / Day);
         $hour = floor(($seconds % Day) / Hour);
         $minute = floor((($seconds % Day) % Hour) / Minute);
         if ($day > 0) {
-            return $day.trans('validation.attributes.day').$hour.trans('validation.attributes.hour').$minute.trans('validation.attributes.minute');
+            return $day.trans_choice('validation.attributes.day', 1).$hour.trans_choice('validation.attributes.hour', 1).$minute.trans('validation.attributes.minute');
         }
 
         if ($hour != 0) {
-            return $hour.trans('validation.attributes.hour').$minute.trans('validation.attributes.minute');
+            return $hour.trans_choice('validation.attributes.hour', 1).$minute.trans('validation.attributes.minute');
         }
 
         return $minute.trans('validation.attributes.minute');
@@ -91,5 +91,21 @@ if (! function_exists('sysConfig')) {
     function sysConfig($name)
     {
         return config('settings.'.$name);
+    }
+}
+
+// 字段加密
+if (! function_exists('string_encrypt')) {
+    function string_encrypt(string $data): string
+    {
+        return base64url_encode(openssl_encrypt($data, 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16)));
+    }
+}
+
+// 字段解密
+if (! function_exists('string_decrypt')) {
+    function string_decrypt(string $data): string
+    {
+        return openssl_decrypt(base64url_decode($data), 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16));
     }
 }

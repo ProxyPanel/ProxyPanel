@@ -14,15 +14,15 @@ class BitpayX extends AbstractPayment
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'merchant_order_id'  => $payment->trade_no,
-            'price_amount'       => (float) $payment->amount,
-            'price_currency'     => 'CNY',
-            'title'              => '支付单号：'.$payment->trade_no,
-            'description'        => sysConfig('subject_name') ?: sysConfig('website_name'),
-            'callback_url'       => route('payment.notify', ['method' => 'bitpayx']),
-            'success_url'        => route('invoice'),
-            'cancel_url'         => route('invoice'),
-            'token'              => $this->sign($this->prepareSignId($payment->trade_no)),
+            'merchant_order_id' => $payment->trade_no,
+            'price_amount'      => (float) $payment->amount,
+            'price_currency'    => 'CNY',
+            'title'             => '支付单号：'.$payment->trade_no,
+            'description'       => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'callback_url'      => route('payment.notify', ['method' => 'bitpayx']),
+            'success_url'       => route('invoice'),
+            'cancel_url'        => route('invoice'),
+            'token'             => $this->sign($this->prepareSignId($payment->trade_no)),
         ];
         if ($request->input('type') == 1) {
             $data['pay_currency'] = 'ALIPAY';
@@ -38,9 +38,14 @@ class BitpayX extends AbstractPayment
             return Response::json(['status' => 'success', 'url' => $result['payment_url'], 'message' => '创建订单成功!']);
         }
 
-        Log::warning('创建订单错误：'.var_export($result, true));
+        Log::alert('【BitpayX】创建订单错误：'.var_export($result, true));
 
-        return Response::json(['status' => 'fail', 'message' => '创建订单失败!'.$result['error']]);
+        return Response::json(['status' => 'fail', 'message' => '创建订单失败! 请联系管理员']);
+    }
+
+    private function sign($data)
+    {
+        return strtolower(md5(md5($data).sysConfig('bitpay_secret')));
     }
 
     private function prepareSignId($tradeNo): string
@@ -53,11 +58,6 @@ class BitpayX extends AbstractPayment
         ksort($data);
 
         return http_build_query($data);
-    }
-
-    private function sign($data)
-    {
-        return strtolower(md5(md5($data).sysConfig('bitpay_secret')));
     }
 
     private function sendRequest($data, $type = 'createOrder')
@@ -86,13 +86,6 @@ class BitpayX extends AbstractPayment
         return json_decode($result, true);
     }
 
-    private function verify_bit($data, $signature)
-    {
-        $mySign = $this->sign($data);
-
-        return $mySign === $signature;
-    }
-
     public function notify($request): void
     {
         $tradeNo = $request->input(['merchant_order_id']);
@@ -103,8 +96,15 @@ class BitpayX extends AbstractPayment
                 exit(json_encode(['status' => 200]));
             }
         } else {
-            Log::info('BitpayX：交易失败');
+            Log::error('【BitpayX】交易失败：'.var_export($request->all(), true));
         }
         exit(json_encode(['status' => 400]));
+    }
+
+    private function verify_bit($data, $signature)
+    {
+        $mySign = $this->sign($data);
+
+        return $mySign === $signature;
     }
 }

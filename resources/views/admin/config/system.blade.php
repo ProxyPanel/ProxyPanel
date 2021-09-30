@@ -110,14 +110,14 @@
                             <x-system.select title="邮箱过滤机制" code="is_email_filtering" help="黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:用户只能选择使用白名单中的邮箱后缀注册"
                                              :list="['关闭' => '', '黑名单' => 1, '白名单' => 2]"/>
                             <x-system.input-limit title="激活账号次数" code="active_times" :value="$active_times" help="24小时内可以通过邮件激活账号次数"/>
-                            <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0时不限制"/>
+                            <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0/留空时不限制"/>
                             <x-system.input-limit title="用户-邀请码有效期" code="user_invite_days" :value="$user_invite_days" min="1" unit="天" help="用户自行生成邀请的有效期"/>
                             <x-system.input-limit title="管理员-邀请码有效期" code="admin_invite_days" :value="$admin_invite_days" min="1" unit="天" help="管理员生成邀请码的有效期"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="node">
                             <x-system.input title="节点订阅地址" :value="$subscribe_domain" code="subscribe_domain" help="（推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https://"
                                             :holder="'默认为 '.$website_url" type="url"/>
-                            <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0时返回全部节点"/>
+                            <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0/留空时返回全部节点"/>
                             <x-system.switch title="随机订阅" code="rand_subscribe" :check="$rand_subscribe" help="启用后，订阅时将随机返回节点信息，否则按节点排序返回"/>
                             <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe" help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
                             <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.ml" type="url"/>
@@ -154,11 +154,20 @@
                         </x-system.tab-pane>
                         <x-system.tab-pane id="notify">
                             <x-system.input-test title="SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
-                                    target=_blank>申请SCKEY</a>）' holder="请到ServerChan申请" test="serverChan"/>
+                                    target=_blank>申请 SCKEY</a>）' holder="请到ServerChan申请" test="serverChan"/>
                             <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="安装并打开Bark后取得" type="url"
                                                  help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值" test="bark"/>
                             <x-system.input-test title="Telegram Token" :value="$telegram_token" code="telegram_token" help="找 <a href=https://t.me/BotFather
                                     target=_blank>@BotFather</a> 申请机器人" test="telegram"/>
+                            <x-system.input title="微信企业ID" :value="$wechat_cid" code="wechat_cid"
+                                            help="获取<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>我的企业</a>中的企业ID"/>
+                            <x-system.input title="微信企业应用ID" :value="$wechat_aid" code="wechat_aid" holder="应用的AgentId"
+                                            help="在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId"/>
+                            <x-system.input-test title="微信企业应用密钥" :value="$wechat_secret" code="wechat_secret" help='应用的Secret（可能需要下载企业微信才能查看）' holder="应用的Secret" test="weChat"/>
+                            <x-system.input-test title="TG酱Token" :value="$tg_chat_token" code="tg_chat_token" help='启用TG酱，请务必填入本值（<a href=https://t.me/realtgchat_bot
+                                    target=_blank>申请 Token</a>）' holder="请到Telegram申请" test="tgChat"/>
+                            <x-system.input-test title="PushPlus Token" :value="$pushplus_token" code="pushplus_token" help='启用PushPlus，请务必填入本值（<a href=https://www.pushplus.plus/push1.html
+                                    target=_blank>申请 Token</a>）' holder="请到ServerChan申请" test="pushPlus"/>
                             <x-system.switch title="PushBear" code="is_push_bear" :check="$is_push_bear"
                                              help='使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）'/>
                             <x-system.input title="PushBear SendKey" :value="$push_bear_send_key" code="push_bear_send_key" help="启用PushBear，请务必填入本值" holder="创建消息通道后即可获取"/>
@@ -170,20 +179,25 @@
                             <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
                             <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
                             <x-system.select title="节点离线提醒" code="node_offline_notification" help="每10分钟检测节点离线并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
                             <x-system.select title="节点阻断提醒" code="node_blocked_notification" help="每小时检测节点是否被阻断并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus'
+                                             => 'pushPlus']"/>
                             <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
-                                                  help="提醒N次后自动下线节点，为0时不限制，不超过12"/>
+                                                  help="提醒N次后自动下线节点，为0/留空时不限制，不超过12"/>
                             <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
                                              :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
                             <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.select title="新工单通知" code="ticket_created_notification" help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.select title="工单回复通知" code="ticket_replied_notification" help="工单回复通知对方" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="auto">
                             <x-system.switch title="自动清除日志" code="is_clear_log" :check="$is_clear_log" help='（推荐）启用后自动清除无用日志'/>
@@ -192,21 +206,27 @@
                             <x-system.input-limit title="订阅请求阈值" code="subscribe_ban_times" :value="$subscribe_ban_times" help="24小时内订阅链接请求次数限制"/>
                             <x-system.switch title="异常自动封号" code="is_traffic_ban" :check="$is_traffic_ban" help='1小时内流量超过异常阈值则自动封号（仅禁用代理）'/>
                             <x-system.select title="流量异常通知" code="data_anomaly_notification" help="1小时内流量超过异常阈值通知超管" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB" help="1小时内超过该值，则触发自动封号"/>
                             <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟" help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
                             <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port" help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
                             <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status" help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
                             <x-system.select title="节点使用报告" code="node_daily_notification" help="报告各节点流量昨日消耗情况" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram']"/>
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="other">
-                            @if($errors->any())
-                                <x-alert type="danger" :message="$errors->all()"/>
-                            @endif
-                            @if (Session::has('successMsg'))
-                                <x-alert type="success" :message="Session::get('successMsg')"/>
-                            @endif
+                            <div class="col-12">
+                                @if($errors->any())
+                                    <x-alert type="danger" :message="$errors->all()"/>
+                                @endif
+                                @if (Session::has('successMsg'))
+                                    <x-alert type="success" :message="Session::get('successMsg')"/>
+                                @endif
+                            </div>
+                            <x-system.input title="首页LOGO" :value="$website_home_logo" code="website_home_logo" type="url"/>
+                            <x-system.input title="站内LOGO" :value="$website_logo" code="website_logo" type="url"/>
                             <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
                                   id="setExtend">@csrf
                                 <x-system.input-file title="首页LOGO" code="website_home_logo" :value="$website_home_logo"/>
@@ -223,7 +243,7 @@
                                     <x-system.select title="QQ钱包" code="is_QQPay" :list="['关闭' => '', '码支付' => 'codepay', '易支付' => 'epay']"/>
                                     <x-system.select title="微信支付" code="is_WeChatPay"
                                                      :list="['关闭' => '', '码支付' => 'codepay', 'PayJS' => 'payjs', '易支付' => 'epay', '海狸支付' => 'paybeaver', '麻瓜宝' => 'bitpayx']"/>
-                                    <x-system.select title="特殊支付" code="is_otherPay" :list="['关闭' => '', '麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
+                                    <x-system.select title="特殊支付" code="is_otherPay" multiple="1" :list="['麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
                                     <x-system.input title="自定义商品名称" :value="$subject_name" code="subject_name" help="用于在支付渠道的商品标题显示"/>
                                     <x-system.input title="通用支付回调地址" :value="$website_callback_url" code="website_callback_url"
                                                     help="防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https://" :holder="'默认为 '.$website_url" type="url"/>
@@ -328,6 +348,29 @@
                                     <x-system.input title="商家ID" :value="$theadpay_mchid" code="theadpay_mchid"/>
                                     <x-system.input title="商家密钥" :value="$theadpay_key" code="theadpay_key"/>
                                 </x-system.tab-pane>
+                                <x-system.tab-pane id="Manual">
+                                    <div class="form-group col-lg-12 d-flex">
+                                        <label class="col-md-3 col-form-label">人工支付</label>
+                                        <div class="col-md-7">
+                                            设置后会自动开启对应显示
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        @if($errors->any())
+                                            <x-alert type="danger" :message="$errors->all()"/>
+                                        @endif
+                                        @if (Session::has('successMsg'))
+                                            <x-alert type="success" :message="Session::get('successMsg')"/>
+                                        @endif
+                                    </div>
+                                    <x-system.input title="支付宝二维码" :value="$alipay_qrcode" code="alipay_qrcode" type="url"/>
+                                    <x-system.input title="微 信二维码" :value="$wechat_qrcode" code="wechat_qrcode" type="url"/>
+                                    <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
+                                          id="setExtend">@csrf
+                                        <x-system.input-file title="支付宝二维码" code="alipay_qrcode" :value="$alipay_qrcode"/>
+                                        <x-system.input-file title="微 信二维码" code="wechat_qrcode" :value="$wechat_qrcode"/>
+                                    </form>
+                                </x-system.tab-pane>
                             </div>
                             <ul class="nav nav-tabs nav-tabs-bottom nav-tabs-line dropup" role="tablist">
                                 <li class="nav-item">
@@ -360,6 +403,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
+                                </li>
                                 <li class="nav-item dropdown" style="display: none;">
                                     <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">菜单</a>
                                     <div class="dropdown-menu" role="menu">
@@ -373,6 +419,7 @@
                                         <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
                                     </div>
                                 </li>
                             </ul>
@@ -396,7 +443,7 @@
     <script>
         $(document).ready(function() {
             $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-            $('#username_type').selectpicker('val', '{{$username_type}}');
+            $('#username_type').selectpicker('val', '{{$username_type ?? 'email'}}');
             $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
             $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
             $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
@@ -406,7 +453,7 @@
             $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
             $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
             $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-            $('#is_otherPay').selectpicker('val', '{{$is_otherPay}}');
+            $('#is_otherPay').selectpicker('val', {!! $is_otherPay !!});
             $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
             $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
             $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
@@ -414,7 +461,7 @@
             $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
             $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
             $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
-            $('#password_reset_notification').selectpicker('val', {!! $password_reset_notification !!});
+            $('#password_reset_notification').selectpicker('val', '{{$password_reset_notification}}');
             $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
             $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
             $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});

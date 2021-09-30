@@ -49,13 +49,11 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        // 记录异常来源
-        Log::info('异常来源：'.get_class($exception));
-
-        // 调试模式下记录错误详情
-        if (config('app.debug') || config('app.demo')) {
+        if (config('app.debug') || config('app.demo')) { // 调试模式下记录错误详情
             Log::debug('来自链接：'.url()->full());
             Log::debug($exception);
+        } else {
+            Log::error('异常来源：'.get_class($exception)); // 记录异常来源
         }
 
         parent::report($exception);
@@ -76,7 +74,7 @@ class Handler extends ExceptionHandler
         if (! config('app.debug')) {
             switch ($exception) {
                 case $exception instanceof NotFoundHttpException: // 捕获访问异常
-                    Log::info('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());
+                    Log::warning('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());
 
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json(['status' => 'fail', 'message' => trans('error.missing_page')], 404);
@@ -92,7 +90,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof TokenMismatchException: // 捕获CSRF异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
-                            'status' => 'fail',
+                            'status'  => 'fail',
                             'message' => trans('error.refresh_page').'<a href="'.route('login').'" target="_blank">'.trans('error.refresh').'</a>',
                         ], 419);
                     }
@@ -111,7 +109,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof ErrorException: // 捕获系统错误异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
-                            'status' => 'fail',
+                            'status'  => 'fail',
                             'message' => trans('error.system').', '.trans('error.visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>',
                         ], 500);
                     }

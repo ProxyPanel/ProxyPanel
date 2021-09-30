@@ -5,8 +5,11 @@ namespace App\Observers;
 use App\Components\Helpers;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\PaymentConfirm;
 use App\Services\OrderService;
 use Arr;
+use Notification;
 
 class OrderObserver
 {
@@ -14,17 +17,18 @@ class OrderObserver
     {
         $changes = $order->getChanges();
         if (Arr::exists($changes, 'status')) {
-            // 本地订单-在线订单 关闭互联
-            if ($changes['status'] === -1) {
-                $payment = $order->payment;
-                if ($payment) {
-                    // 关闭在线订单
-                    $payment->close();
-                    // 退回优惠券
-                    if ($order->coupon_id && $this->returnCoupon($order->coupon)) {
-                        Helpers::addCouponLog('订单超时未支付，自动退回', $order->coupon_id, $order->goods_id, $order->id);
-                    }
+            if ($changes['status'] === -1) { // 本地订单-在线订单 关闭互联
+                if ($order->payment) {
+                    $order->payment->close(); // 关闭在线订单
                 }
+
+                if ($order->coupon && $this->returnCoupon($order->coupon)) { // 退回优惠券
+                    Helpers::addCouponLog('订单超时未支付，自动退回', $order->coupon_id, $order->goods_id, $order->id);
+                }
+            }
+
+            if ($changes['status'] === 1) { // 待确认支付
+                Notification::send(User::find(1), new PaymentConfirm($order));
             }
 
             // 本地订单-在线订单 支付成功互联
@@ -42,7 +46,7 @@ class OrderObserver
             $prepaidOrder = Order::userPrepay($order->user_id)->oldest()->first();
 
             if ($prepaidOrder) {
-                (new OrderService($prepaidOrder))->activatePrepaidPlan();
+                (new OrderService($prepaidOrder))->activatePrepaidPlan(); // 激活预支付
             }
         }
     }

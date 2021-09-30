@@ -51,7 +51,7 @@ class PayPal extends AbstractPayment
         try {
             $response = $this->provider->setExpressCheckout($data);
             if (! $response['paypal_link']) {
-                Log::error('Paypal处理错误：'.var_export($response, true));
+                Log::error('【Paypal】处理错误：'.var_export($response, true));
 
                 return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
             }
@@ -101,10 +101,10 @@ class PayPal extends AbstractPayment
             $status = $payment_status['PAYMENTINFO_0_PAYMENTSTATUS'];
 
             if (! strcasecmp($status, 'Completed') || ! strcasecmp($status, 'Processed')) {
-                Log::info("Order $payment->order_id has been paid successfully!");
+                Log::notice("【Paypal】Order $payment->order_id has been paid successfully!");
                 $payment->order->paid();
             } else {
-                Log::warning("Error processing PayPal payment for Order $payment->id!");
+                Log::alert("【PayPal】Error processing PayPal payment for Order $payment->id!");
             }
         }
 
@@ -128,7 +128,7 @@ class PayPal extends AbstractPayment
                 exit('success');
             }
         } else {
-            Log::info('Paypal：交易失败');
+            Log::error('【Paypal】交易失败');
         }
         exit('fail');
     }

@@ -14,16 +14,15 @@ class UserExpireWarning extends Command
 
     public function handle()
     {
-        $jobStartTime = microtime(true);
+        $jobTime = microtime(true);
 
         if (sysConfig('account_expire_notification')) {// 用户临近到期自动提醒
             $this->userExpireWarning();
         }
 
-        $jobEndTime = microtime(true);
-        $jobUsedTime = round(($jobEndTime - $jobStartTime), 4);
+        $jobTime = round((microtime(true) - $jobTime), 4);
 
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobUsedTime.'秒');
+        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
 
     private function userExpireWarning()

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ShopStoreRequest;
 use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Models\Goods;
+use App\Models\GoodsCategory;
 use App\Models\Level;
 use Arr;
 use Exception;
@@ -37,7 +38,7 @@ class ShopController extends Controller
     // 添加商品页面
     public function create()
     {
-        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get()]);
+        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get(), 'categories' => GoodsCategory::all()]);
     }
 
     // 添加商品
@@ -92,6 +93,7 @@ class ShopController extends Controller
         return view('admin.shop.info', [
             'good'   => $good,
             'levels' => Level::orderBy('level')->get(),
+            'categories' => GoodsCategory::all(),
         ]);
     }
 

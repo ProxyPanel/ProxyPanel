@@ -26,106 +26,76 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chart-js/Chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
     <script>
-        const dailyChart = new Chart(document.getElementById('dailyChart').getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: {{$dayHours}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficHourly}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
+        function common_options(tail) {
+            return {
                 responsive: true,
                 scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '小时',
+                    x: {
+                        ticks: {
+                            callback: function(value) {
+                                return this.getLabelForValue(value) + tail;
                             },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function(tick) {
-                                    return tick.toString() + ' GB';
-                                },
+                        },
+                        grid: {
+                            display: false,
+                        },
+                    },
+                    y: {
+                        ticks: {
+                            callback: function(value) {
+                                return this.getLabelForValue(value) + ' GB';
                             },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('user.traffic_logs.24hours')}}',
-                            },
-                        }],
+                        },
+                        grid: {
+                            display: false,
+                        },
+                        min: 0,
+                    },
+
                 },
-            },
+                plugins: {
+                    legend: false,
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            title: function(context) {
+                                return context[0].label + tail;
+                            },
+                            label: function(context) {
+                                return context.parsed.y + ' GB';
+                            },
+                        },
+                    },
+                },
+            };
+        }
+
+        function datasets(label, data) {
+            return {
+                labels: label,
+                datasets: [
+                    {
+                        backgroundColor: 'rgba(184, 215, 255)',
+                        borderColor: 'rgba(184, 215, 255)',
+                        data: data,
+                        tension: 0.4,
+                    }],
+            };
+        }
+
+        new Chart(document.getElementById('dailyChart'), {
+            type: 'line',
+            data: datasets(@json($dayHours), @json($trafficHourly)),
+            options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
         });
 
-        const monthlyChart = new Chart(document.getElementById('monthlyChart').getContext('2d'), {
+        new Chart(document.getElementById('monthlyChart'), {
             type: 'line',
-            data: {
-                labels: {{$monthDays}},
-                datasets: [
-                    {
-                        fill: true,
-                        backgroundColor: 'rgba(98, 168, 234, .1)',
-                        borderColor: Config.colors('primary', 600),
-                        pointRadius: 4,
-                        borderDashOffset: 2,
-                        pointBorderColor: '#fff',
-                        pointBackgroundColor: Config.colors('primary', 600),
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: Config.colors('primary', 600),
-                        data: {{$trafficDaily}},
-                    }],
-            },
-            options: {
-                legend: {
-                    display: false,
-                },
-                responsive: true,
-                scales: {
-                    xAxes: [
-                        {
-                            display: true,
-                            scaleLabel: {
-                                display: true,
-                                labelString: '天',
-                            },
-                        }],
-                    yAxes: [
-                        {
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                userCallback: function(tick) {
-                                    return tick.toString() + ' GB';
-                                },
-                            },
-                            scaleLabel: {
-                                display: true,
-                                labelString: '{{trans('user.traffic_logs.30days')}}',
-                            },
-                        }],
-                },
-            },
+            data: datasets(@json($monthDays), @json($trafficDaily)),
+            options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
         });
     </script>
 @endsection

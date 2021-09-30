@@ -147,47 +147,45 @@
                             </td>
                             <td>
                                 @canany(['admin.user.edit', 'admin.user.destroy', 'admin.user.export', 'admin.user.monitor', 'admin.user.online', 'admin.user.reset', 'admin.user.switch'])
-                                    <div class="btn-group" role="group">
-                                        <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
-                                            <i class="icon wb-wrench" aria-hidden="true"></i>
-                                        </button>
-                                        <div class="dropdown-menu" role="menu">
-                                            @can('admin.user.edit')
-                                                <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
-                                                    <i class="icon wb-edit" aria-hidden="true"></i> 编辑
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.destroy')
-                                                <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->username}}')" role="menuitem">
-                                                    <i class="icon wb-trash" aria-hidden="true"></i> 删除
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.export')
-                                                <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
-                                                    <i class="icon wb-code" aria-hidden="true"></i> 配置信息
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.monitor')
-                                                <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
-                                                    <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.online')
-                                                <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
-                                                    <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.reset')
-                                                <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}')" role="menuitem">
-                                                    <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
-                                                </a>
-                                            @endcan
-                                            @can('admin.user.switch')
-                                                <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
-                                                    <i class="icon wb-user" aria-hidden="true"></i> 用户视角
-                                                </a>
-                                            @endcan
-                                        </div>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="icon wb-wrench" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="dropdown-menu" role="menu">
+                                        @can('admin.user.edit')
+                                            <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
+                                                <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.destroy')
+                                            <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->username}}')" role="menuitem">
+                                                <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.export')
+                                            <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
+                                                <i class="icon wb-code" aria-hidden="true"></i> 配置信息
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.monitor')
+                                            <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
+                                                <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.online')
+                                            <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
+                                                <i class="icon wb-cloud" aria-hidden="true"></i> 在线巡查
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.reset')
+                                            <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}')" role="menuitem">
+                                                <i class="icon wb-reload" aria-hidden="true"></i> 重置流量
+                                            </a>
+                                        @endcan
+                                        @can('admin.user.switch')
+                                            <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
+                                                <i class="icon wb-user" aria-hidden="true"></i> 用户视角
+                                            </a>
+                                        @endcan
                                     </div>
                                 @endcanany
                             </td>

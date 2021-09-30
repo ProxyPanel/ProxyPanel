@@ -1,6 +1,6 @@
 <?php
 
-if (env('APP_KEY') && config('settings')) {
+if (config('app.key') && config('settings')) {
     Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))
         ->get('s/{code}', 'User\SubscribeController@getSubscribeByCode')->name('sub'); // 节点订阅地址
 
@@ -9,7 +9,7 @@ if (env('APP_KEY') && config('settings')) {
 }
 
 Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
-Route::post('api/telegram/webhook', 'TelegramController@webhook'); // Telegram fallback
+Route::post('api/telegram/webhook', 'TelegramController@webhook')->middleware('telegram'); // Telegram fallback
 
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {

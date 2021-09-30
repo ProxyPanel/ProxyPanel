@@ -31,7 +31,6 @@ abstract class AbstractPayment
      * @param  string  $trade_no  本地订单号
      * @param  string  $out_trade_no  外部订单号
      * @param  int  $amount  交易金额
-     *
      * @return int
      */
     protected function addPamentCallback(string $trade_no, string $out_trade_no, int $amount): int
@@ -56,22 +55,19 @@ abstract class AbstractPayment
      * @param  array  $data  需要加密的数组
      * @param  string  $key  尾部的密钥
      * @param  bool  $filter  是否清理空值
-     *
      * @return string md5加密后的数据
      */
-    protected function aliStyleSign(array $data, string $key, $filter = true): string
-    {
-        // 剃离sign，sign_type，空值
-        unset($data['sign'], $data['sign_type']);
+    protected function aliStyleSign(array $data, string $key, bool $filter = true): string
+    { // https://opendocs.alipay.com/open/common/104741
+        unset($data['sign'], $data['sign_type']); // 筛选 剃离sign，sign_type，空值
         if ($filter) {
             $data = array_filter($data);
         }
 
-        // 排序
-        ksort($data, SORT_STRING);
+        ksort($data, SORT_STRING); // 排序
         reset($data);
 
-        return md5(urldecode(http_build_query($data)).$key);
+        return md5(urldecode(http_build_query($data)).$key); // 拼接
     }
 
     protected function paymentReceived(string $tradeNo)

@@ -78,13 +78,16 @@
                         <th> 用户账号</th>
                         <th> @sortablelink('sn', '订单号')</th>
                         <th> 商品</th>
-                        <th> @sortablelink('expired_at', '过期时间')</th>
                         <th> 优惠券</th>
                         <th> 原价</th>
                         <th> 实价</th>
                         <th> 支付方式</th>
                         <th> 订单状态</th>
+                        <th> @sortablelink('expired_at', '过期时间')</th>
                         <th> @sortablelink('created_at', '创建时间')</th>
+                        @can(['admin.order.edit'])
+                            <th> 操作</th>
+                        @endcan
                     </tr>
                     </thead>
                     <tbody>
@@ -104,25 +107,41 @@
                             </td>
                             <td> {{$order->sn}}</td>
                             <td> {{$order->goods->name  ?? trans('user.recharge_credit')}} </td>
-                            <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
                             <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
                             <td> ¥{{$order->origin_amount}} </td>
                             <td> ¥{{$order->amount}} </td>
                             <td>
-                                <span class="badge badge-lg badge-info"> {{$order->pay_way_label}} </span>
+                                {{$order->pay_way_label}}
                             </td>
                             <td>
-                                @if($order->status === -1)
-                                    <span class="badge badge-lg badge-danger"> 已关闭 </span>
-                                @elseif ($order->status === 0)
-                                    <span class="badge badge-lg badge-default"> 待支付 </span>
-                                @elseif ($order->status === 1)
-                                    <span class="badge badge-lg badge-default"> 已支付待确认 </span>
-                                @else
-                                    <span class="badge badge-lg badge-success"> 已完成 </span>
-                                @endif
+                                {!! $order->status_label !!}
                             </td>
+                            <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
                             <td> {{$order->created_at}} </td>
+                            @can(['admin.order.edit'])
+                                <td>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                        <i class="icon wb-wrench" aria-hidden="true"></i>
+                                    </button>
+                                    <div class="dropdown-menu" role="menu">
+                                        @if ($order->status !== -1)
+                                            <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', -1)" role="menuitem">
+                                                <i class="icon wb-close" aria-hidden="true"></i> 置 过 期
+                                            </a>
+                                        @endif
+                                        @if ($order->status !== 2)
+                                            <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 2)" role="menuitem">
+                                                <i class="icon wb-check" aria-hidden="true"></i> 置 完 成
+                                            </a>
+                                        @endif
+                                        @if ($order->status !== 3)
+                                            <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 3)" role="menuitem">
+                                                <i class="icon wb-check-circle" aria-hidden="true"></i> 置 预支付
+                                            </a>
+                                        @endif
+                                    </div>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                     </tbody>
@@ -160,5 +179,18 @@
 
         // 有效期
         $('.input-daterange').datepicker({format: 'yyyy-mm-dd'});
+
+        @can('admin.order.edit')
+        // 重置流量
+        function changeStatus(id, status) {
+            $.post('{{route('admin.order.edit')}}', {_token: '{{csrf_token()}}', oid: id, status: status}, function(ret) {
+                if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+            });
+        }
+        @endcan
     </script>
 @endsection

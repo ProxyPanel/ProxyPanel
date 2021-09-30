@@ -39,8 +39,10 @@ class CodePay extends AbstractPayment
             if ($this->paymentReceived($tradeNo)) {
                 exit('success');
             }
+
+            Log::error('【码支付】验签失败：'.var_export($request->all(), true));
         } else {
-            Log::error('码支付：交易失败');
+            Log::error('【码支付】交易失败：'.var_export($request->all(), true));
         }
         exit('fail');
     }
