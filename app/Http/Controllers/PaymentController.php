@@ -140,7 +140,7 @@ class PaymentController extends Controller
             //非余额付款下，检查在线支付是否开启
             if (self::$method !== 'credit') {
                 // 判断是否开启在线支付
-                if (! sysConfig('is_onlinePay')) {
+                if (! sysConfig('is_onlinePay') && ! sysConfig('wechat_qrcode') && ! sysConfig('alipay_qrcode')) {
                     return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
                 }
 

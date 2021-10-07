@@ -9,10 +9,30 @@
         .hide {
             display: none;
         }
+
+        #ad {
+            position: fixed;
+            z-index: 9999;
+            right: 30px;
+            bottom: 30px;
+            margin-left: 535px;
+        }
+
+        #ad > button {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
     </style>
 @endsection
 
 @section('content')
+    <div id="ad">
+        <button class="btn btn-icon btn-default" type="button" onclick="document.getElementById('ad').style.display = 'none'">
+            <i class="icon wb-close"></i>
+        </button>
+        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" class="w-lg-250 w-150" alt="">
+    </div>
     <div class="page-content container">
         <div class="panel panel-bordered">
             <div class="panel-heading">
