@@ -62,7 +62,7 @@ class LogsController extends Controller
     public function changeOrderStatus(Request $request)
     {
         $order = Order::findOrFail($request->input('oid'));
-        $status = $request->input('status');
+        $status = (int) $request->input('status');
 
         if ($order->update(['status' => $status])) {
             return Response::json(['status' => 'success', 'message' => '更新成功']);

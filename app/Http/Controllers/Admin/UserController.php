@@ -280,7 +280,7 @@ class UserController extends Controller
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }

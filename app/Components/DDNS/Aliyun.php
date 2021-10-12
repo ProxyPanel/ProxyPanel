@@ -88,7 +88,7 @@ class Aliyun
     // 签名
     private function computeSignature($parameters): string
     {
-        ksort($parameters);
+        ksort($parameters, SORT_STRING);
 
         $stringToBeSigned = 'POST&%2F&'.urlencode(http_build_query($parameters));
 

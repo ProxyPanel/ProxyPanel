@@ -45,11 +45,11 @@
                             <td> {{$log->type_label}} </td>
                             <td> {{$log->address}} </td>
                             <td> {{$log->title}} </td>
-                            <td> {{$log->content}} </td>
+                            <td class="text-break"> {{$log->content}} </td>
                             <td> {{$log->created_at}} </td>
                             <td>
                                 @if($log->status < 0)
-                                    <span class="badge badge-danger"> {{Str::limit($log->error)}} </span>
+                                    <p class="badge badge-danger text-break font-size-14"> {{$log->error}} </p>
                                 @elseif($log->status > 0)
                                     <labe class="badge badge-success">投递成功</labe>
                                 @else

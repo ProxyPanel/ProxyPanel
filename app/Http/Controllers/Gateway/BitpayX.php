@@ -55,7 +55,7 @@ class BitpayX extends AbstractPayment
             'secret'            => sysConfig('bitpay_secret'),
             'type'              => 'FIAT',
         ];
-        ksort($data);
+        ksort($data, SORT_STRING);
 
         return http_build_query($data);
     }

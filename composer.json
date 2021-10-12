@@ -44,7 +44,9 @@
     "zbrettonye/geetest": "^1.2",
     "zbrettonye/hcaptcha": "^1.1",
     "zbrettonye/no-captcha": "^1.1",
-    "zoujingli/ip2region": "^1.0"
+    "zoujingli/ip2region": "^1.0",
+    "ext-dom": "*",
+    "ext-mcrypt": "*"
   },
   "require-dev": {
     "arcanedev/laravel-lang": "^8.0",
