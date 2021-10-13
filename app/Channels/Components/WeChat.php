@@ -2,7 +2,9 @@
 
 namespace App\Channels\Components;
 
+use DOMDocument;
 use Exception;
+use Log;
 
 class WeChat
 {
@@ -39,7 +41,7 @@ class WeChat
 
             return [0, sha1(implode($array))];
         } catch (Exception $e) {
-            echo $e->__toString()."\n";
+            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
 
             return [-40003, null]; // ComputeSignatureError
         }
@@ -146,7 +148,7 @@ class WeChat
 
             return [0, $encrypt];
         } catch (Exception $e) {
-            echo $e."\n";
+            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
 
             return [-40002, null]; // ParseXmlError
         }
@@ -218,7 +220,7 @@ class Prpcrypt
 
             return [0, $encrypted];
         } catch (Exception $e) {
-            echo $e->__toString();
+            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
 
             return [-40006, null]; // EncryptAESError
         }
@@ -230,6 +232,8 @@ class Prpcrypt
             //解密
             $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
         } catch (Exception $e) {
+            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
+
             return [-40007, null]; // DecryptAESError
         }
         try {
@@ -245,7 +249,8 @@ class Prpcrypt
             $xml_content = substr($content, 4, $xml_len);
             $from_receiveId = substr($content, $xml_len + 4);
         } catch (Exception $e) {
-            echo $e->__toString();
+            // 发送错误
+            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
 
             return [-40008, null]; // IllegalBuffer
         }

@@ -68,14 +68,19 @@ class WeChatChannel
             ];
         } else {
             $body = [
-                'touser'  => '@all',
-                'agentid' => sysConfig('wechat_aid'),
-                'msgtype' => 'text',
-                'text'    => ['content' => Markdown::parse($message['content'])->toHtml()],
+                'touser'   => '@all',
+                'agentid'  => sysConfig('wechat_aid'),
+                'msgtype'  => 'textcard',
+                'textcard' => [
+                    'title'       => $message['title'],
+                    'description' => Markdown::parse($message['content'])->toHtml(),
+                    'url'         => route('admin.index'),
+                    'btntxt'      => '',
+                ],
             ];
         }
 
-        $response = Http::timeout(15)->post($url, $body);
+        $response = Http::timeout(15)->withBody(json_encode($body, JSON_UNESCAPED_UNICODE), 'application/json; charset=utf-8')->post($url);
 
         // 发送成功
         if ($response->ok()) {
