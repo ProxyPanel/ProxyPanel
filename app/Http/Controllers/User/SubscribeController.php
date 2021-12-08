@@ -28,38 +28,38 @@ class SubscribeController extends Controller
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
         if (! $subscribe) {
-            return $this->failed(trans('error.subscribe.unknown'));
+            return $this->failed(trans('errors.subscribe.unknown'));
         }
 
         if ($subscribe->status !== 1) {
-            return $this->failed(trans('error.subscribe.sub_baned'));
+            return $this->failed(trans('errors.subscribe.sub_baned'));
         }
 
         // 检查用户是否有效
         $user = $subscribe->user;
         if (! $user) {
-            return $this->failed(trans('error.subscribe.user'));
+            return $this->failed(trans('errors.subscribe.user'));
         }
 
         if ($user->status === -1) {
-            return $this->failed(trans('error.subscribe.user_disable'));
+            return $this->failed(trans('errors.subscribe.user_disable'));
         }
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed(trans('error.subscribe.baned_until', ['time' => $user->ban_time]));
+                return $this->failed(trans('errors.subscribe.baned_until', ['time' => $user->ban_time]));
             }
 
             $unusedTraffic = $user->transfer_enable - $user->used_traffic;
             if ($unusedTraffic <= 0) {
-                return $this->failed(trans('error.subscribe.out'));
+                return $this->failed(trans('errors.subscribe.out'));
             }
 
             if ($user->expired_at < date('Y-m-d')) {
-                return $this->failed(trans('error.subscribe.expired'));
+                return $this->failed(trans('errors.subscribe.expired'));
             }
 
-            return $this->failed(trans('error.subscribe.question'));
+            return $this->failed(trans('errors.subscribe.question'));
         }
 
         // 更新访问次数
@@ -79,7 +79,7 @@ class SubscribeController extends Controller
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->get();
         if (empty($nodeList)) {
-            return $this->failed(trans('error.subscribe.none'));
+            return $this->failed(trans('errors.subscribe.none'));
         }
 
         $servers = [];

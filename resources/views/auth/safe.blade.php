@@ -1,12 +1,12 @@
 @extends('auth.layouts')
-@section('title', sysConfig('website_name').' - '.trans('error.safe_enter'))
+@section('title', sysConfig('website_name').' - '.trans('errors.safe_enter'))
 @section('content')
 <form role="form" action="/login?securityCode=">
     <div class="form-group">
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input class="form-control" id="securityCode" name="securityCode"
                 placeholder="" type="text">
-            <label class="floating-label" for="securityCode">{{trans('error.safe_code')}}</label>
+            <label class="floating-label" for="securityCode">{{trans('errors.safe_code')}}</label>
         </div>
     </div>
     <div class="text-center">

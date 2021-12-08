@@ -271,7 +271,7 @@ class Helpers
         $ipLocation = IP::getIPInfo($ip);
 
         if (empty($ipLocation) || empty($ipLocation['country'])) {
-            Log::warning(trans('error.get_ip').'：'.$ip);
+            Log::warning(trans('errors.get_ip').'：'.$ip);
         }
 
         $log = new UserLoginLog();

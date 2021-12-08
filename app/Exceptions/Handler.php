@@ -77,46 +77,46 @@ class Handler extends ExceptionHandler
                     Log::warning('异常请求：'.$request->fullUrl().'，IP：'.IP::getClientIp());
 
                     if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.missing_page')], 404);
+                        return Response::json(['status' => 'fail', 'message' => trans('errors.missing_page')], 404);
                     }
 
-                    return Response::view('auth.error', ['message' => trans('error.missing_page')], 404);
+                    return Response::view('auth.error', ['message' => trans('errors.missing_page')], 404);
                 case $exception instanceof AuthenticationException:  // 捕获身份校验异常
                     if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.unauthorized')], 401);
+                        return Response::json(['status' => 'fail', 'message' => trans('errors.unauthorized')], 401);
                     }
 
-                    return Response::view('auth.error', ['message' => trans('error.unauthorized')], 401);
+                    return Response::view('auth.error', ['message' => trans('errors.unauthorized')], 401);
                 case $exception instanceof TokenMismatchException: // 捕获CSRF异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
                             'status'  => 'fail',
-                            'message' => trans('error.refresh_page').'<a href="'.route('login').'" target="_blank">'.trans('error.refresh').'</a>',
+                            'message' => trans('errors.refresh_page').'<a href="'.route('login').'" target="_blank">'.trans('errors.refresh').'</a>',
                         ], 419);
                     }
 
                     return Response::view(
                         'auth.error',
-                        ['message' => trans('error.refresh_page').'<a href="'.route('login').'" target="_blank">'.trans('error.refresh').'</a>'],
+                        ['message' => trans('errors.refresh_page').'<a href="'.route('login').'" target="_blank">'.trans('errors.refresh').'</a>'],
                         419
                     );
                 case $exception instanceof ReflectionException:
                     if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => trans('error.system')], 500);
+                        return Response::json(['status' => 'fail', 'message' => trans('errors.system')], 500);
                     }
 
-                    return Response::view('auth.error', ['message' => trans('error.system')], 500);
+                    return Response::view('auth.error', ['message' => trans('errors.system')], 500);
                 case $exception instanceof ErrorException: // 捕获系统错误异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
                             'status'  => 'fail',
-                            'message' => trans('error.system').', '.trans('error.visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>',
+                            'message' => trans('errors.system').', '.trans('errors.visit').'<a href="'.route('log-viewer::dashboard').'" target="_blank">'.trans('errors.log').'</a>',
                         ], 500);
                     }
 
                     return Response::view(
                         'auth.error',
-                        ['message' => trans('error.system').', '.trans('error.visit').'<a href="'.route('admin.log.viewer').'" target="_blank">'.trans('error.log').'</a>'],
+                        ['message' => trans('errors.system').', '.trans('errors.visit').'<a href="'.route('log-viewer::dashboard').'" target="_blank">'.trans('errors.log').'</a>'],
                         500
                     );
                 case $exception instanceof ConnectionException:

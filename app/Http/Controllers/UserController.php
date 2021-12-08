@@ -525,7 +525,7 @@ class UserController extends Controller
     public function switchToAdmin(): JsonResponse
     {
         if (! Session::has('admin')) {
-            return Response::json(['status' => 'fail', 'message' => trans('error.unauthorized')]);
+            return Response::json(['status' => 'fail', 'message' => trans('errors.unauthorized')]);
         }
 
         // 管理员信息重新写入user
