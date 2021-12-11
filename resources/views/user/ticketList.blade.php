@@ -120,7 +120,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" data-dismiss="modal" class="btn btn-danger"> {{trans('common.cancel')}} </button>
+                    <button type="button" data-dismiss="modal" class="btn btn-danger mr-auto"> {{trans('common.cancel')}} </button>
                     <button type="button" data-dismiss="modal" class="btn btn-success" onclick="createTicket()"> {{trans('common.confirm')}} </button>
                 </div>
             </div>

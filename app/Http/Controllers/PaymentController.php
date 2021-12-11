@@ -29,12 +29,13 @@ class PaymentController extends Controller
 {
     public static $method;
 
-    public static function notify(Request $request): void
+    public static function notify(Request $request)
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
         Log::notice(self::$method.'回调接口：'.self::$method.var_export($request->all(), true));
-        self::getClient()->notify($request);
+
+        return self::getClient()->notify($request);
     }
 
     public static function getClient()

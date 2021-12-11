@@ -416,7 +416,7 @@
                             @can('log-viewer')
                                 <li class="site-menu-item">
                                     <a href="{{route('log-viewer::dashboard')}}" target="_blank">
-                                        <span class="site-menu-title">系统运行</span>
+                                        <span class="site-menu-title">系统日志</span>
                                     </a>
                                 </li>
                             @endcan

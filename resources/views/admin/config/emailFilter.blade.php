@@ -91,7 +91,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-danger"> 关 闭</button>
+                        <button data-dismiss="modal" class="btn btn-danger mr-auto"> 关 闭</button>
                         <button data-dismiss="modal" class="btn btn-success" onclick="addEmailSuffix()"> 提 交</button>
                     </div>
                 </div>

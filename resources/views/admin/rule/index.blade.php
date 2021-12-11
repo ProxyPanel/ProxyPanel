@@ -129,7 +129,7 @@
                         </div>
                     </form>
                     <div class="modal-footer">
-                        <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                        <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
                         <button type="button" class="btn btn-primary" onclick="addRule()">添 加</button>
                     </div>
                 </div>

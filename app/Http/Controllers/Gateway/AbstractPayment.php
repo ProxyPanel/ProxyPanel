@@ -13,7 +13,7 @@ abstract class AbstractPayment
 {
     abstract public function purchase(Request $request): JsonResponse;
 
-    abstract public function notify(Request $request): void;
+    abstract public function notify(Request $request);
 
     protected function creatNewPayment($uid, $oid, $amount): Payment
     {
