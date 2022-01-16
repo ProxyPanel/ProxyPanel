@@ -65,12 +65,11 @@ abstract class AbstractPayment
         }
 
         ksort($data, SORT_STRING); // 排序
-        reset($data);
 
         return md5(urldecode(http_build_query($data)).$key); // 拼接
     }
 
-    protected function paymentReceived(string $tradeNo)
+    protected function paymentReceived(string $tradeNo): bool
     {
         $payment = Payment::whereTradeNo($tradeNo)->with('order')->first();
         if ($payment) {

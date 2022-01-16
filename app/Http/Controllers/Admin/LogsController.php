@@ -166,7 +166,7 @@ class LogsController extends Controller
         $onlineIPLogs = $query->groupBy('user_id', 'node_id')->latest()->paginate(20)->appends($request->except('page'));
         foreach ($onlineIPLogs as $log) {
             // 跳过上报多IP的
-            if ($log->ip === null || strpos($log->ip, ',') !== false) {
+            if ($log->ip === null || str_contains($log->ip, ',')) {
                 continue;
             }
             $ipInfo = IP::getIPInfo($log->ip);

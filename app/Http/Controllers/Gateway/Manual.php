@@ -60,7 +60,7 @@ class Manual extends AbstractPayment
                 }
             }
 
-            return view('components.payment.detail', ['order' => $payment->order, 'user' => $payment->user]);
+            return view('components.payment.detail', ['order' => $payment->order->refresh(), 'user' => $payment->user->refresh()]);
         }
 
         return view('auth.error', ['message' => 'No enough information']);

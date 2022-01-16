@@ -223,6 +223,10 @@ class Node extends Model
 
     public function getHostAttribute(): string
     {
-        return $this->is_relay ? $this->relay_server : ($this->server ?: $this->ip);
+        if ($this->is_relay) {
+            return $this->relay_server;
+        }
+
+        return $this->server ?: $this->ip;
     }
 }

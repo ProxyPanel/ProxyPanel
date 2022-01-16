@@ -50,9 +50,7 @@ class addUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
-
-        $response = $request->post('api/v2/user/add/list', $this->data);
+        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/v2/user/add/list', $this->data);
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {

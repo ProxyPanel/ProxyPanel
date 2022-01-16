@@ -74,7 +74,6 @@ class Stripe extends AbstractPayment
     {
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $endpointSecret = sysConfig('stripe_signing_secret');
-        $event = null;
         $payload = @file_get_contents('php://input');
 
         try {

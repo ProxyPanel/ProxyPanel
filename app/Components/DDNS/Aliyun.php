@@ -32,7 +32,7 @@ class Aliyun
         $domainList = $this->domainList();
         if ($domainList) {
             foreach ($domainList as $domain) {
-                if (strpos(self::$subDomain, $domain) !== false) {
+                if (str_contains(self::$subDomain, $domain)) {
                     return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.')];
                 }
             }
@@ -139,8 +139,7 @@ class Aliyun
         if ($records) {
             $count = 0;
             foreach ($records as $record) {
-                $result = $this->send('DeleteDomainRecord', ['RecordId' => $record]);
-                if ($result) {
+                if ($this->send('DeleteDomainRecord', ['RecordId' => $record])) {
                     $count++;
                 }
             }

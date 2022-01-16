@@ -6,22 +6,21 @@ class QuantumultX
 {
     public static function buildShadowsocks($server)
     {
-        $config = [
+        $config = array_filter([
             "shadowsocks={$server['host']}:{$server['port']}",
             "method={$server['method']}",
             "password={$server['passwd']}",
             'fast-open=true',
             "udp-relay={$server['udp']}",
             "tag={$server['name']}",
-        ];
-        $config = array_filter($config);
+        ]);
 
         return implode(',', $config).PHP_EOL;
     }
 
     public static function buildShadowsocksr($server)
     {
-        $config = [
+        $config = array_filter([
             "shadowsocks={$server['host']}:{$server['port']}",
             "method={$server['method']}",
             "password={$server['passwd']}",
@@ -32,8 +31,7 @@ class QuantumultX
             'fast-open=true',
             "udp-relay={$server['udp']}",
             "tag={$server['name']}",
-        ];
-        $config = array_filter($config);
+        ]);
 
         return implode(',', $config).PHP_EOL;
     }
@@ -61,12 +59,12 @@ class QuantumultX
 
         if ($server['v2_tls']) {
             $config[] = 'tls-verification=true';
-            if (isset($server['v2_host']) && ! empty($server['v2_host'])) {
+            if (! empty($server['v2_host'])) {
                 $config[] = "tls-host={$server['v2_host']}";
             }
         }
 
-        if ($server['v2_type'] === 'ws' && isset($server['v2_path']) && ! empty($server['v2_path'])) {
+        if ($server['v2_type'] === 'ws' && ! empty($server['v2_path'])) {
             $config[] = "obfs-uri={$server['v2_path']}";
             $config[] = "obfs-host={$server['v2_host']}";
         }
@@ -76,7 +74,7 @@ class QuantumultX
 
     public static function buildTrojan($server)
     {
-        $config = [
+        $config = array_filter([
             "trojan={$server['host']}:{$server['port']}",
             "password={$server['passwd']}",
             'over-tls=true',
@@ -86,8 +84,7 @@ class QuantumultX
             'fast-open=true',
             'udp-relay=true',
             "tag={$server['name']}",
-        ];
-        $config = array_filter($config);
+        ]);
 
         return implode(',', $config).PHP_EOL;
     }

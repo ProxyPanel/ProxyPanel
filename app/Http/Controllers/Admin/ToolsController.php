@@ -75,18 +75,18 @@ class ToolsController extends Controller
             $data = [];
             foreach ($content->port_password as $port => $passwd) {
                 $data[] = [
-                    'u' => 0,
-                    'd' => 0,
-                    'enable' => 1,
-                    'method' => $method,
-                    'obfs' => $obfs,
-                    'obfs_param' => empty($obfs_param) ? '' : $obfs_param,
-                    'passwd' => $passwd,
-                    'port' => $port,
-                    'protocol' => $protocol,
-                    'protocol_param' => empty($protocol_param) ? '' : $protocol_param,
+                    'u'               => 0,
+                    'd'               => 0,
+                    'enable'          => 1,
+                    'method'          => $method,
+                    'obfs'            => $obfs,
+                    'obfs_param'      => empty($obfs_param) ? '' : $obfs_param,
+                    'passwd'          => $passwd,
+                    'port'            => $port,
+                    'protocol'        => $protocol,
+                    'protocol_param'  => empty($protocol_param) ? '' : $protocol_param,
                     'transfer_enable' => $transfer_enable,
-                    'user' => date('Ymd').'_IMPORT_'.$port,
+                    'user'            => date('Ymd').'_IMPORT_'.$port,
                 ];
             }
 
@@ -234,7 +234,8 @@ class ToolsController extends Controller
         assert($n > 0);
         $pos = $n + 1;
         $lines = [];
-        while (count($lines) <= $n) {
+        $counts = 0;
+        while ($counts <= $n) {
             try {
                 fseek($fp, -$pos, SEEK_END);
             } catch (Exception $e) {
@@ -244,6 +245,7 @@ class ToolsController extends Controller
             $pos *= $base;
             while (! feof($fp)) {
                 array_unshift($lines, fgets($fp));
+                $counts++;
             }
         }
 

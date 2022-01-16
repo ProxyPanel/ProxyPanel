@@ -170,7 +170,7 @@ class PaymentController extends Controller
                 'user_id'       => auth()->id(),
                 'goods_id'      => $credit ? null : $goods_id,
                 'coupon_id'     => $coupon->id ?? null,
-                'origin_amount' => $credit ?: $goods->price ?? 0,
+                'origin_amount' => $credit ?: ($goods->price ?? 0),
                 'amount'        => $amount,
                 'pay_type'      => $pay_type,
                 'pay_way'       => self::$method,

@@ -107,7 +107,6 @@ class SubscribeController extends Controller
 
     private function infoGenerator($text): string
     {
-        $result = null;
         switch ($this->subType) {
             case 2:
                 $result = 'vmess://'.base64url_encode(json_encode([

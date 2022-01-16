@@ -75,7 +75,6 @@ class PayBeaver extends AbstractPayment
             unset($params['sign']);
         }
         ksort($params, SORT_STRING);
-        reset($params);
 
         return strtolower(md5(http_build_query($params).$this->appSecret));
     }

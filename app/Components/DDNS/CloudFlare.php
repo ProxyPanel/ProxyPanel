@@ -24,9 +24,8 @@ class CloudFlare
     {
         $zoneInfo = $this->client->get(self::$apiHost.'zones')->json();
         if ($zoneInfo && Arr::has($zoneInfo, 'result.0.id')) {
-            $zones = $zoneInfo['result'];
-            foreach ($zones as $zone) {
-                if (strpos(self::$subDomain, $zone['name']) !== false) {
+            foreach ($zoneInfo['result'] as $zone) {
+                if (str_contains(self::$subDomain, $zone['name'])) {
                     return [$zone['name'], rtrim(substr(self::$subDomain, 0, -(strlen($zone['name']))), '.'), $zone['id']];
                 }
             }

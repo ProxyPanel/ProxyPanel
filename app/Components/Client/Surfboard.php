@@ -6,7 +6,7 @@ class Surfboard
 {
     public static function buildShadowsocks($server)
     {
-        $config = [
+        $config = array_filter([
             "{$server['name']}=custom",
             $server['host'],
             $server['port'],
@@ -15,8 +15,7 @@ class Surfboard
             sysConfig('website_url').'/clients/SSEncrypt.module',
             'tfo=true',
             "udp-relay={$server['udp']}",
-        ];
-        $config = array_filter($config);
+        ]);
 
         return implode(',', $config).PHP_EOL;
     }
@@ -33,10 +32,10 @@ class Surfboard
         ];
 
         if ($server['v2_tls']) {
-            $config = array_merge($config, ['tls=true', "sni={$server['v2_host']}"]);
+            array_push($config, 'tls=true', "sni={$server['v2_host']}");
         }
         if ($server['v2_net'] === 'ws') {
-            $config = array_merge($config, ['ws=true', "ws-path={$server['v2_path']}", "ws-headers=Host:{$server['v2_host']}"]);
+            array_push($config, 'ws=true', "ws-path={$server['v2_path']}", "ws-headers=Host:{$server['v2_host']}");
         }
 
         return implode(',', $config).PHP_EOL;

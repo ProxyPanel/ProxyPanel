@@ -120,13 +120,13 @@ class V1Controller extends Controller
         $userInfo['subUrl'] = $user->subUrl();
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->used_traffic;
-        $unusedTraffic = $totalTransfer - $usedTransfer > 0 ? $totalTransfer - $usedTransfer : 0;
+        $unusedTraffic = max($totalTransfer - $usedTransfer, 0);
         $userInfo['unusedTraffic'] = flowAutoShow($unusedTraffic);
 
         return response()->json(['ret' => 1, 'data' => $userInfo]);
     }
 
-    public function nodeList(int $id = null)
+    public function nodeList()
     {
         return response()->json(['ret' => 1, 'data' => auth()->user()->nodes()->get()]);
     }

@@ -13,6 +13,7 @@ class Permission
      *
      * @param  Request  $request
      * @param  Closure  $next
+     * @param  null  $guard
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)

@@ -12,7 +12,7 @@ class TrojanController extends BaseController
     {
         return $this->returnData('获取节点信息成功', 'success', 200, [
             'id' => $node->id,
-            'is_udp' => $node->is_udp ? true : false,
+            'is_udp' => (bool) $node->is_udp,
             'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'push_port' => $node->push_port,

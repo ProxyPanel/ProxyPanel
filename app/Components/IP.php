@@ -108,8 +108,8 @@ class IP
     // 通过ip.taobao.com查询IP地址的详细信息
     public static function TaoBao(string $ip)
     {
-        // 依据 http://ip.taobao.com/instructions 开发
-        $response = Http::timeout(15)->get('http://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
+        // 依据 https://ip.taobao.com/instructions 开发
+        $response = Http::timeout(15)->get('https://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
 
         if ($response->ok()) {
             $message = $response->json();
@@ -133,13 +133,13 @@ class IP
     // 通过api.map.baidu.com查询IP地址的详细信息
     public static function Baidu(string $ip)
     {
-        if (! env('BAIDU_APP_AK')) {
+        if (! config('services.baidu.app_ak')) {
             Log::error('【百度IP库】AK信息缺失');
 
             return false;
         }
         // 依据 http://lbsyun.baidu.com/index.php?title=webapi/ip-api 开发
-        $response = Http::timeout(15)->get('https://api.map.baidu.com/location/ip?ak='.env('BAIDU_APP_AK').'&'.$ip.'&coor=bd09ll');
+        $response = Http::timeout(15)->get('https://api.map.baidu.com/location/ip?ak='.config('services.baidu.app_ak').'&'.$ip.'&coor=bd09ll');
 
         if ($response->ok()) {
             $message = $response->json();
