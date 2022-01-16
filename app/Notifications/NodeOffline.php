@@ -46,6 +46,7 @@ class NodeOffline extends Notification implements ShouldQueue
         return [
             'title'   => trans('notification.node_offline'),
             'content' => $this->markdownMessage(),
+            'url_type' => 'markdown',
         ];
     }
 
@@ -54,6 +55,8 @@ class NodeOffline extends Notification implements ShouldQueue
         return [
             'title'   => trans('notification.node_offline'),
             'content' => $this->stringMessage(),
+            'group'   => '节点状态',
+            'icon'    => asset('assets/images/notification/offline.png'),
         ];
     }
 

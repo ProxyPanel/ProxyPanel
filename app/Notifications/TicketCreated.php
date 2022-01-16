@@ -58,4 +58,15 @@ class TicketCreated extends Notification implements ShouldQueue
     {
         return "📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->title}`\n内容：\n`{$ticket->content}`";
     }
+
+    public function toBark($notifiable)
+    {
+        return [
+            'title'   => trans('notification.new_ticket', ['title' => $this->ticket->title]),
+            'content' => trans('notification.ticket_content').strip_tags($this->ticket->content),
+            'group'   => '工单',
+            'icon'    => asset('assets/images/notification/ticket.png'),
+            'url'     => $this->url,
+        ];
+    }
 }

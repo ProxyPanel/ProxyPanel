@@ -150,15 +150,17 @@ class Helpers
      * @param  string  $title  标题
      * @param  string  $content  内容
      * @param  int  $type  发送类型
-     * @param  string  $address  收信方
      * @param  int  $status  投递状态
-     * @param  string  $error  投递失败时记录的异常信息
+     * @param  string|null  $error  投递失败时记录的异常信息
+     * @param  string|null  $msgId  对公查询ID
+     * @param  string  $address  收信方
      * @return int
      */
-    public static function addNotificationLog(string $title, string $content, int $type, string $address = 'admin', int $status = 1, string $error = ''): int
+    public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, string $error = null, string $msgId = null, string $address = 'admin'): int
     {
         $log = new NotificationLog();
         $log->type = $type;
+        $log->msg_id = $msgId;
         $log->address = $address;
         $log->title = $title;
         $log->content = $content;

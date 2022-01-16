@@ -6,7 +6,6 @@ use App\Models\Order;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use NotificationChannels\Telegram\TelegramChannel;
 use NotificationChannels\Telegram\TelegramMessage;
 
 class PaymentConfirm extends Notification
@@ -31,7 +30,7 @@ class PaymentConfirm extends Notification
     {
         $order = $this->order;
         $goods = $this->order->goods;
-        $message = sprintf("🛒 人工支付\n———————————————\n\t\tℹ️ 账号：%s\n\t\t💰 金额：%s\n\t\t📦 商品：%s\n\t\t", $order->user->username, $order->amount, $goods->name ?? '余额充值');
+        $message = sprintf("🛒 人工支付\n———————————————\n\t\tℹ️ 账号：%s\n\t\t💰 金额：%1.2f\n\t\t📦 商品：%s\n\t\t", $order->user->username, $order->amount, $goods->name ?? '余额充值');
         foreach (User::role('Super Admin')->get() as $admin) {
             if (! $admin->telegram_user_id) {
                 continue;
@@ -62,7 +61,7 @@ class PaymentConfirm extends Notification
                 ],
                 [
                     'keyname' => '💰 金额',
-                    'value'   => $order->amount,
+                    'value'   => sprintf('%1.2f', $order->amount),
                 ],
                 [
                     'keyname' => '📦 商品',

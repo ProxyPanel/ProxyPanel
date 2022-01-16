@@ -194,9 +194,9 @@
             @yield('content')
         </div>
     </div>
-    <footer class="site-footer">
+    <footer class="site-footer ml-0">
         <div class="site-footer-legal">
-            © 2017 - 2021 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} </a> {{__('All rights reserved
+            © 2017 - 2022 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} </a> {{__('All rights reserved
             .')}}
         </div>
         <div class="site-footer-right">

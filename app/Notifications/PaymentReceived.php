@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -46,17 +45,15 @@ class PaymentReceived extends Notification implements ShouldQueue
     // todo: 需要重新审视发送对象
     public function toTelegram($notifiable)
     {
-        foreach (User::role('Super Admin')->get() as $admin) {
-            $message = sprintf(
-                "💰成功收款%s元\n———————————————\n订单号：%s",
-                $this->amount,
-                $this->sn
-            );
+        $message = sprintf(
+            "💰成功收款%s元\n———————————————\n订单号：%s",
+            $this->amount,
+            $this->sn
+        );
 
-            return TelegramMessage::create()
-                ->to($admin->telegram_user_id)
-                ->token(sysConfig('telegram_token'))
-                ->content($message);
-        }
+        return TelegramMessage::create()
+            ->to($notifiable->telegram_user_id)
+            ->token(sysConfig('telegram_token'))
+            ->content($message);
     }
 }

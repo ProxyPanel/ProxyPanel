@@ -11,6 +11,7 @@ if (config('app.key') && config('settings')) {
 Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
 Route::post('api/telegram/webhook', 'TelegramController@webhook')->middleware('telegram'); // Telegram fallback
 Route::get('api/wechat/verify', '\App\Channels\WeChatChannel@verify')->name('wechat.verify'); // 微信回调验证
+Route::get('/message/{type}/{msg_id}/show', 'MessageController@index')->name('message.show'); // 微信回调验证
 
 // 登录相关
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () {

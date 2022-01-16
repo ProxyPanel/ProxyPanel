@@ -58,4 +58,15 @@ class TicketReplied extends Notification implements ShouldQueue
     {
         return "📮工单回复提醒 #{$reply->ticket->id}\n———————————————\n主题：\n`{$reply->ticket->title}`\n内容：\n`{$reply->content}`";
     }
+
+    public function toBark($notifiable)
+    {
+        return [
+            'title'   => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
+            'content' => trans('notification.ticket_content').strip_tags($this->reply->content),
+            'group'   => '工单',
+            'icon'    => asset('assets/images/notification/ticket.png'),
+            'url'     => $this->url,
+        ];
+    }
 }

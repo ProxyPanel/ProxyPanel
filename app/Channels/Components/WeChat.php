@@ -5,6 +5,7 @@ namespace App\Channels\Components;
 use DOMDocument;
 use Exception;
 use Log;
+use Str;
 
 class WeChat
 {
@@ -193,8 +194,8 @@ class PKCS7Encoder
  */
 class Prpcrypt
 {
-    public $key = null;
-    public $iv = null;
+    public $key;
+    public $iv;
 
     public function __construct()
     {

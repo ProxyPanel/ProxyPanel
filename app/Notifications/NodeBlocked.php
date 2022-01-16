@@ -53,8 +53,9 @@ class NodeBlocked extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.node_block'),
-            'content' => $this->markdownMessage(),
+            'title'    => trans('notification.node_block'),
+            'content'  => $this->markdownMessage(),
+            'url_type' => 'markdown',
         ];
     }
 

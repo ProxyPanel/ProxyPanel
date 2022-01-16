@@ -198,25 +198,21 @@
                                         <div class="panel-collapse collapse show" id="answer-5"
                                              aria-labelledby="question-5" role="tabpanel">
                                             <div class="panel-body">
+                                                <h4>方法一</h4>
+                                                <p>电脑有安装任何电脑管家类的软件，都可以使用他们自带的网络修复工具来重置网络。</p>
+                                                <h4>方法二</h4>
                                                 <ol>
                                                     <li>
-                                                        电脑有安装任何电脑管家类的软件，都可以使用他们自带的网络修复工具来重置网络。
+                                                        键盘操作<code>Win</code> + <code>X</code>，或右击左下角开始菜单键
+                                                        （Win键看起来像 <i class="fab fa-windows" aria-hidden="true"></i> 这样）
                                                     </li>
                                                     <li>
-                                                        <ol>
-                                                            <li>
-                                                                键盘操作<code>Win</code> + <code>X</code>，或右击左下角开始菜单键
-                                                                （Win键看起来像 <i class="fab fa-windows" aria-hidden="true"></i> 这样）
-                                                            </li>
-                                                            <li>
-                                                                按下 <code>A</code>键 或者 手动选择
-                                                                <code>命令提示符（管理员）/ Windows PowerShell(管理员)</code>
-                                                            </li>
-                                                            <li>
-                                                                输入<code>Netsh winsock reset</code> 后回车，再输入
-                                                                <code>netsh advfirewall reset</code> 后回车；
-                                                            </li>
-                                                        </ol>
+                                                        按下 <code>A</code>键 或者 手动选择
+                                                        <code>命令提示符（管理员）/ Windows PowerShell(管理员)</code>
+                                                    </li>
+                                                    <li>
+                                                        输入<code>Netsh winsock reset</code> 后回车，再输入
+                                                        <code>netsh advfirewall reset</code> 后回车；
                                                     </li>
                                                 </ol>
                                             </div>
@@ -237,7 +233,7 @@
                                                 账号在2种情况下会显示禁用；
                                                 <ol>
                                                     <li>
-                                                        套餐过期/流量枯竭；此情况您需要重新
+                                                        套餐过期/流量枯竭；此情况您需要重新购买/重置
                                                         <a href="{{route('shop')}}">【{{trans('user.menu.shop')}}】</a>；
                                                     </li>
                                                     <li>

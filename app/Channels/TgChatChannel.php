@@ -24,7 +24,7 @@ class TgChatChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 6, 'admin', -1, $ret ? $ret['message'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 6, -1, $ret ? $ret['message'] : '未知');
 
             return false;
         }

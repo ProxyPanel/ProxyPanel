@@ -10,12 +10,47 @@
             display: none;
         }
 
+        @media (max-width: 768px) {
+            #ad {
+                right: 1vw;
+                bottom: 20vh;
+            }
+
+            #ad img {
+                width: 40vw;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #ad {
+                right: 3vw;
+                bottom: 15vh;
+            }
+
+            #ad img {
+                width: 30vw;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #ad {
+                right: 10vw;
+                bottom: 15vh;
+            }
+
+            #ad img {
+                width: 20vw;
+            }
+        }
+
         #ad {
             position: fixed;
             z-index: 9999;
-            right: 30px;
-            bottom: 30px;
-            margin-left: 535px;
+            margin-right: auto;
+        }
+
+        #ad img {
+            max-width: 300px;
         }
 
         #ad > button {
@@ -28,10 +63,8 @@
 
 @section('content')
     <div id="ad">
-        <button class="btn btn-icon btn-default" type="button" onclick="document.getElementById('ad').style.display = 'none'">
-            <i class="icon wb-close"></i>
-        </button>
-        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" class="w-lg-250 w-150" alt="">
+        <button class="btn btn-pure btn-outline-light icon wb-close" type="button" onclick="document.getElementById('ad').style.display = 'none'"></button>
+        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" alt="支付宝领红包">
     </div>
     <div class="page-content container">
         <div class="panel panel-bordered">
@@ -40,7 +73,10 @@
                     <i class="icon wb-payment"></i>{{sysConfig('website_name').' '.trans('common.payment.manual')}}
                 </h1>
             </div>
-            <div class="panel-body border-primary">
+            <div class="panel-body">
+                <div class="alert alert-info text-center">
+                    <p>扫完二维码，支付完成后。记得回来 点击👇【下一步】 直到 点击👇【{{trans('common.submit')}}】 才算正式支付完成呦！</p>
+                </div>
                 <div class="steps row w-p100">
                     <div class="step col-lg-4 current">
                         <span class="step-number">1</span>
@@ -59,7 +95,7 @@
                     <div class="step col-lg-4">
                         <span class="step-number">3</span>
                         <div class="step-desc">
-                            <span class="step-title">等待</span>
+                            <span class="step-title">完成</span>
                             <p>等待支付被确认</p>
                         </div>
                     </div>
@@ -120,7 +156,7 @@
                     <div class="alert alert-danger text-center">
                         支付时，请充值正确金额（多不退，少要补）
                     </div>
-                    <div class="mx-auto w-md-p50">
+                    <div class="mx-auto w-md-p50 w-lg-p25">
                         <ul class="list-group list-group-dividered">
                             <li class="list-group-item">{{trans('user.shop.service').'：'.$name}}</li>
                             <li class="list-group-item">{{trans('user.shop.price').'：¥'.$payment->amount}}</li>
@@ -133,7 +169,7 @@
 
                 <div class="clearfix">
                     <button type="button" class="btn btn-lg btn-default float-left" id="prevBtn" onclick="nextPrev(-1)">上一步</button>
-                    <button type="button" class="btn btn-lg btn-default float-right" id="nextBtn" onclick="nextPrev(1)">下一步</button>
+                    <button type="button" class="btn btn-lg btn-primary float-right" id="nextBtn" onclick="nextPrev(1)">下一步</button>
                 </div>
             </div>
         </div>
@@ -159,12 +195,14 @@
 
             if (n === x.length - 1) {
                 document.getElementById('payment-group').style.display = 'none';
-                document.getElementById('nextBtn').classList.remove('btn-default');
-                document.getElementById('nextBtn').classList.add('btn-primary');
-                document.getElementById('nextBtn').innerHTML = '{{trans('user.status.completed')}}';
+                document.getElementById('nextBtn').classList.remove('btn-primary');
+                document.getElementById('nextBtn').classList.add('btn-success');
+                document.getElementById('nextBtn').innerHTML = '{{trans('common.submit')}}';
             } else {
                 document.getElementById('payment-group').style.display = 'inline-flex';
                 document.getElementById('nextBtn').innerHTML = '下一步';
+                document.getElementById('nextBtn').classList.remove('btn-success');
+                document.getElementById('nextBtn').classList.add('btn-primary');
                 document.getElementById('nextBtn').style.display = 'inline';
             }
 
@@ -174,10 +212,8 @@
         function nextPrev(n) {
             // This function will figure out which tab to display
             const x = document.getElementsByClassName('tab');
-            // Hide the current tab:
-            x[currentTab].style.display = 'none';
             // if you have reached the end of the form... :
-            if (currentTab === x.length - 1) {
+            if (currentTab === x.length - 1 && n === 1) {
                 //...the form gets submitted:
                 $.post('{{route('manual.inform', ['payment' => $payment->trade_no])}}', {_token: '{{csrf_token()}}'}, function(ret) {
                     if (ret.status === 'success') {
@@ -188,11 +224,11 @@
                 });
                 return false;
             } else {
-                // Increase or decrease the current tab by 1:
-                currentTab += n;
-                showTab(currentTab);
+                x[currentTab].style.display = 'none';// Hide the current tab:
+                currentTab += n;// Increase or decrease the current tab by 1:
             }
 
+            showTab(currentTab);
         }
 
         function fixStepIndicator(n) {

@@ -55,4 +55,15 @@ class TicketClosed extends Notification implements ShouldQueue
             ->token(sysConfig('telegram_token'))
             ->content($this->reason);
     }
+
+    public function toBark($notifiable)
+    {
+        return [
+            'title'   => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
+            'content' => $this->reason,
+            'group'   => '工单',
+            'icon'    => asset('assets/images/notification/ticket.png'),
+            'url'     => $this->url,
+        ];
+    }
 }
