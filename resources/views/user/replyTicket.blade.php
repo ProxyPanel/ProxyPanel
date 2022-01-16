@@ -20,18 +20,16 @@
                     </div>
                 </div>
             </div>
-            @if($ticket->status !== 2)
-                <div class="panel-footer pb-30">
-                    <form>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="editor" placeholder="{{trans('user.ticket.reply_placeholder')}}"/>
-                            <span class="input-group-btn">
+            <div class="panel-footer pb-30">
+                <form>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="editor" placeholder="{{trans('user.ticket.reply_placeholder')}}"/>
+                        <span class="input-group-btn">
                                 <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('common.send')}}</button>
                             </span>
-                        </div>
-                    </form>
-                </div>
-            @endif
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

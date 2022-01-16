@@ -113,7 +113,6 @@
                             </td>
                             <td> {{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}} </td>
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>
-
                             <td>
                                 @if ($user->expired_at < date('Y-m-d'))
                                     <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>

@@ -27,7 +27,7 @@ class SubscribeController extends Controller
             });
         });
 
-        foreach (['user_id', 'status'] as $field) {
+        foreach (['user_id', 'status', 'code'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
                 $query->where($field, $value);
             });

@@ -55,6 +55,7 @@ class TicketController extends Controller
     {
         return view('admin.ticket.reply', [
             'ticket'    => $ticket,
+            'user'      => $ticket->user->load('userGroup', 'inviter'),
             'replyList' => $ticket->reply()->oldest()->get(),
         ]);
     }
