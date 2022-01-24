@@ -60,6 +60,12 @@ class Clash
         $array['network'] = $server['v2_net'];
 
         if ($server['v2_net'] === 'ws') {
+            $array['ws-opts'] = [];
+            $array['ws-opts']['path'] = $server['v2_path'];
+            if ($server['v2_host']) {
+                $array['ws-opts']['headers'] = ['Host' => $server['v2_host']];
+            }
+            // TODO: 2022.06.01 remove it
             $array['ws-path'] = $server['v2_path'];
             if ($server['v2_host']) {
                 $array['ws-headers'] = ['Host' => $server['v2_host']];
