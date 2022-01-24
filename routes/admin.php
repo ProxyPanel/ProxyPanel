@@ -112,6 +112,4 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('setConfig', 'SystemController@setConfig')->name('system.update'); // 设置某个配置项
         Route::post('sendTestNotification', 'SystemController@sendTestNotification')->name('test.notify'); //推送通知测试
     });
-
-    Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index')->name('log.viewer'); // 系统运行日志
 });

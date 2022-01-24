@@ -32,7 +32,7 @@ class ReportController extends Controller
 
         $currentDays = date('j');
         $lastDays = date('t', strtotime('-1 months'));
-        $data['days'] = range(1, $currentDays > $lastDays ? $currentDays : $lastDays);
+        $data['days'] = range(1, max($currentDays, $lastDays));
         $data['years'] = range(1, 12);
 
         for ($i = 1; $i <= $currentDays; $i++) {

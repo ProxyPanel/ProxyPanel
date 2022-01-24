@@ -78,9 +78,7 @@ class ShopController extends Controller
     public function fileUpload(UploadedFile $file)
     {
         $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
-        $path = $file->storeAs('public', $fileName);
-
-        if (! $path) {
+        if (! $file->storeAs('public', $fileName)) {
             return Redirect::back()->withInput()->withErrors('Logo存储失败');
         }
 

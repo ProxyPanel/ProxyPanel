@@ -61,7 +61,7 @@
                         <label class="col-form-label col-md-2" for="logo">LOGO</label>
                         <div class="col-md-4" id="icon" style="display: none;">
                             <input type="text" name="logo" id="logo" class="form-control" value="{{ old('logo') }}"/>
-                            <span class="text-help"><a href="https://fontawesome.com/v4.7.0/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
+                            <span class="text-help"><a href="https://fontawesome.com/v5.15/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
                         </div>
 
                         <div class="col-md-4" id="logoUpload">

@@ -16,6 +16,18 @@
                 @endcan
             </div>
             <div class="panel-body">
+                <form class="form-row">
+                    <div class="form-group col-lg-5 col-sm-6">
+                        <input type="text" class="form-control" name="description" value="{{Request::query('description')}}" placeholder="名称"/>
+                    </div>
+                    <div class="form-group col-lg-5 col-sm-6">
+                        <input type="text" class="form-control" name="name" value="{{Request::query('name')}}" placeholder="行为"/>
+                    </div>
+                    <div class="form-group col-lg-2 col-sm-6 btn-group">
+                        <button type="submit" class="btn btn-primary">搜 索</button>
+                        <a href="{{route('admin.permission.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                    </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>

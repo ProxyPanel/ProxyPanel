@@ -40,7 +40,7 @@ class ServerChanChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 2, 'admin', -1, $ret ? $ret['errmsg'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 2, -1, $ret ? $ret['errmsg'] : '未知');
 
             return false;
         }

@@ -23,8 +23,8 @@ class BaseController
         $data = array_map('intval', $validator->validated());
 
         if ($node->heartbeats()->create([
-            'uptime' => $data['uptime'],
-            'load' => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
+            'uptime'   => $data['uptime'],
+            'load'     => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
             'log_time' => time(),
         ])) {
             return $this->returnData('上报节点心跳信息成功', 'success', 200);
@@ -56,7 +56,7 @@ class BaseController
         }
 
         $etag = sha1(json_encode($data));
-        if ($etag === $req->header('IF-NONE-MATCH')) {
+        if (! empty($req->header('IF-NONE-MATCH')) && hash_equals($etag, $req->header('IF-NONE-MATCH'))) {
             abort(304);
         }
 
@@ -125,8 +125,8 @@ class BaseController
         if ($ruleGroup = $node->ruleGroup) {
             foreach ($ruleGroup->rules as $rule) {
                 $data[] = [
-                    'id' => $rule->id,
-                    'type' => $rule->type_api_label,
+                    'id'      => $rule->id,
+                    'type'    => $rule->type_api_label,
                     'pattern' => $rule->pattern,
                 ];
             }

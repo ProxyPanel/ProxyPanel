@@ -110,7 +110,7 @@
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-danger" data-dismiss="modal">取消</button>
+                        <button class="btn btn-danger mr-auto" data-dismiss="modal">取消</button>
                         <button class="btn btn-primary" onclick="return send();">推送</button>
                     </div>
                 </div>

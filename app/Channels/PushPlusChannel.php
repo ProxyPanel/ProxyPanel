@@ -30,7 +30,7 @@ class PushPlusChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 7, 'admin', -1, $ret ? $ret['msg'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 7, -1, $ret ? $ret['msg'] : '未知');
 
             return false;
         }

@@ -324,7 +324,7 @@
                             </div>
                         </form>
                         <div class="modal-footer">
-                            <button data-dismiss="modal" class="btn btn-danger">关闭</button>
+                            <button data-dismiss="modal" class="btn btn-danger mr-auto">关闭</button>
                             <button type="button" class="btn btn-primary" onclick="handleUserCredit()">充值</button>
                         </div>
                     </div>

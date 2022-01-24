@@ -117,7 +117,8 @@ class UserController extends Controller
 
         $roles = $request->input('roles');
         try {
-            if ($roles && (Auth::getUser()->can('give roles') || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin')))) {
+            $adminUser = Auth::getUser();
+            if ($roles && ($adminUser->can('give roles') || (in_array('Super Admin', $roles, true) && $adminUser->hasRole('Super Admin')))) {
                 // 编辑用户权限
                 // 只有超级管理员才有赋予超级管理的权限
                 $user->assignRole($roles);
@@ -171,7 +172,8 @@ class UserController extends Controller
         $roles = $request->input('roles');
         try {
             if (isset($roles)) {
-                if (Auth::getUser()->can('give roles') || Auth::getUser()->hasRole('Super Admin')
+                $adminUser = Auth::getUser();
+                if ($adminUser->can('give roles') || $adminUser->hasRole('Super Admin')
                     || (in_array('Super Admin', $roles, true) && Auth::getUser()->hasRole('Super Admin'))) {
                     $user->syncRoles($roles);
                 }
@@ -280,7 +282,7 @@ class UserController extends Controller
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $amount, $amount, '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }

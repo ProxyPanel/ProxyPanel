@@ -10,11 +10,14 @@
             </div>
             <div class="panel-body">
                 <form class="form-row">
-                    <div class="form-group col-lg-2 col-sm-6">
+                    <div class="form-group col-lg-1 col-sm-6">
                         <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="ID"/>
                     </div>
-                    <div class="form-group col-lg-4 col-sm-6">
+                    <div class="form-group col-lg-3 col-sm-6">
                         <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                    </div>
+                    <div class="form-group col-lg-3 col-sm-6">
+                        <input type="text" class="form-control" name="code" value="{{Request::query('code')}}" placeholder="订阅码"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-6">
                         <select name="status" id="status" class="form-control" onchange="this.form.submit()">

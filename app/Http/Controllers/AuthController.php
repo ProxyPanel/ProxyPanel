@@ -373,11 +373,11 @@ class AuthController extends Controller
     {
         if (is_numeric($aff)) {
             return $aff;
-        } else {
-            $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
-            if (isset($decode)) {
-                return $decode[0];
-            }
+        }
+
+        $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
+        if ($decode) {
+            return $decode[0];
         }
 
         return false;

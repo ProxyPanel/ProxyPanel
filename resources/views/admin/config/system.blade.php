@@ -164,6 +164,8 @@
                             <x-system.input title="微信企业应用ID" :value="$wechat_aid" code="wechat_aid" holder="应用的AgentId"
                                             help="在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId"/>
                             <x-system.input-test title="微信企业应用密钥" :value="$wechat_secret" code="wechat_secret" help='应用的Secret（可能需要下载企业微信才能查看）' holder="应用的Secret" test="weChat"/>
+                            <x-system.input title="微信企业应用TOKEN" :value="$wechat_token" code="wechat_token" help="{{'应用管理->应用->设置API接收->TOKEN，URL设置：'.route('wechat.verify')}}"/>
+                            <x-system.input title="微信企业应用EncodingAESKey" :value="$wechat_encodingAESKey" code="wechat_encodingAESKey" help='应用管理->应用->设置API接收->EncodingAESKey'/>
                             <x-system.input-test title="TG酱Token" :value="$tg_chat_token" code="tg_chat_token" help='启用TG酱，请务必填入本值（<a href=https://t.me/realtgchat_bot
                                     target=_blank>申请 Token</a>）' holder="请到Telegram申请" test="tgChat"/>
                             <x-system.input-test title="PushPlus Token" :value="$pushplus_token" code="pushplus_token" help='启用PushPlus，请务必填入本值（<a href=https://www.pushplus.plus/push1.html
@@ -189,6 +191,8 @@
                                                   help="提醒N次后自动下线节点，为0/留空时不限制，不超过12"/>
                             <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
                                              :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
+                            <x-system.select title="人工支付确认通知" code="payment_confirm_notification" help="用户使用人工支付后通知管理员处理订单"
+                                             :list="['关闭' => '', 'Telegram' => 'telegram', '微信企业' => 'weChat']"/>
                             <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
                                              :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
@@ -462,6 +466,7 @@
             $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
             $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
             $('#password_reset_notification').selectpicker('val', '{{$password_reset_notification}}');
+            $('#payment_confirm_notification').selectpicker('val', '{{$payment_confirm_notification}}');
             $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
             $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
             $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});

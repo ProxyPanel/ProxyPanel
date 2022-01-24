@@ -49,9 +49,7 @@ class CouponController extends Controller
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
-            $path = $file->storeAs('public', $fileName);
-
-            if (! $path) {
+            if (! $file->storeAs('public', $fileName)) {
                 return Redirect::back()->withInput()->withErrors('LOGO不合法');
             }
             $logo = 'upload/'.$fileName;

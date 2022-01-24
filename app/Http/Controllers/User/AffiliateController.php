@@ -49,8 +49,7 @@ class AffiliateController extends Controller
         }
 
         // 判断是否已存在申请
-        $referralApply = ReferralApply::uid()->whereIn('status', [0, 1])->first();
-        if ($referralApply) {
+        if (ReferralApply::uid()->whereIn('status', [0, 1])->first()) {
             return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.appliedd')]);
         }
 

@@ -53,9 +53,7 @@ class editUser implements ShouldQueue
 
     private function list($host, $secret)
     {
-        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
-
-        $response = $request->get('api/user/list');
+        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->get('api/user/list');
         $message = $response->json();
         if ($message && $response->ok()) {
             return Arr::pluck($message, 'uid');
@@ -68,9 +66,7 @@ class editUser implements ShouldQueue
 
     private function send($host, $secret): void
     {
-        $request = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret]);
-
-        $response = $request->post('api/user/edit', $this->data);
+        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/user/edit', $this->data);
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {

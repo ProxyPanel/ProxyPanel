@@ -46,7 +46,7 @@ class Manual extends AbstractPayment
         return Response::json(['status' => 'success', 'message' => '我们将在【24小时】内对购买/充值的款项进行开通！请耐心等待']);
     }
 
-    public function notify(Request $request): void
+    public function notify(Request $request)
     {
         $code = $request->input('sign');
         $status = $request->input('status');
@@ -54,15 +54,15 @@ class Manual extends AbstractPayment
             $payment = Payment::findOrFail((int) string_decrypt($code));
             if ($payment && $payment->order && $payment->order->status === 1) {
                 if ($status) {
-                    $payment->order->complete();
+                    $this->paymentReceived($payment->trade_no);
                 } else {
                     $payment->order->close();
                 }
-
-                exit('success');
             }
-            exit('fail');
+
+            return view('components.payment.detail', ['order' => $payment->order->refresh(), 'user' => $payment->user->refresh()]);
         }
-        exit('No enough information');
+
+        return view('auth.error', ['message' => 'No enough information']);
     }
 }

@@ -25,7 +25,9 @@ class AutoJob extends Command
     {
         $jobTime = microtime(true);
 
-        Order::recentUnPay()->update(['status' => -1]); // 关闭超时未支付本地订单
+        Order::recentUnPay()->chunk(config('tasks.chunk'), function ($orders) {
+            $orders->each->close();
+        }); // 关闭超时未支付本地订单
         $this->expireCode(); //过期验证码、优惠券、邀请码无效化
 
         if (sysConfig('is_subscribe_ban')) {

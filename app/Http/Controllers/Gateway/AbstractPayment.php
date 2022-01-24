@@ -13,7 +13,7 @@ abstract class AbstractPayment
 {
     abstract public function purchase(Request $request): JsonResponse;
 
-    abstract public function notify(Request $request): void;
+    abstract public function notify(Request $request);
 
     protected function creatNewPayment($uid, $oid, $amount): Payment
     {
@@ -65,12 +65,11 @@ abstract class AbstractPayment
         }
 
         ksort($data, SORT_STRING); // 排序
-        reset($data);
 
         return md5(urldecode(http_build_query($data)).$key); // 拼接
     }
 
-    protected function paymentReceived(string $tradeNo)
+    protected function paymentReceived(string $tradeNo): bool
     {
         $payment = Payment::whereTradeNo($tradeNo)->with('order')->first();
         if ($payment) {

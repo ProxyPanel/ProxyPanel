@@ -129,7 +129,7 @@ class BaseController extends Controller
             if (! $user) {
                 $user = UserOauth::whereIdentifier($info->getId())->first();
                 if (! $user) {
-                    $user = Helpers::addUser($info->getEmail(), Str::random(), MB * ((int) sysConfig('default_traffic')), null, $user->getNickname());
+                    $user = Helpers::addUser($info->getEmail(), Str::random(), MB * ((int) sysConfig('default_traffic')), null, $info->getNickname());
 
                     if ($user) {
                         $user->userAuths()->create([

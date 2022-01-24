@@ -19,7 +19,7 @@ class V2RayController extends BaseController
 
         return $this->returnData('获取节点信息成功', 'success', 200, [
             'id' => $node->id,
-            'is_udp' => $node->is_udp ? true : false,
+            'is_udp' => (bool) $node->is_udp,
             'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'push_port' => $node->push_port,
@@ -35,7 +35,7 @@ class V2RayController extends BaseController
             'v2_type' => $node->v2_type,
             'v2_host' => $node->v2_host,
             'v2_path' => $node->v2_path,
-            'v2_tls' => $node->v2_tls ? true : false,
+            'v2_tls' => (bool) $node->v2_tls,
             'v2_tls_provider' => $tlsProvider,
         ]);
     }

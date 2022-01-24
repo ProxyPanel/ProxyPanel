@@ -42,13 +42,13 @@ class OrderService
         $goods = self::$order->goods;
         switch ($goods->type) {// 商品为流量或者套餐
             case 1:// 流量包
-                $this->activatePackage();
+                $ret = $this->activatePackage();
                 break;
             case 2:// 套餐
                 if (Order::userActivePlan(self::$user->id)->where('id', '<>', self::$order->id)->exists()) {// 判断套餐是否直接激活
-                    $this->setPrepaidPlan();
+                    $ret = $this->setPrepaidPlan();
                 } else {
-                    $this->activatePlan();
+                    $ret = $this->activatePlan();
                 }
                 $this->setCommissionExpense(self::$user); // 返利
                 break;
@@ -56,7 +56,7 @@ class OrderService
                 Log::emergency('【处理订单】出现错误-未知套餐类型');
         }
 
-        return true;
+        return $ret ?? true;
     }
 
     // 余额充值
@@ -114,8 +114,7 @@ class OrderService
             $updateData['port'] = Helpers::getPort();
         }
 
-        $ret = self::$user->update(array_merge($this->resetTimeAndData(), $updateData));
-        if ($ret) {
+        if (self::$user->update(array_merge($this->resetTimeAndData(), $updateData))) {
             return Helpers::addUserTrafficModifyLog(
                 self::$order->user_id,
                 self::$order->id,

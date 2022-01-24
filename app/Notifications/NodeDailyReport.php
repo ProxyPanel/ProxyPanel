@@ -46,6 +46,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
         return [
             'title'   => __('Nodes Daily Report'),
             'content' => $this->markdownMessage(),
+            'url_type' => 'markdown',
         ];
     }
 

@@ -95,7 +95,9 @@ class SystemController extends Controller
             }
 
             return redirect()->route('admin.system.index', '#other')->withErrors('更新失败');
-        } elseif ($request->hasAny(['alipay_qrcode', 'wechat_qrcode'])) {
+        }
+
+        if ($request->hasAny(['alipay_qrcode', 'wechat_qrcode'])) {
             if ($request->hasFile('alipay_qrcode')) {
                 $validator = validator()->make($request->all(), ['alipay_qrcode' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 

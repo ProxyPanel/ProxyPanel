@@ -36,7 +36,7 @@ class EPay extends AbstractPayment
     public function notify(Request $request): void
     {
         if ($request->input('trade_status') === 'TRADE_SUCCESS' && $request->has('out_trade_no')
-            && $this->verify($request->all(), sysConfig('epay_key'), $request->input('sign'))) {
+            && $this->verify($request->except('method'), sysConfig('epay_key'), $request->input('sign'))) {
             if ($this->paymentReceived($request->input('out_trade_no'))) {
                 exit('SUCCESS');
             }

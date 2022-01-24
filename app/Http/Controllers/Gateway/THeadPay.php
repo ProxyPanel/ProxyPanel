@@ -43,7 +43,6 @@ class THeadPay extends AbstractPayment
     {
         unset($params['sign']);
         ksort($params, SORT_STRING);
-        reset($params);
         $params['key'] = sysConfig('theadpay_key');
 
         return strtoupper(md5(http_build_query($params)));

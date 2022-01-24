@@ -312,7 +312,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" data-dismiss="modal">关 闭</button>
+                    <button class="btn btn-danger mr-auto" data-dismiss="modal">关 闭</button>
                     <button class="btn btn-primary" onclick="addConfig()">提 交</button>
                 </div>
             </div>
@@ -340,7 +340,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
                     <button class="btn btn-primary" onclick="addLevel()">提 交</button>
                 </div>
             </div>
@@ -368,7 +368,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
                     <button class="btn btn-primary" onclick="addCategory()">提 交</button>
                 </div>
             </div>
@@ -396,7 +396,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
                     <button class="btn btn-primary" onclick="addCountry()">提 交</button>
                 </div>
             </div>
@@ -424,7 +424,7 @@
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger">关 闭</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
                     <button class="btn btn-primary" onclick="addLabel()">提 交</button>
                 </div>
             </div>

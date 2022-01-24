@@ -37,11 +37,11 @@ class Namesilo
         if ($domainList) {
             if (is_array($domainList)) {
                 foreach ($domainList as $domain) {
-                    if (strpos(self::$subDomain, $domain) !== false) {
+                    if (str_contains(self::$subDomain, $domain)) {
                         return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.')];
                     }
                 }
-            } elseif (strpos(self::$subDomain, $domainList) !== false) {
+            } elseif (str_contains(self::$subDomain, $domainList)) {
                 return [$domainList, rtrim(substr(self::$subDomain, 0, -(strlen($domainList))), '.')];
             }
         }

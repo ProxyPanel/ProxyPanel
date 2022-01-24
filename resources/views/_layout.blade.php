@@ -14,7 +14,7 @@
           content="An account management Panel based on Laravel7 framework. Include multiple payment, account management, system caching, admin notification, products models, and more.">
     <meta name="keywords" content="ProxyPanel Laravel Shadowsocks ShadowsocksR V2Ray Trojan VNET VPN">
     <meta name="author" content="ZBrettonYe">
-    <meta name="copyright" content="2017-2021©ProxyPanel">
+    <meta name="copyright" content="2017-2022©ProxyPanel">
     <title>@yield('title')</title>
     <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->

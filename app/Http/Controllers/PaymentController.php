@@ -29,12 +29,13 @@ class PaymentController extends Controller
 {
     public static $method;
 
-    public static function notify(Request $request): void
+    public static function notify(Request $request)
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
         Log::notice(self::$method.'回调接口：'.self::$method.var_export($request->all(), true));
-        self::getClient()->notify($request);
+
+        return self::getClient()->notify($request);
     }
 
     public static function getClient()
@@ -140,7 +141,7 @@ class PaymentController extends Controller
             //非余额付款下，检查在线支付是否开启
             if (self::$method !== 'credit') {
                 // 判断是否开启在线支付
-                if (! sysConfig('is_onlinePay')) {
+                if (! sysConfig('is_onlinePay') && ! sysConfig('wechat_qrcode') && ! sysConfig('alipay_qrcode')) {
                     return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
                 }
 
@@ -169,7 +170,7 @@ class PaymentController extends Controller
                 'user_id'       => auth()->id(),
                 'goods_id'      => $credit ? null : $goods_id,
                 'coupon_id'     => $coupon->id ?? null,
-                'origin_amount' => $credit ?: $goods->price ?? 0,
+                'origin_amount' => $credit ?: ($goods->price ?? 0),
                 'amount'        => $amount,
                 'pay_type'      => $pay_type,
                 'pay_way'       => self::$method,

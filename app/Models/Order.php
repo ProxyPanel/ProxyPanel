@@ -45,9 +45,13 @@ class Order extends Model
         return $query->whereUserId($uid ?: Auth::id());
     }
 
-    public function scopeRecentUnPay($query)
+    public function scopeRecentUnPay($query, int $minutes = 0)
     {
-        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.order').' minutes')));
+        if (! $minutes) {
+            $minutes = config('tasks.close.order');
+        }
+
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.$minutes.' minutes')));
     }
 
     public function scopeUserPrepay($query, $uid = null)
@@ -89,7 +93,7 @@ class Order extends Model
         return $this->update(['status' => -1]);
     }
 
-    public function paid() // 完成订单
+    public function paid() // 支付需要确认的订单
     {
         return $this->update(['status' => 1]);
     }

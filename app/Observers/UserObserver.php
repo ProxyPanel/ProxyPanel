@@ -17,7 +17,7 @@ class UserObserver
         $user->subscribe()->create(['code' => Helpers::makeSubscribeCode()]);
 
         $allowNodes = $user->nodes()->whereType(4)->get()->pluck('id');
-        if ($allowNodes) {
+        if (count($allowNodes)) {
             addUser::dispatch($user->id, $allowNodes);
         }
     }

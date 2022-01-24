@@ -26,7 +26,7 @@ class PushBearChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addMarketing(2, $message['title'], $message['content'], -1, $ret['message']);
+            Helpers::addMarketing(2, $message['title'], $message['content'], -1, '无返回内容');
 
             return false;
         }

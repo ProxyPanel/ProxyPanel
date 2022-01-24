@@ -37,7 +37,7 @@ class NetworkDetection
         $msg = null;
         foreach ([1, 6, 14] as $line) {
             $url = "https://api.oioweb.cn/api/hostping.php?host={$ip}&node={$line}"; // https://api.iiwl.cc/api/ping.php?host=
-            $response = Http::timeout(15)->get($url);
+            $response = Http::timeout(20)->get($url);
 
             // 发送成功
             if ($response->ok()) {
@@ -117,7 +117,7 @@ class NetworkDetection
 
         $url = "https://api.50network.com/china-firewall/check/ip/{$type_string}{$ip}{$port}";
 
-        $response = Http::timeout(15)->get($url);
+        $response = Http::timeout(20)->get($url);
 
         if ($response->ok()) {
             $message = $response->json();
@@ -162,8 +162,8 @@ class NetworkDetection
 
         $checkName = $is_icmp ? 'icmp' : 'tcp';
 
-        $response_cn = Http::timeout(15)->get($cn);
-        $response_us = Http::timeout(15)->get($us);
+        $response_cn = Http::timeout(20)->get($cn);
+        $response_us = Http::timeout(20)->get($us);
 
         if ($response_cn->ok() && $response_us->ok()) {
             $cn = $response_cn->json();
@@ -198,7 +198,7 @@ class NetworkDetection
 
         $checkName = $is_icmp ? 'ICMP' : 'TCP';
 
-        $response = Http::timeout(15)->withoutVerifying()->asForm()->post($url, ['ip' => $ip]);
+        $response = Http::timeout(20)->withoutVerifying()->asForm()->post($url, ['ip' => $ip]);
         if ($response->ok()) {
             $message = $response->json();
             if (! $message) {
@@ -237,8 +237,8 @@ class NetworkDetection
         $us = "https://api.idcoffer.com/ipcheck?host={$ip}&port={$port}";
         $checkName = $is_icmp ? 'ping' : 'tcp';
 
-        $response_cn = Http::timeout(15)->get($cn);
-        $response_us = Http::timeout(15)->get($us);
+        $response_cn = Http::timeout(20)->get($cn);
+        $response_us = Http::timeout(20)->get($us);
 
         if ($response_cn->ok() && $response_us->ok()) {
             $cn = $response_cn->json();
@@ -279,7 +279,7 @@ class NetworkDetection
 
         $checkName = $is_icmp ? 'ping_alive' : 'telnet_alive';
 
-        $response = Http::timeout(15)->get($url);
+        $response = Http::timeout(20)->get($url);
 
         if ($response->ok()) {
             $message = $response->json();

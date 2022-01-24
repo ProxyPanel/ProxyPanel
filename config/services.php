@@ -73,9 +73,13 @@ return [
     ],
 
     'telegram' => [
-        'bot' => env('TELEGRAM_BOT_NAME'),  // The bot's username
-        'client_id' => null,
+        'bot'           => env('TELEGRAM_BOT_NAME'),  // The bot's username
+        'client_id'     => null,
         'client_secret' => env('TELEGRAM_TOKEN'),
-        'redirect' => '/oauth/telegram/redirect',
+        'redirect'      => '/oauth/telegram/redirect',
+    ],
+
+    'baidu' => [
+        'app_ak' => env('BAIDU_APP_AK'),
     ],
 ];

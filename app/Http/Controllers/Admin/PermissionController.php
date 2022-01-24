@@ -5,13 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionRequest;
 use Exception;
+use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('admin.permission.index', ['permissions' => Permission::query()->paginate(15)]);
+        $query = Permission::query();
+
+        foreach (['name', 'description'] as $field) {
+            $request->whenFilled($field, function ($value) use ($query, $field) {
+                $query->where($field, 'like', "%{$value}%");
+            });
+        }
+
+        return view('admin.permission.index', ['permissions' => $query->paginate(20)->appends($request->except('page'))]);
     }
 
     public function create()
