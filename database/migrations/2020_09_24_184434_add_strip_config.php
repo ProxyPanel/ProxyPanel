@@ -9,6 +9,7 @@ class AddStripConfig extends Migration
         'stripe_public_key',
         'stripe_secret_key',
         'stripe_signing_secret',
+        'stripe_currency',
     ];
 
     /**
