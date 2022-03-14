@@ -26,32 +26,32 @@ class Stripe extends AbstractPayment
         $type = $request->input('type');
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
-        if ($type == 1 || $type == 3){
+        if ($type == 1 || $type == 3) {
             $stripe_currency = sysConfig('stripe_currency');
             $ch = curl_init();
-            $url = 'https://api.exchangerate-api.com/v4/latest/' . strtoupper($stripe_currency);
+            $url = 'https://api.exchangerate-api.com/v4/latest/'.strtoupper($stripe_currency);
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             $currency = json_decode(curl_exec($ch));
             curl_close($ch);
-            $price_exchanged = bcdiv((double)$payment->amount, $currency->rates->CNY, 10);
+            $price_exchanged = bcdiv((float) $payment->amount, $currency->rates->CNY, 10);
             $source = Source::create([
                 'amount' => floor($price_exchanged * 100),
                 'currency' => $stripe_currency,
-                'type' => $type == 1 ? "alipay" : "wechat",
+                'type' => $type == 1 ? 'alipay' : 'wechat',
                 'statement_descriptor' => $payment->trade_no,
                 'metadata' => [
                     'user_id' => $payment->user_id,
                     'out_trade_no' => $payment->trade_no,
-                    'identifier' => ''
+                    'identifier' => '',
                 ],
                 'redirect' => [
-                    'return_url' => route('invoice')
-                ]
+                    'return_url' => route('invoice'),
+                ],
             ]);
             if ($type == 3) {
-                if (!$source['wechat']['qr_code_url']) {
+                if (! $source['wechat']['qr_code_url']) {
                     Log::warning('创建订单错误：未知错误');
                     $payment->delete();
 
@@ -61,7 +61,7 @@ class Stripe extends AbstractPayment
 
                 return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
             } else {
-                if (!$source['redirect']['url']) {
+                if (! $source['redirect']['url']) {
                     Log::warning('创建订单错误：未知错误');
                     $payment->delete();
 
