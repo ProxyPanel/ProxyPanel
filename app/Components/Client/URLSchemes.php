@@ -46,6 +46,8 @@ class URLSchemes
             'host' => $server['v2_host'],
             'path' => $server['v2_path'],
             'tls'  => $server['v2_tls'],
+            'sni' => $server['v2_sni'],
+            'remark' => $server['name'],
         ];
 
         return 'vmess://'.base64_encode(json_encode($config)).PHP_EOL;
@@ -55,8 +57,8 @@ class URLSchemes
     {
         $name = rawurlencode($server['name']);
         $query = '';
-        if (array_key_exists('relay_server', $server)) {
-            $query = "?sni={$server['relay_server']}";
+        if (array_key_exists('sni', $server)) {
+            $query = "?sni={$server['sni']}";
         }
 
         return "trojan://{$server['passwd']}@{$server['host']}:{$server['port']}{$query}#{$name}".PHP_EOL;
