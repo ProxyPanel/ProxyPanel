@@ -183,7 +183,7 @@ class NodeController extends Controller
     // 节点流量监控
     public function nodeMonitor(Node $node)
     {
-        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
+        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChartNode($node->id, true)));
     }
 
     // Ping节点延迟
