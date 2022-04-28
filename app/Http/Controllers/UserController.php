@@ -202,8 +202,8 @@ class UserController extends Controller
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.services', [
-            'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->limit(10)->get(),
-            'goodsList'       => Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->paginate(10)->appends($request->except('page')),
+            'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->limit(99)->get(),
+            'goodsList'       => Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->paginate(99)->appends($request->except('page')),
             'renewTraffic'    => $renewPrice->renew ?? 0,
             'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? Helpers::daysToNow($dataPlusDays) : 0,
         ]);
@@ -221,11 +221,11 @@ class UserController extends Controller
 
         $user->update(['u' => 0, 'd' => 0]);
 
-        // 扣余额
-        $user->updateCredit(-$renewCost);
-
         // 记录余额操作日志
         Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, trans('user.reset_data.logs'));
+
+        // 扣余额
+        $user->updateCredit(-$renewCost);
 
         return Response::json(['status' => 'success', 'message' => trans('user.reset_data.success')]);
     }
