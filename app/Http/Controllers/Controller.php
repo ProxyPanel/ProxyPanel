@@ -49,16 +49,14 @@ class Controller extends BaseController
     {
         if ($is_node) {
             $currentFlow = UserDataFlowLog::whereNodeId($id);
-            $hourlyFlow = NodeHourlyDataFlow::whereNodeId($id);
-            $dailyFlow = NodeDailyDataFlow::whereNodeId($id);
+            $hourlyFlow = NodeHourlyDataFlow::whereNodeId($id)->whereDate('created_at', date('Y-m-d'))->selectRaw('(DATE_FORMAT(node_hourly_data_flow.created_at, "%k")) as date, total')->pluck('total', 'date');
+            $dailyFlow = NodeDailyDataFlow::whereNodeId($id)->whereMonth('created_at', date('n'))->selectRaw('(DATE_FORMAT(node_daily_data_flow.created_at, "%e")) as date, total')->pluck('total', 'date');
         } else {
             $currentFlow = UserDataFlowLog::whereUserId($id);
-            $hourlyFlow = UserHourlyDataFlow::userHourly($id);
-            $dailyFlow = UserDailyDataFlow::userDaily($id);
+            $hourlyFlow = UserHourlyDataFlow::userHourly($id)->whereDate('created_at', date('Y-m-d'))->selectRaw('(DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, total')->pluck('total', 'date');
+            $dailyFlow = UserDailyDataFlow::userDaily($id)->whereMonth('created_at', date('n'))->selectRaw('(DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, total')->pluck('total', 'date');
         }
         $currentFlow = $currentFlow->where('log_time', '>=', strtotime(date('Y-m-d H:0')))->sum(DB::raw('u + d'));
-        $hourlyFlow = $hourlyFlow->whereDate('created_at', date('Y-m-d'))->selectRaw('(DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, total')->pluck('total', 'date');
-        $dailyFlow = $dailyFlow->whereMonth('created_at', date('n'))->selectRaw('(DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, total')->pluck('total', 'date');
 
         // 节点一天内的流量
         $hourlyData = array_fill(0, date('G') + 1, 0);

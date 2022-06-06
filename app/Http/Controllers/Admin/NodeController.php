@@ -12,7 +12,6 @@ use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
-use Arr;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,33 +37,19 @@ class NodeController extends Controller
             $node->online_users = $online_log->online_user ?? 0;
             $node->transfer = flowAutoShow($node->dailyDataFlows()->sum('total')); // 已产生流量
             $node_info = $node->heartbeats()->recently()->first(); // 近期负载
-            $node->isOnline = empty($node_info) || empty($node_info->load) ? 0 : 1;
-            $node->load = $node->isOnline ? $node_info->load : '离线';
+            $node->isOnline = ! empty($node_info) && ! empty($node_info->load);
+            $node->load = $node_info->load ?? false;
             $node->uptime = empty($node_info) ? 0 : seconds2time($node_info->uptime);
         }
 
         return view('admin.node.index', ['nodeList' => $nodeList]);
     }
 
-    // 添加节点页面
-    public function create()
-    {
-        return view('admin.node.info', [
-            'countries'  => Country::orderBy('code')->get(),
-            'levels'     => Level::orderBy('level')->get(),
-            'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs'      => NodeCertificate::orderBy('id')->get(),
-        ]);
-    }
-
     // 添加节点
     public function store(NodeRequest $request): JsonResponse
     {
-        $array = $request->validated();
-        Arr::forget($array, ['labels']);
         try {
-            if ($node = Node::create($array)) {
+            if ($node = Node::create($this->nodeStore($request->validated()))) {
                 // 生成节点标签
                 if ($request->has('labels')) {
                     $node->labels()->attach($request->input('labels'));
@@ -81,11 +66,88 @@ class NodeController extends Controller
         return Response::json(['status' => 'fail', 'message' => '添加线路失败']);
     }
 
+    public function create()
+    {
+        return view('admin.node.info', [
+            'nodes'      => Node::orderBy('id')->pluck('id', 'name'),
+            'countries'  => Country::orderBy('code')->get(),
+            'levels'     => Level::orderBy('level')->get(),
+            'ruleGroups' => RuleGroup::orderBy('id')->get(),
+            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs'      => NodeCertificate::orderBy('id')->get(),
+        ]);
+    }
+
+    // 添加节点信息
+    private function nodeStore(array $info): array
+    {
+        switch ($info['type']) {
+            case 0:
+                $profile = [
+                    'method' => $info['method'],
+                ];
+                break;
+            case 2:
+                $profile = [
+                    'method'      => $info['v2_method'],
+                    'v2_alter_id' => $info['v2_alter_id'],
+                    'v2_net'      => $info['v2_net'],
+                    'v2_type'     => $info['v2_type'],
+                    'v2_host'     => $info['v2_host'],
+                    'v2_path'     => $info['v2_path'],
+                    'v2_tls'      => $info['v2_tls'] ? 'tls' : '',
+                    'v2_sni'      => $info['v2_sni'],
+                ];
+                break;
+            case 3:
+                $profile = [
+                    'allow_insecure' => false,
+                ];
+                break;
+            case 1:
+            case 4:
+                $profile = [
+                    'method'         => $info['method'],
+                    'protocol'       => $info['protocol'],
+                    'obfs'           => $info['obfs'],
+                    'obfs_param'     => $info['obfs_param'],
+                    'protocol_param' => $info['protocol_param'],
+                    'passwd'         => $info['passwd'],
+                ];
+                break;
+        }
+
+        return [
+            'type'           => $info['type'],
+            'name'           => $info['name'],
+            'country_code'   => $info['country_code'],
+            'server'         => $info['server'],
+            'ip'             => $info['ip'],
+            'ipv6'           => $info['ipv6'],
+            'level'          => $info['level'],
+            'rule_group_id'  => $info['rule_group_id'],
+            'speed_limit'    => $info['speed_limit'],
+            'client_limit'   => $info['client_limit'],
+            'description'    => $info['description'],
+            'profile'        => $profile ?? [],
+            'traffic_rate'   => $info['traffic_rate'],
+            'is_udp'         => $info['is_udp'],
+            'is_subscribe'   => $info['is_subscribe'],
+            'is_ddns'        => $info['is_ddns'],
+            'relay_node_id'  => $info['relay_node_id'],
+            'push_port'      => $info['push_port'],
+            'detection_type' => $info['detection_type'],
+            'sort'           => $info['sort'],
+            'status'         => $info['status'],
+        ];
+    }
+
     // 编辑节点页面
     public function edit(Node $node)
     {
         return view('admin.node.info', [
             'node'       => $node,
+            'nodes'      => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
             'countries'  => Country::orderBy('code')->get(),
             'levels'     => Level::orderBy('level')->get(),
             'ruleGroups' => RuleGroup::orderBy('id')->get(),
@@ -98,9 +160,7 @@ class NodeController extends Controller
     public function update(NodeRequest $request, Node $node): JsonResponse
     {
         try {
-            $array = $request->validated();
-            Arr::forget($array, ['labels']);
-            if ($node->update($array)) {
+            if ($node->update($this->nodeStore($request->validated()))) {
                 // 更新节点标签
                 $node->labels()->sync($request->input('labels'));
 
@@ -135,8 +195,8 @@ class NodeController extends Controller
     public function checkNode(Node $node): JsonResponse
     {
         foreach ($node->ips() as $ip) {
-            $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22); // ICMP
-            $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22); // TCP
+            $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->port ?? 22); // ICMP
+            $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->port ?? 22); // TCP
             if ($icmp) {
                 $data[$ip][0] = config('common.network_status')[$icmp];
             } else {

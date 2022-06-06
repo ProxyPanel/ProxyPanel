@@ -17,6 +17,9 @@ class Node extends Model
 {
     protected $table = 'node';
     protected $guarded = [];
+    protected $casts = [
+        'profile' => 'array',
+    ];
 
     public function labels()
     {
@@ -61,6 +64,11 @@ class Node extends Model
     public function ruleGroup(): BelongsTo
     {
         return $this->belongsTo(RuleGroup::class);
+    }
+
+    public function relayNode(): BelongsTo
+    {
+        return $this->belongsTo(Node::class);
     }
 
     public function userGroups(): BelongsToMany
@@ -122,72 +130,54 @@ class Node extends Model
         return array_map('trim', explode(',', $ip));
     }
 
-    public function config(User $user)
+    public function getConfig(User $user)
     {
         $config = [
             'id'    => $this->id,
             'name'  => $this->name,
             'host'  => $this->host,
             'group' => sysConfig('website_name'),
+            'udp'   => $this->is_udp,
         ];
         switch ($this->type) {
             case 0:
                 $config = array_merge($config, [
                     'type'   => 'shadowsocks',
-                    'method' => $this->method,
-                    'udp'    => $this->is_udp,
                     'passwd' => $user->passwd,
-                ]);
-                if ($this->single) {
-                    $config['port'] = $this->is_relay ? $this->relay_port : $this->port;
+                ], $this->profile);
+                if ($this->port) {
+                    $config['port'] = $this->port;
                 } else {
                     $config['port'] = $user->port;
                 }
                 break;
             case 2:
                 $config = array_merge($config, [
-                    'type'        => 'v2ray',
-                    'port'        => $this->is_relay ? $this->relay_port : $this->port,
-                    'uuid'        => $user->vmess_id,
-                    'method'      => $this->v2_method,
-                    'v2_alter_id' => $this->v2_alter_id,
-                    'v2_net'      => $this->v2_net,
-                    'v2_type'     => $this->v2_type,
-                    'v2_host'     => $this->v2_host,
-                    'v2_path'     => $this->v2_path,
-                    'v2_tls'      => $this->v2_tls ? 'tls' : '',
-                    'v2_sni'      => $this->v2_sni,
-                    'udp'         => $this->is_udp,
-                ]);
+                    'type' => 'v2ray',
+                    'port' => $this->port,
+                    'uuid' => $user->vmess_id,
+                ], $this->profile);
                 break;
             case 3:
                 $config = array_merge($config, [
                     'type'   => 'trojan',
-                    'port'   => $this->is_relay ? $this->relay_port : $this->port,
+                    'port'   => $this->port,
                     'passwd' => $user->passwd,
-                    'sni'    => $this->is_relay ? $this->server : '',
-                    'udp'    => $this->is_udp,
-                ]);
+                    'sni'    => $this->relay_node_id ? $this->server : '',
+                ], $this->profile);
                 break;
             case 1:
             case 4:
                 $config = array_merge($config, [
-                    'type'       => $this->compatible ? 'shadowsocks' : 'shadowsocksr',
-                    'method'     => $this->method,
-                    'protocol'   => $this->protocol,
-                    'obfs'       => $this->obfs,
-                    'obfs_param' => $this->obfs_param,
-                    'udp'        => $this->is_udp,
-                ]);
-                if ($this->single) {
+                    'type' => 'shadowsocksr',
+                ], $this->profile);
+                if ($this->profile['passwd'] && $this->port) {
                     //单端口使用中转的端口
-                    $config['port'] = $this->is_relay ? $this->relay_port : $this->port;
-                    $config['passwd'] = $this->passwd;
+                    $config['port'] = $this->port;
                     $config['protocol_param'] = $user->port.':'.$user->passwd;
                 } else {
                     $config['port'] = $user->port;
                     $config['passwd'] = $user->passwd;
-                    $config['protocol_param'] = $this->protocol_param;
                     if ($this->type === 1) {
                         $config['method'] = $user->method;
                         $config['protocol'] = $user->protocol;
@@ -223,10 +213,6 @@ class Node extends Model
 
     public function getHostAttribute(): string
     {
-        if ($this->is_relay) {
-            return $this->relay_server;
-        }
-
-        return $this->server ?: $this->ip;
+        return $this->server ?? $this->ip ?? $this->ipv6;
     }
 }

@@ -5,23 +5,23 @@ namespace App\Http\Controllers\Api\WebApi;
 use App\Models\Node;
 use Illuminate\Http\JsonResponse;
 
-class SSRController extends BaseController
+class SSRController extends CoreController
 {
     // 获取节点信息
     public function getNodeInfo(Node $node): JsonResponse
     {
-        return $this->returnData('获取节点信息成功', 'success', 200, [
+        return $this->returnData('获取节点信息成功', 200, 'success', [
             'id'           => $node->id,
-            'method'       => $node->method,
-            'protocol'     => $node->protocol,
-            'obfs'         => $node->obfs,
-            'obfs_param'   => $node->obfs_param ?? '',
+            'method'       => $node->profile['method'],
+            'protocol'     => $node->profile['protocol'],
+            'obfs'         => $node->profile['obfs'],
+            'obfs_param'   => $node->profile['obfs_param'] ?? '',
             'is_udp'       => $node->is_udp,
             'speed_limit'  => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
-            'single'       => $node->single,
+            'single'       => isset($node->profile['passwd']) ? 1 : 0,
             'port'         => (string) $node->port,
-            'passwd'       => $node->passwd ?? '',
+            'passwd'       => $node->profile['passwd'] ?? '',
             'push_port'    => $node->push_port,
             'secret'       => $node->auth->secret,
             'redirect_url' => sysConfig('redirect_url'),
@@ -39,12 +39,12 @@ class SSRController extends BaseController
                 'method'      => $user->method,
                 'protocol'    => $user->protocol,
                 'obfs'        => $user->obfs,
-                'obfs_param'  => $node->obfs_param,
+                'obfs_param'  => $node->profile['obfs_param'],
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
                 'enable'      => $user->enable,
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 'success', 200, $data ?? [], ['updateTime' => time()]);
+        return $this->returnData('获取用户列表成功', 200, 'success', $data ?? [], ['updateTime' => time()]);
     }
 }

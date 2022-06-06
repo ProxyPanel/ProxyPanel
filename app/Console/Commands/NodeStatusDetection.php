@@ -79,13 +79,13 @@ class NodeStatusDetection extends Command
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
                 if ($node->detection_type !== 1) {
-                    $icmpCheck = (new NetworkDetection)->networkCheck($ip, true, $node->single ? $node->port : 22);
+                    $icmpCheck = (new NetworkDetection)->networkCheck($ip, true, $node->port ?? 22);
                     if ($icmpCheck !== false && $icmpCheck !== 1) {
                         $data[$node_id][$ip]['icmp'] = config('common.network_status')[$icmpCheck];
                     }
                 }
                 if ($node->detection_type !== 2) {
-                    $tcpCheck = (new NetworkDetection)->networkCheck($ip, false, $node->single ? $node->port : 22);
+                    $tcpCheck = (new NetworkDetection)->networkCheck($ip, false, $node->port ?? 22);
                     if ($tcpCheck !== false && $tcpCheck !== 1) {
                         $data[$node_id][$ip]['tcp'] = config('common.network_status')[$tcpCheck];
                     }
@@ -123,7 +123,7 @@ class NodeStatusDetection extends Command
         if (isset($data)) { //只有在出现阻断线路时，才会发出警报
             Notification::send(User::find(1), new NodeBlocked($data));
 
-            Log::info("节点状态日志: \r\n".var_export($data, true));
+            Log::notice("节点状态日志: \r\n".var_export($data, true));
         }
 
         Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700); // 随机生成下次检测时间

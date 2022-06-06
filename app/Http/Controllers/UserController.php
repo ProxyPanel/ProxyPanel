@@ -108,7 +108,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($request->isMethod('POST')) {
-            $server = Node::findOrFail($request->input('id'))->config($user); // 提取节点信息
+            $server = Node::findOrFail($request->input('id'))->getConfig($user); // 提取节点信息
 
             return Response::json(['status' => 'success', 'data' => $this->getUserNodeInfo($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
         }
@@ -202,8 +202,8 @@ class UserController extends Controller
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.services', [
-            'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->limit(99)->get(),
-            'goodsList'       => Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->paginate(99)->appends($request->except('page')),
+            'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->get(),
+            'goodsList'       => Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get(),
             'renewTraffic'    => $renewPrice->renew ?? 0,
             'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? Helpers::daysToNow($dataPlusDays) : 0,
         ]);
@@ -480,6 +480,7 @@ class UserController extends Controller
             'paying_user'             => auth()->user()->activePayingUser(), // 付费用户判断
             'Shadowrocket_install'    => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Shadowrocket.plist', // 客户端安装
             'Quantumult_install'      => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Quantumult.plist', // 客户端安装
+            'QuantumultX_install'     => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/QuantumultX.plist', // 客户端安装
             'subscribe_status'        => $subscribe->status, // 订阅连接
             'link'                    => $subscribe_link,
             'subscribe_link'          => 'sub://'.base64url_encode($subscribe_link),
@@ -487,10 +488,10 @@ class UserController extends Controller
             'Shadowrocket_linkQrcode' => 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(sysConfig('website_name')),
             'Clash_link'              => "clash://install-config?url={$subscribe_link}",
             'Surge_link'              => "surge:///install-config?url={$subscribe_link}",
-            'Quantumultx'             => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
-                'server_remote'  => "{$subscribe_link},  tag=".urlencode(sysConfig('website_name').' '.sysConfig('website_url')),
-                'filter_remote'  => '',
-                'rewrite_remote' => '',
+            'QuantumultX_link'             => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
+                'server_remote'  => ["{$subscribe_link}, tag=".sysConfig('website_name')],
+                'filter_remote'  => [],
+                'rewrite_remote' => [],
             ]),
             'Quantumult_linkOut'      => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),
             'Quantumult_linkIn'       => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),

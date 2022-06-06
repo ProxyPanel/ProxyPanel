@@ -81,7 +81,7 @@ class NodeObserver
 
     public function deleted(Node $node): void
     {
-        if ($node->is_ddns === 0 && $node->server && sysConfig('ddns_mode')) {
+        if ($node->server && sysConfig('ddns_mode')) {
             DDNS::destroy($node->server);
         }
     }

@@ -24,7 +24,7 @@ class IP
         } else {
             $ipInfo = self::ip2Region($ip);
             if (! $ipInfo) {
-                Log::info('无法识别，尝试使用【IPIP库】库解析：'.$ip);
+                Log::warning('无法识别，尝试使用【IPIP库】库解析：'.$ip);
                 $ipInfo = self::ip2Location($ip);
             }
         }
