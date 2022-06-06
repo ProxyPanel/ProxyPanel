@@ -84,7 +84,7 @@ class SubscribeController extends Controller
 
         $servers = [];
         foreach ($nodeList as $node) {
-            $servers[] = $node->config($user);
+            $servers[] = $node->getConfig($user);
         }
 
         // 打乱数组

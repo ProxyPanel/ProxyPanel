@@ -50,7 +50,7 @@ class AffiliateController extends Controller
 
         // 判断是否已存在申请
         if (ReferralApply::uid()->whereIn('status', [0, 1])->first()) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.appliedd')]);
+            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.applied')]);
         }
 
         // 校验可以提现金额是否超过系统设置的阀值

@@ -36,14 +36,14 @@
                         <th> ID</th>
                         <th> 类型</th>
                         <th> 名称</th>
-                        <th> IP</th>
                         <th> 域名</th>
+                        <th> IP</th>
                         <th> 存活</th>
-                        <th> {{trans('common.status')}}</th>
                         <th> 在线</th>
                         <th> 产生流量</th>
                         <th> 流量比例</th>
                         <th> 扩展</th>
+                        <th> {{trans('common.status')}}</th>
                         <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
@@ -53,25 +53,37 @@
                             <td> {{$node->id}} </td>
                             <td> {{$node->type_label}} </td>
                             <td> {{$node->name}} </td>
-                            <td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
                             <td> {{$node->server}} </td>
-                            <td> {{$node->uptime}} </td>
-                            <td>
-                                @if(!$node->isOnline)
-                                    <i class="red-600 icon wb-warning" aria-hidden="true"></i>
-                                @elseif (!$node->status)
-                                    <i class="yellow-600 icon wb-warning" aria-hidden="true"></i>
-                                @endif
-                                {{$node->status? $node->load : '维护'}}
-                            </td>
-                            <td> {{$node->online_users}} </td>
+                            <td> {{$node->is_ddns ? 'DDNS' : $node->ip}} </td>
+                            <td> {{$node->uptime ?: '-'}} </td>
+                            <td> {{$node->online_users ?: '-'}} </td>
                             <td> {{$node->transfer}} </td>
                             <td> {{$node->traffic_rate}} </td>
                             <td>
-                                @if($node->compatible) <span class="badge badge-lg badge-info">兼</span> @endif
-                                @if($node->single) <span class="badge badge-lg badge-info">单</span> @endif
-                                @if($node->is_relay) <span class="badge badge-lg badge-info">中转</span> @endif
-                                @if(!$node->is_subscribe) <span class="badge badge-lg badge-danger"><del>订</del></span> @endif
+                                @if(isset($node->profile['passwd']))
+                                    <span class="badge badge-lg badge-info"><i class="icon fas fa-stream"></i>单</span>
+                                @endif
+                                @if($node->relay_node_id)
+                                    <span class="badge badge-lg badge-info"><i class="icon fas fa-ethernet"></i>转</span>
+                                @endif
+                                @if(!$node->is_subscribe)
+                                    <span class="badge badge-lg badge-danger"><i class="icon fas fa-rss"></i><del>订</del></span>
+                                @endif
+                            </td>
+                            <td>
+                                @if($node->isOnline)
+                                    @if ($node->status)
+                                        {{$node->load}}
+                                    @else
+                                        <i class="yellow-700 icon icon-spin fas fa-cog" aria-hidden="true"></i>
+                                    @endif
+                                @else
+                                    @if ($node->status)
+                                        <i class="red-600 icon fas fa-cog" aria-hidden="true"></i>
+                                    @else
+                                        <i class="red-600 icon fas fa-handshake-slash" aria-hidden="true"></i>
+                                    @endif
+                                @endif
                             </td>
                             <td>
                                 @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
@@ -85,7 +97,7 @@
                                             </a>
                                         @endcan
                                         @can('admin.node.destroy')
-                                            <a class="dropdown-item" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">
+                                            <a class="dropdown-item red-700" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">
                                                 <i class="icon wb-trash" aria-hidden="true"></i> 删除
                                             </a>
                                         @endcan

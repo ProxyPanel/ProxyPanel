@@ -58,7 +58,7 @@ class DDNS
         if (self::dnsProvider($domain)->update($ip, $type)) {
             Log::info("【DDNS】更新：{$ip} => {$domain} 类型：{$type} 成功");
         } else {
-            Log::info("【DDNS】更新：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
+            Log::warning("【DDNS】更新：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
         }
     }
 
@@ -74,7 +74,7 @@ class DDNS
         if (self::dnsProvider($domain)->store($ip, $type)) {
             Log::info("【DDNS】添加：{$ip} => {$domain} 类型：{$type} 成功");
         } else {
-            Log::info("【DDNS】添加：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
+            Log::warning("【DDNS】添加：{$ip} => {$domain} 类型：{$type} 失败，请手动设置！");
         }
     }
 }

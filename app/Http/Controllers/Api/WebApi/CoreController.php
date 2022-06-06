@@ -6,10 +6,11 @@ use App\Models\Node;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Response;
 use Validator;
 
-class BaseController
+class CoreController extends Controller
 {
     // 上报节点心跳信息
     public function setNodeStatus(Request $request, Node $node): JsonResponse
@@ -27,14 +28,14 @@ class BaseController
             'load'     => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
             'log_time' => time(),
         ])) {
-            return $this->returnData('上报节点心跳信息成功', 'success', 200);
+            return $this->returnData('上报节点心跳信息成功', 200, 'success');
         }
 
-        return $this->returnData('生成节点心跳信息失败');
+        return $this->returnData('生成节点心跳信息失败', 400);
     }
 
     // 返回数据
-    public function returnData(string $message, string $status = 'fail', int $code = 400, array $data = [], array $addition = null): JsonResponse
+    public function returnData(string $message, int $code = 422, string $status = 'fail', array $data = [], array $addition = null): JsonResponse
     {
         $etag = self::abortIfNotModified($data);
         $data = compact('status', 'code', 'data', 'message');
@@ -79,14 +80,14 @@ class BaseController
         }
 
         if (isset($formattedData) && ! $node->onlineIps()->createMany($formattedData)) {  // 生成节点在线IP数据
-            return $this->returnData('生成节点在线用户IP信息失败');
+            return $this->returnData('生成节点在线用户IP信息失败', 400);
         }
 
         if ($node->onlineLogs()->create(['online_user' => $onlineCount, 'log_time' => time()])) { // 生成节点在线人数数据
-            return $this->returnData('上报节点在线情况成功', 'success', 200);
+            return $this->returnData('上报节点在线情况成功', 200, 'success');
         }
 
-        return $this->returnData('生成节点在线情况失败');
+        return $this->returnData('生成节点在线情况失败', 400);
     }
 
     // 上报用户流量日志
@@ -112,10 +113,10 @@ class BaseController
                 $user->update(['u' => $user->u + $log->u, 'd' => $user->d + $log->d, 't' => time()]);
             }
 
-            return $this->returnData('上报用户流量日志成功', 'success', 200);
+            return $this->returnData('上报用户流量日志成功', 200, 'success');
         }
 
-        return $this->returnData('生成用户流量日志失败');
+        return $this->returnData('生成用户流量日志失败', 400);
     }
 
     // 获取节点的审计规则
@@ -131,11 +132,11 @@ class BaseController
                 ];
             }
 
-            return $this->returnData('获取节点审计规则成功', 'success', 200, ['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data ?? []]);
+            return $this->returnData('获取节点审计规则成功', 200, 'success', ['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data ?? []]);
         }
 
         // 放行
-        return $this->returnData('获取节点审计规则成功', 'success', 200, ['mode' => 'all', 'rules' => $data ?? []]);
+        return $this->returnData('获取节点审计规则成功', 200, 'success', ['mode' => 'all', 'rules' => $data ?? []]);
     }
 
     // 上报用户触发审计规则记录
@@ -144,13 +145,13 @@ class BaseController
         $validator = Validator::make($request->all(), ['uid' => 'required|numeric|exists:user,id', 'rule_id' => 'required|numeric|exists:rule,id', 'reason' => 'required']);
 
         if ($validator->fails()) {
-            return $this->returnData('上报用户触发审计规则日志失败，请检查字段');
+            return $this->returnData('上报日志失败，请检查字段');
         }
         $data = $validator->validated();
         if ($node->ruleLogs()->create(['user_id' => $data['uid'], 'rule_id' => $data['rule_id'], 'reason' => $data['reason']])) {
-            return $this->returnData('上报用户触发审计规则日志成功', 'success', 200);
+            return $this->returnData('上报日志成功', 200, 'success');
         }
 
-        return $this->returnData('上报用户触发审计规则日志失败');
+        return $this->returnData('上报用户触发审计规则日志失败', 400);
     }
 }

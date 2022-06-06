@@ -22,7 +22,7 @@ class WebApi
         $time = $request->header('timestamp');
 
         if (! isset($key)) {// 未提供 key
-            return $this->returnData('Your key is null!');
+            return $this->returnData('Your key is null!', 400);
         }
 
         $nodeAuth = $node->auth ?? null;
@@ -38,8 +38,8 @@ class WebApi
     }
 
     // 返回数据
-    public function returnData(string $message): JsonResponse
+    private function returnData(string $message, int $code = 401): JsonResponse
     {
-        return Response::json(['status' => 'fail', 'code' => 404, 'message' => $message]);
+        return Response::json(['status' => 'fail', 'code' => $code, 'message' => $message]);
     }
 }

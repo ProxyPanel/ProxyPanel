@@ -5,24 +5,24 @@ namespace App\Http\Controllers\Api\WebApi;
 use App\Models\Node;
 use Illuminate\Http\JsonResponse;
 
-class SSController extends BaseController
+class SSController extends CoreController
 {
     // 获取节点信息
     public function getNodeInfo(Node $node): JsonResponse
     {
         $data = [
             'id'           => $node->id,
-            'method'       => $node->method,
+            'method'       => $node->profile['method'],
             'speed_limit'  => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'redirect_url' => sysConfig('redirect_url'),
         ];
 
-        if ($node->single) {
+        if ($node->profile['passwd']) {
             $data['port'] = $node->port;
         }
 
-        return $this->returnData('获取节点信息成功', 'success', 200, $data);
+        return $this->returnData('获取节点信息成功', 200, 'success', $data);
     }
 
     // 获取节点可用的用户列表
@@ -38,6 +38,6 @@ class SSController extends BaseController
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 'success', 200, $data ?? [], ['updateTime' => time()]);
+        return $this->returnData('获取用户列表成功', 200, 'success', $data ?? [], ['updateTime' => time()]);
     }
 }

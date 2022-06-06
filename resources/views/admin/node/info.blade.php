@@ -12,7 +12,11 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">@isset($node) 编辑节点 @else 添加节点 @endisset</h2>
+                <h2 class="panel-title">@isset($node)
+                        编辑节点
+                    @else
+                        添加节点
+                    @endisset</h2>
             </div>
             <div class="alert alert-info" role="alert">
                 <button class="close" data-dismiss="alert" aria-label="Close">
@@ -58,7 +62,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="push_port" class="col-md-3 col-form-label"> 消息推送端口 </label>
-                                        <input type="number" class="form-control col-md-4" name="push_port" value="0" id="push_port">
+                                        <input type="number" class="form-control col-md-4" name="push_port" value="1080" id="push_port">
                                         <span class="text-help offset-md-3">必填且防火墙需放行，否则将导致消息推送异常</span>
                                     </div>
                                     <div class="form-group row">
@@ -215,11 +219,8 @@
                                                           placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="compatible" class="col-md-3 col-form-label">兼容SS</label>
-                                                <div class="col-md-9">
-                                                    <input type="checkbox" id="compatible" name="compatible" data-plugin="switchery">
-                                                </div>
-                                                <div class="text-help offset-md-3">
+                                                <label class="col-md-3 col-form-label">*兼容 SS</label>
+                                                <div class="text-help col-md-9">
                                                     如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
                                                 </div>
                                             </div>
@@ -372,20 +373,14 @@
                                         <div class="text-help offset-md-3"> 每30~60分钟随机进行节点阻断检测</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="is_relay" class="col-md-3 col-form-label">中转</label>
-                                        <div class="col-md-9">
-                                            <input type="checkbox" id="is_relay" name="is_relay" data-plugin="switchery" onchange="switchSetting('is_relay')">
-                                        </div>
-                                    </div>
-                                    <div class="relay-setting">
-                                        <div class="form-group row">
-                                            <label for="relay_port" class="col-md-3 col-form-label"> 中转端口 </label>
-                                            <input type="number" class="form-control col-md-4" name="relay_port" id="relay_port" value="443">
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="relay_server" class="col-md-3 col-form-label"> 中转地址 </label>
-                                            <input type="text" class="form-control col-md-4" name="relay_server" id="relay_server">
-                                        </div>
+                                        <label for="relay_node_id" class="col-md-3 col-form-label">中转</label>
+                                        <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick"
+                                                id="relay_node_id" name="relay_node_id">
+                                            <option value="">不使用</option>
+                                            @foreach($nodes as $name => $id)
+                                                <option value="{{$id}}">{{$id}} - {{$name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -412,7 +407,6 @@
         $(document).ready(function() {
             let v2_path = $('#v2_path');
             switchSetting('single');
-            switchSetting('is_relay');
             switchSetting('is_ddns');
             @isset($node)
 
@@ -431,6 +425,7 @@
             $('#client_limit').val('{{$node->client_limit}}');
             $('#labels').selectpicker('val', {{$node->labels->pluck('id')}});
             $('#country_code').selectpicker('val', '{{$node->country_code}}');
+            $('#relay_node_id').selectpicker('val', '{{$node->relay_node_id}}');
             $('#description').val('{{$node->description}}');
             $('#sort').val('{{$node->sort}}');
             @if($node->is_udp)
@@ -443,53 +438,46 @@
             $('#is_subscribe').click();
             @endif
             $("input[name='detection_type'][value='{{$node->detection_type}}']").click();
-            @if($node->single)
+            @if($node->profile['passwd'] && $node->port)
             $('#single').click();
+            $('#passwd').val('{{$node->profile['passwd']}}');
             @endif
             $('input[name = port]').val('{{$node->port}}');
-            $('#passwd').val('{{$node->passwd}}');
             $("input[name='type'][value='{{$node->type}}']").click();
 
-            switch ({{$node->type}}) {
-                case 1:
-                case 4:
-                    @if ($node->compatible)
-                    $('#compatible').click();
-                    @endif
-                    $('#protocol').selectpicker('val', '{{$node->protocol}}');
-                    $('#protocol_param').val('{{$node->protocol_param}}');
-                    $('#obfs').selectpicker('val', '{{$node->obfs}}');
-                    $('#obfs_param').val('{{$node->obfs_param}}');
-                case 0:
-                    $('#method').selectpicker('val', '{{$node->method}}');
-                    break;
-                case 2:
-                    //V2Ray
-                    $('#v2_alter_id').val('{{$node->v2_alter_id}}');
-                    $('#v2_method').selectpicker('val', '{{$node->v2_method}}');
-                    $('#v2_net').selectpicker('val', '{{$node->v2_net}}');
-                    $('#v2_type').selectpicker('val', '{{$node->v2_type}}');
-                    $('#v2_host').val('{{$node->v2_host}}');
-                    $('#v2_port').val('{{$node->port}}');
-                    $('#v2_sni').val('{{$node->v2_sni}}');
-                    v2_path.val('{{$node->v2_path}}');
-                    @if($node->v2_tls)
-                    $('#v2_tls').click();
-                    @endif
-                    $('#tls_provider').val('{!! $node->tls_provider !!}');
-                    break;
-                case 3:
-                    $('#trojan_port').val('{{$node->port}}');
-                    break;
-                default:
-            }
+            @switch($node->type)
+            @case(1)
+            @case(4)
+            $('#protocol').selectpicker('val', '{{$node->profile['protocol']}}');
+            $('#protocol_param').val('{{$node->profile['protocol_param']}}');
+            $('#obfs').selectpicker('val', '{{$node->profile['obfs']}}');
+            $('#obfs_param').val('{{$node->profile['obfs_param']}}');
+            @case(0)
+            $('#method').selectpicker('val', '{{$node->profile['method']}}');
+            @break
 
-            @if($node->is_relay)
-            // 中转
-            $('#is_relay').click();
-            $('#relay_port').val('{{$node->relay_port}}');
-            $('#relay_server').val('{{$node->relay_server}}');
+            @case(2)
+            //V2Ray
+            $('#v2_alter_id').val('{{$node->profile['v2_alter_id']}}');
+            $('#v2_method').selectpicker('val', '{{$node->profile['v2_method']}}');
+            $('#v2_net').selectpicker('val', '{{$node->profile['v2_net']}}');
+            $('#v2_type').selectpicker('val', '{{$node->profile['v2_type']}}');
+            $('#v2_host').val('{{$node->profile['v2_host']}}');
+            $('#v2_port').val('{{$node->port}}');
+            $('#v2_sni').val('{{$node->profile['v2_sni']}}');
+            v2_path.val('{{$node->profile['v2_path']}}');
+            @if($node->profile['v2_tls'])
+            $('#v2_tls').click();
             @endif
+            $('#tls_provider').val('{!! $node->tls_provider !!}');
+
+            @break
+            @case(3)
+            $('#trojan_port').val('{{$node->port}}');
+            @break
+            @default
+            @endswitch
+
             @else
             $('input[name=\'type\'][value=\'0\']').click();
             $('#status').click();
@@ -548,7 +536,6 @@
                     protocol_param: $('#protocol_param').val(),
                     obfs: $('#obfs').val(),
                     obfs_param: $('#obfs_param').val(),
-                    compatible: document.getElementById('compatible').checked ? 1 : 0,
                     is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
                     detection_type: $('input[name=\'detection_type\']:checked').val(),
                     single: document.getElementById('single').checked ? 1 : 0,
@@ -563,9 +550,7 @@
                     v2_sni: $('#v2_sni').val(),
                     v2_tls: document.getElementById('v2_tls').checked ? 1 : 0,
                     tls_provider: $('#tls_provider').val(),
-                    is_relay: document.getElementById('is_relay').checked ? 1 : 0,
-                    relay_port: $('#relay_port').val(),
-                    relay_server: $('#relay_server').val(),
+                    relay_node_id: $('#relay_node_id option:selected').val(),
                 },
                 success: function(ret) {
                     if (ret.status === 'success') {
@@ -606,18 +591,6 @@
                         $('#single_port').val('').removeAttr('required');
                         $('#passwd').val('');
                         $('.single-setting').hide();
-                    }
-                    break;
-                //设置中转
-                case 'is_relay':
-                    if (check) {
-                        $('.relay-setting').show();
-                        $('#relay_port').attr('required', true);
-                        $('#relay_server').attr('required', true);
-                    } else {
-                        $('.relay-setting').hide();
-                        $('#relay_port').removeAttr('required');
-                        $('#relay_server').removeAttr('required');
                     }
                     break;
                 // 设置是否使用DDNS
