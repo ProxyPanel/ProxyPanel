@@ -201,9 +201,22 @@ class UserController extends Controller
         // 有重置日时按照重置日为标准，否则就以过期日为标准
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
+        $goodsList = Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get();
+
+        if ($user && $nodes = $user->userGroup) {
+            $nodes = $nodes->nodes();
+            foreach ($goodsList as $goods) {
+                $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
+            }
+        } else {
+            foreach ($goodsList as $goods) {
+                $goods->node_count = Node::where('level', '<=', $goods->level)->count();
+            }
+        }
+
         return view('user.services', [
             'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->get(),
-            'goodsList'       => Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get(),
+            'goodsList'       => $goodsList,
             'renewTraffic'    => $renewPrice->renew ?? 0,
             'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? Helpers::daysToNow($dataPlusDays) : 0,
         ]);
