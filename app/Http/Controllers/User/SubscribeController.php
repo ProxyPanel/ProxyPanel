@@ -66,7 +66,7 @@ class SubscribeController extends Controller
         $subscribe->increment('times', 1);
 
         // 记录每次请求
-        $this->subscribeLog($subscribe->id, IP::getClientIp(), $request->headers);
+        $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()]));
 
         // 获取这个账号可用节点
         $query = $user->nodes()->whereIsSubscribe(1);
