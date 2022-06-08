@@ -1,6 +1,12 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <style>
+        .table th a {
+            color: #76838f;
+            text-decoration: none;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -34,10 +40,10 @@
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
-                        <th> #</th>
+                        <th> @sortablelink('id', '#')</th>
                         <th> 用户</th>
                         <th> 订阅码</th>
-                        <th> 请求次数</th>
+                        <th> @sortablelink('times', '请求次数')</th>
                         <th> 最后请求时间</th>
                         <th> 封禁时间</th>
                         <th> 封禁理由</th>
@@ -70,9 +76,13 @@
                             <td> {{$subscribe->ban_desc}} </td>
                             <td>
                                 @can('admin.subscribe.set')
-                                    <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-sm btn-outline-danger @endif"
+                                    <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-outline-danger @endif"
                                             onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
-                                        @if($subscribe->status == 0) 启用 @else 禁用 @endif
+                                        @if($subscribe->status == 0)
+                                            启用
+                                        @else
+                                            禁用
+                                        @endif
                                     </button>
                                 @endcan
                             </td>

@@ -15,7 +15,7 @@ return [
             'class' => 'fas fa-sort-amount',
         ],
         'numeric' => [
-            'rows'  => ['created_at', 'updated_at', 'expired_at', 't', 'level', 'id', 'phone_number', 'port'],
+            'rows'  => ['created_at', 'updated_at', 'expired_at', 't', 'level', 'id', 'phone_number', 'port', 'times'],
             'class' => 'fas fa-sort-numeric',
         ],
     ],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\IP;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use Illuminate\Http\Request;
@@ -33,16 +34,24 @@ class SubscribeController extends Controller
             });
         }
 
-        return view('admin.subscribe.index', ['subscribeList' => $query->latest()->paginate(20)->appends($request->except('page'))]);
+        return view('admin.subscribe.index', ['subscribeList' => $query->sortable(['id' => 'desc'])->paginate(20)->appends($request->except('page'))]);
     }
 
     //订阅记录
-    public function subscribeLog($id)
+    public function subscribeLog(Request $request, $id)
     {
-        $query = UserSubscribeLog::with('user:username');
+        $query = UserSubscribeLog::whereUserSubscribeId($id);
 
-        if (isset($id)) {
-            $query->whereUserSubscribeId($id);
+        $request->whenFilled('id', function ($value) use ($query) {
+            $query->where('id', $value);
+        });
+
+        $request->whenFilled('ip', function ($value) use ($query) {
+            $query->where('request_ip', 'like', "%{$value}%");
+        });
+
+        if ($request->filled('start')) {
+            $query->whereBetween('request_time', [$request->input('start').' 00:00:00', $request->input('end').' 23:59:59']);
         }
 
         $subscribeLogs = $query->latest()->paginate(20)->appends(\request('page'));
@@ -53,7 +62,7 @@ class SubscribeController extends Controller
             }
         }
 
-        return view('admin.subscribe.log', ['subscribeLog' => $subscribeLogs]);
+        return view('admin.subscribe.log', ['subscribeLog' => $subscribeLogs, 'subscribe' => User::find($id)->subscribe]);
     }
 
     // 设置用户的订阅的状态
