@@ -77,7 +77,7 @@
                                                 {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans_choice('validation.attributes.day', 1):'/'.trans('validation.attributes.month')!!}
                                             </li>
                                             <li>
-                                                {!!trans('user.service.node_count', ['num' => Auth::user()->nodes()->where('level', '<=', $goods->level)->count()])!!}
+                                                {!!trans('user.service.node_count', ['num' => $goods->node_count])!!}
                                             </li>
                                             <li>
                                                 {{trans('user.account.speed_limit')}}
