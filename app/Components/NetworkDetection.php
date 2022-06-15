@@ -15,12 +15,18 @@ class NetworkDetection
      */
     public function ping(string $ip)
     {
-        $round = 0;
+        $round = 1;
         // 依次尝试接口
         while (true) {
             switch ($round) {
                 case 0:
                     $ret = $this->oiowebPing($ip);
+                    break;
+                case 1:
+                    $ret = $this->xiaoapiPing($ip);
+                    break;
+                case 2:
+                    $ret = $this->yum6Ping($ip);
                     break;
                 default:
                     return false;
@@ -54,6 +60,41 @@ class NetworkDetection
             return $msg;
         }
         Log::warning('【PING】检测'.$ip.'时，api.oioweb.cn无结果');
+
+        // 发送错误
+        return false;
+    }
+
+    private function xiaoapiPing(string $ip)
+    { // 来源 https://xiaoapi.cn/?action=doc&id=3
+        $msg = null;
+
+        $url = "https://xiaoapi.cn/API/sping.php?url={$ip}";
+        $response = Http::timeout(20)->get($url);
+
+        // 发送成功
+        if ($response->ok()) {
+            return $response->body();
+        }
+        Log::warning('【PING】检测'.$ip.'时，xiaoapi.cn无结果');
+
+        // 发送错误
+        return false;
+    }
+
+    private function yum6Ping(string $ip)
+    { // 来源 https://api.yum6.cn/ping.php?host=api.yum6.cn
+        $url = "https://api.yum6.cn/ping.php?host={$ip}";
+        $response = Http::timeout(20)->get($url);
+
+        // 发送成功
+        if ($response->ok()) {
+            $msg = $response->json();
+            if ($msg && $msg['state'] === '1000') {
+                return "<h4>{$msg['ip']}</h4>线路【{$msg['node']}】<br> 最小值：{$msg['ping_time_min']}<br> 平均值：{$msg['ping_time_avg']}<br> 最大值：{$msg['ping_time_max']}";
+            }
+        }
+        Log::warning('【PING】检测'.$ip.'时，api.yum6.cn无结果');
 
         // 发送错误
         return false;

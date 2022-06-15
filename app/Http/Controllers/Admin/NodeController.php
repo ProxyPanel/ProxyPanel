@@ -197,16 +197,7 @@ class NodeController extends Controller
         foreach ($node->ips() as $ip) {
             $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->port ?? 22); // ICMP
             $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->port ?? 22); // TCP
-            if ($icmp) {
-                $data[$ip][0] = config('common.network_status')[$icmp];
-            } else {
-                $data[$ip][0] = ' ';
-            }
-            if ($tcp) {
-                $data[$ip][1] = config('common.network_status')[$tcp];
-            } else {
-                $data[$ip][1] = ' ';
-            }
+            $data[$ip] = [$icmp ? config('common.network_status')[$icmp] : ' ', $tcp ? config('common.network_status')[$tcp] : ' '];
         }
 
         return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);
@@ -215,15 +206,19 @@ class NodeController extends Controller
     // 刷新节点地理位置
     public function refreshGeo($id): JsonResponse
     {
+        $ret = false;
         if ($id) {
             $ret = Node::findOrFail($id)->refresh_geo();
         } else {
             foreach (Node::whereStatus(1)->get() as $node) {
-                $ret = $node->refresh_geo();
+                $result = $node->refresh_geo();
+                if ($result && ! $ret) {
+                    $ret = true;
+                }
             }
         }
 
-        if ($ret) {
+        if (! empty($ret)) {
             return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
         }
 
@@ -249,11 +244,21 @@ class NodeController extends Controller
     // Ping节点延迟
     public function pingNode(Node $node): JsonResponse
     {
-        if ($result = (new NetworkDetection)->ping($node->is_ddns ? $node->server : $node->ip)) {
-            return Response::json([
-                'status'  => 'success',
-                'message' => $result,
-            ]);
+        if ($node->is_ddns) {
+            if ($result = (new NetworkDetection)->ping($node->server)) {
+                return Response::json(['status' => 'success', 'message' => $result]);
+            }
+        } else {
+            $msg = null;
+            foreach ($node->ips() as $ip) {
+                $ret = (new NetworkDetection)->ping($ip);
+                if ($ret !== false) {
+                    $msg .= $ret.' <hr>';
+                }
+            }
+            if (isset($msg)) {
+                return Response::json(['status' => 'success', 'message' => $msg]);
+            }
         }
 
         return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
