@@ -19,8 +19,8 @@
                 @canany(['admin.node.geo', 'admin.node.create'])
                     <div class="panel-actions btn-group">
                         @can('admin.node.geo')
-                            <button type="button" onclick="refreshGeo()" class="btn btn-info">
-                                <i class="icon wb-map"></i> 刷新节点地理信息
+                            <button type="button" onclick="refreshGeo(0)" class="btn btn-info">
+                                <i id="geo0" class="icon wb-map" aria-hidden="true"></i> 刷新【全部】节点地理信息
                             </button>
                         @endcan
                         @can('admin.node.create')
@@ -254,7 +254,7 @@
 
         @can('admin.node.geo')
         // 刷新节点地理信息
-        function refreshGeo(id = 0) {
+        function refreshGeo(id) {
             $.ajax({
                 method: 'GET',
                 url: '{{route('admin.node.geo', '')}}/' + id,

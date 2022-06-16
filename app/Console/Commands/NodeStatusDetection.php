@@ -43,7 +43,7 @@ class NodeStatusDetection extends Command
     {
         $offlineCheckTimes = sysConfig('offline_check_times');
         $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
-        foreach (Node::whereIsRelay(0)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
             // 近期无节点负载信息则认为是后端炸了
             if ($offlineCheckTimes) {
                 // 已通知次数
@@ -74,7 +74,7 @@ class NodeStatusDetection extends Command
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
 
-        foreach (Node::whereIsRelay(0)->whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
             $node_id = $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
