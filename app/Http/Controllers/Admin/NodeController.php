@@ -135,6 +135,7 @@ class NodeController extends Controller
             'is_subscribe'   => $info['is_subscribe'],
             'is_ddns'        => $info['is_ddns'],
             'relay_node_id'  => $info['relay_node_id'],
+            'port'           => $info['port'],
             'push_port'      => $info['push_port'],
             'detection_type' => $info['detection_type'],
             'sort'           => $info['sort'],

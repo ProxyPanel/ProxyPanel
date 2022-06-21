@@ -147,196 +147,6 @@
                                 <h4 class="example-title">扩展信息</h4>
                                 <div class="example">
                                     <div class="form-group row">
-                                        <label for="type" class="col-md-3 col-form-label">类型</label>
-                                        <ul class="col-md-9 list-unstyled list-inline">
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="shadowsocks" name="type" value="0">
-                                                    <label for="shadowsocks">Shadowsocks</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="shadowsocksR" name="type" value="1">
-                                                    <label for="shadowsocksR">ShadowsocksR</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="v2ray" name="type" value="2">
-                                                    <label for="v2ray">V2Ray</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="trojan" name="type" value="3">
-                                                    <label for="trojan">Trojan</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input type="radio" id="vnet" name="type" value="4">
-                                                    <label for="vnet">VNET</label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <hr/>
-                                    <!-- SS/SSR 设置部分 -->
-                                    <div class="ss-setting">
-                                        <div class="form-group row">
-                                            <label for="method" class="col-md-3 col-form-label">加密方式</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
-                                                @foreach (Helpers::methodList() as $method)
-                                                    <option value="{{$method->name}}" @if(!isset($node) && $method->is_default) selected @endif>{{$method->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="ssr-setting">
-                                            <div class="form-group row">
-                                                <label for="protocol" class="col-md-3 col-form-label">协议</label>
-                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol" id="protocol">
-                                                    @foreach (Helpers::protocolList() as $protocol)
-                                                        <option value="{{$protocol->name}}" @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="protocol_param" class="col-md-3 col-form-label"> 协议参数 </label>
-                                                <input type="text" class="form-control col-md-4" name="protocol_param" id="protocol_param">
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="obfs" class="col-md-3 col-form-label">混淆</label>
-                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
-                                                    @foreach (Helpers::obfsList() as $obfs)
-                                                        <option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="form-group row obfs_param">
-                                                <label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
-                                                <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
-                                                          placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label">*兼容 SS</label>
-                                                <div class="text-help col-md-9">
-                                                    如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <hr/>
-                                        <div class="form-group row">
-                                            <label for="single" class="col-md-3 col-form-label">单端口</label>
-                                            <div class="col-md-9">
-                                                <input type="checkbox" id="single" name="single" data-plugin="switchery" onchange="switchSetting('single')">
-                                            </div>
-                                            <div class="text-help offset-md-3">
-                                                如果启用请配置服务端的<span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span>信息
-                                            </div>
-                                        </div>
-                                        <div class="single-setting">
-                                            <div class="form-group row">
-                                                <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
-                                                <input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
-                                                <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
-                                                    严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
-                                            </div>
-                                            <div class="form-group row ssr-setting">
-                                                <label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
-                                                <input type="text" class="form-control col-md-4" name="passwd" id="passwd" placeholder="password">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- V2ray 设置部分 -->
-                                    <div class="v2ray-setting">
-                                        <div class="form-group row">
-                                            <label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
-                                            <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" required/>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
-                                            <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" required/>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_method">
-                                                <option value="auto">auto</option>
-                                                <option value="none">none</option>
-                                                <option value="aes-128-gcm">aes-128-gcm</option>
-                                                <option value="chacha20-poly1305">chacha20-poly1305</option>
-                                            </select>
-                                            <div class="text-help offset-md-3"> 使用WebSocket传输协议时不要使用none</div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_net" class="col-md-3 col-form-label">传输方式</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_net">
-                                                <option value="tcp">TCP</option>
-                                                <option value="kcp">mKCP</option>
-                                                <option value="ws">WebSocket</option>
-                                                <option value="http">HTTP/2</option>
-                                                <option value="domainsocket">DomainSocket</option>
-                                                <option value="quic">QUIC</option>
-                                            </select>
-                                            <div class="text-help offset-md-3"> 使用WebSocket传输协议时请启用TLS</div>
-                                        </div>
-                                        <div class="form-group row v2_type">
-                                            <label for="v2_type" class="col-md-3 col-form-label">伪装类型</label>
-                                            <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_type">
-                                                <option value="none">无伪装</option>
-                                                <option value="http">HTTP数据流</option>
-                                                <optgroup id="type_option" label="">
-                                                    <option value="srtp">视频通话数据 (SRTP)</option>
-                                                    <option value="utp">BT下载数据 (uTP)</option>
-                                                    <option value="wechat-video">微信视频通话</option>
-                                                    <option value="dtls">DTLS1.2数据包</option>
-                                                    <option value="wireguard">WireGuard数据包</option>
-                                                </optgroup>
-                                            </select>
-                                        </div>
-                                        <div class="form-group row v2_host">
-                                            <label for="v2_host" class="col-md-3 col-form-label">伪装域名</label>
-                                            <div class="col-md-4 pl-0">
-                                                <input type="text" class="form-control" name="v2_other" id="v2_host">
-                                            </div>
-                                            <div class="text-help offset-md-3">
-                                                伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_path" class="col-md-3 col-form-label">路径 | 密钥</label>
-                                            <input type="text" class="form-control col-md-4" name="v2_path" id="v2_path">
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_sni" class="col-md-3 col-form-label">SNI</label>
-                                            <input type="text" class="form-control col-md-4" name="v2_sni" id="v2_sni">
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="v2_tls" class="col-md-3 col-form-label">连接TLS</label>
-                                            <div class="col-md-9">
-                                                <input type="checkbox" id="v2_tls" name="v2_tls" data-plugin="switchery" onchange="switchSetting('v2_tls')">
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
-                                            <input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
-                                            <div class="text-help offset-md-3"> 不同后端配置不同：
-                                                <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a>、
-                                                <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
-                                                   target="_blank">V2Ray-Poseidon</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Trojan 设置部分 -->
-                                    <div class="trojan-setting">
-                                        <div class="form-group row">
-                                            <label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
-                                            <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443"/>
-                                        </div>
-                                    </div>
-                                    <!-- 中转 设置部分 -->
-                                    <hr/>
-                                    <div class="form-group row">
                                         <label for="is_subscribe" class="col-md-3 col-form-label">订阅</label>
                                         <div class="col-md-9">
                                             <input type="checkbox" id="is_subscribe" name="is_subscribe" data-plugin="switchery">
@@ -372,6 +182,7 @@
                                         </ul>
                                         <div class="text-help offset-md-3"> 每30~60分钟随机进行节点阻断检测</div>
                                     </div>
+                                    <!-- 中转 设置部分 -->
                                     <div class="form-group row">
                                         <label for="relay_node_id" class="col-md-3 col-form-label">中转</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick"
@@ -381,6 +192,206 @@
                                                 <option value="{{$id}}">{{$id}} - {{$name}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <hr/>
+                                    <!-- 代理 设置部分 -->
+                                    <div class="proxy-config">
+                                        <div class="form-group row">
+                                            <label for="type" class="col-md-3 col-form-label">类型</label>
+                                            <ul class="col-md-9 list-unstyled list-inline">
+                                                <li class="list-inline-item">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" id="shadowsocks" name="type" value="0">
+                                                        <label for="shadowsocks">Shadowsocks</label>
+                                                    </div>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" id="shadowsocksR" name="type" value="1">
+                                                        <label for="shadowsocksR">ShadowsocksR</label>
+                                                    </div>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" id="v2ray" name="type" value="2">
+                                                        <label for="v2ray">V2Ray</label>
+                                                    </div>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" id="trojan" name="type" value="3">
+                                                        <label for="trojan">Trojan</label>
+                                                    </div>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                    <div class="radio-custom radio-primary">
+                                                        <input type="radio" id="vnet" name="type" value="4">
+                                                        <label for="vnet">VNET</label>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <hr/>
+                                        <!-- SS/SSR 设置部分 -->
+                                        <div class="ss-setting">
+                                            <div class="form-group row">
+                                                <label for="method" class="col-md-3 col-form-label">加密方式</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
+                                                    @foreach (Helpers::methodList() as $method)
+                                                        <option value="{{$method->name}}" @if(!isset($node) && $method->is_default) selected @endif>{{$method->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="ssr-setting">
+                                                <div class="form-group row">
+                                                    <label for="protocol" class="col-md-3 col-form-label">协议</label>
+                                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol"
+                                                            id="protocol">
+                                                        @foreach (Helpers::protocolList() as $protocol)
+                                                            <option value="{{$protocol->name}}"
+                                                                    @if(!isset($node) && $protocol->is_default) selected @endif>{{$protocol->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="protocol_param" class="col-md-3 col-form-label"> 协议参数 </label>
+                                                    <input type="text" class="form-control col-md-4" name="protocol_param" id="protocol_param">
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="obfs" class="col-md-3 col-form-label">混淆</label>
+                                                    <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
+                                                        @foreach (Helpers::obfsList() as $obfs)
+                                                            <option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group row obfs_param">
+                                                    <label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
+                                                    <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
+                                                              placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-md-3 col-form-label">*兼容 SS</label>
+                                                    <div class="text-help col-md-9">
+                                                        如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <hr/>
+                                            <div class="form-group row">
+                                                <label for="single" class="col-md-3 col-form-label">单端口</label>
+                                                <div class="col-md-9">
+                                                    <input type="checkbox" id="single" name="single" data-plugin="switchery" onchange="switchSetting('single')">
+                                                </div>
+                                                <div class="text-help offset-md-3">
+                                                    如果启用请配置服务端的<span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span>信息
+                                                </div>
+                                            </div>
+                                            <div class="single-setting">
+                                                <div class="form-group row">
+                                                    <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
+                                                    <input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
+                                                    <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
+                                                    严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+                                                </div>
+                                                <div class="form-group row ssr-setting">
+                                                    <label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
+                                                    <input type="text" class="form-control col-md-4" name="passwd" id="passwd" placeholder="password">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- V2ray 设置部分 -->
+                                        <div class="v2ray-setting">
+                                            <div class="form-group row">
+                                                <label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
+                                                <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" required/>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
+                                                <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" required/>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_method">
+                                                    <option value="auto">auto</option>
+                                                    <option value="none">none</option>
+                                                    <option value="aes-128-gcm">aes-128-gcm</option>
+                                                    <option value="chacha20-poly1305">chacha20-poly1305</option>
+                                                </select>
+                                                <div class="text-help offset-md-3"> 使用WebSocket传输协议时不要使用none</div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_net" class="col-md-3 col-form-label">传输方式</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_net">
+                                                    <option value="tcp">TCP</option>
+                                                    <option value="kcp">mKCP</option>
+                                                    <option value="ws">WebSocket</option>
+                                                    <option value="http">HTTP/2</option>
+                                                    <option value="domainsocket">DomainSocket</option>
+                                                    <option value="quic">QUIC</option>
+                                                </select>
+                                                <div class="text-help offset-md-3"> 使用WebSocket传输协议时请启用TLS</div>
+                                            </div>
+                                            <div class="form-group row v2_type">
+                                                <label for="v2_type" class="col-md-3 col-form-label">伪装类型</label>
+                                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_type">
+                                                    <option value="none">无伪装</option>
+                                                    <option value="http">HTTP数据流</option>
+                                                    <optgroup id="type_option" label="">
+                                                        <option value="srtp">视频通话数据 (SRTP)</option>
+                                                        <option value="utp">BT下载数据 (uTP)</option>
+                                                        <option value="wechat-video">微信视频通话</option>
+                                                        <option value="dtls">DTLS1.2数据包</option>
+                                                        <option value="wireguard">WireGuard数据包</option>
+                                                    </optgroup>
+                                                </select>
+                                            </div>
+                                            <div class="form-group row v2_host">
+                                                <label for="v2_host" class="col-md-3 col-form-label">伪装域名</label>
+                                                <div class="col-md-4 pl-0">
+                                                    <input type="text" class="form-control" name="v2_other" id="v2_host">
+                                                </div>
+                                                <div class="text-help offset-md-3">
+                                                    伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_path" class="col-md-3 col-form-label">路径 | 密钥</label>
+                                                <input type="text" class="form-control col-md-4" name="v2_path" id="v2_path">
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_sni" class="col-md-3 col-form-label">SNI</label>
+                                                <input type="text" class="form-control col-md-4" name="v2_sni" id="v2_sni">
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="v2_tls" class="col-md-3 col-form-label">连接TLS</label>
+                                                <div class="col-md-9">
+                                                    <input type="checkbox" id="v2_tls" name="v2_tls" data-plugin="switchery" onchange="switchSetting('v2_tls')">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
+                                                <input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
+                                                <div class="text-help offset-md-3"> 不同后端配置不同：
+                                                    <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a>、
+                                                    <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
+                                                       target="_blank">V2Ray-Poseidon</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Trojan 设置部分 -->
+                                        <div class="trojan-setting">
+                                            <div class="form-group row">
+                                                <label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
+                                                <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="relay-config">
+                                        <div class="form-group row">
+                                            <label for="relay_port" class="col-md-3 col-form-label">中转端口</label>
+                                            <input type="number" class="form-control col-md-4" name="port" id="relay_port" value="443"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -438,34 +449,37 @@
             $('#is_subscribe').click();
             @endif
             $("input[name='detection_type'][value='{{$node->detection_type}}']").click();
-            @if($node->profile['passwd'] && $node->port)
+            @if(!empty($node->profile['passwd']) && $node->port)
             $('#single').click();
             $('#passwd').val('{{$node->profile['passwd']}}');
             @endif
             $('input[name = port]').val('{{$node->port}}');
             $("input[name='type'][value='{{$node->type}}']").click();
 
+            @if(isset($node->relay_node_id))
+            $('#relay_port').val('{{$node->port}}');
+            @else
             @switch($node->type)
             @case(1)
             @case(4)
-            $('#protocol').selectpicker('val', '{{$node->profile['protocol']}}');
-            $('#protocol_param').val('{{$node->profile['protocol_param']}}');
-            $('#obfs').selectpicker('val', '{{$node->profile['obfs']}}');
-            $('#obfs_param').val('{{$node->profile['obfs_param']}}');
+            $('#protocol').selectpicker('val', '{{$node->profile['protocol'] ?? null}}');
+            $('#protocol_param').val('{{$node->profile['protocol_param'] ?? null}}');
+            $('#obfs').selectpicker('val', '{{$node->profile['obfs'] ?? null}}');
+            $('#obfs_param').val('{{$node->profile['obfs_param'] ?? null}}');
             @case(0)
-            $('#method').selectpicker('val', '{{$node->profile['method']}}');
+            $('#method').selectpicker('val', '{{$node->profile['method'] ?? null}}');
             @break
 
             @case(2)
             //V2Ray
-            $('#v2_alter_id').val('{{$node->profile['v2_alter_id']}}');
-            $('#v2_method').selectpicker('val', '{{$node->profile['v2_method']}}');
-            $('#v2_net').selectpicker('val', '{{$node->profile['v2_net']}}');
-            $('#v2_type').selectpicker('val', '{{$node->profile['v2_type']}}');
-            $('#v2_host').val('{{$node->profile['v2_host']}}');
+            $('#v2_alter_id').val('{{$node->profile['v2_alter_id'] ?? null}}');
+            $('#v2_method').selectpicker('val', '{{$node->profile['v2_method'] ?? null}}');
+            $('#v2_net').selectpicker('val', '{{$node->profile['v2_net'] ?? null}}');
+            $('#v2_type').selectpicker('val', '{{$node->profile['v2_type'] ?? null}}');
+            $('#v2_host').val('{{$node->profile['v2_host'] ?? null}}');
             $('#v2_port').val('{{$node->port}}');
-            $('#v2_sni').val('{{$node->profile['v2_sni']}}');
-            v2_path.val('{{$node->profile['v2_path']}}');
+            $('#v2_sni').val('{{$node->profile['v2_sni'] ?? null}}');
+            v2_path.val('{{$node->profile['v2_path'] ?? null}}');
             @if($node->profile['v2_tls'])
             $('#v2_tls').click();
             @endif
@@ -477,6 +491,7 @@
             @break
             @default
             @endswitch
+            @endif
 
             @else
             $('input[name=\'type\'][value=\'0\']').click();
@@ -652,6 +667,18 @@
                 obfs_param.hide();
             } else {
                 obfs_param.show();
+            }
+        });
+
+        $('#relay_node_id').on('changed.bs.select', function() {
+            const relay = $('.relay-config');
+            const config = $('.proxy-config');
+            if ($('#relay_node_id').val() === '') {
+                relay.hide();
+                config.show();
+            } else {
+                relay.show();
+                config.hide();
             }
         });
 

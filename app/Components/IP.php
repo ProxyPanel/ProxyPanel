@@ -41,7 +41,7 @@ class IP
             return $response->json();
         }
 
-        Log::warning('解析IPv6异常：'.$ip);
+        Log::warning('api.ip.sb解析'.$ip.'异常: '.$response->body());
 
         return false;
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Components\IP;
+use Arr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -100,7 +101,7 @@ class Node extends Model
     {
         $ip = $this->ips();
         if ($ip !== []) {
-            $data = IP::IPSB($ip[0]);
+            $data = IP::IPSB($ip[0]); // 复数IP都以第一个为准
 
             if ($data) {
                 self::withoutEvents(function () use ($data) {
@@ -139,53 +140,63 @@ class Node extends Model
             'group' => sysConfig('website_name'),
             'udp'   => $this->is_udp,
         ];
-        switch ($this->type) {
-            case 0:
-                $config = array_merge($config, [
-                    'type'   => 'shadowsocks',
-                    'passwd' => $user->passwd,
-                ], $this->profile);
-                if ($this->port) {
-                    $config['port'] = $this->port;
-                } else {
-                    $config['port'] = $user->port;
-                }
-                break;
-            case 2:
-                $config = array_merge($config, [
-                    'type' => 'v2ray',
-                    'port' => $this->port,
-                    'uuid' => $user->vmess_id,
-                ], $this->profile);
-                break;
-            case 3:
-                $config = array_merge($config, [
-                    'type'   => 'trojan',
-                    'port'   => $this->port,
-                    'passwd' => $user->passwd,
-                    'sni'    => $this->relay_node_id ? $this->server : '',
-                ], $this->profile);
-                break;
-            case 1:
-            case 4:
-                $config = array_merge($config, [
-                    'type' => 'shadowsocksr',
-                ], $this->profile);
-                if ($this->profile['passwd'] && $this->port) {
-                    //单端口使用中转的端口
-                    $config['port'] = $this->port;
-                    $config['protocol_param'] = $user->port.':'.$user->passwd;
-                } else {
-                    $config['port'] = $user->port;
-                    $config['passwd'] = $user->passwd;
-                    if ($this->type === 1) {
-                        $config['method'] = $user->method;
-                        $config['protocol'] = $user->protocol;
-                        $config['obfs'] = $user->obfs;
-                    }
-                }
 
-                break;
+        if ($this->relay_node_id) {
+            $parentConfig = $this->relayNode->getConfig($user);
+            $config = array_merge($config, Arr::except($parentConfig, ['id', 'name', 'host', 'group', 'udp']));
+            if ($parentConfig['type'] === 'trojan') {
+                $config['sni'] = $parentConfig['host'];
+            }
+            $config['port'] = $this->port;
+        } else {
+            switch ($this->type) {
+                case 0:
+                    $config = array_merge($config, [
+                        'type'   => 'shadowsocks',
+                        'passwd' => $user->passwd,
+                    ], $this->profile);
+                    if ($this->port) {
+                        $config['port'] = $this->port;
+                    } else {
+                        $config['port'] = $user->port;
+                    }
+                    break;
+                case 2:
+                    $config = array_merge($config, [
+                        'type' => 'v2ray',
+                        'port' => $this->port,
+                        'uuid' => $user->vmess_id,
+                    ], $this->profile);
+                    break;
+                case 3:
+                    $config = array_merge($config, [
+                        'type'   => 'trojan',
+                        'port'   => $this->port,
+                        'passwd' => $user->passwd,
+                        'sni'    => '',
+                    ], $this->profile);
+                    break;
+                case 1:
+                case 4:
+                    $config = array_merge($config, [
+                        'type' => 'shadowsocksr',
+                    ], $this->profile);
+                    if ($this->profile['passwd'] && $this->port) {
+                        //单端口使用中转的端口
+                        $config['port'] = $this->port;
+                        $config['protocol_param'] = $user->port.':'.$user->passwd;
+                    } else {
+                        $config['port'] = $user->port;
+                        $config['passwd'] = $user->passwd;
+                        if ($this->type === 1) {
+                            $config['method'] = $user->method;
+                            $config['protocol'] = $user->protocol;
+                            $config['obfs'] = $user->obfs;
+                        }
+                    }
+
+                    break;
+            }
         }
 
         return $config;
