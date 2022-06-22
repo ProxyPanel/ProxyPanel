@@ -141,7 +141,7 @@ class PresetSeeder extends Seeder
             'website_name' => 'ProxyPanel',
             'is_reset_password' => 1,
             'reset_password_times' => 3,
-            'website_url' => 'https://demo.proxypanel.ml',
+            'website_url' => 'https://demo.proxypanel.cf',
             'active_times' => 3,
             'is_checkin' => 1,
             'min_rand_traffic' => 10,

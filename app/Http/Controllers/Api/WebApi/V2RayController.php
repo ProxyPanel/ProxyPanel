@@ -12,7 +12,7 @@ class V2RayController extends CoreController
     public function getNodeInfo(Node $node): JsonResponse
     {
         $cert = NodeCertificate::whereDomain($node->profile['v2_host'])->first();
-        $tlsProvider = $node->profile['tls_provider'] ?: sysConfig('v2ray_tls_provider');
+        $tlsProvider = ! empty($node->profile['tls_provider']) ? $node->profile['tls_provider'] : sysConfig('v2ray_tls_provider');
         if (! $tlsProvider) {
             $tlsProvider = null;
         }
@@ -28,14 +28,14 @@ class V2RayController extends CoreController
             'key'             => $cert ? $cert->key : '',
             'pem'             => $cert ? $cert->pem : '',
             'v2_license'      => (string) sysConfig('v2ray_license'),
-            'v2_alter_id'     => $node->profile['v2_alter_id'],
+            'v2_alter_id'     => $node->profile['v2_alter_id'] ?? '',
             'v2_port'         => $node->port,
-            'v2_method'       => $node->profile['v2_method'],
-            'v2_net'          => $node->profile['v2_net'],
-            'v2_type'         => $node->profile['v2_type'],
-            'v2_host'         => $node->profile['v2_host'],
-            'v2_path'         => $node->profile['v2_path'],
-            'v2_tls'          => (bool) $node->profile['v2_tls'],
+            'v2_method'       => $node->profile['v2_method'] ?? '',
+            'v2_net'          => $node->profile['v2_net'] ?? '',
+            'v2_type'         => $node->profile['v2_type'] ?? '',
+            'v2_host'         => $node->profile['v2_host'] ?? '',
+            'v2_path'         => $node->profile['v2_path'] ?? '',
+            'v2_tls'          => (bool) ($node->profile['v2_tls'] ?? false),
             'v2_tls_provider' => $tlsProvider,
         ]);
     }

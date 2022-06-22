@@ -12,7 +12,7 @@ return [
     'login'        => [
         'telegram_url'   => '',  // 留空的话则不展示telegram群
         'qq_url'         => '',  // 留空的话则不展示QQ群
-        'background_img' => 'https://demo.proxypanel.ml/assets/images/logo64.png', // 背景图片地址,图片宽高不超过 860px * 544px 就行 （留空为默认的背景图）
+        'background_img' => 'https://demo.proxypanel.cf/assets/images/logo64.png', // 背景图片地址,图片宽高不超过 860px * 544px 就行 （留空为默认的背景图）
         'text'           => '一键开启<br>极速上网体验',
         'text_color'     => 'rgba(255, 255, 255, 0.8);',    // 文字和按钮颜色   默认颜色 rgba(255, 255, 255, 0.8);
         'button_color'   => '#8077f1',    // 文字和按钮颜色 默认颜色：#8077f1(v2版本配置)
@@ -50,5 +50,5 @@ return [
     ],
 
     // 个人中心头像
-    'user_avatar'  => 'https://demo.proxypanel.ml/assets/images/avatar.svg',
+    'user_avatar'  => 'https://demo.proxypanel.cf/assets/images/avatar.svg',
 ];

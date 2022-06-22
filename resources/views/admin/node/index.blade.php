@@ -60,9 +60,9 @@
                             <td> {{$node->transfer}} </td>
                             <td> {{$node->traffic_rate}} </td>
                             <td>
-                                @if(isset($node->profile['passwd']))
+                                @isset($node->profile['passwd'])
                                     <span class="badge badge-lg badge-info"><i class="icon fas fa-stream"></i>单</span>
-                                @endif
+                                @endisset
                                 @if($node->relay_node_id)
                                     <span class="badge badge-lg badge-info"><i class="icon fas fa-ethernet"></i>转</span>
                                 @endif

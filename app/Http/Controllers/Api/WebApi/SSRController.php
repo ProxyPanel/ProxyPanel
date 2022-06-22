@@ -12,9 +12,9 @@ class SSRController extends CoreController
     {
         return $this->returnData('获取节点信息成功', 200, 'success', [
             'id'           => $node->id,
-            'method'       => $node->profile['method'],
-            'protocol'     => $node->profile['protocol'],
-            'obfs'         => $node->profile['obfs'],
+            'method'       => $node->profile['method'] ?? '',
+            'protocol'     => $node->profile['protocol'] ?? '',
+            'obfs'         => $node->profile['obfs'] ?? '',
             'obfs_param'   => $node->profile['obfs_param'] ?? '',
             'is_udp'       => $node->is_udp,
             'speed_limit'  => $node->getRawOriginal('speed_limit'),
@@ -39,7 +39,7 @@ class SSRController extends CoreController
                 'method'      => $user->method,
                 'protocol'    => $user->protocol,
                 'obfs'        => $user->obfs,
-                'obfs_param'  => $node->profile['obfs_param'],
+                'obfs_param'  => $node->profile['obfs_param'] ?? '',
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
                 'enable'      => $user->enable,
             ];

@@ -12,13 +12,13 @@ class SSController extends CoreController
     {
         $data = [
             'id'           => $node->id,
-            'method'       => $node->profile['method'],
+            'method'       => $node->profile['method'] ?? '',
             'speed_limit'  => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'redirect_url' => sysConfig('redirect_url'),
         ];
 
-        if ($node->profile['passwd']) {
+        if (! empty($node->profile['passwd'])) {
             $data['port'] = $node->port;
         }
 

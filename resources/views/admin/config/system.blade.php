@@ -120,7 +120,7 @@
                             <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0/留空时返回全部节点"/>
                             <x-system.switch title="随机订阅" code="rand_subscribe" :check="$rand_subscribe" help="启用后，订阅时将随机返回节点信息，否则按节点排序返回"/>
                             <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe" help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
-                            <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.ml" type="url"/>
+                            <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.cf" type="url"/>
                             <x-system.input title="V2Ray授权" :value="$v2ray_license" code="v2ray_license"/>
                             <x-system.input title="Trojan授权" :value="$trojan_license" code="trojan_license"/>
                             <x-system.input title="V2Ray TLS配置" :value="$v2ray_tls_provider" code="v2ray_tls_provider" help="后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）"/>

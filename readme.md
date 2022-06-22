@@ -3,7 +3,7 @@
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET
 
-- [Demo](https://demo.proxypanel.ml/) Demo will always on dev/latest code, rather than the stable version.
+- [Demo](https://demo.proxypanel.cf/) Demo will always on dev/latest code, rather than the stable version.
     - Account: test@test.com
     - Password: 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/)

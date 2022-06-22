@@ -480,7 +480,7 @@
             $('#v2_port').val('{{$node->port}}');
             $('#v2_sni').val('{{$node->profile['v2_sni'] ?? null}}');
             v2_path.val('{{$node->profile['v2_path'] ?? null}}');
-            @if($node->profile['v2_tls'])
+            @if($node->profile['v2_tls'] ?? false)
             $('#v2_tls').click();
             @endif
             $('#tls_provider').val('{!! $node->tls_provider !!}');
