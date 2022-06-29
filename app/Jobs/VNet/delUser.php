@@ -31,11 +31,17 @@ class delUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret);
+            if ($node->is_ddns) {
+                $this->send($node->server.':'.$node->push_port, $node->auth->secret);
+            } else { // 多IP支持
+                foreach ($node->ips() as $ip) {
+                    $this->send($ip.':'.$node->push_port, $node->auth->secret);
+                }
+            }
         }
     }
 
-    private function send($host, $secret): void
+    private function send(string $host, string $secret): void
     {
         $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
@@ -48,9 +54,9 @@ class delUser implements ShouldQueue
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
-                Log::alert('【删除用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
+                Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
             } else {
-                Log::notice('【删除用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->userIds, true).'）');
+                Log::notice("【删除用户】推送成功（推送地址：{$host}，内容：".json_encode($this->userIds, true).'）');
             }
         }
     }

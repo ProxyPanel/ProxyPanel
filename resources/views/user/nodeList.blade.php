@@ -30,14 +30,14 @@
                             </div>
                         </div>
                     </div>
-                    @if(Auth::getUser()->group_id)
+                    @if(Auth::getUser()->user_group_id)
                         <div class="col-md-12">
                             <div class="card card-block p-20 bg-indigo-500">
                                 <div class="counter counter-lg counter-inverse">
                                     <div class="counter-label text-uppercase font-size-16">{{trans('user.account.group')}}</div>
                                     <div class="counter-number-group">
                                         <span class="counter-icon"><i class="icon wb-globe" aria-hidden="true"></i></span>
-                                        <span class="counter-number ml-10">{{Auth::getUser()->group->name}}</span>
+                                        <span class="counter-number ml-10">{{Auth::getUser()->userGroup->name}}</span>
                                     </div>
                                 </div>
                             </div>

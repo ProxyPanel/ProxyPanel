@@ -240,15 +240,17 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('status', '>=', 0)->whereEnable(0);
     }
 
-    public function nodes()
+    public function nodes($userLevel = -1, $userGroupId = -1)
     {
-        if ($this->attributes['user_group_id']) {
+        if ($userGroupId === -1 && $this->attributes['user_group_id']) {
             $query = $this->userGroup->nodes();
+        } elseif ($userGroupId !== -1 && $userGroupId) {
+            $query = UserGroup::findOrFail($userGroupId)->nodes();
         } else {
             $query = Node::query();
         }
 
-        return $query->whereStatus(1)->where('level', '<=', $this->attributes['level'] ?? 0);
+        return $query->whereStatus(1)->where('level', '<=', $userLevel !== -1 && $userLevel !== null ? $userLevel : $this->attributes['level'] ?? 0);
     }
 
     public function userGroup(): BelongsTo

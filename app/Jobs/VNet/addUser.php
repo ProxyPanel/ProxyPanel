@@ -30,11 +30,11 @@ class addUser implements ShouldQueue
         $data = [];
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
-                'uid' => $user->id,
-                'port' => $user->port,
-                'passwd' => $user->passwd,
+                'uid'         => $user->id,
+                'port'        => $user->port,
+                'passwd'      => $user->passwd,
                 'speed_limit' => $user->speed_limit,
-                'enable' => $user->enable,
+                'enable'      => $user->enable,
             ];
         }
 
@@ -44,19 +44,25 @@ class addUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $this->send(($node->server ?: $node->ip).':'.$node->push_port, $node->auth->secret);
+            if ($node->is_ddns) {
+                $this->send($node->server.':'.$node->push_port, $node->auth->secret);
+            } else { // 多IP支持
+                foreach ($node->ips() as $ip) {
+                    $this->send($ip.':'.$node->push_port, $node->auth->secret);
+                }
+            }
         }
     }
 
-    private function send($host, $secret): void
+    private function send(string $host, string $secret): void
     {
         $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/v2/user/add/list', $this->data);
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
-                Log::alert('【新增用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
+                Log::alert("【新增用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
             } else {
-                Log::notice('【新增用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->data, true).'）');
+                Log::notice("【新增用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
             }
         }
     }

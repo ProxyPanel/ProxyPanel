@@ -27,31 +27,33 @@ class editUser implements ShouldQueue
     {
         $this->nodes = $nodes;
         $this->data = [
-            'uid' => $user->id,
-            'port' => (int) $user->port,
-            'passwd' => $user->passwd,
+            'uid'         => $user->id,
+            'port'        => (int) $user->port,
+            'passwd'      => $user->passwd,
             'speed_limit' => $user->speed_limit,
-            'enable' => (int) $user->enable,
+            'enable'      => (int) $user->enable,
         ];
     }
 
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $host = ($node->server ?: $node->ip).':'.$node->push_port;
-            $secret = $node->auth->secret;
-
-            // 如果用户已存在节点内，则执行修改；否则为添加
-            $list = $this->list($host, $secret);
-            if ($list && in_array($this->data['uid'], $list)) {
-                $this->send($host, $secret);
+            $list = $this->list(($node->server ?: $node->ips()[0]).':'.$node->push_port, $node->auth->secret);
+            if ($list && in_array($this->data['uid'], $list, true)) { // 如果用户已存在节点内，则执行修改；否则为添加
+                if ($node->is_ddns) {
+                    $this->send($node->server.':'.$node->push_port, $node->auth->secret);
+                } else { // 多IP支持
+                    foreach ($node->ips() as $ip) {
+                        $this->send($ip.':'.$node->push_port, $node->auth->secret);
+                    }
+                }
             } else {
                 addUser::dispatch($this->data['uid'], $node->id);
             }
         }
     }
 
-    private function list($host, $secret)
+    private function list(string $host, string $secret)
     {
         $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->get('api/user/list');
         $message = $response->json();
@@ -64,15 +66,15 @@ class editUser implements ShouldQueue
         return false;
     }
 
-    private function send($host, $secret): void
+    private function send(string $host, string $secret): void
     {
         $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/user/edit', $this->data);
         $message = $response->json();
         if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
             if ($message['success'] === 'false') {
-                Log::warning('【编辑用户】推送失败（推送地址：'.$host.'，返回内容：'.$message['content'].'）');
+                Log::warning("【编辑用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
             } else {
-                Log::info('【编辑用户】推送成功（推送地址：'.$host.'，内容：'.json_encode($this->data, true).'）');
+                Log::info("【编辑用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
             }
         }
     }

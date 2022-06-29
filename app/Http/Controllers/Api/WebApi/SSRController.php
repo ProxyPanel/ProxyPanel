@@ -10,7 +10,13 @@ class SSRController extends CoreController
     // 获取节点信息
     public function getNodeInfo(Node $node): JsonResponse
     {
-        return $this->returnData('获取节点信息成功', 200, 'success', [
+        return $this->returnData('获取节点信息成功', 200, 'success', $this->nodeData($node));
+    }
+
+    // 生成节点信息
+    public function nodeData(Node $node): array
+    {
+        return [
             'id'           => $node->id,
             'method'       => $node->profile['method'] ?? '',
             'protocol'     => $node->profile['protocol'] ?? '',
@@ -25,7 +31,7 @@ class SSRController extends CoreController
             'push_port'    => $node->push_port,
             'secret'       => $node->auth->secret,
             'redirect_url' => sysConfig('redirect_url'),
-        ]);
+        ];
     }
 
     // 获取节点可用的用户列表

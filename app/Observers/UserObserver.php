@@ -7,7 +7,6 @@ use App\Jobs\VNet\addUser;
 use App\Jobs\VNet\delUser;
 use App\Jobs\VNet\editUser;
 use App\Models\User;
-use App\Models\UserSubscribe;
 use Arr;
 
 class UserObserver
@@ -26,8 +25,27 @@ class UserObserver
     {
         $changes = $user->getChanges();
         $allowNodes = $user->nodes()->whereType(4)->get();
-        if ($allowNodes->isNotEmpty() && Arr::hasAny($changes, ['level', 'group_id', 'port', 'passwd', 'speed_limit', 'enable'])) {
-            editUser::dispatch($user, $allowNodes);
+        $oldAllowNodes = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(4)->get();
+        if ($allowNodes->isNotEmpty() || $oldAllowNodes->isNotEmpty()) {
+            if (Arr::hasAny($changes, ['level', 'user_group_id', 'enable'])) {
+                if (Arr::has($changes, 'enable')) {
+                    if ($user->enable) { // TODO: 由于vnet未正确使用enable字段，临时解决方案
+                        addUser::dispatch($user->id, $allowNodes);
+                    } else {
+                        delUser::dispatch($user->id, $allowNodes);
+                    }
+                } else {
+                    // 权限修改，消除重叠的部分
+                    if ($oldAllowNodes->isNotEmpty() && $oldAllowNodes->diff($allowNodes)->isNotEmpty()) {
+                        delUser::dispatch($user->id, $oldAllowNodes->diff($allowNodes));
+                    }
+                    if ($allowNodes->diff($oldAllowNodes)->isNotEmpty()) {
+                        addUser::dispatch($user->id, $allowNodes->diff($oldAllowNodes));
+                    }
+                }
+            } elseif (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {
+                editUser::dispatch($user, $allowNodes);
+            }
         }
     }
 
