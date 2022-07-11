@@ -141,7 +141,9 @@ class Helpers
 
     public static function daysToNow($date): int
     {
-        return (new DateTime())->diff(new DateTime($date))->days;
+        $calculate = (new DateTime())->diff(new DateTime($date));
+
+        return $calculate->invert ? -$calculate->days : $calculate->days;
     }
 
     /**

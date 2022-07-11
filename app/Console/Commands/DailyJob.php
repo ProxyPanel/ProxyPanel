@@ -38,8 +38,8 @@ class DailyJob extends Command
             ->where('expired_at', '<', date('Y-m-d'))
             ->chunk(config('tasks.chunk'), function ($users) use ($isBanStatus) {
                 foreach ($users as $user) {
-                    if ($isBanStatus) { // 停止服务 或 封禁账号
-                        $user->update([
+                    if ($isBanStatus) {
+                        $user->update([ // 停止服务 & 封禁账号
                             'u'               => 0,
                             'd'               => 0,
                             'transfer_enable' => 0,
@@ -57,7 +57,7 @@ class DailyJob extends Command
                         // 写入用户流量变动记录
                         Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, 0, '[定时任务]账号已过期(禁止登录，清空账户)');
                     } else {
-                        $user->update([
+                        $user->update([ // 停止服务
                             'u'               => 0,
                             'd'               => 0,
                             'transfer_enable' => 0,
@@ -97,8 +97,8 @@ class DailyJob extends Command
     {
         User::where('status', '<>', -1)
             ->where('expired_at', '>', date('Y-m-d'))
-            ->where('reset_time', '<=', date('Y-m-d'))
             ->whereNotNull('reset_time')
+            ->where('reset_time', '<=', date('Y-m-d'))
             ->with('orders')->whereHas('orders')
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {

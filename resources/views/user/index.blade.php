@@ -33,7 +33,7 @@
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.enabled')}}</span>
                                 <p class="font-weight-300 m-0 green-500">{{trans('user.account.reason.normal')}}</p>
-                            @elseif($remainDays == 0)
+                            @elseif($remainDays < 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.expired')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.expired')}}</p>
@@ -67,7 +67,7 @@
                                     <h4>{{trans('user.account.level')}}：<code class="font-size-20">{{Auth::user()->level}}</code></h4>
                                 </div>
                                 <div class="text-center font-weight-300 blue-grey-500 mb-10">
-                                    @if($paying_user && $resetDays && $remainDays > $resetDays && sysConfig('reset_traffic'))
+                                    @if(isset($resetDays) && $resetDays >= 0)
                                         {{trans('user.account.reset', ['days' => $resetDays])}}
                                     @endif
                                 </div>
@@ -92,7 +92,7 @@
                         </button>
                         <span class="font-weight-400">{{trans('user.account.time')}}</span>
                         <div class="content-text text-center mb-0">
-                            @if($remainDays !== -1)
+                            @if($remainDays >= 0)
                                 <span class="font-size-40 font-weight-100">{{$remainDays.' '.trans_choice('validation.attributes.day', 1)}}</span>
                                 <p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
                             @else

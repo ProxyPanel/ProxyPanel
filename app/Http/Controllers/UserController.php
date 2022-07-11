@@ -57,8 +57,8 @@ class UserController extends Controller
         }
 
         return view('user.index', array_merge([
-            'remainDays'       => $expireTime < date('Y-m-d') ? -1 : Helpers::daysToNow($expireTime),
-            'resetDays'        => $user->reset_time ? Helpers::daysToNow($user->reset_time) : 0,
+            'remainDays'       => Helpers::daysToNow($expireTime),
+            'resetDays'        => $user->reset_time ? Helpers::daysToNow($user->reset_time) : null,
             'unusedTraffic'    => flowAutoShow($unusedTraffic),
             'expireTime'       => $expireTime,
             'banedTime'        => $user->ban_time,

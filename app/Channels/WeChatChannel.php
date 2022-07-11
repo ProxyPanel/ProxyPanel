@@ -13,40 +13,11 @@ use Str;
 
 class WeChatChannel
 {
-    private $access_token;
-
-    public function __construct()
-    {
-        $this->access_token = $this->getAccessToken();
-    }
-
-    private function getAccessToken()
-    {
-        if (Cache::has('wechat_access_token')) {
-            $access_token = Cache::get('wechat_access_token');
-        } else {
-            // https://work.weixin.qq.com/api/doc/90000/90135/91039
-            $response = Http::get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid='.sysConfig('wechat_cid').'&corpsecret='.sysConfig('wechat_secret'));
-            if ($response->ok() && isset($response->json()['access_token'])) {
-                $access_token = $response->json()['access_token'];
-                Cache::put('wechat_access_token', $response->json()['access_token'], 7200); // 2小时
-            } else {
-                Log::critical('Wechat消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
-                abort(400);
-            }
-        }
-
-        return $access_token ?? null;
-    }
-
     public function send($notifiable, Notification $notification)
     { // route('message.show', ['type' => 'markdownMsg', 'msgId' => ''])
         $message = $notification->toCustom($notifiable);
-        if (! $this->access_token) {
-            $this->access_token = $this->getAccessToken();
-        }
 
-        $url = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token='.$this->access_token;
+        $url = 'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token='.$this->getAccessToken();
 
         if (isset($message['button'])) { // 按钮交互型
             // https://work.weixin.qq.com/api/doc/90000/90135/90236#%E6%8C%89%E9%92%AE%E4%BA%A4%E4%BA%92%E5%9E%8B
@@ -89,12 +60,7 @@ class WeChatChannel
                 ],
             ];
         } else { // 文本消息
-            $body = [
-                'touser'                   => '@all',
-                'agentid'                  => sysConfig('wechat_aid'),
-                'msgtype'                  => 'text',
-                'text'                     => ['content' => $message['content']],
-                'duplicate_check_interval' => 600,
+            $body = ['touser' => '@all', 'agentid' => sysConfig('wechat_aid'), 'msgtype' => 'text', 'text' => ['content' => $message['content']], 'duplicate_check_interval' => 600,
             ];
         }
 
@@ -117,6 +83,25 @@ class WeChatChannel
         Log::critical('Wechat消息推送异常：'.var_export($response, true));
 
         return false;
+    }
+
+    private function getAccessToken()
+    {
+        if (Cache::has('wechat_access_token')) {
+            $access_token = Cache::get('wechat_access_token');
+        } else {
+            // https://work.weixin.qq.com/api/doc/90000/90135/91039
+            $response = Http::get('https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid='.sysConfig('wechat_cid').'&corpsecret='.sysConfig('wechat_secret'));
+            if ($response->ok() && isset($response->json()['access_token'])) {
+                $access_token = $response->json()['access_token'];
+                Cache::put('wechat_access_token', $access_token, 7189); // 2小时
+            } else {
+                Log::critical('Wechat消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
+                abort(400);
+            }
+        }
+
+        return $access_token ?? null;
     }
 
     public function verify(Request $request)
