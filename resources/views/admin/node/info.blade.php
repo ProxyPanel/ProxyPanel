@@ -290,7 +290,7 @@
                                             <div class="single-setting">
                                                 <div class="form-group row">
                                                     <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
-                                                    <input type="number" class="form-control col-md-4" name="port" value="443" id="single_port"/>
+                                                    <input type="number" class="form-control col-md-4" name="port" id="single_port" value="443" hidden/>
                                                     <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
                                                     严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
                                                 </div>
@@ -308,7 +308,7 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
-                                                <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" required/>
+                                                <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" hidden/>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
@@ -383,14 +383,14 @@
                                         <div class="trojan-setting">
                                             <div class="form-group row">
                                                 <label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
-                                                <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443"/>
+                                                <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443" hidden/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="relay-config">
                                         <div class="form-group row">
                                             <label for="relay_port" class="col-md-3 col-form-label">中转端口</label>
-                                            <input type="number" class="form-control col-md-4" name="port" id="relay_port" value="443"/>
+                                            <input type="number" class="form-control col-md-4" name="port" id="relay_port" value="443" hidden/>
                                         </div>
                                     </div>
                                 </div>
@@ -416,6 +416,7 @@
     <script>
         const string = "{{strtolower(Str::random())}}";
         $(document).ready(function() {
+            $('.relay-config').hide();
             let v2_path = $('#v2_path');
             switchSetting('single');
             switchSetting('is_ddns');
@@ -507,21 +508,6 @@
 
         // ajax同步提交
         function Submit() {
-            const type = $('input[name=\'type\']:checked').val();
-            let port;
-            switch (type) {
-                case '2':
-                    port = $('#v2_port').val();
-                    break;
-                case '3':
-                    port = $('#trojan_port').val();
-                    break;
-                case '0':
-                case '1':
-                case '4':
-                default:
-                    port = $('#single_port').val();
-            }
             $.ajax({
                 method: @isset($node) 'PUT' @else 'POST' @endisset,
                 url: '{{isset($node)? route('admin.node.update', $node) : route('admin.node.store')}}',
@@ -545,7 +531,7 @@
                     sort: $('#sort').val(),
                     is_udp: document.getElementById('is_udp').checked ? 1 : 0,
                     status: document.getElementById('status').checked ? 1 : 0,
-                    type: type,
+                    type: $('input[name=\'type\']:checked').val(),
                     method: $('#method').val(),
                     protocol: $('#protocol').val(),
                     protocol_param: $('#protocol_param').val(),
@@ -554,7 +540,7 @@
                     is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
                     detection_type: $('input[name=\'detection_type\']:checked').val(),
                     single: document.getElementById('single').checked ? 1 : 0,
-                    port: port,
+                    port: $('input[name="port"]:not([hidden])').val(),
                     passwd: $('#passwd').val(),
                     v2_alter_id: $('#v2_alter_id').val(),
                     v2_method: $('#v2_method').val(),
@@ -601,9 +587,9 @@
                 case 'single':
                     if (check) {
                         $('.single-setting').show();
-                        $('#single_port').attr('required', true);
+                        $('#single_port').removeAttr('hidden').attr('required', true);
                     } else {
-                        $('#single_port').val('').removeAttr('required');
+                        $('#single_port').removeAttr('required').attr('hidden', true);
                         $('#passwd').val('');
                         $('.single-setting').hide();
                     }
@@ -636,7 +622,7 @@
             $ss_setting.hide();
             $v2ray_setting.hide();
             $trojan_setting.hide();
-            $('#v2_port').removeAttr('required');
+            $('#v2_port').removeAttr('required').attr('hidden', true);
             $('#trojan_port').removeAttr('required');
             switch (type) {
                 case 0:
@@ -644,12 +630,12 @@
                     break;
                 case 2:
                     $v2ray_setting.show();
-                    $('#v2_port').val('').attr('required', true);
+                    $('#v2_port').removeAttr('hidden').attr('required', true);
                     $('#v2_net').selectpicker('val', 'tcp');
                     break;
                 case 3:
                     $trojan_setting.show();
-                    $('#trojan_port').val('').attr('required', true);
+                    $('#trojan_port').removeAttr('hidden').attr('required', true);
                     break;
                 case 1:
                 case 4:
@@ -675,10 +661,12 @@
             const config = $('.proxy-config');
             if ($('#relay_node_id').val() === '') {
                 relay.hide();
+                $('#relay_port').removeAttr('required').attr('hidden', true);
                 config.show();
             } else {
                 relay.show();
                 config.hide();
+                $('#relay_port').removeAttr('hidden').attr('required', true);
             }
         });
 
