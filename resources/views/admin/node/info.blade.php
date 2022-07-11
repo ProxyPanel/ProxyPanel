@@ -416,6 +416,7 @@
     <script>
         const string = "{{strtolower(Str::random())}}";
         $(document).ready(function() {
+            $('.relay-config').hide();
             let v2_path = $('#v2_path');
             switchSetting('single');
             switchSetting('is_ddns');
@@ -507,21 +508,6 @@
 
         // ajax同步提交
         function Submit() {
-            const type = $('input[name=\'type\']:checked').val();
-            let port;
-            switch (type) {
-                case '2':
-                    port = $('#v2_port').val();
-                    break;
-                case '3':
-                    port = $('#trojan_port').val();
-                    break;
-                case '0':
-                case '1':
-                case '4':
-                default:
-                    port = $('#single_port').val();
-            }
             $.ajax({
                 method: @isset($node) 'PUT' @else 'POST' @endisset,
                 url: '{{isset($node)? route('admin.node.update', $node) : route('admin.node.store')}}',
@@ -545,7 +531,7 @@
                     sort: $('#sort').val(),
                     is_udp: document.getElementById('is_udp').checked ? 1 : 0,
                     status: document.getElementById('status').checked ? 1 : 0,
-                    type: type,
+                    type: $('input[name=\'type\']:checked').val(),
                     method: $('#method').val(),
                     protocol: $('#protocol').val(),
                     protocol_param: $('#protocol_param').val(),
@@ -554,7 +540,7 @@
                     is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
                     detection_type: $('input[name=\'detection_type\']:checked').val(),
                     single: document.getElementById('single').checked ? 1 : 0,
-                    port: port,
+                    port: $('input[name=\'port\']').val(),
                     passwd: $('#passwd').val(),
                     v2_alter_id: $('#v2_alter_id').val(),
                     v2_method: $('#v2_method').val(),
