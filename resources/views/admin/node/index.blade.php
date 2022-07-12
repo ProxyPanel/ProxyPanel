@@ -96,6 +96,11 @@
                                                 <i class="icon wb-edit" aria-hidden="true"></i> 编辑
                                             </a>
                                         @endcan
+                                        @can('admin.node.clone')
+                                            <a class="dropdown-item" href="{{route('admin.node.clone', $node)}}" role="menuitem">
+                                                <i class="icon wb-copy" aria-hidden="true"></i> 克隆
+                                            </a>
+                                        @endcan
                                         @can('admin.node.destroy')
                                             <a class="dropdown-item red-700" href="javascript:delNode('{{$node->id}}', '{{$node->name}}')" role="menuitem">
                                                 <i class="icon wb-trash" aria-hidden="true"></i> 删除

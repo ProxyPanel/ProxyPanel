@@ -39,6 +39,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('node', 'NodeController')->except('show');
         Route::prefix('node')->name('node.')->group(function () {
+            Route::get('clone/{node}', 'NodeController@clone')->name('clone'); // 节点流量监控
             Route::get('monitor/{node}', 'NodeController@nodeMonitor')->name('monitor'); // 节点流量监控
             Route::post('check/{node}', 'NodeController@checkNode')->name('check'); // 节点阻断检测
             Route::post('ping/{node}', 'NodeController@pingNode')->name('ping'); // 节点ping测速
