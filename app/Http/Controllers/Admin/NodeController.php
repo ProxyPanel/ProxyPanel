@@ -143,6 +143,18 @@ class NodeController extends Controller
         ];
     }
 
+    // 克隆节点
+    public function clone(Node $node)
+    {
+        $new = $node->replicate()->fill([
+            'name'   => $node->name.'_克隆',
+            'server' => null,
+        ]);
+        $new->save();
+
+        return redirect()->route('admin.node.edit', $new);
+    }
+
     // 编辑节点页面
     public function edit(Node $node)
     {
