@@ -105,7 +105,7 @@ class Node extends Model
 
             if ($data) {
                 self::withoutEvents(function () use ($data) {
-                    $this->update(['geo' => $data['latitude'].','.$data['longitude']]);
+                    $this->update(['geo' => $data['latitude'] ?? null.','.$data['longitude'] ?? null]);
                 });
 
                 return true;
@@ -215,6 +215,7 @@ class Node extends Model
     public function getTypeLabelAttribute(): string
     {
         return [
+            0 => 'Shadowsocks',
             1 => 'ShadowsocksR',
             2 => 'V2Ray',
             3 => 'Trojan',

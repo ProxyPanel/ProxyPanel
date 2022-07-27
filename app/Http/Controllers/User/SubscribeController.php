@@ -63,7 +63,7 @@ class SubscribeController extends Controller
         }
 
         // 更新访问次数
-        $subscribe->increment('times', 1);
+        $subscribe->increment('times');
 
         // 记录每次请求
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()]));

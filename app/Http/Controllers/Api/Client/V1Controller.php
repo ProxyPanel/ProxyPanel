@@ -248,7 +248,7 @@ class V1Controller extends Controller
             // 使用优惠券，减少可使用次数
             if (! empty($coupon)) {
                 if ($coupon->usable_times > 0) {
-                    $coupon->decrement('usable_times', 1);
+                    $coupon->decrement('usable_times');
                 }
 
                 Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $newOrder->id);
