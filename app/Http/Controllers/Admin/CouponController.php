@@ -35,12 +35,6 @@ class CouponController extends Controller
         return view('admin.coupon.index', ['couponList' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 添加优惠券页面
-    public function create()
-    {
-        return view('admin.coupon.create');
-    }
-
     // 添加优惠券
     public function store(CouponRequest $request)
     {
@@ -57,6 +51,7 @@ class CouponController extends Controller
         $num = (int) $request->input('num');
         $data = $request->only(['name', 'type', 'usable_times', 'value', 'rule', 'start_time', 'end_time']);
         $data['logo'] = $logo;
+        $data['status'] = 0;
         try {
             for ($i = 0; $i < $num; $i++) {
                 $data['sn'] = $num === 1 && $request->input('sn') ? $request->input('sn') : Str::random(8);
@@ -69,6 +64,12 @@ class CouponController extends Controller
 
             return Redirect::back()->withInput()->withInput()->withErrors('生成优惠券失败：'.$e->getMessage());
         }
+    }
+
+    // 添加优惠券页面
+    public function create()
+    {
+        return view('admin.coupon.create');
     }
 
     // 删除优惠券

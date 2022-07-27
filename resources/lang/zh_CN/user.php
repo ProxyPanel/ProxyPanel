@@ -17,7 +17,7 @@ return [
             'expired'           => '您的账号套餐已过期',
             'overused'          => '本时段使用流量超过 <code>:data</code> GB触发系统限制<br/> <code id="countdown">:min</code> 后解除限制',
             'traffic_exhausted' => '您的账号[流量]消耗殆尽',
-            'unknown'           => '未知原因，请开工单联系管理',
+            'unknown'           => '未知原因，请尝试[刷新]你的浏览器！多次无果后再请开工单联系管理',
         ],
     ],
     'status'              => [

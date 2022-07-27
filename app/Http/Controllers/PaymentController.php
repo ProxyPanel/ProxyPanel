@@ -87,8 +87,7 @@ class PaymentController extends Controller
         return Response::json(['status' => 'error', 'message' => '未知订单']);
     }
 
-    // 创建支付订单
-    public function purchase(Request $request)
+    public function purchase(Request $request) // 创建支付订单
     {
         $goods_id = $request->input('goods_id');
         $coupon_sn = $request->input('coupon_sn');
@@ -128,10 +127,13 @@ class PaymentController extends Controller
 
             // 使用优惠券
             if ($coupon_sn) {
-                $coupon = Coupon::whereStatus(0)->whereIn('type', [1, 2])->whereSn($coupon_sn)->first();
-                if (! $coupon) {
-                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：优惠券不存在']);
+                $ret = $this->couponCheck($coupon_sn, $goods->price);
+
+                if ($ret !== true) {
+                    return $ret;
                 }
+
+                $coupon = Coupon::whereStatus(0)->whereIn('type', [1, 2])->whereSn($coupon_sn)->firstOrFail();
 
                 // 计算实际应支付总价
                 $amount = $coupon->type === 2 ? $goods->price * $coupon->value / 100 : $goods->price - $coupon->value;
@@ -179,7 +181,7 @@ class PaymentController extends Controller
             // 使用优惠券，减少可使用次数
             if (! empty($coupon)) {
                 if ($coupon->usable_times > 0) {
-                    $coupon->decrement('usable_times', 1);
+                    $coupon->decrement('usable_times');
                 }
 
                 Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $newOrder->id);
@@ -196,6 +198,50 @@ class PaymentController extends Controller
         return Response::json(['status' => 'fail', 'message' => '订单创建失败']);
     }
 
+    public function couponCheck($coupon_sn, $price) // 检查券合规性
+    {
+        if (empty($coupon_sn)) {
+            return Response::json([
+                'status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('validation.required', ['attribute' => trans('user.coupon.attribute')]),
+            ]);
+        }
+
+        $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
+        if (! $coupon) {
+            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
+        }
+
+        if ($coupon->status === 1) {
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.used')]);
+        }
+        if ($coupon->getRawOriginal('end_time') < time()) {
+            $coupon->status = 2;
+            $coupon->save();
+
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
+        }
+
+        if ($coupon->status === 2) {
+            if ($coupon->usable_times === 0) {
+                return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.run_out')]);
+            }
+
+            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
+        }
+
+        if ($coupon->start_time > date('Y-m-d H:i:s')) {
+            return Response::json(['status'  => 'fail', 'title' => trans('user.coupon.error.inactive'),
+                'message' => trans('user.coupon.error.wait', ['time' => $coupon->start_time]),
+            ]);
+        }
+
+        if ($price < $coupon->rule) {
+            return Response::json(['status' => 'fail', 'title' => trans('user.coupon.error.limit'), 'message' => trans('user.coupon.error.higher', ['amount' => $coupon->rule])]);
+        }
+
+        return true;
+    }
+
     public function close(Order $order): JsonResponse
     {
         if (! $order->close()) {
@@ -205,8 +251,7 @@ class PaymentController extends Controller
         return Response::json(['status' => 'success', 'message' => '关闭订单成功']);
     }
 
-    // 支付单详情
-    public function detail($trade_no)
+    public function detail($trade_no) // 支付单详情
     {
         $payment = Payment::uid()->with(['order', 'order.goods'])->whereTradeNo($trade_no)->firstOrFail();
         $goods = $payment->order->goods;

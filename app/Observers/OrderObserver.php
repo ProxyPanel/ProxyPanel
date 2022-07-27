@@ -54,7 +54,7 @@ class OrderObserver
     // 返回优惠券
     private function returnCoupon(Coupon $coupon): bool
     {
-        if ($coupon && $coupon->type !== 3) {
+        if ($coupon->type !== 3) {
             return $coupon->update(['usable_times' => $coupon->usable_times + 1, 'status' => 0]);
         }
 

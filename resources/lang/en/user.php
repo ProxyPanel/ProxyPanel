@@ -17,7 +17,7 @@ return [
             'expired'           => 'Expired',
             'overused'          => 'You have reach the <code>:data</code> GB hourly data spend limit<br/> Wait <code id="countdown">:min</code> to cool down',
             'traffic_exhausted' => 'OUT OF DATA',
-            'unknown'           => 'UNKNOWN ERROR, please contact admin for reason',
+            'unknown'           => 'UNKNOWN ERROR, Please try to refresh your browser first before contact admin for help',
         ],
     ],
     'status'              => [
