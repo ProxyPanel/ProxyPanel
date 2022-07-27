@@ -403,46 +403,13 @@ class UserController extends Controller
     public function redeemCoupon(Request $request): JsonResponse
     {
         $coupon_sn = $request->input('coupon_sn');
-        $good_price = $request->input('price');
 
-        if (empty($coupon_sn)) {
-            return Response::json([
-                'status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('validation.required', ['attribute' => trans('user.coupon.attribute')]),
-            ]);
+        $ret = (new PaymentController())->couponCheck($coupon_sn, $request->input('price'));
+
+        if ($ret !== true) {
+            return $ret;
         }
-
-        $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->first();
-        if (! $coupon) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
-        }
-
-        if ($coupon->status === 1) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.used')]);
-        }
-        if ($coupon->getRawOriginal('end_time') < time()) {
-            $coupon->status = 2;
-            $coupon->save();
-
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
-        }
-
-        if ($coupon->status === 2) {
-            if ($coupon->usable_times === 0) {
-                return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.run_out')]);
-            }
-
-            return Response::json(['status' => 'fail', 'title' => trans('common.sorry'), 'message' => trans('user.coupon.error.expired')]);
-        }
-
-        if ($coupon->start_time > date('Y-m-d H:i:s')) {
-            return Response::json(['status'  => 'fail', 'title' => trans('user.coupon.error.inactive'),
-                'message' => trans('user.coupon.error.wait', ['time' => $coupon->start_time]),
-            ]);
-        }
-
-        if ($good_price < $coupon->rule) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.coupon.error.limit'), 'message' => trans('user.coupon.error.higher', ['amount' => $coupon->rule])]);
-        }
+        $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->firstOrFail();
 
         $data = [
             'name'  => $coupon->name,
@@ -501,7 +468,7 @@ class UserController extends Controller
             'Shadowrocket_linkQrcode' => 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(sysConfig('website_name')),
             'Clash_link'              => "clash://install-config?url={$subscribe_link}",
             'Surge_link'              => "surge:///install-config?url={$subscribe_link}",
-            'QuantumultX_link'             => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
+            'QuantumultX_link'        => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
                 'server_remote'  => ["{$subscribe_link}, tag=".sysConfig('website_name')],
                 'filter_remote'  => [],
                 'rewrite_remote' => [],
