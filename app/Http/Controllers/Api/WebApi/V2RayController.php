@@ -28,7 +28,7 @@ class V2RayController extends CoreController
             'key'             => $cert ? $cert->key : '',
             'pem'             => $cert ? $cert->pem : '',
             'v2_license'      => (string) sysConfig('v2ray_license'),
-            'v2_alter_id'     => $node->profile['v2_alter_id'] ?? '',
+            'v2_alter_id'     => (int) $node->profile['v2_alter_id'],
             'v2_port'         => $node->port,
             'v2_method'       => $node->profile['v2_method'] ?? '',
             'v2_net'          => $node->profile['v2_net'] ?? '',
