@@ -8,7 +8,7 @@
   ],
   "license": "GPL-3.0-or-later",
   "require": {
-    "php": "^7.2.5",
+    "php": "^7.2.5|^8.0",
     "ext-dom": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
@@ -99,8 +99,6 @@
     ],
     "post-create-project-cmd": [
       "@php artisan key:generate --ansi"
-    ],
-    "check-style": "php-cs-fixer fix --dry-run --diff .",
-    "fix-style": "php-cs-fixer fix ."
+    ]
   }
 }
