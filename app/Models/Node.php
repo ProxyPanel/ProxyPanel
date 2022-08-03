@@ -105,7 +105,7 @@ class Node extends Model
 
             if ($data) {
                 self::withoutEvents(function () use ($data) {
-                    $this->update(['geo' => $data['latitude'] ?? null.','.$data['longitude'] ?? null]);
+                    $this->update(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
                 });
 
                 return true;

@@ -35,15 +35,21 @@ class IP
     // 通过api.ip.sb查询IP地址的详细信息
     public static function IPSB($ip)
     {
-        $response = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'])->timeout(15)->get('https://api.ip.sb/geoip/'.$ip);
+        try {
+            $response = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'])->timeout(15)->get('https://api.ip.sb/geoip/'.$ip);
 
-        if ($response->ok()) {
-            return $response->json();
+            if ($response->ok()) {
+                return $response->json();
+            }
+
+            Log::warning('api.ip.sb解析'.$ip.'异常: '.$response->body());
+
+            return false;
+        } catch (Exception $e) {
+            Log::error('api.ip.sb解析'.$ip.'错误: '.var_export($e->getMessage(), true));
+
+            return false;
         }
-
-        Log::warning('api.ip.sb解析'.$ip.'异常: '.$response->body());
-
-        return false;
     }
 
     // 通过ip2Region查询IP地址的详细信息 ← 聚合 淘宝IP库，GeoIP，纯真IP库

@@ -20,7 +20,7 @@ class ImproveNodeTable extends Migration
     public function up()
     {
         foreach ($this->configs as $config) {
-            Config::insert(['name' => $config]);
+            Config::insertOrIgnore(['name' => $config]);
         }
 
         // 插入新字段
@@ -67,7 +67,7 @@ class ImproveNodeTable extends Migration
                     break;
                 default:
             }
-            Node::whereId($node->id)->update(['profile' => $profile]);
+            $node->update(['profile' => $profile]);
         }
 
         // 销毁老字段
@@ -85,6 +85,71 @@ class ImproveNodeTable extends Migration
     public function down()
     {
         Config::destroy($this->configs);
-        // 太复杂了，无法逆转了
+
+        Schema::table('node', function (Blueprint $table) { // 回滚老字段
+            $table->string('relay_server')->nullable()->comment('中转地址');
+            $table->unsignedSmallInteger('relay_port')->nullable()->comment('中转端口');
+            $table->string('method', 32)->default('aes-256-cfb')->comment('加密方式');
+            $table->string('protocol', 64)->default('origin')->comment('协议');
+            $table->string('protocol_param', 128)->nullable()->comment('协议参数');
+            $table->string('obfs', 64)->default('plain')->comment('混淆');
+            $table->string('obfs_param')->nullable()->comment('混淆参数');
+            $table->boolean('compatible')->default(0)->comment('兼容SS');
+            $table->boolean('single')->default(0)->comment('启用单端口功能：0-否、1-是');
+            $table->string('passwd')->nullable()->comment('单端口的连接密码');
+            $table->unsignedSmallInteger('v2_alter_id')->default(16)->comment('V2Ray额外ID');
+            $table->string('v2_method', 32)->default('aes-128-gcm')->comment('V2Ray加密方式');
+            $table->string('v2_net', 16)->default('tcp')->comment('V2Ray传输协议');
+            $table->string('v2_type', 32)->default('none')->comment('V2Ray伪装类型');
+            $table->string('v2_host')->nullable()->comment('V2Ray伪装的域名');
+            $table->string('v2_path')->nullable()->comment('V2Ray的WS/H2路径');
+            $table->boolean('v2_tls')->default(0)->comment('V2Ray连接TLS：0-未开启、1-开启');
+            $table->string('v2_sni', 191)->nullable()->comment('V2Ray的SNI配置');
+            $table->text('tls_provider')->nullable()->comment('V2Ray节点的TLS提供商授权信息');
+            $table->boolean('is_relay')->default(0)->comment('是否中转节点：0-否、1-是');
+        });
+
+        foreach (Node::all() as $node) {
+            if ($node->relay_node_id) { // 回滚中转节点
+                $node->profile = Node::find($node->relay_node_id)->profile;
+                $node->is_relay = 1;
+                $node->relay_server = $node->server ?: $node->ip;
+                $node->relay_port = $node->port;
+            } else {
+                $node->is_relay = 0;
+            }
+            switch ($node->type) { // 回滚节点配置
+                case 0:
+                    $node->method = $node->profile['method'];
+                    break;
+                case 2:
+                    $node->v2_method = $node->profile['method'];
+                    $node->v2_alter_id = $node->profile['v2_alter_id'];
+                    $node->v2_net = $node->profile['v2_net'];
+                    $node->v2_type = $node->profile['v2_type'];
+                    $node->v2_host = $node->profile['v2_host'];
+                    $node->v2_path = $node->profile['v2_path'];
+                    $node->v2_tls = $node->profile['v2_tls'] ? 1 : 0;
+                    $node->v2_sni = $node->profile['v2_sni'];
+                    break;
+                case 1:
+                case 4:
+                    $node->method = $node->profile['method'];
+                    $node->protocol = $node->profile['protocol'];
+                    $node->obfs = $node->profile['obfs'];
+                    $node->obfs_param = $node->profile['obfs_param'];
+                    $node->protocol_param = $node->profile['protocol_param'];
+                    $node->single = $node->profile['passwd'] ? 1 : 0;
+                    $node->passwd = $node->profile['passwd'];
+                    break;
+                default:
+            }
+            $node->save();
+        }
+
+        // 回滚新字段
+        Schema::table('node', function (Blueprint $table) {
+            $table->dropColumn('profile', 'relay_node_id');
+        });
     }
 }
