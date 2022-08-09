@@ -1,6 +1,5 @@
 @extends('user.layouts')
 @section('css')
-    <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js" type="text/javascript"></script>
     <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/webui-popover/webui-popover.min.css" type="text/css" rel="stylesheet">
     <link href="/assets/global/vendor/jvectormap/jquery-jvectormap.min.css" type="text/css" rel="stylesheet">
@@ -62,18 +61,16 @@
                     <div class="card card-inverse card-shadow bg-white node">
                         <div class="card-block p-30 row">
                             <div class="col-4">
-                                <svg class="w-p100 text-center" aria-hidden="true">
-                                    <use xlink:href="@if($node->country_code)#icon-{{$node->country_code}}@else #icon-un @endif"></use>
-                                </svg>
+                                <i class="fi fis fi-{{$node->country_code}} h-p100 w-p100" style="border-radius: 25px" aria-hidden="true"></i>
                             </div>
                             <div class="col-8 text-break text-right">
                                 <p class="font-size-20 blue-600">
-                                    <span class="badge badge-pill up m-0 badge-default">{{$node->level_table->name}}</span>
-                                    @if($node->offline)
+                                    <span class="float-left badge badge-round badge-default">{{$node->level_table->name}}</span>
+                                    @if($node->offline && !$node->relay_node_id)
                                         <i class="red-600 icon wb-warning" data-content="{{trans('user.node.unstable')}}"
                                            data-trigger="hover" data-toggle="popover" data-placement="top"></i>
                                     @endif
-                                    @if($node->traffic_rate != 1)
+                                    @if($node->traffic_rate !== 1.0)
                                         <i class="green-600 icon wb-info-circle" data-content="{{trans('user.node.rate', ['ratio' => $node->traffic_rate])}}"
                                            data-trigger="hover" data-toggle="popover" data-placement="top"></i>
                                     @endif
@@ -81,20 +78,20 @@
                                 </p>
                                 <blockquote>
                                     @foreach($node->labels as $label)
-                                        <span class="badge badge-pill font-size-10 up m-0 badge-info">{{$label->name}}</span>
+                                        <span class="badge badge-round badge-info">{{$label->name}}</span>
                                     @endforeach
                                     <br>
                                     {{$node->description}}
                                 </blockquote>
                                 <p class="font-size-14">
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','code')">
-                                        <i id="code{{$node->id}}" class="fas fa-code"></i>
+                                        <i id="code{{$node->id}}" class="fa-solid fa-code"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','qrcode')">
-                                        <i id="qrcode{{$node->id}}" class="fas fa-qrcode"></i>
+                                        <i id="qrcode{{$node->id}}" class="fa-solid fa-qrcode"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{$node->id}}','text')">
-                                        <i id="text{{$node->id}}" class="fas fa-list"></i>
+                                        <i id="text{{$node->id}}" class="fa-solid fa-list"></i>
                                     </button>
                                 </p>
                             </div>

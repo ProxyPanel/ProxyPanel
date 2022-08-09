@@ -306,7 +306,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function isTrafficWarning(): bool
     { // 流量异常警告
-        return $this->recentTrafficUsed() >= (sysConfig('traffic_ban_value') * GB);
+        return (sysConfig('traffic_ban_value') * GB) <= $this->recentTrafficUsed();
     }
 
     public function recentTrafficUsed()

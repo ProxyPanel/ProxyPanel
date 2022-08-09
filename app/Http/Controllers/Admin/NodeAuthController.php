@@ -14,7 +14,7 @@ class NodeAuthController extends Controller
     // 节点授权列表
     public function index()
     {
-        return view('admin.node.auth', ['authorizations' => NodeAuth::orderBy('node_id')->paginate()->appends(request('page'))]);
+        return view('admin.node.auth', ['authorizations' => NodeAuth::with('node')->orderBy('node_id')->paginate()->appends(request('page'))]);
     }
 
     // 添加节点授权

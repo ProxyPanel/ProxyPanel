@@ -32,7 +32,7 @@ class NodeRequest extends FormRequest
             'protocol_param' => 'nullable|string',
             'obfs'           => 'required_if:type,1,4|exists:ss_config,name',
             'obfs_param'     => 'nullable|string',
-            'is_subscribe'   => 'required|boolean',
+            'is_display'     => 'required|numeric|between:0,3',
             'detection_type' => 'required|numeric|between:0,3',
             'single'         => 'required|boolean',
             'port'           => 'required_unless:single,0|numeric|between:1,65535|different:push_port',

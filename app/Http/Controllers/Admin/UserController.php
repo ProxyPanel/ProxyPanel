@@ -308,7 +308,7 @@ class UserController extends Controller
 
     public function oauth()
     {
-        $list = UserOauth::paginate(15)->appends(\request('page'));
+        $list = UserOauth::with('user:id,username')->paginate(15)->appends(\request('page'));
 
         return view('admin.user.oauth', compact('list'));
     }

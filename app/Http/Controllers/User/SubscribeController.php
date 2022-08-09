@@ -69,7 +69,7 @@ class SubscribeController extends Controller
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()]));
 
         // 获取这个账号可用节点
-        $query = $user->nodes()->whereIsSubscribe(1);
+        $query = $user->nodes()->whereIn('is_display', [2, 3]);
 
         if ($this->subType === 1) {
             $query = $query->whereIn('type', [1, 4]);

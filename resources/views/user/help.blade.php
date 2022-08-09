@@ -204,7 +204,7 @@
                                                 <ol>
                                                     <li>
                                                         键盘操作<code>Win</code> + <code>X</code>，或右击左下角开始菜单键
-                                                        （Win键看起来像 <i class="fab fa-windows" aria-hidden="true"></i> 这样）
+                                                        （Win键看起来像 <i class="fa-brands fa-windows" aria-hidden="true"></i> 这样）
                                                     </li>
                                                     <li>
                                                         按下 <code>A</code>键 或者 手动选择

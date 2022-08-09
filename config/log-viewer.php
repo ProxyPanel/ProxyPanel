@@ -92,15 +92,15 @@ return [
      */
 
     'icons' => [
-        'all'       => 'fas fa-fw fa-list-ul',
-        'emergency' => 'far fa-fw fa-life-ring',
-        'alert'     => 'fas fa-fw fa-bullhorn',
-        'critical'  => 'fas fa-fw fa-heartbeat',
-        'error'     => 'fas fa-fw fa-times-circle',
-        'warning'   => 'fas fa-fw fa-exclamation-triangle',
-        'notice'    => 'fas fa-fw fa-exclamation-circle',
-        'info'      => 'fas fa-fw fa-info-circle',
-        'debug'     => 'fas fa-fw fa-bug',
+        'all'       => 'fa-solid fa-fw fa-list-ul',
+        'emergency' => 'fa-solid fa-fw fa-life-ring',
+        'alert'     => 'fa-solid fa-fw fa-bullhorn',
+        'critical'  => 'fa-solid fa-fw fa-heart-pulse',
+        'error'     => 'fa-solid fa-fw fa-circle-xmark',
+        'warning'   => 'fa-solid fa-fw fa-triangle-exclamation',
+        'notice'    => 'fa-solid fa-fw fa-circle-exclamation',
+        'info'      => 'fa-solid fa-fw fa-circle-info',
+        'debug'     => 'fa-solid fa-fw fa-bug',
     ],
 
     /* -----------------------------------------------------------------

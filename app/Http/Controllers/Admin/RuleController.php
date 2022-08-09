@@ -78,7 +78,7 @@ class RuleController extends Controller
         return view('admin.rule.log', [
             'nodes'    => Node::all(),
             'rules'    => Rule::all(),
-            'ruleLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
+            'ruleLogs' => $query->with('node:id,name', 'user:id,username', 'rule:id,name')->latest()->paginate(15)->appends($request->except('page')),
         ]);
     }
 

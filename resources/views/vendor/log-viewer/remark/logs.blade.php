@@ -42,13 +42,13 @@
                         @endforeach
                         <td class="text-right">
                             <a href="{{ route('log-viewer::logs.show', [$date]) }}" class="btn btn-sm btn-info">
-                                <i class="fas fa-fw fa-search"></i>
+                                <i class="fa-solid fa-magnifying-glass"></i>
                             </a>
                             <a href="{{ route('log-viewer::logs.download', [$date]) }}" class="btn btn-sm btn-success">
-                                <i class="fas fa-download"></i>
+                                <i class="fa-solid fa-download"></i>
                             </a>
                             <button class="btn btn-sm btn-danger" data-target="#deleteLogModal" data-toggle="modal" data-log-date="{{ $date }}" type="button">
-                                <i class="far fa-trash-alt"></i> @lang('Delete')
+                                <i class="fa-solid fa-trash"></i> @lang('Delete')
                             </button>
                         </td>
                     </tr>

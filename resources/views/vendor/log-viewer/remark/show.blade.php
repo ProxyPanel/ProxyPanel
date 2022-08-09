@@ -40,10 +40,10 @@
                     <h3 class="panel-title"> @lang('Log info') :</h3>
                     <div class="panel-actions panel-actions-keep">
                         <a href="{{ route('log-viewer::logs.download', [$log->date]) }}" class="btn btn-sm btn-success">
-                            <i class="fas fa-download"></i> @lang('Download')
+                            <i class="fa-solid fa-download"></i> @lang('Download')
                         </a>
                         <button class="btn btn-sm btn-danger" data-target="#deleteLogModal" data-toggle="modal" type="button">
-                            <i class="far fa-trash-alt"></i> @lang('Delete')
+                            <i class="fa-solid fa-trash"></i> @lang('Delete')
                         </button>
                     </div>
                 </div>
@@ -86,11 +86,11 @@
                                 <div class="input-group-append">
                                     @unless (is_null($query))
                                         <a href="{{ route('log-viewer::logs.show', [$log->date]) }}" class="btn btn-secondary">
-                                            (@lang(':count results', ['count' => $entries->count()])) <i class="fa fa-fw fa-times"></i>
+                                            (@lang(':count results', ['count' => $entries->count()])) <i class="fa-solid fa-fw fa-xmark"></i>
                                         </a>
                                     @endunless
                                     <button id="search-btn" class="btn btn-primary">
-                                        <i class="fas fa-fw fa-search"></i>
+                                        <i class="fa-solid fa-fw fa-magnifying-glass"></i>
                                     </button>
                                 </div>
                             </div>
@@ -151,14 +151,14 @@
                                         @if ($entry->hasStack())
                                             <a class="btn btn-sm btn-light" role="button" data-toggle="collapse"
                                                href="#log-stack-{{ $key }}" aria-expanded="false" aria-controls="log-stack-{{ $key }}">
-                                                <i class="fas fa-toggle-on"></i> @lang('Stack')
+                                                <i class="fa-solid fa-toggle-on"></i> @lang('Stack')
                                             </a>
                                         @endif
 
                                         @if ($entry->hasContext())
                                             <a class="btn btn-sm btn-light" role="button" data-toggle="collapse"
                                                href="#log-context-{{ $key }}" aria-expanded="false" aria-controls="log-context-{{ $key }}">
-                                                <i class="fas fa-toggle-on"></i> @lang('Context')
+                                                <i class="fa-solid fa-toggle-on"></i> @lang('Context')
                                             </a>
                                         @endif
                                     </td>

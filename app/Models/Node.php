@@ -72,6 +72,11 @@ class Node extends Model
         return $this->belongsTo(Node::class);
     }
 
+    public function childNodes(): hasMany
+    {
+        return $this->hasMany(Node::class, 'relay_node_id', 'id');
+    }
+
     public function userGroups(): BelongsToMany
     {
         return $this->belongsToMany(UserGroup::class);

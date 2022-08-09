@@ -87,7 +87,7 @@
                                         @endif
                                         <input type="text" class="form-control" name="logo" value="{{$article->logo}}"/>
                                     </div>
-                                    <span class="text-help"><a href="https://fontawesome.com/v5.15/icons/" target="_blank">图标列表</a> | 格式： fa-windows</span>
+                                    <span class="text-help"><a href="https://fontawesome.com/v6/icons" target="_blank">图标列表</a> | 格式： fa-windows</span>
                                 </div>
                             @endif
                         </div>

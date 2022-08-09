@@ -78,7 +78,7 @@
                             <dt class="col-sm-3">等级</dt>
                             <dd class="col-sm-9">{{$user->level}}</dd>
                             <dt class="col-sm-3">分组</dt>
-                            <dd class="col-sm-9">{{$user->userGroup ?? '无分组'}}</dd>
+                            <dd class="col-sm-9">{{$user->userGroup->name ?? '无分组'}}</dd>
                             <dt class="col-sm-3">余额</dt>
                             <dd class="col-sm-9">{{$user->credit}}</dd>
                             <dt class="col-sm-3">流量</dt>

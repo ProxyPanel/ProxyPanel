@@ -27,9 +27,9 @@
                             <x-avatar :user="Auth::getUser()"/>
                         </a>
                         <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
-                        <p class="user-job"><i class="fab fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
+                        <p class="user-job"><i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
                             @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif</p>
-                        <p class="user-location"><i class="fab fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
+                        <p class="user-location"><i class="fa-brands fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
                             @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif</p>
                     </div>
                     @if(sysConfig('oauth_path'))
@@ -40,7 +40,7 @@
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                                 <a class="list-group-item justify-content-center @if(in_array($item, $auth)) col-10 @else col-12 @endif"
                                    @if($item !== 'telegram') href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}" @endif>
-                                    <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
+                                    <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
                                     @if(in_array($item, $auth))
                                         <span class="red-600">{{trans('user.oauth.rebind')}}</span>
                                     @else

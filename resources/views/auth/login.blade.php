@@ -43,7 +43,7 @@
                     </div>
                 @else
                     <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'login'])}}">
-                        <i class="fab {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
+                        <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
                     </a>
                 @endif
             @endforeach

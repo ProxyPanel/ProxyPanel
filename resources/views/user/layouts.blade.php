@@ -44,15 +44,15 @@
                     <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
                            aria-expanded="false" role="button">
-                            <span class="flag-icon wb-flag"></span>
-                            <span class="flag-icon icon wb-chevron-down-mini"></span>
+                            <span class="icon wb-flag"></span>
+                            <span class="icon wb-chevron-down-mini"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">
                             <a class="dropdown-item" href="{{route('lang', ['locale' => 'en'])}}" role="menuitem">
-                                <i class="flag-icon flag-icon-gb"></i>
+                                <i class="fi fi-gb"></i>
                                 <span style="padding: inherit;">English</span></a>
                             <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh_CN'])}}" role="menuitem">
-                                <i class="flag-icon flag-icon-cn"></i>
+                                <i class="fi fi-cn"></i>
                                 <span style="padding: inherit;">简体中文</span></a>
                         </div>
                     </li>
@@ -102,7 +102,7 @@
                 </li>
                 <li class="site-menu-item {{request()->routeIs('node') ? 'active open' : ''}}">
                     <a href="{{route('node')}}">
-                        <i class="site-menu-icon wb-grid-4" aria-hidden="true"></i>
+                        <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
                         <span class="site-menu-title">{{trans('user.menu.nodes')}}</span>
                     </a>
                 </li>

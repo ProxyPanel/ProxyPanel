@@ -19,9 +19,8 @@
     <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
     <link href="/assets/bundle/app.min.css" rel="stylesheet">
-    <link href="https://cdnjs.loli.net/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css" rel="stylesheet"
-          integrity="sha512-Cv93isQdFwaKBV+Z4X8kaVBYWHST58Xb/jVOcV9aRsGSArZsgAnFIhMpDoMDcFNoUtday1hdjn0nGp3+KZyyFw==" crossorigin="anonymous"/>
-@yield('layout_css')
+    <link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/flag-icon-css/6.6.4/css/flag-icons.min.css" integrity="sha512-uvXdJud8WaOlQFjlz9B15Yy2Au/bMAvz79F7Xa6OakCl2jvQPdHD0hb3dEqZRdSwG4/sknePXlE7GiarwA/9Wg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    @yield('layout_css')
 <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">
     <link href="https://fonts.loli.net/css?family=Roboto:300,400,500,300italic" rel="stylesheet">

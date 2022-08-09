@@ -1,7 +1,6 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
 @endsection
 @section('content')
     <div class="page-content container-fluid">
@@ -42,13 +41,13 @@
                                 @can('admin.user.exportProxy')
                                     <div class="btn-group">
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','code')"><i class="fas fa-code"></i>
+                                                onclick="getInfo('{{$node->id}}','code')"><i class="fa-solid fa-code"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','qrcode')"><i class="fas fa-qrcode"></i>
+                                                onclick="getInfo('{{$node->id}}','qrcode')"><i class="fa-solid fa-qrcode"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-info"
-                                                onclick="getInfo('{{$node->id}}','text')"><i class="fas fa-list"></i>
+                                                onclick="getInfo('{{$node->id}}','text')"><i class="fa-solid fa-list"></i>
                                         </button>
                                     </div>
                                 @endcan
@@ -76,7 +75,6 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/jquery-qrcode/jquery.qrcode.min.js"></script>
-    <script src="/assets/global/js/Plugin/webui-popover.js"></script>
     @can('admin.user.exportProxy')
         <script>
             function getInfo(id, type) {

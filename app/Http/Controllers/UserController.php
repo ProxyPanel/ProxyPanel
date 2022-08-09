@@ -114,7 +114,7 @@ class UserController extends Controller
         }
 
         // 获取当前用户可用节点
-        $nodeList = $user->nodes()->with(['labels', 'level_table'])->get();
+        $nodeList = $user->nodes()->whereIn('is_display', [1, 3])->with(['labels', 'level_table'])->get();
         $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
         foreach ($nodeList as $node) {
             // 节点在线状态
@@ -209,8 +209,9 @@ class UserController extends Controller
                 $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
             }
         } else {
+            $nodes = Node::all();
             foreach ($goodsList as $goods) {
-                $goods->node_count = Node::where('level', '<=', $goods->level)->count();
+                $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
             }
         }
 

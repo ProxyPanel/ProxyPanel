@@ -40,10 +40,10 @@
                             </button>
                             <div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
                                 <a class="dropdown-item" href="{{route('lang', ['locale' => 'en'])}}" role="menuitem">
-                                    <i class="flag-icon flag-icon-gb"></i>
+                                    <i class="fi fi-gb"></i>
                                     <span style="padding: inherit;">English</span></a>
                                 <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh_CN'])}}" role="menuitem">
-                                    <i class="flag-icon flag-icon-cn"></i>
+                                    <i class="fi fi-cn"></i>
                                     <span style="padding: inherit;">简体中文</span></a>
                             </div>
                         </div>

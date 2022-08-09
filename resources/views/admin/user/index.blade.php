@@ -100,7 +100,7 @@
                     </thead>
                     <tbody>
                     @foreach ($userList as $user)
-                        <tr class="{{$user->isTrafficWarning() ? ' table-danger' : ''}}">
+                        <tr class="{{$user->isTrafficWarning() ? 'table-danger' : ''}}">
                             <td> {{$user->id}} </td>
                             <td> {{$user->username}} </td>
                             <td> {{$user->credit}} </td>

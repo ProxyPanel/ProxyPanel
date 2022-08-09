@@ -62,7 +62,7 @@
                                 label += ': ';
                             }
                             if (context.parsed.y !== null) {
-                                label += new Intl.NumberFormat('ch-CN', {style: 'currency', currency: 'CNY'}).format(context.parsed.y);
+                                label += context.parsed.y + ' GB';
                             }
                             return label;
                         },

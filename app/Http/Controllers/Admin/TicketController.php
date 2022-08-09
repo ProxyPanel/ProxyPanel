@@ -28,7 +28,7 @@ class TicketController extends Controller
             });
         });
 
-        return view('admin.ticket.index', ['ticketList' => $query->latest()->paginate(10)->appends($request->except('page'))]);
+        return view('admin.ticket.index', ['ticketList' => $query->with('user')->latest()->paginate(10)->appends($request->except('page'))]);
     }
 
     // 创建工单
@@ -55,8 +55,8 @@ class TicketController extends Controller
     {
         return view('admin.ticket.reply', [
             'ticket'    => $ticket,
-            'user'      => $ticket->user->load('userGroup', 'inviter'),
-            'replyList' => $ticket->reply()->oldest()->get(),
+            'user'      => $ticket->user,
+            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username', 'user:id,username')->oldest()->get(),
         ]);
     }
 

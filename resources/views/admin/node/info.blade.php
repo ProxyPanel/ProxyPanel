@@ -147,10 +147,34 @@
                                 <h4 class="example-title">扩展信息</h4>
                                 <div class="example">
                                     <div class="form-group row">
-                                        <label for="is_subscribe" class="col-md-3 col-form-label">订阅</label>
-                                        <div class="col-md-9">
-                                            <input type="checkbox" id="is_subscribe" name="is_subscribe" data-plugin="switchery">
-                                        </div>
+                                        <label for="is_display" class="col-md-3 col-form-label">显示 与 订阅</label>
+                                        <ul class="col-md-9 list-unstyled list-inline">
+                                            <li class="list-inline-item">
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" id="invisible" name="is_display" value="0" checked/>
+                                                    <label for="invisible">完全不可见</label>
+                                                </div>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" id="page_only" name="is_display" value="1"/>
+                                                    <label for="page_only">只显示于【{{ trans('user.menu.nodes') }}】页面</label>
+                                                </div>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" id="sub_only" name="is_display" value="2"/>
+                                                    <label for="sub_only">只显示于【订 阅】</label>
+                                                </div>
+                                            </li>
+                                            <li class="list-inline-item">
+                                                <div class="radio-custom radio-primary">
+                                                    <input type="radio" id="visible" name="is_display" value="3" checked/>
+                                                    <label for="visible">完全可见</label>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                        <div class="text-help offset-md-3"> 用户是否可以订阅/看到本节点</div>
                                     </div>
                                     <div class="form-group row">
                                         <label for="detection_type" class="col-md-3 col-form-label">节点阻断检测</label>
@@ -446,9 +470,7 @@
             @if($node->status)
             $('#status').click();
             @endif
-            @if($node->is_subscribe)
-            $('#is_subscribe').click();
-            @endif
+            $("input[name='is_display'][value='{{$node->is_display}}']").click();
             $("input[name='detection_type'][value='{{$node->detection_type}}']").click();
             @if(!empty($node->profile['passwd']) && $node->port)
             $('#single').click();
@@ -498,7 +520,6 @@
             $('input[name=\'type\'][value=\'0\']').click();
             $('#status').click();
             $('#is_udp').click();
-            $('#is_subscribe').click();
             v2_path.val('/' + string);
             @endisset
             if ($('#obfs').val() === 'plain') {
@@ -537,7 +558,7 @@
                     protocol_param: $('#protocol_param').val(),
                     obfs: $('#obfs').val(),
                     obfs_param: $('#obfs_param').val(),
-                    is_subscribe: document.getElementById('is_subscribe').checked ? 1 : 0,
+                    is_display:  $('input[name=\'is_display\']:checked').val(),
                     detection_type: $('input[name=\'detection_type\']:checked').val(),
                     single: document.getElementById('single').checked ? 1 : 0,
                     port: $('input[name="port"]:not([hidden])').val(),

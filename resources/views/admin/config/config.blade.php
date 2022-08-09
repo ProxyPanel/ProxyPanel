@@ -1,6 +1,5 @@
 @extends('admin.layouts')
 @section('css')
-    <script src="//at.alicdn.com/t/font_682457_e6aq10jsbq0yhkt9.js"></script>
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
 @endsection
 @section('content')
@@ -222,9 +221,7 @@
                                 @foreach($countries as $country)
                                     <tr>
                                         <td>
-                                            <svg class="w-40 h-40 text-center" aria-hidden="true">
-                                                <use xlink:href="@if($country->code)#icon-{{$country->code}}@endif"></use>
-                                            </svg>
+                                            <i class="fi fis fi-{{$country->code}} h-40 w-40" aria-hidden="true"></i>
                                         </td>
                                         <td>
                                             {{$country->code}}

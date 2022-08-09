@@ -61,13 +61,18 @@
                             <td> {{$node->traffic_rate}} </td>
                             <td>
                                 @isset($node->profile['passwd'])
-                                    <span class="badge badge-lg badge-info"><i class="icon fas fa-stream"></i>单</span>
+                                    {{-- 单端口 --}}
+                                    <span class="badge badge-lg badge-info"><i class="fa-solid fa-arrows-left-right-to-line" aria-hidden="true"></i></span>
                                 @endisset
-                                @if($node->relay_node_id)
-                                    <span class="badge badge-lg badge-info"><i class="icon fas fa-ethernet"></i>转</span>
-                                @endif
-                                @if(!$node->is_subscribe)
-                                    <span class="badge badge-lg badge-danger"><i class="icon fas fa-rss"></i><del>订</del></span>
+                                @if($node->is_display === 0)
+                                    {{-- 节点完全不可见 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="icon wb-eye-close" aria-hidden="true"></i></span>
+                                @elseif($node->is_display === 1)
+                                    {{-- 节点只在页面中显示 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="fa-solid fa-link-slash" aria-hidden="true"></i></span>
+                                @elseif($node->is_display === 2)
+                                    {{-- 节点只可被订阅到 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
                                 @endif
                             </td>
                             <td>
@@ -75,13 +80,15 @@
                                     @if ($node->status)
                                         {{$node->load}}
                                     @else
-                                        <i class="yellow-700 icon icon-spin fas fa-cog" aria-hidden="true"></i>
+                                        <i class="yellow-700 icon icon-spin fa-solid fa-gear" aria-hidden="true"></i>
                                     @endif
                                 @else
                                     @if ($node->status)
-                                        <i class="red-600 icon fas fa-cog" aria-hidden="true"></i>
+                                        {{-- 节点完全不可见 --}}
+                                        <i class="red-600 fa-solid fa-cloud-question" aria-hidden="true"></i>
                                     @else
-                                        <i class="red-600 icon fas fa-handshake-slash" aria-hidden="true"></i>
+                                        {{-- 节点 关闭 --}}
+                                        <i class="red-600 fa-solid fa-cloud-exclamation" aria-hidden="true"></i>
                                     @endif
                                 @endif
                             </td>
@@ -139,6 +146,83 @@
                                 @endcan
                             </td>
                         </tr>
+                        @if (count($node->childNodes))
+                            @foreach($node->childNodes as $childNode)
+                                <tr class="bg-blue-grey-200 grey-700 table-borderless frontlin">
+                                    <td></td>
+                                    <td><i class="float-left fa-solid fa-right-left" aria-hidden="true"></i> <strong>中 转</strong></td>
+                                    <td> {{ $childNode->name }} </td>
+                                    <td> {{ $childNode->server }} </td>
+                                    <td> {{ $childNode->is_ddns ? 'DDNS' : $childNode->ip }} </td>
+                                    <td colspan="2">
+                                        @if($childNode->is_display === 0)
+                                            {{-- 节点完全不可见 --}}
+                                            <span class="badge badge-lg badge-danger"><i class="icon wb-eye-close" aria-hidden="true"></i></span>
+                                        @elseif($childNode->is_display === 1)
+                                            {{-- 节点只在页面中显示 --}}
+                                            <span class="badge badge-lg badge-danger"><i class="fa-solid fa-link-slash" aria-hidden="true"></i></span>
+                                        @elseif($childNode->is_display === 2)
+                                            {{-- 节点只可被订阅到 --}}
+                                            <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
+                                        @endif
+                                    </td>
+                                    <td colspan="5">
+                                        @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
+                                            <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="icon wb-wrench" aria-hidden="true"></i>
+                                            </button>
+                                            <div class="dropdown-menu" role="menu">
+                                                @can('admin.node.edit')
+                                                    <a class="dropdown-item" href="{{route('admin.node.edit', [$childNode->id, 'page' => Request::query('page', 1)])}}"
+                                                       role="menuitem">
+                                                        <i class="icon wb-edit" aria-hidden="true"></i> 编辑
+                                                    </a>
+                                                @endcan
+                                                @can('admin.node.clone')
+                                                    <a class="dropdown-item" href="{{route('admin.node.clone', $childNode)}}" role="menuitem">
+                                                        <i class="icon wb-copy" aria-hidden="true"></i> 克隆
+                                                    </a>
+                                                @endcan
+                                                @can('admin.node.destroy')
+                                                    <a class="dropdown-item red-700" href="javascript:delNode('{{$childNode->id}}', '{{$childNode->name}}')" role="menuitem">
+                                                        <i class="icon wb-trash" aria-hidden="true"></i> 删除
+                                                    </a>
+                                                @endcan
+                                                @can('admin.node.monitor')
+                                                    <a class="dropdown-item" href="{{route('admin.node.monitor', $childNode)}}" role="menuitem">
+                                                        <i class="icon wb-stats-bars" aria-hidden="true"></i> 流量统计
+                                                    </a>
+                                                @endcan
+                                                <hr/>
+                                                @can('admin.node.geo')
+                                                    <a class="dropdown-item" href="javascript:refreshGeo('{{$childNode->id}}')" role="menuitem">
+                                                        <i id="geo{{$childNode->id}}" class="icon wb-map" aria-hidden="true"></i> 刷新地理
+                                                    </a>
+                                                @endcan
+                                                @can('admin.node.ping')
+                                                    <a class="dropdown-item" href="javascript:pingNode('{{$childNode->id}}')" role="menuitem">
+                                                        <i id="ping{{$childNode->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
+                                                    </a>
+                                                @endcan
+                                                @can('admin.node.check')
+                                                    <a class="dropdown-item" href="javascript:checkNode('{{$childNode->id}}')" role="menuitem">
+                                                        <i id="node{{$childNode->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
+                                                    </a>
+                                                @endcan
+                                                @if($childNode->type === 4)
+                                                    @can('admin.node.reload')
+                                                        <hr/>
+                                                        <a class="dropdown-item" href="javascript:reload('{{$childNode->id}}')" role="menuitem">
+                                                            <i id="reload{{$childNode->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
+                                                        </a>
+                                                    @endcan
+                                                @endif
+                                            </div>
+                                        @endcan
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
                     @endforeach
                     </tbody>
                 </table>
