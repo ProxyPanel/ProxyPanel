@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Channels\PushBearChannel;
 use App\Http\Controllers\Controller;
 use App\Models\Marketing;
-use App\Notifications\Custom;
 use Illuminate\Http\Request;
-use Notification;
 use Response;
 
 class MarketingController extends Controller
@@ -42,12 +39,12 @@ class MarketingController extends Controller
         $title = $request->input('title');
         $content = $request->input('content');
 
-        if (! sysConfig('is_push_bear')) {
-            return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
-        }
+//        if (! sysConfig('is_push_bear')) {
+//            return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
+//        }
+//
+//        Notification::send(PushBearChannel::class, new Custom($title, $content));
 
-        Notification::send(PushBearChannel::class, new Custom($title, $content));
-
-        return Response::json(['status' => 'success', 'message' => '推送成功']);
+        return Response::json(['status' => 'fail', 'message' => '功能待开发']);
     }
 }

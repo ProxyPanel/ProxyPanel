@@ -14,19 +14,31 @@ class ServerChanChannel
     {
         $message = $notification->toCustom($notifiable);
 
-        $cacheKey = 'serverChanCount'.date('d');
-        if (Cache::has($cacheKey)) {
-            Cache::increment($cacheKey);
+        $cacheDayKey = 'serverChanCountDays';
+        $cacheMinuteKey = 'serverChanCountMinutes';
+        if (Cache::has($cacheDayKey)) {
+            Cache::increment($cacheDayKey);
         } else {
-            Cache::put($cacheKey, 1, Day); // 24小时
+            Cache::put($cacheDayKey, 1, Day); // 天限制
         }
 
-        // 一天仅可发送不超过500条
-        if (Cache::get($cacheKey) < 500) {
-            $response = Http::timeout(15)
-                ->get('https://sctapi.ftqq.com/'.sysConfig('server_chan_key').'.send?title='.$message['title'].'&desp='.urlencode($message['content']));
+        if (Cache::has($cacheMinuteKey)) {
+            Cache::increment($cacheMinuteKey);
         } else {
-            Log::critical('ServerChan消息推送异常：今日500条限额已耗尽！');
+            Cache::put($cacheMinuteKey, 1, Minute); // 分钟限制
+        }
+
+        if (Cache::get($cacheDayKey) < 1000) { // 订阅会员 一天仅可发送不超过1000条
+            if (Cache::get($cacheMinuteKey) < 5) {
+                $response = Http::timeout(15)
+                    ->post('https://sctapi.ftqq.com/'.sysConfig('server_chan_key').'.send?title='.urlencode($message['title']).'&desp='.urlencode($message['content']));
+            } else {
+                Log::critical('[ServerChan] 消息推送异常：分钟频率过高，请优化通知场景！');
+
+                return false;
+            }
+        } else {
+            Log::critical('[ServerChan] 消息推送异常：今日限额已耗尽！');
 
             return false;
         }
@@ -45,7 +57,7 @@ class ServerChanChannel
             return false;
         }
         // 发送错误
-        Log::critical('ServerChan消息推送异常：'.var_export($response, true));
+        Log::critical('[ServerChan] 消息推送异常：'.var_export($response, true));
 
         return false;
     }

@@ -53,8 +53,8 @@ class PaymentConfirm extends Notification
         $goods = $this->order->goods;
 
         return [
-            'title'  => '🛒 人工支付',
-            'body'   => [
+            'title'    => '🛒 人工支付',
+            'body'     => [
                 [
                     'keyname' => 'ℹ️ 账号',
                     'value'   => $order->user->username,
@@ -68,7 +68,8 @@ class PaymentConfirm extends Notification
                     'value'   => $goods->name ?? '余额充值',
                 ],
             ],
-            'button' => [
+            'markdown' => '- ℹ️ 账号: '.$order->user->username.PHP_EOL.'- 💰 金额: '.sprintf('%1.2f', $order->amount).PHP_EOL.'- 📦 商品: '.($goods->name ?? '余额充值'),
+            'button'   => [
                 route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 0]),
                 route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 1]),
             ],

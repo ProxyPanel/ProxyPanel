@@ -3,6 +3,9 @@
 namespace App\Providers;
 
 use App\Channels\BarkChannel;
+use App\Channels\DingTalkChannel;
+use App\Channels\iYuuChannel;
+use App\Channels\PushDeerChannel;
 use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
 use App\Channels\TgChatChannel;
@@ -78,6 +81,9 @@ class SettingServiceProvider extends ServiceProvider
                 'serverChan' => ServerChanChannel::class,
                 'tgChat'     => TgChatChannel::class,
                 'weChat'     => WeChatChannel::class,
+                'iYuu'       => iYuuChannel::class,
+                'pushDear'   => PushDeerChannel::class,
+                'dingTalk'   => DingTalkChannel::class,
             ] as $key => $channel
         ) {
             $index = array_search($key, $channels, true);

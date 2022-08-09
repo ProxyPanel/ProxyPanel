@@ -16,7 +16,7 @@ const Mbps = 125000;
 if (! function_exists('base64url_encode')) {
     function base64url_encode($data): string
     {
-        return strtr(base64_encode($data), ['+' => '-', '/' => '_', '=' => '']);
+        return str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($data));
     }
 }
 
@@ -24,7 +24,7 @@ if (! function_exists('base64url_encode')) {
 if (! function_exists('base64url_decode')) {
     function base64url_decode($data)
     {
-        return base64_decode(strtr($data, '-_', '+/'));
+        return base64_decode(str_replace(['-', '_'], ['+', '/'], $data));
     }
 }
 

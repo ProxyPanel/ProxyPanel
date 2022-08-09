@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Channels\BarkChannel;
+use App\Channels\DingTalkChannel;
+use App\Channels\iYuuChannel;
+use App\Channels\PushDeerChannel;
 use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
 use App\Channels\TgChatChannel;
@@ -155,8 +158,6 @@ class SystemController extends Controller
                 'is_captcha',
                 'min_rand_traffic',
                 'max_rand_traffic',
-                'push_bear_send_key',
-                'push_bear_qrcode',
                 'forbid_mode',
                 'website_security_code',
             ];
@@ -207,6 +208,15 @@ class SystemController extends Controller
                 break;
             case 'pushPlus':
                 Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushPlusChannel::class]);
+                break;
+            case 'iYuu':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [iYuuChannel::class]);
+                break;
+            case 'pushDeer':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushDeerChannel::class]);
+                break;
+            case 'dingTalk':
+                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [DingTalkChannel::class]);
                 break;
             default:
                 return Response::json(['status' => 'fail', 'message' => '未知渠道']);

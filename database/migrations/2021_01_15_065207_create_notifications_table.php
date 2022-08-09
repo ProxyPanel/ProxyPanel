@@ -47,7 +47,7 @@ class CreateNotificationsTable extends Migration
         foreach ($this->configs as $config) {
             \App\Models\Config::insert(['name' => $config]);
         }
-        \App\Models\Config::whereIn('name', $this->dropConfigs)->delete();
+        \App\Models\Config::destroy($this->dropConfigs);
     }
 
     /**
@@ -63,8 +63,8 @@ class CreateNotificationsTable extends Migration
         });
 
         foreach ($this->dropConfigs as $config) {
-            \App\Models\Config::insert(['name' => $config]);
+            \App\Models\Config::insertOrIgnore(['name' => $config]);
         }
-        \App\Models\Config::whereIn('name', $this->configs)->delete();
+        \App\Models\Config::destroy($this->configs);
     }
 }

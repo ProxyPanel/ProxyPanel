@@ -37,11 +37,11 @@
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.expired')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.expired')}}</p>
-                            @elseif($unusedTraffic == 0)
+                            @elseif($unusedTraffic === '0B')
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.disabled')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.traffic_exhausted')}}</p>
-                            @elseif(Auth::user()->isTrafficWarning() || $banedTime)
+                            @elseif($banedTime || Auth::user()->isTrafficWarning())
                                 <i class="wb-alert orange-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('user.status.limited')}}</span>
                                 <p class="font-weight-300 m-0 orange-500">{!!trans('user.account.reason.overused', ['data'=>sysConfig('traffic_ban_value')])!!}</p>
@@ -146,13 +146,13 @@
                                                 <div class="col">
                                                     <select class="form-control" id="subType" name="subType" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                                         <option value="" hidden>{{trans('common.all')}}</option>
-                                                        @if(in_array('ss',$subType))
+                                                        @if(in_array('ss', $subType, true))
                                                             <option value="1">{{trans('user.subscribe.ss_only')}}</option>
                                                         @endif
-                                                        @if(in_array('v2',$subType))
+                                                        @if(in_array('v2', $subType, true))
                                                             <option value="2">{{trans('user.subscribe.v2ray_only')}}</option>
                                                         @endif
-                                                        @if(in_array('trojan',$subType))
+                                                        @if(in_array('trojan', $subType, true))
                                                             <option value="3">{{trans('user.subscribe.trojan_only')}}</option>
                                                         @endif
                                                     </select>
@@ -200,17 +200,6 @@
                             </div>
                         </div>
                     </div>
-                    @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
-                        <div class="col-xl-4 mb-30">
-                            <div class="card card-shadow text-center h-full">
-                                <div class="card-block">
-                                    <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>{{trans('user.home.wechat_push')}}
-                                    </h4>
-                                    <div id="qrcode" class="mb-10"></div>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
                 </div>
                 <div class="row" data-plugin="matchHeight" data-by-row="true">
                     <div class="col-xxl-6 mb-30">
@@ -285,22 +274,22 @@
     <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))
-        <script src="/assets/custom/easy.qrcode.min.js"></script>
-        <script>
-            // Options
-            const options = {
-                text: @json(sysConfig('push_bear_qrcode')),
-                width: 150,
-                height: 150,
-                backgroundImage: '{{asset('/assets/images/wechat.png')}}',
-                autoColor: true,
-            };
+    {{--    @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))--}}
+    {{--        <script src="/assets/custom/easy.qrcode.min.js"></script>--}}
+    {{--        <script>--}}
+    {{--            // Options--}}
+    {{--            const options = {--}}
+    {{--                text: @json(sysConfig('push_bear_qrcode')),--}}
+    {{--                width: 150,--}}
+    {{--                height: 150,--}}
+    {{--                backgroundImage: '{{asset('/assets/images/wechat.png')}}',--}}
+    {{--                autoColor: true,--}}
+    {{--            };--}}
 
-            // Create QRCode Object
-            new QRCode(document.getElementById('qrcode'), options);
-        </script>
-    @endif
+    {{--            // Create QRCode Object--}}
+    {{--            new QRCode(document.getElementById('qrcode'), options);--}}
+    {{--        </script>--}}
+    {{--    @endif--}}
     <script>
         // 更换订阅地址
         function exchangeSubscribe() {

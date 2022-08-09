@@ -35,7 +35,7 @@ class PushPlusChannel
             return false;
         }
         // 发送错误
-        Log::critical('PushPlus消息推送异常：'.var_export($response, true));
+        Log::critical('[PushPlus] 消息推送异常：'.var_export($response, true));
 
         return false;
     }

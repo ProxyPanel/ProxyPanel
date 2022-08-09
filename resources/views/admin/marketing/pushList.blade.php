@@ -10,7 +10,7 @@
                 <h3 class="panel-title">推送消息列表</h3>
                 @can('admin.marketing.add')
                     <div class="panel-actions">
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#send_modal"><i class="icon wb-plus"></i>推送消息</button>
+                        <button type="button" class="btn btn-primary disabled" data-toggle="modal" data-target="#send_modal"><i class="icon wb-plus"></i>推送消息</button>
                     </div>
                 @endcan
             </div>
@@ -29,11 +29,11 @@
                         <a href="{{route('admin.marketing.push')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
                     </div>
                 </form>
-                <div class="alert alert-info alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span></button>
-                    仅会推送给关注了您的消息通道的用户 @can('admin.system.index')<a href="{{route('admin.system.index')}}" class="alert-link" target="_blank">设置PushBear</a> @else 设置PushBear @endcan
-                </div>
+{{--                <div class="alert alert-info alert-dismissible" role="alert">--}}
+{{--                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">--}}
+{{--                        <span aria-hidden="true">×</span></button>--}}
+{{--                    仅会推送给关注了您的消息通道的用户 @can('admin.system.index')<a href="{{route('admin.system.index')}}" class="alert-link" target="_blank">设置PushBear</a> @else 设置PushBear @endcan--}}
+{{--                </div>--}}
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -78,7 +78,7 @@
         <!-- 推送消息 -->
         <div id="send_modal" class="modal fade" tabindex="-1" data-focus-on="input:first" data-backdrop="static"
              data-keyboard="false">
-            <div class="modal-dialog modal-lg  modal-center">
+            <div class="modal-dialog modal-lg modal-center">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -111,7 +111,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-danger mr-auto" data-dismiss="modal">取消</button>
-                        <button class="btn btn-primary" onclick="return send();">推送</button>
+                        <button type="button" class="btn btn-primary disabled" onclick="return send();">推送</button>
                     </div>
                 </div>
             </div>

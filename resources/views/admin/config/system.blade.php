@@ -153,13 +153,23 @@
                             <x-system.input-limit title="提现限制" code="referral_money" :value="$referral_money" unit="元" help="满多少元才可以申请提现"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="notify">
-                            <x-system.input-test title="SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
-                                    target=_blank>申请 SCKEY</a>）' holder="请到ServerChan申请" test="serverChan"/>
-                            <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="安装并打开Bark后取得" type="url"
-                                                 help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串代码，启用Bark，请务必填入本值" test="bark"/>
-                            <x-system.input-test title="Telegram Token" :value="$telegram_token" code="telegram_token" help="找 <a href=https://t.me/BotFather
-                                    target=_blank>@BotFather</a> 申请机器人" test="telegram"/>
-                            <x-system.input title="微信企业ID" :value="$wechat_cid" code="wechat_cid"
+                            <x-system.input-test title="ServerChan SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
+                                    target=_blank>申请 SCKEY</a>）' holder="填入ServerChan的SCKEY -> 再点击更新" test="serverChan"/>
+                            <x-system.input-test title="PushDeer Key" :value="$pushDeer_key" code="pushDeer_key" help='启用PushDeer，请务必填入本值（<a href=http://www.pushdeer.com/official.html
+                                    target=_blank>申请 Push Key</a>）' holder="填入PushDeer的Push Key -> 再点击更新" test="pushDeer"/>
+                            <x-system.input-test title="IYUU令牌" :value="$iYuu_token" code="iYuu_token" help='启用爱语飞飞，请务必填入本值（<a href=http://iyuu.cn
+                                    target=_blank>申请 IYUU令牌</a>）' holder="填入爱语飞飞的IYUU令牌 -> 再点击更新" test="iYuu"/>
+                            <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="填入Bark的设备号 -> 再点击更新"
+                                                 help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串字符串，启用Bark，请务必填入本值" test="bark"/>
+                            <x-system.input-test title="Telegram" :value="$telegram_token" code="telegram_token" holder="填入Telegram的 Token -> 再点击更新" help="找 <a href=https://t
+                            .me/BotFather
+                                    target=_blank>@BotFather</a> 申请机器人获取TOKEN" test="telegram"/>
+                            <x-system.input-test title="PushPlus Token" :value="$pushplus_token" code="pushplus_token" help='启用PushPlus，请务必填入本值（<a href=https://www.pushplus.plus/push1.html
+                                    target=_blank>申请 Token</a>）' holder="请到ServerChan申请" test="pushPlus"/>
+                            <x-system.input title="钉钉自定义机器人 Access Token" :value="$dingTalk_access_token" code="dingTalk_access_token" holder="自定义机器人的WebHook中的access_token"
+                                            help="可以阅读<a href=https://open.dingtalk.com/document/group/custom-robot-access#title-jfe-yo9-jl2 target=_blank>钉钉手册</a>查阅步骤"/>
+                            <x-system.input-test title="钉钉自定义机器人 密钥" :value="$dingTalk_secret" code="dingTalk_secret" help='可选填！开启机器人[加签]就是必填项目！' holder="自定义机器人加签后出现的的密钥" test="dingTalk"/>
+                            <x-system.input title="微信企业ID" :value="$wechat_cid" code="wechat_cid" holder="填入微信企业ID -> 再点击更新"
                                             help="获取<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>我的企业</a>中的企业ID"/>
                             <x-system.input title="微信企业应用ID" :value="$wechat_aid" code="wechat_aid" holder="应用的AgentId"
                                             help="在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId"/>
@@ -168,39 +178,32 @@
                             <x-system.input title="微信企业应用EncodingAESKey" :value="$wechat_encodingAESKey" code="wechat_encodingAESKey" help='应用管理->应用->设置API接收->EncodingAESKey'/>
                             <x-system.input-test title="TG酱Token" :value="$tg_chat_token" code="tg_chat_token" help='启用TG酱，请务必填入本值（<a href=https://t.me/realtgchat_bot
                                     target=_blank>申请 Token</a>）' holder="请到Telegram申请" test="tgChat"/>
-                            <x-system.input-test title="PushPlus Token" :value="$pushplus_token" code="pushplus_token" help='启用PushPlus，请务必填入本值（<a href=https://www.pushplus.plus/push1.html
-                                    target=_blank>申请 Token</a>）' holder="请到ServerChan申请" test="pushPlus"/>
-                            <x-system.switch title="PushBear" code="is_push_bear" :check="$is_push_bear"
-                                             help='使用PushBear推送微信消息给用户（<a href="https://pushbear.ftqq.com/admin/#/signin" target="_blank">创建消息通道</a>）'/>
-                            <x-system.input title="PushBear SendKey" :value="$push_bear_send_key" code="push_bear_send_key" help="启用PushBear，请务必填入本值" holder="创建消息通道后即可获取"/>
-                            <x-system.input title="PushBear订阅二维码" :value="$push_bear_qrcode" code="push_bear_qrcode" help="创建消息通道后，在二维码上点击右键“复制图片地址”并粘贴至此处"
-                                            holder="填入消息通道的二维码URL" type="url"/>
                             <hr class="col-10"/>
                             <x-system.select title="账号过期通知" code="account_expire_notification" help="通知用户账号即将到期" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
                             <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="元" help="【账号过期通知】开始阈值，每日通知用户"/>
                             <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
                             <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
                             <x-system.select title="节点离线提醒" code="node_offline_notification" help="每10分钟检测节点离线并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' =>
+                                             'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
                             <x-system.select title="节点阻断提醒" code="node_blocked_notification" help="每小时检测节点是否被阻断并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus'
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus'
                                              => 'pushPlus']"/>
                             <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
                                                   help="提醒N次后自动下线节点，为0/留空时不限制，不超过12"/>
                             <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
                                              :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
                             <x-system.select title="人工支付确认通知" code="payment_confirm_notification" help="用户使用人工支付后通知管理员处理订单"
-                                             :list="['关闭' => '', 'Telegram' => 'telegram', '微信企业' => 'weChat']"/>
+                                             :list="['关闭' => '', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat']"/>
                             <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.select title="新工单通知" code="ticket_created_notification" help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.select title="工单回复通知" code="ticket_replied_notification" help="工单回复通知对方" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="auto">
@@ -210,14 +213,14 @@
                             <x-system.input-limit title="订阅请求阈值" code="subscribe_ban_times" :value="$subscribe_ban_times" help="24小时内订阅链接请求次数限制"/>
                             <x-system.switch title="异常自动封号" code="is_traffic_ban" :check="$is_traffic_ban" help='1小时内流量超过异常阈值则自动封号（仅禁用代理）'/>
                             <x-system.select title="流量异常通知" code="data_anomaly_notification" help="1小时内流量超过异常阈值通知超管" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                             <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB" help="1小时内超过该值，则触发自动封号"/>
                             <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟" help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
                             <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port" help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
                             <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status" help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
                             <x-system.select title="节点使用报告" code="node_daily_notification" help="报告各节点流量昨日消耗情况" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' =>
+                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="other">

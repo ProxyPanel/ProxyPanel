@@ -60,11 +60,18 @@ class WeChatChannel
                 ],
             ];
         } else { // 文本消息
-            $body = ['touser' => '@all', 'agentid' => sysConfig('wechat_aid'), 'msgtype' => 'text', 'text' => ['content' => $message['content']], 'duplicate_check_interval' => 600,
+            $body = [
+                'touser'                   => '@all',
+                'agentid'                  => sysConfig('wechat_aid'),
+                'msgtype'                  => 'text',
+                'text'                     => [
+                    'content' => $message['content'],
+                ],
+                'duplicate_check_interval' => 600,
             ];
         }
 
-        $response = Http::timeout(15)->withBody(json_encode($body, JSON_UNESCAPED_UNICODE), 'application/json; charset=utf-8')->post($url);
+        $response = Http::timeout(15)->withBody(json_encode($body, JSON_UNESCAPED_UNICODE), 'application/json;charset=utf-8')->post($url);
 
         // 发送成功
         if ($response->ok()) {
@@ -80,7 +87,7 @@ class WeChatChannel
             return false;
         }
         // 发送错误
-        Log::critical('Wechat消息推送异常：'.var_export($response, true));
+        Log::critical('[企业微信] 消息推送异常：'.var_export($response, true));
 
         return false;
     }
@@ -96,7 +103,7 @@ class WeChatChannel
                 $access_token = $response->json()['access_token'];
                 Cache::put('wechat_access_token', $access_token, 7189); // 2小时
             } else {
-                Log::critical('Wechat消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
+                Log::critical('[企业微信] 消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
                 abort(400);
             }
         }
@@ -111,6 +118,6 @@ class WeChatChannel
             exit($sEchoStr);
         }
 
-        Log::critical('Wechat互动消息推送异常：'.var_export($errCode, true));
+        Log::critical('[企业微信] 互动消息推送异常：'.var_export($errCode, true));
     }
 }

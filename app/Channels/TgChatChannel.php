@@ -29,7 +29,7 @@ class TgChatChannel
             return false;
         }
         // 发送错误
-        Log::critical('TG酱消息推送异常：'.var_export($response, true));
+        Log::critical('[TG酱] 消息推送异常：'.var_export($response, true));
 
         return false;
     }
