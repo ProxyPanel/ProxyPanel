@@ -24,10 +24,9 @@ class addUser implements ShouldQueue
     private $data;
     private $nodes;
 
-    public function __construct($userIds, $nodeIds)
+    public function __construct($userIds, $nodes)
     {
-        $this->nodes = Node::findMany($nodeIds);
-        $data = [];
+        $this->nodes = $nodes;
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
                 'uid'         => $user->id,
@@ -38,7 +37,7 @@ class addUser implements ShouldQueue
             ];
         }
 
-        $this->data = $data;
+        $this->data = $data ?? [];
     }
 
     public function handle(): void

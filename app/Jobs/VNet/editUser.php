@@ -48,7 +48,7 @@ class editUser implements ShouldQueue
                     }
                 }
             } else {
-                addUser::dispatch($this->data['uid'], $node->id);
+                addUser::dispatch($this->data['uid'], $node);
             }
         }
     }
