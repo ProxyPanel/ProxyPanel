@@ -3,6 +3,7 @@
 namespace App\Jobs\VNet;
 
 use Arr;
+use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -43,21 +44,25 @@ class delUser implements ShouldQueue
 
     private function send(string $host, string $secret): void
     {
-        $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+        try {
+            $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
 
-        if (is_array($this->userIds)) {
-            $response = $request->post('api/v2/user/del/list', $this->userIds);
-        } else {
-            $response = $request->post('api/user/del/'.$this->userIds);
-        }
-
-        $message = $response->json();
-        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
-            if ($message['success'] === 'false') {
-                Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
+            if (is_array($this->userIds)) {
+                $response = $request->post('api/v2/user/del/list', $this->userIds);
             } else {
-                Log::notice("【删除用户】推送成功（推送地址：{$host}，内容：".json_encode($this->userIds, true).'）');
+                $response = $request->post('api/user/del/'.$this->userIds);
             }
+
+            $message = $response->json();
+            if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+                if ($message['success'] === 'false') {
+                    Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
+                } else {
+                    Log::notice("【删除用户】推送成功（推送地址：{$host}，内容：".json_encode($this->userIds, true).'）');
+                }
+            }
+        } catch (Exception $exception) {
+            Log::alert('【删除用户】推送异常：'.$exception->getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ namespace App\Jobs\VNet;
 
 use App\Http\Controllers\Api\WebApi\SSRController;
 use Arr;
+use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -54,20 +55,24 @@ class reloadNode implements ShouldQueue
 
     public function send(string $host, string $secret, array $data): bool
     {
-        $response = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret])->post('api/v2/node/reload', $data);
-        $message = $response->json();
-        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
-            if ($message['success'] === 'false') {
-                Log::warning("【重载节点】失败：{$host} 反馈：".$message['content']);
+        try {
+            $response = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret])->post('api/v2/node/reload', $data);
+            $message = $response->json();
+            if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+                if ($message['success'] === 'false') {
+                    Log::warning("【重载节点】失败：{$host} 反馈：".$message['content']);
 
-                return false;
+                    return false;
+                }
+
+                Log::notice("【重载节点】成功：{$host} 反馈：".$message['content']);
+
+                return true;
             }
-
-            Log::notice("【重载节点】成功：{$host} 反馈：".$message['content']);
-
-            return true;
+            Log::warning("【重载节点】失败：{$host}");
+        } catch (Exception $exception) {
+            Log::alert('【重载节点】推送异常：'.$exception->getMessage());
         }
-        Log::warning("【重载节点】失败：{$host}");
 
         return false;
     }
@@ -75,6 +80,6 @@ class reloadNode implements ShouldQueue
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::error('【重载节点】推送异常：'.$exception->getMessage());
+        Log::alert('【重载节点】推送异常：'.$exception->getMessage());
     }
 }

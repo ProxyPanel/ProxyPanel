@@ -4,6 +4,7 @@ namespace App\Jobs\VNet;
 
 use App\Models\User;
 use Arr;
+use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -68,20 +69,24 @@ class editUser implements ShouldQueue
 
     private function send(string $host, string $secret): void
     {
-        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/user/edit', $this->data);
-        $message = $response->json();
-        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
-            if ($message['success'] === 'false') {
-                Log::warning("【编辑用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
-            } else {
-                Log::info("【编辑用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
+        try {
+            $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/user/edit', $this->data);
+            $message = $response->json();
+            if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+                if ($message['success'] === 'false') {
+                    Log::warning("【编辑用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
+                } else {
+                    Log::info("【编辑用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
+                }
             }
+        } catch (Exception $exception) {
+            Log::alert('【编辑用户】推送异常：'.$exception->getMessage());
         }
     }
 
     // 队列失败处理
     public function failed(Throwable $exception)
     {
-        Log::warning('【编辑用户】推送异常：'.$exception->getMessage());
+        Log::alert('【编辑用户】推送异常：'.$exception->getMessage());
     }
 }

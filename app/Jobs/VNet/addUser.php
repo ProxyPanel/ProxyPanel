@@ -5,6 +5,7 @@ namespace App\Jobs\VNet;
 use App\Models\Node;
 use App\Models\User;
 use Arr;
+use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -55,14 +56,18 @@ class addUser implements ShouldQueue
 
     private function send(string $host, string $secret): void
     {
-        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/v2/user/add/list', $this->data);
-        $message = $response->json();
-        if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
-            if ($message['success'] === 'false') {
-                Log::alert("【新增用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
-            } else {
-                Log::notice("【新增用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
+        try {
+            $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->post('api/v2/user/add/list', $this->data);
+            $message = $response->json();
+            if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
+                if ($message['success'] === 'false') {
+                    Log::alert("【新增用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
+                } else {
+                    Log::notice("【新增用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
+                }
             }
+        } catch (Exception $exception) {
+            Log::alert('【新增用户】推送异常：'.$exception->getMessage());
         }
     }
 
