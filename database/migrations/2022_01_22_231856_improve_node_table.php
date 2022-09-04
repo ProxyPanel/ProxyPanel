@@ -68,6 +68,41 @@ class ImproveNodeTable extends Migration
                 default:
             }
             $node->update(['profile' => $profile]);
+
+            if ($node->relay_server && $node->relay_port) { // 创建 中转线路
+                $relayNodeData = [
+                    'type'           => 0,
+                    'name'           => $node->name.'↔️',
+                    'country_code'   => $node->country_code,
+                    'port'           => $node->relay_port,
+                    'level'          => $node->level,
+                    'rule_group_id'  => $node->rule_group_id,
+                    'speed_limit'    => $node->speed_limit,
+                    'client_limit'   => $node->client_limit,
+                    'description'    => $node->description,
+                    'geo'            => $node->geo,
+                    'traffic_rate'   => $node->traffic_rate,
+                    'relay_node_id'  => $node->id,
+                    'is_udp'         => $node->is_udp,
+                    'push_port'      => $node->push_port,
+                    'detection_type' => $node->detection_type,
+                    'sort'           => $node->sort,
+                    'status'         => $node->status,
+                ];
+
+                if (filter_var($node->relay_server, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    $relayNodeData['ip'] = $node->relay_server;
+                } elseif (filter_var($node->relay_server, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    $relayNodeData['ipv6'] = $node->relay_server;
+                } else {
+                    $relayNodeData['server'] = $node->relay_server;
+                    $ip = gethostbyname($node->relay_server);
+                    if ($ip) {
+                        $relayNodeData['ip'] = $ip;
+                    }
+                }
+                Node::create($relayNodeData);
+            }
         }
 
         // 销毁老字段
@@ -111,12 +146,17 @@ class ImproveNodeTable extends Migration
 
         foreach (Node::all() as $node) {
             if ($node->relay_node_id) { // 回滚中转节点
-                $node->profile = Node::find($node->relay_node_id)->profile;
-                $node->is_relay = 1;
-                $node->relay_server = $node->server ?: $node->ip;
-                $node->relay_port = $node->port;
-            } else {
-                $node->is_relay = 0;
+                $pNode = Node::find($node->relay_node_id);
+                $pNode->is_relay = 1;
+                $pNode->relay_server = $node->server ?: $node->ip;
+                $pNode->relay_port = $node->port;
+                $pNode->save();
+                try {
+                    $node->delete();
+                } catch (Exception $e) {
+                    Log::emergency('中转删除失败，请手动在数据库中删除; '.$e->getMessage());
+                }
+                continue;
             }
             switch ($node->type) { // 回滚节点配置
                 case 0:
