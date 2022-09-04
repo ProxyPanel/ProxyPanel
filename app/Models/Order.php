@@ -48,7 +48,7 @@ class Order extends Model
     public function scopeRecentUnPay($query, int $minutes = 0)
     {
         if (! $minutes) {
-            $minutes = config('tasks.close.order');
+            $minutes = config('tasks.close.orders');
         }
 
         return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.$minutes.' minutes')));

@@ -74,7 +74,7 @@ class NodeStatusDetection extends Command
     {
         $detectionCheckTimes = sysConfig('detection_check_times');
 
-        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
+        foreach (Node::whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
             $node_id = $node->id;
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {

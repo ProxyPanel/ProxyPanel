@@ -20,9 +20,10 @@ return [
         'traffic_logs'          => '-3 days', // 清除用户流量日志
     ],
     'close'              => [
-        'ticket' => 72, // 自动关闭工单，单位：小时
-        'order'  => 15, // 自动关闭订单，单位：分钟
-        'verify' => 15, // 自动失效验证码，单位：分钟
+        'tickets'             => 72, // 自动关闭工单，单位：小时
+        'confirmation_orders' => 12, // 自动关闭人工支付订单，单位：小时
+        'orders'              => 15, // 自动关闭订单，单位：分钟
+        'verify'              => 15, // 自动失效验证码，单位：分钟
     ],
     'release_port'       => 30, // 端口自动释放，单位：天
     'recently_heartbeat' => '-10 minutes', // 节点近期负载

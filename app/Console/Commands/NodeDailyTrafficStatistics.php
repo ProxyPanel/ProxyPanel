@@ -15,7 +15,7 @@ class NodeDailyTrafficStatistics extends Command
     {
         $jobTime = microtime(true);
 
-        foreach (Node::whereStatus(1)->orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs')->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs')->get() as $node) {
             $this->statisticsByNode($node);
         }
 

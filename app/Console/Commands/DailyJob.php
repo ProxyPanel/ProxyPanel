@@ -82,12 +82,12 @@ class DailyJob extends Command
                 $q->where('admin_id', '<>', null);
             })
             ->has('reply')
-            ->where('updated_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.close.ticket').' hours')))
+            ->where('updated_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.close.tickets').' hours')))
             ->chunk(config('tasks.chunk'), function ($tickets) {
                 foreach ($tickets as $ticket) {
                     if ($ticket->close()) {
                         $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]),
-                            __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => config('tasks.close.ticket')])));
+                            __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => config('tasks.close.tickets')])));
                     }
                 }
             });

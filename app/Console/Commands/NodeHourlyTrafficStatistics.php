@@ -10,13 +10,12 @@ class NodeHourlyTrafficStatistics extends Command
 {
     protected $signature = 'nodeHourlyTrafficStatistics';
     protected $description = '节点每小时流量统计';
-    protected $guarded = [];
 
     public function handle()
     {
         $jobTime = microtime(true);
 
-        foreach (Node::whereStatus(1)->orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs')->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs')->get() as $node) {
             $this->statisticsByNode($node);
         }
 

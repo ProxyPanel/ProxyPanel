@@ -28,6 +28,11 @@ class AutoJob extends Command
         Order::recentUnPay()->chunk(config('tasks.chunk'), function ($orders) {
             $orders->each->close();
         }); // 关闭超时未支付本地订单
+
+        Order::whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.confirmation_orders').' hours')))->chunk(config('tasks.chunk'), function ($orders) {
+            $orders->each->close();
+        }); // 关闭未处理的人工支付订单
+
         $this->expireCode(); //过期验证码、优惠券、邀请码无效化
 
         if (sysConfig('is_subscribe_ban')) {
