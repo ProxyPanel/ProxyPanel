@@ -32,7 +32,14 @@ class ShopController extends Controller
             });
         }
 
-        return view('admin.shop.index', ['goodsList' => $query->orderByDesc('status')->paginate(10)->appends($request->except('page'))]);
+        $goodsList = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
+
+        foreach ($goodsList->load('orders') as $goods) {
+            $goods->use_count = $goods->orders->whereIn('status', [2, 3])->where('is_expire', 0)->count();
+            $goods->total_count = $goods->orders->whereIn('status', [2, 3])->count();
+        }
+
+        return view('admin.shop.index', ['goodsList' => $goodsList]);
     }
 
     // 添加商品页面
@@ -89,8 +96,8 @@ class ShopController extends Controller
     public function edit(Goods $good)
     {
         return view('admin.shop.info', [
-            'good'   => $good,
-            'levels' => Level::orderBy('level')->get(),
+            'good'       => $good,
+            'levels'     => Level::orderBy('level')->get(),
             'categories' => GoodsCategory::all(),
         ]);
     }

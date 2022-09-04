@@ -44,6 +44,7 @@
                         <th> 内含流量</th>
                         <th> 售价</th>
                         <th> 排序</th>
+                        <th> 使用 / 销售</th>
                         <th> 热销</th>
                         <th> 限购数</th>
                         <th> {{trans('common.status')}}</th>
@@ -64,25 +65,26 @@
                                     充值
                                 @endif
                             </td>
-                            <td>
+                            <td style="background-color: {{$goods->color ?? 'white'}}" @if($goods->color)class="text-white"@endif>
                                 @if($goods->logo)
                                     <a href="{{asset($goods->logo)}}" target="_blank">
                                         <img src="{{asset($goods->logo)}}" class="h-50" alt="logo"/>
                                     </a>
+                                @elseif($goods->color)
+                                    无 LOGO
                                 @endif
                             </td>
                             <td> {{$goods->traffic_label}} </td>
-                            <td> {{$goods->price}}元</td>
+                            <td> {{$goods->price}} 元</td>
                             <td> {{$goods->sort}} </td>
+                            <td><code>{{$goods->use_count}} / {{$goods->total_count}}</code></td>
                             <td>
                                 @if($goods->is_hot)
-                                    <span class="badge badge-lg badge-danger">是</span>
-                                @else
-                                    <span class="badge badge-lg badge-default">否</span>
+                                    🔥
                                 @endif
                             </td>
                             <td>
-                                {{$goods->limit_num}}
+                                {{$goods->limit_num ?: '无限制'}}
                             </td>
                             <td>
                                 @if($goods->status)
