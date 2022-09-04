@@ -14,13 +14,13 @@
             <input type="hidden" name="aff" value="{{Request::query('aff')}}"/>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="nickname" id="nickname"
-                       value="{{Request::old('nickname') ? : Request::query('nickname')}}" autocomplete="off" required/>
+                       value="{{old('nickname') ? : Request::query('nickname')}}" autocomplete="off" required/>
                 <label class="floating-label" for="username">{{trans('validation.attributes.nickname')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
                     <div class="input-group">
-                        <input type="text" class="form-control" name="emailHead" id="emailHead" value="{{Request::old('emailHead')}}" required/>
+                        <input type="text" class="form-control" name="emailHead" id="emailHead" value="{{old('emailHead')}}" required/>
                         <label class="floating-label" for="emailHead">{{trans('validation.attributes.email')}}</label>
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-indigo-600 text-white">@</span>
@@ -33,7 +33,7 @@
                         <input type="text" name="username" id="username" hidden/>
                     </div>
                 @else
-                    <input type="text" class="form-control" name="username" id="username" value="{{Request::old('username')}}" required/>
+                    <input type="text" class="form-control" name="username" id="username" value="{{old('username')}}" required/>
                     <label class="floating-label" for="username">
                         {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
                     </label>
@@ -42,7 +42,7 @@
             @if(sysConfig('is_activate_account') == 1)
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <div class="input-group" data-plugin="inputGroupFile">
-                        <input type="text" class="form-control" name="verify_code" value="{{Request::old('verify_code')}}" required/>
+                        <input type="text" class="form-control" name="verify_code" value="{{old('verify_code')}}" required/>
                         <label class="floating-label" for="verify_code">{{trans('auth.captcha.attribute')}}</label>
                         <span class="input-group-btn">
                             <button class="btn btn-success" id="sendCode" onclick="sendVerifyCode()">
@@ -62,7 +62,7 @@
             </div>
             @if(sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
-                    <input type="text" class="form-control" name="code" value="{{Request::old('code') ?: Request::query('code')}}"
+                    <input type="text" class="form-control" name="code" value="{{old('code') ?: Request::query('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
                         {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
@@ -77,7 +77,7 @@
             @yield('captcha', view('auth.captcha'))
             <div class="form-group mt-20 mb-20">
                 <div class="checkbox-custom checkbox-primary">
-                    <input type="checkbox" name="term" id="term" {{Request::old('term') ? 'checked':''}} />
+                    <input type="checkbox" name="term" id="term" {{old('term') ? 'checked':''}} />
                     <label for="term">{{trans('auth.accept_term')}}
                         <button class="btn btn-xs btn-primary" data-target="#tos" data-toggle="modal" type="button">
                             {{trans('auth.tos')}}

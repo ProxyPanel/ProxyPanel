@@ -22,15 +22,15 @@
                 <form action="{{route('admin.coupon.store')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">@csrf
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="name">卡券名称</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" name="name" id="name" value="{{Request::old('name')}}" required/>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control col-md-4" name="name" id="name" value="{{old('name')}}" required/>
                             <span class="text-help"> 会用于前端显示 </span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="sn">使用券码</label>
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" name="sn" id="sn" value="{{Request::old('sn')}}"/>
+                        <div class="col-md-10">
+                            <input type="text" class="form-control col-md-4" name="sn" id="sn" value="{{old('sn')}}"/>
                             <span class="text-help"> 提供给用户使用卡券的卡券，留空则默认为8位随机码 </span>
                         </div>
                     </div>
@@ -61,31 +61,35 @@
                     <div class="form-group row usage">
                         <label class="col-md-2 col-form-label" for="usable_times">使用次数</label>
                         <div class="col-md-4 input-group">
-                            <input type="number" class="form-control" name="usable_times" id="usable_times" value="{{Request::old('usable_times')}}"/>
+                            <input type="number" class="form-control" name="usable_times" id="usable_times" value="{{old('usable_times')}}"/>
                             <span class="input-group-text">次</span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="value">优惠额度</label>
-                        <div class="col-md-4 input-group">
-                            <input type="number" class="form-control" name="value" id="value" value="{{Request::old('value')}}" required/>
-                            <span class="input-group-text amount">元</span>
-                            <span class="input-group-text discount" style="display: none;">%</span>
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <input type="number" class="form-control col-md-3" name="value" id="value" value="{{old('value')}}" required/>
+                                <span class="input-group-text" id="amount">元</span>
+                                <span class="input-group-text discount" style="display: none;">%</span>
+                            </div>
                             <span class="text-help discount" style="display: none;"> 范围为 1~99折，即 1% ~ 99% </span>
                         </div>
                     </div>
                     <div class="form-group row usage">
-                        <label class="col-md-2 col-form-label" for="rule">条件</label>
-                        <div class="col-md-4 input-group">
-                            <input type="number" class="form-control" name="rule" id="rule" value="{{Request::old('rule')}}" step="0.01" required/>
-                            <span class="input-group-text">元</span>
-                            <span class="text-help"> 当套餐超过N值时，才能使用本优惠劵；0即使用无限制 </span>
+                        <label class="col-md-2 col-form-label" for="rule">满减条件</label>
+                        <div class="col-md-10">
+                            <div class="input-group">
+                                <input type="number" class="form-control col-md-3" name="rule" id="rule" value="{{old('rule')}}" step="0.01" />
+                                <span class="input-group-text">元</span>
+                            </div>
+                            <span class="text-help"> 当支付金额超过N值时，才能使用本优惠劵；不设置/0，即为无限制 </span>
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-2 col-form-label" for="num">数量</label>
                         <div class="col-md-4 input-group">
-                            <input type="number" class="form-control" name="num" id="num" value="{{Request::old('num')}}" required/>
+                            <input type="number" class="form-control" name="num" id="num" value="{{old('num')}}" required/>
                             <span class="input-group-text">张</span>
                         </div>
                     </div>
@@ -97,13 +101,13 @@
                             </div>
                             <label for="start_time"></label>
                             <input type="text" class="form-control" name="start_time" id="start_time"
-                                   value="{{Request::old('start_time') ?? date("Y-m-d")}}" required/>
+                                   value="{{old('start_time') ?? date("Y-m-d")}}" required/>
                             <div class="input-group-prepend">
                                 <span class="input-group-text">至</span>
                             </div>
                             <label for="end_time"></label>
                             <input type="text" class="form-control" name="end_time" id="end_time"
-                                   value="{{Request::old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}" required/>
+                                   value="{{old('end_time') ?? date("Y-m-d",strtotime("+1 month"))}}" required/>
                         </div>
                     </div>
                     <div class="form-actions col-12 text-right">

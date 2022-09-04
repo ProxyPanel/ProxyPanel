@@ -10,13 +10,13 @@
             <x-alert type="success" :message="Session::get('successMsg')"/>
         @endif
         <div class="form-group form-material floating" data-plugin="formMaterial">
-            <input type="text" class="form-control" name="username" value="{{Request::old('username')}}" required/>
+            <input type="text" class="form-control" name="username" value="{{old('username')}}" required/>
             <label class="floating-label" for="username">
                 {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
             </label>
         </div>
         <div class="form-group form-material floating" data-plugin="formMaterial">
-            <input type="password" class="form-control" name="password" value="{{Request::old('password')}}" autocomplete required/>
+            <input type="password" class="form-control" name="password" value="{{old('password')}}" autocomplete required/>
             <label class="floating-label" for="password">{{trans('validation.attributes.password')}}</label>
         </div>
         @yield('captcha', view('auth.captcha'))

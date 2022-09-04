@@ -14,7 +14,7 @@
                 {{trans('auth.password.reset.attribute')}}
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input type="text" class="form-control" name="username" value="{{Request::old('username')}}" autofocus required/>
+                <input type="text" class="form-control" name="username" value="{{old('username')}}" autofocus required/>
                 <label class="floating-label" for="username">
                     {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
                 </label>
