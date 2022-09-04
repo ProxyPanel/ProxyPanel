@@ -15,8 +15,8 @@ class CertRequest extends FormRequest
 
         return [
             'domain' => 'required|string|unique:node_certificate,domain'.$unq_domain,
-            'key'    => 'string|nullable',
-            'pem'    => 'string|nullable',
+            'key'    => 'nullable|string',
+            'pem'    => 'nullable|string',
         ];
     }
 }

@@ -9,8 +9,8 @@ class UserGroupRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
-            'nodes' => 'exists:node,id',
+            'name'  => 'required|string',
+            'nodes' => 'nullable|exists:node,id',
         ];
     }
 }

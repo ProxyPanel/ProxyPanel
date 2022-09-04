@@ -9,7 +9,7 @@ class RbacRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string',
+            'name'        => 'required|string',
             'description' => 'required|string',
         ];
     }

@@ -9,10 +9,10 @@ class TicketRequest extends FormRequest
     public function rules()
     {
         return [
-            'uid' => 'required_without:username|exists:user,id|numeric|nullable',
+            'uid'      => 'required_without:username|exists:user,id|numeric|nullable',
             'username' => 'required_without:uid|exists:user,username||nullable',
-            'title' => 'required|string',
-            'content' => 'required|string',
+            'title'    => 'required|string',
+            'content'  => 'required|string',
         ];
     }
 }
