@@ -36,17 +36,17 @@ class IP
     public static function IPSB($ip)
     {
         try {
-            $response = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'])->timeout(15)->get('https://api.ip.sb/geoip/'.$ip);
+            $response = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'])->timeout(15)->post('https://api.ip.sb/geoip/'.$ip);
 
             if ($response->ok()) {
                 return $response->json();
             }
 
-            Log::warning('api.ip.sb解析'.$ip.'异常: '.$response->body());
+            Log::warning('[IPSB] 解析'.$ip.'异常: '.$response->body());
 
             return false;
         } catch (Exception $e) {
-            Log::error('api.ip.sb解析'.$ip.'错误: '.var_export($e->getMessage(), true));
+            Log::error('[IPSB] 解析'.$ip.'错误: '.var_export($e->getMessage(), true));
 
             return false;
         }
@@ -59,7 +59,7 @@ class IP
         try {
             $ipInfo = (new Ip2Region())->memorySearch($ip);
         } catch (Exception $e) {
-            Log::error('【淘宝IP库】错误信息：'.$e->getMessage());
+            Log::error('【ip2Region】错误信息：'.$e->getMessage());
         }
 
         if ($ipInfo) {
@@ -111,11 +111,34 @@ class IP
         ];
     }
 
+    // 通过IPIP在线查询IP地址的详细信息
+    public static function IPIPOnline(string $ip)
+    { // https://freeapi.ipip.net
+        $response = Http::timeout(15)->get('https://freeapi.ipip.net/'.$ip);
+
+        if ($response->ok()) {
+            $message = $response->json();
+            if ($message) {
+                return [
+                    'country'  => $message[0],
+                    'province' => $message[1],
+                    'city'     => $message[2],
+                ];
+            }
+
+            Log::warning('【IPIP在线】返回错误信息：'.$ip.PHP_EOL.$message['msg']);
+        } else {
+            Log::error('【IPIP在线】解析异常：'.$ip);
+        }
+
+        return false;
+    }
+
     // 通过ip.taobao.com查询IP地址的详细信息
     public static function TaoBao(string $ip)
     {
         // 依据 https://ip.taobao.com/instructions 开发
-        $response = Http::timeout(15)->get('https://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
+        $response = Http::timeout(15)->post('https://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
 
         if ($response->ok()) {
             $message = $response->json();
