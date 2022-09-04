@@ -63,23 +63,19 @@
                                 <span class="font-weight-400">{{trans('user.account.remain')}}</span>
                                 <div class="text-center font-weight-100 font-size-40">
                                     {{$unusedTraffic}}
-                                    <br>
+                                    <br/>
                                     <h4>{{trans('user.account.level')}}：<code class="font-size-20">{{Auth::user()->level}}</code></h4>
                                 </div>
                                 <div class="text-center font-weight-300 blue-grey-500 mb-10">
                                     @if(isset($resetDays) && $resetDays >= 0)
-                                        {{trans('user.account.reset', ['days' => $resetDays])}}
+                                        {!! trans_choice('user.account.reset',$resetDays, ['days' => $resetDays]) !!}
                                     @endif
                                 </div>
                             </div>
                             <div class="col-lg-5 col-md-12 col-sm-5">
-                                <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress"
-                                     data-valuemax="100"
-                                     data-barcolor="#96A3FA" data-size="100" data-barsize="10"
-                                     data-goal="{{$unusedPercent}}" aria-valuenow="{{$unusedPercent}}"
-                                     role="progressbar">
-                                    <span class="pie-progress-number blue-grey-700 font-size-20">
-                                        {{$unusedPercent}}%</span>
+                                <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress" data-valuemax="100" data-barcolor="#96A3FA" data-size="100"
+                                     data-barsize="10" data-goal="{{$unusedPercent}}" aria-valuenow="{{$unusedPercent}}" role="progressbar">
+                                    <span class="pie-progress-number blue-grey-700 font-size-20">{{$unusedPercent}}%</span>
                                 </div>
                             </div>
                         </div>
@@ -171,7 +167,7 @@
                                                     <option value="surge">Surge</option>
                                                     <option value="shadowrocket">Shadowrocket</option>
                                                     <option value="v2rayn">v2rayN</option>
-                                                    {{--                                                    <option value="shadowsocks">SS路由器</option>--}}
+                                                    {{-- <option value="shadowsocks">SS路由器</option> --}}
                                                 </select>
                                             </div>
                                         </div>
@@ -197,6 +193,15 @@
                                 <h4 class="card-title">{{trans('user.client')}}</h4>
                                 <p class="card-text">{{trans('common.download').' & '.trans('user.tutorials')}}</p>
                                 <a href="{{route('help')}}#answer-2" class="btn btn-primary mb-10">{{trans('common.goto')}}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 mb-30">
+                        <div class="card card-shadow text-center h-full">
+                            <div class="card-block">
+                                <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>{{trans('user.home.chat_group')}}</h4>
+                                <a class="card-link btn btn-lg btn-primary" href="https://t.me/+nW8AwsPPUsliYzg1" target="_blank" rel="noopener">
+                                    Telegram {{trans('user.home.chat_group')}} <i class="fa-brands fa-telegram"></i></a>
                             </div>
                         </div>
                     </div>
@@ -291,156 +296,176 @@
     {{--        </script>--}}
     {{--    @endif--}}
     <script>
-        // 更换订阅地址
-        function exchangeSubscribe() {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '{{trans('user.subscribe.exchange_warning')}}',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+      function exchangeSubscribe() { // 更换订阅地址
+        swal.fire({
+          title: '{{trans('common.warning')}}',
+          text: '{{trans('user.subscribe.exchange_warning')}}',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
 
-        const clipboard = new ClipboardJS('.mt-clipboard', {
-            text: function(trigger) {
-                let base = @json($subUrl);
-                const client = $('#client').val();
-                const subType = $('#subType').val();
-                if (subType && client) {
-                    base += '?target=' + client + '&type=' + subType;
-                } else if (subType) {
-                    base += '?type=' + subType;
-                } else if (client) {
-                    base += '?target=' + client;
-                }
-                return base;
+      const clipboard = new ClipboardJS('.mt-clipboard', {
+        text: function(trigger) {
+          let base = @json($subUrl);
+          const client = $('#client').val();
+          const subType = $('#subType').val();
+          if (subType && client) {
+            base += '?target=' + client + '&type=' + subType;
+          } else if (subType) {
+            base += '?type=' + subType;
+          } else if (client) {
+            base += '?target=' + client;
+          }
+          return base;
+        },
+      });
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '{{trans('common.copy.success')}}',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
+        });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '{{trans('common.copy.failed')}}',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+
+        });
+      });
+
+      @if(sysConfig('is_checkin'))
+      function checkIn() { // 签到
+        $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire(ret.title, ret.message, 'success');
+          } else {
+            swal.fire(ret.title, ret.message, 'error');
+          }
+        });
+      }
+      @endif
+
+      function common_options(tail) {
+        return {
+          responsive: true,
+          scales: {
+            x: {
+              ticks: {
+                callback: function(value) {
+                  return this.getLabelForValue(value) + tail;
+                },
+              },
+              grid: {
+                display: false,
+              },
             },
-        });
-        clipboard.on('success', function() {
-            swal.fire({
-                title: '{{trans('common.copy.success')}}',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
-        });
-        clipboard.on('error', function() {
-            swal.fire({
-                title: '{{trans('common.copy.failed')}}',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
-        });
-
-        // 签到
-        function checkIn() {
-            $.post('{{route('checkIn')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire(ret.title, ret.message, 'success');
-                } else {
-                    swal.fire(ret.title, ret.message, 'error');
-                }
-            });
-        }
-
-        function common_options(tail) {
-            return {
-                responsive: true,
-                scales: {
-                    x: {
-                        ticks: {
-                            callback: function(value) {
-                                return this.getLabelForValue(value) + tail;
-                            },
-                        },
-                        grid: {
-                            display: false,
-                        },
-                    },
-                    y: {
-                        ticks: {
-                            callback: function(value) {
-                                return this.getLabelForValue(value) + ' GB';
-                            },
-                        },
-                        grid: {
-                            display: false,
-                        },
-                        min: 0,
-                    },
-
+            y: {
+              ticks: {
+                callback: function(value) {
+                  return this.getLabelForValue(value) + ' GB';
                 },
-                plugins: {
-                    legend: false,
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        callbacks: {
-                            title: function(context) {
-                                return context[0].label + tail;
-                            },
-                            label: function(context) {
-                                return context.parsed.y + ' GB';
-                            },
-                        },
-                    },
+              },
+              grid: {
+                display: false,
+              },
+              min: 0,
+            },
+          },
+          plugins: {
+            legend: false,
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                title: function(context) {
+                  return context[0].label + tail;
                 },
-            };
+                label: function(context) {
+                  return context.parsed.y + ' GB';
+                },
+              },
+            },
+          },
+        };
+      }
+
+      function datasets(label, data) {
+        return {
+          labels: label,
+          datasets: [
+            {
+              backgroundColor: 'rgba(184, 215, 255)',
+              borderColor: 'rgba(184, 215, 255)',
+              data: data,
+              tension: 0.4,
+            }],
+        };
+      }
+
+      new Chart(document.getElementById('dailyChart'), {
+        type: 'line',
+        data: datasets(@json($dayHours), @json($trafficHourly)),
+        options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
+      });
+
+      new Chart(document.getElementById('monthlyChart'), {
+        type: 'line',
+        data: datasets(@json($monthDays), @json($trafficDaily)),
+        options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
+      });
+
+      @if($banedTime) // 封禁倒计时
+      const banedTime = new Date("{{$banedTime}}").getTime();
+      countDown(banedTime, 'banedTime', true);
+      setInterval(function() {
+        countDown(banedTime, 'banedTime', true);
+      }, 1000);
+      @endif
+
+      @if(isset($resetDays) && $resetDays === 0) // 重置日倒计时
+      const resetTime = new Date("{{date("Y-m-d 00:00", strtotime("tomorrow"))}}").getTime();
+      countDown(resetTime, 'restTime');
+      setInterval(function() {
+        countDown(resetTime, 'restTime');
+      }, 60000);
+      @endif
+
+      function countDown(endTime, id, seconds = false) { // 计时器主题逻辑
+        const distance = endTime - new Date().getTime();
+        const hour = Math.floor(distance % 86400000 / 3600000);
+        const minute = Math.floor((distance % 3600000) / 60000);
+        let string = '';
+        if (hour) {
+          string += hour + '{{ trans_choice('validation.attributes.hour', 1) }} ';
         }
-
-        function datasets(label, data) {
-            return {
-                labels: label,
-                datasets: [
-                    {
-                        backgroundColor: 'rgba(184, 215, 255)',
-                        borderColor: 'rgba(184, 215, 255)',
-                        data: data,
-                        tension: 0.4,
-                    }],
-            };
+        if (minute) {
+          string += minute + '{{ trans('validation.attributes.minute') }}';
         }
+        if (seconds) {
+          string += ' ' + Math.floor((distance % 60000) / 1000) + '{{trans('validation.attributes.second')}}';
+        }
+        document.getElementById(id).innerHTML = string;
 
-        new Chart(document.getElementById('dailyChart'), {
-            type: 'line',
-            data: datasets(@json($dayHours), @json($trafficHourly)),
-            options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
-        });
-
-        new Chart(document.getElementById('monthlyChart'), {
-            type: 'line',
-            data: datasets(@json($monthDays), @json($trafficDaily)),
-            options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
-        });
-
-        @if($banedTime)
-        // 每秒更新计时器
-        const countDownDate = new Date("{{$banedTime}}").getTime();
-        const x = setInterval(function() {
-            const distance = countDownDate - new Date().getTime();
-            const hours = Math.floor(distance % 86400000 / 3600000);
-            const minutes = Math.floor((distance % 3600000) / 60000);
-            const seconds = Math.floor((distance % 60000) / 1000);
-            document.getElementById('countdown').innerHTML = hours + '{{trans_choice('validation.attributes.hour', 1)}} ' + minutes
-                + '{{trans('validation.attributes.minute')}} ' + seconds + '{{trans('validation.attributes.second')}}';
-            if (distance <= 0) {
-                clearInterval(x);
-                document.getElementById('countdown').remove();
-            }
-        }, 1000);
-        @endif
+        if (distance <= 0) {
+          window.location.reload();
+        }
+      }
     </script>
 @endsection

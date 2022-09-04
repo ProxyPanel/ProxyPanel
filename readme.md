@@ -10,7 +10,7 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 - [Issues](https://github.com/ZBrettonYe/ProxyPanel/issues)
 - [UpdateLog](https://proxypanel.gitbook.io/wiki/updatelog)
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
-- [Telegram](https://t.me/joinchat/GUrO5hZsT3FOd79HAa9pcA)
+- [Telegram](https://t.me/+nW8AwsPPUsliYzg1)
 
 ## Funding
 Buy me a Coffee?
