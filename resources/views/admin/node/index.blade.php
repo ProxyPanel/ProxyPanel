@@ -18,9 +18,16 @@
                 <h3 class="panel-title">节点列表</h3>
                 @canany(['admin.node.geo', 'admin.node.create'])
                     <div class="panel-actions btn-group">
+                        @can('admin.node.reload')
+                            @if($nodeList->where('type',4)->count())
+                                <button type="button" onclick="reload(0)" class="btn btn-info">
+                                    <i id="reload_0" class="icon wb-reload" aria-hidden="true"></i> 重载【全部】后端
+                                </button>
+                            @endif
+                        @endcan
                         @can('admin.node.geo')
-                            <button type="button" onclick="refreshGeo(0)" class="btn btn-info">
-                                <i id="geo0" class="icon wb-map" aria-hidden="true"></i> 刷新【全部】节点地理信息
+                            <button type="button" onclick="refreshGeo(0)" class="btn btn-outline-default">
+                                <i id="geo_0" class="icon wb-map" aria-hidden="true"></i> 刷新【全部】节点地理信息
                             </button>
                         @endcan
                         @can('admin.node.create')
@@ -84,16 +91,15 @@
                                     @endif
                                 @else
                                     @if ($node->status)
-                                        {{-- 节点完全不可见 --}}
-                                        <i class="red-600 fa-solid fa-cloud-question" aria-hidden="true"></i>
+                                        <i class="red-600 fa-solid fa-gear" aria-hidden="true"></i>
                                     @else
-                                        {{-- 节点 关闭 --}}
-                                        <i class="red-600 fa-solid fa-cloud-exclamation" aria-hidden="true"></i>
+                                        <i class="red-600 fa-solid fa-handshake-simple-slash" aria-hidden="true"></i>
                                     @endif
                                 @endif
                             </td>
                             <td>
-                                @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
+                                @canany(['admin.node.edit', 'admin.node.clone', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node
+                                .check', 'admin.node.reload'])
                                     <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
                                         <i class="icon wb-wrench" aria-hidden="true"></i>
                                     </button>
@@ -126,19 +132,19 @@
                                         @endcan
                                         @can('admin.node.ping')
                                             <a class="dropdown-item" href="javascript:pingNode('{{$node->id}}')" role="menuitem">
-                                                <i id="ping{{$node->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
+                                                <i id="ping_{{$node->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
                                             </a>
                                         @endcan
                                         @can('admin.node.check')
                                             <a class="dropdown-item" href="javascript:checkNode('{{$node->id}}')" role="menuitem">
-                                                <i id="node{{$node->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
+                                                <i id="node_{{$node->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
                                             </a>
                                         @endcan
                                         @if($node->type === 4)
                                             @can('admin.node.reload')
                                                 <hr/>
                                                 <a class="dropdown-item" href="javascript:reload('{{$node->id}}')" role="menuitem">
-                                                    <i id="reload{{$node->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
+                                                    <i id="reload_{{$node->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
                                                 </a>
                                             @endcan
                                         @endif
@@ -166,8 +172,13 @@
                                             <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
                                         @endif
                                     </td>
-                                    <td colspan="5">
-                                        @canany(['admin.node.edit', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check', 'admin.node.reload'])
+                                    <td colspan="2">
+                                        @if (!$childNode->status || !$node->status)
+                                            <i class="red-600 fa-solid fa-handshake-simple-slash" aria-hidden="true"></i>
+                                        @endif
+                                    </td>
+                                    <td colspan="3">
+                                        @canany(['admin.node.edit', 'admin.node.clone', 'admin.node.destroy', 'admin.node.monitor', 'admin.node.geo', 'admin.node.ping', 'admin.node.check'])
                                             <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
                                                 <i class="icon wb-wrench" aria-hidden="true"></i>
                                             </button>
@@ -196,27 +207,19 @@
                                                 <hr/>
                                                 @can('admin.node.geo')
                                                     <a class="dropdown-item" href="javascript:refreshGeo('{{$childNode->id}}')" role="menuitem">
-                                                        <i id="geo{{$childNode->id}}" class="icon wb-map" aria-hidden="true"></i> 刷新地理
+                                                        <i id="geo_{{$childNode->id}}" class="icon wb-map" aria-hidden="true"></i> 刷新地理
                                                     </a>
                                                 @endcan
                                                 @can('admin.node.ping')
                                                     <a class="dropdown-item" href="javascript:pingNode('{{$childNode->id}}')" role="menuitem">
-                                                        <i id="ping{{$childNode->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
+                                                        <i id="ping_{{$childNode->id}}" class="icon wb-order" aria-hidden="true"></i> 检测延迟
                                                     </a>
                                                 @endcan
                                                 @can('admin.node.check')
                                                     <a class="dropdown-item" href="javascript:checkNode('{{$childNode->id}}')" role="menuitem">
-                                                        <i id="node{{$childNode->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
+                                                        <i id="node_{{$childNode->id}}" class="icon wb-signal" aria-hidden="true"></i> 连通性检测
                                                     </a>
                                                 @endcan
-                                                @if($childNode->type === 4)
-                                                    @can('admin.node.reload')
-                                                        <hr/>
-                                                        <a class="dropdown-item" href="javascript:reload('{{$childNode->id}}')" role="menuitem">
-                                                            <i id="reload{{$childNode->id}}" class="icon wb-reload" aria-hidden="true"></i> 重载后端
-                                                        </a>
-                                                    @endcan
-                                                @endif
                                             </div>
                                         @endcan
                                     </td>
@@ -254,7 +257,7 @@
                 url: '{{route('admin.node.check', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
                 beforeSend: function() {
-                    $('#node' + id).removeClass('wb-signal').addClass('wb-loop icon-spin');
+                    $('#node_' + id).removeClass('wb-signal').addClass('wb-loop icon-spin');
                 },
                 success: function(ret) {
                     if (ret.status === 'success') {
@@ -273,7 +276,7 @@
                     }
                 },
                 complete: function() {
-                    $('#node' + id).removeClass('wb-loop icon-spin').addClass('wb-signal');
+                    $('#node_' + id).removeClass('wb-loop icon-spin').addClass('wb-signal');
                 },
             });
         }
@@ -287,7 +290,7 @@
                 url: '{{route('admin.node.ping', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
                 beforeSend: function() {
-                    $('#ping' + id).removeClass('wb-order').addClass('wb-loop icon-spin');
+                    $('#ping_' + id).removeClass('wb-order').addClass('wb-loop icon-spin');
                 },
                 success: function(ret) {
                     if (ret.status === 'success') {
@@ -301,7 +304,7 @@
                     }
                 },
                 complete: function() {
-                    $('#ping' + id).removeClass('wb-loop icon-spin').addClass('wb-order');
+                    $('#ping_' + id).removeClass('wb-loop icon-spin').addClass('wb-order');
                 },
             });
         }
@@ -323,7 +326,7 @@
                         url: '{{route('admin.node.reload', '')}}/' + id,
                         data: {_token: '{{csrf_token()}}'},
                         beforeSend: function() {
-                            $('#reload' + id).removeClass('wb-reload').addClass('wb-loop icon-spin');
+                            $('#reload_' + id).removeClass('wb-reload').addClass('wb-loop icon-spin');
                         },
                         success: function(ret) {
                             if (ret.status === 'success') {
@@ -333,7 +336,7 @@
                             }
                         },
                         complete: function() {
-                            $('#reload' + id).removeClass('wb-loop icon-spin').addClass('wb-reload');
+                            $('#reload_' + id).removeClass('wb-loop icon-spin').addClass('wb-reload');
                         },
                     });
                 }
@@ -349,7 +352,7 @@
                 url: '{{route('admin.node.geo', '')}}/' + id,
                 data: {_token: '{{csrf_token()}}'},
                 beforeSend: function() {
-                    $('#geo' + id).removeClass('wb-map').addClass('wb-loop icon-spin');
+                    $('#geo_' + id).removeClass('wb-map').addClass('wb-loop icon-spin');
                 },
                 success: function(ret) {
                     if (ret.status === 'success') {
@@ -359,7 +362,7 @@
                     }
                 },
                 complete: function() {
-                    $('#geo' + id).removeClass('wb-loop icon-spin').addClass('wb-map');
+                    $('#geo_' + id).removeClass('wb-loop icon-spin').addClass('wb-map');
                 },
             });
         }

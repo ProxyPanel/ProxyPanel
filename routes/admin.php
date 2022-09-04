@@ -44,7 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('check/{node}', 'NodeController@checkNode')->name('check'); // 节点阻断检测
             Route::post('ping/{node}', 'NodeController@pingNode')->name('ping'); // 节点ping测速
             Route::get('refreshGeo/{id}', 'NodeController@refreshGeo')->name('geo'); // 更新节点
-            Route::post('reload/{node}', 'NodeController@reload')->name('reload'); // 更新节点
+            Route::post('reload/{id}', 'NodeController@reload')->name('reload'); // 更新节点
 
             Route::resource('auth', 'NodeAuthController')->except(['create', 'show', 'edit']); // 节点授权相关
             Route::resource('cert', 'CertController')->except('show'); // 节点域名tls相关

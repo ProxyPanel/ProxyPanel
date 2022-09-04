@@ -231,21 +231,34 @@ class NodeController extends Controller
             }
         }
 
-        if (! empty($ret)) {
+        if ($ret) {
             return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '获取地理位置更新失败！']);
+        return Response::json(['status' => 'fail', 'message' => '【存在】获取地理位置更新失败！']);
     }
 
     // 重载节点
-    public function reload(Node $node): JsonResponse
+    public function reload($id): JsonResponse
     {
-        if (reloadNode::dispatchNow($node)) {
+        $ret = false;
+        if ($id) {
+            $node = Node::findOrFail($id);
+            $ret = reloadNode::dispatchNow($node);
+        } else {
+            foreach (Node::whereStatus(1)->whereType(4)->get() as $node) {
+                $result = reloadNode::dispatchNow($node);
+                if ($result && ! $ret) {
+                    $ret = true;
+                }
+            }
+        }
+
+        if ($ret) {
             return Response::json(['status' => 'success', 'message' => '重载成功！']);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '重载失败！']);
+        return Response::json(['status' => 'fail', 'message' => '【存在】重载失败！']);
     }
 
     // 节点流量监控
