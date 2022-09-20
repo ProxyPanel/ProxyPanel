@@ -9,12 +9,22 @@ use Log;
 
 class iYuuChannel
 {
+    private $token;
+
+    public function __construct()
+    {
+        $this->token = sysConfig('iYuu_token');
+
+        if ($this->token) {
+            Log::critical('[爱语飞飞] TOKEN 为空');
+        }
+    }
+
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toCustom($notifiable);
 
-        $response = Http::timeout(15)
-            ->post('https://iyuu.cn/'.sysConfig('iYuu_token').'.send?title='.urlencode($message['title']).'&desp='.urlencode($message['content']));
+        $response = Http::timeout(15)->post('https://iyuu.cn/'.$this->token.'.send?title='.urlencode($message['title']).'&desp='.urlencode($message['content']));
 
         // 发送成功
         if ($response->ok()) {

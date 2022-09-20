@@ -46,7 +46,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     public function toTelegram($notifiable)
     {
         $message = sprintf(
-            "💰成功收款%s元\n———————————————\n订单号：%s",
+            "💰成功收款¥ %s\n———————————————\n订单号：%s",
             $this->amount,
             $this->sn
         );

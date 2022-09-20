@@ -42,7 +42,9 @@ class NodeObserver
             $changes = $node->getChanges();
             if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) { // DDNS操作
                 if (Arr::exists($changes, 'server')) { // 域名变动
-                    DDNS::destroy($node->getOriginal('server')); // 删除原域名
+                    if ($node->getOriginal('server')) {
+                        DDNS::destroy($node->getOriginal('server')); // 删除原域名
+                    }
                     if ($node->ip) { // 添加IPV4至新域名
                         foreach ($node->ips() as $ip) {
                             DDNS::store($node->server, $ip);
