@@ -80,8 +80,14 @@
                                                 <a href="javascript:setStatus('{{$apply->id}}','-1')" class="btn btn-sm btn-danger">
                                                     <i class="icon wb-close" aria-hidden="true"></i>驳回</a>
                                             @elseif($apply->status === 1)
+                                                @can('admin.user.updateCredit')
+                                                    <a href="javascript:handleUserCredit('{{$apply->user->id}}','{{$apply->amount}}', '{{$apply->id}}','2')" class="btn
+                                                    btn-sm
+                                                    btn-success">
+                                                        <i id="makePayment_{{$apply->id}}" class="icon wb-payment" aria-hidden="true"></i> 打款至余额 </a>
+                                                @endcan
                                                 <a href="javascript:setStatus('{{$apply->id}}','2')" class="btn btn-sm btn-primary">
-                                                    <i class="icon wb-check-circle" aria-hidden="true"></i>已打款</a>
+                                                    <i class="icon wb-check-circle" aria-hidden="true"></i> 已 打 款 </a>
                                             @endif
                                         @endcan
                                         @can('admin.aff.detail')
@@ -147,6 +153,34 @@
                         });
                         swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
                     }
+                },
+            });
+        }
+        @endcan
+
+        @can('admin.user.updateCredit')
+        // 余额充值
+        function handleUserCredit(uid, amount, aid, status) {
+            $.ajax({
+                url: '{{route('admin.user.updateCredit', '')}}/' + uid,
+                method: 'POST',
+                data: {_token: '{{csrf_token()}}', amount: amount, description: '推广返利'},
+                beforeSend: function() {
+                    $('#makePayment_' + aid).removeClass('wb-payment').addClass('wb-loop icon-spin');
+                },
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+                            setStatus(aid, status)
+                        });
+                    } else {
+                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                    }
+                },
+                error: function() {
+                    $('#msg').show().html('请求错误，请重试');
+                },
+                complete: function() {
                 },
             });
         }
