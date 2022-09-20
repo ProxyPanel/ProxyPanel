@@ -14,8 +14,8 @@ Route::get('invoices', 'UserController@invoices')->name('invoice'); // 订单列
 Route::post('closePlan', 'UserController@closePlan')->name('cancelPlan'); // 激活预支付套餐
 Route::get('invoice/{sn}', 'UserController@invoiceDetail')->name('invoiceInfo'); // 订单明细
 Route::post('resetUserTraffic', 'UserController@resetUserTraffic')->name('resetTraffic'); // 重置用户流量
+Route::post('buy/{good}/redeem', 'UserController@redeemCoupon')->name('redeemCoupon'); // 使用优惠券
 Route::get('buy/{good}', 'UserController@buy')->name('buy'); // 购买商品
-Route::post('redeemCoupon', 'UserController@redeemCoupon')->name('redeemCoupon'); // 使用优惠券
 Route::get('invite', 'UserController@invite')->name('invite'); // 邀请码
 Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); // 生成邀请码
 Route::match(['get', 'post'], 'profile', 'UserController@profile')->name('profile'); // 修改个人信息

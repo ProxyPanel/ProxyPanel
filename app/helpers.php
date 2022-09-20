@@ -109,3 +109,20 @@ if (! function_exists('string_decrypt')) {
         return openssl_decrypt(base64url_decode($data), 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16));
     }
 }
+
+// Array values and indexes clean
+if (! function_exists('array_clean')) {
+    function array_clean(array &$array): array
+    {
+        foreach ($array as $key => &$value) {
+            if (is_array($value)) {
+                $value = array_clean($value);
+            }
+            if (empty($value)) {
+                unset($array[$key]);
+            }
+        }
+
+        return $array;
+    }
+}

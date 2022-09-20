@@ -14,6 +14,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
+use App\Services\CouponService;
 use Cache;
 use DB;
 use Exception;
@@ -205,14 +206,11 @@ class UserController extends Controller
 
         if ($user && $nodes = $user->userGroup) {
             $nodes = $nodes->nodes();
-            foreach ($goodsList as $goods) {
-                $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
-            }
         } else {
             $nodes = Node::all();
-            foreach ($goodsList as $goods) {
-                $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
-            }
+        }
+        foreach ($goodsList as $goods) {
+            $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
         }
 
         return view('user.services', [
@@ -385,14 +383,12 @@ class UserController extends Controller
         if ($user->invite_num <= 0) {
             return Response::json(['status' => 'fail', 'message' => trans('user.invite.generate_failed')]);
         }
-
-        $obj = new Invite();
-        $obj->inviter_id = $user->id;
-        $obj->code = strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12));
-        $obj->dateline = date('Y-m-d H:i:s', strtotime(sysConfig('user_invite_days').' days'));
-        $obj->save();
-        if ($obj) {
-            $user->update(['invite_num' => $user->invite_num - 1]);
+        $invite = $user->invites()->create([
+            'code'     => strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12)),
+            'dateline' => date('Y-m-d H:i:s', strtotime(sysConfig('user_invite_days').' days')),
+        ]);
+        if ($invite) {
+            $user->decrement('invite_num');
 
             return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
         }
@@ -401,21 +397,24 @@ class UserController extends Controller
     }
 
     // 使用优惠券
-    public function redeemCoupon(Request $request): JsonResponse
+    public function redeemCoupon(Request $request, Goods $good): JsonResponse
     {
         $coupon_sn = $request->input('coupon_sn');
 
-        $ret = (new PaymentController())->couponCheck($coupon_sn, $request->input('price'));
+        if (empty($coupon_sn)) {
+            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
+        }
 
-        if ($ret !== true) {
+        $ret = (new CouponService($coupon_sn))->search($good); // 检查券合规性
+
+        if (! $ret instanceof Coupon) {
             return $ret;
         }
-        $coupon = Coupon::whereSn($coupon_sn)->whereIn('type', [1, 2])->firstOrFail();
 
         $data = [
-            'name'  => $coupon->name,
-            'type'  => $coupon->type,
-            'value' => $coupon->value,
+            'name'  => $ret->name,
+            'type'  => $ret->type,
+            'value' => $ret->value,
         ];
 
         return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('user.coupon.attribute')])]);
@@ -534,32 +533,10 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        $coupon = Coupon::whereSn($request->input('coupon_sn'))->firstOrFail();
-
-        try {
-            DB::beginTransaction();
-            // 写入日志
-            $user = auth()->user();
-            Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value,
-                trans('user.recharge').' - ['.trans('user.coupon.recharge').'：'.$request->input('coupon_sn').']');
-
-            // 余额充值
-            $user->updateCredit($coupon->value);
-
-            // 更改卡券状态
-            $coupon->update(['status' => 1]);
-
-            // 写入卡券日志
-            Helpers::addCouponLog(trans('user.recharge_credit'), $coupon->id);
-
-            DB::commit();
-
+        if ((new CouponService($request->input('coupon_sn')))->charge()) {
             return Response::json(['status' => 'success', 'message' => trans('user.recharge').trans('common.success')]);
-        } catch (Exception $e) {
-            Log::error(trans('user.recharge').trans('common.failed').$e->getMessage());
-            DB::rollBack();
-
-            return Response::json(['status' => 'fail', 'message' => trans('user.recharge').trans('common.failed')]);
         }
+
+        return Response::json(['status' => 'fail', 'message' => trans('user.recharge').trans('common.failed')]);
     }
 }

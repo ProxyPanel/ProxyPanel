@@ -77,9 +77,9 @@
             const goods_price = '{{$goods->price}}';
             $.ajax({
                 method: 'POST',
-                url: '{{route('redeemCoupon')}}',
+                url: '{{route('redeemCoupon', $goods)}}',
                 dataType: 'json',
-                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn, price: '{{$goods->price}}'},
+                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
                 success: function(ret) {
                     $('.input-group-prepend').remove();
                     if (ret.status === 'success') {
