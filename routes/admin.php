@@ -21,6 +21,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('reset/{user}', 'UserController@resetTraffic')->name('reset'); // 重置用户流量
             Route::get('export/{user}', 'UserController@export')->name('export'); // 查看配置信息
             Route::post('export/{user}', 'UserController@exportProxyConfig')->name('exportProxy'); // 读取配置信息
+            Route::post('vnet/{user}', 'UserController@VNetInfo')->name('VNetInfo'); // VNet用户开通检测
         });
 
         Route::prefix('subscribe')->name('subscribe.')->group(function () {

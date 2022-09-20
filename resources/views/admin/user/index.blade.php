@@ -3,6 +3,10 @@
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/assets/custom/range.min.css" rel="stylesheet">
     <style>
+        #swal2-content {
+            display: grid !important;
+        }
+
         .table a {
             color: #76838f;
             text-decoration: none;
@@ -185,6 +189,11 @@
                                                 <i class="icon wb-user" aria-hidden="true"></i> 用户视角
                                             </a>
                                         @endcan
+                                        @can('admin.user.VNetInfo')
+                                            <a class="dropdown-item" href="javascript:VNetInfo('{{$user->id}}')" role="menuitem">
+                                                <i id="vent_{{$user->id}}" class="icon wb-link-broken" aria-hidden="true"></i> 联网测试
+                                            </a>
+                                        @endcan
                                     </div>
                                 @endcanany
                             </td>
@@ -310,6 +319,39 @@
                 } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+            });
+        }
+        @endcan
+
+        @can('admin.user.VNetInfo')
+        // 节点连通性测试
+        function VNetInfo(id) {
+            $.ajax({
+                method: 'POST',
+                url: '{{route('admin.user.VNetInfo', '')}}/' + id,
+                data: {_token: '{{csrf_token()}}'},
+                beforeSend: function() {
+                    $('#vent_' + id).removeClass('wb-link-broken').addClass('wb-loop icon-spin');
+                },
+                success: function(ret) {
+                    if (ret.status === 'success') {
+                        let str = '';
+                        for (let i in ret.data) {
+                            str += '<tr><td>' + ret.data[i]['id'] + '</td><td>' + ret.data[i]['name'] + '</td><td>' + ret.data[i]['avaliable'] + '</td></tr>';
+                        }
+                        swal.fire({
+                            title: ret.title,
+                            icon: 'info',
+                            html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> 节点 </th> <th> 状态 </th></thead><tbody>' + str + '</tbody></table>',
+                            showConfirmButton: false,
+                        });
+                    } else {
+                        swal.fire({title: ret.title, text: ret.data, icon: 'error'});
+                    }
+                },
+                complete: function() {
+                    $('#vent_' + id).removeClass('wb-loop icon-spin').addClass('wb-link-broken');
+                },
             });
         }
         @endcan

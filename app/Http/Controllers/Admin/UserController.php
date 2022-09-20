@@ -7,6 +7,7 @@ use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
+use App\Jobs\VNet\getUser;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\Order;
@@ -27,7 +28,6 @@ use Str;
 
 class UserController extends Controller
 {
-    // 用户列表
     public function index(Request $request)
     {
         $query = User::with('subscribe');
@@ -82,23 +82,6 @@ class UserController extends Controller
         ]);
     }
 
-    // 添加账号页面
-    public function create()
-    {
-        if (Auth::getUser()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
-            $roles = Role::all()->pluck('description', 'name');
-        } elseif (Auth::getUser()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
-            $roles = Auth::getUser()->roles()->pluck('description', 'name');
-        }
-
-        return view('admin.user.info', [
-            'levels'     => Level::orderBy('level')->get(),
-            'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles'      => $roles ?? null,
-        ]);
-    }
-
-    // 添加账号
     public function store(UserStoreRequest $request): JsonResponse
     {
         $data = $request->validated();
@@ -139,7 +122,21 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => '添加失败']);
     }
 
-    // 编辑账号页面
+    public function create()
+    {
+        if (Auth::getUser()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
+            $roles = Role::all()->pluck('description', 'name');
+        } elseif (Auth::getUser()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
+            $roles = Auth::getUser()->roles()->pluck('description', 'name');
+        }
+
+        return view('admin.user.info', [
+            'levels'     => Level::orderBy('level')->get(),
+            'userGroups' => UserGroup::orderBy('id')->get(),
+            'roles'      => $roles ?? null,
+        ]);
+    }
+
     public function edit(User $user)
     {
         if (Auth::getUser()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
@@ -156,7 +153,62 @@ class UserController extends Controller
         ]);
     }
 
-    // 编辑账号
+    public function destroy(User $user)
+    {
+        if ($user->id === 1) {
+            return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
+        }
+
+        try {
+            if ($user->delete()) {
+                return Response::json(['status' => 'success', 'message' => '删除成功']);
+            }
+        } catch (Exception $e) {
+            Log::error('删除用户信息异常：'.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => '删除失败'.$e->getMessage()]);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+    }
+
+    public function batchAddUsers()
+    {
+        try {
+            for ($i = 0; $i < (int) request('amount', 1); $i++) {
+                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
+                // 写入用户流量变动记录
+                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, '后台批量生成用户');
+            }
+
+            return Response::json(['status' => 'success', 'message' => '批量生成账号成功']);
+        } catch (Exception $e) {
+            return Response::json(['status' => 'fail', 'message' => '批量生成账号失败：'.$e->getMessage()]);
+        }
+    }
+
+    public function switchToUser(User $user): JsonResponse
+    {
+        // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
+        Session::put('admin', Auth::id());
+        Session::put('user', $user->id);
+
+        return Response::json(['status' => 'success', 'message' => '身份切换成功']);
+    }
+
+    public function resetTraffic(User $user): JsonResponse
+    {
+        try {
+            $user->update(['u' => 0, 'd' => 0]);
+        } catch (Exception $e) {
+            Log::error('流量重置失败：'.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => '流量重置失败']);
+        }
+
+        return Response::json(['status' => 'success', 'message' => '流量重置成功']);
+    }
+
     public function update(UserUpdateRequest $request, User $user)
     {
         $data = $request->validated();
@@ -211,67 +263,6 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => '编辑失败']);
     }
 
-    // 删除用户
-    public function destroy(User $user)
-    {
-        if ($user->id === 1) {
-            return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
-        }
-
-        try {
-            if ($user->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
-            }
-        } catch (Exception $e) {
-            Log::error('删除用户信息异常：'.$e->getMessage());
-
-            return Response::json(['status' => 'fail', 'message' => '删除失败'.$e->getMessage()]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
-    }
-
-    // 批量生成账号
-    public function batchAddUsers()
-    {
-        try {
-            for ($i = 0; $i < (int) request('amount', 1); $i++) {
-                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
-                // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, '后台批量生成用户');
-            }
-
-            return Response::json(['status' => 'success', 'message' => '批量生成账号成功']);
-        } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '批量生成账号失败：'.$e->getMessage()]);
-        }
-    }
-
-    // 转换成某个用户的身份
-    public function switchToUser(User $user): JsonResponse
-    {
-        // 存储当前管理员ID，并将当前登录信息改成要切换的用户的身份信息
-        Session::put('admin', Auth::id());
-        Session::put('user', $user->id);
-
-        return Response::json(['status' => 'success', 'message' => '身份切换成功']);
-    }
-
-    // 重置用户流量
-    public function resetTraffic(User $user): JsonResponse
-    {
-        try {
-            $user->update(['u' => 0, 'd' => 0]);
-        } catch (Exception $e) {
-            Log::error('流量重置失败：'.$e->getMessage());
-
-            return Response::json(['status' => 'fail', 'message' => '流量重置失败']);
-        }
-
-        return Response::json(['status' => 'success', 'message' => '流量重置成功']);
-    }
-
-    // 操作用户余额
     public function handleUserCredit(Request $request, User $user): JsonResponse
     {
         $amount = $request->input('amount');
@@ -282,7 +273,7 @@ class UserController extends Controller
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, $request->input('description') ?? '后台手动充值');  // 写入余额变动日志
 
             return Response::json(['status' => 'success', 'message' => '充值成功']);
         }
@@ -290,7 +281,6 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => '充值失败']);
     }
 
-    // 导出配置信息
     public function export(User $user)
     {
         return view('admin.user.export', [
@@ -311,5 +301,17 @@ class UserController extends Controller
         $list = UserOauth::with('user:id,username')->paginate(15)->appends(\request('page'));
 
         return view('admin.user.oauth', compact('list'));
+    }
+
+    public function VNetInfo(User $user)
+    {
+        $nodes = $user->nodes()->whereType(4)->get(['node.id', 'node.name']);
+        $nodeList = (new getUser())->existsinVNet($user);
+
+        foreach ($nodes as $node) {
+            $node->avaliable = in_array($node->id, $nodeList, true) ? '✔️' : '❌';
+        }
+
+        return Response::json(['status' => 'success', 'data' => $nodes]);
     }
 }

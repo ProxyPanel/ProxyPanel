@@ -39,7 +39,7 @@ class editUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $list = $this->list(($node->server ?: $node->ips()[0]).':'.$node->push_port, $node->auth->secret);
+            $list = (new getUser())->list($node);
             if ($list && in_array($this->data['uid'], $list, true)) { // 如果用户已存在节点内，则执行修改；否则为添加
                 if ($node->is_ddns) {
                     $this->send($node->server.':'.$node->push_port, $node->auth->secret);
@@ -52,19 +52,6 @@ class editUser implements ShouldQueue
                 addUser::dispatch($this->data['uid'], $node);
             }
         }
-    }
-
-    private function list(string $host, string $secret)
-    {
-        $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->get('api/user/list');
-        $message = $response->json();
-        if ($message && $response->ok()) {
-            return Arr::pluck($message, 'uid');
-        }
-
-        Log::warning('【用户列表】获取失败（推送地址：'.$host.'）');
-
-        return false;
     }
 
     private function send(string $host, string $secret): void
