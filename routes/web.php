@@ -18,13 +18,13 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::get('lang/{locale}', 'AuthController@switchLang')->name('lang'); // 语言切换
     Route::get('login', 'AuthController@showLoginForm')->middleware('isSecurity')->name('login'); // 登录页面
 
-    Route::namespace('OAuth')->prefix('oauth')->name('oauth.')->group(function () { // 用户第三方登录默认登录/转跳方式
-        Route::get('{type}/login', 'BaseController@logining')->name('login');
-        Route::get('{type}/bind', 'BaseController@binding')->name('bind');
-        Route::get('{type}/register', 'BaseController@register')->name('register');
-        Route::get('{type}/redirect', 'BaseController@simple')->name('simple');
-        Route::get('{type}/unsubscribe', 'BaseController@unsubscribe')->name('unsubscribe');
-        Route::get('{type}/route', 'BaseController@route')->name('route');
+    Route::prefix('oauth')->name('oauth.')->group(function () { // 用户第三方登录默认登录/转跳方式
+        Route::get('{type}/login', 'OAuthController@logining')->name('login');
+        Route::get('{type}/bind', 'OAuthController@binding')->name('bind');
+        Route::get('{type}/register', 'OAuthController@register')->name('register');
+        Route::get('{type}/redirect', 'OAuthController@simple')->name('simple');
+        Route::get('{type}/unsubscribe', 'OAuthController@unsubscribe')->name('unsubscribe');
+        Route::get('{type}/route', 'OAuthController@route')->name('route');
     });
 
     Route::post('login', 'AuthController@login')->middleware('isSecurity'); // 登录

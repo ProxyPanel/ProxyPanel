@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\IP;
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\EmailFilter;
 use App\Models\Invite;
@@ -45,13 +46,9 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), ['username' => 'required', 'password' => 'required']);
-
-        if ($validator->fails()) {
-            return Redirect::back()->withInput()->withErrors($validator->errors());
-        }
+        $data = $request->validated();
 
         // 是否校验验证码
         $captcha = $this->check_captcha($request);
@@ -60,7 +57,7 @@ class AuthController extends Controller
         }
 
         // 验证账号并创建会话
-        if (! Auth::attempt($validator->validated(), $request->input('remember'))) {
+        if (! Auth::attempt($data, $request->has('remember'))) {
             return Redirect::back()->withInput()->withErrors(trans('auth.error.login_failed'));
         }
         $user = Auth::getUser();

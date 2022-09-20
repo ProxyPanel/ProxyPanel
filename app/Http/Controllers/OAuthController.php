@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\OAuth;
+namespace App\Http\Controllers;
 
 use App\Components\Helpers;
 use App\Components\IP;
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\UserOauth;
 use Auth;
@@ -12,7 +11,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
 
-class BaseController extends Controller
+class OAuthController extends Controller
 {
     public function route(Request $request, string $type)
     {
