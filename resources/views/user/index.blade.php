@@ -140,8 +140,8 @@
                                             <div class="form-group row">
                                                 <label class="col-md-auto col-form-label" for="subType">{{trans('common.customize')}}</label>
                                                 <div class="col">
-                                                    <select class="form-control" id="subType" name="subType" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                                        <option value="" hidden>{{trans('common.all')}}</option>
+                                                    <select class="form-control" id="subType" name="subType" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                                            title="{{trans('common.all')}}">
                                                         @if(in_array('ss', $subType, true))
                                                             <option value="1">{{trans('user.subscribe.ss_only')}}</option>
                                                         @endif
@@ -158,8 +158,8 @@
                                         <div class="form-group row">
                                             <label class="col-md-auto col-form-label" for="client">{{trans('user.client').trans('common.customize')}}</label>
                                             <div class="col">
-                                                <select class="form-control" id="client" name="client" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                                    <option value="" hidden>{{trans('common.default')}}</option>
+                                                <select class="form-control" id="client" name="client" data-plugin="selectpicker" data-style="btn-primary btn-outline"
+                                                        title="{{trans('common.default')}}">
                                                     <option value="quantumult">Quantumult</option>
                                                     <option value="quantumult%20x">QuantumultX</option>
                                                     <option value="clash">Clash</option>

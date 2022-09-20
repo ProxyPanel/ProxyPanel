@@ -52,7 +52,11 @@ class LogsController extends Controller
 
         foreach (['is_expire', 'pay_way', 'status'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
-                $query->where($field, $value);
+                if (is_array($value)) {
+                    $query->whereIn($field, $value);
+                } else {
+                    $query->where($field, $value);
+                }
             });
         }
 

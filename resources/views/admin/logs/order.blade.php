@@ -1,6 +1,7 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <style>
         .table a {
@@ -36,34 +37,33 @@
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" id="is_expire" name="is_expire">
-                            <option value="" hidden>是否过期</option>
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="is_expire" id="is_expire" data-style="btn-outline btn-primary" title="是否过期">
                             <option value="0">否</option>
                             <option value="1">是</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" id="is_coupon" name="is_coupon">
-                            <option value="" hidden>是否使用优惠券</option>
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="is_coupon" id="is_coupon" data-style="btn-outline btn-primary"
+                                title="是否使用优惠券">
                             <option value="0">否</option>
                             <option value="1">是</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" id="pay_way" name="pay_way">
-                            <option value="" hidden>支付方式</option>
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="pay_way" id="pay_way" data-style="btn-outline byn-primary" title="支付方式">
                             @foreach(config('common.payment.labels') as $key => $value)
-                                <option value="{{$key}}">{{$value}}</option>
+                                <option value="{{$key}}">{{$key.' - '.$value}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select class="form-control" name="status" id="status">
-                            <option value="" hidden>订单状态</option>
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="status[]" id="status" data-style="btn-outline btn-primary" title="订单状态"
+                                multiple>
                             <option value="-1">已关闭</option>
                             <option value="0">待支付</option>
                             <option value="1">已支付待确认</option>
                             <option value="2">已完成</option>
+                            <option value="3">预支付</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
@@ -166,31 +166,33 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#is_expire').val({{Request::query('is_expire')}});
-            $('#is_coupon').val({{Request::query('is_coupon')}});
-            $('#pay_way').val({{Request::query('pay_way')}});
-            $('#status').val({{Request::query('status')}});
-            $('select').on('change', function() { this.form.submit(); });
+      $(document).ready(function() {
+        $('#is_coupon').selectpicker('val', @json(Request::query('is_coupon')));
+        $('#is_expire').selectpicker('val', @json(Request::query('is_expire')));
+        $('#pay_way').selectpicker('val', @json(Request::query('pay_way')));
+        $('#status').selectpicker('val', @json(Request::query('status')));
+        $('select').on('change', function() { this.form.submit(); });
+      });
+
+      // 有效期
+      $('.input-daterange').datepicker({format: 'yyyy-mm-dd'});
+
+      @can('admin.order.edit')
+      // 重置流量
+      function changeStatus(id, status) {
+        $.post('{{route('admin.order.edit')}}', {_token: '{{csrf_token()}}', oid: id, status: status}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+          } else {
+            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+          }
         });
-
-        // 有效期
-        $('.input-daterange').datepicker({format: 'yyyy-mm-dd'});
-
-        @can('admin.order.edit')
-        // 重置流量
-        function changeStatus(id, status) {
-            $.post('{{route('admin.order.edit')}}', {_token: '{{csrf_token()}}', oid: id, status: status}, function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-            });
-        }
+      }
         @endcan
     </script>
 @endsection

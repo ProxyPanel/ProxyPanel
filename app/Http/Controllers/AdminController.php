@@ -54,8 +54,8 @@ class AdminController extends Controller
             'todayOrder' => Order::whereDate('created_at', date('Y-m-d'))->count(),
             'totalOnlinePayOrder' => Order::where('pay_type', '<>', 0)->count(),
             'todayOnlinePayOrder' => Order::where('pay_type', '<>', 0)->whereDate('created_at', date('Y-m-d'))->count(),
-            'totalSuccessOrder' => Order::whereStatus(2)->count(),
-            'todaySuccessOrder' => Order::whereStatus(2)->whereDate('created_at', date('Y-m-d'))->count(),
+            'totalSuccessOrder' => Order::whereIn('status', [2, 3])->count(),
+            'todaySuccessOrder' => Order::whereIn('status', [2, 3])->whereDate('created_at', date('Y-m-d'))->count(),
         ]);
     }
 

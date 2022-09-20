@@ -19,8 +19,7 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <select class="form-control" name="type" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="this.form.submit()">
-                            <option value="" hidden>类型</option>
+                        <select class="form-control" name="type" data-plugin="selectpicker" data-style="btn-outline btn-primary" title="类型" onchange="this.form.submit()">
                             <option value="1">正则表达式</option>
                             <option value="2">域名</option>
                             <option value="3">IP</option>

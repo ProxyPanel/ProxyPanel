@@ -1,7 +1,4 @@
 @extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-@endsection
 @section('content')
     <div class="page-content container">
         <div class="panel">

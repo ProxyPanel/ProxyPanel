@@ -228,7 +228,7 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.order', ['status'=>2])}}" class="card card-shadow">
+                    <a href="{{route('admin.order', ['status'=>[1, 2]])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-success">
                                 <i class="icon md-ticket-star"></i>
@@ -303,8 +303,8 @@
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
     <script>
-        $(function() {
-            $('.card').matchHeight();
-        });
+      $(function() {
+        $('.card').matchHeight();
+      });
     </script>
 @endsection
