@@ -492,7 +492,7 @@
           @case(2)
         //V2Ray
         $('#v2_alter_id').val('{{$node->profile['v2_alter_id'] ?? null}}');
-        $('#v2_method').selectpicker('val', '{{$node->profile['v2_method'] ?? null}}');
+        $('#v2_method').selectpicker('val', '{{$node->profile['method'] ?? null}}');
         $('#v2_net').selectpicker('val', '{{$node->profile['v2_net'] ?? null}}');
         $('#v2_type').selectpicker('val', '{{$node->profile['v2_type'] ?? null}}');
         $('#v2_host').val('{{$node->profile['v2_host'] ?? null}}');

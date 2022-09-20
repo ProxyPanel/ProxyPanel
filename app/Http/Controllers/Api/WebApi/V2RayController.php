@@ -30,7 +30,7 @@ class V2RayController extends CoreController
             'v2_license'      => (string) sysConfig('v2ray_license'),
             'v2_alter_id'     => (int) $node->profile['v2_alter_id'],
             'v2_port'         => $node->port,
-            'v2_method'       => $node->profile['v2_method'] ?? '',
+            'v2_method'       => $node->profile['method'] ?? '',
             'v2_net'          => $node->profile['v2_net'] ?? '',
             'v2_type'         => $node->profile['v2_type'] ?? '',
             'v2_host'         => $node->profile['v2_host'] ?? '',
