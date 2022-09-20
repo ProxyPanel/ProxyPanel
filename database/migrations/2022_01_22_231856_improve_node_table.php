@@ -1,5 +1,6 @@
 <?php
 
+use App\Components\MigrationToolBox;
 use App\Models\Config;
 use App\Models\Node;
 use Illuminate\Database\Migrations\Migration;
@@ -25,7 +26,11 @@ class ImproveNodeTable extends Migration
 
         // 插入新字段
         Schema::table('node', function (Blueprint $table) {
-            $table->json('profile')->comment('节点设置选项')->after('description');
+            if ((new MigrationToolBox())->versionCheck()) {
+                $table->json('profile')->comment('节点设置选项')->after('description');
+            } else {
+                $table->text('profile')->comment('节点设置选项')->after('description');
+            }
             $table->unsignedInteger('relay_node_id')->nullable()->comment('中转节点对接母节点, 默认NULL')->after('is_relay');
         });
 
