@@ -116,7 +116,7 @@ class AdminController extends Controller
 
     public function config()
     {
-        return view('admin.config.config', [
+        return view('admin.config.common', [
             'methods' => SsConfig::type(1)->get(),
             'protocols' => SsConfig::type(2)->get(),
             'categories' => GoodsCategory::all(),

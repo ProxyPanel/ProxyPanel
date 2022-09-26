@@ -328,7 +328,7 @@
                                         <div class="v2ray-setting">
                                             <div class="form-group row">
                                                 <label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
-                                                <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id" required/>
+                                                <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id"/>
                                             </div>
                                             <div class="form-group row">
                                                 <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
@@ -337,8 +337,9 @@
                                             <div class="form-group row">
                                                 <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_method">
-                                                    <option value="auto">auto</option>
                                                     <option value="none">none</option>
+                                                    <option value="auto">auto</option>
+                                                    <option value="aes-128-cfb">aes-128-cfb</option>
                                                     <option value="aes-128-gcm">aes-128-gcm</option>
                                                     <option value="chacha20-poly1305">chacha20-poly1305</option>
                                                 </select>
@@ -348,9 +349,9 @@
                                                 <label for="v2_net" class="col-md-3 col-form-label">传输方式</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_net">
                                                     <option value="tcp">TCP</option>
-                                                    <option value="kcp">mKCP</option>
-                                                    <option value="ws">WebSocket</option>
                                                     <option value="http">HTTP/2</option>
+                                                    <option value="ws">WebSocket</option>
+                                                    <option value="kcp">mKCP</option>
                                                     <option value="domainsocket">DomainSocket</option>
                                                     <option value="quic">QUIC</option>
                                                 </select>

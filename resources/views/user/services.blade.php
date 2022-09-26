@@ -67,7 +67,7 @@
                                                     <span class="pricing-period">/ {{$goods->days.trans_choice('validation.attributes.day', 1)}}</span>
                                                 @endif
                                             </div>
-                                            @if($goods->info)
+                                            @if($goods->description)
                                                 <p class="px-30 pb-25 text-center">{{$goods->description}}</p>
                                             @endif
                                         </div>

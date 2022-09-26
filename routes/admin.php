@@ -2,7 +2,7 @@
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', 'AdminController@index')->name('index'); // 后台首页
-    Route::get('config', 'AdminController@config')->name('config'); // 系统设置
+    Route::get('config', 'AdminController@config')->name('config.index'); // 系统通用配置
     Route::get('invite', 'AdminController@inviteList')->name('invite.index'); // 邀请码列表
     Route::post('invite', 'AdminController@makeInvite')->name('invite.create'); // 生成邀请码
     Route::get('Invite/export', 'AdminController@exportInvite')->name('invite.export'); // 导出邀请码

@@ -461,7 +461,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['admin.config.filter.index', 'admin.config', 'admin.system.index'])
+                @canany(['admin.config.filter.index', 'admin.config.index', 'admin.system.index'])
                     <li class="site-menu-item has-sub {{request()->routeIs('admin.config.*', 'admin.system.index') ? 'active open' : ''}}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
@@ -475,9 +475,9 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('admin.config')
+                            @can('admin.config.index')
                                 <li class="site-menu-item {{request()->routeIs('admin.config.common.*') ? 'active open' : ''}}">
-                                    <a href="{{route('admin.config')}}">
+                                    <a href="{{route('admin.config.index')}}">
                                         <span class="site-menu-title">通用配置</span>
                                     </a>
                                 </li>
