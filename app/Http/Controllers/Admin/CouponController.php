@@ -81,7 +81,7 @@ class CouponController extends Controller
                 'black' => $request->has('services_blacklist') ? array_map('intval', explode(', ', $request->input('services_blacklist'))) : null,
             ],
         ];
-        array_clean($data['limit']);
+        array_clean($data);
 
         $data['logo'] = $logo;
         $data['status'] = 0;
