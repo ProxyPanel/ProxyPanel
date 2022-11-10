@@ -22,7 +22,7 @@ class isForbidden
     {
         // 拒绝机器人访问
         if (sysConfig('is_forbid_robot') && Agent::isRobot()) {
-            Log::warning('识别到机器人访问('.IP::getClientIp().')');
+            Log::warning('识别到机器人('.IP::getClientIp().')访问');
 
             return Response::view('auth.error', ['message' => trans('errors.forbidden.bots')], 403);
         }

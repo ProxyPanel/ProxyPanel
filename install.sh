@@ -30,15 +30,29 @@ check_composer(){
 
 # 设置权限
 set_permissions(){
+  if [ ! -d "/home/www" ]; then
+    mkdir -p /home/www
+    chown www:www /home/www
+  fi
     chown -R www:www ./
     chmod -R 755 ./
     chmod -R 777 storage/
 }
 
-git fetch --all && git reset --hard origin/master && git pull
+set_crontab(){
+  cmd="php $(dirname "$path")/artisan schedule:run >> /dev/null 2>&1"
+  cronjob="* * * * * $cmd"
+  ( crontab -u www -l | grep -v -F "$cmd" ; echo "$cronjob" ) | crontab -u www -
+
+
+  cmd="bash $(dirname "$path")/queue.sh"
+  cronjob="*/10 * * * * $cmd"
+  ( crontab -l | grep -v -F "$cmd" ; echo "$cronjob" ) | crontab -
+}
+
 check_sys
 check_composer
-php artisan optimize:clear
 composer install
-php artisan panel:update
+php artisan panel:install
 set_permissions
+set_crontab

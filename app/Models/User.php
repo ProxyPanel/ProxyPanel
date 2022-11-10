@@ -11,12 +11,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Kyslik\ColumnSortable\Sortable;
 use Spatie\Permission\Traits\HasRoles;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 /**
  * 用户信息.
  */
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable
 {
     use Notifiable, HasRoles, Sortable;
 
@@ -322,16 +321,6 @@ class User extends Authenticatable implements JWTSubject
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
-    }
-
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-
-    public function getJWTCustomClaims()
-    {
-        return [];
     }
 
     public function routeNotificationForTelegram()

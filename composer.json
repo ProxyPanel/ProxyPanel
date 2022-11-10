@@ -28,6 +28,7 @@
     "laravel-notification-channels/bearychat": "^1.4",
     "laravel-notification-channels/telegram": "^0.5",
     "laravel/framework": "^7.30",
+    "laravel/sanctum": "^2.15",
     "laravel/socialite": "^5.2",
     "laravel/tinker": "^2.6",
     "mews/captcha": "^3.2",
@@ -40,7 +41,6 @@
     "srmklive/paypal": "^1.8",
     "stripe/stripe-php": "^7.69",
     "symfony/yaml": "^5.2",
-    "tymon/jwt-auth": "^1.0",
     "xhat/payjs": "^1.5",
     "zbrettonye/geetest": "^1.2",
     "zbrettonye/hcaptcha": "^1.1",
@@ -48,7 +48,6 @@
     "zoujingli/ip2region": "^1.0"
   },
   "require-dev": {
-    "arcanedev/laravel-lang": "^8.0",
     "barryvdh/laravel-debugbar": "^3.4",
     "barryvdh/laravel-ide-helper": "^2.8",
     "facade/ignition": "^2.0",

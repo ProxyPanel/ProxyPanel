@@ -13,6 +13,7 @@ use App\Observers\OrderObserver;
 use App\Observers\UserGroupObserver;
 use App\Observers\UserObserver;
 use DB;
+use File;
 use Illuminate\Support\ServiceProvider;
 use Schema;
 use URL;
@@ -31,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
         }
-        if (Schema::hasTable('config') && DB::table('config')->exists()) {
+        if (File::exists(base_path().'/.env') && Schema::hasTable('config') && DB::table('config')->exists()) {
             $this->app->register(SettingServiceProvider::class);
         }
     }
