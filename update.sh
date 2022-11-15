@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 #检查系统
 check_sys(){
+	# shellcheck disable=SC2002
 	if [[ -f /etc/redhat-release ]]; then
 		release="centos"
 	elif cat /etc/issue | grep -q -E -i "debian"; then

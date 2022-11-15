@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
+#清理不需要的文件
+clean_files(){
+  if [ -f .user.ini ]; then
+    chattr -i .user.ini
+  fi
+  rm -rf .htaccess 404.html index.html .user.ini
+}
+
 #检查系统
 check_sys(){
+	# shellcheck disable=SC2002
 	if [[ -f /etc/redhat-release ]]; then
 		release="centos"
 	elif cat /etc/issue | grep -q -E -i "debian"; then
@@ -15,7 +24,29 @@ check_sys(){
 		release="ubuntu"
 	elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
 		release="centos"
-    fi
+  fi
+
+  echo "========= Checking for Software dependency | 检查依赖软件是否安装/运行 ========="
+  if which redis-cli >/dev/null; then
+    echo -e "\e[37;42m Redis Installed! | Redis 已安装!\e[0m"
+    redis-cli ping
+  else
+    echo -e "\e[37;1;41m Redis did not installed! | redis 未安装!\e[0m"
+  fi
+
+  if which php >/dev/null; then
+    echo -e "\e[37;42m PHP Installed! | PHP 已安装!\e[0m"
+    php -v
+  else
+    echo -e "\e[37;1;41m PHP did not installed! | PHP 未安装!\e[0m"
+  fi
+
+  if which nginx >/dev/null; then
+    echo -e "\e[37;42m Nginx Installed! | Nginx 已安装!\e[0m"
+    nginx -v
+  else
+    echo -e "\e[37;1;41m Nginx did not installed! | Nginx 未安装!\e[0m"
+  fi
 }
 #检查composer是否安装
 check_composer(){
@@ -50,6 +81,7 @@ set_crontab(){
   ( crontab -l | grep -v -F "$cmd" ; echo "$cronjob" ) | crontab -
 }
 
+clean_files
 check_sys
 check_composer
 composer install
