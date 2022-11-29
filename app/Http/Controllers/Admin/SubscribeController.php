@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Components\IP;
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use Illuminate\Http\Request;
@@ -38,9 +37,9 @@ class SubscribeController extends Controller
     }
 
     //订阅记录
-    public function subscribeLog(Request $request, $id)
+    public function subscribeLog(Request $request, $userSubscribeId)
     {
-        $query = UserSubscribeLog::whereUserSubscribeId($id);
+        $query = UserSubscribeLog::whereUserSubscribeId($userSubscribeId);
 
         $request->whenFilled('id', function ($value) use ($query) {
             $query->where('id', $value);
@@ -62,7 +61,7 @@ class SubscribeController extends Controller
             }
         }
 
-        return view('admin.subscribe.log', ['subscribeLog' => $subscribeLogs, 'subscribe' => User::find($id)->subscribe]);
+        return view('admin.subscribe.log', ['subscribeLog' => $subscribeLogs, 'subscribe' => UserSubscribe::find($userSubscribeId)]);
     }
 
     // 设置用户的订阅的状态

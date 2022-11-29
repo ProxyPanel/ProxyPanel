@@ -76,9 +76,9 @@
                             <td> {{$subscribe->ban_desc}} </td>
                             <td>
                                 @can('admin.subscribe.set')
-                                    <button class="btn btn-sm @if($subscribe->status == 0) btn-outline-success @else btn-outline-danger @endif"
+                                    <button class="btn btn-sm @if($subscribe->status === 0) btn-outline-success @else btn-outline-danger @endif"
                                             onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
-                                        @if($subscribe->status == 0)
+                                        @if($subscribe->status === 0)
                                             启用
                                         @else
                                             禁用
