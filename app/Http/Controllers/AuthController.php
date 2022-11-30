@@ -137,9 +137,11 @@ class AuthController extends Controller
     }
 
     // 退出
-    public function logout(): RedirectResponse
+    public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return Redirect::route('login');
     }

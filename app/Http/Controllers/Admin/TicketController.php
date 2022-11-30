@@ -56,7 +56,7 @@ class TicketController extends Controller
         return view('admin.ticket.reply', [
             'ticket'    => $ticket,
             'user'      => $ticket->user,
-            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username', 'user:id,username')->oldest()->get(),
+            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
         ]);
     }
 

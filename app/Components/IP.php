@@ -14,8 +14,7 @@ use MaxMind\Db\Reader\InvalidDatabaseException;
 
 class IP
 {
-    // 获取IP地址信息
-    public static function getIPInfo($ip)
+    public static function getIPInfo($ip) // 获取IP地址信息
     {
         // IPv6 推荐使用ip.sb
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
@@ -32,8 +31,7 @@ class IP
         return $ipInfo;
     }
 
-    // 通过api.ip.sb查询IP地址的详细信息
-    public static function IPSB($ip)
+    public static function IPSB($ip) // 通过api.ip.sb查询IP地址的详细信息
     {
         try {
             $response = Http::withHeaders(['User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'])->timeout(15)->post('https://api.ip.sb/geoip/'.$ip);
@@ -52,8 +50,7 @@ class IP
         }
     }
 
-    // 通过ip2Region查询IP地址的详细信息 ← 聚合 淘宝IP库，GeoIP，纯真IP库
-    public static function ip2Region(string $ip)
+    public static function ip2Region(string $ip) // 通过ip2Region查询IP地址的详细信息 ← 聚合 淘宝IP库，GeoIP，纯真IP库
     {
         $ipInfo = false;
         try {
@@ -78,10 +75,9 @@ class IP
         return $ipInfo;
     }
 
-    // 通过ip2Location查询IP地址的详细信息
-    public static function ip2Location(string $ip)
+    public static function ip2Location(string $ip) // 通过ip2Location查询IP地址的详细信息
     {
-        $filePath = database_path('IP2LOCATION-LITE-DB3.IPV6.BIN');
+        $filePath = database_path('IP2LOCATION-LITE-DB3.IPV6.BIN'); // 来源: https://lite.ip2location.com/database-download IP-COUNTRY-REGION-CITY的BIN
         try {
             $location = (new Database($filePath, Database::FILE_IO))
                 ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME]);
@@ -98,10 +94,9 @@ class IP
         return false;
     }
 
-    // 通过IPIP查询IP地址的详细信息
-    public static function IPIP(string $ip): array
+    public static function IPIP(string $ip): array // 通过IPIP查询IP地址的详细信息
     {
-        $filePath = database_path('ipip.ipdb');
+        $filePath = database_path('ipipfree.ipdb'); // 来源: https://www.ipip.net/free_download/
         $location = (new City($filePath))->findMap($ip, 'CN');
 
         return [
@@ -111,8 +106,7 @@ class IP
         ];
     }
 
-    // 通过IPIP在线查询IP地址的详细信息
-    public static function IPIPOnline(string $ip)
+    public static function IPIPOnline(string $ip) // 通过IPIP在线查询IP地址的详细信息
     { // https://freeapi.ipip.net
         $response = Http::timeout(15)->get('https://freeapi.ipip.net/'.$ip);
 
@@ -134,8 +128,7 @@ class IP
         return false;
     }
 
-    // 通过ip.taobao.com查询IP地址的详细信息
-    public static function TaoBao(string $ip)
+    public static function TaoBao(string $ip) // 通过ip.taobao.com查询IP地址的详细信息
     {
         // 依据 https://ip.taobao.com/instructions 开发
         $response = Http::timeout(15)->post('https://ip.taobao.com/outGetIpInfo?ip='.$ip.'&accessKey=alibaba-inc');
@@ -159,8 +152,7 @@ class IP
         return false;
     }
 
-    // 通过api.map.baidu.com查询IP地址的详细信息
-    public static function Baidu(string $ip)
+    public static function Baidu(string $ip) // 通过api.map.baidu.com查询IP地址的详细信息
     {
         if (! config('services.baidu.app_ak')) {
             Log::error('【百度IP库】AK信息缺失');
@@ -189,16 +181,15 @@ class IP
         return false;
     }
 
-    // 通过GeoIP2查询IP地址的详细信息
-    public static function GeoIP2(string $ip)
+    public static function GeoIP2(string $ip) // 通过GeoIP2查询IP地址的详细信息
     {
-        $filePath = database_path('maxmind.mmdb');
+        $filePath = database_path('GeoLite2-City.mmdb'); // 来源：https://github.com/PrxyHunter/GeoLite2/releases
         try {
             $location = (new Reader($filePath))->city($ip);
 
             return [
-                'country'  => $location->country->names['zh-CN'],
-                'province' => '',
+                'country'  => $location->country->name ?? '',
+                'province' => $location->mostSpecificSubdivision->name ?? '',
                 'city'     => $location->city->name ?? '',
             ];
         } catch (AddressNotFoundException $e) {
@@ -210,8 +201,7 @@ class IP
         return false;
     }
 
-    // 获取访客真实IP
-    public static function getClientIP()
+    public static function getClientIP() // 获取访客真实IP
     {
         /*
          * 访问时用localhost访问的，读出来的是“::1”是正常情况

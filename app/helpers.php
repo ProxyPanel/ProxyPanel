@@ -88,9 +88,9 @@ if (! function_exists('filterEmoji')) {
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig($key = false)
+    function sysConfig($key = false, $default = null)
     {
-        return $key ? config('settings.'.$key) : config('settings');
+        return $key ? config('settings.'.$key, $default) : config('settings');
     }
 }
 
@@ -98,7 +98,9 @@ if (! function_exists('sysConfig')) {
 if (! function_exists('string_encrypt')) {
     function string_encrypt(string $data): string
     {
-        return base64url_encode(openssl_encrypt($data, 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16)));
+        $key = config('app.key');
+
+        return base64url_encode(openssl_encrypt($data, 'aes-128-ctr', hash('sha256', $key), OPENSSL_RAW_DATA, substr(sha1($key), 0, 16)));
     }
 }
 
@@ -106,7 +108,9 @@ if (! function_exists('string_encrypt')) {
 if (! function_exists('string_decrypt')) {
     function string_decrypt(string $data): string
     {
-        return openssl_decrypt(base64url_decode($data), 'aes-128-ctr', hash('sha256', config('app.key')), OPENSSL_RAW_DATA, substr(sha1(config('app.key')), 0, 16));
+        $key = config('app.key');
+
+        return openssl_decrypt(base64url_decode($data), 'aes-128-ctr', hash('sha256', $key), OPENSSL_RAW_DATA, substr(sha1($key), 0, 16));
     }
 }
 
