@@ -60,7 +60,7 @@
                         <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"
                            data-toggle="dropdown" role="button">
                         <span class="avatar avatar-online">
-                            <x-avatar :user="Auth::getUser()"/><i></i>
+                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}" /><i></i>
                         </span>
                         </a>
                         <div class="dropdown-menu" role="menu">

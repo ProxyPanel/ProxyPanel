@@ -24,7 +24,7 @@
                 <div class="user-info card card-shadow text-center">
                     <div class="user-base card-block">
                         <a class="avatar img-bordered avatar-100" href="javascript:void(0)">
-                            <x-avatar :user="Auth::getUser()"/>
+                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}" />
                         </a>
                         <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
                         <p class="user-job"><i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：

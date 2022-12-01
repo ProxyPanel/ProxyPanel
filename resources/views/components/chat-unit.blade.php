@@ -6,7 +6,7 @@
 @endif">
     <div class="chat-avatar">
         <p class="avatar" data-toggle="tooltip" href="#" data-placement="right" title="" data-original-title="{{($ticket->admin ?? $ticket->user)->username}}">
-            <x-avatar :user="$ticket->admin ?? $ticket->user"/>
+            <img src="{{($ticket->admin ?? $ticket->user)->avatar}}" alt="{{trans('common.avatar')}}"/>
         </p>
     </div>
     <div class="chat-body">

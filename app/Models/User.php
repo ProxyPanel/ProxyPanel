@@ -228,6 +228,21 @@ class User extends Authenticatable
         return $this->attributes['speed_limit'] = $value * Mbps;
     }
 
+    public function getAvatarAttribute(): string
+    {
+        if ($this->qq) {
+            $url = "https://q1.qlogo.cn/g?b=qq&nk={$this->qq}&s=640";
+        } elseif (stripos(strtolower($this->username), '@qq.com') !== false) {
+            $url = "https://q1.qlogo.cn/g?b=qq&nk={$this->username}&s=640";
+        } else {
+            // $url = 'https://gravatar.loli.net/avatar/'.md5(strtolower(trim($this->username)))."?&d=identicon";
+            // $url = 'https://robohash.org/'.md5(strtolower(trim($this->username))).'?set=set4&bgset=bg2&size=400x400';
+            $url = 'https://api.btstu.cn/sjtx/api.php?lx=c1&format=images&method=zsy';
+        }
+
+        return $url;
+    }
+
     public function scopeActiveUser($query)
     {
         return $query->where('status', '<>', -1)->whereEnable(1);
