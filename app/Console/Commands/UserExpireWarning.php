@@ -35,7 +35,7 @@ class UserExpireWarning extends Command
                     if (filter_var($user->username, FILTER_VALIDATE_EMAIL) === false) { // 用户账号不是邮箱的跳过
                         continue;
                     }
-                    $user->notify(new AccountExpire($user->expired_at));
+                    $user->notify(new AccountExpire($user->expired_at->diffInDays()));
                 }
             });
     }

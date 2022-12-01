@@ -84,21 +84,17 @@
                             <dt class="col-sm-3">流量</dt>
                             <dd class="col-sm-9">{{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}}</dd>
                             <dt class="col-sm-3">重置日期</dt>
-                            <dd class="col-sm-9">{{$user->reset_time ?? '无'}}</dd>
+                            <dd class="col-sm-9">{{$user->reset_date ?? '无'}}</dd>
                             <dt class="col-sm-3">最近使用</dt>
                             <dd class="col-sm-9">
                                 {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}}
                             </dd>
                             <dt class="col-sm-3">过期日期</dt>
                             <dd class="col-sm-9">
-                                @if ($user->expired_at < date('Y-m-d'))
-                                    <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
-                                @elseif ($user->expired_at === date('Y-m-d'))
-                                    <span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
-                                @elseif ($user->expired_at <= date('Y-m-d', strtotime('30 days')))
-                                    <span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
+                                @if($user->expiration_status() !== 3)
+                                    <span class="badge badge-lg badge-{{['danger','warning','default'][$user->expiration_status()]}}"> {{ $user->expiration_date }} </span>
                                 @else
-                                    {{$user->expired_at}}
+                                    {{ $user->expiration_date }}
                                 @endif
                             </dd>
                             <dt class="col-sm-3">备注</dt>
@@ -146,85 +142,85 @@
         @can('admin.ticket.destroy')
         // 关闭工单
         function closeTicket() {
-            swal.fire({
-                title: '确定关闭工单？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: '{{route('admin.ticket.destroy', $ticket->id)}}',
-                        async: true,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false,
-                                }).then(() => window.location.href = '{{route('admin.ticket.index')}}');
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                        error: function() {
-                            swal.fire({title: '{{trans('user.ticket.error')}}', icon: 'error'});
-                        },
-                    });
-                }
-            });
+          swal.fire({
+            title: '确定关闭工单？',
+            icon: 'question',
+            showCancelButton: true,
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                method: 'DELETE',
+                url: '{{route('admin.ticket.destroy', $ticket->id)}}',
+                async: true,
+                data: {_token: '{{csrf_token()}}'},
+                dataType: 'json',
+                success: function(ret) {
+                  if (ret.status === 'success') {
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.href = '{{route('admin.ticket.index')}}');
+                  } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  }
+                },
+                error: function() {
+                  swal.fire({title: '{{trans('user.ticket.error')}}', icon: 'error'});
+                },
+              });
+            }
+          });
         }
         @endcan
 
         @can('admin.ticket.update')
         //回车检测
         $(document).on('keypress', 'input', function(e) {
-            if (e.which === 13) {
-                replyTicket();
-                return false;
-            }
+          if (e.which === 13) {
+            replyTicket();
+            return false;
+          }
         });
 
         // 回复工单
         function replyTicket() {
-            const content = document.getElementById('editor').value;
+          const content = document.getElementById('editor').value;
 
-            if (content.trim() === '') {
-                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning', timer: 1500});
-                return false;
+          if (content.trim() === '') {
+            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning', timer: 1500});
+            return false;
+          }
+          swal.fire({
+            title: '{{trans('user.ticket.reply_confirm')}}',
+            icon: 'question',
+            allowEnterKey: false,
+            showCancelButton: true,
+            cancelButtonText: '{{trans('common.close')}}',
+            confirmButtonText: '{{trans('common.confirm')}}',
+          }).then((result) => {
+            if (result.value) {
+              $.ajax({
+                method: 'PUT',
+                url: '{{route('admin.ticket.update', $ticket)}}',
+                data: {_token: '{{csrf_token()}}', content: content},
+                dataType: 'json',
+                success: function(ret) {
+                  if (ret.status === 'success') {
+                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  } else {
+                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                  }
+                },
+                error: function() {
+                  swal.fire({title: '未知错误！请查看运行日志', icon: 'error'});
+                },
+              });
             }
-            swal.fire({
-                title: '{{trans('user.ticket.reply_confirm')}}',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'PUT',
-                        url: '{{route('admin.ticket.update', $ticket)}}',
-                        data: {_token: '{{csrf_token()}}', content: content},
-                        dataType: 'json',
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                        error: function() {
-                            swal.fire({title: '未知错误！请查看运行日志', icon: 'error'});
-                        },
-                    });
-                }
-            });
+          });
         }
         @endcan
     </script>

@@ -55,7 +55,7 @@ class SubscribeController extends Controller
                 return $this->failed(trans('errors.subscribe.out'));
             }
 
-            if ($user->expired_at < date('Y-m-d')) {
+            if ($user->expiration_date < date('Y-m-d')) {
                 return $this->failed(trans('errors.subscribe.expired'));
             }
 
@@ -127,9 +127,8 @@ class SubscribeController extends Controller
         return $result.PHP_EOL;
     }
 
-    // 写入订阅访问日志
     private function subscribeLog($subscribeId, $ip, $headers): void
-    {
+    { // 写入订阅访问日志
         $log = new UserSubscribeLog();
         $log->user_subscribe_id = $subscribeId;
         $log->request_ip = $ip;

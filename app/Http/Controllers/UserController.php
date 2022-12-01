@@ -43,7 +43,6 @@ class UserController extends Controller
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->used_traffic;
         $unusedTraffic = max($totalTransfer - $usedTransfer, 0);
-        $expireTime = $user->expired_at;
 
         $nodes = $user->nodes()->get();
         $subType = [];
@@ -58,10 +57,10 @@ class UserController extends Controller
         }
 
         return view('user.index', array_merge([
-            'remainDays'       => Helpers::daysToNow($expireTime),
-            'resetDays'        => $user->reset_time ? Helpers::daysToNow($user->reset_time) : null,
+            'remainDays'       => now()->diffInDays($user->expired_at, false),
+            'resetDays'        => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
             'unusedTraffic'    => flowAutoShow($unusedTraffic),
-            'expireTime'       => $expireTime,
+            'expireTime'       => $user->expiration_date,
             'banedTime'        => $user->ban_time,
             'unusedPercent'    => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
             'announcements'    => Article::type(2)->take(5)->latest()->Paginate(1), // 公告
@@ -217,7 +216,7 @@ class UserController extends Controller
             'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->get(),
             'goodsList'       => $goodsList,
             'renewTraffic'    => $renewPrice->renew ?? 0,
-            'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? Helpers::daysToNow($dataPlusDays) : 0,
+            'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
         ]);
     }
 
@@ -341,7 +340,7 @@ class UserController extends Controller
 
         return view('user.replyTicket', [
             'ticket'    => $ticket,
-            'replyList' => $ticket->reply()->with('user')->oldest()->get(),
+            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
         ]);
     }
 
@@ -428,7 +427,7 @@ class UserController extends Controller
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.buy', [
-            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? Helpers::daysToNow($dataPlusDays) : 0,
+            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
             'activePlan'   => Order::userActivePlan()->exists(),
             'goods'        => $good,
         ]);

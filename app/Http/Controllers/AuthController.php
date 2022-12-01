@@ -277,7 +277,7 @@ class AuthController extends Controller
             // 则直接给推荐人加流量
             if ($inviter_id) {
                 $referralUser = User::find($inviter_id);
-                if ($referralUser && $referralUser->expired_at >= date('Y-m-d')) {
+                if ($referralUser && $referralUser->expiration_date >= date('Y-m-d')) {
                     $referralUser->incrementData(sysConfig('referral_traffic') * MB);
                 }
             }

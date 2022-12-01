@@ -11,7 +11,6 @@ use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use DateTime;
 use Log;
 use Str;
 
@@ -137,13 +136,6 @@ class Helpers
         $config = SsConfig::default()->type(3)->first();
 
         return $config->name ?? 'plain';
-    }
-
-    public static function daysToNow($date): int
-    {
-        $calculate = (new DateTime())->diff(new DateTime($date));
-
-        return $calculate->invert ? -$calculate->days : $calculate->days;
     }
 
     /**

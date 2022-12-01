@@ -13,9 +13,9 @@ class AccountExpire extends Notification implements ShouldQueue
 
     private $days;
 
-    public function __construct($expired_at)
+    public function __construct($expire_days)
     {
-        $this->days = now()->diffInDays($expired_at);
+        $this->days = $expire_days;
     }
 
     public function via($notifiable)

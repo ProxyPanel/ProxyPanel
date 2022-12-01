@@ -81,7 +81,7 @@
                                     余额：{{ $user->credit }}
                                 </li>
                                 <li class="list-group-item">
-                                    过期时间：{{ $user->expired_at }}
+                                    过期时间：{{ $user->expiration_date }}
                                 </li>
                             </ul>
                         </div>

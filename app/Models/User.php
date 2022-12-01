@@ -22,7 +22,6 @@ class User extends Authenticatable
     public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
     protected $table = 'user';
     protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
-    protected $dates = ['expired_at', 'reset_time'];
     protected $guarded = [];
 
     public function routeNotificationForMail($notification)
@@ -38,6 +37,16 @@ class User extends Authenticatable
     public function getUsedTrafficAttribute(): int
     {
         return $this->d + $this->u;
+    }
+
+    public function getExpirationDateAttribute()
+    {
+        return $this->attributes['expired_at'];
+    }
+
+    public function getResetDateAttribute()
+    {
+        return $this->attributes['reset_time'];
     }
 
     public function getTelegramUserIdAttribute()
@@ -204,16 +213,6 @@ class User extends Authenticatable
         return $this->attributes['speed_limit'] / Mbps;
     }
 
-    public function getExpiredAtAttribute()
-    {
-        return $this->attributes['expired_at'];
-    }
-
-    public function getResetTimeAttribute()
-    {
-        return $this->attributes['reset_time'];
-    }
-
     public function setPasswordAttribute($password)
     {
         return $this->attributes['password'] = Hash::make($password);
@@ -289,18 +288,20 @@ class User extends Authenticatable
         return $this->save();
     }
 
-    public function expired_status(): int
+    public function expiration_status(): int
     {
-        $expired_status = 2; // 大于一个月过期
-        if ($this->expired_at < date('Y-m-d')) {
-            $expired_status = -1; // 已过期
-        } elseif ($this->expired_at === date('Y-m-d')) {
-            $expired_status = 0; // 今天过期
-        } elseif ($this->expired_at > date('Y-m-d') && $this->expired_at <= date('Y-m-d', strtotime('30 days'))) {
-            $expired_status = 1; // 最近一个月过期
+        $today = date('Y-m-d');
+        $nextMonth = date('Y-m-d', strtotime('next month'));
+
+        if ($this->expiration_date < $today) {
+            $status = 0; // 已过期
+        } elseif ($this->expiration_date === $today) {
+            $status = 1; // 今日过期
+        } elseif ($this->expiration_date <= $nextMonth) {
+            $status = 2; // 一个月内过期
         }
 
-        return $expired_status;
+        return $status ?? 3;
     }
 
     public function isTrafficWarning(): bool

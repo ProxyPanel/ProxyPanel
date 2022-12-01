@@ -118,14 +118,10 @@
                             <td> {{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}} </td>
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}} </td>
                             <td>
-                                @if ($user->expired_at < date('Y-m-d'))
-                                    <span class="badge badge-lg badge-danger"> {{$user->expired_at}} </span>
-                                @elseif ($user->expired_at === date('Y-m-d'))
-                                    <span class="badge badge-lg badge-warning"> {{$user->expired_at}} </span>
-                                @elseif ($user->expired_at <= date('Y-m-d', strtotime('30 days')))
-                                    <span class="badge badge-lg badge-default"> {{$user->expired_at}} </span>
+                                @if($user->expiration_status() !== 3)
+                                    <span class="badge badge-lg badge-{{['danger','warning','default'][$user->expiration_status()]}}"> {{ $user->expiration_date }} </span>
                                 @else
-                                    {{$user->expired_at}}
+                                    {{ $user->expiration_date }}
                                 @endif
                             </td>
                             <td>
@@ -222,156 +218,156 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#user_group_id').val({{Request::query('user_group_id')}});
-            $('#level').val({{Request::query('level')}});
-            $('#status').val({{Request::query('status')}});
-            $('#enable').val({{Request::query('enable')}});
-            $('select').on('change', function() { this.form.submit(); });
+      $(document).ready(function() {
+        $('#user_group_id').val({{Request::query('user_group_id')}});
+        $('#level').val({{Request::query('level')}});
+        $('#status').val({{Request::query('status')}});
+        $('#enable').val({{Request::query('enable')}});
+        $('select').on('change', function() { this.form.submit(); });
+      });
+
+      @can('admin.user.batch')
+      // 批量生成账号
+      function batchAddUsers() {
+        swal.fire({
+          title: '用户生成数量',
+          input: 'range',
+          inputAttributes: {min: 1, max: 10},
+          inputValue: 1,
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            });
+          }
         });
+      }
+      @endcan
 
-        @can('admin.user.batch')
-        // 批量生成账号
-        function batchAddUsers() {
-            swal.fire({
-                title: '用户生成数量',
-                input: 'range',
-                inputAttributes: {min: 1, max: 10},
-                inputValue: 1,
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.batch')}}', {_token: '{{csrf_token()}}', amount: result.value}, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.destroy')
-        // 删除账号
-        function delUser(url, username) {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '确定删除用户 【' + username + '】 ？',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: url,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.reset')
-        // 重置流量
-        function resetTraffic(id, username) {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '确定重置 【' + username + '】 流量吗？',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.switch')
-        // 切换用户身份
-        function switchToUser(id) {
-            $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.VNetInfo')
-        // 节点连通性测试
-        function VNetInfo(id) {
+      @can('admin.user.destroy')
+      // 删除账号
+      function delUser(url, username) {
+        swal.fire({
+          title: '{{trans('common.warning')}}',
+          text: '确定删除用户 【' + username + '】 ？',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
             $.ajax({
-                method: 'POST',
-                url: '{{route('admin.user.VNetInfo', '')}}/' + id,
-                data: {_token: '{{csrf_token()}}'},
-                beforeSend: function() {
-                    $('#vent_' + id).removeClass('wb-link-broken').addClass('wb-loop icon-spin');
-                },
-                success: function(ret) {
-                    if (ret.status === 'success') {
-                        let str = '';
-                        for (let i in ret.data) {
-                            str += '<tr><td>' + ret.data[i]['id'] + '</td><td>' + ret.data[i]['name'] + '</td><td>' + ret.data[i]['avaliable'] + '</td></tr>';
-                        }
-                        swal.fire({
-                            title: ret.title,
-                            icon: 'info',
-                            html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> 节点 </th> <th> 状态 </th></thead><tbody>' + str + '</tbody></table>',
-                            showConfirmButton: false,
-                        });
-                    } else {
-                        swal.fire({title: ret.title, text: ret.data, icon: 'error'});
-                    }
-                },
-                complete: function() {
-                    $('#vent_' + id).removeClass('wb-loop icon-spin').addClass('wb-link-broken');
-                },
+              method: 'DELETE',
+              url: url,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
             });
-        }
-        @endcan
+          }
+        });
+      }
+      @endcan
 
-        const clipboard = new ClipboardJS('.copySubscribeLink');
-        clipboard.on('success', function() {
-            swal.fire({
-                title: '{{trans('common.copy.success')}}',
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
+      @can('admin.user.reset')
+      // 重置流量
+      function resetTraffic(id, username) {
+        swal.fire({
+          title: '{{trans('common.warning')}}',
+          text: '确定重置 【' + username + '】 流量吗？',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
+          }
         });
-        clipboard.on('error', function() {
-            swal.fire({
-                title: '{{trans('common.copy.failed')}}',
-                icon: 'error',
-                timer: 1500,
+      }
+      @endcan
+
+      @can('admin.user.switch')
+      // 切换用户身份
+      function switchToUser(id) {
+        $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '/');
+          } else {
+            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+          }
+        });
+      }
+      @endcan
+
+      @can('admin.user.VNetInfo')
+      // 节点连通性测试
+      function VNetInfo(id) {
+        $.ajax({
+          method: 'POST',
+          url: '{{route('admin.user.VNetInfo', '')}}/' + id,
+          data: {_token: '{{csrf_token()}}'},
+          beforeSend: function() {
+            $('#vent_' + id).removeClass('wb-link-broken').addClass('wb-loop icon-spin');
+          },
+          success: function(ret) {
+            if (ret.status === 'success') {
+              let str = '';
+              for (let i in ret.data) {
+                str += '<tr><td>' + ret.data[i]['id'] + '</td><td>' + ret.data[i]['name'] + '</td><td>' + ret.data[i]['avaliable'] + '</td></tr>';
+              }
+              swal.fire({
+                title: ret.title,
+                icon: 'info',
+                html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> 节点 </th> <th> 状态 </th></thead><tbody>' + str + '</tbody></table>',
                 showConfirmButton: false,
-            });
+              });
+            } else {
+              swal.fire({title: ret.title, text: ret.data, icon: 'error'});
+            }
+          },
+          complete: function() {
+            $('#vent_' + id).removeClass('wb-loop icon-spin').addClass('wb-link-broken');
+          },
         });
+      }
+      @endcan
+
+      const clipboard = new ClipboardJS('.copySubscribeLink');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '{{trans('common.copy.success')}}',
+          icon: 'success',
+          timer: 1000,
+          showConfirmButton: false,
+        });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '{{trans('common.copy.failed')}}',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      });
     </script>
 @endsection

@@ -44,7 +44,7 @@ class AffiliateController extends Controller
     public function extractMoney(): JsonResponse
     {
         // 判断账户是否过期
-        if (Auth::getUser()->expired_at < date('Y-m-d')) {
+        if (Auth::getUser()->expiration_date < date('Y-m-d')) {
             return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.account')]);
         }
 

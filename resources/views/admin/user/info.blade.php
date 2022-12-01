@@ -346,8 +346,8 @@
             $('#level').selectpicker('val', '{{$user->level}}');
             $('#group').selectpicker('val', '{{$user->user_group_id}}');
             $('#invite_num').val('{{$user->invite_num}}');
-            $('#reset_time').val('{{$user->reset_time}}');
-            $('#expired_at').val('{{$user->expired_at}}');
+            $('#reset_time').val('{{$user->reset_date}}');
+            $('#expired_at').val('{{$user->expiration_date}}');
             $("input[name='status'][value='{{$user->status}}']").click();
             $('#wechat').val('{{$user->wechat}}');
             $('#qq').val('{{$user->qq}}');
