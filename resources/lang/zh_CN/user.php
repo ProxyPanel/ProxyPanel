@@ -25,6 +25,7 @@ return [
         'enabled'         => '正常',
         'expired'         => '已过期',
         'limited'         => '限制',
+        'run_out'         => '流量耗尽',
         'unused'          => '未使用',
         'used'            => '已使用',
         'closed'          => '关 闭',

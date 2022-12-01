@@ -62,7 +62,11 @@
                                 </button>
                                 <span class="font-weight-400">{{trans('user.account.remain')}}</span>
                                 <div class="text-center font-weight-100 font-size-40">
-                                    {{$unusedTraffic}}
+                                    @if ($unusedTraffic === '0B')
+                                        {{trans('user.status.run_out')}}
+                                    @else
+                                        {{$unusedTraffic}}
+                                    @endif
                                     <br/>
                                     <h4>{{trans('user.account.level')}}：<code class="font-size-20">{{Auth::user()->level}}</code></h4>
                                 </div>
@@ -463,7 +467,7 @@
         }
         document.getElementById(id).innerHTML = string;
 
-        if (distance <= 0) {
+        if (distance <= 0 && distance.abs > 1000) {
           window.location.reload();
         }
       }

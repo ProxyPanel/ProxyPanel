@@ -25,6 +25,7 @@ return [
         'enabled'         => 'Normal',
         'expired'         => 'Expired',
         'limited'         => 'Limited',
+        'run_out'         => 'Run out of Data',
         'unused'          => 'Unused',
         'used'            => 'Used',
         'closed'          => 'Closed',
