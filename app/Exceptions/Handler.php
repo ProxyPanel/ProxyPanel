@@ -13,7 +13,7 @@ use Illuminate\Validation\ValidationException;
 use Log;
 use ReflectionException;
 use Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -25,7 +25,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        HttpException::class,
+        //        HttpException::class,
         ValidationException::class,
     ];
 
@@ -35,6 +35,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontFlash = [
+        'current_password',
         'password',
         'password_confirmation',
     ];
@@ -105,6 +106,12 @@ class Handler extends ExceptionHandler
                     }
 
                     return Response::view('auth.error', ['message' => trans('errors.system')], 500);
+                case $exception instanceof MethodNotAllowedHttpException:
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('errors.http')], 405);
+                    }
+
+                    return Response::view('auth.error', ['message' => trans('errors.http')], 405);
                 case $exception instanceof ErrorException: // 捕获系统错误异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([

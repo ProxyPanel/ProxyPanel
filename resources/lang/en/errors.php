@@ -7,6 +7,7 @@ return [
         'china'   => 'Chinese IP or Proxy Access Forbidden',
         'oversea' => 'Oversea IP or Proxy Access Forbidden',
     ],
+    'http'         => 'HTTP Method Not Allowed',
     'log'          => 'Logs',
     'missing_page' => 'Page Not Found',
     'refresh'      => 'Refresh',

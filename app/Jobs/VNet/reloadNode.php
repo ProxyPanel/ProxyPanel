@@ -2,7 +2,6 @@
 
 namespace App\Jobs\VNet;
 
-use App\Http\Controllers\Api\WebApi\SSRController;
 use Arr;
 use Exception;
 use Http;
@@ -35,7 +34,7 @@ class reloadNode implements ShouldQueue
     public function handle(): bool
     {
         foreach ($this->nodes as $node) {
-            $data = (new SSRController())->nodeData($node);
+            $data = $node->getSSRConfig();
 
             if ($node->is_ddns) {
                 if (! $this->send($node->server.':'.$node->push_port, $node->auth->secret, $data)) {

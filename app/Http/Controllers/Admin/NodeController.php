@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Components\NetworkDetection;
+use App\Helpers\DataChart;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
 use App\Jobs\VNet\reloadNode;
@@ -20,8 +21,9 @@ use Response;
 
 class NodeController extends Controller
 {
-    // 节点列表
-    public function index(Request $request)
+    use DataChart;
+
+    public function index(Request $request) // 节点列表
     {
         $status = $request->input('status');
 

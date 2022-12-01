@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Kyslik\ColumnSortable\Sortable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -17,7 +18,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use Notifiable, HasRoles, Sortable;
+    use HasApiTokens, Notifiable, HasRoles, Sortable;
 
     public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
     protected $table = 'user';
@@ -59,33 +60,6 @@ class User extends Authenticatable
     public function userAuths(): HasMany
     {
         return $this->hasMany(UserOauth::class);
-    }
-
-    public function profile()
-    {
-        return [
-            'id'              => $this->id,
-            'nickname'        => $this->nickname,
-            'account'         => $this->username,
-            'port'            => $this->port,
-            'passwd'          => $this->passwd,
-            'uuid'            => $this->vmess_id,
-            'transfer_enable' => $this->transfer_enable,
-            'u'               => $this->u,
-            'd'               => $this->d,
-            't'               => $this->t,
-            'enable'          => $this->enable,
-            'speed_limit'     => $this->speed_limit,
-            'credit'          => $this->credit,
-            'expired_at'      => $this->expired_at,
-            'ban_time'        => $this->ban_time,
-            'level'           => $this->level_name,
-            'group'           => $this->userGroup->name ?? null,
-            'last_login'      => $this->last_login,
-            'reset_time'      => $this->reset_time,
-            'invite_num'      => $this->invite_num,
-            'status'          => $this->status,
-        ];
     }
 
     public function onlineIpLogs(): HasMany

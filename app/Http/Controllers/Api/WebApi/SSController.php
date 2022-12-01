@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Helpers\WebApiResponse;
 use App\Models\Node;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 
-class SSController extends CoreController
+class SSController extends Controller
 {
-    // 获取节点信息
-    public function getNodeInfo(Node $node): JsonResponse
+    use WebApiResponse;
+
+    public function getNodeInfo(Node $node): JsonResponse // 获取节点信息
     {
         $data = [
             'id'           => $node->id,
@@ -22,11 +25,10 @@ class SSController extends CoreController
             $data['port'] = $node->port;
         }
 
-        return $this->returnData('获取节点信息成功', 200, 'success', $data);
+        return $this->succeed($data);
     }
 
-    // 获取节点可用的用户列表
-    public function getUserList(Node $node): JsonResponse
+    public function getUserList(Node $node): JsonResponse // 获取节点可用的用户列表
     {
         foreach ($node->users() as $user) {
             $data[] = [
@@ -38,6 +40,6 @@ class SSController extends CoreController
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 200, 'success', $data ?? [], ['updateTime' => time()]);
+        return $this->succeed($data ?? [], ['updateTime' => time()]);
     }
 }

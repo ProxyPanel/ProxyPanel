@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Helpers\ResponseEnum;
+use App\Helpers\WebApiResponse;
 use App\Models\Node;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Response;
 use Validator;
 
 class CoreController extends Controller
 {
+    use WebApiResponse;
+
     // 上报节点心跳信息
     public function setNodeStatus(Request $request, Node $node): JsonResponse
     {
         $validator = Validator::make($request->all(), ['cpu' => 'required', 'mem' => 'required', 'disk' => 'required', 'uptime' => 'required|numeric']);
 
         if ($validator->fails()) {
-            return $this->returnData('上报节点心跳信息失败，请检查字段');
+            return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
 
         $data = array_map('intval', $validator->validated());
@@ -28,40 +31,10 @@ class CoreController extends Controller
             'load'     => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
             'log_time' => time(),
         ])) {
-            return $this->returnData('上报节点心跳信息成功', 200, 'success');
+            return $this->succeed();
         }
 
-        return $this->returnData('生成节点心跳信息失败', 400);
-    }
-
-    // 返回数据
-    public function returnData(string $message, int $code = 422, string $status = 'fail', array $data = [], array $addition = null): JsonResponse
-    {
-        $etag = self::abortIfNotModified($data);
-        $data = compact('status', 'code', 'data', 'message');
-
-        if (isset($addition)) {
-            $data = array_merge($data, $addition);
-        }
-
-        return Response::json($data)->header('ETAG', $etag)->setStatusCode($code);
-    }
-
-    // 检查数据是否有变动
-    private static function abortIfNotModified($data): string
-    {
-        $req = request();
-        // Only for "GET" method
-        if (! $req->isMethod('GET')) {
-            return '';
-        }
-
-        $etag = sha1(json_encode($data));
-        if (! empty($req->header('IF-NONE-MATCH')) && hash_equals($etag, $req->header('IF-NONE-MATCH'))) {
-            abort(304);
-        }
-
-        return $etag;
+        return $this->failed([400201, '生成节点心跳信息失败']);
     }
 
     // 上报节点在线IP
@@ -70,7 +43,7 @@ class CoreController extends Controller
         $validator = Validator::make($request->all(), ['*.uid' => 'required|numeric|exists:user,id', '*.ip' => 'required|string']);
 
         if ($validator->fails()) {
-            return $this->returnData('上报节点在线用户IP信息失败，请检查字段');
+            return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
 
         $onlineCount = 0;
@@ -80,14 +53,14 @@ class CoreController extends Controller
         }
 
         if (isset($formattedData) && ! $node->onlineIps()->createMany($formattedData)) {  // 生成节点在线IP数据
-            return $this->returnData('生成节点在线用户IP信息失败', 400);
+            return $this->failed([400201, '生成节点在线用户IP信息失败']);
         }
 
         if ($node->onlineLogs()->create(['online_user' => $onlineCount, 'log_time' => time()])) { // 生成节点在线人数数据
-            return $this->returnData('上报节点在线情况成功', 200, 'success');
+            return $this->succeed();
         }
 
-        return $this->returnData('生成节点在线情况失败', 400);
+        return $this->failed([400201, '生成节点在线情况失败']);
     }
 
     // 上报用户流量日志
@@ -96,7 +69,7 @@ class CoreController extends Controller
         $validator = Validator::make($request->all(), ['*.uid' => 'required|numeric|exists:user,id', '*.upload' => 'required|numeric', '*.download' => 'required|numeric']);
 
         if ($validator->fails()) {
-            return $this->returnData('上报用户流量日志失败，请检查字段');
+            return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
 
         foreach ($validator->validated() as $input) { // 处理用户流量数据
@@ -113,10 +86,10 @@ class CoreController extends Controller
                 $user->update(['u' => $user->u + $log->u, 'd' => $user->d + $log->d, 't' => time()]);
             }
 
-            return $this->returnData('上报用户流量日志成功', 200, 'success');
+            return $this->succeed();
         }
 
-        return $this->returnData('生成用户流量日志失败', 400);
+        return $this->failed([400201, '生成用户流量日志失败']);
     }
 
     // 获取节点的审计规则
@@ -132,11 +105,11 @@ class CoreController extends Controller
                 ];
             }
 
-            return $this->returnData('获取节点审计规则成功', 200, 'success', ['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data ?? []]);
+            return $this->succeed(['mode' => $ruleGroup->type ? 'reject' : 'allow', 'rules' => $data ?? []]);
         }
 
         // 放行
-        return $this->returnData('获取节点审计规则成功', 200, 'success', ['mode' => 'all', 'rules' => $data ?? []]);
+        return $this->succeed(['mode' => 'all', 'rules' => $data ?? []]);
     }
 
     // 上报用户触发审计规则记录
@@ -145,13 +118,13 @@ class CoreController extends Controller
         $validator = Validator::make($request->all(), ['uid' => 'required|numeric|exists:user,id', 'rule_id' => 'required|numeric|exists:rule,id', 'reason' => 'required']);
 
         if ($validator->fails()) {
-            return $this->returnData('上报日志失败，请检查字段');
+            return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
         $data = $validator->validated();
         if ($node->ruleLogs()->create(['user_id' => $data['uid'], 'rule_id' => $data['rule_id'], 'reason' => $data['reason']])) {
-            return $this->returnData('上报日志成功', 200, 'success');
+            return $this->succeed();
         }
 
-        return $this->returnData('上报用户触发审计规则日志失败', 400);
+        return $this->failed([400201, '上报用户触发审计规则日志失败']);
     }
 }

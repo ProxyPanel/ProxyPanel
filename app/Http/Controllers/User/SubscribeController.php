@@ -3,27 +3,30 @@
 namespace App\Http\Controllers\User;
 
 use App\Components\IP;
-use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
-use Arr;
+use App\Services\ProxyServer;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
 
 class SubscribeController extends Controller
 {
-    private $subType;
+    private static $subType;
+    private $proxyServer;
 
     // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, string $code)
     {
-        if (empty($code)) {
+        preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
+
+        if (empty($matches) || empty($code)) {
             return Redirect::route('login');
         }
-        $this->subType = $request->input('type');
-        $target = strtolower($request->input('target') ?? ($request->userAgent() ?? ''));
+        $code = $matches[0];
+        $this->proxyServer = ProxyServer::getInstance();
+        self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
@@ -61,70 +64,16 @@ class SubscribeController extends Controller
 
             return $this->failed(trans('errors.subscribe.question'));
         }
+        $this->proxyServer->setUser($user);
+        $subscribe->increment('times'); // 更新访问次数
+        $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()])); // 记录每次请求
 
-        // 更新访问次数
-        $subscribe->increment('times');
-
-        // 记录每次请求
-        $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()]));
-
-        // 获取这个账号可用节点
-        $query = $user->nodes()->whereIn('is_display', [2, 3]);
-
-        if ($this->subType === 1) {
-            $query = $query->whereIn('type', [1, 4]);
-        } elseif ($this->subType) {
-            $query = $query->whereType($this->subType);
-        }
-
-        $nodeList = $query->orderByDesc('sort')->orderBy('id')->get();
-        if (empty($nodeList)) {
-            return $this->failed(trans('errors.subscribe.none'));
-        }
-
-        $servers = [];
-        foreach ($nodeList as $node) {
-            $servers[] = $node->getConfig($user);
-        }
-
-        // 打乱数组
-        if (sysConfig('rand_subscribe')) {
-            $servers = Arr::shuffle($servers);
-        }
-
-        if (sysConfig('subscribe_max')) {
-            $servers = array_slice($servers, 0, (int) sysConfig('subscribe_max'));
-        }
-
-        return (new ClientController)->config($target, $user, $servers);
+        return ProxyServer::getInstance()->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
     }
 
-    // 抛出错误的节点信息，用于兼容防止客户端订阅失败
-    private function failed($text)
-    {
-        return Response::make(base64url_encode($this->infoGenerator($text)));
-    }
-
-    private function infoGenerator($text): string
-    {
-        switch ($this->subType) {
-            case 2:
-                $result = 'vmess://'.base64url_encode(json_encode([
-                    'v' => '2', 'ps' => $text, 'add' => '0.0.0.0', 'port' => 0, 'id' => 0, 'aid' => 0, 'net' => 'tcp',
-                    'type' => 'none', 'host' => '', 'path' => '/', 'tls' => 'tls',
-                ], JSON_PRETTY_PRINT));
-                break;
-            case 3:
-                $result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);
-                break;
-            case 1:
-            case 4:
-            default:
-                $result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(sysConfig('website_name')).'&udpport=0&uot=0');
-                break;
-        }
-
-        return $result.PHP_EOL;
+    private function failed(string $text)
+    { // 抛出错误的节点信息，用于兼容防止客户端订阅失败
+        return Response::make(base64url_encode($this->proxyServer->failedProxyReturn($text, self::$subType ?? 1)));
     }
 
     private function subscribeLog($subscribeId, $ip, $headers): void

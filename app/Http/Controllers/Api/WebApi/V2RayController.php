@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Helpers\WebApiResponse;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 
-class V2RayController extends CoreController
+class V2RayController extends Controller
 {
-    // 获取节点信息
-    public function getNodeInfo(Node $node): JsonResponse
+    use WebApiResponse;
+
+    public function getNodeInfo(Node $node): JsonResponse // 获取节点信息
     {
         $cert = NodeCertificate::whereDomain($node->profile['v2_host'])->first();
         $tlsProvider = ! empty($node->profile['tls_provider']) ? $node->profile['tls_provider'] : sysConfig('v2ray_tls_provider');
-        if (! $tlsProvider) {
-            $tlsProvider = null;
-        }
 
-        return $this->returnData('获取节点信息成功', 200, 'success', [
+        return $this->succeed([
             'id'              => $node->id,
             'is_udp'          => (bool) $node->is_udp,
             'speed_limit'     => $node->getRawOriginal('speed_limit'),
             'client_limit'    => $node->client_limit,
             'push_port'       => $node->push_port,
-            'redirect_url'    => (string) sysConfig('redirect_url'),
+            'redirect_url'    => (string) sysConfig('redirect_url', ''),
             'secret'          => $node->auth->secret,
             'key'             => $cert ? $cert->key : '',
             'pem'             => $cert ? $cert->pem : '',
@@ -40,8 +40,7 @@ class V2RayController extends CoreController
         ]);
     }
 
-    // 获取节点可用的用户列表
-    public function getUserList(Node $node): JsonResponse
+    public function getUserList(Node $node): JsonResponse // 获取节点可用的用户列表
     {
         foreach ($node->users() as $user) {
             $data[] = [
@@ -51,19 +50,18 @@ class V2RayController extends CoreController
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 200, 'success', $data ?? [], ['updateTime' => time()]);
+        return $this->succeed($data ?? [], ['updateTime' => time()]);
     }
 
-    // 上报节点伪装域名证书信息
-    public function addCertificate(Node $node): JsonResponse
+    public function addCertificate(Node $node): JsonResponse // 上报节点伪装域名证书信息
     {
         if (request()->has(['key', 'pem'])) {
             $cert = NodeCertificate::whereDomain($node->v2_host)->firstOrCreate(['domain' => $node->server]);
             if ($cert && $cert->update(['key' => request('key'), 'pem' => request('pem')])) {
-                return $this->returnData('上报节点伪装域名证书成功', 200, 'success');
+                return $this->succeed();
             }
         }
 
-        return $this->returnData('上报节点伪装域名证书失败，请检查字段');
+        return $this->failed([400201, '上报节点伪装域名证书失败，请检查字段']);
     }
 }
