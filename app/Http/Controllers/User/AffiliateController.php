@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
+use App\Services\UserService;
 use Auth;
 use Hashids\Hashids;
 use Illuminate\Http\JsonResponse;
@@ -20,20 +21,13 @@ class AffiliateController extends Controller
             return Response::view('auth.error', ['message' => trans('user.purchase_required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
-        $affSalt = sysConfig('aff_salt');
-        if (isset($affSalt)) {
-            $aff_link = route('register', ['aff' => (new Hashids($affSalt, 8))->encode(Auth::id())]);
-        } else {
-            $aff_link = route('register', ['aff' => Auth::id()]);
-        }
-
         return view('user.referral', [
             'referral_traffic'  => flowAutoShow(sysConfig('referral_traffic') * MB),
             'referral_percent'  => sysConfig('referral_percent'),
             'referral_money'    => sysConfig('referral_money'),
             'totalAmount'       => ReferralLog::uid()->sum('commission') / 100,
             'canAmount'         => ReferralLog::uid()->whereStatus(0)->sum('commission') / 100,
-            'aff_link'          => $aff_link,
+            'aff_link'          => UserService::getInstance()->inviteURI(),
             'referralLogList'   => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
             'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
             'referralUserList'  => Auth::getUser()->invitees()->select(['username', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),

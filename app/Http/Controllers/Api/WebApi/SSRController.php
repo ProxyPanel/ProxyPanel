@@ -2,36 +2,18 @@
 
 namespace App\Http\Controllers\Api\WebApi;
 
+use App\Helpers\WebApiResponse;
 use App\Models\Node;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Routing\Controller;
 
-class SSRController extends CoreController
+class SSRController extends Controller
 {
-    // 获取节点信息
-    public function getNodeInfo(Node $node): JsonResponse
-    {
-        return $this->returnData('获取节点信息成功', 200, 'success', $this->nodeData($node));
-    }
+    use WebApiResponse;
 
-    // 生成节点信息
-    public function nodeData(Node $node): array
+    public function getNodeInfo(Node $node): JsonResponse // 获取节点信息
     {
-        return [
-            'id'           => $node->id,
-            'method'       => $node->profile['method'] ?? '',
-            'protocol'     => $node->profile['protocol'] ?? '',
-            'obfs'         => $node->profile['obfs'] ?? '',
-            'obfs_param'   => $node->profile['obfs_param'] ?? '',
-            'is_udp'       => $node->is_udp,
-            'speed_limit'  => $node->getRawOriginal('speed_limit'),
-            'client_limit' => $node->client_limit,
-            'single'       => isset($node->profile['passwd']) ? 1 : 0,
-            'port'         => (string) $node->port,
-            'passwd'       => $node->profile['passwd'] ?? '',
-            'push_port'    => $node->push_port,
-            'secret'       => $node->auth->secret,
-            'redirect_url' => sysConfig('redirect_url'),
-        ];
+        return $this->succeed($node->getSSRConfig());
     }
 
     // 获取节点可用的用户列表
@@ -51,6 +33,6 @@ class SSRController extends CoreController
             ];
         }
 
-        return $this->returnData('获取用户列表成功', 200, 'success', $data ?? [], ['updateTime' => time()]);
+        return $this->succeed($data ?? [], ['updateTime' => time()]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
+use App\Helpers\DataChart;
 use App\Models\Article;
 use App\Models\Coupon;
 use App\Models\Goods;
@@ -15,6 +16,7 @@ use App\Models\User;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
 use App\Services\CouponService;
+use App\Services\ProxyServer;
 use Cache;
 use DB;
 use Exception;
@@ -32,6 +34,8 @@ use Validator;
 
 class UserController extends Controller
 {
+    use DataChart;
+
     public function index()
     {
         // 用户转换
@@ -108,9 +112,10 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($request->isMethod('POST')) {
-            $server = Node::findOrFail($request->input('id'))->getConfig($user); // 提取节点信息
+            $proxyServer = ProxyServer::getInstance();
+            $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
-            return Response::json(['status' => 'success', 'data' => $this->getUserNodeInfo($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
+            return Response::json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
         }
 
         // 获取当前用户可用节点
@@ -477,9 +482,8 @@ class UserController extends Controller
         ]);
     }
 
-    // 更换订阅地址
     public function exchangeSubscribe(): ?JsonResponse
-    {
+    { // 更换订阅地址
         try {
             DB::beginTransaction();
 
@@ -501,9 +505,8 @@ class UserController extends Controller
         }
     }
 
-    // 转换成管理员的身份
     public function switchToAdmin(): JsonResponse
-    {
+    { // 转换成管理员的身份
         if (! Session::has('admin')) {
             return Response::json(['status' => 'fail', 'message' => trans('errors.unauthorized')]);
         }

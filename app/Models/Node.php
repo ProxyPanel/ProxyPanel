@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Components\IP;
-use Arr;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -18,9 +17,7 @@ class Node extends Model
 {
     protected $table = 'node';
     protected $guarded = [];
-    protected $casts = [
-        'profile' => 'array',
-    ];
+    protected $casts = ['profile' => 'array'];
 
     public function labels()
     {
@@ -60,6 +57,11 @@ class Node extends Model
     public function hourlyDataFlows(): HasMany
     {
         return $this->hasMany(NodeHourlyDataFlow::class);
+    }
+
+    public function country(): HasOne
+    {
+        return $this->HasOne(Country::class, 'code', 'country_code');
     }
 
     public function ruleGroup(): BelongsTo
@@ -123,7 +125,7 @@ class Node extends Model
     public function ips(int $type = 4): array
     {
         // 使用DDNS的node先通过gethostbyname获取ip地址
-        if ($this->attributes['is_ddns']) { // When ddns is enable, only domain can be used to check the ip
+        if ($this->attributes['is_ddns'] ?? 0) { // When ddns is enabled, only domain can be used to check the ip
             $ip = gethostbyname($this->attributes['server']);
             if (strcmp($ip, $this->attributes['server']) === 0) {
                 Log::warning('获取 【'.$this->attributes['server'].'】 IP失败'.$ip);
@@ -134,77 +136,6 @@ class Node extends Model
         }
 
         return array_map('trim', explode(',', $ip));
-    }
-
-    public function getConfig(User $user)
-    {
-        $config = [
-            'id'    => $this->id,
-            'name'  => $this->name,
-            'host'  => $this->host,
-            'group' => sysConfig('website_name'),
-            'udp'   => $this->is_udp,
-        ];
-
-        if ($this->relay_node_id) {
-            $parentConfig = $this->relayNode->getConfig($user);
-            $config = array_merge($config, Arr::except($parentConfig, ['id', 'name', 'host', 'group', 'udp']));
-            if ($parentConfig['type'] === 'trojan') {
-                $config['sni'] = $parentConfig['host'];
-            }
-            $config['port'] = $this->port;
-        } else {
-            switch ($this->type) {
-                case 0:
-                    $config = array_merge($config, [
-                        'type'   => 'shadowsocks',
-                        'passwd' => $user->passwd,
-                    ], $this->profile);
-                    if ($this->port) {
-                        $config['port'] = $this->port;
-                    } else {
-                        $config['port'] = $user->port;
-                    }
-                    break;
-                case 2:
-                    $config = array_merge($config, [
-                        'type' => 'v2ray',
-                        'port' => $this->port,
-                        'uuid' => $user->vmess_id,
-                    ], $this->profile);
-                    break;
-                case 3:
-                    $config = array_merge($config, [
-                        'type'   => 'trojan',
-                        'port'   => $this->port,
-                        'passwd' => $user->passwd,
-                        'sni'    => '',
-                    ], $this->profile);
-                    break;
-                case 1:
-                case 4:
-                    $config = array_merge($config, [
-                        'type' => 'shadowsocksr',
-                    ], $this->profile);
-                    if ($this->profile['passwd'] && $this->port) {
-                        //单端口使用中转的端口
-                        $config['port'] = $this->port;
-                        $config['protocol_param'] = $user->port.':'.$user->passwd;
-                    } else {
-                        $config['port'] = $user->port;
-                        $config['passwd'] = $user->passwd;
-                        if ($this->type === 1) {
-                            $config['method'] = $user->method;
-                            $config['protocol'] = $user->protocol;
-                            $config['obfs'] = $user->obfs;
-                        }
-                    }
-
-                    break;
-            }
-        }
-
-        return $config;
     }
 
     public function getSpeedLimitAttribute($value)
@@ -231,5 +162,25 @@ class Node extends Model
     public function getHostAttribute(): string
     {
         return $this->server ?? $this->ip ?? $this->ipv6;
+    }
+
+    public function getSSRConfig(): array
+    {
+        return [
+            'id'           => $this->id,
+            'method'       => $this->profile['method'] ?? '',
+            'protocol'     => $this->profile['protocol'] ?? '',
+            'obfs'         => $this->profile['obfs'] ?? '',
+            'obfs_param'   => $this->profile['obfs_param'] ?? '',
+            'is_udp'       => $this->is_udp,
+            'speed_limit'  => $this->getRawOriginal('speed_limit'),
+            'client_limit' => $this->client_limit,
+            'single'       => isset($this->profile['passwd']) ? 1 : 0,
+            'port'         => (string) $this->port,
+            'passwd'       => $this->profile['passwd'] ?? '',
+            'push_port'    => $this->push_port,
+            'secret'       => $this->auth->secret,
+            'redirect_url' => sysConfig('redirect_url', ''),
+        ];
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Components\IP;
+use App\Helpers\DataChart;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\NodeOnlineIp;
@@ -19,8 +20,9 @@ use Response;
 
 class LogsController extends Controller
 {
-    // 订单列表
-    public function orderList(Request $request)
+    use DataChart;
+
+    public function orderList(Request $request) // 订单列表
     {
         $query = Order::with(['user:id,username', 'goods:id,name', 'coupon:id,name,sn']);
 

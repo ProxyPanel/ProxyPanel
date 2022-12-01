@@ -1,7 +1,7 @@
 <?php
 
 // 后端WEBAPI
-Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function () {
+Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi', 'domain' => sysConfig('web_api_url') ?? sysConfig('website_url')], function () {
     // ss后端WEBAPI V1版
     Route::group(['prefix' => 'ss/v1'], function () {
         Route::get('node/{node}', 'SSController@getNodeInfo'); // 获取节点信息
@@ -71,18 +71,24 @@ Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi'], function (
 });
 
 // 客户端API
-Route::group(['namespace' => 'Api\Client', 'prefix' => 'client/v1'], function () {
-    Route::get('config', 'V1Controller@getConfig'); // 获取配置
-    Route::post('login', 'V1Controller@login'); // 登录
-    Route::post('register', 'V1Controller@register'); // 注册
-    Route::get('logout', 'V1Controller@logout'); // 退出
-    Route::get('refresh', 'V1Controller@refresh'); // 刷新令牌
-    Route::get('profile', 'V1Controller@userProfile'); // 获取账户信息
-    Route::get('nodes', 'V1Controller@nodeList'); // 获取账户全部节点
-    Route::get('node/{id}', 'V1Controller@nodeList'); // 获取账户个别节点
-    Route::get('shop', 'V1Controller@shop'); // 获取商品信息
-    Route::get('gift', 'V1Controller@gift'); // 获取邀请信息
-    Route::post('checkIn', 'V1Controller@checkIn'); // 签到
-    Route::post('payment/purchase', 'V1Controller@purchase'); // 获取商品信息
-    Route::get('payment/getStatus', 'V1Controller@getStatus'); // 获取商品信息
+
+Route::group(['namespace' => 'Api\Client', 'prefix' => 'v1'], function () {
+    Route::post('login', 'AuthController@login'); // 登录
+    Route::post('register', 'AuthController@register'); // 注册
+    Route::get('logout', 'AuthController@logout'); //登出
+    Route::get('getconfig', 'ClientController@getConfig'); // 获取配置文件
+    Route::get('version/update', 'ClientController@checkClientVersion'); // 检查更新
+    Route::get('shop', 'ClientController@shop'); // 获取商品列表
+    Route::group(['middleware' => 'auth.client'], function () { // 用户验证
+        Route::get('getclash', 'ClientController@downloadProxies'); // 下载节点配置
+        Route::get('getuserinfo', 'ClientController@getUserInfo'); // 获取用户信息
+        Route::post('doCheckIn', 'ClientController@checkIn'); // 签到
+        Route::get('checkClashUpdate', 'ClientController@proxyCheck'); // 判断是否更新订阅
+        Route::get('proxy', 'ClientController@getProxyList'); // 获取节点列表
+        Route::get('tickets', 'ClientController@ticketList'); // 获取工单列表
+        Route::post('tickets/add', 'ClientController@ticket_add'); // 提交工单
+        Route::get('order', 'ClientController@getOrders'); // 获取订单列表
+        Route::get('invite/gift', 'ClientController@getInvite'); // 获取邀请详情和列表
+        Route::get('gettransfer', 'ClientController@getUserTransfer'); // 获取剩余流量
+    });
 });

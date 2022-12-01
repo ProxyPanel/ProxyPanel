@@ -7,6 +7,7 @@ return [
         'china'   => '检测到中国IP或使用代理访问，禁止访问',
         'oversea' => '检测到海外IP或代理访问，禁止访问',
     ],
+    'http'         => 'HTTP请求类型错误',
     'log'          => '日志',
     'missing_page' => '找不到网页',
     'refresh'      => '刷 新',

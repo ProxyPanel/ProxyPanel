@@ -2,9 +2,11 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AcceptHeader;
 use App\Http\Middleware\Affiliate;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\CheckForMaintenanceMode;
+use App\Http\Middleware\ClientAuthenticate;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\isForbidden;
 use App\Http\Middleware\isLogin;
@@ -14,6 +16,7 @@ use App\Http\Middleware\Permission;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\Telegram;
+use App\Http\Middleware\tmpCORS;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -83,6 +86,12 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            AcceptHeader::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            tmpCORS::class,
+            SetLocale::class,
             'throttle:60,1',
             SubstituteBindings::class,
         ],
@@ -96,21 +105,22 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => Authenticate::class,
-        'auth.basic' => AuthenticateWithBasicAuth::class,
-        'bindings' => SubstituteBindings::class,
-        'cache.headers' => SetCacheHeaders::class,
-        'can' => Authorize::class,
-        'guest' => RedirectIfAuthenticated::class,
+        'auth'             => Authenticate::class,
+        'auth.basic'       => AuthenticateWithBasicAuth::class,
+        'auth.client'      => ClientAuthenticate::class,
+        'bindings'         => SubstituteBindings::class,
+        'cache.headers'    => SetCacheHeaders::class,
+        'can'              => Authorize::class,
+        'guest'            => RedirectIfAuthenticated::class,
         'password.confirm' => RequirePassword::class,
-        'signed' => ValidateSignature::class,
-        'telegram'=>Telegram::class,
-        'throttle' => ThrottleRequests::class,
-        'verified' => EnsureEmailIsVerified::class,
-        'webApi' => WebApi::class,
-        'isMaintenance' => isMaintenance::class,
-        'isSecurity' => isSecurity::class,
-        'isForbidden' => isForbidden::class,
-        'affiliate' => Affiliate::class,
+        'signed'           => ValidateSignature::class,
+        'telegram'         => Telegram::class,
+        'throttle'         => ThrottleRequests::class,
+        'verified'         => EnsureEmailIsVerified::class,
+        'webApi'           => WebApi::class,
+        'isMaintenance'    => isMaintenance::class,
+        'isSecurity'       => isSecurity::class,
+        'isForbidden'      => isForbidden::class,
+        'affiliate'        => Affiliate::class,
     ];
 }

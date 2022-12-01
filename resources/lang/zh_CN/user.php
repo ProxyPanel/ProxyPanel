@@ -172,8 +172,9 @@ return [
         'call4help'     => '请开工单通知客服',
     ],
     'service'             => [
-        'node_count' => '<code>:num</code>条优质线路',
-        'unlimited'  => '不限速',
+        'node_count'    => '<code>:num</code> 条优质线路',
+        'country_count' => '覆盖 <code>:num</code> 个国家或地区',
+        'unlimited'     => '不限速',
     ],
     'payment'             => [
         'error'           => '充值余额不合规',
