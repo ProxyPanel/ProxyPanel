@@ -14,7 +14,7 @@ class RmTelegramInUserTable extends Migration
     public function up()
     {
         Schema::table('user', function (Blueprint $table) {
-            $table->dropColumn(['telegram_id']);
+            $table->dropColumn('telegram_id');
         });
     }
 
