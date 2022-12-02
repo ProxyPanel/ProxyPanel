@@ -271,7 +271,7 @@ class ClientController extends Controller
             'client.name'            => sysConfig('website_name'),
             'client.node_class_name' => Level::all()->pluck('name', 'level')->toArray(),
             'client.baseUrl'         => sysConfig('website_url'),
-            'client.subscribe_url'   => sysConfig('web_api_url') ?? sysConfig('website_url'),
+            'client.subscribe_url'   => sysConfig('subscribe_domain') ?: sysConfig('website_url'),
             'client.checkinMin'      => sysConfig('min_rand_traffic'),
             'client.checkinMax'      => sysConfig('max_rand_traffic'),
             'client.invite_gift'     => sysConfig('default_traffic') / 1024,

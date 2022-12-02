@@ -26,7 +26,7 @@ class AppendV2SniToNodeTable extends Migration
     public function down()
     {
         Schema::table('node', function (Blueprint $table) {
-            $table->dropColumn(['v2_sni']);
+            $table->dropColumn('v2_sni');
         });
     }
 }

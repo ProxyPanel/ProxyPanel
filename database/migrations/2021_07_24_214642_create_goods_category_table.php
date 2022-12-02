@@ -36,7 +36,7 @@ class CreateGoodsCategoryTable extends Migration
     {
         Schema::dropIfExists('goods_category');
         Schema::table('goods', function (Blueprint $table) {
-            $table->dropColumn(['category_id']);
+            $table->dropColumn('category_id');
         });
     }
 }

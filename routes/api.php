@@ -1,7 +1,7 @@
 <?php
 
 // 后端WEBAPI
-Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi', 'domain' => sysConfig('web_api_url') ?? sysConfig('website_url')], function () {
+Route::group(['namespace' => 'Api\WebApi', 'middleware' => 'webApi', 'domain' => sysConfig('web_api_url') ?: sysConfig('website_url')], function () {
     // ss后端WEBAPI V1版
     Route::group(['prefix' => 'ss/v1'], function () {
         Route::get('node/{node}', 'SSController@getNodeInfo'); // 获取节点信息

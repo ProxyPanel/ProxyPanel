@@ -26,7 +26,7 @@ class AppendSpeedLimitGoodsTable extends Migration
     public function down()
     {
         Schema::table('goods', function (Blueprint $table) {
-            $table->dropColumn(['speed_limit']);
+            $table->dropColumn('speed_limit');
         });
     }
 }

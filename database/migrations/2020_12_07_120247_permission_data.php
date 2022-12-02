@@ -138,7 +138,7 @@ class PermissionData extends Migration
         }
 
         Schema::table('user', function (Blueprint $table) {
-            $table->dropColumn(['is_admin']);
+            $table->dropColumn('is_admin');
         });
     }
 
