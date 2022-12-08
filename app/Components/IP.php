@@ -94,7 +94,7 @@ class IP
         return false;
     }
 
-    public static function IPIP(string $ip): array // 通过IPIP查询IP地址的详细信息
+    public static function IPIP(string $ip): array // 通过IPIP离线数据查询IP地址的详细信息
     {
         $filePath = database_path('ipipfree.ipdb'); // 来源: https://www.ipip.net/free_download/
         $location = (new City($filePath))->findMap($ip, 'CN');

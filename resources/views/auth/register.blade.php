@@ -65,7 +65,9 @@
                     <input type="text" class="form-control" name="code" value="{{old('code') ?: Request::query('code')}}"
                            @if(sysConfig('is_invite_register') == 2) required @endif/>
                     <label class="floating-label" for="code">
-                        {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)({{trans('auth.optional')}}) @endif
+                        {{trans('auth.invite.attribute')}}@if(sysConfig('is_invite_register') == 1)
+                            ({{trans('auth.optional')}})
+                        @endif
                     </label>
                 </div>
                 @if(sysConfig('is_free_code'))
@@ -99,7 +101,7 @@
             <button type="submit" class="btn btn-primary btn-lg float-right">{{trans('auth.register.attribute')}}</button>
         @endif
     </form>
-    @if(sysConfig('is_register') && sysConfig('oauth_path'))
+    @if(sysConfig('is_register') && sysConfig('oauth_path') && sysConfig('is_invite_register') != 2)
         <div class="pt-20" style="display: inline-block;">
             <div class="line">
                 <span> {{trans('auth.oauth.register')}} </span>
@@ -164,67 +166,67 @@
     <script>
         @if($emailList)
         function getEmail() {
-            let email = $('#emailHead').val().trim();
-            const emailTail = $('#emailTail').val();
-            if (email === '') {
-                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
-                return false;
-            }
-            email += '@' + emailTail;
-            $('#username').val(email);
-            return email;
+          let email = $('#emailHead').val().trim();
+          const emailTail = $('#emailTail').val();
+          if (email === '') {
+            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+            return false;
+          }
+          email += '@' + emailTail;
+          $('#username').val(email);
+          return email;
         }
         @endif
 
         // 发送注册验证码
         function sendVerifyCode() {
-            let flag = true; // 请求成功与否标记
-            let email = $('#username').val().trim();
+          let flag = true; // 请求成功与否标记
+          let email = $('#username').val().trim();
             @if($emailList)
                 email = getEmail();
             @endif
 
             if (email === '') {
-                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
-                return false;
+              swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+              return false;
             }
 
-            $.ajax({
-                method: 'POST',
-                url: '{{route('sendVerificationCode')}}',
-                dataType: 'json',
-                data: {_token: '{{csrf_token()}}', username: email},
-                success: function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success'});
-                        $('#sendCode').attr('disabled', true);
-                        flag = true;
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
-                        $('#sendCode').attr('disabled', false);
-                        flag = false;
-                    }
-                },
-                error: function() {
-                    swal.fire({title: '发送失败', icon: 'error'});
-                    flag = false;
-                },
-            });
+          $.ajax({
+            method: 'POST',
+            url: '{{route('sendVerificationCode')}}',
+            dataType: 'json',
+            data: {_token: '{{csrf_token()}}', username: email},
+            success: function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success'});
+                $('#sendCode').attr('disabled', true);
+                flag = true;
+              } else {
+                swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
+                $('#sendCode').attr('disabled', false);
+                flag = false;
+              }
+            },
+            error: function() {
+              swal.fire({title: '发送失败', icon: 'error'});
+              flag = false;
+            },
+          });
 
-            // 请求成功才开始倒计时
-            if (flag) {
-                // 60秒后才能重新申请发送
-                let left_time = 60;
-                const tt = window.setInterval(function() {
-                    left_time--;
-                    if (left_time <= 0) {
-                        window.clearInterval(tt);
-                        $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
-                    } else {
-                        $('#sendCode').text(left_time + ' s');
-                    }
-                }, 1000);
-            }
+          // 请求成功才开始倒计时
+          if (flag) {
+            // 60秒后才能重新申请发送
+            let left_time = 60;
+            const tt = window.setInterval(function() {
+              left_time--;
+              if (left_time <= 0) {
+                window.clearInterval(tt);
+                $('#sendCode').removeAttr('disabled').text('{{trans('auth.request')}}');
+              } else {
+                $('#sendCode').text(left_time + ' s');
+              }
+            }, 1000);
+          }
         }
 
         $('#register-form').submit(function(event) {
@@ -234,18 +236,18 @@
 
             @switch(sysConfig('is_captcha'))
             @case(3)
-            // 先检查Google reCAPTCHA有没有进行验证
-            if ($('#g-recaptcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-                return false;
-            }
+          // 先检查Google reCAPTCHA有没有进行验证
+          if ($('#g-recaptcha-response').val() === '') {
+            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+            return false;
+          }
             @break
             @case(4)
-            // 先检查Google reCAPTCHA有没有进行验证
-            if ($('#h-captcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-                return false;
-            }
+          // 先检查Google reCAPTCHA有没有进行验证
+          if ($('#h-captcha-response').val() === '') {
+            swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+            return false;
+          }
             @break
             @default
             @endswitch

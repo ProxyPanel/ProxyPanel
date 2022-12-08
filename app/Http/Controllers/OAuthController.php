@@ -13,21 +13,6 @@ use Str;
 
 class OAuthController extends Controller
 {
-    public function route(Request $request, string $type)
-    {
-        $action = $request->input('action');
-        $key = "services.{$type}.redirect";
-        if ($action === 'binding') {
-            config([$key => route('oauth.bind', ['type' => $type])]);
-        } elseif ($action === 'register') {
-            config([$key => route('oauth.register', ['type' => $type])]);
-        } else {
-            config([$key => route('oauth.login', ['type' => $type])]);
-        }
-
-        return Socialite::driver($type)->redirect();
-    }
-
     public function simple(string $type)
     {
         $info = Socialite::driver($type)->stateless()->user();
@@ -57,6 +42,21 @@ class OAuthController extends Controller
         $user->userAuths()->create($data);
 
         return redirect()->route('profile')->with('successMsg', trans('auth.oauth.bind_success'));
+    }
+
+    public function route(Request $request, string $type)
+    {
+        $action = $request->input('action');
+        $key = "services.{$type}.redirect";
+        if ($action === 'binding') {
+            config([$key => route('oauth.bind', ['type' => $type])]);
+        } elseif ($action === 'register') {
+            config([$key => route('oauth.register', ['type' => $type])]);
+        } else {
+            config([$key => route('oauth.login', ['type' => $type])]);
+        }
+
+        return Socialite::driver($type)->redirect();
     }
 
     private function login(string $type, $info)
@@ -119,6 +119,14 @@ class OAuthController extends Controller
 
     public function register($type)
     {
+        if (! sysConfig('is_register')) {
+            return redirect()->route('register')->withErrors(trans('auth.register.error.disable'));
+        }
+
+        if ((int) sysConfig('is_invite_register') === 2) { // 必须使用邀请码
+            return redirect()->route('register')->withErrors(trans('validation.required', ['attribute' => trans('auth.invite.attribute')]));
+        }
+
         config(["services.{$type}.redirect" => route('oauth.register', ['type' => $type])]);
         $info = Socialite::driver($type)->stateless()->user();
 
