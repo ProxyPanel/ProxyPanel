@@ -238,10 +238,7 @@ class AuthController extends Controller
         $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
         // 创建新用户
-        $user = Helpers::addUser($data['username'], $data['password'], $transfer_enable, sysConfig('default_days'), $inviter_id, $data['nickname']);
-
-        // 注册失败，抛出异常
-        if (! $user) {
+        if (! $user = Helpers::addUser($data['username'], $data['password'], $transfer_enable, sysConfig('default_days'), $inviter_id, $data['nickname'])) { // 注册失败，抛出异常
             return Redirect::back()->withInput()->withErrors(trans('auth.register.failed'));
         }
 
