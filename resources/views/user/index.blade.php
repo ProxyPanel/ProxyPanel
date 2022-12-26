@@ -196,7 +196,7 @@
                                 <i class="font-size-40 wb-wrench"></i>
                                 <h4 class="card-title">{{trans('user.client')}}</h4>
                                 <p class="card-text">{{trans('common.download').' & '.trans('user.tutorials')}}</p>
-                                <a href="{{route('help')}}#answer-2" class="btn btn-primary mb-10">{{trans('common.goto')}}</a>
+                                <a href="{{route('knowledge')}}" class="btn btn-primary mb-10">{{trans('common.goto')}}</a>
                             </div>
                         </div>
                     </div>
@@ -283,22 +283,6 @@
     <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    {{--    @if(sysConfig('is_push_bear') && sysConfig('push_bear_qrcode'))--}}
-    {{--        <script src="/assets/custom/easy.qrcode.min.js"></script>--}}
-    {{--        <script>--}}
-    {{--            // Options--}}
-    {{--            const options = {--}}
-    {{--                text: @json(sysConfig('push_bear_qrcode')),--}}
-    {{--                width: 150,--}}
-    {{--                height: 150,--}}
-    {{--                backgroundImage: '{{asset('/assets/images/wechat.png')}}',--}}
-    {{--                autoColor: true,--}}
-    {{--            };--}}
-
-    {{--            // Create QRCode Object--}}
-    {{--            new QRCode(document.getElementById('qrcode'), options);--}}
-    {{--        </script>--}}
-    {{--    @endif--}}
     <script>
       function exchangeSubscribe() { // 更换订阅地址
         swal.fire({
