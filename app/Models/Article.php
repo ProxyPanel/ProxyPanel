@@ -21,4 +21,9 @@ class Article extends Model
     {
         return $query->whereType($type);
     }
+
+    public function scopeLang($query, $language = null)
+    {
+        return $query->whereLanguage($language ?? app()->getLocale());
+    }
 }

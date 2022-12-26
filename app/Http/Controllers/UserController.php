@@ -15,6 +15,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
+use App\Services\ArticleService;
 use App\Services\CouponService;
 use App\Services\ProxyService;
 use App\Services\UserService;
@@ -134,10 +135,11 @@ class UserController extends Controller
         ]);
     }
 
-    // 公告详情
     public function article(Article $article)
-    {
-        return view('user.article', compact('article'));
+    { // 公告详情
+        $articleService = new ArticleService($article);
+
+        return response()->json(['title' => $article->title, 'content' => $articleService->getContent()]);
     }
 
     // 修改个人资料
@@ -441,9 +443,8 @@ class UserController extends Controller
     }
 
     // 帮助中心
-    public function help()
+    public function knowledge()
     {
-        //$view['articleList'] = Article::type(1)->orderByDesc('sort')->latest()->limit(10)->paginate(5);
         $data = [];
         if (Node::whereType(0)->whereStatus(1)->exists()) {
             $data[] = 'ss';
@@ -459,28 +460,12 @@ class UserController extends Controller
         }
 
         $subscribe = auth()->user()->subscribe;
-        $subscribe_link = route('sub', $subscribe->code);
 
-        return view('user.help', [
-            'sub'                     => $data,
-            'paying_user'             => auth()->user()->activePayingUser(), // 付费用户判断
-            'Shadowrocket_install'    => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Shadowrocket.plist', // 客户端安装
-            'Quantumult_install'      => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/Quantumult.plist', // 客户端安装
-            'QuantumultX_install'     => 'itms-services://?action=download-manifest&url='.sysConfig('website_url').'/clients/QuantumultX.plist', // 客户端安装
-            'subscribe_status'        => $subscribe->status, // 订阅连接
-            'link'                    => $subscribe_link,
-            'subscribe_link'          => 'sub://'.base64url_encode($subscribe_link),
-            'Shadowrocket_link'       => 'shadowrocket://add/sub://'.base64url_encode($subscribe_link).'?remarks='.urlencode(sysConfig('website_name').' '.sysConfig('website_url')),
-            'Shadowrocket_linkQrcode' => 'sub://'.base64url_encode($subscribe_link).'#'.base64url_encode(sysConfig('website_name')),
-            'Clash_link'              => "clash://install-config?url={$subscribe_link}",
-            'Surge_link'              => "surge:///install-config?url={$subscribe_link}",
-            'QuantumultX_link'        => 'quantumult-x:///update-configuration?remote-resource='.json_encode([
-                'server_remote'  => ["{$subscribe_link}, tag=".sysConfig('website_name')],
-                'filter_remote'  => [],
-                'rewrite_remote' => [],
-            ]),
-            'Quantumult_linkOut'      => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Pro.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),
-            'Quantumult_linkIn'       => 'quantumult://configuration?server='.base64url_encode($subscribe_link).'&filter='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/BacktoCN.conf').'&rejection='.base64url_encode('https://raw.githubusercontent.com/ZBrettonYe/VPN-Rules-Collection/master/Profiles/Quantumult/Rejection.conf'),
+        return view('user.knowledge', [
+            'subType'    => $data,
+            'subUrl'     => route('sub', $subscribe->code),
+            'subStatus'  => $subscribe->status,
+            'knowledges' => Article::type(1)->lang()->latest()->orderByDesc('sort')->get()->groupBy('category'),
         ]);
     }
 

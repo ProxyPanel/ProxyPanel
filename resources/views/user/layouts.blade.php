@@ -107,7 +107,7 @@
                     </a>
                 </li>
                 <li class="site-menu-item {{request()->routeIs('help') ? 'active open' : ''}}">
-                    <a href="{{route('help')}}">
+                    <a href="{{route('knowledge')}}">
                         <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
                         <span class="site-menu-title">{{trans('user.menu.helps')}}</span>
                     </a>

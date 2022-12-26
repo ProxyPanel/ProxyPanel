@@ -21,7 +21,7 @@ Route::post('makeInvite', 'UserController@makeInvite')->name('createInvite'); //
 Route::match(['get', 'post'], 'profile', 'UserController@profile')->name('profile'); // 修改个人信息
 Route::post('switchToAdmin', 'UserController@switchToAdmin')->name('switch'); // 转换成管理员的身份
 Route::post('charge', 'UserController@charge')->name('recharge'); // 卡券余额充值
-Route::get('help', 'UserController@help')->name('help'); // 帮助中心
+Route::get('knowledge', 'UserController@knowledge')->name('knowledge'); // 帮助中心
 
 Route::namespace('User')->group(function () {
     Route::get('referral', 'AffiliateController@referral')->name('commission'); // 推广返利
