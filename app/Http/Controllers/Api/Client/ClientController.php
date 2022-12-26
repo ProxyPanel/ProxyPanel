@@ -10,7 +10,7 @@ use App\Models\GoodsCategory;
 use App\Models\Level;
 use App\Models\ReferralLog;
 use App\Models\Ticket;
-use App\Services\ProxyServer;
+use App\Services\ProxyService;
 use App\Services\UserService;
 use Arr;
 use Artisan;
@@ -186,7 +186,7 @@ class ClientController extends Controller
     {
         $md5 = $request->get('md5', '');
 
-        $proxy = ProxyServer::getInstance()->getProxyCode('clash');
+        $proxy = ProxyService::getInstance()->getProxyCode('clash');
         if (strtolower(md5(json_encode($proxy))) === strtolower($md5)) {
             return $this->succeed(false);
         }
@@ -198,12 +198,12 @@ class ClientController extends Controller
     {
         $flag = strtolower($request->input('flag') ?? ($request->userAgent() ?? ''));
 
-        return ProxyServer::getInstance()->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
+        return ProxyService::getInstance()->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
     }
 
     public function getProxyList()
     {
-        $proxyServer = ProxyServer::getInstance();
+        $proxyServer = ProxyService::getInstance();
 
         $servers = [];
         foreach ($proxyServer->getNodeList(null, false) as $node) {

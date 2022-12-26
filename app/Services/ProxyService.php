@@ -9,7 +9,7 @@ use App\Models\Node;
 use App\Models\User;
 use Arr;
 
-class ProxyServer extends BaseService
+class ProxyService extends BaseService
 {
     use ClientConfig;
 

@@ -16,7 +16,7 @@ use App\Models\User;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
 use App\Services\CouponService;
-use App\Services\ProxyServer;
+use App\Services\ProxyService;
 use Cache;
 use DB;
 use Exception;
@@ -112,7 +112,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($request->isMethod('POST')) {
-            $proxyServer = ProxyServer::getInstance();
+            $proxyServer = ProxyService::getInstance();
             $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
             return Response::json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
