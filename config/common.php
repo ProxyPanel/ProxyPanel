@@ -72,4 +72,9 @@ return [
             10 => '钉钉',
         ],
     ],
+
+    'language' => [
+        'zh_CN' => ['简体中文', 'cn'],
+        'en'    => ['English', 'gb'],
+    ],
 ];

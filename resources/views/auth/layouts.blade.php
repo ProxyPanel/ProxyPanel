@@ -39,17 +39,16 @@
                                 <i class="font-size-20 wb-globe"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
-                                <a class="dropdown-item" href="{{route('lang', ['locale' => 'en'])}}" role="menuitem">
-                                    <i class="fi fi-gb"></i>
-                                    <span style="padding: inherit;">English</span></a>
-                                <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh_CN'])}}" role="menuitem">
-                                    <i class="fi fi-cn"></i>
-                                    <span style="padding: inherit;">简体中文</span></a>
+                                @foreach (config('common.language') as $key => $value)
+                                    <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}" role="menuitem">
+                                        <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                    </a>
+                                @endforeach
                             </div>
                         </div>
                     </div>
                     <div class="panel-body">
-                    <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
+                        <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
 {{trans('common.update_browser.2')}}<a href="http://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
                         @yield('content')
                     </div>
