@@ -36,6 +36,19 @@
                             <span class="sr-only">{{trans('common.toggle_action', ['action' => trans('common.function.fullscreen')])}}</span>
                         </a>
                     </li>
+                    <li class="nav-item dropdown">
+                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" role="button">
+                            <span class="icon wb-flag"></span>
+                            <span class="icon wb-chevron-down-mini"></span>
+                        </a>
+                        <div class="dropdown-menu" role="menu">
+                            @foreach (config('common.language') as $key => $value)
+                                <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}" role="menuitem">
+                                    <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </li>
                 </ul>
                 <ul class="nav navbar-toolbar navbar-right navbar-toolbar-right">
                     <li class="nav-item dropdown">

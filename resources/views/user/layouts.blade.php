@@ -1,3 +1,4 @@
+@php use App\Models\ReferralLog, App\Models\Order; @endphp
 @extends('_layout')
 @section('title', sysConfig('website_name'))
 @section('layout_css')
@@ -48,19 +49,18 @@
                             <span class="icon wb-chevron-down-mini"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">
-                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'en'])}}" role="menuitem">
-                                <i class="fi fi-gb"></i>
-                                <span style="padding: inherit;">English</span></a>
-                            <a class="dropdown-item" href="{{route('lang', ['locale' => 'zh_CN'])}}" role="menuitem">
-                                <i class="fi fi-cn"></i>
-                                <span style="padding: inherit;">简体中文</span></a>
+                            @foreach (config('common.language') as $key => $value)
+                                <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}" role="menuitem">
+                                    <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                </a>
+                            @endforeach
                         </div>
                     </li>
                     <li class="nav-item dropdown">
                         <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"
                            data-toggle="dropdown" role="button">
                         <span class="avatar avatar-online">
-                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}" /><i></i>
+                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}"/><i></i>
                         </span>
                         </a>
                         <div class="dropdown-menu" role="menu">
@@ -138,7 +138,7 @@
                         <span class="site-menu-title">{{trans('user.menu.invoices')}}</span>
                     </a>
                 </li>
-                @if(\App\Models\ReferralLog::uid()->exists() || \App\Models\Order::uid()->whereStatus(2)->exists())
+                @if(ReferralLog::uid()->exists() || Order::uid()->whereStatus(2)->exists())
                     @if(sysConfig('is_invite_register'))
                         <li class="site-menu-item {{request()->routeIs('invite') ? 'active open' : ''}}">
                             <a href="{{route('invite')}}">
@@ -175,7 +175,7 @@
         </div>
     </div>
     <div class="page">
-    <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
+        <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
 {{trans('common.update_browser.2')}}<a href="http://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
         @yield('content')
     </div>
@@ -207,30 +207,30 @@
         @yield('javascript')
         @if(Session::get('admin'))
             <script>
-                $('#return_to_admin').click(function() {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{route('switch')}}',
-                        data: {'_token': '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function(ret) {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false,
-                            }).then(() => window.location.href = '{{route('admin.index')}}');
-                        },
-                        error: function(ret) {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'error',
-                                timer: 1500,
-                                showConfirmButton: false,
-                            });
-                        },
+              $('#return_to_admin').click(function() {
+                $.ajax({
+                  method: 'POST',
+                  url: '{{route('switch')}}',
+                  data: {'_token': '{{csrf_token()}}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.href = '{{route('admin.index')}}');
+                  },
+                  error: function(ret) {
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'error',
+                      timer: 1500,
+                      showConfirmButton: false,
                     });
+                  },
                 });
+              });
             </script>
         @endif
         <!-- 统计 -->
