@@ -17,6 +17,7 @@ use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
 use App\Services\CouponService;
 use App\Services\ProxyService;
+use App\Services\UserService;
 use Cache;
 use DB;
 use Exception;
@@ -43,6 +44,7 @@ class UserController extends Controller
             auth()->loginUsingId(Session::get('user'));
             Session::forget('user');
         }
+        $userService = UserService::getInstance();
         $user = auth()->user();
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->used_traffic;
@@ -69,7 +71,7 @@ class UserController extends Controller
             'unusedPercent'    => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
             'announcements'    => Article::type(2)->latest()->simplePaginate(1), // 公告
             'isTrafficWarning' => $user->isTrafficWarning(), // 流量异常判断
-            'paying_user'      => $user->activePayingUser(), // 付费用户判断
+            'paying_user'      => $userService->isActivePaying(), // 付费用户判断
             'userLoginLog'     => $user->loginLogs()->latest()->first(), // 近期登录日志
             'subscribe_status' => $user->subscribe->status,
             'subType'          => $subType,
