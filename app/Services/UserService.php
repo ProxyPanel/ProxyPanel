@@ -59,4 +59,9 @@ class UserService extends BaseService
 
         return $isCode ? $aff : sysConfig('website_url').route('register', ['aff' => 1], false);
     }
+
+    public function isActivePaying(): bool
+    {
+        return self::$user->orders()->active()->where('origin_amount', '>', 0)->exists();
+    }
 }

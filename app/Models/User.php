@@ -303,11 +303,6 @@ class User extends Authenticatable
         return UserHourlyDataFlow::userRecentUsed($this->id)->sum('total');
     }
 
-    public function activePayingUser()
-    { //付费用户判断
-        return $this->orders()->active()->where('origin_amount', '>', 0)->exists();
-    }
-
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
