@@ -6,7 +6,7 @@ use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
-use App\Services\ProxyServer;
+use App\Services\ProxyService;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
@@ -25,7 +25,7 @@ class SubscribeController extends Controller
             return Redirect::route('login');
         }
         $code = $matches[0];
-        $this->proxyServer = ProxyServer::getInstance();
+        $this->proxyServer = ProxyService::getInstance();
         self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
 
         // 检查订阅码是否有效
@@ -68,7 +68,7 @@ class SubscribeController extends Controller
         $subscribe->increment('times'); // 更新访问次数
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()])); // 记录每次请求
 
-        return ProxyServer::getInstance()->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
+        return ProxyService::getInstance()->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
     }
 
     private function failed(string $text)

@@ -15,7 +15,7 @@ use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
 use App\Models\UserOauth;
-use App\Services\ProxyServer;
+use App\Services\ProxyService;
 use Arr;
 use Auth;
 use Exception;
@@ -292,7 +292,7 @@ class UserController extends Controller
 
     public function exportProxyConfig(Request $request, User $user): JsonResponse
     {
-        $proxyServer = ProxyServer::getInstance();
+        $proxyServer = ProxyService::getInstance();
         $proxyServer->setUser($user);
         $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
