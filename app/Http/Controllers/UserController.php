@@ -507,7 +507,9 @@ class UserController extends Controller
     public function charge(Request $request): ?JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'coupon_sn' => ['required', Rule::exists('coupon', 'sn')->where(static function ($query) { $query->whereType(3)->whereStatus(0); })],
+            'coupon_sn' => ['required', Rule::exists('coupon', 'sn')->where(static function ($query) {
+                $query->whereType(3)->whereStatus(0);
+            })],
         ]);
 
         if ($validator->fails()) {
