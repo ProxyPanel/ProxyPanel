@@ -14,7 +14,8 @@
             <div class="col-md-10 offset-md-1">
                 <div class="panel">
                     <div class="panel-heading">
-                        <h3 class="panel-title">{{$article->title}}<sub class="ml-30">{{$article->created_at}}</sub></h3>
+                        <h3 class="panel-title">{{$article->title}} {!! $article->category ?'<sub class="ml-20">'.$article->category.'</sub>':'' !!}</h3>
+                        <div class="panel-actions"><code>{{$article->created_at}}</code></div>
                     </div>
                     <div class="panel-body pt-0 pb-60">
                         <div style="padding: 10px;">{!! $article->content !!}</div>

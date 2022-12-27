@@ -71,7 +71,7 @@
                     <div class="form-group row article">
                         <label class="col-form-label col-md-2" for="sort"> 排 序 </label>
                         <div class="col-md-2">
-                            <input type="number" class="form-control" name="sort" id="sort" required/>
+                            <input type="number" class="form-control" name="sort" id="sort" value="10" required/>
                             <span class="text-help"> 值越高显示时越靠前 </span>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
                     <div class="form-group row">
                         <label class="col-form-label col-md-2" for="content"> 内 容 </label>
                         <div class="col-md-10">
-                            <textarea class="form-control" name="content" rows="15">@isset($article) {!! $article->content !!} @endisset</textarea>
+                            <textarea class="form-control" name="content">@isset($article) {!! $article->content !!} @endisset</textarea>
                         </div>
                     </div>
                     <div class="form-actions text-right">
@@ -109,7 +109,7 @@
         @isset($article)
         $(document).ready(function() {
           $("input[name='type'][value='{{$article->type}}']").click();
-          $('#title').val('{{$article->title}}');
+          $('#title').val('{!! $article->title !!}');
           $('#category').val('{{$article->category}}');
           $('#language').selectpicker('val', '{{$article->language}}');
           $('#sort').val('{{$article->sort}}');
@@ -118,9 +118,10 @@
 
         tinymce.init({
           selector: 'textarea',  // change this value according to your HTML
-          plugins: 'advlist autolink code emoticons help image importcss link lists media preview quickbars searchreplace table visualblocks visualchars wordcount',
-          toolbar: 'undo redo | styles | bold italic forecolor backcolor emoticons| alignleft aligncenter alignright alignjustify | bullist numlist outdent ' +
-              'indent | link image media',
+          plugins: 'advlist autolink autoresize autosave code emoticons help image importcss link lists media ' +
+              'preview quickbars searchreplace table visualblocks visualchars wordcount',
+          toolbar: 'restoredraft undo redo | styles | bold italic forecolor backcolor emoticons| alignleft aligncenter alignright alignjustify' +
+              ' | bullist numlist outdent indent | link image media',
           menubar: 'view edit insert format table tools help',
           link_default_target: '_blank',
           quickbars_insert_toolbar: 'quicktable image media',
@@ -128,6 +129,8 @@
           extended_valid_elements: 'i[class|aria-hidden]',
           language: '{{app()->getLocale()}}',
           content_css: '/assets/bundle/app.min.css',
+          min_height: 500,
+          max_height: 800,
         });
 
         $('input:radio[name=\'type\']').on('change', function() {

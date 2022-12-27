@@ -203,7 +203,9 @@ return [
         'link'             => 'Subscribe Link',
         'tips'             => 'Warning：Subscribe Link is for personal used only, Please do not show to anyone else. Otherwise, they may using your service without your permission',
         'exchange_warning' => 'Exchange Link:\n1. Old Link will be disabled\n2. Proxy connection password will be reset',
-        'ss_only'          => 'Subscribe SS/SSR Only',
+        'custom'           => 'Custom Subscribe',
+        'ss_only'          => 'Subscribe SS Only',
+        'ssr_only'         => 'Subscribe SS/SSR Only',
         'v2ray_only'       => 'Subscribe V2Ray Only',
         'trojan_only'      => 'Subscribe Trojan Only',
         'error'            => 'Exchange Link Error',
@@ -234,4 +236,8 @@ return [
     'client'              => 'Clients',
     'tutorials'           => 'Tutorials',
     'current_role'        => 'Current Role as',
+    'knowledge'           => [
+        'title' => 'Knowledge Base',
+        'basic' => 'Basic',
+    ],
 ];

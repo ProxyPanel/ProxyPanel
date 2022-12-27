@@ -203,7 +203,9 @@ return [
         'link'             => '订阅链接',
         'tips'             => '警告：该订阅链接仅限个人使用，请勿传播该链接，否则会导致您的账号流量使用情况异常触发自动封号机制。',
         'exchange_warning' => '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
-        'ss_only'          => '只订阅SS/SSR',
+        'custom'           => '自定义订阅',
+        'ss_only'          => '只订阅SS',
+        'ssr_only'         => '只订阅SSR (包含SS)',
         'v2ray_only'       => '只订阅V2Ray',
         'trojan_only'      => '只订阅Trojan',
         'error'            => '更换订阅地址异常',
@@ -234,4 +236,8 @@ return [
     'client'              => '客户端',
     'tutorials'           => '教程',
     'current_role'        => '当前身份',
+    'knowledge'           => [
+        'title' => '知 识 库',
+        'basic' => '基 础',
+    ],
 ];
