@@ -118,15 +118,14 @@
 
         tinymce.init({
           selector: 'textarea',  // change this value according to your HTML
-          plugins: [
-            'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-            'searchreplace', 'wordcount', 'visualblocks', 'visualchars', 'code', 'fullscreen', 'insertdatetime',
-            'media', 'table', 'emoticons', 'template', 'help',
-          ],
-          toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-              'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-              'forecolor backcolor emoticons | help',
-          menubar: 'favs file edit view insert format tools table help',
+          plugins: 'advlist autolink code emoticons help image importcss link lists media preview quickbars searchreplace table visualblocks visualchars wordcount',
+          toolbar: 'undo redo | styles | bold italic forecolor backcolor emoticons| alignleft aligncenter alignright alignjustify | bullist numlist outdent ' +
+              'indent | link image media',
+          menubar: 'view edit insert format table tools help',
+          link_default_target: '_blank',
+          quickbars_insert_toolbar: 'quicktable image media',
+          quickbars_selection_toolbar: 'bold italic underline | blocks | bullist numlist | blockquote quicklink',
+          extended_valid_elements: 'i[class|aria-hidden]',
           language: '{{app()->getLocale()}}',
           content_css: '/assets/bundle/app.min.css',
         });
