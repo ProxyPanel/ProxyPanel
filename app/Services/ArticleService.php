@@ -33,10 +33,7 @@ class ArticleService extends BaseService
     public function getContent()
     {
         $content = self::$article->content;
-        if (! UserService::getInstance()->isActivePaying()) {
-            $this->formatAccessable($content);
-        }
-
+        $this->formatAccessable($content);
         $this->formatValuables($content);
 
         return $content;
@@ -44,21 +41,31 @@ class ArticleService extends BaseService
 
     private function formatAccessable(&$body)
     {
-        while (strpos($body, '<!--access start-->') !== false) {
-            $accessData = $this->getInBetween($body, '<!--access start-->', '<!--access end-->');
-            if ($accessData) {
-                $body = strtr($body, [
-                    $accessData => '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view content in this area!').'</div>',
-                ]);
+        $noAccess = ! UserService::getInstance()->isActivePaying();
+
+        if ($noAccess) {
+            while ($this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->', true) !== '') {
+                $accessArea = $this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->');
+                if ($accessArea) {
+                    $body = strtr($body,
+                        [$accessArea => '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view content in this area!').'</div>']);
+                }
             }
+        }
+
+        while ($this->getInBetween($body, '<!--access_mode_2 start-->', '<!--access_mode_2 end-->', true) !== '') {
+            $accessArea = $this->getInBetween($body, '<!--access_mode_2 start-->', '<!--access_mode_2 end-->');
+            $hasAccessArea = $this->getInBetween($accessArea, '<!--access_mode_2 start-->', '<!--access_mode_2 else-->', true);
+            $noAccessArea = $this->getInBetween($accessArea, '<!--access_mode_2 else-->', '<!--access_mode_2 end-->', true);
+            $body = strtr($body, [$accessArea => $accessArea && $noAccess ? $noAccessArea : $hasAccessArea]);
         }
     }
 
-    private function getInBetween($input, $start, $end): string
+    private function getInBetween($input, $start, $end, $bodyOnly = false): string
     {
-        $substr = substr($input, strlen($start) + strpos($input, $start), (strlen($input) - strpos($input, $end)) * (-1));
+        $substr = substr($input, strpos($input, $start) + strlen($start), strpos($input, $end) - strlen($input));
 
-        return $start.$substr.$end;
+        return $bodyOnly ? $substr : $start.$substr.$end;
     }
 
     private function formatValuables(&$body)
