@@ -6,11 +6,15 @@
         ol > li {
             margin-bottom: 8px;
         }
+
+        .panel-group .panel-title {
+            font-size: 20px;
+        }
     </style>
 @endsection
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">问题解决库</h1>
+        <h1 class="page-title">{{ __('user.knowledge.title') }}</h1>
     </div>
     <div class="page-content container-fluid">
         <div class="row">
@@ -19,7 +23,7 @@
                     <div class="panel-body">
                         <div class="list-group faq-list" role="tablist">
                             <a class="list-group-item list-group-item-action active" data-toggle="tab"
-                               href="#basic" aria-controls="basic" role="tab">基础</a>
+                               href="#basic" aria-controls="basic" role="tab">{{ __('user.knowledge.basic') }}</a>
                             @foreach($knowledges as $category => $articles)
                                 <a class="list-group-item list-group-item-action" data-toggle="tab"
                                    href="#{{$category}}" aria-controls="{{$category}}" role="tab">{{$category}}</a>
@@ -57,20 +61,24 @@
                                                                 <div class="btn-group" role="group">
                                                                     <button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown"
                                                                             aria-expanded="false">
-                                                                        自定义订阅
+                                                                        {{ __('user.subscribe.custom') }}
                                                                     </button>
                                                                     <div class="dropdown-menu" aria-labelledby="sublink" role="menu">
                                                                         @if(in_array('ss', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('0')" role="menuitem">只订阅SS</a>
+                                                                            <a class="dropdown-item" onclick="linkManager('0')"
+                                                                               role="menuitem">{{ __('user.subscribe.ss_only') }}</a>
                                                                         @endif
                                                                         @if(in_array('ssr', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('1')" role="menuitem">只订阅SSR (包含ss)</a>
+                                                                            <a class="dropdown-item" onclick="linkManager('1')"
+                                                                               role="menuitem">{{ __('user.subscribe.ssr_only') }}</a>
                                                                         @endif
                                                                         @if(in_array('v2', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('2')" role="menuitem">只订阅V2Ray</a>
+                                                                            <a class="dropdown-item" onclick="linkManager('2')"
+                                                                               role="menuitem">{{ __('user.subscribe.v2ray_only') }}</a>
                                                                         @endif
                                                                         @if(in_array('trojan', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('3')" role="menuitem">只订阅Trojan</a>
+                                                                            <a class="dropdown-item" onclick="linkManager('3')"
+                                                                               role="menuitem">{{ __('user.subscribe.trojan_only') }}</a>
                                                                         @endif
                                                                     </div>
                                                                 </div>

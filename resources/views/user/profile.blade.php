@@ -83,12 +83,12 @@
                                 <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal" autocomplete="off">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="password" class="col-md-2 col-form-label">{{trans('auth.password.original')}}</label>
-                                        <input type="password" class="form-control col-md-5 round" name="password" id="password" autofocus required/>
+                                        <label for="password" class="col-md-5 col-form-label">{{trans('auth.password.original')}}</label>
+                                        <input type="password" class="form-control col-md-6 round" name="password" id="password" autofocus required/>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="new_password" class="col-md-2  col-form-label">{{trans('auth.password.new')}}</label>
-                                        <input type="password" class="form-control col-md-5 round" name="new_password" id="new_password" required/>
+                                        <label for="new_password" class="col-md-5  col-form-label">{{trans('auth.password.new')}}</label>
+                                        <input type="password" class="form-control col-md-6 round" name="new_password" id="new_password" required/>
                                     </div>
                                     <div class="form-actions">
                                         <button type="submit" class="btn btn-info">{{trans('common.submit')}}</button>
@@ -99,16 +99,16 @@
                                 <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="nickname" class="col-md-2 col-form-label">{{trans('validation.attributes.nickname')}}</label>
-                                        <input type="text" class="form-control col-md-5 round" name="nickname" id="nickname" value="{{Auth::getUser()->nickname}}"/>
+                                        <label for="nickname" class="col-md-5 col-form-label">{{trans('validation.attributes.nickname')}}</label>
+                                        <input type="text" class="form-control col-md-6 round" name="nickname" id="nickname" value="{{Auth::getUser()->nickname}}"/>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="wechat" class="col-md-2 col-form-label">{{trans('common.payment.wechat')}}</label>
-                                        <input type="text" class="form-control col-md-5 round" name="wechat" id="wechat" value="{{Auth::getUser()->wechat}}"/>
+                                        <label for="wechat" class="col-md-5 col-form-label">{{trans('common.payment.wechat')}}</label>
+                                        <input type="text" class="form-control col-md-6 round" name="wechat" id="wechat" value="{{Auth::getUser()->wechat}}"/>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="qq" class="col-md-2 col-form-label">QQ</label>
-                                        <input type="number" class="form-control col-md-5 round" name="qq" id="qq" value="{{Auth::getUser()->qq}}"/>
+                                        <label for="qq" class="col-md-5 col-form-label">QQ</label>
+                                        <input type="number" class="form-control col-md-6 round" name="qq" id="qq" value="{{Auth::getUser()->qq}}"/>
                                     </div>
                                     <div class="form-actions">
                                         <button type="submit" class="btn btn-info">{{trans('common.submit')}}</button>
@@ -119,7 +119,7 @@
                                 <form action="{{route('profile')}}" method="post" enctype="multipart/form-data" class="form-horizontal">
                                     @csrf
                                     <div class="form-group row">
-                                        <label for="passwd" class="col-md-2 col-form-label"> {{trans('user.account.connect_password')}} </label>
+                                        <label for="passwd" class="col-md-5 col-form-label"> {{trans('user.account.connect_password')}} </label>
                                         <input type="text" class="form-control col-md-5 round" name="passwd" id="passwd" value="{{Auth::getUser()->passwd}}" required/>
                                     </div>
                                     <div class="form-actions">

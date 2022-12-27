@@ -32,8 +32,6 @@ class ArticleController extends Controller
                 }
             }
 
-            $data['content'] = json_encode($data['content']);
-
             if ($article = Article::create($data)) {
                 return redirect(route('admin.article.edit', $article))->with('successMsg', '添加成功');
             }

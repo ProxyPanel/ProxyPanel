@@ -70,7 +70,7 @@ class UserController extends Controller
             'expireTime'       => $user->expiration_date,
             'banedTime'        => $user->ban_time,
             'unusedPercent'    => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
-            'announcements'    => Article::type(2)->latest()->simplePaginate(1), // 公告
+            'announcements'    => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
             'isTrafficWarning' => $user->isTrafficWarning(), // 流量异常判断
             'paying_user'      => $userService->isActivePaying(), // 付费用户判断
             'userLoginLog'     => $user->loginLogs()->latest()->first(), // 近期登录日志
@@ -461,7 +461,7 @@ class UserController extends Controller
             'subType'    => $data,
             'subUrl'     => route('sub', $subscribe->code),
             'subStatus'  => $subscribe->status,
-            'knowledges' => Article::type(1)->lang()->latest()->orderByDesc('sort')->get()->groupBy('category'),
+            'knowledges' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
         ]);
     }
 

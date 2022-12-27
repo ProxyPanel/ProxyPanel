@@ -18,9 +18,11 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 类型</th>
-                        <th> 标题</th>
-                        <th> 排序</th>
+                        <th> 类 型</th>
+                        <th> 分 类</th>
+                        <th> 标 题</th>
+                        <th> 语 言</th>
+                        <th> 排 序</th>
                         <th> 发布日期</th>
                         <th> {{trans('common.action')}}</th>
                     </tr>
@@ -33,25 +35,27 @@
                                 <td> 文章</td>
                             @elseif ($article->type === 2)
                                 <td> 公告</td>
-                            @elseif ($article->type === 3)
-                                <td> 购买说明</td>
-                            @elseif ($article->type === 4)
-                                <td> 使用教程</td>
                             @else
                                 <td> 未知</td>
                             @endif
-                            <td>
-                                @can('admin.article.show')
-                                    <a href="{{route('admin.article.show',$article)}}" target="_blank"> {{Str::limit($article->title, 80)}} </a>
-                                @else
-                                    {{Str::limit($article->title, 80)}}
-                                @endcan
+                            <td class="text-left">
+                                {{ Str::limit($article->category, 30) }}
                             </td>
+                            <td class="text-left">
+                                {{ Str::limit($article->title, 50) }}
+                            </td>
+                            <td>
+                            {!! isset(config('common.language')[$article->language]) ? '<i class="fi fi-'.config('common.language')[$article->language][1].'"></i>
+                             <span style="padding: inherit;">'.config('common.language')[$article->language][0].'</span>': __('user.unknown') !!}
                             <td> {{$article->sort}} </td>
                             <td> {{$article->created_at}} </td>
                             <td>
                                 @canany(['admin.article.edit', 'admin.article.destroy'])
                                     <div class="btn-group">
+                                        @can('admin.article.show')
+                                            <a href="{{route('admin.article.show',$article)}}" class="btn btn-outline-success">
+                                                <i class="icon wb-eye"></i></a>
+                                        @endcan
                                         @can('admin.article.edit')
                                             <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::query('page')])}}" class="btn btn-outline-primary">
                                                 <i class="icon wb-edit"></i></a>
@@ -88,32 +92,32 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.article.destroy')
         <script>
-            // 删除文章
-            function delArticle(url) {
-                swal.fire({
-                    title: '确定删除文章?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    cancelButtonText: '{{trans('common.close')}}',
-                    confirmButtonText: '{{trans('common.confirm')}}',
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            method: 'DELETE',
-                            url: url,
-                            data: {_token: '{{csrf_token()}}'},
-                            dataType: 'json',
-                            success: function(ret) {
-                                if (ret.status === 'success') {
-                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                                } else {
-                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                                }
-                            },
-                        });
+          // 删除文章
+          function delArticle(url) {
+            swal.fire({
+              title: '确定删除文章?',
+              icon: 'question',
+              showCancelButton: true,
+              cancelButtonText: '{{trans('common.close')}}',
+              confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  method: 'DELETE',
+                  url: url,
+                  data: {_token: '{{csrf_token()}}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    if (ret.status === 'success') {
+                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
+                  },
                 });
-            }
+              }
+            });
+          }
         </script>
     @endcan
 @endsection
