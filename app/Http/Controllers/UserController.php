@@ -369,11 +369,7 @@ class UserController extends Controller
     public function invite()
     {
         if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
-            return Response::view(
-                'auth.error',
-                ['message' => trans('user.purchase_required').' <a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'],
-                402
-            );
+            return Response::view('auth.error', ['message' => trans('user.purchase_required').' <a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
         return view('user.invite', [
@@ -511,11 +507,9 @@ class UserController extends Controller
     public function charge(Request $request): ?JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'coupon_sn' => [
-                'required', Rule::exists('coupon', 'sn')->where(static function ($query) {
-                    $query->whereType(3)->whereStatus(0);
-                }),
-            ],
+            'coupon_sn' => ['required', Rule::exists('coupon', 'sn')->where(static function ($query) {
+                $query->whereType(3)->whereStatus(0);
+            })],
         ]);
 
         if ($validator->fails()) {
