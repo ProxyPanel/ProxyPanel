@@ -53,7 +53,7 @@ class SubscribeController extends Controller
             $query->whereBetween('request_time', [$request->input('start').' 00:00:00', $request->input('end').' 23:59:59']);
         }
 
-        $subscribeLogs = $query->latest()->paginate(20)->appends(\request('page'));
+        $subscribeLogs = $query->latest()->paginate(20)->appends($request->except('page'));
         foreach ($subscribeLogs as $log) {
             // 跳过上报多IP的
             if ($log->request_ip) {
