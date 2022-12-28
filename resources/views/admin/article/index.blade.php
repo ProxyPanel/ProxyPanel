@@ -14,6 +14,40 @@
                 @endcan
             </div>
             <div class="panel-body">
+                <form class="form-row">
+                    <div class="form-group col-xxl-1 col-lg-1 col-md-1 col-sm-4">
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
+                        <select class="form-control" id="type" name="type">
+                            <option value="" hidden>类 型</option>
+                            <option value="1">文章</option>
+                            <option value="2">公告</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
+                        <select class="form-control" id="category" name="category">
+                            <option value="" hidden>分 类</option>
+                            @foreach($categories as $category)
+                                <option value="{{$category->category}}">{{$category->category}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
+                        <select class="form-control" id="language" name="language">
+                            <option value="" hidden>语 言</option>
+                            @foreach (config('common.language') as $key => $value)
+                                <option value="{{$key}}">
+                                    <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
+                        <button type="submit" class="btn btn-primary">搜 索</button>
+                        <a href="{{route('admin.article.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                    </div>
+                </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
@@ -61,8 +95,8 @@
                                                 <i class="icon wb-edit"></i></a>
                                         @endcan
                                         @can('admin.article.destroy')
-                                            <button class="btn btn-outline-danger" onclick="delArticle('{{route('admin.article.destroy',$article->id)}}')">
-                                                <i class="icon wb-close"></i></button>
+                                            <a class="btn btn-outline-danger" href="javascript:delArticle('{{route('admin.article.destroy',$article->id)}}')">
+                                                <i class="icon wb-close"></i></a>
                                         @endcan
                                     </div>
                                 @endcanany
@@ -92,6 +126,14 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.article.destroy')
         <script>
+          $(document).ready(function() {
+            $('#id').val('{{Request::query('id')}}');
+            $('#type').val('{{Request::query('type')}}');
+            $('#category').val('{{Request::query('category')}}');
+            $('#language').val('{{Request::query('language')}}');
+            $('select').on('change', function() { this.form.submit(); });
+          });
+
           // 删除文章
           function delArticle(url) {
             swal.fire({

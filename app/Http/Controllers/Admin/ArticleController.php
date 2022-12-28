@@ -7,15 +7,25 @@ use App\Http\Requests\Admin\ArticleRequest;
 use App\Models\Article;
 use App\Services\ArticleService;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Log;
 use Str;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     { // 文章列表
-        return view('admin.article.index', ['articles' => Article::latest()->orderByDesc('sort')->paginate()->appends(request('page'))]);
+        $categories = Article::whereNotNull('category')->distinct()->get('category');
+        $articles = Article::query();
+        foreach (['id', 'category', 'language', 'type'] as $field) {
+            $request->whenFilled($field, function ($value) use ($articles, $field) {
+                $articles->where($field, $value);
+            });
+        }
+        $articles = $articles->latest()->orderByDesc('sort')->paginate()->appends($request->except('page'));
+
+        return view('admin.article.index', compact('articles', 'categories'));
     }
 
     public function store(ArticleRequest $request)
