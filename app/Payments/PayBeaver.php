@@ -5,15 +5,16 @@
  * Version: 2020-12-06.
  */
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
+use App\Payments\Library\Gateway;
 use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
 use Log;
 use Response;
 
-class PayBeaver extends AbstractPayment
+class PayBeaver extends Gateway
 {
     private $appId;
     private $appSecret;

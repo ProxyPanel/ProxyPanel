@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Channels\Components;
+namespace App\Channels\Library;
 
 use DOMDocument;
 use Exception;

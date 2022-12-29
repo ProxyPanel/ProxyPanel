@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
+use App\Payments\Library\Gateway;
 use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
@@ -9,7 +10,7 @@ use Illuminate\Http\Request;
 use Log;
 use Response;
 
-class EPay extends AbstractPayment
+class EPay extends Gateway
 {
     public function purchase(Request $request): JsonResponse
     {

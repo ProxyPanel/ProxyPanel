@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
 use App\Models\Payment;
+use App\Payments\Library\Gateway;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
-class Manual extends AbstractPayment
+class Manual extends Gateway
 {
     public function purchase(Request $request): JsonResponse
     {

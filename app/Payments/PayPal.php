@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
 use App\Models\Payment;
+use App\Payments\Library\Gateway;
 use Auth;
 use Exception;
 use Http;
@@ -12,7 +13,7 @@ use Log;
 use Response;
 use Srmklive\PayPal\Services\ExpressCheckout;
 
-class PayPal extends AbstractPayment
+class PayPal extends Gateway
 {
     protected $provider;
     protected $exChange;
