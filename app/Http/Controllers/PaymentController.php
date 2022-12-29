@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Components\Helpers;
-use App\Http\Controllers\Gateway\BitpayX;
-use App\Http\Controllers\Gateway\CodePay;
-use App\Http\Controllers\Gateway\EPay;
-use App\Http\Controllers\Gateway\F2Fpay;
-use App\Http\Controllers\Gateway\Local;
-use App\Http\Controllers\Gateway\Manual;
-use App\Http\Controllers\Gateway\PayBeaver;
-use App\Http\Controllers\Gateway\PayJs;
-use App\Http\Controllers\Gateway\PayPal;
-use App\Http\Controllers\Gateway\Stripe;
-use App\Http\Controllers\Gateway\THeadPay;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Payments\CodePay;
+use App\Payments\EPay;
+use App\Payments\F2Fpay;
+use App\Payments\Local;
+use App\Payments\Manual;
+use App\Payments\PayBeaver;
+use App\Payments\PayJs;
+use App\Payments\PayPal;
+use App\Payments\Stripe;
+use App\Payments\THeadPay;
 use App\Services\CouponService;
 use Auth;
 use Exception;
@@ -50,8 +49,6 @@ class PaymentController extends Controller
                 return new Codepay();
             case 'payjs':
                 return new PayJs();
-            case 'bitpayx':
-                return new BitpayX();
             case 'paypal':
                 return new PayPal();
             case 'epay':

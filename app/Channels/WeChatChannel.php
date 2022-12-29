@@ -2,7 +2,7 @@
 
 namespace App\Channels;
 
-use App\Channels\Components\WeChat;
+use App\Channels\Library\WeChat;
 use Cache;
 use Helpers;
 use Http;

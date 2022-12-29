@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments\Library;
 
 use App\Models\Payment;
 use App\Models\PaymentCallback;
@@ -9,7 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Str;
 
-abstract class AbstractPayment
+abstract class Gateway
 {
     abstract public function purchase(Request $request): JsonResponse;
 

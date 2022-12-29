@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
 use App\Models\Payment;
+use App\Payments\Library\Gateway;
 use Auth;
 use Exception;
+use Http;
 use Illuminate\Http\JsonResponse;
 use Log;
 use Response;
@@ -14,7 +16,7 @@ use Stripe\Source;
 use Stripe\Webhook;
 use UnexpectedValueException;
 
-class Stripe extends AbstractPayment
+class Stripe extends Gateway
 {
     public function __construct()
     {
@@ -28,25 +30,26 @@ class Stripe extends AbstractPayment
 
         if ($type == 1 || $type == 3) {
             $stripe_currency = sysConfig('stripe_currency');
-            $ch = curl_init();
-            $url = 'https://api.exchangerate-api.com/v4/latest/'.strtoupper($stripe_currency);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            $currency = json_decode(curl_exec($ch));
-            curl_close($ch);
-            $price_exchanged = bcdiv((float) $payment->amount, $currency->rates->CNY, 10);
+            $response = Http::get('https://api.exchangerate-api.com/v4/latest/'.strtoupper($stripe_currency));
+            if (! $response->ok()) {
+                Log::warning('【Stripe】错误: 获取汇率失败！');
+                $payment->delete();
+
+                return Response::json(['status' => 'fail', 'message' => '获取汇率失败！']);
+            }
+            $response = $response->json();
+            $price_exchanged = bcdiv((float) $payment->amount, $response['rates']['CNY'], 10);
             $source = Source::create([
-                'amount' => floor($price_exchanged * 100),
-                'currency' => $stripe_currency,
-                'type' => $type == 1 ? 'alipay' : 'wechat',
+                'amount'               => floor($price_exchanged * 100),
+                'currency'             => $stripe_currency,
+                'type'                 => $type == 1 ? 'alipay' : 'wechat',
                 'statement_descriptor' => $payment->trade_no,
-                'metadata' => [
-                    'user_id' => $payment->user_id,
+                'metadata'             => [
+                    'user_id'      => $payment->user_id,
                     'out_trade_no' => $payment->trade_no,
-                    'identifier' => '',
+                    'identifier'   => '',
                 ],
-                'redirect' => [
+                'redirect'             => [
                     'return_url' => route('invoice'),
                 ],
             ]);
@@ -55,7 +58,7 @@ class Stripe extends AbstractPayment
                     Log::warning('创建订单错误：未知错误');
                     $payment->delete();
 
-                    return response()->json(['code' => 0, 'msg' => '创建订单失败：未知错误']);
+                    return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
                 }
                 $payment->update(['qr_code' => 1, 'url' => $source['wechat']['qr_code_url']]);
 
@@ -88,39 +91,13 @@ class Stripe extends AbstractPayment
         }
     }
 
-    protected function getCheckoutSessionData(string $tradeNo, int $amount, int $type): array
-    {
-        $unitAmount = $amount * 100;
-
-        return [
-            'payment_method_types' => ['card'],
-            'line_items'           => [
-                [
-                    'price_data' => [
-                        'currency'     => 'usd',
-                        'product_data' => ['name' => sysConfig('subject_name') ?: sysConfig('website_name')],
-                        'unit_amount'  => $unitAmount,
-                    ],
-                    'quantity'   => 1,
-                ],
-            ],
-            'mode'                 => 'payment',
-            'success_url'          => route('invoice'),
-            'cancel_url'           => route('invoice'),
-            'client_reference_id'  => $tradeNo,
-            'customer_email'       => Auth::getUser()->email,
-        ];
-    }
-
-    // redirect to Stripe Payment url
     public function redirectPage($session_id)
-    {
+    { // redirect to Stripe Payment url
         return view('user.components.payment.stripe', ['session_id' => $session_id]);
     }
 
-    // url = '/callback/notify?method=stripe'
     public function notify($request): void
-    {
+    { // url = '/callback/notify?method=stripe'
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'];
         $endpointSecret = sysConfig('stripe_signing_secret');
         $payload = @file_get_contents('php://input');
@@ -170,12 +147,35 @@ class Stripe extends AbstractPayment
         exit();
     }
 
-    // 未支付成功则关闭订单
     public function failedPayment(Session $session)
-    {
+    { // 未支付成功则关闭订单
         $payment = Payment::whereTradeNo($session->client_reference_id)->first();
         if ($payment) {
             $payment->order->close();
         }
+    }
+
+    protected function getCheckoutSessionData(string $tradeNo, int $amount, int $type): array
+    {
+        $unitAmount = $amount * 100;
+
+        return [
+            'payment_method_types' => ['card'],
+            'line_items'           => [
+                [
+                    'price_data' => [
+                        'currency'     => 'usd',
+                        'product_data' => ['name' => sysConfig('subject_name') ?: sysConfig('website_name')],
+                        'unit_amount'  => $unitAmount,
+                    ],
+                    'quantity'   => 1,
+                ],
+            ],
+            'mode'                 => 'payment',
+            'success_url'          => route('invoice'),
+            'cancel_url'           => route('invoice'),
+            'client_reference_id'  => $tradeNo,
+            'customer_email'       => Auth::getUser()->email,
+        ];
     }
 }

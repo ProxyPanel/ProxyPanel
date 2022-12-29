@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Gateway;
+namespace App\Payments;
 
+use App\Payments\Library\Gateway;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Log;
 use Response;
 use Xhat\Payjs\Payjs as Pay;
 
-class PayJs extends AbstractPayment
+class PayJs extends Gateway
 {
     private static $config;
 

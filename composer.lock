@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "09b412ee2134272c0a2bd14284ed9728",
+    "content-hash": "81d07bf2521fca879f12a57bb5ba3257",
     "packages": [
         {
             "name": "arcanedev/log-viewer",
@@ -5216,73 +5216,6 @@
                 }
             ],
             "time": "2021-09-25T23:10:38+00:00"
-        },
-        {
-            "name": "riverslei/payment",
-            "version": "v5.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/helei112g/payment.git",
-                "reference": "77f671b68b0285a6af77dc7c5afa36eabcae35aa"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/helei112g/payment/zipball/77f671b68b0285a6af77dc7c5afa36eabcae35aa",
-                "reference": "77f671b68b0285a6af77dc7c5afa36eabcae35aa",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "ext-bcmath": "*",
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "ext-openssl": "*",
-                "ext-simplexml": "*",
-                "ext-xml": "*",
-                "guzzlehttp/guzzle": "~6.0",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "codeception/codeception": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Payment\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Leo",
-                    "email": "dayugog@gmail.com",
-                    "homepage": "https://dayutalk.cn"
-                }
-            ],
-            "description": "支付宝支付、微信支付、招商一网通支付php SDK。方便快速接入，最完整的开源支付 php sdk",
-            "homepage": "http://helei112g.github.io/payment",
-            "keywords": [
-                "alipay",
-                "weixin",
-                "一网通",
-                "微信支付",
-                "招商一网通",
-                "支付宝支付",
-                "集成支付接口SDK"
-            ],
-            "support": {
-                "issues": "https://github.com/helei112g/payment/issues",
-                "source": "https://github.com/helei112g/payment/tree/v5.x"
-            },
-            "time": "2020-05-04T03:07:17+00:00"
         },
         {
             "name": "socialiteproviders/manager",
