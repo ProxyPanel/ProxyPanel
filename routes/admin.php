@@ -6,7 +6,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('invite', 'AdminController@inviteList')->name('invite.index'); // 邀请码列表
     Route::post('invite', 'AdminController@makeInvite')->name('invite.create'); // 生成邀请码
     Route::get('Invite/export', 'AdminController@exportInvite')->name('invite.export'); // 导出邀请码
-    Route::get('epayInfo', 'Gateway\EPay@queryInfo')->name('test.epay'); // 易支付信息
+    Route::get('epayInfo', '\App\Payments\EPay@queryInfo')->name('test.epay'); // 易支付信息
 
     Route::namespace('Admin')->group(function () {
         Route::resource('user', 'UserController')->except('show');
