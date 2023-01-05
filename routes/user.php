@@ -36,7 +36,7 @@ Route::prefix('payment')->group(function () {
 });
 
 Route::prefix('pay')->group(function () {
-    Route::get('/manual/{payment}', 'Gateway\Manual@redirectPage')->name('manual.checkout'); // 人工支付详细
-    Route::post('/manual/{payment}/inform', 'Gateway\Manual@inform')->name('manual.inform'); // 人工支付通知
-    Route::get('/stripe/{session_id}', 'Gateway\Stripe@redirectPage')->name('stripe.checkout'); // Stripe Checkout page
+    Route::get('/manual/{payment}', '\App\Payments\Manual@redirectPage')->name('manual.checkout'); // 人工支付详细
+    Route::post('/manual/{payment}/inform', '\App\Payments\Manual@inform')->name('manual.inform'); // 人工支付通知
+    Route::get('/stripe/{session_id}', '\App\Payments\Stripe@redirectPage')->name('stripe.checkout'); // Stripe Checkout page
 });

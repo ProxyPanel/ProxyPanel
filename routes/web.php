@@ -8,7 +8,7 @@ if (config('app.key') && config('settings')) {
         ->match(['get', 'post'], 'callback/notify', 'PaymentController@notify')->name('payment.notify'); //支付回调
 }
 
-Route::get('callback/checkout', 'Gateway\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
+Route::get('callback/checkout', '\App\Payments\PayPal@getCheckout')->name('paypal.checkout'); // 支付回调相关
 Route::post('api/telegram/webhook', 'TelegramController@webhook')->middleware('telegram'); // Telegram fallback
 Route::get('api/wechat/verify', '\App\Channels\WeChatChannel@verify')->name('wechat.verify'); // 微信回调验证
 Route::get('/message/{type}/{msg_id}/show', 'MessageController@index')->name('message.show'); // 微信回调验证
