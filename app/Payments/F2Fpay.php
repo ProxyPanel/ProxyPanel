@@ -39,7 +39,7 @@ class F2Fpay extends Gateway
             $result = $gateWay->qrCharge($data);
             $payment->update(['qr_code' => 1, 'url' => $result['qr_code']]);
         } catch (Exception $e) {
-            $payment->delete();
+            $payment->failed();
             Log::alert('【支付宝当面付】支付错误: '.$e->getMessage());
             exit;
         }

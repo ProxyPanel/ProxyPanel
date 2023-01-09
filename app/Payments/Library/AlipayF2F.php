@@ -95,7 +95,7 @@ class AlipayF2F
             throw new RuntimeException('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
         }
 
-        $result = ! openssl_verify(json_encode($data, JSON_UNESCAPED_UNICODE), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
+        $result = (bool) openssl_verify(json_encode($data), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
         if (PHP_VERSION_ID < 80000) {
             openssl_free_key($publicKey);
         }
@@ -128,16 +128,16 @@ class AlipayF2F
         $response = Http::get(self::$gatewayUrl, $this->buildParams())->json();
         $resKey = str_replace('.', '_', $this->config['method']).'_response';
         if (! isset($response[$resKey])) {
-            throw new RuntimeException('【支付宝当面付】请求错误：看起来是请求失败');
+            throw new RuntimeException('请求错误-看起来是请求失败');
         }
 
         if (! $this->rsaVerify($response[$resKey], $response['sign'])) {
-            throw new RuntimeException('【支付宝当面付】请求错误：'.$response[$resKey]['msg'].' | '.$response[$resKey]['sub_msg']);
+            throw new RuntimeException('验签错误-'.$response[$resKey]['msg'].' | '.($response[$resKey]['sub_msg'] ?? var_export($response, true)));
         }
 
         $response = $response[$resKey];
         if ($response['msg'] !== 'Success') {
-            throw new RuntimeException($response['sub_msg']);
+            throw new RuntimeException($response[$resKey]['sub_msg'] ?? var_export($response, true));
         }
 
         return $response;

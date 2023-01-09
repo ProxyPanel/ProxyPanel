@@ -24,19 +24,19 @@ class PayPal extends Gateway
         $config = [
             'mode' => 'live',
             'live' => [
-                'username' => sysConfig('paypal_username'),
-                'password' => sysConfig('paypal_password'),
-                'secret' => sysConfig('paypal_secret'),
+                'username'    => sysConfig('paypal_username'),
+                'password'    => sysConfig('paypal_password'),
+                'secret'      => sysConfig('paypal_secret'),
                 'certificate' => sysConfig('paypal_certificate'),
-                'app_id' => sysConfig('paypal_app_id'),
+                'app_id'      => sysConfig('paypal_app_id'),
             ],
 
             'payment_action' => 'Sale',
-            'currency' => 'USD',
-            'billing_type' => 'MerchantInitiatedBilling',
-            'notify_url' => route('payment.notify', ['method' => 'paypal']),
-            'locale' => 'zh_CN',
-            'validate_ssl' => true,
+            'currency'       => 'USD',
+            'billing_type'   => 'MerchantInitiatedBilling',
+            'notify_url'     => route('payment.notify', ['method' => 'paypal']),
+            'locale'         => 'zh_CN',
+            'validate_ssl'   => true,
         ];
         $this->provider->setApiCredentials($config);
         $response = Http::timeout(15)->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4');
@@ -60,6 +60,7 @@ class PayPal extends Gateway
 
             return Response::json(['status' => 'success', 'url' => $response['paypal_link'], 'message' => '创建订单成功!']);
         } catch (Exception $e) {
+            $payment->failed();
             Log::error('【PayPal】错误: '.$e->getMessage());
             exit;
         }

@@ -56,7 +56,7 @@ class Stripe extends Gateway
             if ($type == 3) {
                 if (! $source['wechat']['qr_code_url']) {
                     Log::warning('创建订单错误：未知错误');
-                    $payment->delete();
+                    $payment->failed();
 
                     return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
                 }
@@ -66,7 +66,7 @@ class Stripe extends Gateway
             } else {
                 if (! $source['redirect']['url']) {
                     Log::warning('创建订单错误：未知错误');
-                    $payment->delete();
+                    $payment->failed();
 
                     return response()->json(['code' => 0, 'msg' => '创建订单失败：未知错误']);
                 }

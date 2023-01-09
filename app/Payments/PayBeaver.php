@@ -38,6 +38,13 @@ class PayBeaver extends Gateway
             'return_url'        => route('invoice'),
         ]);
 
+        if (! isset($result['message']) && isset($result['data']['pay_url'])) {
+            $payment->update(['url' => $result['data']['pay_url']]);
+
+            return Response::json(['status' => 'success', 'url' => $result['data']['pay_url'], 'message' => '创建订单成功!']);
+        }
+
+        $payment->failed();
         if (isset($result['message'])) {
             Log::alert('【海狸支付】创建订单错误：'.$result['message']);
 
@@ -46,13 +53,24 @@ class PayBeaver extends Gateway
 
         if (! isset($result['data']['pay_url'])) {
             Log::alert('【海狸支付】创建订单错误：未获取到支付链接'.var_export($result, true));
-
-            return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
         }
 
-        $payment->update(['url' => $result['data']['pay_url']]);
+        return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
+    }
 
-        return Response::json(['status' => 'success', 'url' => $result['data']['pay_url'], 'message' => '创建订单成功!']);
+    public function notify($request): void
+    {
+        if (! $this->paybeaverVerify($request->post())) {
+            exit(json_encode(['status' => 400]));
+        }
+
+        if ($request->has(['merchant_order_id']) && $this->paymentReceived($request->input(['merchant_order_id']))) {
+            exit(json_encode(['status' => 200]));
+        }
+
+        Log::error('【海狸支付】交易失败：'.var_export($request->all(), true));
+
+        exit(json_encode(['status' => 500]));
     }
 
     private function createOrder($params)
@@ -78,21 +96,6 @@ class PayBeaver extends Gateway
         ksort($params, SORT_STRING);
 
         return strtolower(md5(http_build_query($params).$this->appSecret));
-    }
-
-    public function notify($request): void
-    {
-        if (! $this->paybeaverVerify($request->post())) {
-            exit(json_encode(['status' => 400]));
-        }
-
-        if ($request->has(['merchant_order_id']) && $this->paymentReceived($request->input(['merchant_order_id']))) {
-            exit(json_encode(['status' => 200]));
-        }
-
-        Log::error('【海狸支付】交易失败：'.var_export($request->all(), true));
-
-        exit(json_encode(['status' => 500]));
     }
 
     private function paybeaverVerify($params)
