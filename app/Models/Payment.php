@@ -34,6 +34,11 @@ class Payment extends Model
         return $this->update(['status' => -1]);
     }
 
+    public function failed() // 关闭支付单
+    {
+        return $this->close() && $this->order()->close();
+    }
+
     public function complete() // 完成支付单
     {
         return $this->update(['status' => 1]);

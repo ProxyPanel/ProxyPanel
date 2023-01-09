@@ -31,22 +31,13 @@ class THeadPay extends Gateway
 
                 return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
             }
-
+            $payment->failed();
             Log::error('【平头哥支付】 返回错误信息：'.$result['message']);
         }
 
         Log::alert('【平头哥支付】 支付渠道建立订单出现问题!');
 
         return Response::json(['status' => 'fail', 'message' => '创建在线订单失败，请工单通知管理员！']);
-    }
-
-    private function sign($params)
-    {
-        unset($params['sign']);
-        ksort($params, SORT_STRING);
-        $params['key'] = sysConfig('theadpay_key');
-
-        return strtoupper(md5(http_build_query($params)));
     }
 
     public function notify($request): void
@@ -63,6 +54,15 @@ class THeadPay extends Gateway
         }
 
         exit('fail');
+    }
+
+    private function sign($params)
+    {
+        unset($params['sign']);
+        ksort($params, SORT_STRING);
+        $params['key'] = sysConfig('theadpay_key');
+
+        return strtoupper(md5(http_build_query($params)));
     }
 
     private function verify_notify($params)
