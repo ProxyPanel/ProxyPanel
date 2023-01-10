@@ -17,116 +17,114 @@
         <h1 class="page-title">{{ __('user.knowledge.title') }}</h1>
     </div>
     <div class="page-content container-fluid">
-        <div class="row">
-            <div class="col-xxl-2 col-lg-4 col-md-12">
-                <div class="panel">
-                    <div class="panel-body">
-                        <div class="list-group faq-list" role="tablist">
-                            <a class="list-group-item list-group-item-action active" data-toggle="tab"
-                               href="#basic" aria-controls="basic" role="tab">{{ __('user.knowledge.basic') }}</a>
-                            @foreach($knowledges as $category => $articles)
-                                <a class="list-group-item list-group-item-action" data-toggle="tab"
-                                   href="#{{$category}}" aria-controls="{{$category}}" role="tab">{{$category}}</a>
-                            @endforeach
+        @if ($knowledges->isNotEmpty())
+            <div class="row">
+                <div class="col-xxl-2 col-lg-4 col-md-12">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div class="list-group faq-list" role="tablist">
+                                @foreach($knowledges as $category => $articles)
+                                    @php $str = string_urlsafe($category) @endphp
+                                    <a class="list-group-item list-group-item-action @if($loop->first) active @endif" data-toggle="tab"
+                                       href="#{{$str}}" aria-controls="{{$str}}" role="tab">{{$category}}</a>
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-xxl-8 col-lg-8 col-md-12">
-                <div class="panel">
-                    <div class="panel-heading progress" id="loading_article" style="display: none;">
-                        <div class="progress-bar progress-bar-striped active" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%" role="progressbar">
-                            <span class="sr-only">100% Complete</span>
+                <div class="col-xxl-8 col-lg-8 col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading progress" id="loading_article" style="display: none;">
+                            <div class="progress-bar progress-bar-striped active" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%" role="progressbar">
+                                <span class="sr-only">100% Complete</span>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel-body pt-30">
-                        <div class="tab-content">
-                            <div class="tab-pane animation-fade active" id="basic" role="tabpanel">
-                                <div class="panel-group panel-group-simple panel-group-continuous" id="category_basic" aria-multiselectable="true" role="tablist">
-                                    <div class="panel">
-                                        <div class="panel-heading" id="question_1" role="tab">
-                                            <a class="panel-title cyan-600" aria-controls="answer_1" aria-expanded="true" data-toggle="collapse" href="#answer_1"
-                                               data-parent="#category_basic">
-                                                <i class="icon wb-link" aria-hidden="true"></i>{{trans('user.subscribe.link')}}
-                                            </a>
-                                        </div>
-                                        <div class="panel-collapse collapse show" id="answer_1" aria-labelledby="question_1" role="tabpanel">
-                                            <div class="panel-body">
-                                                @if($subStatus)
-                                                    <x-alert type="warning" :message="trans('user.subscribe.tips')"/>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" id="sub_link" value="{{$subUrl}}"/>
-                                                        <div class="input-group-btn btn-group" role="group">
-                                                            @if(count($subType) > 1)
-                                                                <div class="btn-group" role="group">
-                                                                    <button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown"
-                                                                            aria-expanded="false">
-                                                                        {{ __('user.subscribe.custom') }}
-                                                                    </button>
-                                                                    <div class="dropdown-menu" aria-labelledby="sublink" role="menu">
-                                                                        @if(in_array('ss', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('0')"
-                                                                               role="menuitem">{{ __('user.subscribe.ss_only') }}</a>
+                        <div class="panel-body pt-30">
+                            <div class="tab-content">
+                                @foreach($knowledges as $category => $articles)
+                                    <div class="tab-pane animation-fade @if($loop->first) active @endif" id="{{string_urlsafe($category)}}" role="tabpanel">
+                                        <div class="panel-group panel-group-simple panel-group-continuous" id="category_{{$loop->iteration}}" aria-multiselectable="true"
+                                             role="tablist">
+                                            @if ($loop->first)
+                                                <div class="panel">
+                                                    <div class="panel-heading" id="question_1" role="tab">
+                                                        <a class="panel-title cyan-600" aria-controls="answer_1" aria-expanded="true" data-toggle="collapse" href="#answer_1"
+                                                           data-parent="#category_{{$loop->iteration}}">
+                                                            <i class="icon wb-link" aria-hidden="true"></i>{{trans('user.subscribe.link')}}
+                                                        </a>
+                                                    </div>
+                                                    <div class="panel-collapse collapse show" id="answer_1" aria-labelledby="question_1" role="tabpanel">
+                                                        <div class="panel-body">
+                                                            @if($subStatus)
+                                                                <x-alert type="warning" :message="trans('user.subscribe.tips')"/>
+                                                                <div class="input-group">
+                                                                    <input type="text" class="form-control" id="sub_link" value="{{$subUrl}}"/>
+                                                                    <div class="input-group-btn btn-group" role="group">
+                                                                        @if(count($subType) > 1)
+                                                                            <div class="btn-group" role="group">
+                                                                                <button type="button" class="btn btn-primary dropdown-toggle" id="sublink" data-toggle="dropdown"
+                                                                                        aria-expanded="false">
+                                                                                    {{ __('user.subscribe.custom') }}
+                                                                                </button>
+                                                                                <div class="dropdown-menu" aria-labelledby="sublink" role="menu">
+                                                                                    @if(in_array('ss', $subType, true))
+                                                                                        <a class="dropdown-item" onclick="linkManager('0')"
+                                                                                           role="menuitem">{{ __('user.subscribe.ss_only') }}</a>
+                                                                                    @endif
+                                                                                    @if(in_array('ssr', $subType, true))
+                                                                                        <a class="dropdown-item" onclick="linkManager('1')"
+                                                                                           role="menuitem">{{ __('user.subscribe.ssr_only') }}</a>
+                                                                                    @endif
+                                                                                    @if(in_array('v2', $subType, true))
+                                                                                        <a class="dropdown-item" onclick="linkManager('2')"
+                                                                                           role="menuitem">{{ __('user.subscribe.v2ray_only') }}</a>
+                                                                                    @endif
+                                                                                    @if(in_array('trojan', $subType, true))
+                                                                                        <a class="dropdown-item" onclick="linkManager('3')"
+                                                                                           role="menuitem">{{ __('user.subscribe.trojan_only') }}</a>
+                                                                                    @endif
+                                                                                </div>
+                                                                            </div>
                                                                         @endif
-                                                                        @if(in_array('ssr', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('1')"
-                                                                               role="menuitem">{{ __('user.subscribe.ssr_only') }}</a>
-                                                                        @endif
-                                                                        @if(in_array('v2', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('2')"
-                                                                               role="menuitem">{{ __('user.subscribe.v2ray_only') }}</a>
-                                                                        @endif
-                                                                        @if(in_array('trojan', $subType, true))
-                                                                            <a class="dropdown-item" onclick="linkManager('3')"
-                                                                               role="menuitem">{{ __('user.subscribe.trojan_only') }}</a>
-                                                                        @endif
+                                                                        <button class="btn btn-outline-info" onclick="exchangeSubscribe();">
+                                                                            <i class="icon wb-refresh" aria-hidden="true"></i>
+                                                                            {{trans('common.replace')}}</button>
+                                                                        <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy"
+                                                                                data-clipboard-target="#sub_link">
+                                                                            <i class="icon wb-copy" aria-hidden="true"></i>
+                                                                            {{trans('common.copy.attribute')}}</button>
                                                                     </div>
                                                                 </div>
+                                                            @else
+                                                                <x-alert type="danger" :message="trans('user.subscribe.baned')"/>
                                                             @endif
-                                                            <button class="btn btn-outline-info" onclick="exchangeSubscribe();">
-                                                                <i class="icon wb-refresh" aria-hidden="true"></i>
-                                                                {{trans('common.replace')}}</button>
-                                                            <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy" data-clipboard-target="#sub_link">
-                                                                <i class="icon wb-copy" aria-hidden="true"></i>
-                                                                {{trans('common.copy.attribute')}}</button>
                                                         </div>
                                                     </div>
-                                                @else
-                                                    <x-alert type="danger" :message="trans('user.subscribe.baned')"/>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            @foreach($knowledges as $category => $articles)
-                                @php
-                                    $outLoop = $loop->iteration;
-                                @endphp
-                                <div class="tab-pane animation-fade" id="{{$category}}" role="tabpanel">
-                                    <div class="panel-group panel-group-simple panel-group-continuous" id="category_{{$outLoop}}" aria-multiselectable="true" role="tablist">
-                                        @foreach ($articles as $article)
-                                            <div class="panel">
-                                                <div class="panel-heading" id="article_Q{{$article->id}}" role="tab">
-                                                    <a class="panel-title" onclick="fetch('{{$article->id}}')" aria-controls="article_A{{$article->id}}"
-                                                       aria-expanded="false"
-                                                       data-toggle="collapse" href="#article_A{{$article->id}}" data-parent="#category_{{$outLoop}}">
-                                                        {{$article->title}}
-                                                    </a>
-                                                    <div class="panel-collapse" id="article_A{{$article->id}}" aria-labelledby="article_Q{{$article->id}}" role="tabpanel">
-                                                        <div class="panel-body" id="article_B{{$article->id}}"></div>
+                                                </div>
+                                            @endif
+                                            @foreach ($articles as $article)
+                                                <div class="panel">
+                                                    <div class="panel-heading" id="article_Q{{$article->id}}" role="tab">
+                                                        <a class="panel-title" onclick="fetch('{{$article->id}}')" aria-controls="article_A{{$article->id}}"
+                                                           aria-expanded="false"
+                                                           data-toggle="collapse" href="#article_A{{$article->id}}" data-parent="#category_{{$loop->parent->iteration}}">
+                                                            {{$article->title}}
+                                                        </a>
+                                                        <div class="panel-collapse" id="article_A{{$article->id}}" aria-labelledby="article_Q{{$article->id}}" role="tabpanel">
+                                                            <div class="panel-body" id="article_B{{$article->id}}"></div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
     </div>
 @endsection
 @section('javascript')
