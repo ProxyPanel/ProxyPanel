@@ -122,6 +122,8 @@ class SystemController extends Controller
                 'max_rand_traffic',
                 'forbid_mode',
                 'website_security_code',
+                'website_security_code',
+                'username_type',
             ];
 
             if (in_array($name, $denyConfig, true)) {
