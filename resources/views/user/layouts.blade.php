@@ -193,7 +193,7 @@
     </div>
     <footer class="site-footer">
         <div class="site-footer-legal">
-            © 2017 - 2022 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} {{__('All rights reserved.')}}</a>
+            © 2017 - 2023 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} {{__('All rights reserved.')}}</a>
             🚀 Version: <code> {{config('version.number')}} </code>
         </div>
         <div class="site-footer-right">

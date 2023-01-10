@@ -71,7 +71,7 @@
                     <div class="form-group row article">
                         <label class="col-form-label col-md-2" for="sort"> 排 序 </label>
                         <div class="col-md-2">
-                            <input type="number" class="form-control" name="sort" id="sort" value="10" required/>
+                            <input type="number" class="form-control" name="sort" id="sort" value="10" min="0" max="255" required/>
                             <span class="text-help"> 值越高显示时越靠前 </span>
                         </div>
                     </div>
@@ -85,7 +85,11 @@
                     <div class="form-group row">
                         <label class="col-form-label col-md-2" for="content"> 内 容 </label>
                         <div class="col-md-10">
-                            <textarea class="form-control" name="content">@isset($article) {!! $article->content !!} @endisset</textarea>
+                            <textarea class="form-control" name="content">
+                                @isset($article)
+                                    {!! $article->content !!}
+                                @endisset
+                            </textarea>
                         </div>
                     </div>
                     <div class="form-actions text-right">
@@ -109,8 +113,8 @@
         @isset($article)
         $(document).ready(function() {
           $("input[name='type'][value='{{$article->type}}']").click();
-          $('#title').val('{!! $article->title !!}');
-          $('#category').val('{{$article->category}}');
+          $('#title').val(@json($article->title));
+          $('#category').val(@json($article->category));
           $('#language').selectpicker('val', '{{$article->language}}');
           $('#sort').val('{{$article->sort}}');
         });

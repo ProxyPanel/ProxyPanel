@@ -157,7 +157,7 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="sort">排序</label>
                                 <div class="col-md-4">
-                                    <input type="number" class="form-control" name="sort" id="sort" value="0"/>
+                                    <input type="number" class="form-control" name="sort" id="sort" value="0" min="0" max="255"/>
                                     <span class="text-help"> 排序值越大排越前 </span>
                                 </div>
                             </div>

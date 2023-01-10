@@ -130,3 +130,27 @@ if (! function_exists('array_clean')) {
         return $array;
     }
 }
+
+// string url safe sanitize
+if (! function_exists('string_urlsafe')) {
+    function string_urlsafe($string, $force_lowercase = true, $anal = false)
+    {
+        $strip = [
+            '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '=', '+', '[', '{', ']', '}', '\\', '|', ';', ':', '"', "'", '&#8216;', '&#8217;', '&#8220;',
+            '&#8221;', '&#8211;', '&#8212;', 'â€”', 'â€“', ',', '<', '.', '>', '/', '?',
+        ];
+        $clean = trim(str_replace($strip, '_', strip_tags($string)));
+        $clean = preg_replace('/\s+/', '-', $clean);
+        $clean = ($anal) ? preg_replace('/[^a-zA-Z0-9]/', '', $clean) : $clean;
+
+        if ($force_lowercase) {
+            if (function_exists('mb_strtolower')) {
+                $clean = mb_strtolower($clean, 'UTF-8');
+            } else {
+                $clean = strtolower($clean);
+            }
+        }
+
+        return $clean;
+    }
+}
