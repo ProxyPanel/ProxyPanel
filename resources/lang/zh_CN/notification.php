@@ -4,7 +4,7 @@ return [
     'attribute'               => '通知',
     'new'                     => ':num条新消息',
     'empty'                   => '目前未收到新消息',
-    'payment_received'        => '订单支付成功，金额：¥:amount，查看详情',
+    'payment_received'        => '订单支付成功，金额：:amount，查看详情',
     'account_expired'         => '账号过期提醒',
     'account_expired_content' => '您的账号将在【:days】天后过期，为了确保您可以继续正常使用我们的服务，请及时续费。',
     'account_expired_blade'   => '账号将于【:days天】后过期，请及时续费',

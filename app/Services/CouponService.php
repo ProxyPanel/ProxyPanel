@@ -63,7 +63,7 @@ class CouponService
         }
 
         if (isset($coupon->limit['minimum']) && $goods->price < $coupon->limit['minimum']) {
-            return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.minimum', ['amount' => $coupon->limit['minimum']]));
+            return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.minimum', ['amount' => Helpers::getPriceTag($coupon->limit['minimum'])]));
         }
 
         if (isset($coupon->limit['users']['black']) && in_array($this->user->id, $coupon->limit['users']['black'], true)) {

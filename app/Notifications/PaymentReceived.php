@@ -30,7 +30,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     {
         return (new MailMessage)
             ->subject(__('Payment Received'))
-            ->line(__('Payment for #:sn has been received! Total amount: ¥:amount.', ['sn' => $this->sn, 'amount' => $this->amount]))
+            ->line(__('Payment for #:sn has been received! Total amount: :amount.', ['sn' => $this->sn, 'amount' => $this->amount]))
             ->action(__('Invoice Detail'), route('invoiceInfo', $this->sn));
     }
 
@@ -45,15 +45,9 @@ class PaymentReceived extends Notification implements ShouldQueue
     // todo: 需要重新审视发送对象
     public function toTelegram($notifiable)
     {
-        $message = sprintf(
-            "💰成功收款¥ %s\n———————————————\n订单号：%s",
-            $this->amount,
-            $this->sn
-        );
-
         return TelegramMessage::create()
             ->to($notifiable->telegram_user_id)
             ->token(sysConfig('telegram_token'))
-            ->content($message);
+            ->content('💰'.__('Payment for #:sn has been received! Total amount: :amount.', ['sn' => $this->sn, 'amount' => $this->amount]));
     }
 }

@@ -31,44 +31,6 @@ class SystemController extends Controller
         return view('admin.config.system', array_merge(['payments' => $this->getPayment(), 'captcha' => $this->getCaptcha()], Config::pluck('value', 'name')->toArray()));
     }
 
-    private function getPayment() // 获取已经完成配置的支付渠道
-    {
-        if (sysConfig('f2fpay_app_id') && sysConfig('f2fpay_private_key') && sysConfig('f2fpay_public_key')) {
-            $payment[] = 'f2fpay';
-        }
-        if (sysConfig('codepay_url') && sysConfig('codepay_id') && sysConfig('codepay_key')) {
-            $payment[] = 'codepay';
-        }
-        if (sysConfig('epay_url') && sysConfig('epay_mch_id') && sysConfig('epay_key')) {
-            $payment[] = 'epay';
-        }
-        if (sysConfig('payjs_mch_id') && sysConfig('payjs_key')) {
-            $payment[] = 'payjs';
-        }
-        if (sysConfig('bitpay_secret')) {
-            $payment[] = 'bitpayx';
-        }
-        if (sysConfig('paypal_username') && sysConfig('paypal_password') && sysConfig('paypal_secret')) {
-            $payment[] = 'paypal';
-        }
-        if (sysConfig('stripe_public_key') && sysConfig('stripe_secret_key')) {
-            $payment[] = 'stripe';
-        }
-        if (sysConfig('paybeaver_app_id') && sysConfig('paybeaver_app_secret')) {
-            $payment[] = 'paybeaver';
-        }
-        if (sysConfig('theadpay_mchid') && sysConfig('theadpay_key')) {
-            $payment[] = 'theadpay';
-        }
-
-        return $payment ?? [];
-    }
-
-    private function getCaptcha()
-    {
-        return sysConfig('captcha_secret') && sysConfig('captcha_key');
-    }
-
     public function setExtend(Request $request): RedirectResponse  // 设置涉及到上传的设置
     {
         if ($request->hasAny(['website_home_logo', 'website_home_logo'])) { // 首页LOGO
@@ -223,5 +185,43 @@ class SystemController extends Controller
         }
 
         return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
+    }
+
+    private function getPayment() // 获取已经完成配置的支付渠道
+    {
+        if (sysConfig('f2fpay_app_id') && sysConfig('f2fpay_private_key') && sysConfig('f2fpay_public_key')) {
+            $payment[] = 'f2fpay';
+        }
+        if (sysConfig('codepay_url') && sysConfig('codepay_id') && sysConfig('codepay_key')) {
+            $payment[] = 'codepay';
+        }
+        if (sysConfig('epay_url') && sysConfig('epay_mch_id') && sysConfig('epay_key')) {
+            $payment[] = 'epay';
+        }
+        if (sysConfig('payjs_mch_id') && sysConfig('payjs_key')) {
+            $payment[] = 'payjs';
+        }
+        if (sysConfig('bitpay_secret')) {
+            $payment[] = 'bitpayx';
+        }
+        if (sysConfig('paypal_username') && sysConfig('paypal_password') && sysConfig('paypal_secret')) {
+            $payment[] = 'paypal';
+        }
+        if (sysConfig('stripe_public_key') && sysConfig('stripe_secret_key')) {
+            $payment[] = 'stripe';
+        }
+        if (sysConfig('paybeaver_app_id') && sysConfig('paybeaver_app_secret')) {
+            $payment[] = 'paybeaver';
+        }
+        if (sysConfig('theadpay_mchid') && sysConfig('theadpay_key')) {
+            $payment[] = 'theadpay';
+        }
+
+        return $payment ?? [];
+    }
+
+    private function getCaptcha()
+    {
+        return sysConfig('captcha_secret') && sysConfig('captcha_key');
     }
 }

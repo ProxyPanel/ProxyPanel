@@ -35,10 +35,10 @@
                         <div class="panel-body">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    订单原价：¥{{ $order->origin_amount }}
+                                    订单原价：{{ $order->origin_amount_tag }}
                                 </li>
                                 <li class="list-group-item">
-                                    实际支付金额：¥{{ $order->origin_amount }}
+                                    实际支付金额：{{ $order->origin_amount_tag }}
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('user.payment_method') }}：

@@ -108,8 +108,8 @@
                             <td> {{$order->sn}}</td>
                             <td> {{$order->goods->name  ?? trans('user.recharge_credit')}} </td>
                             <td> {{$order->coupon ? $order->coupon->name . ' - ' . $order->coupon->sn : ''}} </td>
-                            <td> ¥{{$order->origin_amount}} </td>
-                            <td> ¥{{$order->amount}} </td>
+                            <td> {{$order->origin_amount_tag}} </td>
+                            <td> {{$order->amount_tag}} </td>
                             <td>
                                 {{$order->pay_way_label}}
                             </td>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,6 +53,11 @@ class Payment extends Model
     public function setAmountAttribute($value)
     {
         return $this->attributes['amount'] = $value * 100;
+    }
+
+    public function getAmountTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->amount);
     }
 
     // 订单状态

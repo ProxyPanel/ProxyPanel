@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\Helpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -37,6 +38,11 @@ class Goods extends Model
         $this->attributes['price'] = $value * 100;
     }
 
+    public function getPriceTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->price);
+    }
+
     public function getRenewAttribute($value)
     {
         return $value / 100;
@@ -47,18 +53,23 @@ class Goods extends Model
         $this->attributes['renew'] = $value * 100;
     }
 
+    public function getRenewTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->renew);
+    }
+
     public function getTrafficLabelAttribute()
     {
         return flowAutoShow($this->attributes['traffic'] * MB);
     }
 
-    public function getSpeedLimitAttribute($value)
-    {
-        return $value / Mbps;
-    }
-
     public function setSpeedLimitAttribute($value)
     {
         return $this->attributes['speed_limit'] = $value * Mbps;
+    }
+
+    public function getSpeedLimitAttribute($value)
+    {
+        return $value / Mbps;
     }
 }

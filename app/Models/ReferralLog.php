@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -52,6 +53,16 @@ class ReferralLog extends Model
     public function setCommissionAttribute($value): void
     {
         $this->attributes['commission'] = $value * 100;
+    }
+
+    public function getAmountTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->amount);
+    }
+
+    public function getCommissionTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->commission);
     }
 
     public function getStatusLabelAttribute(): string

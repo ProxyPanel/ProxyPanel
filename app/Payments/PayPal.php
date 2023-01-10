@@ -2,11 +2,11 @@
 
 namespace App\Payments;
 
+use App\Components\CurrencyExchange;
 use App\Models\Payment;
 use App\Payments\Library\Gateway;
 use Auth;
 use Exception;
-use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
@@ -16,7 +16,6 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 class PayPal extends Gateway
 {
     protected $provider;
-    protected $exChange;
 
     public function __construct()
     {
@@ -39,8 +38,6 @@ class PayPal extends Gateway
             'validate_ssl'   => true,
         ];
         $this->provider->setApiCredentials($config);
-        $response = Http::timeout(15)->get('http://api.k780.com/?app=finance.rate&scur=USD&tcur=CNY&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4');
-        $this->exChange = $response->json()['result']['rate'] ?? 7;
     }
 
     public function purchase($request): JsonResponse
@@ -64,27 +61,6 @@ class PayPal extends Gateway
             Log::error('【PayPal】错误: '.$e->getMessage());
             exit;
         }
-    }
-
-    protected function getCheckoutData($trade_no, $amount): array
-    {
-        $amount = 0.3 + ceil($amount / $this->exChange * 100) / 100;
-
-        return [
-            'invoice_id' => $trade_no,
-            'items' => [
-                [
-                    'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
-                    'price' => $amount,
-                    'desc' => 'Description for'.(sysConfig('subject_name') ?: sysConfig('website_name')),
-                    'qty' => 1,
-                ],
-            ],
-            'invoice_description' => $trade_no,
-            'return_url' => route('paypal.checkout'),
-            'cancel_url' => route('invoice'),
-            'total' => $amount,
-        ];
     }
 
     public function getCheckout(Request $request)
@@ -133,5 +109,26 @@ class PayPal extends Gateway
             Log::error('【Paypal】交易失败');
         }
         exit('fail');
+    }
+
+    protected function getCheckoutData($trade_no, $amount): array
+    {
+        $amount = 0.3 + CurrencyExchange::convert('USD', $amount);
+
+        return [
+            'invoice_id'          => $trade_no,
+            'items'               => [
+                [
+                    'name'  => sysConfig('subject_name') ?: sysConfig('website_name'),
+                    'price' => $amount,
+                    'desc'  => 'Description for'.(sysConfig('subject_name') ?: sysConfig('website_name')),
+                    'qty'   => 1,
+                ],
+            ],
+            'invoice_description' => $trade_no,
+            'return_url'          => route('paypal.checkout'),
+            'cancel_url'          => route('invoice'),
+            'total'               => $amount,
+        ];
     }
 }

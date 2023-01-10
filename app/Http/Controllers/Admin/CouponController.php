@@ -144,7 +144,7 @@ class CouponController extends Controller
             $spreadsheet->setActiveSheetIndex(0);
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->setTitle('抵用券');
-            $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（元）', '权重', '使用限制']);
+            $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（'.array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')].'）', '权重', '使用限制']);
             foreach ($voucherList as $k => $vo) {
                 $dateRange = $vo->start_time.' ~ '.$vo->end_time;
                 $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
@@ -166,7 +166,7 @@ class CouponController extends Controller
             $spreadsheet->setActiveSheetIndex(2);
             $sheet = $spreadsheet->getActiveSheet();
             $sheet->setTitle('充值券');
-            $sheet->fromArray(['名称', '有效期', '券码', '金额（元）']);
+            $sheet->fromArray(['名称', '有效期', '券码', '金额（'.array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')].'）']);
             foreach ($refillList as $k => $vo) {
                 $dateRange = $vo->start_time.' ~ '.$vo->end_time;
                 $sheet->fromArray([$vo->name, $dateRange, $vo->sn, $vo->value], null, 'A'.($k + 2));

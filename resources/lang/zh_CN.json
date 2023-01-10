@@ -7,7 +7,7 @@
   "If your problem has not been solved, Feel free to open other one.": "如果您的问题尚未解决，请另开工单解决。",
   "Invoice Detail": "订单明细",
   "Nodes Daily Report": "线路每日流量报告",
-  "Payment for #:sn has been received! Total amount: ¥:amount.": "您成功支付了订单#:sn，总金额为 ¥:amount。",
+  "Payment for #:sn has been received! Total amount: :amount.": "您成功支付了订单#:sn，总金额为 :amount。",
   "Payment Received": "账单付款成功",
   "Please click the button below to verify your email address.": "请点击下面按钮验证您的 E-mail：",
   "Please click the button below to reset your password.": "请点击下面按钮重置您的密码：",

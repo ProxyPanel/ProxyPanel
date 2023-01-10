@@ -75,7 +75,7 @@ abstract class Gateway
         if ($payment) {
             $ret = $payment->order->complete();
             if ($ret) {
-                $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount));
+                $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount_tag));
             }
 
             return $ret;

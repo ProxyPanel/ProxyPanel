@@ -6,7 +6,6 @@ use App\Models\Payment;
 use App\Payments\Library\Gateway;
 use Auth;
 use Exception;
-use Http;
 use Illuminate\Http\JsonResponse;
 use Log;
 use Response;
@@ -29,19 +28,9 @@ class Stripe extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         if ($type == 1 || $type == 3) {
-            $stripe_currency = sysConfig('stripe_currency');
-            $response = Http::get('https://api.exchangerate-api.com/v4/latest/'.strtoupper($stripe_currency));
-            if (! $response->ok()) {
-                Log::warning('【Stripe】错误: 获取汇率失败！');
-                $payment->delete();
-
-                return Response::json(['status' => 'fail', 'message' => '获取汇率失败！']);
-            }
-            $response = $response->json();
-            $price_exchanged = bcdiv((float) $payment->amount, $response['rates']['CNY'], 10);
             $source = Source::create([
-                'amount'               => floor($price_exchanged * 100),
-                'currency'             => $stripe_currency,
+                'amount'               => ceil($payment->amount * 100),
+                'currency'             => strtolower(sysConfig('standard_currency')),
                 'type'                 => $type == 1 ? 'alipay' : 'wechat',
                 'statement_descriptor' => $payment->trade_no,
                 'metadata'             => [
@@ -63,31 +52,31 @@ class Stripe extends Gateway
                 $payment->update(['qr_code' => 1, 'url' => $source['wechat']['qr_code_url']]);
 
                 return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
-            } else {
-                if (! $source['redirect']['url']) {
-                    Log::warning('创建订单错误：未知错误');
-                    $payment->failed();
-
-                    return response()->json(['code' => 0, 'msg' => '创建订单失败：未知错误']);
-                }
-                $payment->update(['url' => $source['redirect']['url']]);
-
-                return Response::json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => '创建订单成功!']);
             }
-        } else {
-            $data = $this->getCheckoutSessionData($payment->trade_no, $payment->amount, $type);
 
-            try {
-                $session = Session::create($data);
+            if (! $source['redirect']['url']) {
+                Log::warning('创建订单错误：未知错误');
+                $payment->failed();
 
-                $url = route('stripe.checkout', ['session_id' => $session->id]);
-                $payment->update(['url' => $url]);
-
-                return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
-            } catch (Exception $e) {
-                Log::error('【Stripe】错误: '.$e->getMessage());
-                exit;
+                return response()->json(['code' => 0, 'msg' => '创建订单失败：未知错误']);
             }
+            $payment->update(['url' => $source['redirect']['url']]);
+
+            return Response::json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => '创建订单成功!']);
+        }
+
+        $data = $this->getCheckoutSessionData($payment->trade_no, $payment->amount, $type);
+
+        try {
+            $session = Session::create($data);
+
+            $url = route('stripe.checkout', ['session_id' => $session->id]);
+            $payment->update(['url' => $url]);
+
+            return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
+        } catch (Exception $e) {
+            Log::error('【Stripe】错误: '.$e->getMessage());
+            exit;
         }
     }
 

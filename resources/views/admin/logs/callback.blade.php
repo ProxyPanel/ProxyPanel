@@ -54,7 +54,7 @@
                                     {{$log->out_trade_no}}
                                 @endcan
                             </td>
-                            <td> {{$log->amount}}元</td>
+                            <td> {{$log->amount_tag}}</td>
                             <td> {!! $log->trade_status_label !!} </td>
                             <td> {{$log->created_at}} </td>
                         </tr>

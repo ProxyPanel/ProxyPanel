@@ -63,6 +63,8 @@
                         <x-system.tab-pane id="webSetting" :active="true">
                             <x-system.input title="网站名称" :value="$website_name" code="website_name" help="发邮件时展示"/>
                             <x-system.input title="网站地址" :value="$website_url" code="website_url" help="生成重置密码、在线支付必备" type="url"/>
+                            <x-system.select title="本位货币" code="standard_currency" :list="array_column(config('common.currency'), 'code', 'name')"
+                                             help="网站中涉及金钱部分的默认货币"/>
                             <x-system.input title="苹果账号" :value="$AppStore_id" code="AppStore_id" help="iOS软件设置教程中使用的苹果账号" type="email"/>
                             <x-system.input title="苹果密码" :value="$AppStore_password" code="AppStore_password" help="iOS软件设置教程中使用的苹果密码" type="password"/>
                             <x-system.input title="管理员邮箱" :value="$webmaster_email" code="webmaster_email" help="错误提示时会提供管理员邮箱作为联系方式" type="email"/>
@@ -94,12 +96,15 @@
                             <x-system.switch title="用户注册" code="is_register" :check="$is_register" help="关闭后无法注册"/>
                             <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台" multiple="1"
                                              :list="array_flip(config('common.oauth.labels'))"/>
-                            <x-system.select title="账号类型" help="规范站点用户账号的类型，默认为电子邮箱" code="username_type" :list="['电子邮箱'=> 'email', '手机号码' => 'numeric', '任意用户名' => 'string']"/>
+                            <x-system.select title="账号类型" help="规范站点用户账号的类型，默认为电子邮箱" code="username_type"
+                                             :list="['电子邮箱'=> 'email', '手机号码' => 'numeric', '任意用户名' => 'string']"/>
                             <x-system.select title="邀请注册" code="is_invite_register" :list="['关闭' => '', '可选'=> 1, '必须' => 2]"/>
-                            <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]" help="启用后用户需要通过邮件来激活账号"/>
+                            <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]"
+                                             help="启用后用户需要通过邮件来激活账号"/>
                             <x-system.select title="重置密码" code="password_reset_notification" :list="['关闭' => '', '邮箱'=> 'mail']" help="启用后用户可以重置密码"/>
                             <x-system.switch title="免费邀请码" code="is_free_code" :check="$is_free_code" help="关闭后免费邀请码不可见"/>
-                            <x-system.input title="邀请链接 用户信息字符化" :value="$aff_salt" code="aff_salt" help="留空时，邀请链接将显示用户ID；填入任意英文/数字 即可对用户链接ID进行加密"/>
+                            <x-system.input title="邀请链接 用户信息字符化" :value="$aff_salt" code="aff_salt"
+                                            help="留空时，邀请链接将显示用户ID；填入任意英文/数字 即可对用户链接ID进行加密"/>
                             <x-system.switch title="随机端口" code="is_rand_port" :check="$is_rand_port" help="注册、添加用户时随机生成端口"/>
                             <x-system.input-limit title="端口范围" code="min_port" hcode="max_port" :value="$min_port" min="1000" max="$('#max_port').val()"
                                                   :hvalue="$max_port" hmin="$('#min_port').val()" hmax="65535" help="端口范围：1000 - 65535"/>
@@ -112,18 +117,21 @@
                             <x-system.input-limit title="激活账号次数" code="active_times" :value="$active_times" help="24小时内可以通过邮件激活账号次数"/>
                             <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0/留空时不限制"/>
                             <x-system.input-limit title="用户-邀请码有效期" code="user_invite_days" :value="$user_invite_days" min="1" unit="天" help="用户自行生成邀请的有效期"/>
-                            <x-system.input-limit title="管理员-邀请码有效期" code="admin_invite_days" :value="$admin_invite_days" min="1" unit="天" help="管理员生成邀请码的有效期"/>
+                            <x-system.input-limit title="管理员-邀请码有效期" code="admin_invite_days" :value="$admin_invite_days" min="1" unit="天"
+                                                  help="管理员生成邀请码的有效期"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="node">
                             <x-system.input title="节点订阅地址" :value="$subscribe_domain" code="subscribe_domain" help="（推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https://"
                                             :holder="'默认为 '.$website_url" type="url"/>
                             <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0/留空时返回全部节点"/>
                             <x-system.switch title="随机订阅" code="rand_subscribe" :check="$rand_subscribe" help="启用后，订阅时将随机返回节点信息，否则按节点排序返回"/>
-                            <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe" help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
+                            <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe"
+                                             help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
                             <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.cf" type="url"/>
                             <x-system.input title="V2Ray授权" :value="$v2ray_license" code="v2ray_license"/>
                             <x-system.input title="Trojan授权" :value="$trojan_license" code="trojan_license"/>
-                            <x-system.input title="V2Ray TLS配置" :value="$v2ray_tls_provider" code="v2ray_tls_provider" help="后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）"/>
+                            <x-system.input title="V2Ray TLS配置" :value="$v2ray_tls_provider" code="v2ray_tls_provider"
+                                            help="后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
                             <x-system.select title="DDNS模式" code="ddns_mode" help="添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商"
@@ -133,7 +141,8 @@
                             <x-system.input title="DNS服务商Secret" :value="$ddns_secret" code="ddns_secret"/>
                             <hr class="col-lg-12">
                             <x-system.select title="验证码模式" code="is_captcha"
-                                             :list="['关闭' => '', '普通验证码' => 1, '极验Geetest' => 2, 'Google reCaptcha' => 3, 'hCaptcha' => 4]" help="启用后 登录/注册 需要进行验证码认证"/>
+                                             :list="['关闭' => '', '普通验证码' => 1, '极验Geetest' => 2, 'Google reCaptcha' => 3, 'hCaptcha' => 4]"
+                                             help="启用后 登录/注册 需要进行验证码认证"/>
                             <x-system.input title="验证码 Key" :value="$captcha_key" code="captcha_key"
                                             help='浏览<a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">设置指南</a>来设置'/>
                             <x-system.input title="验证码 Secret/ID" :value="$captcha_secret" code="captcha_secret"/>
@@ -146,11 +155,14 @@
                         </x-system.tab-pane>
                         <x-system.tab-pane id="promo">
                             <x-system.switch title="推广功能" code="referral_status" :check="$referral_status" help="关闭后用户不可见，但是不影响其正常邀请返利"/>
-                            <x-system.select title="返利模式" code="referral_type" :list="['关闭' => '', '首购返利' => 1, '循环返利' => 2]" help="切换模式后旧数据不变，新的返利按新的模式计算"/>
+                            <x-system.select title="返利模式" code="referral_type" :list="['关闭' => '', '首购返利' => 1, '循环返利' => 2]"
+                                             help="切换模式后旧数据不变，新的返利按新的模式计算"/>
                             <x-system.input-limit title="注册送流量" code="referral_traffic" :value="$referral_traffic" unit="MB" help="根据推广链接、邀请码注册则赠送相应的流量"/>
                             <x-system.input-limit title="返利比例" code="referral_percent" :value="$referral_percent * 100" max="100" unit="%"
                                                   help="根据推广链接注册的账号每笔消费推广人可以分成的比例 "/>
-                            <x-system.input-limit title="提现限制" code="referral_money" :value="$referral_money" unit="元" help="满多少元才可以申请提现"/>
+                            <x-system.input-limit title="提现限制" code="referral_money" :value="$referral_money"
+                                                  unit="{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}"
+                                                  help="满多少元才可以申请提现"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="notify">
                             <x-system.input-test title="ServerChan SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
@@ -168,21 +180,28 @@
                                     target=_blank>申请 Token</a>）' holder="请到ServerChan申请" test="pushPlus"/>
                             <x-system.input title="钉钉自定义机器人 Access Token" :value="$dingTalk_access_token" code="dingTalk_access_token" holder="自定义机器人的WebHook中的access_token"
                                             help="可以阅读<a href=https://open.dingtalk.com/document/group/custom-robot-access#title-jfe-yo9-jl2 target=_blank>钉钉手册</a>查阅步骤"/>
-                            <x-system.input-test title="钉钉自定义机器人 密钥" :value="$dingTalk_secret" code="dingTalk_secret" help='可选填！开启机器人[加签]就是必填项目！' holder="自定义机器人加签后出现的的密钥" test="dingTalk"/>
+                            <x-system.input-test title="钉钉自定义机器人 密钥" :value="$dingTalk_secret" code="dingTalk_secret" help='可选填！开启机器人[加签]就是必填项目！'
+                                                 holder="自定义机器人加签后出现的的密钥" test="dingTalk"/>
                             <x-system.input title="微信企业ID" :value="$wechat_cid" code="wechat_cid" holder="填入微信企业ID -> 再点击更新"
                                             help="获取<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>我的企业</a>中的企业ID"/>
                             <x-system.input title="微信企业应用ID" :value="$wechat_aid" code="wechat_aid" holder="应用的AgentId"
                                             help="在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId"/>
-                            <x-system.input-test title="微信企业应用密钥" :value="$wechat_secret" code="wechat_secret" help='应用的Secret（可能需要下载企业微信才能查看）' holder="应用的Secret" test="weChat"/>
-                            <x-system.input title="微信企业应用TOKEN" :value="$wechat_token" code="wechat_token" help="{{'应用管理->应用->设置API接收->TOKEN，URL设置：'.route('wechat.verify')}}"/>
-                            <x-system.input title="微信企业应用EncodingAESKey" :value="$wechat_encodingAESKey" code="wechat_encodingAESKey" help='应用管理->应用->设置API接收->EncodingAESKey'/>
+                            <x-system.input-test title="微信企业应用密钥" :value="$wechat_secret" code="wechat_secret" help='应用的Secret（可能需要下载企业微信才能查看）'
+                                                 holder="应用的Secret" test="weChat"/>
+                            <x-system.input title="微信企业应用TOKEN" :value="$wechat_token" code="wechat_token"
+                                            help="{{'应用管理->应用->设置API接收->TOKEN，URL设置：'.route('wechat.verify')}}"/>
+                            <x-system.input title="微信企业应用EncodingAESKey" :value="$wechat_encodingAESKey" code="wechat_encodingAESKey"
+                                            help='应用管理->应用->设置API接收->EncodingAESKey'/>
                             <x-system.input-test title="TG酱Token" :value="$tg_chat_token" code="tg_chat_token" help='启用TG酱，请务必填入本值（<a href=https://t.me/realtgchat_bot
                                     target=_blank>申请 Token</a>）' holder="请到Telegram申请" test="tgChat"/>
                             <hr class="col-10"/>
-                            <x-system.select title="账号过期通知" code="account_expire_notification" help="通知用户账号即将到期" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
-                            <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="元" help="【账号过期通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1" :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
-                            <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%" help="【流量耗尽通知】开始阈值，每日通知用户"/>
+                            <x-system.select title="账号过期通知" code="account_expire_notification" help="通知用户账号即将到期" multiple="1"
+                                             :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
+                            <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="天" help="【账号过期通知】开始阈值，每日通知用户"/>
+                            <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1"
+                                             :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
+                            <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%"
+                                                  help="【流量耗尽通知】开始阈值，每日通知用户"/>
                             <x-system.select title="节点离线提醒" code="node_offline_notification" help="每10分钟检测节点离线并提醒管理员" multiple="1"
                                              :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' =>
                                              'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus' => 'pushPlus']"/>
@@ -215,10 +234,14 @@
                             <x-system.select title="流量异常通知" code="data_anomaly_notification" help="1小时内流量超过异常阈值通知超管" multiple="1"
                                              :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
-                            <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB" help="1小时内超过该值，则触发自动封号"/>
-                            <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟" help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
-                            <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port" help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
-                            <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status" help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
+                            <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB"
+                                                  help="1小时内超过该值，则触发自动封号"/>
+                            <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟"
+                                                  help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
+                            <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port"
+                                             help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
+                            <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status"
+                                             help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
                             <x-system.select title="节点使用报告" code="node_daily_notification" help="报告各节点流量昨日消耗情况" multiple="1"
                                              :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
                                              'tgChat', 'PushPlus' => 'pushPlus']"/>
@@ -305,7 +328,8 @@
                                     <div class="form-group col-lg-6 d-flex">
                                         <label class="col-md-3 col-form-label">PayPal</label>
                                         <div class="col-md-7">
-                                            使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>, 同意并获取设置信息
+                                            使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>,
+                                            同意并获取设置信息
                                         </div>
                                     </div>
                                     <x-system.input title="API用户名" :value="$paypal_username" code="paypal_username"/>
@@ -321,8 +345,6 @@
                                     <x-system.input title="Public Key" :value="$stripe_public_key" code="stripe_public_key"/>
                                     <x-system.input title="Secret Key" :value="$stripe_secret_key" code="stripe_secret_key"/>
                                     <x-system.input title="WebHook Signing secret" :value="$stripe_signing_secret" code="stripe_signing_secret"/>
-                                    <x-system.select title="货币" code="stripe_currency"
-                                                     :list="['HKD(港币)' => 'hkd', 'USD(美元)' => 'usd', 'SGD(新币)' => 'sgd', 'EUR(欧元)' => 'eur', 'GBP(英镑)' => 'gbp', 'JPY(日元)' => 'jpy', 'CAD(加元)' => 'cad']"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="PayBeaver">
                                     <div class="form-group col-lg-6 d-flex">
@@ -436,150 +458,151 @@
     <script src="/assets/custom/jump-tab.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
-            $('#username_type').selectpicker('val', '{{$username_type ?? 'email'}}');
-            $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
-            $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
-            $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
-            $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
-            $('#referral_type').selectpicker('val', '{{$referral_type}}');
-            $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
-            $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
-            $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
-            $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
-            $('#is_otherPay').selectpicker('val', {!! $is_otherPay !!});
-            $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
-            $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
-            $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
-            $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
-            $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
-            $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
-            $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
-            $('#password_reset_notification').selectpicker('val', '{{$password_reset_notification}}');
-            $('#payment_confirm_notification').selectpicker('val', '{{$payment_confirm_notification}}');
-            $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
-            $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
-            $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
-            $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
+      $(document).ready(function() {
+        $('#forbid_mode').selectpicker('val', '{{$forbid_mode}}');
+        $('#username_type').selectpicker('val', '{{$username_type ?? 'email'}}');
+        $('#is_invite_register').selectpicker('val', '{{$is_invite_register}}');
+        $('#is_activate_account').selectpicker('val', '{{$is_activate_account}}');
+        $('#ddns_mode').selectpicker('val', '{{$ddns_mode}}');
+        $('#is_captcha').selectpicker('val', '{{$is_captcha}}');
+        $('#referral_type').selectpicker('val', '{{$referral_type}}');
+        $('#is_email_filtering').selectpicker('val', '{{$is_email_filtering}}');
+        $('#is_AliPay').selectpicker('val', '{{$is_AliPay}}');
+        $('#is_QQPay').selectpicker('val', '{{$is_QQPay}}');
+        $('#is_WeChatPay').selectpicker('val', '{{$is_WeChatPay}}');
+        $('#standard_currency').selectpicker('val', '{{$standard_currency}}');
+        $('#is_otherPay').selectpicker('val', {!! $is_otherPay !!});
+        $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
+        $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
+        $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
+        $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
+        $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
+        $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
+        $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
+        $('#password_reset_notification').selectpicker('val', '{{$password_reset_notification}}');
+        $('#payment_confirm_notification').selectpicker('val', '{{$payment_confirm_notification}}');
+        $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
+        $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
+        $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
+        $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
 
-            // Get all options within select
-            disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
+        // Get all options within select
+        disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
+        disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
 
-            @if (!$captcha)
-            disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
-            @endif
+          @if (!$captcha)
+          disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
+          @endif
 
-        });
+      });
 
-        function disablePayment(op) {
-            for (let i = 1; i < op.length; i++) {
-                @json($payments).
-                includes(op[i].value)
-                    ? op[i].disabled = false
-                    : op[i].disabled = true;
-            }
+      function disablePayment(op) {
+        for (let i = 1; i < op.length; i++) {
+            @json($payments).
+          includes(op[i].value)
+              ? op[i].disabled = false
+              : op[i].disabled = true;
         }
+      }
 
-        function disableCaptcha(op) {
-            for (let i = 2; i < op.length; i++) {
-                op[i].disabled = true;
-            }
+      function disableCaptcha(op) {
+        for (let i = 2; i < op.length; i++) {
+          op[i].disabled = true;
         }
+      }
 
-        // 系统设置更新
-        function systemUpdate(systemItem, value) {
-            @can('admin.system.update')
-            $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-            });
-            @else
-            swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
-            @endcan
-        }
-
-        // 正常input更新
-        function update(systemItem) {
-            systemUpdate(systemItem, $('#' + systemItem).val());
-        }
-
-        // 需要检查限制的更新
-        function updateFromInput(systemItem, lowerBound = false, upperBound = false) {
-            let value = parseInt($('#' + systemItem).val());
-            if (lowerBound !== false && value < lowerBound) {
-                swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
-            } else if (upperBound !== false && value > upperBound) {
-                swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+      // 系统设置更新
+      function systemUpdate(systemItem, value) {
+          @can('admin.system.update')
+          $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
             } else {
-                systemUpdate(systemItem, value);
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
-        }
+          });
+          @else
+          swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          @endcan
+      }
 
-        // 其他项更新选择
-        function updateFromOther(inputType, systemItem) {
-            let input = $('#' + systemItem);
-            switch (inputType) {
-                case 'select':
-                    input.on('changed.bs.select', function() {
-                        systemUpdate(systemItem, $(this).val());
-                    });
-                    break;
-                case 'multiSelect':
-                    input.on('changed.bs.select', function() {
-                        systemUpdate(systemItem, $(this).val().join(','));
-                    });
-                    break;
-                case 'switch':
-                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-                    break;
-                default:
-                    break;
-            }
-        }
+      // 正常input更新
+      function update(systemItem) {
+        systemUpdate(systemItem, $('#' + systemItem).val());
+      }
 
-        // 使用通知渠道 发送测试消息
-        @can('admin.test.notify')
-        function sendTestNotification(channel) {
-            $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+      // 需要检查限制的更新
+      function updateFromInput(systemItem, lowerBound = false, upperBound = false) {
+        let value = parseInt($('#' + systemItem).val());
+        if (lowerBound !== false && value < lowerBound) {
+          swal.fire({title: '不能小于' + lowerBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else if (upperBound !== false && value > upperBound) {
+          swal.fire({title: '不能大于' + upperBound, icon: 'warning', timer: 1500, showConfirmButton: false});
+        } else {
+          systemUpdate(systemItem, value);
+        }
+      }
+
+      // 其他项更新选择
+      function updateFromOther(inputType, systemItem) {
+        let input = $('#' + systemItem);
+        switch (inputType) {
+          case 'select':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val());
             });
-        }
-        @endcan
-
-        // 生成网站安全码
-        function makeWebsiteSecurityCode() {
-            $.get('{{route('createStr')}}', function(ret) {
-                $('#website_security_code').val(ret);
+            break;
+          case 'multiSelect':
+            input.on('changed.bs.select', function() {
+              systemUpdate(systemItem, $(this).val().join(','));
             });
+            break;
+          case 'switch':
+            systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
+            break;
+          default:
+            break;
         }
+      }
 
-        @can('admin.test.epay')
-        function epayInfo() {
-            $.get('{{route('admin.test.epay')}}', function(ret) {
-                if (ret.status === 'success') {
-                    swal.fire({
-                        title: '易支付信息(仅供参考)',
-                        html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                            '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                            '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
-                        icon: 'info',
-                    });
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'});
-                }
+      // 使用通知渠道 发送测试消息
+      @can('admin.test.notify')
+      function sendTestNotification(channel) {
+        $.post('{{route('admin.test.notify')}}', {_token: '{{csrf_token()}}', channel: channel}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
+      @endcan
+
+      // 生成网站安全码
+      function makeWebsiteSecurityCode() {
+        $.get('{{route('createStr')}}', function(ret) {
+          $('#website_security_code').val(ret);
+        });
+      }
+
+      @can('admin.test.epay')
+      function epayInfo() {
+        $.get('{{route('admin.test.epay')}}', function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({
+              title: '易支付信息(仅供参考)',
+              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
+                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
+                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+              icon: 'info',
             });
-        }
+          } else {
+            swal.fire({title: ret.message, icon: 'error'});
+          }
+        });
+      }
         @endcan
     </script>
 @endsection

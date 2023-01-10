@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -150,6 +151,11 @@ class Order extends Model
         return $this->attributes['origin_amount'] = $value * 100;
     }
 
+    public function getOriginAmountTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->origin_amount);
+    }
+
     public function getAmountAttribute($value)
     {
         return $value / 100;
@@ -158,6 +164,11 @@ class Order extends Model
     public function setAmountAttribute($value)
     {
         return $this->attributes['amount'] = $value * 100;
+    }
+
+    public function getAmountTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->amount);
     }
 
     // 支付渠道

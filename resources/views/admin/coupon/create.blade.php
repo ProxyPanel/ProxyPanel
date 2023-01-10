@@ -64,8 +64,10 @@
                         <label class="col-md-2 col-form-label" for="value">优惠额度</label>
                         <div class="col-md-10">
                             <div class="input-group">
+                                <div class="input-group-prepend" id="amount">
+                                    <span class="input-group-text">{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}</span>
+                                </div>
                                 <input type="number" class="form-control col-md-3" min="1" max="99" name="value" id="value" value="{{old('value')}}" required/>
-                                <span class="input-group-text" id="amount">元</span>
                                 <span class="input-group-text discount" style="display: none;">%</span>
                             </div>
                             <span class="text-help discount" style="display: none;"> 范围为 1% ~ 99% </span>
@@ -93,8 +95,10 @@
                             <label class="col-md-2 col-form-label" for="minimum">满减条件</label>
                             <div class="col-md-10">
                                 <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}</span>
+                                    </div>
                                     <input type="number" class="form-control col-md-3" name="minimum" id="minimum" value="{{old('minimum')}}" step="0.01"/>
-                                    <span class="input-group-text">元</span>
                                 </div>
                                 <span class="text-help"> 当支付金额超过N值时，才能使用本优惠劵；不设置/0，即为无限制 </span>
                             </div>

@@ -75,7 +75,7 @@
                                 @endif
                             </td>
                             <td> {{$goods->traffic_label}} </td>
-                            <td> {{$goods->price}} 元</td>
+                            <td> {{$goods->price_tag}}</td>
                             <td> {{$goods->sort}} </td>
                             <td><code>{{$goods->use_count}} / {{$goods->total_count}}</code></td>
                             <td>

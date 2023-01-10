@@ -88,8 +88,8 @@
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
                                     <td> {{empty($referralLog->invitee) ? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】' : str_replace(mb_substr($referralLog->invitee->username, 3, 4), "****", $referralLog->invitee->username)}} </td>
-                                    <td> ¥{{$referralLog->amount}} </td>
-                                    <td> ¥{{$referralLog->commission}} </td>
+                                    <td> {{$referralLog->amount_tag}} </td>
+                                    <td> {{$referralLog->commission_tag}} </td>
                                     <td> {{$referralLog->created_at}} </td>
                                     <td>{!! $referralLog->status_label !!}</td>
                                 </tr>
@@ -104,7 +104,7 @@
                             </div>
                             <div class="col-md-6 col-sm-6">
                                 <nav class="Page navigation float-right">
-                                    {{$referralLogList->appends(Arr::except(Request::query(), 'user_page'))->links()}}
+                                    {{$referralLogList->appends(Arr::except(Request::query(), 'log_page'))->links()}}
                                 </nav>
                             </div>
                         </div>
@@ -129,7 +129,7 @@
                                 <tr>
                                     <td> {{$loop->iteration}} </td>
                                     <td> {{$referralApply->created_at}} </td>
-                                    <td> ¥{{$referralApply->amount}} </td>
+                                    <td> {{$referralApply->amount_tag}} </td>
                                     <td>
                                         {!! $referralApply->status_label !!}
                                     </td>
@@ -140,7 +140,7 @@
                     </div>
                     <div class="card-footer card-footer-transparent">
                         <nav class="Page navigation float-right">
-                            {{$referralApplyList->appends(Arr::except(Request::query(), 'user_page'))->links()}}
+                            {{$referralApplyList->appends(Arr::except(Request::query(), 'apply_page'))->links()}}
                         </nav>
                     </div>
                 </div>
