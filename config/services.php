@@ -82,4 +82,6 @@ return [
     'baidu' => [
         'app_ak' => env('BAIDU_APP_AK'),
     ],
+
+    'apiLayer' => env('API_LAYER_API_KEY'),
 ];

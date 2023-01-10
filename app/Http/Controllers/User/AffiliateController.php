@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Components\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReferralApply;
@@ -24,9 +25,9 @@ class AffiliateController extends Controller
         return view('user.referral', [
             'referral_traffic'  => flowAutoShow(sysConfig('referral_traffic') * MB),
             'referral_percent'  => sysConfig('referral_percent'),
-            'referral_money'    => sysConfig('referral_money'),
+            'referral_money'    => Helpers::getPriceTag(sysConfig('referral_money')),
             'totalAmount'       => ReferralLog::uid()->sum('commission') / 100,
-            'canAmount'         => ReferralLog::uid()->whereStatus(0)->sum('commission') / 100,
+            'canAmount'         => Helpers::getPriceTag(ReferralLog::uid()->whereStatus(0)->sum('commission') / 100),
             'aff_link'          => UserService::getInstance()->inviteURI(),
             'referralLogList'   => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
             'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
@@ -52,7 +53,7 @@ class AffiliateController extends Controller
         $commission /= 100;
         if ($commission < sysConfig('referral_money')) {
             return Response::json([
-                'status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => sysConfig('referral_money')]),
+                'status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => Helpers::getPriceTag(sysConfig('referral_money'))]),
             ]);
         }
 

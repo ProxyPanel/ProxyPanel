@@ -16,32 +16,25 @@ use Str;
 
 class Helpers
 {
-    // 不生成的端口
-    private static $denyPorts = [
-        1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179,
-    ];
+    private static $denyPorts = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
 
-    // 加密方式
     public static function methodList()
-    {
+    { // 加密方式
         return SsConfig::type(1)->get();
     }
 
-    // 协议
     public static function protocolList()
-    {
+    { // 协议
         return SsConfig::type(2)->get();
     }
 
-    // 混淆
     public static function obfsList()
-    {
+    { // 混淆
         return SsConfig::type(3)->get();
     }
 
-    // 生成用户的订阅码
     public static function makeSubscribeCode(): string
-    {
+    { // 生成用户的订阅码
         $code = Str::random();
         if (UserSubscribe::whereCode($code)->exists()) {
             $code = self::makeSubscribeCode();
@@ -81,9 +74,8 @@ class Helpers
         ]);
     }
 
-    // 获取一个有效端口
     public static function getPort(): int
-    {
+    { // 获取一个有效端口
         if (sysConfig('is_rand_port')) {
             $port = self::getRandPort();
         } else {
@@ -98,41 +90,22 @@ class Helpers
         return $port;
     }
 
-    // 获取一个随机端口
-    private static function getRandPort(): int
-    {
-        $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
-        $exists_port = array_merge(
-            User::where('port', '<>', 0)->pluck('port')->toArray(),
-            self::$denyPorts
-        );
-
-        while (in_array($port, $exists_port, true)) {
-            $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
-        }
-
-        return $port;
-    }
-
-    // 获取默认加密方式
     public static function getDefaultMethod(): string
-    {
+    { // 获取默认加密方式
         $config = SsConfig::default()->type(1)->first();
 
         return $config->name ?? 'aes-256-cfb';
     }
 
-    // 获取默认协议
     public static function getDefaultProtocol(): string
-    {
+    { // 获取默认协议
         $config = SsConfig::default()->type(2)->first();
 
         return $config->name ?? 'origin';
     }
 
-    // 获取默认混淆
     public static function getDefaultObfs(): string
-    {
+    { // 获取默认混淆
         $config = SsConfig::default()->type(3)->first();
 
         return $config->name ?? 'plain';
@@ -282,5 +255,38 @@ class Helpers
         $log->save();
 
         $user->update(['last_login' => time()]); // 更新登录信息
+    }
+
+    /**
+     * Get price with money symbol in the user's preferred currency.
+     *
+     * @param  int|float  $amount  price
+     * @return string
+     */
+    public static function getPriceTag($amount): string
+    {
+        $currentCurrency = session('currency');
+        $standard = sysConfig('standard_currency');
+        $currencyLib = array_column(config('common.currency'), 'symbol', 'code');
+        if (! empty($currentCurrency) && isset($currencyLib[$currentCurrency]) && $currentCurrency !== $standard) {
+            return $currencyLib[$currentCurrency].CurrencyExchange::convert($currentCurrency, $amount);
+        }
+
+        return $currencyLib[$standard].$amount;
+    }
+
+    private static function getRandPort(): int
+    {  // 获取一个随机端口
+        $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
+        $exists_port = array_merge(
+            User::where('port', '<>', 0)->pluck('port')->toArray(),
+            self::$denyPorts
+        );
+
+        while (in_array($port, $exists_port, true)) {
+            $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
+        }
+
+        return $port;
     }
 }

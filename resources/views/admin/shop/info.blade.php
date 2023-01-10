@@ -52,8 +52,10 @@
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="price">售价</label>
                                 <div class="col-md-4 input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}</span>
+                                    </div>
                                     <input type="number" class="form-control" name="price" id="price" step="0.01" required/>
-                                    <span class="input-group-text">元</span>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -79,8 +81,10 @@
                             <div class="form-group row package-renew">
                                 <label class="col-md-2 col-form-label" for="renew">流量重置价格</label>
                                 <div class="col-md-4 input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}</span>
+                                    </div>
                                     <input type="number" class="form-control" name="renew" id="renew" step="0.01" value="0"/>
-                                    <span class="input-group-text">元</span>
                                 </div>
                             </div>
                             <div class="form-group row package-renew">

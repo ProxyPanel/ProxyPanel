@@ -22,7 +22,7 @@
                         <thead class="thead-default">
                         <tr>
                             <th colspan="6">
-                                申请单ID：{{$referral->id}} | 申请人：{{$referral->user->username}} | 申请提现金额：¥{{$referral->amount}} | 申请时间：{{$referral->created_at}}
+                                申请单ID：{{$referral->id}} | 申请人：{{$referral->user->username}} | 申请提现金额：{{$referral->amount_tag}} | 申请时间：{{$referral->created_at}}
                             </th>
                         </tr>
                         <tr>
@@ -49,8 +49,8 @@
                                         {{$commission->order->goods->name}}
                                     @endcan
                                 </td>
-                                <td> ¥{{$commission->amount}} </td>
-                                <td> ¥{{$commission->commission}} </td>
+                                <td> {{$commission->amount_tag}} </td>
+                                <td> {{$commission->commission_tag}} </td>
                                 <td> {{$commission->created_at}} </td>
                             </tr>
                         @endforeach

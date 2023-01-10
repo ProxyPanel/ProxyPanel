@@ -45,8 +45,7 @@
                     <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
                            aria-expanded="false" role="button">
-                            <span class="icon wb-flag"></span>
-                            <span class="icon wb-chevron-down-mini"></span>
+                            <span class="icon font-size-16 wb-globe"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">
                             @foreach (config('common.language') as $key => $value)
@@ -55,6 +54,19 @@
                                 </a>
                             @endforeach
                         </div>
+                    <li class="nav-item dropdown">
+                        <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
+                           aria-expanded="false" role="button">
+                            <span class="icon wb-payment"></span>
+                        </a>
+                        <div class="dropdown-menu" role="menu">
+                            @foreach (config('common.currency') as $country_code => $currency)
+                                <a class="dropdown-item" href="{{route('currency', ['code' => $currency['code']])}}" role="menuitem">
+                                    <i class="fi fi-{{$country_code}}"></i> <span style="padding: inherit;">{{$currency['symbol'].' '.$currency['name']}}</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </li>
                     </li>
                     <li class="nav-item dropdown">
                         <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"

@@ -73,7 +73,7 @@
                             <td> {{$coupon->priority}} </td>
                             <td> {{$coupon->type === 3 ? '一次性' : ($coupon->usable_times ?? '无限制')}} </td>
                             <td>
-                                {{($coupon->type === 2 ?'减 ':'抵 ').$coupon->value.($coupon->type === 2 ?' %':' 元')}}
+                                {{($coupon->type === 2 ?'减 ':'抵 ').($coupon->type === 2 ? $coupon->value.' %': \App\Components\Helpers::getPriceTag($coupon->value))}}
                             </td>
                             <td> {{$coupon->start_time}} ~ {{$coupon->end_time}} </td>
                             <td>

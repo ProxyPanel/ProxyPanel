@@ -206,7 +206,7 @@ class UserController extends Controller
         $user = auth()->user();
         // 余额充值商品，只取10个
         $renewOrder = Order::userActivePlan($user->id)->first();
-        $renewPrice = $renewOrder->goods ?? 0;
+        $renewPrice = $renewOrder->goods->renew ?? 0;
         // 有重置日时按照重置日为标准，否则就以过期日为标准
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
@@ -224,7 +224,7 @@ class UserController extends Controller
         return view('user.services', [
             'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->get(),
             'goodsList'       => $goodsList,
-            'renewTraffic'    => $renewPrice->renew ?? 0,
+            'renewTraffic'    => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
             'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
         ]);
     }
@@ -418,7 +418,7 @@ class UserController extends Controller
         $data = [
             'name'  => $ret->name,
             'type'  => $ret->type,
-            'value' => $ret->value,
+            'value' => $ret->type === 2 ? $ret->value : Helpers::getPriceTag($ret->value),
         ];
 
         return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('user.coupon.attribute')])]);
@@ -521,5 +521,12 @@ class UserController extends Controller
         }
 
         return Response::json(['status' => 'fail', 'message' => trans('user.recharge').trans('common.failed')]);
+    }
+
+    public function switchCurrency(string $code)// 切换语言
+    {
+        Session::put('currency', $code);
+
+        return Redirect::back();
     }
 }

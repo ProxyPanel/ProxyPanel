@@ -60,10 +60,10 @@
                                     {{trans('user.recharge_credit')}}
                                 @endif
                             </td>
-                            <td><strong>¥</strong> {{$order->origin_amount}} </td>
+                            <td> {{$order->origin_amount_tag}} </td>
                             <td> 1</td>
                             <td>{{$order->coupon->name ?? trans('common.none')}}</td>
-                            <td> ¥{{$order->amount}} </td>
+                            <td> {{$order->amount_tag}} </td>
                             <td> {!! $order->status_label !!} </td>
                         </tr>
                         </tbody>

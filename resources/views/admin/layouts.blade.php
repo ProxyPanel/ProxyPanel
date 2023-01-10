@@ -38,7 +38,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" role="button">
-                            <span class="icon wb-flag"></span>
+                            <span class="icon wb-globe"></span>
                             <span class="icon wb-chevron-down-mini"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">

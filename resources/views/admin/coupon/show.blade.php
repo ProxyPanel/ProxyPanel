@@ -56,13 +56,13 @@
                         <p class="form-control text-fit">
                             @switch ($coupon->type)
                                 @case(1)
-                                    抵用 <code>{{$coupon->value}}</code> 元
+                                    抵用 <code>{{ \App\Components\Helpers::getPriceTag($coupon->value) }}</code>
                                     @break
                                 @case(2)
                                     减 <code>{{$coupon->value}}</code> %
                                     @break
                                 @case(3)
-                                    充值 <code>{{$coupon->value}}</code> 元
+                                    充值 <code>{{ \App\Components\Helpers::getPriceTag($coupon->value) }}</code>
                                     @break
                                 @default
                                     未知卡券
@@ -92,7 +92,7 @@
                         <div class="form-group row">
                             <label class="col-md-2 col-form-label" for="minimum">满减条件</label>
                             <div class="col-md-10">
-                                <p class="form-control text-fit">当支付金额超过<strong> {{$coupon->limit['minimum']}}元</strong> 时，才能使用本优惠劵</p>
+                                <p class="form-control text-fit">当支付金额超过<strong> {{ \App\Components\Helpers::getPriceTag($coupon->limit['minimum']) }}</strong> 时，才能使用本优惠劵</p>
                             </div>
                         </div>
                     @endisset

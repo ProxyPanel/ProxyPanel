@@ -35,7 +35,7 @@
                             <td><a href="/invoice/{{$order->sn}}" target="_blank">{{$order->sn}}</a></td>
                             <td>{{$order->goods->name ?? trans('user.recharge_credit')}}</td>
                             <td>{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</td>
-                            <td>¥{{$order->amount}}</td>
+                            <td>{{$order->amount_tag}}</td>
                             <td>{{$order->created_at}}</td>
                             <td>{{empty($order->goods) || $order->goods_id === null || $order->status === 3 ? '' : $order->expired_at}}</td>
                             <td>{!! $order->status_label !!}</td>

@@ -57,7 +57,7 @@
                                     @endcan
                                 @endif
                             </td>
-                            <td> ¥{{$apply->amount}} </td>
+                            <td> {{$apply->amount_tag}} </td>
                             <td>
                                 @if($apply->status === -1)
                                     <span class="badge badge-lg badge-danger"> 驳 回 </span>

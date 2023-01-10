@@ -26,7 +26,7 @@
                                 <br>
                                 {{trans('user.account.speed_limit')}}<strong> {{ $goods->speed_limit ? $goods->speed_limit.' Mbps' : trans('user.service.unlimited') }} </strong>
                             </td>
-                            <td class="text-middle"> ¥{{$goods->price}} </td>
+                            <td class="text-middle"> {{$goods->price_tag}} </td>
                             <td class="text-middle"> x 1</td>
                         </tr>
                         </tbody>
@@ -47,10 +47,10 @@
                         <div class="col-lg-3 offset-lg-6 text-right">
                             <p id="discount"></p>
                             <p>{{trans('user.shop.subtotal')}}
-                                <span>¥{{$goods->price}}</span>
+                                <span>{{$goods->price_tag}}</span>
                             </p>
                             <p class="page-invoice-amount">{{trans('user.shop.total')}}
-                                <span class="grand-total">¥{{$goods->price}}</span>
+                                <span class="grand-total">{{$goods->price_tag}}</span>
                             </p>
                         </div>
                     @endif
@@ -71,122 +71,126 @@
 @endsection
 @section('javascript')
     <script>
-        // 校验优惠券是否可用
-        function redeemCoupon() {
-            const coupon_sn = $('#coupon_sn').val();
-            const goods_price = '{{$goods->price}}';
-            $.ajax({
-                method: 'POST',
-                url: '{{route('redeemCoupon', $goods)}}',
-                dataType: 'json',
-                data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
-                success: function(ret) {
-                    $('.input-group-prepend').remove();
-                    if (ret.status === 'success') {
-                        $('#coupon_sn').parent().prepend(
-                            '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
-                        // 根据类型计算折扣后的总金额
-                        let total_price = 0;
-                        let coupon_text = document.getElementById('discount');
-                        if (ret.data.type === 2) {
-                            total_price = goods_price * (1 - ret.data.value / 100);
-                            coupon_text.innerHTML = '【{{trans('user.coupon.attribute')}}】：' + ret.data.name + ' － '
-                                + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}} － ¥' + total_price.toFixed(2);
-                            total_price = goods_price - total_price;
-                        } else {
-                            total_price = goods_price - ret.data.value;
-                            total_price = total_price > 0 ? total_price : 0;
-                            if (ret.data.type === 1) {
-                                coupon_text.innerHTML = '【{{trans('user.coupon.voucher')}}】：' + ret.data.name + ' －¥' + ret.data.value;
-                            }
-                        }
+      // 校验优惠券是否可用
+      function redeemCoupon() {
+        const coupon_sn = $('#coupon_sn').val();
+        let tag = '{{$goods->price_tag}}'.match(/(.*?[^0-9])(\d+\.?.*)/);
+        const goods_price = tag[2];
+        const sign = tag[1];
+        $.ajax({
+          method: 'POST',
+          url: '{{route('redeemCoupon', $goods)}}',
+          dataType: 'json',
+          data: {_token: '{{csrf_token()}}', coupon_sn: coupon_sn},
+          success: function(ret) {
+            $('.input-group-prepend').remove();
+            if (ret.status === 'success') {
+              $('#coupon_sn').parent().prepend(
+                  '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
+              // 根据类型计算折扣后的总金额
+              let total_price = 0;
+              let coupon_text = document.getElementById('discount');
+              if (ret.data.type === 2) {
+                const discount = goods_price * (ret.data.value / 100);
 
-                        // 四舍五入，保留2位小数
-                        $('.grand-total').text('¥' + total_price.toFixed(2));
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1300,
-                            showConfirmButton: false,
-                        });
-                    } else {
-                        $('.grand-total').text('¥' + goods_price);
-                        $('#coupon_sn').parent().prepend(
-                            '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
-                        swal.fire({
-                            title: ret.title,
-                            text: ret.message,
-                            icon: 'error',
-                        });
-                    }
-                },
-            });
-        }
+                coupon_text.innerHTML = '【{{trans('user.coupon.attribute')}}】：' + ret.data.name + '_'
+                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: - ' + sign + discount.toFixed(2);
+                total_price = goods_price - discount;
+              } else {
+                console.log(ret.data.value);
+                total_price = goods_price - ret.data.value.match(/(.*?[^0-9])(\d+\.?.*)/)[2];
+                total_price = total_price > 0 ? total_price : 0;
+                if (ret.data.type === 1) {
+                  coupon_text.innerHTML = '【{{trans('user.coupon.voucher')}}】：' + ret.data.name + ' －' + ret.data.value;
+                }
+              }
 
-        // 检查预支付
-        function pay(method, pay_type) {
-            // 存在套餐 和 购买类型为套餐时 出现提示
-            if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
-                swal.fire({
-                    title: '{{trans('user.shop.conflict')}}',
-                    html: '{!! trans('user.shop.conflict_tips') !!}',
-                    icon: 'info',
-                    showCancelButton: true,
-                    cancelButtonText: '{{trans('common.back')}}',
-                    confirmButtonText: '{{trans('common.continues')}}',
-                }).then((result) => {
-                    if (result.value) {
-                        contiousPay(method, pay_type);
-                    }
-                });
+              // 四舍五入，保留2位小数
+              $('.grand-total').text(sign + total_price.toFixed(2));
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+              });
             } else {
-                contiousPay(method, pay_type);
+              $('.grand-total').text(sign + goods_price);
+              $('#coupon_sn').parent().prepend(
+                  '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>');
+              swal.fire({
+                title: ret.title,
+                text: ret.message,
+                icon: 'error',
+              });
             }
-        }
+          },
+        });
+      }
 
-        function contiousPay(method, pay_type) {
-            const goods_id = '{{$goods->id}}';
-            const coupon_sn = $('#coupon_sn').val();
-            $.ajax({
-                method: 'POST',
-                url: '{{route('purchase')}}',
-                dataType: 'json',
-                data: {
-                    _token: '{{csrf_token()}}',
-                    goods_id: goods_id,
-                    coupon_sn: coupon_sn,
-                    method: method,
-                    pay_type: pay_type,
-                },
-                success: function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1300,
-                            showConfirmButton: false,
-                        });
-                        if (method === 'credit') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
-                        }
-                        if (ret.data) {
-                            window.location.href = '{{route('orderDetail', '')}}/' + ret.data;
-                        } else if (ret.url) {
-                            window.location.href = ret.url;
-                        }
-                    } else if (ret.status === 'info') {
-                        swal.fire({title: ret.title, text: ret.message, icon: 'question'});
-                    } else {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'error',
-                        });
-                    }
-                },
-                error: function() {
-                    swal.fire('{{trans('user.unknown').trans('common.error')}}', '{{trans('user.shop.call4help')}}', 'error');
-                },
-            });
+      // 检查预支付
+      function pay(method, pay_type) {
+        // 存在套餐 和 购买类型为套餐时 出现提示
+        if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
+          swal.fire({
+            title: '{{trans('user.shop.conflict')}}',
+            html: '{!! trans('user.shop.conflict_tips') !!}',
+            icon: 'info',
+            showCancelButton: true,
+            cancelButtonText: '{{trans('common.back')}}',
+            confirmButtonText: '{{trans('common.continues')}}',
+          }).then((result) => {
+            if (result.value) {
+              contiousPay(method, pay_type);
+            }
+          });
+        } else {
+          contiousPay(method, pay_type);
         }
+      }
+
+      function contiousPay(method, pay_type) {
+        const goods_id = '{{$goods->id}}';
+        const coupon_sn = $('#coupon_sn').val();
+        $.ajax({
+          method: 'POST',
+          url: '{{route('purchase')}}',
+          dataType: 'json',
+          data: {
+            _token: '{{csrf_token()}}',
+            goods_id: goods_id,
+            coupon_sn: coupon_sn,
+            method: method,
+            pay_type: pay_type,
+          },
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1300,
+                showConfirmButton: false,
+              });
+              if (method === 'credit') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
+              }
+              if (ret.data) {
+                window.location.href = '{{route('orderDetail', '')}}/' + ret.data;
+              } else if (ret.url) {
+                window.location.href = ret.url;
+              }
+            } else if (ret.status === 'info') {
+              swal.fire({title: ret.title, text: ret.message, icon: 'question'});
+            } else {
+              swal.fire({
+                title: ret.message,
+                icon: 'error',
+              });
+            }
+          },
+          error: function() {
+            swal.fire('{{trans('user.unknown').trans('common.error')}}', '{{trans('user.shop.call4help')}}', 'error');
+          },
+        });
+      }
     </script>
 @endsection

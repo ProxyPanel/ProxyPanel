@@ -13,7 +13,7 @@
                         </button>
                         <span class="font-weight-400">{{trans('user.account.credit')}}</span>
                         <div class="content-text text-center mb-0">
-                            <span class="font-size-40 font-weight-100">{{Auth::getUser()->credit}}</span>
+                            <span class="font-size-40 font-weight-100">{{Auth::getUser()->credit_tag}}</span>
                             <br/>
                             <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{trans('user.recharge')}}</button>
                         </div>
@@ -27,7 +27,7 @@
                             </button>
                             <span class="font-weight-400">{{trans('user.reset_data.')}}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-20 font-weight-100">{{trans('user.reset_data.required')}} <code>¥{{$renewTraffic}}</code></span>
+                                <span class="font-size-20 font-weight-100">{{trans('user.reset_data.required')}} <code>{{$renewTraffic}}</code></span>
                                 <br/>
                                 <button class="btn btn-danger mt-10" onclick="resetTraffic()">{{trans('common.reset')}}</button>
                             </div>
@@ -61,8 +61,7 @@
                                         <div class="pricing-header text-white" style="background-color: {{$goods->color}}">
                                             <div class="pricing-title font-size-20">{{$goods->name}}</div>
                                             <div class="pricing-price text-white @if($goods->type === 1) text-center @endif">
-                                                <span class="pricing-currency">¥</span>
-                                                <span class="pricing-amount">{{$goods->price}}</span>
+                                                <span class="pricing-amount">{{$goods->price_tag}}</span>
                                                 @if($goods->type === 2)
                                                     <span class="pricing-period">/ {{$goods->days.trans_choice('validation.attributes.day', 1)}}</span>
                                                 @endif
@@ -123,7 +122,8 @@
                             <div class="form-group row charge_credit">
                                 <label for="amount" class="offset-md-1 col-md-2 col-form-label">{{trans('user.shop.change_amount')}}</label>
                                 <div class="col-md-8">
-                                    <input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="¥"/>
+                                    <input type="text" name="amount" id="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40 data-prefix="{{array_column
+                                    (config('common.currency'), 'symbol', 'code')[session('currency') ?? sysConfig('standard_currency')]}}"/>
                                 </div>
                             </div>
                         @endif
@@ -150,122 +150,122 @@
     <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
     <script>
-        function itemControl(value) {
-            if (value === 1) {
-                $('.charge_credit').show();
-                $('#change_btn').hide();
-                $('#charge_coupon_code').hide();
-            } else {
-                $('.charge_credit').hide();
-                $('#charge_coupon_code').show();
-                $('#change_btn').show();
-            }
+      function itemControl(value) {
+        if (value === 1) {
+          $('.charge_credit').show();
+          $('#change_btn').hide();
+          $('#charge_coupon_code').hide();
+        } else {
+          $('.charge_credit').hide();
+          $('#charge_coupon_code').show();
+          $('#change_btn').show();
         }
+      }
 
-        $(document).ready(function() {
-            let which_selected = 2;
-            @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                which_selected = 1;
-            @endif
+      $(document).ready(function() {
+        let which_selected = 2;
+          @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
+              which_selected = 1;
+          @endif
 
-            itemControl(which_selected);
-            $('charge_type').val(which_selected);
-        });
+          itemControl(which_selected);
+        $('charge_type').val(which_selected);
+      });
 
-        // 切换充值方式
-        $('#charge_type').change(function() {
-            itemControl(parseInt($(this).val()));
-        });
+      // 切换充值方式
+      $('#charge_type').change(function() {
+        itemControl(parseInt($(this).val()));
+      });
 
-        // 重置流量
-        function resetTraffic() {
-            swal.fire({
-                title: '{{trans('user.reset_data.')}}',
-                text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                text: ret.data,
-                                icon: 'error',
-                            }).then(() => window.location.reload());
-                        }
-                    });
-                }
+      // 重置流量
+      function resetTraffic() {
+        swal.fire({
+          title: '{{trans('user.reset_data.')}}',
+          text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({
+                  title: ret.message,
+                  text: ret.data,
+                  icon: 'error',
+                }).then(() => window.location.reload());
+              }
             });
-        }
+          }
+        });
+      }
 
-        // 充值
-        function pay(method, pay_type) {
-            const paymentType = parseInt($('#charge_type').val() ?? 2);
-            const charge_coupon = $('#charge_coupon').val().trim();
-            const amount = parseInt($('#amount').val());
-            if (paymentType === 1) {
-                if (amount <= 0) {
-                    swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
-                    return false;
+      // 充值
+      function pay(method, pay_type) {
+        const paymentType = parseInt($('#charge_type').val() ?? 2);
+        const charge_coupon = $('#charge_coupon').val().trim();
+        const amount = parseInt($('#amount').val());
+        if (paymentType === 1) {
+          if (amount <= 0) {
+            swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
+            return false;
+          }
+
+          $.ajax({
+            method: 'POST',
+            url: '{{route('purchase')}}',
+            data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
+            dataType: 'json',
+            beforeSend: function() {
+              $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
+            },
+            success: function(ret) {
+              $('#charge_msg').show().html(ret.message);
+              if (ret.status === 'fail') {
+                return false;
+              } else {
+                if (ret.data) {
+                  window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
+                } else if (ret.url) {
+                  window.location.href = ret.url;
                 }
+              }
+            },
+            error: function() {
+              $('#charge_msg').show().html("{{trans('user.error_response')}}");
+            },
+          });
+        } else if (paymentType === 2) {
+          if (charge_coupon === '') {
+            $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
+            $('#charge_coupon').focus();
+            return false;
+          }
 
-                $.ajax({
-                    method: 'POST',
-                    url: '{{route('purchase')}}',
-                    data: {_token: '{{csrf_token()}}', amount: amount, method: method, pay_type: pay_type},
-                    dataType: 'json',
-                    beforeSend: function() {
-                        $('#charge_msg').show().html('{{trans('user.payment.creating')}}');
-                    },
-                    success: function(ret) {
-                        $('#charge_msg').show().html(ret.message);
-                        if (ret.status === 'fail') {
-                            return false;
-                        } else {
-                            if (ret.data) {
-                                window.location.href = '{{route('orderDetail' , '')}}/' + ret.data;
-                            } else if (ret.url) {
-                                window.location.href = ret.url;
-                            }
-                        }
-                    },
-                    error: function() {
-                        $('#charge_msg').show().html("{{trans('user.error_response')}}");
-                    },
-                });
-            } else if (paymentType === 2) {
-                if (charge_coupon === '') {
-                    $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
-                    $('#charge_coupon').focus();
-                    return false;
-                }
+          $.ajax({
+            method: 'POST',
+            url: '{{route('recharge')}}',
+            data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
+            beforeSend: function() {
+              $('#charge_msg').show().html("{{trans('user.recharging')}}");
+            },
+            success: function(ret) {
+              if (ret.status === 'fail') {
+                $('#charge_msg').show().html(ret.message);
+                return false;
+              }
 
-                $.ajax({
-                    method: 'POST',
-                    url: '{{route('recharge')}}',
-                    data: {_token: '{{csrf_token()}}', coupon_sn: charge_coupon},
-                    beforeSend: function() {
-                        $('#charge_msg').show().html("{{trans('user.recharging')}}");
-                    },
-                    success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#charge_msg').show().html(ret.message);
-                            return false;
-                        }
-
-                        $('#charge_modal').modal('hide');
-                        window.location.reload();
-                    },
-                    error: function() {
-                        $('#charge_msg').show().html("{{trans('user.error_response')}}");
-                    },
-                });
-            }
+              $('#charge_modal').modal('hide');
+              window.location.reload();
+            },
+            error: function() {
+              $('#charge_msg').show().html("{{trans('user.error_response')}}");
+            },
+          });
         }
+      }
     </script>
 @endsection

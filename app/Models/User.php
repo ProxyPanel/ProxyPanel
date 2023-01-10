@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Components\Helpers;
 use Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -177,6 +178,16 @@ class User extends Authenticatable
         return $this->attributes['credit'] / 100;
     }
 
+    public function setCreditAttribute($value)
+    {
+        return $this->attributes['credit'] = $value * 100;
+    }
+
+    public function getCreditTagAttribute(): string
+    {
+        return Helpers::getPriceTag($this->credit);
+    }
+
     public function getTransferEnableFormattedAttribute()
     {
         return flowAutoShow($this->attributes['transfer_enable']);
@@ -190,11 +201,6 @@ class User extends Authenticatable
     public function setPasswordAttribute($password)
     {
         return $this->attributes['password'] = Hash::make($password);
-    }
-
-    public function setCreditAttribute($value)
-    {
-        return $this->attributes['credit'] = $value * 100;
     }
 
     public function setSpeedLimitAttribute($value)

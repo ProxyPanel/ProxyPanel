@@ -5,8 +5,8 @@
         <label class="col-md-3 col-form-label" for="{{$code}}">{{$title}}</label>
         <div class="col-md-9">
             <select id="{{$code}}" data-plugin="selectpicker" data-style="btn-outline btn-primary" onchange="updateFromOther('select','{{$code}}')" @if ($multiple) multiple @endif>
-                @foreach ($list as $item => $value)
-                    <option value="{{$value}}">{{$item}}</option>
+                @foreach ($list as $key => $value)
+                    <option value="{{$value}}">{{$key}}</option>
                 @endforeach
             </select>
             @isset($help)

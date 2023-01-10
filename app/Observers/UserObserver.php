@@ -36,11 +36,13 @@ class UserObserver
                     }
                 } else {
                     // 权限修改，消除重叠的部分
-                    if ($oldAllowNodes->isNotEmpty() && $oldAllowNodes->diff($allowNodes)->isNotEmpty()) {
-                        delUser::dispatch($user->id, $oldAllowNodes->diff($allowNodes));
+                    $old = $oldAllowNodes->diff($allowNodes);
+                    if ($oldAllowNodes->isNotEmpty() && $old->isNotEmpty()) {
+                        delUser::dispatch($user->id, $old->diff($allowNodes));
                     }
-                    if ($allowNodes->diff($oldAllowNodes)->isNotEmpty()) {
-                        addUser::dispatch($user->id, $allowNodes->diff($oldAllowNodes));
+                    $new = $allowNodes->diff($oldAllowNodes);
+                    if ($new->isNotEmpty()) {
+                        addUser::dispatch($user->id, $new);
                     }
                 }
             } elseif (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {

@@ -22,6 +22,7 @@ Route::match(['get', 'post'], 'profile', 'UserController@profile')->name('profil
 Route::post('switchToAdmin', 'UserController@switchToAdmin')->name('switch'); // 转换成管理员的身份
 Route::post('charge', 'UserController@charge')->name('recharge'); // 卡券余额充值
 Route::get('knowledge', 'UserController@knowledge')->name('knowledge'); // 帮助中心
+Route::get('currency/{code}', 'UserController@switchCurrency')->name('currency'); // 语言切换
 
 Route::namespace('User')->group(function () {
     Route::get('referral', 'AffiliateController@referral')->name('commission'); // 推广返利

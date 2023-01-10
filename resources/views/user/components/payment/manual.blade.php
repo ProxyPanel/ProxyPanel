@@ -158,10 +158,10 @@
                     </div>
                     <div class="mx-auto w-md-p50 w-lg-p25">
                         <ul class="list-group list-group-dividered">
-                            <li class="list-group-item">{{trans('user.shop.service').'：'.$name}}</li>
-                            <li class="list-group-item">{{trans('user.shop.price').'：¥'.$payment->amount}}</li>
+                            <li class="list-group-item">{{trans('user.shop.service').': '.$name}}</li>
+                            <li class="list-group-item">{{trans('user.shop.price').': '.$payment->amount_tag}}</li>
                             @if($days !== 0)
-                                <li class="list-group-item">{{trans('common.available_date').'：'.$days.trans_choice('validation.attributes.day', 1)}}</li>
+                                <li class="list-group-item">{{trans('common.available_date').': '.$days.trans_choice('validation.attributes.day', 1)}}</li>
                             @endif
                         </ul>
                     </div>
