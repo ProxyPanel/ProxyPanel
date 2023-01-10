@@ -50,7 +50,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-        if (config('app.debug') || config('app.demo')) { // 调试模式下记录错误详情
+        if (config('app.debug')) { // 调试模式下记录错误详情
             Log::debug('来源：'.url()->full().PHP_EOL.'访问者IP：'.IP::getClientIP().PHP_EOL.$exception);
         } else {
             Log::error('来源：'.url()->full().PHP_EOL.'访问者IP：'.IP::getClientIP().get_class($exception)); // 记录异常来源

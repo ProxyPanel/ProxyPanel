@@ -46,6 +46,11 @@ class PanelUpdate extends Command
             $bar->start();
             $this->line(' 更新数据库...');
             Artisan::call('migrate --force');
+
+            if (config('app.demo') && $this->confirm('检测到您在DEMO模式, 是否重置数据库?')) {
+                Artisan::call('migrate:fresh --seed');
+            }
+
             $bar->advance();
             $this->line(' 更新缓存...');
             Artisan::call('optimize');
