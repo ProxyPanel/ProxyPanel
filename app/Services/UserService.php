@@ -52,7 +52,7 @@ class UserService extends BaseService
     {
         $affSalt = sysConfig('aff_salt');
         if (isset($affSalt)) {
-            $aff = (new Hashids($affSalt, 8))->encode(self::$user->id());
+            $aff = (new Hashids($affSalt, 8))->encode(self::$user->id);
         } else {
             $aff = self::$user->id;
         }

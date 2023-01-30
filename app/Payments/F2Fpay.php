@@ -57,7 +57,7 @@ class F2Fpay extends Gateway
             exit;
         }
 
-        if ($result['code'] === 10000 && $result['msg'] === 'Success') {
+        if ($result['code'] === '10000' && $result['msg'] === 'Success') {
             if ($request->has('out_trade_no') && in_array($request->input('trade_status'), ['TRADE_FINISHED', 'TRADE_SUCCESS'])) {
                 if ($this->paymentReceived($request->input('out_trade_no'))) {
                     exit('success');
