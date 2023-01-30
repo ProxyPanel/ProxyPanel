@@ -88,7 +88,7 @@ if (! function_exists('filterEmoji')) {
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig($key = false, $default = null)
+    function sysConfig(string $key = null, string $default = null)
     {
         return $key ? config('settings.'.$key, $default) : config('settings');
     }

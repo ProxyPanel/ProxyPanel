@@ -266,7 +266,7 @@ class Helpers
     public static function getPriceTag($amount): string
     {
         $currentCurrency = session('currency');
-        $standard = sysConfig('standard_currency');
+        $standard = sysConfig('standard_currency', 'CNY');
         $currencyLib = array_column(config('common.currency'), 'symbol', 'code');
         if (! empty($currentCurrency) && isset($currencyLib[$currentCurrency]) && $currentCurrency !== $standard) {
             return $currencyLib[$currentCurrency].CurrencyExchange::convert($currentCurrency, $amount);
