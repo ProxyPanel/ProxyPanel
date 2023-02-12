@@ -57,7 +57,7 @@ class UserService extends BaseService
             $aff = self::$user->id;
         }
 
-        return $isCode ? $aff : sysConfig('website_url').route('register', ['aff' => 1], false);
+        return $isCode ? $aff : sysConfig('website_url').route('register', ['aff' => $aff], false);
     }
 
     public function isActivePaying(): bool
