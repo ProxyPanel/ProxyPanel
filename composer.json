@@ -41,9 +41,9 @@
     "stripe/stripe-php": "^7.69",
     "symfony/yaml": "^5.2",
     "xhat/payjs": "^1.5",
-    "zbrettonye/geetest": "^1.2",
-    "zbrettonye/hcaptcha": "^1.1",
-    "zbrettonye/no-captcha": "^1.1",
+    "zbrettonye/geetest": "^1",
+    "zbrettonye/hcaptcha": "^1",
+    "zbrettonye/no-captcha": "^1",
     "zoujingli/ip2region": "^1.0"
   },
   "require-dev": {
