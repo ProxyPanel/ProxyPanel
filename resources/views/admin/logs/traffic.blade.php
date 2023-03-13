@@ -7,22 +7,22 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">流量日志</h2>
+                <h2 class="panel-title">{{ trans('admin.logs.user_traffic.title') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="用户ID"/>
+                        <input type="number" class="form-control" name="user_id" value="{{Request::query('user_id')}}" placeholder="{{ trans('model.user.id') }}"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
-                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="用户端口"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="{{ trans('model.user.port') }}"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-8">
                         <select class="form-control" name="node_id" id="node_id" onchange="this.form.submit()">
-                            <option value="" hidden>选择节点</option>
+                            <option value="" hidden>{{ trans('admin.logs.user_traffic.choose_node') }}</option>
                             @foreach($nodes as $node)
                                 <option value="{{$node->id}}">{{$node->name}}</option>
                             @endforeach
@@ -37,27 +37,27 @@
                             </div>
                             <input type="text" class="form-control" name="start" value="{{Request::query('start')}}" autocomplete="off"/>
                             <div class="input-group-prepend">
-                                <span class="input-group-text">至</span>
+                                <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
                             <input type="text" class="form-control" name="end" value="{{Request::query('end')}}" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.log.traffic')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.log.traffic')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户</th>
-                        <th> 节点</th>
-                        <th> 流量比例</th>
-                        <th> 上传流量</th>
-                        <th> 下载流量</th>
-                        <th> 总流量</th>
-                        <th> 记录时间</th>
+                        <th> {{ trans('common.account') }}</th>
+                        <th> {{ trans('model.node.attribute') }}</th>
+                        <th> {{ trans('model.node.data_rate') }}</th>
+                        <th> {{ trans('model.user_traffic.upload') }}</th>
+                        <th> {{ trans('model.user_traffic.download') }}</th>
+                        <th> {{ trans('model.user_traffic.total') }}</th>
+                        <th> {{ trans('model.user_traffic.log_time') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -75,7 +75,7 @@
                                     @endcan
                                 @endif
                             </td>
-                            <td> {{$log->node->name ?? '【节点已删除】'}} </td>
+                            <td> {{$log->node->name ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.node.attribute')]).'】'}} </td>
                             <td> {{$log->rate}} </td>
                             <td> {{$log->u}} </td>
                             <td> {{$log->d}} </td>
@@ -89,7 +89,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-6">
-                        共 <code>{{$dataFlowLogs->total()}} 条记录</code>，合计 <code>{{$totalTraffic}}</code>
+                        {!! trans('admin.logs.counts', ['num' => $dataFlowLogs->total()]) !!} | <code>{{$totalTraffic}}</code>
                     </div>
                     <div class="col-sm-6">
                         <nav class="Page navigation float-right">
@@ -108,12 +108,12 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
-        });
+      $('.input-daterange').datepicker({
+        format: 'yyyy-mm-dd',
+      });
 
-        $(document).ready(function() {
-            $('#node_id').val({{Request::query('node_id')}});
-        });
+      $(document).ready(function() {
+        $('#node_id').val({{Request::query('node_id')}});
+      });
     </script>
 @endsection

@@ -6,14 +6,14 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title">卡券列表</h1>
+                <h1 class="panel-title">{{ trans('admin.coupon.title') }}</h1>
                 @canany(['admin.coupon.export', 'admin.coupon.create'])
                     <div class="panel-actions btn-group">
                         @can('admin.coupon.export')
-                            <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>批量导出</button>
+                            <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>{{ trans('admin.massive_export') }}</button>
                         @endcan
                         @can('admin.coupon.create')
-                            <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>生成</a>
+                            <a href="{{route('admin.coupon.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
                         @endcan
                     </div>
                 @endcanany
@@ -21,43 +21,43 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
-                        <input type="text" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="券码" autocomplete="off"/>
+                        <input type="text" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="{{ trans('model.coupon.sn') }}" autocomplete="off"/>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
                         <select class="form-control" name="type" id="type">
-                            <option value="" hidden>类型</option>
-                            <option value="1">现金券</option>
-                            <option value="2">折扣券</option>
-                            <option value="3">充值券</option>
+                            <option value="" hidden>{{ trans('model.coupon.type') }}</option>
+                            <option value="1">{{ trans('admin.coupon.type.voucher') }}</option>
+                            <option value="2">{{ trans('admin.coupon.type.discount') }}</option>
+                            <option value="3">{{ trans('admin.coupon.type.charge') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
                         <select class="form-control" name="status" id="status">
-                            <option value="" hidden>状态</option>
-                            <option value="0">生效中</option>
-                            <option value="1">已使用</option>
-                            <option value="2">已失效</option>
+                            <option value="" hidden>{{ trans('common.status.attribute') }}</option>
+                            <option value="0">{{ trans('common.status.available') }}</option>
+                            <option value="1">{{ trans('common.status.used') }}</option>
+                            <option value="2">{{ trans('common.status.expire') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-3 col-sm-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 名称</th>
-                        <th> 券码</th>
-                        <th> 图片</th>
-                        <th> 类型</th>
-                        <th> 权重</th>
-                        <th> 使用次数</th>
-                        <th> 优惠</th>
-                        <th> 有效期</th>
-                        <th> {{trans('common.status')}}</th>
-                        <th> {{trans('common.action')}}</th>
+                        <th> {{ trans('model.coupon.name') }}</th>
+                        <th> {{ trans('model.coupon.sn') }}</th>
+                        <th> {{ trans('model.coupon.logo') }}</th>
+                        <th> {{ trans('model.coupon.type') }}</th>
+                        <th> {{ trans('model.coupon.priority') }}</th>
+                        <th> {{ trans('model.coupon.usable_times') }}</th>
+                        <th> {{ trans('admin.coupon.discount') }}</th>
+                        <th> {{ trans('common.available_date') }}</th>
+                        <th> {{ trans('common.status.attribute') }}</th>
+                        <th> {{ trans('common.action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,18 +66,22 @@
                             <td> {{$coupon->id}} </td>
                             <td> {{$coupon->name}} </td>
                             <td> {{$coupon->sn}} </td>
-                            <td> @if($coupon->logo) <img src="{{asset($coupon->logo)}}" class="h-50" alt="优惠码logo"/> @endif </td>
+                            <td> @if($coupon->logo)
+                                    <img src="{{asset($coupon->logo)}}" class="h-50" alt="{{ trans('model.coupon.logo') }}"/>
+                                @endif </td>
                             <td>
-                                {{ ['未知卡券','抵用券','折扣券','充值券'][$coupon->type] }}
+                                {{ [trans('common.status.unknown'), trans('admin.coupon.type.voucher') , trans('admin.coupon.type.discount'), trans('admin.coupon.type.charge')][$coupon->type] }}
                             </td>
                             <td> {{$coupon->priority}} </td>
-                            <td> {{$coupon->type === 3 ? '一次性' : ($coupon->usable_times ?? '无限制')}} </td>
+                            <td> {{$coupon->type === 3 ? trans('admin.coupon.single_use') : ($coupon->usable_times ?? trans('common.unlimited'))}} </td>
                             <td>
-                                {{($coupon->type === 2 ?'减 ':'抵 ').($coupon->type === 2 ? $coupon->value.' %': \App\Components\Helpers::getPriceTag($coupon->value))}}
+                                {{ trans_choice('admin.coupon.value', $coupon->type, ['num' => $coupon->type === 2 ? $coupon->value : \App\Components\Helpers::getPriceTag($coupon->value)]) }}
                             </td>
                             <td> {{$coupon->start_time}} ~ {{$coupon->end_time}} </td>
                             <td>
-                                <span class="badge badge-lg @if($coupon->status) badge-default @else badge-success @endif">  {{['生效中','已使用','已失效'][$coupon->status]}} </span>
+                                <span class="badge badge-lg @if($coupon->status) badge-default @else badge-success @endif">
+                                    {{ [trans('common.status.available'), trans('common.status.used'), trans('common.status.expire')][$coupon->status] }}
+                                </span>
                             </td>
                             <td>
                                 <div class="btn-group">
@@ -103,7 +107,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$couponList->total()}}</code> 张优惠券
+                        {!! trans('admin.coupon.counts', ['num' => $couponList->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -130,12 +134,12 @@
       // 批量导出卡券
       function exportCoupon() {
         swal.fire({
-          title: '卡券导出',
-          text: '确定导出所有卡券吗？',
+          title: '{{ trans('admin.coupon.export_title') }}',
+          text: '{{ trans('admin.confirm.export') }}？',
           icon: 'question',
           showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
         }).then((result) => {
           if (result.value) {
             window.location.href = '{{route('admin.coupon.export')}}';
@@ -148,12 +152,12 @@
       // 删除卡券
       function delCoupon(id, name) {
         swal.fire({
-          title: '确定删除卡券 【' + name + '】 吗？',
+          title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.coupon.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
           icon: 'question',
           allowEnterKey: false,
           showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
         }).then((result) => {
           if (result.value) {
             $.ajax({

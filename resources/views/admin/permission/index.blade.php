@@ -6,11 +6,11 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">权限行为列表</h2>
+                <h2 class="panel-title">{{ trans('admin.permission.title') }}</h2>
                 @can('admin.permission.create')
                     <div class="panel-actions">
                         <a href="{{route('admin.permission.create')}}" class="btn btn-outline-primary">
-                            <i class="icon wb-plus" aria-hidden="true"></i>添加权限行为
+                            <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.add') }}
                         </a>
                     </div>
                 @endcan
@@ -18,22 +18,23 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-5 col-sm-6">
-                        <input type="text" class="form-control" name="description" value="{{Request::query('description')}}" placeholder="名称"/>
+                        <input type="text" class="form-control" name="description" value="{{Request::query('description')}}"
+                               placeholder="{{ trans('model.permission.description') }}"/>
                     </div>
                     <div class="form-group col-lg-5 col-sm-6">
-                        <input type="text" class="form-control" name="name" value="{{Request::query('name')}}" placeholder="行为"/>
+                        <input type="text" class="form-control" name="name" value="{{Request::query('name')}}" placeholder="{{ trans('model.permission.name') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.permission.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.permission.index')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 名称</th>
-                        <th> 行为</th>
+                        <th> {{ trans('model.permission.description') }}</th>
+                        <th> {{ trans('model.permission.name') }}</th>
                         <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
@@ -66,7 +67,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$permissions->total()}}</code> 条权限行为
+                        {!! trans('admin.permission.counts', ['num' => $permissions->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -83,32 +84,32 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.permission.destroy')
         <script>
-            function delPermission(url, name) {
-                swal.fire({
-                    title: '{{trans('common.warning')}}',
-                    text: '确定删除 【' + name + '】 权限行为？',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    cancelButtonText: '{{trans('common.close')}}',
-                    confirmButtonText: '{{trans('common.confirm')}}',
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            method: 'DELETE',
-                            url: url,
-                            data: {_token: '{{csrf_token()}}'},
-                            dataType: 'json',
-                            success: function(ret) {
-                                if (ret.status === 'success') {
-                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                                } else {
-                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                                }
-                            },
-                        });
+          function delPermission(url, name) {
+            swal.fire({
+              title: '{{trans('common.warning')}}',
+              text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.permission.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+              icon: 'warning',
+              showCancelButton: true,
+              cancelButtonText: '{{ trans('common.close') }}',
+              confirmButtonText: '{{ trans('common.confirm') }}',
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  method: 'DELETE',
+                  url: url,
+                  data: {_token: '{{csrf_token()}}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    if (ret.status === 'success') {
+                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
+                  },
                 });
-            }
+              }
+            });
+          }
         </script>
     @endcan
 @endsection

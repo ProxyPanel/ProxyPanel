@@ -6,43 +6,43 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>通用配置</h1>
+                <h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.common.title') }}</h1>
             </div>
             <div class="panel-body container-fluid">
                 <div class="nav-tabs-vertical" data-plugin="tabs">
                     <ul class="nav nav-tabs mr-25" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" data-toggle="tab" href="#method" aria-controls="method" role="tab">加密</a>
+                            <a class="nav-link active" data-toggle="tab" href="#method" aria-controls="method" role="tab">{{ trans('model.node.method') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#protocol" aria-controls="protocol" role="tab">协议</a>
+                            <a class="nav-link" data-toggle="tab" href="#protocol" aria-controls="protocol" role="tab">{{ trans('model.node.protocol') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#obfs" aria-controls="obfs" role="tab">混淆</a>
+                            <a class="nav-link" data-toggle="tab" href="#obfs" aria-controls="obfs" role="tab">{{ trans('model.node.obfs') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#level" aria-controls="level" role="tab">等级</a>
+                            <a class="nav-link" data-toggle="tab" href="#level" aria-controls="level" role="tab">{{ trans('model.node.level') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#country" aria-controls="country" role="tab">国家地区</a>
+                            <a class="nav-link" data-toggle="tab" href="#country" aria-controls="country" role="tab">{{ trans('model.node.country') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#label" aria-controls="label" role="tab">标签</a>
+                            <a class="nav-link" data-toggle="tab" href="#label" aria-controls="label" role="tab">{{ trans('model.node.label') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#category" aria-controls="category" role="tab">商品分类</a>
+                            <a class="nav-link" data-toggle="tab" href="#category" aria-controls="category" role="tab">{{ trans('model.goods.category') }}</a>
                         </li>
                     </ul>
                     <div class="tab-content py-15">
                         <div class="tab-pane active" id="method" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 名称</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -51,11 +51,11 @@
                                         <td> {{$method->name}}</td>
                                         <td>
                                             @if($method->is_default)
-                                                <span class='badge badge-lg badge-default'>默认</span>
+                                                <span class='badge badge-lg badge-default'>{{ trans('common.default') }}</span>
                                             @else
                                                 <div class="btn-group">
                                                     <button class="btn btn-primary" onclick="setDefault('{{$method->id}}')">
-                                                        默认
+                                                        {{ trans('admin.setting.common.set_default') }}
                                                     </button>
                                                     <button class="btn btn-danger" onclick="delConfig('{{$method->id}}','{{$method->name}}')">
                                                         <i class="icon wb-trash"></i>
@@ -70,13 +70,13 @@
                         </div>
                         <div class="tab-pane" id="protocol" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 名称</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -85,11 +85,11 @@
                                         <td> {{$protocol->name}}</td>
                                         <td>
                                             @if($protocol->is_default)
-                                                <span class="badge badge-lg badge-default">默认</span>
+                                                <span class="badge badge-lg badge-default">{{ trans('common.default') }}</span>
                                             @else
                                                 <div class="btn-group">
                                                     <button class="btn btn-primary" onclick="setDefault('{{$protocol->id}}')">
-                                                        默认
+                                                        {{ trans('admin.setting.common.set_default') }}
                                                     </button>
                                                     <button class="btn btn-danger" onclick="delConfig('{{$protocol->id}}','{{$protocol->name}}')">
                                                         <i class="icon wb-trash"></i>
@@ -104,13 +104,13 @@
                         </div>
                         <div class="tab-pane" id="obfs" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 名称</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -119,11 +119,11 @@
                                         <td> {{$obfs->name}}</td>
                                         <td>
                                             @if($obfs->is_default)
-                                                <span class="badge badge-lg badge-default">默认</span>
+                                                <span class="badge badge-lg badge-default">{{ trans('common.default') }}</span>
                                             @else
                                                 <div class="btn-group">
                                                     <button class="btn btn-primary" onclick="setDefault('{{$obfs->id}}')">
-                                                        默认
+                                                        {{ trans('admin.setting.common.set_default') }}
                                                     </button>
                                                     <button class="btn btn-danger" onclick="delConfig('{{$obfs->id}}','{{$obfs->name}}')">
                                                         <i class="icon wb-trash"></i>
@@ -138,14 +138,14 @@
                         </div>
                         <div class="tab-pane" id="level" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 等级</th>
-                                    <th> 名称</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('model.node.level') }}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -172,14 +172,14 @@
                         </div>
                         <div class="tab-pane" id="category" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_category_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 名称</th>
-                                    <th> 排序</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('model.common.sort') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -206,15 +206,15 @@
                         </div>
                         <div class="tab-pane" id="country" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 图标</th>
-                                    <th> 代码</th>
-                                    <th> 国家/地区名称</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('model.country.icon') }}</th>
+                                    <th> {{ trans('model.country.code') }}</th>
+                                    <th> {{ trans('model.country.name') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -244,15 +244,15 @@
                         </div>
                         <div class="tab-pane" id="label" role="tabpanel">
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_label_modal">
-                                新增<i class="icon wb-plus"></i>
+                                <i class="icon wb-plus"></i>
                             </button>
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> 名称</th>
-                                    <th> 关联节点数</th>
-                                    <th> 排序</th>
-                                    <th> {{trans('common.action')}}</th>
+                                    <th> {{ trans('validation.attributes.name') }}</th>
+                                    <th> {{ trans('admin.setting.common.connect_nodes') }}</th>
+                                    <th> {{ trans('model.common.sort') }}</th>
+                                    <th> {{ trans('common.action') }}</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -288,29 +288,29 @@
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">新增配置</h4>
+                    <h4 class="modal-title">{{ trans('common.add') }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <select class="form-control" name="type" id="type" placeholder="类型">
-                                <option value="1" selected>加密方式</option>
-                                <option value="2">协议</option>
-                                <option value="3">混淆</option>
+                            <select class="form-control" name="type" id="type">
+                                <option value="1" selected>{{ trans('model.node.method') }}</option>
+                                <option value="2">{{ trans('model.node.protocol') }}</option>
+                                <option value="3">{{ trans('model.node.obfs') }}</option>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="名称">
+                            <input type="text" class="form-control" name="name" id="name" placeholder="{{ trans('validation.attributes.name') }}">
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button class="btn btn-danger mr-auto" data-dismiss="modal">关 闭</button>
-                    <button class="btn btn-primary" onclick="addConfig()">提 交</button>
+                    <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" onclick="addConfig()">{{ trans('common.submit') }}</button>
                 </div>
             </div>
         </div>
@@ -320,25 +320,25 @@
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">新增等级</h4>
+                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.node.level')]) }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="level_msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="level" id="add_level" placeholder="等级">
+                            <input type="text" class="form-control" name="level" id="add_level" placeholder="{{ trans('model.node.level') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="level_name" id="add_level_name" placeholder="等级名称">
+                            <input type="text" class="form-control" name="level_name" id="add_level_name" placeholder="{{ trans('validation.attributes.name') }}">
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
-                    <button class="btn btn-primary" onclick="addLevel()">提 交</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" onclick="addLevel()">{{ trans('common.submit') }}</button>
                 </div>
             </div>
         </div>
@@ -348,25 +348,25 @@
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">新增分类</h4>
+                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.goods.category')]) }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="category_msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="name" id="add_category_name" placeholder="分类名称">
+                            <input type="text" class="form-control" name="name" id="add_category_name" placeholder="{{ trans('validation.attributes.name') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="sort" id="add_category_sort" placeholder="分类排序">
+                            <input type="text" class="form-control" name="sort" id="add_category_sort" placeholder="{{ trans('model.common.sort') }}">
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
-                    <button class="btn btn-primary" onclick="addCategory()">提 交</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" onclick="addCategory()">{{ trans('common.submit') }}</button>
                 </div>
             </div>
         </div>
@@ -376,25 +376,25 @@
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">新增国家/地区</h4>
+                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.country.name')]) }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="country_msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="ISO国家代码">
+                            <input type="text" class="form-control" name="country_code" id="add_country_code" placeholder="{{ trans('model.country.code') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="country_name" id="add_country_name" placeholder=" 国家/地区名称">
+                            <input type="text" class="form-control" name="country_name" id="add_country_name" placeholder="{{ trans('model.country.name') }}">
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
-                    <button class="btn btn-primary" onclick="addCountry()">提 交</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" onclick="addCountry()">{{ trans('common.submit') }}</button>
                 </div>
             </div>
         </div>
@@ -404,25 +404,25 @@
         <div class="modal-dialog modal-simple modal-center">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">新增标签</h4>
+                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.node.label')]) }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="lable_msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="label" id="add_label" placeholder="标签">
+                            <input type="text" class="form-control" name="label" id="add_label" placeholder="{{ trans('validation.attributes.name') }}">
                         </div>
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="label_sort" id="add_label_sort" placeholder="排序">
+                            <input type="text" class="form-control" name="label_sort" id="add_label_sort" placeholder="{{ trans('model.common.sort') }}">
                         </div>
                     </div>
                 </form>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-danger mr-auto">关 闭</button>
-                    <button class="btn btn-primary" onclick="addLabel()">提 交</button>
+                    <button data-dismiss="modal" class="btn btn-danger mr-auto">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" onclick="addLabel()">{{ trans('common.submit') }}</button>
                 </div>
             </div>
         </div>
@@ -439,13 +439,13 @@
         const level_name = $('#add_level_name').val();
 
         if (level.trim() === '') {
-          $('#level_msg').show().html('等级不能为空');
+          $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.node.level')]) }}');
           $('#level').focus();
           return false;
         }
 
         if (level_name.trim() === '') {
-          $('#level_msg').show().html('等级名称不能为空');
+          $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
           $('#level_name').focus();
           return false;
         }
@@ -455,7 +455,7 @@
           method: 'POST',
           data: {_token: '{{csrf_token()}}', level: level, name: level_name},
           beforeSend: function() {
-            $('#level_msg').show().html('正在添加');
+            $('#level_msg').show().html('{{ trans('admin.creating') }}');
           },
           success: function(ret) {
             if (ret.status === 'fail') {
@@ -466,15 +466,15 @@
             window.location.reload();
           },
           error: function() {
-            $('#level_msg').show().html('请求错误，请重试');
+            $('#level_msg').show().html('{{ trans('common.request_failed') }}');
           },
           complete: function() {
-            swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            swal.fire({icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
           },
         });
           @endcan
           @cannot('admin.config.level.store')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -499,14 +499,14 @@
           });
           @endcan
           @cannot('admin.config.level.update')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
       function delLevel(id, name) { // 删除等级
           @can('admin.config.level.destroy')
           swal.fire({
-            title: '确定删除等级 【' + name + '】 ？',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.level')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -531,7 +531,7 @@
           });
           @endcan
           @cannot('admin.config.level.destroy')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -541,13 +541,13 @@
         const sort = $('#add_category_sort').val();
 
         if (name.trim() === '') {
-          $('#category_msg').show().html('分类名称不能为空');
+          $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
           $('#category_name').focus();
           return false;
         }
 
         if (sort.trim() === '') {
-          $('#category_msg').show().html('分类排序不能为空');
+          $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
           $('#category_sort').focus();
           return false;
         }
@@ -557,7 +557,7 @@
           method: 'POST',
           data: {_token: '{{csrf_token()}}', name: name, sort: sort},
           beforeSend: function() {
-            $('#category_msg').show().html('正在添加');
+            $('#category_msg').show().html('{{ trans('admin.creating') }}');
           },
           success: function(ret) {
             if (ret.status === 'fail') {
@@ -568,15 +568,15 @@
             window.location.reload();
           },
           error: function() {
-            $('#category_msg').show().html('请求错误，请重试');
+            $('#category_msg').show().html('{{ trans('common.request_failed') }}');
           },
           complete: function() {
-            swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            swal.fire({icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
           },
         });
           @endcan
           @cannot('admin.config.category.store')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -601,14 +601,14 @@
           });
           @endcan
           @cannot('admin.config.category.update')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
       function delCategory(id, name) { // 删除分类
           @can('admin.config.category.destroy')
           swal.fire({
-            title: '确定删除分类 【' + name + '】 ？',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.category')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -633,7 +633,7 @@
           });
           @endcan
           @cannot('admin.config.category.destroy')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -643,13 +643,13 @@
         const country_code = $('#add_country_code').val();
 
         if (country_code.trim() === '') {
-          $('#country_msg').show().html('国家/地区代码不能为空');
+          $('#country_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.country.code')]) }}');
           $('#add_country_code').focus();
           return false;
         }
 
         if (country_name.trim() === '') {
-          $('#country_msg').show().html('国家/地区名称不能为空');
+          $('#country_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.country.name')]) }}');
           $('#add_country_name').focus();
           return false;
         }
@@ -659,7 +659,7 @@
           method: 'POST',
           data: {_token: '{{csrf_token()}}', code: country_code, name: country_name},
           beforeSend: function() {
-            $('#country_msg').show().html('正在添加');
+            $('#country_msg').show().html('{{ trans('admin.creating') }}');
           },
           success: function(ret) {
             if (ret.status === 'fail') {
@@ -670,11 +670,10 @@
             window.location.reload();
           },
           error: function() {
-            $('#country_msg').show().html('请求错误，请重试');
+            $('#country_msg').show().html('{{ trans('common.request_failed') }}');
           },
           complete: function() {
             swal.fire({
-              title: '添加成功',
               icon: 'success',
               timer: 1000,
               showConfirmButton: false,
@@ -683,7 +682,7 @@
         });
           @endcan
           @cannot('admin.config.country.store')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -704,14 +703,14 @@
           });
           @endcan
           @cannot('admin.config.country.update')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
       function delCountry(code, name) { // 删除国家/地区
           @can('admin.config.country.destroy')
           swal.fire({
-            title: '确定删除 【' + name + '】 信息？',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.country')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -736,7 +735,7 @@
           });
           @endcan
           @cannot('admin.config.country.destroy')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -746,7 +745,7 @@
         const type = $('#type').val();
 
         if (name.trim() === '') {
-          $('#msg').show().html('名称不能为空');
+          $('#msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
           $('#name').focus();
           return false;
         }
@@ -757,7 +756,7 @@
           data: {_token: '{{csrf_token()}}', name: name, type: type},
           dataType: 'json',
           beforeSend: function() {
-            $('#msg').show().html('正在添加');
+            $('#msg').show().html('{{ trans('admin.creating') }}');
           },
           success: function(ret) {
             if (ret.status === 'fail') {
@@ -768,15 +767,15 @@
             $('#add_config_modal').modal('hide');
           },
           error: function() {
-            $('#msg').show().html('请求错误，请重试');
+            $('#msg').show().html('{{ trans('common.request_failed') }}');
           },
           complete: function() {
-            swal.fire({title: '添加成功', icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            swal.fire({icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
           },
         });
           @endcan
           @cannot('admin.config.ss.store')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -797,14 +796,14 @@
           });
           @endcan
           @cannot('admin.config.ss.update')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
       function delConfig(id, name) { // 删除配置
           @can('admin.config.ss.destroy')
           swal.fire({
-            title: '确定删除配置 【' + name + '】 ？',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => '']) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -829,7 +828,7 @@
           });
           @endcan
           @cannot('admin.config.ss.destroy')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -839,12 +838,12 @@
         const sort = $('#add_label_sort').val();
 
         if (name.trim() === '') {
-          $('#lable_msg').show().html('标签不能为空');
+          $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
           return false;
         }
 
         if (sort.trim() === '') {
-          $('#lable_msg').show().html('标签排序不能为空');
+          $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
           return false;
         }
 
@@ -853,7 +852,7 @@
           method: 'POST',
           data: {_token: '{{csrf_token()}}', name: name, sort: sort},
           beforeSend: function() {
-            $('#level_msg').show().html('正在添加');
+            $('#level_msg').show().html('{{ trans('admin.creating') }}');
           },
           success: function(ret) {
             if (ret.status === 'fail') {
@@ -864,11 +863,10 @@
             window.location.reload();
           },
           error: function() {
-            $('#lable_msg').show().html('请求错误，请重试');
+            $('#lable_msg').show().html('{{ trans('common.request_failed') }}');
           },
           complete: function() {
             swal.fire({
-              title: '添加成功',
               icon: 'success',
               timer: 1000,
               showConfirmButton: false,
@@ -877,7 +875,7 @@
         });
           @endcan
           @cannot('admin.config.label.store')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
@@ -902,15 +900,15 @@
           });
           @endcan
           @cannot('admin.config.label.update')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
 
       function delLabel(id, name) { // 删除标签
           @can('admin.config.label.destroy')
           swal.fire({
-            title: '{{trans('common.warning')}}',
-            text: '确定删除标签 【' + name + '】 ?',
+            title: '{{ trans('common.warning') }}',
+            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.label')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: '{{trans('common.close')}}',
@@ -932,7 +930,7 @@
           });
           @endcan
           @cannot('admin.config.label.destroy')
-          swal.fire({title: '您没有权限修改参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcannot
       }
     </script>

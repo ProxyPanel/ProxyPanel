@@ -26,7 +26,7 @@
                                 <tr>
                                     <th data-cell-style="cellStyle"> #</th>
                                     <th> {{trans('validation.attributes.title')}} </th>
-                                    <th> {{trans('common.status')}} </th>
+                                    <th> {{trans('common.status.attribute')}} </th>
                                     <th></th>
                                 </tr>
                                 </thead>
@@ -115,7 +115,7 @@
                             <input type="text" class="form-control" name="title" id="title" placeholder="{{trans('user.ticket.title_placeholder')}}">
                         </div>
                         <div class="col-xl-12 form-group">
-                            <textarea class="form-control" rows="5" name="content" id="content" placeholder="{{trans('user.ticket.placeholder')}}"></textarea>
+                            <textarea class="form-control" rows="5" name="content" id="content" placeholder="{{trans('user.ticket.content_placeholder')}}"></textarea>
                         </div>
                     </div>
                 </div>

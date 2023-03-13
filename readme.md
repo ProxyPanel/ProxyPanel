@@ -1,4 +1,6 @@
-# ProxyPanel
+# ProxyPanel 
+[![Crowdin](https://badges.crowdin.net/proxypanel/localized.svg)](https://crowdin.com/project/proxypanel)
+
 [简体中文](https://proxypanel.gitbook.io/wiki/)
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET

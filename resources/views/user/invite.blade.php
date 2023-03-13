@@ -34,10 +34,10 @@
                             <thead class="thead-default">
                             <tr>
                                 <th data-cell-style="cellStyle"> #</th>
-                                <th> {{trans('user.invite.attribute')}} </th>
-                                <th> {{trans('common.available_date')}} </th>
-                                <th> {{trans('common.status')}} </th>
-                                <th> {{trans('user.invitee')}} </th>
+                                <th> {{ trans('user.invite.attribute') }} </th>
+                                <th> {{ trans('common.available_date') }} </th>
+                                <th> {{ trans('common.status.attribute') }} </th>
+                                <th> {{ trans('user.invitee') }} </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -61,7 +61,7 @@
                     <div class="card-footer card-footer-transparent">
                         <div class="row">
                             <div class="col-md-4">
-                                {{trans('user.invite.total', ['num' => $inviteList->total()])}}
+                                {!! trans('user.invite.counts', ['num' => $inviteList->total()]) !!}
                             </div>
                             <div class="col-md-8">
                                 <nav class="Page navigation float-right">
@@ -80,40 +80,40 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        // 生成邀请码
-        function makeInvite() {
-            $.ajax({
-                method: 'POST',
-                dataType: 'json',
-                url: '{{route('createInvite')}}',
-                data: {_token: '{{csrf_token()}}'},
-                success: function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                    }
-                },
-            });
-            return false;
-        }
+      // 生成邀请码
+      function makeInvite() {
+        $.ajax({
+          method: 'POST',
+          dataType: 'json',
+          url: '{{route('createInvite')}}',
+          data: {_token: '{{csrf_token()}}'},
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success'}).then(() => window.location.reload());
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+            }
+          },
+        });
+        return false;
+      }
 
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
-            swal.fire({
-                title: '{{trans('common.copy.success')}}',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+      const clipboard = new ClipboardJS('.mt-clipboard');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '{{ trans('common.copy.success') }}',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
         });
-        clipboard.on('error', function() {
-            swal.fire({
-                title: '{{trans('common.copy.failed')}}',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '{{ trans('common.copy.failed') }}',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
         });
+      });
     </script>
 @endsection

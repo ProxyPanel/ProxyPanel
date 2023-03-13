@@ -53,7 +53,7 @@
                                     </li>
                                 @endif
                                 <li class="list-group-item">
-                                    {{ trans('common.status') }}：{!! $order->status_label !!}
+                                    {{ trans('common.status.attribute') }}：{!! $order->status_label !!}
                                 </li>
                             </ul>
                         </div>

@@ -114,28 +114,28 @@ class Order extends Model
     {
         switch ($this->attributes['status']) {
             case -1:
-                $status_label = '<span class="badge badge-default">'.trans('user.status.closed').'</span>';
+                $status_label = '<span class="badge badge-default">'.trans('common.order.status.cancel').'</span>';
                 break;
             case 0:
-                $status_label = '<span class="badge badge-danger">'.trans('user.status.waiting_payment').'</span>';
+                $status_label = '<span class="badge badge-danger">'.trans('common.payment.status.wait').'</span>';
                 break;
             case 1:
-                $status_label = '<span class="badge badge-info">'.trans('user.status.waiting_confirm').'</span>';
+                $status_label = '<span class="badge badge-info">'.trans('common.order.status.review').'</span>';
                 break;
             case 2:
                 if ($this->attributes['goods_id'] === null) {
-                    $status_label = '<span class="badge badge-default">'.trans('user.status.completed').'</span>';
+                    $status_label = '<span class="badge badge-default">'.trans('common.order.status.complete').'</span>';
                 } elseif ($this->attributes['is_expire']) {
-                    $status_label = '<span class="badge badge-default">'.trans('user.status.expired').'</span>';
+                    $status_label = '<span class="badge badge-default">'.trans('common.status.expire').'</span>';
                 } else {
-                    $status_label = '<span class="badge badge-success">'.trans('user.status.using').'</span>';
+                    $status_label = '<span class="badge badge-success">'.trans('common.order.status.ongoing').'</span>';
                 }
                 break;
             case 3:
-                $status_label = '<span class="badge badge-info">'.trans('user.status.prepaid').'</span>';
+                $status_label = '<span class="badge badge-info">'.trans('common.order.status.prepaid').'</span>';
                 break;
             default:
-                $status_label = trans('user.unknown');
+                $status_label = trans('common.status.unknown');
         }
 
         return $status_label;

@@ -14,15 +14,15 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">订单列表</h2>
+                <h2 class="panel-title">{{ trans('admin.logs.order.title') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="订单号"/>
+                        <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="{{ trans('model.aff.order_id') }}"/>
                     </div>
                     <div class="form-group col-lg-6 col-sm-12">
                         <div class="input-group input-daterange" data-plugin="datepicker">
@@ -31,62 +31,62 @@
                             </div>
                             <input type="text" class="form-control" name="start" value="{{Request::query('start')}}" autocomplete="off"/>
                             <div class="input-group-prepend">
-                                <span class="input-group-text">至</span>
+                                <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
                             <input type="text" class="form-control" name="end" value="{{Request::query('end')}}" autocomplete="off"/>
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select data-plugin="selectpicker" class="form-control show-tick" name="is_expire" id="is_expire" data-style="btn-outline btn-primary" title="是否过期">
-                            <option value="0">否</option>
-                            <option value="1">是</option>
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="is_expire" id="is_expire" data-style="btn-outline btn-primary" title="{{ trans('admin.logs.order.is_expired') }}">
+                            <option value="0"> {{ trans('admin.no') }}</option>
+                            <option value="1"> {{ trans('admin.yes') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <select data-plugin="selectpicker" class="form-control show-tick" name="is_coupon" id="is_coupon" data-style="btn-outline btn-primary"
-                                title="是否使用优惠券">
-                            <option value="0">否</option>
-                            <option value="1">是</option>
+                                title="{{ trans('admin.logs.order.is_coupon') }}">
+                            <option value="0"> {{ trans('admin.no') }}</option>
+                            <option value="1"> {{ trans('admin.yes') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select data-plugin="selectpicker" class="form-control show-tick" name="pay_way" id="pay_way" data-style="btn-outline byn-primary" title="支付方式">
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="pay_way" id="pay_way" data-style="btn-outline byn-primary" title="{{ trans('model.order.pay_way') }}">
                             @foreach(config('common.payment.labels') as $key => $value)
                                 <option value="{{$key}}">{{$key.' - '.$value}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select data-plugin="selectpicker" class="form-control show-tick" name="status[]" id="status" data-style="btn-outline btn-primary" title="订单状态"
+                        <select data-plugin="selectpicker" class="form-control show-tick" name="status[]" id="status" data-style="btn-outline btn-primary" title="{{ trans('model.order.status') }}"
                                 multiple>
-                            <option value="-1">已关闭</option>
-                            <option value="0">待支付</option>
-                            <option value="1">已支付待确认</option>
-                            <option value="2">已完成</option>
-                            <option value="3">预支付</option>
+                            <option value="-1">{{ trans('common.order.status.cancel') }}</option>
+                            <option value="0">{{ trans('common.payment.status.wait') }}</option>
+                            <option value="1">{{ trans('common.order.status.review') }}</option>
+                            <option value="2">{{ trans('common.order.status.complete').'/'.trans('common.status.expire').'/'.trans('common.order.status.ongoing') }}</option>
+                            <option value="3">{{ trans('common.order.status.prepaid') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.order')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.order')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> @sortablelink('id', '#')</th>
-                        <th> 用户账号</th>
-                        <th> @sortablelink('sn', '订单号')</th>
-                        <th> 商品</th>
-                        <th> 优惠券</th>
-                        <th> 原价</th>
-                        <th> 实价</th>
-                        <th> 支付方式</th>
-                        <th> 订单状态</th>
-                        <th> @sortablelink('expired_at', '过期时间')</th>
-                        <th> @sortablelink('created_at', '创建时间')</th>
+                        <th> {{ trans('common.account') }}</th>
+                        <th> @sortablelink('sn', trans('model.aff.order_id'))</th>
+                        <th> {{ trans('model.goods.attribute') }}</th>
+                        <th> {{ trans('model.coupon.attribute') }}</th>
+                        <th> {{ trans('model.order.original_price') }}</th>
+                        <th> {{ trans('model.order.price') }}</th>
+                        <th> {{ trans('model.order.pay_way') }}</th>
+                        <th> {{ trans('model.order.status') }}</th>
+                        <th> @sortablelink('expired_at', trans('common.expired_at'))</th>
+                        <th> @sortablelink('created_at', trans('common.created_at'))</th>
                         @can(['admin.order.edit'])
-                            <th> 操作</th>
+                            <th> {{ trans('common.action') }}</th>
                         @endcan
                     </tr>
                     </thead>
@@ -96,7 +96,7 @@
                             <td> {{$order->id}} </td>
                             <td>
                                 @if(empty($order->user) )
-                                    【账号不存在】
+                                    【{{ trans('common.deleted_item', ['attribute' => trans('common.account')]) }}】
                                 @else
                                     @can('admin.user.index')
                                         <a href="{{route('admin.user.index', ['id'=>$order->user->id])}}" target="_blank">{{$order->user->username}} </a>
@@ -116,7 +116,7 @@
                             <td>
                                 {!! $order->status_label !!}
                             </td>
-                            <td> {{$order->is_expire ? '已过期' : $order->expired_at}} </td>
+                            <td> {{$order->is_expire ? trans('common.status.expire') : $order->expired_at}} </td>
                             <td> {{$order->created_at}} </td>
                             @can(['admin.order.edit'])
                                 <td>
@@ -126,17 +126,20 @@
                                     <div class="dropdown-menu" role="menu">
                                         @if ($order->status !== -1)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', -1)" role="menuitem">
-                                                <i class="icon wb-close" aria-hidden="true"></i> 置 过 期
+                                                <i class="icon wb-close" aria-hidden="true"></i>
+                                                {{ trans('admin.set_to', ['attribute' => trans('common.status.expire')]) }}
                                             </a>
                                         @endif
                                         @if ($order->status !== 2)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 2)" role="menuitem">
-                                                <i class="icon wb-check" aria-hidden="true"></i> 置 完 成
+                                                <i class="icon wb-check" aria-hidden="true"></i>
+                                                {{ trans('admin.set_to', ['attribute' => trans('common.order.status.complete')]) }}
                                             </a>
                                         @endif
                                         @if ($order->status !== 3)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 3)" role="menuitem">
-                                                <i class="icon wb-check-circle" aria-hidden="true"></i> 置 预支付
+                                                <i class="icon wb-check-circle" aria-hidden="true"></i>
+                                                {{ trans('admin.set_to', ['attribute' => trans('common.order.status.prepaid')]) }}
                                             </a>
                                         @endif
                                     </div>
@@ -150,7 +153,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$orders->total()}}</code> 个订单
+                        {!! trans('admin.logs.counts', ['num' => $orders->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">

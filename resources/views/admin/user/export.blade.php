@@ -6,18 +6,18 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">【{{$user->username}}】连接配置信息</h2>
+                <h2 class="panel-title"> {{ trans('admin.user.proxies_config', ['username' => $user->username]) }}</h2>
             </div>
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th>#</th>
-                        <th>节点</th>
-                        <th>扩展</th>
-                        <th>域名</th>
-                        <th>IPv4</th>
-                        <th>配置信息</th>
+                        <th>{{ trans('model.node.attribute') }}</th>
+                        <th>{{ trans('admin.node.info.extend') }}</th>
+                        <th>{{ trans('model.node.domain') }}</th>
+                        <th>{{ trans('model.node.ipv4') }}</th>
+                        <th>{{ trans('admin.user.proxy_info') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -32,8 +32,20 @@
                                 @endcan
                             </td>
                             <td>
-                                @if(!empty($node->profile['passwd'])) <span class="label label-danger">单</span> @endif
-                                @if($node->ipv6) <span class="label label-danger">IPv6</span> @endif
+                                @isset($node->profile['passwd'])
+                                    {{-- 单端口 --}}
+                                    <span class="badge badge-lg badge-info"><i class="fa-solid fa-arrows-left-right-to-line" aria-hidden="true"></i></span>
+                                @endisset
+                                @if($node->is_display === 0)
+                                    {{-- 节点完全不可见 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="icon wb-eye-close" aria-hidden="true"></i></span>
+                                @elseif($node->is_display === 1)
+                                    {{-- 节点只在页面中显示 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="fa-solid fa-link-slash" aria-hidden="true"></i></span>
+                                @elseif($node->is_display === 2)
+                                    {{-- 节点只可被订阅到 --}}
+                                    <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
+                                @endif
                             </td>
                             <td>{{$node->server}}</td>
                             <td>{{$node->ip}}</td>
@@ -60,12 +72,13 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$nodeList->total()}}</code> 个账号
+                        {!! trans('admin.node.counts', ['num' => $nodeList->total()]) !!}
                     </div>
-
-                    <nav class="Page navigation float-right">
-                        {{$nodeList->links()}}
-                    </nav>
+                    <div class="col-sm-8">
+                        <nav class="Page navigation float-right">
+                            {{$nodeList->links()}}
+                        </nav>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,44 +90,44 @@
     <script src="/assets/custom/jquery-qrcode/jquery.qrcode.min.js"></script>
     @can('admin.user.exportProxy')
         <script>
-            function getInfo(id, type) {
-                $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
-                    function(ret) {
-                        if (ret.status === 'success') {
-                            switch (type) {
-                                case 'code':
-                                    swal.fire({
-                                        html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
-                                            '</textarea>' +
-                                            '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">打开' +
-                                            ret.title + '</a>',
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                case 'qrcode':
-                                    swal.fire({
-                                        title: '{{trans('user.scan_qrcode')}}',
-                                        html: '<div id="qrcode"></div>',
-                                        onBeforeOpen: () => {
-                                            $('#qrcode').qrcode({text: ret.data});
-                                        },
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                case 'text':
-                                    swal.fire({
-                                        title: '{{trans('user.node.info')}}',
-                                        html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
-                                            '</textarea>',
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                default:
-                                    swal.fire({title: ret.title, text: ret.data});
-                            }
-                        }
-                    });
-            }
+          function getInfo(id, type) {
+            $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
+                function(ret) {
+                  if (ret.status === 'success') {
+                    switch (type) {
+                      case 'code':
+                        swal.fire({
+                          html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
+                              '</textarea>' +
+                              '<a href="' + ret.data + '" class="btn btn-danger btn-block mt-10">{{ trans('common.open') }} ' +
+                              ret.title + '</a>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'qrcode':
+                        swal.fire({
+                          title: '{{trans('user.scan_qrcode')}}',
+                          html: '<div id="qrcode"></div>',
+                          onBeforeOpen: () => {
+                            $('#qrcode').qrcode({text: ret.data});
+                          },
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'text':
+                        swal.fire({
+                          title: '{{trans('user.node.info')}}',
+                          html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
+                              '</textarea>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      default:
+                        swal.fire({title: ret.title, text: ret.data});
+                    }
+                  }
+                });
+          }
         </script>
     @endcan
 @endsection

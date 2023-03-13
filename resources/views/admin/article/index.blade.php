@@ -6,10 +6,10 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">文章列表</h3>
+                <h3 class="panel-title">{{ trans('admin.article.title') }}</h3>
                 @can('admin.article.create')
                     <div class="panel-actions">
-                        <a href="{{route('admin.article.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加文章</a>
+                        <a href="{{route('admin.article.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
                     </div>
                 @endcan
             </div>
@@ -20,14 +20,14 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="type" name="type">
-                            <option value="" hidden>类 型</option>
-                            <option value="1">文章</option>
-                            <option value="2">公告</option>
+                            <option value="" hidden>{{ trans('model.article.type') }}</option>
+                            <option value="1">{{ trans('admin.article.type.knowledge') }}</option>
+                            <option value="2">{{ trans('admin.article.type.announcement') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="category" name="category">
-                            <option value="" hidden>分 类</option>
+                            <option value="" hidden>{{ trans('model.article.category') }}</option>
                             @foreach($categories as $category)
                                 <option value="{{$category->category}}">{{$category->category}}</option>
                             @endforeach
@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="language" name="language">
-                            <option value="" hidden>语 言</option>
+                            <option value="" hidden>{{ trans('model.article.language') }}</option>
                             @foreach (config('common.language') as $key => $value)
                                 <option value="{{$key}}">
                                     <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
@@ -44,21 +44,21 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.article.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.article.index')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 类 型</th>
-                        <th> 分 类</th>
-                        <th> 标 题</th>
-                        <th> 语 言</th>
-                        <th> 排 序</th>
-                        <th> 发布日期</th>
-                        <th> {{trans('common.action')}}</th>
+                        <th> {{ trans('model.article.type') }}</th>
+                        <th> {{ trans('model.article.category') }}</th>
+                        <th> {{ trans('validation.attributes.title') }}</th>
+                        <th> {{ trans('model.article.language') }}</th>
+                        <th> {{ trans('model.common.sort') }}</th>
+                        <th> {{ trans('model.article.created_at') }}</th>
+                        <th> {{ trans('common.action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -66,11 +66,11 @@
                         <tr>
                             <td> {{$article->id}} </td>
                             @if ($article->type === 1)
-                                <td> 文章</td>
+                                <td> {{ trans('admin.article.type.knowledge') }}</td>
                             @elseif ($article->type === 2)
-                                <td> 公告</td>
+                                <td> {{ trans('admin.article.type.announcement') }}</td>
                             @else
-                                <td> 未知</td>
+                                <td> {{ trans('common.status.unknown') }}</td>
                             @endif
                             <td class="text-left">
                                 {{ Str::limit($article->category, 30) }}
@@ -80,7 +80,7 @@
                             </td>
                             <td>
                             {!! isset(config('common.language')[$article->language]) ? '<i class="fi fi-'.config('common.language')[$article->language][1].'"></i>
-                             <span style="padding: inherit;">'.config('common.language')[$article->language][0].'</span>': __('user.unknown') !!}
+                             <span style="padding: inherit;">'.config('common.language')[$article->language][0].'</span>': __('common.status.unknown') !!}
                             <td> {{$article->sort}} </td>
                             <td> {{$article->created_at}} </td>
                             <td>
@@ -95,7 +95,7 @@
                                                 <i class="icon wb-edit"></i></a>
                                         @endcan
                                         @can('admin.article.destroy')
-                                            <a class="btn btn-outline-danger" href="javascript:delArticle('{{route('admin.article.destroy',$article->id)}}')">
+                                            <a class="btn btn-outline-danger" href="javascript:delArticle('{{route('admin.article.destroy',$article->id)}}', '{{$article->id}}')">
                                                 <i class="icon wb-close"></i></a>
                                         @endcan
                                     </div>
@@ -109,7 +109,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$articles->total()}}</code> 篇文章
+                        {{ trans('admin.article.counts', ['num' => $articles->total()]) }}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -135,13 +135,13 @@
           });
 
           // 删除文章
-          function delArticle(url) {
+          function delArticle(url, id) {
             swal.fire({
-              title: '确定删除文章?',
+              title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.article.attribute')]) }}' + id + '{{ trans('admin.confirm.delete.1') }}',
               icon: 'question',
               showCancelButton: true,
-              cancelButtonText: '{{trans('common.close')}}',
-              confirmButtonText: '{{trans('common.confirm')}}',
+              cancelButtonText: '{{ trans('common.close') }}',
+              confirmButtonText: '{{ trans('common.confirm') }}',
             }).then((result) => {
               if (result.value) {
                 $.ajax({

@@ -20,10 +20,7 @@ return [
         'sent'      => 'Email has been sent! Please check your mailbox! (Email may be in the Trash)',
     ],
     'email'           => [
-        'error' => [
-            'banned'  => 'Your email service provider was banned by our platform. Please use another valid email',
-            'invalid' => 'Your email service provider is not in our supporting list. Please use another email',
-        ],
+        'error' => ['banned' => 'Your email service provider was banned by our platform. Please use another valid email', 'invalid' => 'Your email service provider is not in our supporting list. Please use another email'],
     ],
     'error'           => [
         'account_baned'  => 'Your account has been banned!',
@@ -76,10 +73,7 @@ return [
     'register'        => [
         'attribute' => 'Sign up',
         'code'      => 'Registration Code',
-        'error'     => [
-            'disable'  => 'Sorry, The registration function has been disabled',
-            'throttle' => 'Anti-bots shield is active! Please do not send multiple register from at short amount of times!',
-        ],
+        'error'     => ['disable' => 'Sorry, The registration function has been disabled', 'throttle' => 'Anti-bots shield is active! Please do not send multiple register from at short amount of times!'],
         'promotion' => 'Still no account? Please go to ',
         'failed'    => 'Registration failed, please try later',
         'success'   => 'Registration successfully',

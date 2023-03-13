@@ -37,16 +37,16 @@ class Invite extends Model
     {
         switch ($this->attributes['status']) {
             case 0:
-                $status_label = '<span class="badge badge-success">'.trans('user.status.unused').'</span>';
+                $status_label = '<span class="badge badge-success">'.trans('common.status.unused').'</span>';
                 break;
             case 1:
-                $status_label = '<span class="badge badge-danger">'.trans('user.status.used').'</span>';
+                $status_label = '<span class="badge badge-danger">'.trans('common.status.used').'</span>';
                 break;
             case 2:
-                $status_label = '<span class="badge badge-default">'.trans('user.status.expired').'</span>';
+                $status_label = '<span class="badge badge-default">'.trans('common.status.expire').'</span>';
                 break;
             default:
-                $status_label = '<span class="badge badge-default"> 未知 </span>';
+                $status_label = '<span class="badge badge-default"> '.trans('common.status.unknown').' </span>';
         }
 
         return $status_label;

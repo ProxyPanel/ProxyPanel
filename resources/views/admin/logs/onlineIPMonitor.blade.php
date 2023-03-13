@@ -6,47 +6,47 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">在线IP监控
-                    <small>2分钟内的实时数据</small>
-                </h3>
+                <h2 class="panel-title">
+                    {!! trans('admin.logs.ip_monitor') !!}
+                </h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-2">
-                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="用户ID"/>
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="{{ trans('model.user.id') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <input type="text" class="form-control" name="ip" value="{{Request::query('ip')}}" placeholder="IP"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-3">
-                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="端口"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="{{ trans('model.user.port') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <select name="node_id" id="node_id" class="form-control" onchange="this.form.submit()">
-                            <option value="" hidden>选择节点</option>
+                            <option value="" hidden>{{ trans('model.node.attribute') }}</option>
                             @foreach($nodes as $node)
                                 <option value="{{$node->id}}">{{$node->name}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.log.online')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.log.online')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 类型</th>
-                        <th> 节点</th>
-                        <th> 用户</th>
+                        <th> {{ trans('model.ip.network_type') }}</th>
+                        <th> {{ trans('model.node.attribute') }}</th>
+                        <th> {{ trans('common.account') }}</th>
                         <th> IP</th>
-                        <th> 归属地</th>
-                        <th> 时间</th>
+                        <th> {{ trans('model.ip.info') }}</th>
+                        <th> {{ trans('validation.attributes.time') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -54,8 +54,8 @@
                         <tr>
                             <td>{{$log->id}}</td>
                             <td>{{$log->type}}</td>
-                            <td>{{$log->node->name ?? '【节点已删除】'}}</td>
-                            <td>{{$log->user->username ?? '【用户已删除】'}}</td>
+                            <td>{{$log->node->name ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.node.attribute')]).'】'}}</td>
+                            <td>{{$log->user->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.user.attribute')]).'】'}}</td>
                             <td>
                                 @if (strpos($log->ip, ',') !== false)
                                     @foreach (explode(',', $log->ip) as $ip)
@@ -75,7 +75,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$onlineIPLogs->total()}}</code> 个账号
+                        {!! trans('admin.logs.counts', ['num' => $onlineIPLogs->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">

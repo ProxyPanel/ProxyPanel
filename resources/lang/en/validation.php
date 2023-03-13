@@ -106,12 +106,14 @@ return [
     'uploaded'             => 'The :attribute failed to upload.',
     'url'                  => 'The :attribute format is invalid.',
     'uuid'                 => 'The :attribute must be a valid UUID.',
-    'custom'               => [
+
+    'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
     ],
-    'attributes'           => [
+
+    'attributes' => [
         'name'                  => 'Name',
         'nickname'              => 'Nickname',
         'username'              => 'Username',
