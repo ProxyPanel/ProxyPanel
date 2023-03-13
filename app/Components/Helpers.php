@@ -269,7 +269,10 @@ class Helpers
         $standard = sysConfig('standard_currency', 'CNY');
         $currencyLib = array_column(config('common.currency'), 'symbol', 'code');
         if (! empty($currentCurrency) && isset($currencyLib[$currentCurrency]) && $currentCurrency !== $standard) {
-            return $currencyLib[$currentCurrency].CurrencyExchange::convert($currentCurrency, $amount);
+            $convert = CurrencyExchange::convert($currentCurrency, $amount);
+            if ($convert !== false) {
+                return $currencyLib[$currentCurrency].$convert;
+            }
         }
 
         return $currencyLib[$standard].$amount;
@@ -278,10 +281,7 @@ class Helpers
     private static function getRandPort(): int
     {  // 获取一个随机端口
         $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
-        $exists_port = array_merge(
-            User::where('port', '<>', 0)->pluck('port')->toArray(),
-            self::$denyPorts
-        );
+        $exists_port = array_merge(User::where('port', '<>', 0)->pluck('port')->toArray(), self::$denyPorts);
 
         while (in_array($port, $exists_port, true)) {
             $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
