@@ -6,36 +6,36 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">邮件投递记录</h2>
+                <h2 class="panel-title">{{ trans('admin.logs.notification') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-4">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onchange="this.form.submit()">
-                            <option value="" hidden>类型</option>
+                            <option value="" hidden>{{ trans('model.notification.type') }}</option>
                             @foreach(config('common.notification.labels') as $key => $value)
                                 <option value="{{$key}}">{{$value}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.log.notify')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.log.notify')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 类型</th>
-                        <th> 收信地址</th>
-                        <th> 标题</th>
-                        <th> 内容</th>
-                        <th> 投递时间</th>
-                        <th> 投递状态</th>
+                        <th> {{ trans('model.notification.type') }}</th>
+                        <th> {{ trans('model.notification.address') }}</th>
+                        <th> {{ trans('validation.attributes.title') }}</th>
+                        <th> {{ trans('validation.attributes.content') }}</th>
+                        <th> {{ trans('model.notification.created_at') }}</th>
+                        <th> {{ trans('model.notification.status') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -51,9 +51,9 @@
                                 @if($log->status < 0)
                                     <p class="badge badge-danger text-break font-size-14"> {{$log->error}} </p>
                                 @elseif($log->status > 0)
-                                    <labe class="badge badge-success">投递成功</labe>
+                                    <labe class="badge badge-success">{{ trans('common.success') }}</labe>
                                 @else
-                                    <span class="badge badge-default"> 等待投递 </span>
+                                    <span class="badge badge-default"> {{ trans('common.status.waiting_tobe_send') }} </span>
                                 @endif
                             </td>
                         </tr>
@@ -64,7 +64,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$notificationLogs->total()}}</code> 条记录
+                        {!! trans('admin.logs.counts', ['num' => $notificationLogs->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -80,8 +80,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#type').val({{Request::query('type')}});
-        });
+      $(document).ready(function() {
+        $('#type').val({{Request::query('type')}});
+      });
     </script>
 @endsection

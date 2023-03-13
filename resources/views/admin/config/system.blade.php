@@ -8,243 +8,206 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-settings"></i>通用配置</h1>
+                <h1 class="panel-title"><i class="icon wb-settings"></i>{{ trans('admin.setting.system.title') }}</h1>
             </div>
             <div class="panel-body">
                 <div class="nav-tabs-horizontal" data-plugin="tabs">
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link active" data-toggle="tab" href="#webSetting" aria-controls="webSetting" role="tab">网站常规</a>
+                            <a class="nav-link active" data-toggle="tab" href="#webSetting" aria-controls="webSetting" role="tab">{{ trans('admin.setting.system.web') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#account" aria-controls="account" role="tab">账号设置</a>
+                            <a class="nav-link" data-toggle="tab" href="#account" aria-controls="account" role="tab">{{ trans('admin.setting.system.account') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#node" aria-controls="node" role="tab">节点设置</a>
+                            <a class="nav-link" data-toggle="tab" href="#node" aria-controls="node" role="tab">{{ trans('admin.setting.system.node') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#extend" aria-controls="extend" role="tab">拓展功能</a>
+                            <a class="nav-link" data-toggle="tab" href="#extend" aria-controls="extend" role="tab">{{ trans('admin.setting.system.extend') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#checkIn" aria-controls="checkIn" role="tab">签到系统</a>
+                            <a class="nav-link" data-toggle="tab" href="#checkIn" aria-controls="checkIn" role="tab">{{ trans('admin.setting.system.check_in') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#promo" aria-controls="promo" role="tab">推广系统</a>
+                            <a class="nav-link" data-toggle="tab" href="#promo" aria-controls="promo" role="tab">{{ trans('admin.setting.system.promotion') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#notify" aria-controls="notify" role="tab">通知系统</a>
+                            <a class="nav-link" data-toggle="tab" href="#notify" aria-controls="notify" role="tab">{{ trans('admin.setting.system.notify') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#auto" aria-controls="auto" role="tab">自动任务</a>
+                            <a class="nav-link" data-toggle="tab" href="#auto" aria-controls="auto" role="tab">{{ trans('admin.setting.system.auto_job') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#other" aria-controls="other" role="tab">LOGO|客服|统计</a>
+                            <a class="nav-link" data-toggle="tab" href="#other" aria-controls="other" role="tab">{{ trans('admin.setting.system.other') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#payment" aria-controls="payment" role="tab">支付系统</a>
+                            <a class="nav-link" data-toggle="tab" href="#payment" aria-controls="payment" role="tab">{{ trans('admin.setting.system.payment') }}</a>
                         </li>
                         <li class="dropdown nav-item" role="presentation">
-                            <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false">菜单</a>
+                            <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false">{{ trans('admin.setting.system.menu') }}</a>
                             <div class="dropdown-menu" role="menu">
-                                <a class="dropdown-item active" data-toggle="tab" href="#webSetting" aria-controls="webSetting" role="tab">网站常规</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#account" aria-controls="account" role="tab">账号设置</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#node" aria-controls="node" role="tab">节点设置</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#extend" aria-controls="extend" role="tab">拓展功能</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#checkIn" aria-controls="checkIn" role="tab">签到系统</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#promo" aria-controls="promo" role="tab">推广系统</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#notify" aria-controls="notify" role="tab">通知系统</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#auto" aria-controls="auto" role="tab">自动任务</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#other" aria-controls="other" role="tab">LOGO|客服|统计</a>
-                                <a class="dropdown-item" data-toggle="tab" href="#payment" aria-controls="payment" role="tab">支付系统</a>
+                                <a class="dropdown-item active" data-toggle="tab" href="#webSetting" aria-controls="webSetting"
+                                   role="tab">{{ trans('admin.setting.system.web') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#account" aria-controls="account" role="tab">{{ trans('admin.setting.system.account') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#node" aria-controls="node" role="tab">{{ trans('admin.setting.system.node') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#extend" aria-controls="extend" role="tab">{{ trans('admin.setting.system.extend') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#checkIn" aria-controls="checkIn" role="tab">{{ trans('admin.setting.system.check_in') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#promo" aria-controls="promo" role="tab">{{ trans('admin.setting.system.promotion') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#notify" aria-controls="notify" role="tab">{{ trans('admin.setting.system.notify') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#auto" aria-controls="auto" role="tab">{{ trans('admin.setting.system.auto_job') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#other" aria-controls="other" role="tab">{{ trans('admin.setting.system.other') }}</a>
+                                <a class="dropdown-item" data-toggle="tab" href="#payment" aria-controls="payment" role="tab">{{ trans('admin.setting.system.payment') }}</a>
                             </div>
                         </li>
                     </ul>
                     <div class="tab-content py-35 px-35">
                         <x-system.tab-pane id="webSetting" :active="true">
-                            <x-system.input title="网站名称" :value="$website_name" code="website_name" help="发邮件时展示"/>
-                            <x-system.input title="网站地址" :value="$website_url" code="website_url" help="生成重置密码、在线支付必备" type="url"/>
-                            <x-system.select title="本位货币" code="standard_currency" :list="array_column(config('common.currency'), 'code', 'name')"
-                                             help="网站中涉及金钱部分的默认货币"/>
-                            <x-system.input title="苹果账号" :value="$AppStore_id" code="AppStore_id" help="iOS软件设置教程中使用的苹果账号" type="email"/>
-                            <x-system.input title="苹果密码" :value="$AppStore_password" code="AppStore_password" help="iOS软件设置教程中使用的苹果密码" type="password"/>
-                            <x-system.input title="管理员邮箱" :value="$webmaster_email" code="webmaster_email" help="错误提示时会提供管理员邮箱作为联系方式" type="email"/>
+                            <x-system.input code="website_name" :value="$website_name"/>
+                            <x-system.input code="website_url" :value="$website_url" type="url"/>
+                            <x-system.select code="standard_currency" :list="array_column(config('common.currency'), 'code', 'name')"/>
+                            <x-system.input code="AppStore_id" :value="$AppStore_id" type="email"/>
+                            <x-system.input code="AppStore_password" :value="$AppStore_password" type="password"/>
+                            <x-system.input code="webmaster_email" :value="$webmaster_email" type="email"/>
                             <div class="form-group col-lg-6">
                                 <div class="form-row">
-                                    <label class="col-md-3 col-form-label" for="website_security_code">网站安全码</label>
+                                    <label class="col-md-3 col-form-label" for="website_security_code">{{ trans('admin.system.website_security_code') }}</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="website_security_code" value="{{$website_security_code}}"/>
                                             <span class="input-group-append">
-                                                <button class="btn btn-info" type="button" onclick="makeWebsiteSecurityCode()">生成</button>
-                                                <button class="btn btn-primary" type="button" onclick="update('website_security_code')">{{trans('common.update')}}</button>
+                                                <button class="btn btn-info" type="button" onclick="makeWebsiteSecurityCode()">{{ trans('common.generate') }}</button>
+                                                <button class="btn btn-primary" type="button" onclick="update('website_security_code')">{{ trans('common.update') }}</button>
                                             </span>
                                         </div>
-                                        <span class="text-help">非空时必须通过<a href="{{route('login')}}?securityCode=" target="_blank">安全入口</a>加上安全码才可访问</span>
+                                        <span class="text-help">{!! trans('admin.system.hint.website_security_code', ['url' => route('login').'?securityCode=']) !!}</span>
                                     </div>
                                 </div>
                             </div>
-                            <x-system.select title="禁止访问模式" code="forbid_mode" help="依据IP对对应地区进行阻拦，非阻拦地区可正常访问"
-                                             :list="['关闭' => '', '阻拦大陆'=> 'ban_mainland', '阻拦中国' => 'ban_china', '阻拦海外' => 'ban_oversea']"/>
-                            <x-system.switch title="阻止机器人访问" code="is_forbid_robot" :check="$is_forbid_robot" help="如果是机器人、爬虫、代理访问网站则会抛出404错误"/>
-                            <x-system.switch title="维护模式" code="maintenance_mode" :check="$maintenance_mode"
-                                             help="启用后，用户访问转移至维护界面 | 管理员使用 <a href='javascript:(0)'>{{route('admin.login')}}</a> 登录"/>
-                            <x-system.input title="维护结束时间" :value="$maintenance_time" code="maintenance_time" help="用于维护界面倒计时" type="datetime-local"/>
-                            <x-system.textarea title="维护介绍内容" code="maintenance_content" :value="$maintenance_content" row="3" help="自定义维护内容信息"/>
-                            <x-system.input title="重定向地址" :value="$redirect_url" code="redirect_url" help="触发审计规则时访问请求被阻断并重定向至该地址" type="url"/>
+                            <x-system.select code="forbid_mode"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.forbid.mainland')=> 'ban_mainland', trans('admin.system.forbid.china') => 'ban_china', trans('admin.system.forbid.oversea') => 'ban_oversea']"/>
+                            <x-system.switch code="is_forbid_robot" :check="$is_forbid_robot"/>
+                            <x-system.switch code="maintenance_mode" :check="$maintenance_mode" :url="route('admin.login')"/>
+                            <x-system.input code="maintenance_time" :value="$maintenance_time" type="datetime-local"/>
+                            <x-system.textarea code="maintenance_content" :value="$maintenance_content" row="3"/>
+                            <x-system.input code="redirect_url" :value="$redirect_url" type="url"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="account">
-                            <x-system.switch title="用户注册" code="is_register" :check="$is_register" help="关闭后无法注册"/>
-                            <x-system.select title="第三方登录平台" code="oauth_path" help="请在.ENV中添加设置，再在此处开启平台" multiple="1"
-                                             :list="array_flip(config('common.oauth.labels'))"/>
-                            <x-system.select title="账号类型" help="规范站点用户账号的类型，默认为电子邮箱" code="username_type"
-                                             :list="['电子邮箱'=> 'email', '手机号码' => 'numeric', '任意用户名' => 'string']"/>
-                            <x-system.select title="邀请注册" code="is_invite_register" :list="['关闭' => '', '可选'=> 1, '必须' => 2]"/>
-                            <x-system.select title="激活账号" code="is_activate_account" :list="['关闭' => '', '注册前激活'=> 1, '注册后激活' => 2]"
-                                             help="启用后用户需要通过邮件来激活账号"/>
-                            <x-system.select title="重置密码" code="password_reset_notification" :list="['关闭' => '', '邮箱'=> 'mail']" help="启用后用户可以重置密码"/>
-                            <x-system.switch title="免费邀请码" code="is_free_code" :check="$is_free_code" help="关闭后免费邀请码不可见"/>
-                            <x-system.input title="邀请链接 用户信息字符化" :value="$aff_salt" code="aff_salt"
-                                            help="留空时，邀请链接将显示用户ID；填入任意英文/数字 即可对用户链接ID进行加密"/>
-                            <x-system.switch title="随机端口" code="is_rand_port" :check="$is_rand_port" help="注册、添加用户时随机生成端口"/>
-                            <x-system.input-limit title="端口范围" code="min_port" hcode="max_port" :value="$min_port" min="1000" max="$('#max_port').val()"
-                                                  :hvalue="$max_port" hmin="$('#min_port').val()" hmax="65535" help="端口范围：1000 - 65535"/>
-                            <x-system.input-limit title="初始有效期" code="default_days" :value="$default_days" unit="天" help="用户注册时默认账户有效期，为0即当天到期"/>
-                            <x-system.input-limit title="初始流量" code="default_traffic" :value="$default_traffic" unit="MB" help="用户注册时默认可用流量"/>
-                            <x-system.input-limit title="可生成邀请码数" code="invite_num" :value="$invite_num" help="用户可以生成的邀请码数"/>
-                            <x-system.input-limit title="重置密码次数" code="reset_password_times" :value="$reset_password_times" help="24小时内可以通过邮件重置密码次数"/>
-                            <x-system.select title="邮箱过滤机制" code="is_email_filtering" help="黑名单: 用户可使用任意黑名单外的邮箱注册；白名单:用户只能选择使用白名单中的邮箱后缀注册"
-                                             :list="['关闭' => '', '黑名单' => 1, '白名单' => 2]"/>
-                            <x-system.input-limit title="激活账号次数" code="active_times" :value="$active_times" help="24小时内可以通过邮件激活账号次数"/>
-                            <x-system.input-limit title="同IP注册限制" code="register_ip_limit" :value="$register_ip_limit" help="同IP在24小时内允许注册数量，为0/留空时不限制"/>
-                            <x-system.input-limit title="用户-邀请码有效期" code="user_invite_days" :value="$user_invite_days" min="1" unit="天" help="用户自行生成邀请的有效期"/>
-                            <x-system.input-limit title="管理员-邀请码有效期" code="admin_invite_days" :value="$admin_invite_days" min="1" unit="天"
-                                                  help="管理员生成邀请码的有效期"/>
+                            <x-system.switch code="is_register" :check="$is_register"/>
+                            <x-system.select code="oauth_path" multiple="1" :list="array_flip(config('common.oauth.labels'))"/>
+                            <x-system.select code="username_type" :list="[trans('admin.system.username.email') => 'email', trans('admin.system.username.mobile') => 'numeric',
+                            trans('admin.system.username.any') => 'string']"/>
+                            <x-system.select code="is_invite_register" :list="[trans('common.status.closed') => '', trans('admin.optional') => 1, trans('admin.require') => 2]"/>
+                            <x-system.select code="is_activate_account"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.active_account.before') => 1, trans('admin.system.active_account.after') => 2]"/>
+                            <x-system.select code="password_reset_notification" :list="[trans('common.status.closed') => '', trans('admin.system.notification.channel.email') =>
+                            'mail']"/>
+                            <x-system.switch code="is_free_code" :check="$is_free_code"/>
+                            <x-system.input code="aff_salt" :value="$aff_salt"/>
+                            <x-system.switch code="is_rand_port" :check="$is_rand_port"/>
+                            <x-system.input-limit code="min_port" hcode="max_port" :value="$min_port" min="1000" max="$('#max_port').val()" :hvalue="$max_port" hmin="$
+                            ('#min_port').val()" hmax="65535"/>
+                            <x-system.input-limit code="default_days" :value="$default_days" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.input-limit code="default_traffic" :value="$default_traffic" unit="MB"/>
+                            <x-system.input-limit code="invite_num" :value="$invite_num"/>
+                            <x-system.input-limit code="reset_password_times" :value="$reset_password_times"/>
+                            <x-system.select code="is_email_filtering"
+                                             :list="[trans('common.status.closed') => '', trans('admin.setting.email.black') => 1, trans('admin.setting.email.white') => 2]"/>
+                            <x-system.input-limit code="active_times" :value="$active_times"/>
+                            <x-system.input-limit code="register_ip_limit" :value="$register_ip_limit"/>
+                            <x-system.input-limit code="user_invite_days" :value="$user_invite_days" min="1" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.input-limit code="admin_invite_days" :value="$admin_invite_days" min="1" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="node">
-                            <x-system.input title="节点订阅地址" :value="$subscribe_domain" code="subscribe_domain" help="（推荐）防止面板域名被DNS投毒后无法正常订阅，需带http://或https://"
-                                            :holder="'默认为 '.$website_url" type="url"/>
-                            <x-system.input-limit title="订阅节点数" code="subscribe_max" :value="$subscribe_max" help="客户端订阅时取得几个节点，为0/留空时返回全部节点"/>
-                            <x-system.switch title="随机订阅" code="rand_subscribe" :check="$rand_subscribe" help="启用后，订阅时将随机返回节点信息，否则按节点排序返回"/>
-                            <x-system.switch title="高级订阅" code="is_custom_subscribe" :check="$is_custom_subscribe"
-                                             help="启用后，订阅信息顶部将显示过期时间、剩余流量（只支持个别客户端）"/>
-                            <x-system.input title="授权/后端访问域名" :value="$web_api_url" code="web_api_url" help="例：https://demo.proxypanel.cf" type="url"/>
-                            <x-system.input title="V2Ray授权" :value="$v2ray_license" code="v2ray_license"/>
-                            <x-system.input title="Trojan授权" :value="$trojan_license" code="trojan_license"/>
-                            <x-system.input title="V2Ray TLS配置" :value="$v2ray_tls_provider" code="v2ray_tls_provider"
-                                            help="后端自动签发/载入TLS证书时用（节点的设置值优先级高于此处）"/>
+                            <x-system.input code="subscribe_domain" :value="$subscribe_domain" :holder="trans('admin.system.placeholder.default_url', ['url' => $website_url])"
+                                            type="url"/>
+                            <x-system.input-limit code="subscribe_max" :value="$subscribe_max"/>
+                            <x-system.switch code="rand_subscribe" :check="$rand_subscribe"/>
+                            <x-system.switch code="is_custom_subscribe" :check="$is_custom_subscribe"/>
+                            <x-system.input code="web_api_url" :value="$web_api_url" type="url"/>
+                            <x-system.input code="v2ray_license" :value="$v2ray_license"/>
+                            <x-system.input code="trojan_license" value="$trojan_license"/>
+                            <x-system.input code="v2ray_tls_provider" :value="$v2ray_tls_provider"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
-                            <x-system.select title="DDNS模式" code="ddns_mode" help="添加/编辑/删除节点的【域名、ipv4、ipv6】时，自动更新对应内容至DNS服务商"
-                                             :list="['关闭' => '', 'Namesilo' => 'namesilo', '阿里云(国际&国内)' => 'aliyun', 'DNSPod' => 'dnspod', 'CloudFlare' => 'cloudflare']"/>
-                            <x-system.input title="DNS服务商Key" :value="$ddns_key" code="ddns_key"
-                                            help="浏览<a href='https://proxypanel.gitbook.io/wiki/ddns' target='_blank'>设置指南</a>来设置"/>
-                            <x-system.input title="DNS服务商Secret" :value="$ddns_secret" code="ddns_secret"/>
+                            <x-system.select code="ddns_mode"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.ddns.namesilo') => 'namesilo', trans('admin.system.ddns.aliyun') => 'aliyun', trans('admin.system.ddns.dnspod') =>  'dnspod', trans('admin.system.ddns.cloudflare') => 'cloudflare']"/>
+                            <x-system.input code="ddns_key" :value="$ddns_key"/>
+                            <x-system.input code="ddns_secret" :value="$ddns_secret"/>
                             <hr class="col-lg-12">
-                            <x-system.select title="验证码模式" code="is_captcha"
-                                             :list="['关闭' => '', '普通验证码' => 1, '极验Geetest' => 2, 'Google reCaptcha' => 3, 'hCaptcha' => 4]"
-                                             help="启用后 登录/注册 需要进行验证码认证"/>
-                            <x-system.input title="验证码 Key" :value="$captcha_key" code="captcha_key"
-                                            help='浏览<a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">设置指南</a>来设置'/>
-                            <x-system.input title="验证码 Secret/ID" :value="$captcha_secret" code="captcha_secret"/>
+                            <x-system.select code="is_captcha"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.captcha.standard') => 1, trans('admin.system.captcha.geetest') => 2, trans('admin.system.captcha.recaptcha') => 3, trans('admin.system.captcha.hcaptcha') => 4]"/>
+                            <x-system.input code="captcha_key" :value="$captcha_key"/>
+                            <x-system.input code="captcha_secret" :value="$captcha_secret"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="checkIn">
-                            <x-system.switch title="签到加流量" code="is_checkin" :check="$is_checkin" help="登录时将根据流量范围随机得到流量"/>
-                            <x-system.input-limit title="时间间隔" code="traffic_limit_time" :value="$traffic_limit_time" help="间隔多久才可以再次签到"/>
-                            <x-system.input-limit title="流量范围" code="min_rand_traffic" hcode="max_rand_traffic" :value="$min_rand_traffic" :hvalue="$max_rand_traffic"
-                                                  :max="$max_rand_traffic" :hmin="$min_rand_traffic" unit="MB"/>
+                            <x-system.switch code="is_checkin" :check="$is_checkin"/>
+                            <x-system.input-limit code="traffic_limit_time" :value="$traffic_limit_time"/>
+                            <x-system.input-limit code="min_rand_traffic" hcode="max_rand_traffic" :value="$min_rand_traffic" :hvalue="$max_rand_traffic" :max="$max_rand_traffic"
+                                                  :hmin="$min_rand_traffic" unit="MB"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="promo">
-                            <x-system.switch title="推广功能" code="referral_status" :check="$referral_status" help="关闭后用户不可见，但是不影响其正常邀请返利"/>
-                            <x-system.select title="返利模式" code="referral_type" :list="['关闭' => '', '首购返利' => 1, '循环返利' => 2]"
-                                             help="切换模式后旧数据不变，新的返利按新的模式计算"/>
-                            <x-system.input-limit title="注册送流量" code="referral_traffic" :value="$referral_traffic" unit="MB" help="根据推广链接、邀请码注册则赠送相应的流量"/>
-                            <x-system.input-limit title="返利比例" code="referral_percent" :value="$referral_percent * 100" max="100" unit="%"
-                                                  help="根据推广链接注册的账号每笔消费推广人可以分成的比例 "/>
-                            <x-system.input-limit title="提现限制" code="referral_money" :value="$referral_money"
-                                                  unit="{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}"
-                                                  help="满多少元才可以申请提现"/>
+                            <x-system.switch code="referral_status" :check="$referral_status"/>
+                            <x-system.select code="referral_type"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.referral.once') => 1, trans('admin.system.referral.loop') => 2]"/>
+                            <x-system.input-limit code="referral_traffic" :value="$referral_traffic" unit="MB"/>
+                            <x-system.input-limit code="referral_percent" :value="$referral_percent * 100" max="100" unit="%"/>
+                            <x-system.input-limit code="referral_money" :value="$referral_money"
+                                                  unit="{{array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')]}}"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="notify">
-                            <x-system.input-test title="ServerChan SCKEY" :value="$server_chan_key" code="server_chan_key" help='启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com
-                                    target=_blank>申请 SCKEY</a>）' holder="填入ServerChan的SCKEY -> 再点击更新" test="serverChan"/>
-                            <x-system.input-test title="PushDeer Key" :value="$pushDeer_key" code="pushDeer_key" help='启用PushDeer，请务必填入本值（<a href=http://www.pushdeer.com/official.html
-                                    target=_blank>申请 Push Key</a>）' holder="填入PushDeer的Push Key -> 再点击更新" test="pushDeer"/>
-                            <x-system.input-test title="IYUU令牌" :value="$iYuu_token" code="iYuu_token" help='启用爱语飞飞，请务必填入本值（<a href=http://iyuu.cn
-                                    target=_blank>申请 IYUU令牌</a>）' holder="填入爱语飞飞的IYUU令牌 -> 再点击更新" test="iYuu"/>
-                            <x-system.input-test title="Bark设备号" :value="$bark_key" code="bark_key" holder="填入Bark的设备号 -> 再点击更新"
-                                                 help="推送消息到iOS设备，需要在iOS设备里装一个名为Bark的应用，取网址后的一长串字符串，启用Bark，请务必填入本值" test="bark"/>
-                            <x-system.input-test title="Telegram" :value="$telegram_token" code="telegram_token" holder="填入Telegram的 Token -> 再点击更新" help="找 <a href=https://t
-                            .me/BotFather
-                                    target=_blank>@BotFather</a> 申请机器人获取TOKEN" test="telegram"/>
-                            <x-system.input-test title="PushPlus Token" :value="$pushplus_token" code="pushplus_token" help='启用PushPlus，请务必填入本值（<a href=https://www.pushplus.plus/push1.html
-                                    target=_blank>申请 Token</a>）' holder="请到ServerChan申请" test="pushPlus"/>
-                            <x-system.input title="钉钉自定义机器人 Access Token" :value="$dingTalk_access_token" code="dingTalk_access_token" holder="自定义机器人的WebHook中的access_token"
-                                            help="可以阅读<a href=https://open.dingtalk.com/document/group/custom-robot-access#title-jfe-yo9-jl2 target=_blank>钉钉手册</a>查阅步骤"/>
-                            <x-system.input-test title="钉钉自定义机器人 密钥" :value="$dingTalk_secret" code="dingTalk_secret" help='可选填！开启机器人[加签]就是必填项目！'
-                                                 holder="自定义机器人加签后出现的的密钥" test="dingTalk"/>
-                            <x-system.input title="微信企业ID" :value="$wechat_cid" code="wechat_cid" holder="填入微信企业ID -> 再点击更新"
-                                            help="获取<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>我的企业</a>中的企业ID"/>
-                            <x-system.input title="微信企业应用ID" :value="$wechat_aid" code="wechat_aid" holder="应用的AgentId"
-                                            help="在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId"/>
-                            <x-system.input-test title="微信企业应用密钥" :value="$wechat_secret" code="wechat_secret" help='应用的Secret（可能需要下载企业微信才能查看）'
-                                                 holder="应用的Secret" test="weChat"/>
-                            <x-system.input title="微信企业应用TOKEN" :value="$wechat_token" code="wechat_token"
-                                            help="{{'应用管理->应用->设置API接收->TOKEN，URL设置：'.route('wechat.verify')}}"/>
-                            <x-system.input title="微信企业应用EncodingAESKey" :value="$wechat_encodingAESKey" code="wechat_encodingAESKey"
-                                            help='应用管理->应用->设置API接收->EncodingAESKey'/>
-                            <x-system.input-test title="TG酱Token" :value="$tg_chat_token" code="tg_chat_token" help='启用TG酱，请务必填入本值（<a href=https://t.me/realtgchat_bot
-                                    target=_blank>申请 Token</a>）' holder="请到Telegram申请" test="tgChat"/>
+                            <x-system.input-test code="server_chan_key" :value="$server_chan_key" holder="{{ trans('admin.system.placeholder.server_chan_key') }}"
+                                                 test="serverChan"/>
+                            <x-system.input-test code="pushDeer_key" :value="$pushDeer_key" holder="{{ trans('admin.system.placeholder.pushDeer_key') }}" test="pushDeer"/>
+                            <x-system.input-test code="iYuu_token" :value="$iYuu_token" holder="{{ trans('admin.system.placeholder.iYuu_token') }}" test="iYuu"/>
+                            <x-system.input-test code="bark_key" :value="$bark_key" holder="{{ trans('admin.system.placeholder.bark_key') }}" test="bark"/>
+                            <x-system.input-test code="telegram_token" :value="$telegram_token" holder="{{ trans('admin.system.placeholder.telegram_token') }}" test="telegram"/>
+                            <x-system.input-test code="pushplus_token" :value="$pushplus_token" holder="{{ trans('admin.system.placeholder.pushplus_token') }}" test="pushPlus"/>
+                            <x-system.input code="dingTalk_access_token" :value="$dingTalk_access_token" holder="{{ trans('admin.system.placeholder.dingTalk_access_token') }}"/>
+                            <x-system.input-test code="dingTalk_secret" :value="$dingTalk_secret" holder="{{ trans('admin.system.placeholder.dingTalk_secret') }}" test="dingTalk"/>
+                            <x-system.input code="wechat_cid" :value="$wechat_cid" holder="{{ trans('admin.system.placeholder.wechat_cid') }}"/>
+                            <x-system.input code="wechat_aid" :value="$wechat_aid" holder="{{ trans('admin.system.placeholder.wechat_aid') }}"/>
+                            <x-system.input-test code="wechat_secret" :value="$wechat_secret" holder="{{ trans('admin.system.placeholder.wechat_secret') }}" test="weChat"/>
+                            <x-system.input code="wechat_token" :value="$wechat_token" :url="route('wechat.verify')"/>
+                            <x-system.input code="wechat_encodingAESKey" :value="$wechat_encodingAESKey"/>
+                            <x-system.input-test code="tg_chat_token" :value="$tg_chat_token" holder="{{ trans('admin.system.placeholder.tg_chat_token') }}" test="tgChat"/>
                             <hr class="col-10"/>
-                            <x-system.select title="账号过期通知" code="account_expire_notification" help="通知用户账号即将到期" multiple="1"
-                                             :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
-                            <x-system.input-limit title="过期警告阈值" code="expire_days" :value="$expire_days" unit="天" help="【账号过期通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="流量耗尽通知" code="data_exhaust_notification" help="通知用户流量即将耗尽" multiple="1"
-                                             :list="['邮箱' => 'mail', '站内通知' => 'database']"/>
-                            <x-system.input-limit title="流量警告阈值" code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%"
-                                                  help="【流量耗尽通知】开始阈值，每日通知用户"/>
-                            <x-system.select title="节点离线提醒" code="node_offline_notification" help="每10分钟检测节点离线并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' =>
-                                             'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus' => 'pushPlus']"/>
-                            <x-system.input-limit title="离线提醒次数" code="offline_check_times" :value="$offline_check_times" unit="次" help="24小时内提醒n次后不再提醒"/>
-                            <x-system.select title="节点阻断提醒" code="node_blocked_notification" help="每小时检测节点是否被阻断并提醒管理员" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '微信企业' => 'weChat', 'TG酱' => 'tgChat', 'PushPlus'
-                                             => 'pushPlus']"/>
-                            <x-system.input-limit title="阻断检测提醒" code="detection_check_times" :value="$detection_check_times" max="12" unit="次"
-                                                  help="提醒N次后自动下线节点，为0/留空时不限制，不超过12"/>
-                            <x-system.select title="支付成功通知" code="payment_received_notification" help="用户支付订单后通知用户订单状态" multiple="1"
-                                             :list="['邮箱' => 'mail', '站内通知' => 'database', 'Telegram' => 'telegram']"/>
-                            <x-system.select title="人工支付确认通知" code="payment_confirm_notification" help="用户使用人工支付后通知管理员处理订单"
-                                             :list="['关闭' => '', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat']"/>
-                            <x-system.select title="工单关闭通知" code="ticket_closed_notification" help="工单关闭通知用户" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
-                            <x-system.select title="新工单通知" code="ticket_created_notification" help="新工单通知管理/用户，取决于谁创建了新工单" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
-                            <x-system.select title="工单回复通知" code="ticket_replied_notification" help="工单回复通知对方" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
+                            <x-system.select code="account_expire_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.site') => 'database']"/>
+                            <x-system.input-limit code="expire_days" :value="$expire_days" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.select code="data_exhaust_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.site') => 'database']"/>
+                            <x-system.input-limit code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%"/>
+                            <x-system.select code="node_offline_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.bark') => 'bark', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
+                            <x-system.input-limit code="offline_check_times" :value="$offline_check_times" unit="{{ trans('admin.times') }}"/>
+                            <x-system.select code="node_blocked_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
+                            <x-system.input-limit code="detection_check_times" :value="$detection_check_times" max="12" unit="{{ trans('admin.times') }}"/>
+                            <x-system.select code="payment_received_notification" multiple="1" :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin
+                            .system.notification.channel.site') => 'database', trans('admin.system.notification.channel.telegram') => 'telegram']"/>
+                            <x-system.select code="payment_confirm_notification"
+                                             :list="[trans('common.status.closed') => '', trans('admin.system.notification.channel.telegram')=> 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat']"/>
+                            <x-system.select code="ticket_closed_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.bark') => 'bark', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
+                            <x-system.select code="ticket_created_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.bark') => 'bark', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
+                            <x-system.select code="ticket_replied_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.bark') => 'bark', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="auto">
-                            <x-system.switch title="自动清除日志" code="is_clear_log" :check="$is_clear_log" help='（推荐）启用后自动清除无用日志'/>
-                            <x-system.switch title="流量自动重置" code="reset_traffic" :check="$reset_traffic" help='用户会按其购买套餐的日期自动重置可用流量'/>
-                            <x-system.switch title="订阅异常自动封禁" code="is_subscribe_ban" :check="$is_subscribe_ban" help='启用后用户订阅链接请求超过设定阈值则自动封禁'/>
-                            <x-system.input-limit title="订阅请求阈值" code="subscribe_ban_times" :value="$subscribe_ban_times" help="24小时内订阅链接请求次数限制"/>
-                            <x-system.switch title="异常自动封号" code="is_traffic_ban" :check="$is_traffic_ban" help='1小时内流量超过异常阈值则自动封号（仅禁用代理）'/>
-                            <x-system.select title="流量异常通知" code="data_anomaly_notification" help="1小时内流量超过异常阈值通知超管" multiple="1"
-                                             :list="['邮箱' => 'mail', 'Bark' => 'bark', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
-                            <x-system.input-limit title="流量异常阈值" code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB"
-                                                  help="1小时内超过该值，则触发自动封号"/>
-                            <x-system.input-limit title="封号时长" code="traffic_ban_time" :value="$traffic_ban_time" unit="分钟"
-                                                  help="触发流量异常导致用户被封禁的时长，到期后自动解封"/>
-                            <x-system.switch title="端口回收机制" code="auto_release_port" :check="$auto_release_port"
-                                             help="被封禁/过期{{config('tasks.release_port')}}天的账号端口自动释放"/>
-                            <x-system.switch title="过期自动封禁" code="is_ban_status" :check="$is_ban_status"
-                                             help="(慎重)封禁整个账号会重置账号的所有数据且会导致用户无法登录,不开启状态下只封禁用户代理"/>
-                            <x-system.select title="节点使用报告" code="node_daily_notification" help="报告各节点流量昨日消耗情况" multiple="1"
-                                             :list="['邮箱' => 'mail', 'ServerChan' => 'serverChan', 'PushDeer' => 'pushDear', '爱语飞飞' => 'iYuu', 'Telegram' => 'telegram', '钉钉' => 'dingTalk', '微信企业' => 'weChat', 'TG酱' =>
-                                             'tgChat', 'PushPlus' => 'pushPlus']"/>
+                            <x-system.switch code="is_clear_log" :check="$is_clear_log"/>
+                            <x-system.switch code="reset_traffic" :check="$reset_traffic"/>
+                            <x-system.switch code="is_subscribe_ban" :check="$is_subscribe_ban"/>
+                            <x-system.input-limit code="subscribe_ban_times" :value="$subscribe_ban_times"/>
+                            <x-system.switch code="is_traffic_ban" :check="$is_traffic_ban"/>
+                            <x-system.select code="data_anomaly_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.bark') => 'bark', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
+                            <x-system.input-limit code="traffic_ban_value" :value="$traffic_ban_value" min="1" unit="GB"/>
+                            <x-system.input-limit code="traffic_ban_time" :value="$traffic_ban_time" unit="{{ trans('admin.minute') }}"/>
+                            <x-system.switch code="auto_release_port" :check="$auto_release_port"/>
+                            <x-system.switch code="is_ban_status" :check="$is_ban_status"/>
+                            <x-system.select code="node_daily_notification" multiple="1"
+                                             :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.serverchan') => 'serverChan', trans('admin.system.notification.channel.pushdeer') => 'pushDear', trans('admin.system.notification.channel.iyuu') => 'iYuu', trans('admin.system.notification.channel.telegram') => 'telegram', trans('admin.system.notification.channel.dingtalk') => 'dingTalk', trans('admin.system.notification.channel.wechat') => 'weChat', trans('admin.system.notification.channel.tg_chat') => 'tgChat', trans('admin.system.notification.channel.pushplus') => 'pushPlus']"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="other">
                             <div class="col-12">
@@ -255,125 +218,123 @@
                                     <x-alert type="success" :message="Session::get('successMsg')"/>
                                 @endif
                             </div>
-                            <x-system.input title="首页LOGO" :value="$website_home_logo" code="website_home_logo" type="url"/>
-                            <x-system.input title="站内LOGO" :value="$website_logo" code="website_logo" type="url"/>
+                            <x-system.input code="website_home_logo" :value="$website_home_logo" type="url"/>
+                            <x-system.input code="website_logo" :value="$website_logo" type="url"/>
                             <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
                                   id="setExtend">@csrf
-                                <x-system.input-file title="首页LOGO" code="website_home_logo" :value="$website_home_logo"/>
-                                <x-system.input-file title="站内LOGO" code="website_logo" :value="$website_logo"/>
+                                <x-system.input-file code="website_home_logo" :value="$website_home_logo"/>
+                                <x-system.input-file code="website_logo" :value="$website_logo"/>
                             </form>
-                            <x-system.textarea title="统计代码" code="website_analytics" :value="$website_analytics" help="统计JS"/>
-                            <x-system.textarea title="客服代码" code="website_customer_service" :value="$website_customer_service" help="客服JS"/>
+                            <x-system.textarea code="website_analytics" :value="$website_analytics"/>
+                            <x-system.textarea code="website_customer_service" :value="$website_customer_service"/>
                         </x-system.tab-pane>
                         <div class="tab-pane" id="payment" role="tabpanel">
                             <div class="tab-content pb-100">
                                 <x-system.tab-pane id="paymentSetting" :active="true">
-                                    <x-system.select title="支付宝支付" code="is_AliPay"
-                                                     :list="['关闭' => '', 'F2F' => 'f2fpay', '码支付' => 'codepay', '易支付' => 'epay', '海狸支付' => 'paybeaver', '平头哥支付' => 'theadpay', 'Stripe支付宝' => 'stripe']"/>
-                                    <x-system.select title="QQ钱包" code="is_QQPay" :list="['关闭' => '', '码支付' => 'codepay', '易支付' => 'epay']"/>
-                                    <x-system.select title="微信支付" code="is_WeChatPay"
-                                                     :list="['关闭' => '', '码支付' => 'codepay', 'PayJS' => 'payjs', '易支付' => 'epay', '海狸支付' => 'paybeaver', 'Stripe微信' => 'stripe']"/>
-                                    <x-system.select title="特殊支付" code="is_otherPay" multiple="1" :list="['麻瓜宝' => 'bitpayx', 'PayPal' => 'paypal', 'Stripe' => 'stripe']"/>
-                                    <x-system.input title="自定义商品名称" :value="$subject_name" code="subject_name" help="用于在支付渠道的商品标题显示"/>
-                                    <x-system.input title="通用支付回调地址" :value="$website_callback_url" code="website_callback_url"
-                                                    help="防止因为网站域名被DNS投毒后导致支付无法正常回调，需带http://或https://" :holder="'默认为 '.$website_url" type="url"/>
+                                    <x-system.select code="is_AliPay" :list="[trans('common.status.closed') => '', trans('admin.system.payment.channel.alipay') => 'f2fpay',
+                                    trans('admin.system.payment.channel.codepay') => 'codepay', trans('admin.system.payment.channel.epay') => 'epay', trans('admin.system.payment.channel.paybeaver') => 'paybeaver', trans('admin.system.payment.channel.theadpay') => 'theadpay', trans('admin.system.payment.channel.stripe') => 'stripe']"/>
+                                    <x-system.select code="is_QQPay" :list="[trans('common.status.closed') => '', trans('admin.system.payment.channel.codepay') => 'codepay',
+                                    trans('admin.system.payment.channel.epay') => 'epay']"/>
+                                    <x-system.select code="is_WeChatPay" :list="[trans('common.status.closed') => '', trans('admin.system.payment.channel.codepay') => 'codepay',
+                                     trans('admin.system.payment.channel.payjs') => 'payjs', trans('admin.system.payment.channel.epay') => 'epay', trans('admin.system.payment.channel.paybeaver') => 'paybeaver', trans('admin.system.payment.channel.stripe') => 'stripe']"/>
+                                    <x-system.select code="is_otherPay" multiple="1"
+                                                     :list="[trans('admin.system.payment.channel.paypal') => 'paypal', trans('admin.system.payment.channel.stripe') => 'stripe']"/>
+                                    <x-system.input code="subject_name" :value="$subject_name"/>
+                                    <x-system.input code="website_callback_url" :value="$website_callback_url" :holder="trans('admin.system.placeholder.default_url', ['url' =>
+                                    $website_url])" type="url"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="AlipayF2F">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">支付宝F2F</label>
+                                        <label class="col-md-3 col-form-label">{{  trans('admin.system.payment.channel.alipay') }}</label>
                                         <div class="col-md-9">
-                                            本功能需要<a href="https://open.alipay.com/platform/appManage.htm?#/create/" target="_blank">蚂蚁金服开放平台</a>申请权限及应用
+                                            {!! trans('admin.system.payment.hint.alipay') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="应用ID" :value="$f2fpay_app_id" code="f2fpay_app_id" help="即：APPID"/>
-                                    <x-system.input title="应用私钥" :value="$f2fpay_private_key" code="f2fpay_private_key" help="生成秘钥软件生成时，产生的应用秘钥"/>
-                                    <x-system.input title="支付宝公钥" :value="$f2fpay_public_key" code="f2fpay_public_key" help="注意不是应用公钥！"/>
+                                    <x-system.input code="f2fpay_app_id" :value="$f2fpay_app_id"/>
+                                    <x-system.input code="f2fpay_private_key" :value="$f2fpay_private_key"/>
+                                    <x-system.input code="f2fpay_public_key" :value="$f2fpay_public_key"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="CodePay">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">码支付</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.codepay') }}</label>
                                         <div class="col-md-7">
-                                            请到 <a href="https://codepay.fateqq.com/i/377289" target="_blank">码支付</a>申请账号，然后下载登录其挂机软件
+                                            {!! trans('admin.system.payment.hint.codepay') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="请求URL" :value="$codepay_url" code="codepay_url" holder="https://codepay.fateqq.com/creat_order/?" type="url"/>
-                                    <x-system.input title="码支付ID" :value="$codepay_id" code="codepay_id"/>
-                                    <x-system.input title="通信密钥" :value="$codepay_key" code="codepay_key"/>
+                                    <x-system.input code="codepay_url" :value="$codepay_url" :holder="trans('admin.system.placeholder.codepay_url')" type="url"/>
+                                    <x-system.input code="codepay_id" :value="$codepay_id"/>
+                                    <x-system.input code="codepay_key" :value="$codepay_key"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="EPay">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">易支付</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.epay') }}</label>
                                         @can('admin.test.epay')
                                             <div class="col-md-7">
-                                                <button class="btn btn-primary" type="button" onclick="epayInfo()">查询</button>
+                                                <button class="btn btn-primary" type="button" onclick="epayInfo()">{{ trans('admin.query') }}</button>
                                             </div>
                                         @endcan
                                     </div>
-                                    <x-system.input title="接口对接地址" :value="$epay_url" code="epay_url" holder="https://www.example.com" type="url"/>
-                                    <x-system.input title="商户ID" :value="$epay_mch_id" code="epay_mch_id"/>
-                                    <x-system.input title="商户密钥" :value="$epay_key" code="epay_key"/>
+                                    <x-system.input code="epay_url" :value="$epay_url" type="url"/>
+                                    <x-system.input code="epay_mch_id" :value="$epay_mch_id"/>
+                                    <x-system.input code="epay_key" :value="$epay_key"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="PayJs">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">PayJs</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.payjs') }}</label>
                                         <div class="col-md-7">
-                                            请到<a href="https://payjs.cn/ref/zgxjnb" target="_blank">PayJs</a> 申请账号
+                                            {!! trans('admin.system.payment.hint.payjs') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="商户号" :value="$payjs_mch_id" code="payjs_mch_id"
-                                                    help='在<a href="https://payjs.cn/dashboard/member" target="_blank">本界面</a>获取信息'/>
-                                    <x-system.input title="通信密钥" :value="$payjs_key" code="payjs_key"/>
+                                    <x-system.input code="payjs_mch_id" :value="$payjs_mch_id"/>
+                                    <x-system.input code="payjs_key" :value="$payjs_key"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="PayPal">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">PayPal</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.paypal') }}</label>
                                         <div class="col-md-7">
-                                            使用商家账号登录<a href="https://www.paypal.com/businessprofile/mytools/apiaccess/firstparty" target="_blank">API凭证申请页</a>,
-                                            同意并获取设置信息
+                                            {!! trans('admin.system.payment.hint.paypal') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="API用户名" :value="$paypal_username" code="paypal_username"/>
-                                    <x-system.input title="API密码" :value="$paypal_password" code="paypal_password"/>
-                                    <x-system.input title="签名" :value="$paypal_secret" code="paypal_secret"/>
-                                    {{--<x-system.input title="证书" :value="$paypal_certificate" code="paypal_certificate"/>--}}
-                                    {{--<x-system.input title="应用ID" :value="$paypal_app_id" code="paypal_app_id"/>--}}
+                                    <x-system.input code="paypal_username" :value="$paypal_username"/>
+                                    <x-system.input code="paypal_password" :value="$paypal_password"/>
+                                    <x-system.input code="paypal_secret" :value="$paypal_secret"/>
+                                    {{--<x-system.input code="paypal_certificate" :value="$paypal_certificate"/>--}}
+                                    {{--<x-system.input code="paypal_app_id" :value="$paypal_app_id"/>--}}
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="Stripe">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">Stripe</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.stripe') }}</label>
                                     </div>
-                                    <x-system.input title="Public Key" :value="$stripe_public_key" code="stripe_public_key"/>
-                                    <x-system.input title="Secret Key" :value="$stripe_secret_key" code="stripe_secret_key"/>
-                                    <x-system.input title="WebHook Signing secret" :value="$stripe_signing_secret" code="stripe_signing_secret"/>
+                                    <x-system.input code="stripe_public_key" :value="$stripe_public_key"/>
+                                    <x-system.input code="stripe_secret_key" :value="$stripe_secret_key"/>
+                                    <x-system.input code="stripe_signing_secret" :value="$stripe_signing_secret"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="PayBeaver">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">海狸支付 PayBeaver</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.paybeaver') }}</label>
                                         <div class="col-md-7">
-                                            请到<a href="https://merchant.paybeaver.com/?aff_code=iK4GNuX8" target="_blank">海狸支付 PayBeaver</a>申请账号
+                                            {!! trans('admin.system.payment.hint.paybeaver') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="App ID" :value="$paybeaver_app_id" code="paybeaver_app_id"
-                                                    help='<a href="https://merchant.paybeaver.com/" target="_blank">商户中心</a> -&gt; 开发者 -&gt; App ID'/>
-                                    <x-system.input title="App Secret" :value="$paybeaver_app_secret" code="paybeaver_app_secret"
-                                                    help='<a href="https://merchant.paybeaver.com/" target="_blank">商户中心</a> -&gt; 开发者 -&gt; App Secret'/>
+                                    <x-system.input code="paybeaver_app_id" :value="$paybeaver_app_id"/>
+                                    <x-system.input code="paybeaver_app_secret" :value="$paybeaver_app_secret"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="THeadPay">
                                     <div class="form-group col-lg-6 d-flex">
-                                        <label class="col-md-3 col-form-label">平头哥支付 THeadPay</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.theadpay') }}</label>
                                         <div class="col-md-7">
-                                            请到<a href="https://theadpay.com/" target="_blank">平头哥支付 THeadPay</a>申请账号
+                                            {!! trans('admin.system.payment.hint.theadpay') !!}
                                         </div>
                                     </div>
-                                    <x-system.input title="接口地址" :value="$theadpay_url" code="theadpay_url" type="url"/>
-                                    <x-system.input title="商家ID" :value="$theadpay_mchid" code="theadpay_mchid"/>
-                                    <x-system.input title="商家密钥" :value="$theadpay_key" code="theadpay_key"/>
+                                    <x-system.input code="theadpay_url" :value="$theadpay_url" type="url"/>
+                                    <x-system.input code="theadpay_mchid" :value="$theadpay_mchid"/>
+                                    <x-system.input code="theadpay_key" :value="$theadpay_key"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="Manual">
                                     <div class="form-group col-lg-12 d-flex">
-                                        <label class="col-md-3 col-form-label">人工支付</label>
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.manual') }}</label>
                                         <div class="col-md-7">
-                                            设置后会自动开启对应显示
+                                            {!! trans('admin.system.payment.hint.manual') !!}
                                         </div>
                                     </div>
                                     <div class="col-12">
@@ -384,59 +345,73 @@
                                             <x-alert type="success" :message="Session::get('successMsg')"/>
                                         @endif
                                     </div>
-                                    <x-system.input title="支付宝二维码" :value="$alipay_qrcode" code="alipay_qrcode" type="url"/>
-                                    <x-system.input title="微 信二维码" :value="$wechat_qrcode" code="wechat_qrcode" type="url"/>
+                                    <x-system.input code="alipay_qrcode" :value="$alipay_qrcode" type="url"/>
+                                    <x-system.input code="wechat_qrcode" :value="$wechat_qrcode" type="url"/>
                                     <form action="{{route('admin.system.extend')}}" method="post" enctype="multipart/form-data" class="upload-form col-lg-12 row" role="form"
                                           id="setExtend">@csrf
-                                        <x-system.input-file title="支付宝二维码" code="alipay_qrcode" :value="$alipay_qrcode"/>
-                                        <x-system.input-file title="微 信二维码" code="wechat_qrcode" :value="$wechat_qrcode"/>
+                                        <x-system.input-file code="alipay_qrcode" :value="$alipay_qrcode"/>
+                                        <x-system.input-file code="wechat_qrcode" :value="$wechat_qrcode"/>
                                     </form>
                                 </x-system.tab-pane>
                             </div>
                             <ul class="nav nav-tabs nav-tabs-bottom nav-tabs-line dropup" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#paymentSetting" aria-controls="paymentSetting" role="tab">支付设置</a>
+                                    <a class="nav-link active" data-toggle="tab" href="#paymentSetting" aria-controls="paymentSetting"
+                                       role="tab">{{ trans('admin.system.payment.attribute') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#AlipayF2F" aria-controls="AlipayF2F" role="tab">支付宝F2F</a>
+                                    <a class="nav-link" data-toggle="tab" href="#AlipayF2F" aria-controls="AlipayF2F"
+                                       role="tab">{{ trans('admin.system.payment.channel.alipay') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#CodePay" aria-controls="CodePay" role="tab">码支付</a>
+                                    <a class="nav-link" data-toggle="tab" href="#CodePay" aria-controls="CodePay" role="tab">{{ trans('admin.system.payment.channel.codepay') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#EPay" aria-controls="EPay" role="tab">易支付</a>
+                                    <a class="nav-link" data-toggle="tab" href="#EPay" aria-controls="EPay" role="tab">{{ trans('admin.system.payment.channel.epay') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#PayJs" aria-controls="PayJs" role="tab">PayJs</a>
+                                    <a class="nav-link" data-toggle="tab" href="#PayJs" aria-controls="PayJs" role="tab">{{ trans('admin.system.payment.channel.payjs') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#PayPal" aria-controls="PayPal" role="tab">PayPal</a>
+                                    <a class="nav-link" data-toggle="tab" href="#PayPal" aria-controls="PayPal" role="tab">{{ trans('admin.system.payment.channel.paypal') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
+                                    <a class="nav-link" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">{{ trans('admin.system.payment.channel.stripe') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
+                                    <a class="nav-link" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver"
+                                       role="tab">{{ trans('admin.system.payment.channel.paybeaver') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
+                                    <a class="nav-link" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay"
+                                       role="tab">{{ trans('admin.system.payment.channel.theadpay') }}</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
+                                    <a class="nav-link" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">{{ trans('admin.system.payment.channel.manual') }}</a>
                                 </li>
                                 <li class="nav-item dropdown" style="display: none;">
-                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false" aria-haspopup="true">菜单</a>
+                                    <a class="dropdown-toggle nav-link" data-toggle="dropdown" href="#" aria-expanded="false"
+                                       aria-haspopup="true">{{ trans('admin.setting.system.menu') }}</a>
                                     <div class="dropdown-menu" role="menu">
-                                        <a class="dropdown-item active" data-toggle="tab" href="#paymentSetting" aria-controls="paymentSetting" role="tab">支付设置</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#AlipayF2F" aria-controls="AlipayF2F" role="tab">支付宝F2F</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#CodePay" aria-controls="CodePay" role="tab">码支付</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#EPay" aria-controls="EPay" role="tab">易支付</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#PayJs" aria-controls="PayJs" role="tab">PayJs</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#PayPal" aria-controls="PayPal" role="tab">PayPal</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe" role="tab">Stripe</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver" role="tab">PayBeaver</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay" role="tab">平头哥支付</a>
-                                        <a class="dropdown-item" data-toggle="tab" href="#Manual" aria-controls="Manual" role="tab">人工支付</a>
+                                        <a class="dropdown-item active" data-toggle="tab" href="#paymentSetting" aria-controls="paymentSetting"
+                                           role="tab">{{ trans('admin.system.payment.attribute') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#AlipayF2F" aria-controls="AlipayF2F"
+                                           role="tab">{{ trans('admin.system.payment.channel.alipay') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#CodePay" aria-controls="CodePay"
+                                           role="tab">{{ trans('admin.system.payment.channel.codepay') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#EPay" aria-controls="EPay" role="tab">{{ trans('admin.system.payment.channel.epay') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#PayJs" aria-controls="PayJs"
+                                           role="tab">{{ trans('admin.system.payment.channel.payjs') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#PayPal" aria-controls="PayPal"
+                                           role="tab">{{ trans('admin.system.payment.channel.paypal') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#Stripe" aria-controls="Stripe"
+                                           role="tab">{{ trans('admin.system.payment.channel.stripe') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" aria-controls="PayBeaver"
+                                           role="tab">{{ trans('admin.system.payment.channel.paybeaver') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#THeadPay" aria-controls="THeadPay"
+                                           role="tab">{{ trans('admin.system.payment.channel.theadpay') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#Manual" aria-controls="Manual"
+                                           role="tab">{{ trans('admin.system.payment.channel.manual') }}</a>
                                     </div>
                                 </li>
                             </ul>
@@ -524,7 +499,7 @@
             }
           });
           @else
-          swal.fire({title: '您没有权限修改系统参数！', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
           @endcan
       }
 

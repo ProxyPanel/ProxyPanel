@@ -106,10 +106,32 @@ return [
     'uploaded'             => ':attribute을(를) 업로드하지 못했습니다.',
     'url'                  => ':attribute 형식은 올바르지 않습니다.',
     'uuid'                 => ':attribute은(는) 유효한UUID여야합니다.',
-    'custom'               => [
+
+    'custom' => [
         'attribute-name' => [
-            'rule-name' => 'custom-message',
+            'rule-name' => '사용자 지정 메세지',
         ],
     ],
-    'attributes'           => [],
+
+    'attributes' => [
+        'name'                  => '이름',
+        'nickname'              => '닉네임',
+        'username'              => '사용자 이름',
+        'email'                 => '이메일',
+        'password'              => '비밀번호',
+        'password_confirmation' => '비밀번호 확인',
+        'phone'                 => '전화번호',
+        'day'                   => '일 | 일',
+        'month'                 => '월',
+        'year'                  => '년',
+        'hour'                  => '시',
+        'minute'                => '분',
+        'second'                => '초',
+        'title'                 => '제목',
+        'content'               => '내용',
+        'description'           => '표시',
+        'excerpt'               => '요약',
+        'date'                  => '날짜',
+        'time'                  => '시간',
+    ],
 ];

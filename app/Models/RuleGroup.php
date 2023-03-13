@@ -15,9 +15,9 @@ class RuleGroup extends Model
     public function getTypeLabelAttribute(): string
     {
         if ($this->attributes['type']) {
-            $type_label = '<span class="badge badge-danger">阻 断</span>';
+            $type_label = '<span class="badge badge-danger">'.trans('admin.rule.group.type.off').'</span>';
         } else {
-            $type_label = '<span class="badge badge-primary">放 行</span>';
+            $type_label = '<span class="badge badge-primary">'.trans('admin.rule.group.type.on').'</span>';
         }
 
         return $type_label;

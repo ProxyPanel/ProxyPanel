@@ -188,7 +188,7 @@
             }
           },
           error: function() {
-            swal.fire('{{trans('user.unknown').trans('common.error')}}', '{{trans('user.shop.call4help')}}', 'error');
+            swal.fire('{{trans('common.status.unknown').trans('common.error')}}', '{{trans('user.shop.call4help')}}', 'error');
           },
         });
       }

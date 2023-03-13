@@ -70,14 +70,14 @@ class ReferralApply extends Model
     {
         switch ($this->attributes['status']) {
             case 1:
-                $status_label = '<span class="badge badge-sm badge-info">'.trans('user.status.pending').'</span>';
+                $status_label = '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>';
                 break;
             case 2:
-                $status_label = trans('user.status.withdrawn');
+                $status_label = trans('common.status.withdrawn');
                 break;
             case 0:
             default:
-                $status_label = '<span class="badge badge-sm badge-warning">'.trans('user.status.applying').'</span>';
+                $status_label = '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>';
         }
 
         return $status_label;

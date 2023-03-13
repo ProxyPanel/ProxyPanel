@@ -179,12 +179,12 @@ class UserController extends Controller
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
                 $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
                 // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, '后台批量生成用户');
+                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, trans('admin.user.massive.note'));
             }
 
-            return Response::json(['status' => 'success', 'message' => '批量生成账号成功']);
+            return Response::json(['status' => 'success', 'message' => trans('admin.user.massive.succeed')]);
         } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '批量生成账号失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('admin.user.massive.failed').'：'.$e->getMessage()]);
         }
     }
 

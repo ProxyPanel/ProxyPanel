@@ -6,41 +6,43 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">返利流水记录</h2>
+                <h2 class="panel-title">{{ trans('admin.aff.rebate_title') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="invitee_username" value="{{Request::query('invitee_username')}}" placeholder="消费者"/>
+                        <input type="text" class="form-control" name="invitee_username" value="{{Request::query('invitee_username')}}"
+                               placeholder="{{ trans('model.aff.invitee') }}"/>
                     </div>
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="inviter_username" value="{{Request::query('inviter_username')}}" placeholder="邀请人"/>
+                        <input type="text" class="form-control" name="inviter_username" value="{{Request::query('inviter_username')}}"
+                               placeholder="{{ trans('model.user.inviter') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
                         <select name="status" id="status" class="form-control" onchange="this.form.submit()">
-                            <option value="" hidden>状态</option>
-                            <option value="0">未提现</option>
-                            <option value="1">申请中</option>
-                            <option value="2">已提现</option>
+                            <option value="" hidden>{{ trans('common.status.attribute') }}</option>
+                            <option value="0">{{ trans('common.status.unwithdrawn') }}</option>
+                            <option value="1">{{ trans('common.status.applying') }}</option>
+                            <option value="2">{{ trans('common.status.withdrawn') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.aff.rebate')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.aff.rebate')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 消费者</th>
-                        <th> 邀请者</th>
-                        <th> 订单号</th>
-                        <th> 消费金额</th>
-                        <th> 返利金额</th>
-                        <th> 生成时间</th>
-                        <th> 处理时间</th>
-                        <th> {{trans('common.status')}}</th>
+                        <th> {{ trans('model.aff.invitee') }}</th>
+                        <th> {{ trans('model.user.inviter') }}</th>
+                        <th> {{ trans('model.aff.order_id') }}</th>
+                        <th> {{ trans('model.aff.amount') }}</th>
+                        <th> {{ trans('model.aff.commission') }}</th>
+                        <th> {{ trans('model.aff.created_at') }}</th>
+                        <th> {{ trans('model.aff.updated_at') }}</th>
+                        <th> {{ trans('common.status.attribute') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -68,11 +70,11 @@
                             <td> {{$referralLog->updated_at}} </td>
                             <td>
                                 @if ($referralLog->status === 1)
-                                    <span class="badge badge-danger">申请中</span>
+                                    <span class="badge badge-danger">{{ trans('common.status.applying') }}</span>
                                 @elseif($referralLog->status === 2)
-                                    <span class="badge badge-default">已提现</span>
+                                    <span class="badge badge-default">{{ trans('common.status.withdrawn') }}</span>
                                 @else
-                                    <span class="badge badge-info">未提现</span>
+                                    <span class="badge badge-info">{{ trans('common.status.unwithdrawn') }}</span>
                                 @endif
                             </td>
                         </tr>
@@ -83,7 +85,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$referralLogs->total()}}</code> 个申请
+                        {!! trans('admin.aff.counts', ['num' => $referralLogs->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -100,8 +102,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#status').val({{Request::query('status')}});
-        });
+      $(document).ready(function() {
+        $('#status').val({{Request::query('status')}});
+      });
     </script>
 @endsection

@@ -76,11 +76,11 @@
                             <thead class="thead-default">
                             <tr>
                                 <th data-cell-style="cellStyle"> #</th>
-                                <th> {{trans('user.consumer')}} </th>
-                                <th> {{trans('user.referral.amount')}} </th>
-                                <th> {{trans('user.referral.commission')}} </th>
+                                <th> {{trans('model.aff.invitee')}} </th>
+                                <th> {{trans('model.aff.amount')}} </th>
+                                <th> {{trans('model.aff.commission')}} </th>
                                 <th> {{trans('common.created_at')}} </th>
-                                <th> {{trans('common.status')}} </th>
+                                <th> {{trans('common.status.attribute')}} </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -121,7 +121,7 @@
                                 <th data-cell-style="cellStyle"> #</th>
                                 <th> {{trans('user.withdraw_at')}} </th>
                                 <th> {{trans('user.withdraw_commission')}} </th>
-                                <th> {{trans('common.status')}} </th>
+                                <th> {{trans('common.status.attribute')}} </th>
                             </tr>
                             </thead>
                             <tbody>

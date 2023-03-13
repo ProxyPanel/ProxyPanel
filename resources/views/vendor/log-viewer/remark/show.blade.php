@@ -194,7 +194,7 @@
                 <div class="panel-footer">
                     <div class="row">
                         <div class="col-sm-4">
-                            共 <code>{{$entries->total()}}</code> 条日志
+                            {!! trans('admin.logs.counts', ['num' => $entries->total()]) !!}
                         </div>
                         <div class="col-sm-8">
                             <nav class="Page navigation float-right">

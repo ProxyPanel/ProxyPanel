@@ -9,7 +9,7 @@
                 <h1 class="panel-title cyan-600"><i class="icon wb-bookmark"></i>{{trans('user.menu.invoices')}}</h1>
                 @if($prepaidPlan)
                     <div class="panel-actions">
-                        <button onclick="closePlan()" class="btn btn-primary"> {{trans('common.active_item', ['attribute' => trans('user.status.prepaid')])}}</button>
+                        <button onclick="closePlan()" class="btn btn-primary"> {{trans('common.active_item', ['attribute' => trans('common.order.status.prepaid')])}}</button>
                     </div>
                 @endif
             </div>
@@ -18,13 +18,13 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{trans('user.invoice.id')}} </th>
+                        <th> {{trans('model.aff.order_id')}} </th>
                         <th> {{trans('user.shop.service')}} </th>
                         <th> {{trans('user.payment_method')}} </th>
                         <th> {{trans('user.invoice.amount')}} </th>
                         <th> {{trans('user.bought_at')}} </th>
                         <th> {{trans('common.expired_at')}} </th>
-                        <th> {{trans('common.status')}} </th>
+                        <th> {{trans('common.status.attribute')}} </th>
                         <th> {{trans('common.action')}} </th>
                     </tr>
                     </thead>

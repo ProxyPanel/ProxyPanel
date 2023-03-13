@@ -6,11 +6,11 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">用户分组控制<small>（同一节点可分配至多个分组，一个用户只能属于一个分组；对于用户可见/可用节点：先按分组后按等级）</small></h2>
+                <h2 class="panel-title">{!! trans('admin.user.group.title') !!}</h2>
                 @can('admin.user.group.create')
                     <div class="panel-actions">
                         <a class="btn btn-primary" href="{{route('admin.user.group.create')}}">
-                            <i class="icon wb-plus" aria-hidden="true"></i>添加分组
+                            <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.add') }}
                         </a>
                     </div>
                 @endcan
@@ -20,8 +20,8 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 分组名称</th>
-                        <th> {{trans('common.action')}}</th>
+                        <th> {{ trans('admin.user.group.name') }}</th>
+                        <th> {{ trans('common.action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -38,7 +38,7 @@
                                             </a>
                                         @endcan
                                         @can('admin.user.group.destroy')
-                                            <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$group)}}')" class="btn btn-danger">
+                                            <button onclick="deleteUserGroup('{{route('admin.user.group.destroy',$group)}}', '{{$group->name}}')" class="btn btn-danger">
                                                 <i class="icon wb-trash" aria-hidden="true"></i>
                                             </button>
                                         @endcan
@@ -53,7 +53,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$groups->total()}}</code> 个分组
+                        {!! trans('admin.user.group.counts', ['num' => $groups->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -71,33 +71,33 @@
 
     @can('admin.user.group.edit')
         <script>
-            // 删除用户分组
-            function deleteUserGroup(url) {
-                swal.fire({
-                    title: '提示',
-                    text: '确定删除该分组吗?',
-                    icon: 'info',
-                    showCancelButton: true,
-                    cancelButtonText: '{{trans('common.close')}}',
-                    confirmButtonText: '{{trans('common.confirm')}}',
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            method: 'DELETE',
-                            url: url,
-                            data: {_token: '{{csrf_token()}}'},
-                            dataType: 'json',
-                            success: function(ret) {
-                                if (ret.status === 'success') {
-                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                                } else {
-                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                                }
-                            },
-                        });
+          // 删除用户分组
+          function deleteUserGroup(url, name) {
+            swal.fire({
+              title: '{{ trans('admin.hint') }}',
+              text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.user_group.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+              icon: 'info',
+              showCancelButton: true,
+              cancelButtonText: '{{ trans('common.close') }}',
+              confirmButtonText: '{{ trans('common.confirm') }}',
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  method: 'DELETE',
+                  url: url,
+                  data: {_token: '{{ csrf_token() }}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    if (ret.status === 'success') {
+                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
+                  },
                 });
-            }
+              }
+            });
+          }
         </script>
     @endcan
 @endsection

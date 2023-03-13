@@ -6,11 +6,11 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">权限角色列表</h2>
+                <h2 class="panel-title">{{ trans('admin.role.title') }}</h2>
                 @can('admin.role.create')
                     <div class="panel-actions">
                         <a href="{{route('admin.role.create')}}" class="btn btn-outline-primary">
-                            <i class="icon wb-plus" aria-hidden="true"></i>添加角色
+                            <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.add') }}
                         </a>
                     </div>
                 @endcan
@@ -20,8 +20,8 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 名称</th>
-                        <th> 权限</th>
+                        <th> {{ trans('model.role.name') }}</th>
+                        <th> {{ trans('model.role.permissions') }}</th>
                         <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
@@ -32,7 +32,7 @@
                             <td>{{$role->description}}</td>
                             <td>
                                 @if ($role->name === 'Super Admin')
-                                    <span class="badge badge-info">全部权限</span>
+                                    <span class="badge badge-info">{{ trans('admin.role.permissions_all') }}</span>
                                 @else
                                     @foreach($role->permissions()->pluck('description') as $description)
                                         <span class="badge badge-info">{{ $description }}</span>
@@ -61,7 +61,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$roles->total()}}</code> 个权限角色
+                        {!! trans('admin.role.counts', ['num' => $roles->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -78,32 +78,32 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     @can('admin.role.destroy')
         <script>
-            function delRole(url, name) {
-                swal.fire({
-                    title: '{{trans('common.warning')}}',
-                    text: '确定删除 【' + name + '】 权限角色？',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    cancelButtonText: '{{trans('common.close')}}',
-                    confirmButtonText: '{{trans('common.confirm')}}',
-                }).then((result) => {
-                    if (result.value) {
-                        $.ajax({
-                            method: 'DELETE',
-                            url: url,
-                            data: {_token: '{{csrf_token()}}'},
-                            dataType: 'json',
-                            success: function(ret) {
-                                if (ret.status === 'success') {
-                                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                                } else {
-                                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                                }
-                            },
-                        });
+          function delRole(url, name) {
+            swal.fire({
+              title: '{{ trans('common.warning') }}',
+              text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.role.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+              icon: 'warning',
+              showCancelButton: true,
+              cancelButtonText: '{{ trans('common.close') }}',
+              confirmButtonText: '{{ trans('common.confirm') }}',
+            }).then((result) => {
+              if (result.value) {
+                $.ajax({
+                  method: 'DELETE',
+                  url: url,
+                  data: {_token: '{{csrf_token()}}'},
+                  dataType: 'json',
+                  success: function(ret) {
+                    if (ret.status === 'success') {
+                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    } else {
+                      swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }
+                  },
                 });
-            }
+              }
+            });
+          }
         </script>
     @endcan
 @endsection

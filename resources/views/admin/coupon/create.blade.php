@@ -9,9 +9,9 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title">生成卡券</h1>
+                <h1 class="panel-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.coupon.attribute')]) }}</h1>
                 <div class="panel-actions">
-                    <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">返 回</a>
+                    <a href="{{route('admin.coupon.index')}}" class="btn btn-danger">{{ trans('common.back') }}</a>
                 </div>
             </div>
             @if (Session::has('successMsg'))
@@ -23,45 +23,45 @@
             <div class="panel-body">
                 <form action="{{route('admin.coupon.store')}}" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">@csrf
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="name">卡券名称</label>
+                        <label class="col-md-2 col-form-label" for="name">{{ trans('model.coupon.name') }}</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control col-md-4" name="name" id="name" value="{{old('name')}}" required/>
-                            <span class="text-help"> 会用于前端显示 </span>
+                            <span class="text-help"> {{ trans('admin.coupon.name_hint') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="sn">使用券码</label>
+                        <label class="col-md-2 col-form-label" for="sn">{{ trans('model.coupon.sn') }}</label>
                         <div class="col-md-10">
                             <input type="text" class="form-control col-md-4" name="sn" id="sn" value="{{old('sn')}}"/>
-                            <span class="text-help"> 提供给用户使用卡券的卡券，留空则默认为8位随机码 </span>
+                            <span class="text-help"> {{ trans('admin.coupon.sn_hint') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="logo">卡券图片</label>
+                        <label class="col-md-2 col-form-label" for="logo">{{ trans('model.coupon.logo') }}</label>
                         <div class="col-md-6">
                             <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="{{asset('/assets/images/default.png')}}"/>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">类型</label>
+                        <label class="col-md-2 col-form-label">{{ trans('model.coupon.type') }}</label>
                         <div class="col-md-10 align-items-center">
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" id="voucher" value="1" checked/>
-                                <label for="voucher">抵用券</label>
+                                <label for="voucher">{{ trans('admin.coupon.type.voucher') }}</label>
                             </div>
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" id="discount" value="2"/>
-                                <label for="discount">折扣券</label>
+                                <label for="discount">{{ trans('admin.coupon.type.discount') }}</label>
                             </div>
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" id="charge" value="3"/>
-                                <label for="charge">充值券</label>
+                                <label for="charge">{{ trans('admin.coupon.type.charge') }}</label>
                             </div>
-                            <span class="text-help"> 抵用：抵扣商品金额，折扣：商品百分比打折，充值：充值用户账号余额 </span>
+                            <span class="text-help"> {{ trans('admin.coupon.type_hint') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="value">优惠额度</label>
+                        <label class="col-md-2 col-form-label" for="value">{{ trans('model.coupon.value') }}</label>
                         <div class="col-md-10">
                             <div class="input-group">
                                 <div class="input-group-prepend" id="amount">
@@ -70,29 +70,29 @@
                                 <input type="number" class="form-control col-md-3" min="1" max="99" name="value" id="value" value="{{old('value')}}" required/>
                                 <span class="input-group-text discount" style="display: none;">%</span>
                             </div>
-                            <span class="text-help discount" style="display: none;"> 范围为 1% ~ 99% </span>
+                            <span class="text-help discount" style="display: none;"> {{ trans('admin.coupon.value_hint') }}</span>
                         </div>
                     </div>
                     <div class="usage">
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="priority"> 权 重 </label>
+                            <label class="col-md-2 col-form-label" for="priority"> {{ trans('model.coupon.priority') }} </label>
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <input type="number" class="form-control col-md-2" min="0" max="255" name="priority" id="priority" value="{{old('priority')}}"/>
                                 </div>
-                                <span class="text-help"> 同【使用券码】下，符合条件的高权重码将会被优先使用。最高为 255 </span>
+                                <span class="text-help"> {{ trans('admin.coupon.priority_hint') }} </span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="usable_times">使用次数</label>
+                            <label class="col-md-2 col-form-label" for="usable_times">{{ trans('model.coupon.usable_times') }}</label>
                             <div class="col-md-4 input-group">
                                 <input type="number" class="form-control" min="1" name="usable_times" id="usable_times" value="{{old('usable_times', 1)}}"/>
-                                <span class="input-group-text">次</span>
+                                <span class="input-group-text">{{ trans('admin.times') }}</span>
                             </div>
                         </div>
                         <hr>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="minimum">满减条件</label>
+                            <label class="col-md-2 col-form-label" for="minimum">{{ trans('model.coupon.minimum') }}</label>
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <div class="input-group-prepend">
@@ -100,21 +100,21 @@
                                     </div>
                                     <input type="number" class="form-control col-md-3" name="minimum" id="minimum" value="{{old('minimum')}}" step="0.01"/>
                                 </div>
-                                <span class="text-help"> 当支付金额超过N值时，才能使用本优惠劵；不设置/0，即为无限制 </span>
+                                <span class="text-help"> {!! trans('admin.coupon.minimum_hint', ['num' => 'N']).trans('admin.zero_unlimited_hint') !!} </span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="used">个人限用</label>
+                            <label class="col-md-2 col-form-label" for="used">{{ trans('model.coupon.used') }}</label>
                             <div class="col-md-10">
                                 <div class="input-group">
                                     <input type="number" class="form-control col-md-3" name="used" id="used" value="{{old('used')}}" step="1"/>
-                                    <span class="input-group-text">次</span>
+                                    <span class="input-group-text">{{ trans('admin.times') }}</span>
                                 </div>
-                                <span class="text-help"> 符合条件的用户可以使用本券N次；不设置/0，即为无限制 </span>
+                                <span class="text-help"> {!! trans('admin.coupon.used_hint', ['num' => 'N']).trans('admin.zero_unlimited_hint') !!}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="levels" class="col-md-2 col-form-label">等级限定</label>
+                            <label for="levels" class="col-md-2 col-form-label">{{ trans('model.coupon.levels') }}</label>
                             <div class="col-md-10">
                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="levels" name="levels[]"
                                         multiple>
@@ -122,11 +122,11 @@
                                         <option value="{{$key}}">{{$level}}</option>
                                     @endforeach
                                 </select>
-                                <span class="text-help"> 用户等级在选定等级内，方可使用本券</span>
+                                <span class="text-help"> {{ trans('admin.coupon.levels_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="groups" class="col-md-2 col-form-label">分组限定</label>
+                            <label for="groups" class="col-md-2 col-form-label">{{ trans('model.coupon.groups') }}</label>
                             <div class="col-md-10">
                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="groups" name="groups[]"
                                         multiple>
@@ -134,83 +134,82 @@
                                         <option value="{{$key}}">{{$group}}</option>
                                     @endforeach
                                 </select>
-                                <span class="text-help"> 选定的用户分组，方可使用本券</span>
+                                <span class="text-help"> {{ trans('admin.coupon.groups_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="users_whitelist">专属用户</label>
+                            <label class="col-md-2 col-form-label" for="users_whitelist">{{ trans('model.coupon.users_whitelist') }}</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control col-md-6" data-plugin="tokenfield" id="users_whitelist" name="users_whitelist"
-                                       value="{{old('users_whitelist')}}" placeholder="输入用户ID, 再回车"/>
-                                <span class="text-help"> 涉及用户均可使用本券，留空为不使用此条件</span>
+                                       value="{{old('users_whitelist')}}" placeholder="{{ trans('admin.coupon.users_placeholder') }}"/>
+                                <span class="text-help"> {{ trans('admin.coupon.user_whitelist_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="users_blacklist">禁用用户</label>
+                            <label class="col-md-2 col-form-label" for="users_blacklist">{{ trans('model.coupon.users_blacklist') }}</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control col-md-6" data-plugin="tokenfield" id="users_blacklist" name="users_blacklist"
-                                       value="{{old('users_blacklist')}}" placeholder="输入用户ID, 再回车"/>
-                                <span class="text-help"> 涉及用户均不可使用本券，空为不使用此条件</span>
+                                       value="{{old('users_blacklist')}}" placeholder="{{ trans('admin.coupon.users_placeholder') }}"/>
+                                <span class="text-help"> {{ trans('admin.coupon.users_blacklist_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="services_whitelist">许可商品</label>
+                            <label class="col-md-2 col-form-label" for="services_whitelist">{{ trans('model.coupon.services_whitelist') }}</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control col-md-4" data-plugin="tokenfield" id="services_whitelist" name="services_whitelist"
-                                       value="{{old('services_whitelist')}}" placeholder="输入商品ID, 再回车"/>
-                                <span class="text-help"> 涉及商品方可使用本券，留空为不使用此条件</span>
+                                       value="{{old('services_whitelist')}}" placeholder="{{ trans('admin.coupon.services_placeholder') }}"/>
+                                <span class="text-help"> {{ trans('admin.coupon.services_whitelist_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="services_blacklist">禁用商品</label>
+                            <label class="col-md-2 col-form-label" for="services_blacklist">{{ trans('model.coupon.services_blacklist') }}</label>
                             <div class="col-md-10">
                                 <input type="text" class="form-control col-md-4" data-plugin="tokenfield" id="services_blacklist" name="services_blacklist"
-                                       value="{{old('services_blacklist')}}" placeholder="输入商品ID, 再回车"/>
-                                <span class="text-help"> 涉及商品不可使用本券，留空为不使用此条件</span>
+                                       value="{{old('services_blacklist')}}" placeholder="{{ trans('admin.coupon.services_placeholder') }}"/>
+                                <span class="text-help"> {{ trans('admin.coupon.services_blacklist_hint') }}</span>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="newbie" class="col-md-2 col-form-label">新人专属</label>
+                            <label for="newbie" class="col-md-2 col-form-label">{{ trans('model.coupon.newbie') }}</label>
                             <div class="col-md-10">
                                 <ul class="list-unstyled">
                                     <li class="list-group-item p-0">
                                         <div class="checkbox-custom checkbox-primary">
                                             <input type="checkbox" id="coupon" name="coupon" {{ old('coupon') ? 'checked' : '' }}/>
-                                            <label for="coupon">首次用任意券</label>
+                                            <label for="coupon">{{ trans('admin.coupon.newbie.first_discount') }}</label>
                                         </div>
                                     </li>
                                     <li class="list-group-item p-0">
                                         <div class="checkbox-custom checkbox-primary">
                                             <input type="checkbox" id="order" name="order" {{ old('order') ? 'checked' : '' }}/>
-                                            <label for="order">首单</label>
+                                            <label for="order">{{ trans('admin.coupon.newbie.first_order') }}</label>
                                         </div>
                                     </li>
                                     <li class="list-group-item pb-0 pl-0">
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <label class="input-group-text" for="days">创号</label>
+                                                <label class="input-group-text" for="days">{{ trans('admin.coupon.newbie.created_days') }}</label>
                                             </div>
                                             <input type="number" class="form-control col-md-3" name="days" id="days" value="{{old('days')}}"/>
                                             <div class="input-group-append">
-                                                <span class="input-group-text">天</span>
+                                                <span class="input-group-text">{{ trans_choice('validation.attributes.day', 0) }}</span>
                                             </div>
                                         </div>
                                     </li>
                                 </ul>
-                                <span class="text-help"> 本项各条件为 <strong>并且</strong> 关系，请自行搭配使用 </span>
+                                <span class="text-help"> {!! trans('admin.coupon.limit_hint') !!} </span>
                             </div>
                         </div>
                         <hr>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label" for="num">数量</label>
-                        <div class="col-md-4 input-group">
+                        <label class="col-md-2 col-form-label" for="num">{{ trans('model.coupon.num') }}</label>
+                        <div class="col-md-4">
                             <input type="number" class="form-control" name="num" id="num" value="{{old('num')}}" required/>
-                            <span class="input-group-text">张</span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">有效期</label>
+                        <label class="col-md-2 col-form-label">{{ trans('common.available_date') }}</label>
                         <div class="col-md-7 input-group input-daterange" data-plugin="datepicker">
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
@@ -219,7 +218,7 @@
                             <input type="text" class="form-control" name="start_time" id="start_time"
                                    value="{{old('start_time') ?? date("Y-m-d")}}" required/>
                             <div class="input-group-prepend">
-                                <span class="input-group-text">至</span>
+                                <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
                             <label for="end_time"></label>
                             <input type="text" class="form-control" name="end_time" id="end_time"
@@ -227,7 +226,7 @@
                         </div>
                     </div>
                     <div class="form-actions col-12 text-right">
-                        <button type="submit" class="btn btn-success">提 交</button>
+                        <button type="submit" class="btn btn-success">{{ trans('common.submit') }}</button>
                     </div>
                 </form>
             </div>

@@ -76,6 +76,8 @@ return [
     'language' => [
         'zh_CN' => ['简体中文', 'cn'],
         'en'    => ['English', 'us'],
+        'ko'    => ['한국어', 'kr'],
+        'vi'    => ['Tiếng Việt', 'vn'],
     ],
 
     'currency' => [

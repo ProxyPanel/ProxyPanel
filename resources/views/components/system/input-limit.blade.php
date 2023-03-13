@@ -1,8 +1,8 @@
-@props(['code', 'hcode', 'title', 'value', 'holder' => '', 'help', 'min' => 0, 'max' => false, 'hmin' => false, 'hmax' => false, 'hvalue', 'unit'])
+@props(['code', 'hcode', 'value', 'holder' => '', 'min' => 0, 'max' => false, 'hmin' => false, 'hmax' => false, 'hvalue', 'unit'])
 
 <div class="form-group col-lg-6">
     <div class="row">
-        <label class="col-md-3 col-form-label">{{$title}}</label>
+        <label class="col-md-3 col-form-label">{{ trans('admin.system.'.$code) }}</label>
         <div class="col-md-7">
             @isset($hcode)
                 <div class="input-group">
@@ -33,8 +33,8 @@
                     </div>
                 </div>
             @endisset
-            @isset($help)
-                <span class="text-help"> {!! $help !!} </span>
+            @if(trans('admin.system.hint.'.$code) !== 'admin.system.hint.'.$code)
+                <span class="text-help"> {!! trans('admin.system.hint.'.$code) !!} </span>
             @endisset
         </div>
     </div>

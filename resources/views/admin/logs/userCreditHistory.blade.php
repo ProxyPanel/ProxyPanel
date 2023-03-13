@@ -6,29 +6,29 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">余额变动记录</h3>
+                <h3 class="panel-title">{{ trans('admin.menu.tools.import') }}</h3>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-3 col-sm-6">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.log.credit')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.log.credit')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户账号</th>
-                        <th> 订单ID</th>
-                        <th> 操作前余额</th>
-                        <th> 发生金额</th>
-                        <th> 操作后金额</th>
-                        <th> 描述</th>
-                        <th> 发生时间</th>
+                        <th> {{ trans('common.account') }}</th>
+                        <th> {{ trans('model.order.id') }}</th>
+                        <th> {{ trans('model.user_credit.before') }}</th>
+                        <th> {{ trans('model.user_credit.amount') }}</th>
+                        <th> {{ trans('model.user_credit.after') }}</th>
+                        <th> {{ trans('validation.attributes.description') }}</th>
+                        <th> {{ trans('model.user_credit.created_at') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -56,7 +56,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$userCreditLogs->total()}}</code> 条记录
+                        {!! trans('admin.logs.counts', ['num' => $userCreditLogs->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">

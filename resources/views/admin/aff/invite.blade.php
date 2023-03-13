@@ -9,12 +9,12 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600"><i class="icon wb-plus"></i>
-                            {{trans('common.generate_item', ['attribute' => trans('user.invite.attribute')])}}
+                            {{ trans('common.generate_item', ['attribute' => trans('user.invite.attribute')]) }}
                         </h4>
                         <x-alert type="info" :message="trans('user.invite.tips', ['num'=>10, 'days' => sysConfig('user_invite_days')])"/>
                         @can('admin.invite.create')
                             <button type="button" class="btn btn-primary btn-animate btn-animate-side" onclick="makeInvite()">
-                                <i class="icon wb-plus"></i> {{trans('common.generate')}}
+                                <i class="icon wb-plus"></i> {{ trans('common.generate') }}
                             </button>
                         @endcan
                     </div>
@@ -24,11 +24,11 @@
                 <div class="panel">
                     <div class="panel-heading">
                         <h4 class="panel-title cyan-600">
-                            <i class="icon wb-extension"></i>{{trans('user.invite.attribute')}}
+                            <i class="icon wb-extension"></i>{{ trans('user.invite.attribute') }}
                         </h4>
                         @can('admin.invite.export')
                             <div class="panel-actions">
-                                <button class="btn btn-primary" onclick="exportInvite()">批量导出</button>
+                                <button class="btn btn-primary" onclick="exportInvite()">{{ trans('admin.massive_export') }}</button>
                             </div>
                         @endcan
                     </div>
@@ -37,11 +37,11 @@
                             <thead class="thead-default">
                             <tr>
                                 <th> #</th>
-                                <th> {{trans('user.invite.attribute')}} </th>
-                                <th> {{trans('common.available_date')}} </th>
-                                <th> {{trans('user.inviter')}}</th>
-                                <th> {{trans('common.status')}} </th>
-                                <th> {{trans('user.invitee')}} </th>
+                                <th> {{ trans('user.invite.attribute') }} </th>
+                                <th> {{ trans('common.available_date') }} </th>
+                                <th> {{ trans('user.inviter') }}</th>
+                                <th> {{ trans('common.status.attribute') }} </th>
+                                <th> {{ trans('user.invitee') }} </th>
                             </tr>
                             </thead>
                             <tbody>
@@ -54,7 +54,7 @@
                                     </td>
                                     <td> {{$invite->dateline}} </td>
                                     <td>
-                                        {{$invite->inviter_id === null ? '系统生成' : ($invite->inviter->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】')}}
+                                        {{$invite->inviter_id === null ? trans('admin.system_generate') : ($invite->inviter->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('common.account')]).'】')}}
                                     </td>
                                     <td>
                                         {!!$invite->status_label!!}
@@ -70,7 +70,7 @@
                     <div class="panel-footer">
                         <div class="row">
                             <div class="col-md-4">
-                                {{trans('user.invite.total', ['num' => $inviteList->total()])}}
+                                {!! trans('user.invite.counts', ['num' => $inviteList->total()]) !!}
                             </div>
                             <div class="col-md-8">
                                 <nav class="Page navigation float-right">
@@ -93,58 +93,58 @@
         @can('admin.invite.create')
         // 生成邀请码
         function makeInvite() {
-            $.ajax({
-                method: 'POST',
-                url: '{{route('admin.invite.create')}}',
-                dataType: 'json',
-                data: {_token: '{{csrf_token()}}'},
-                success: function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                    }
-                },
-            });
+          $.ajax({
+            method: 'POST',
+            url: '{{route('admin.invite.create')}}',
+            dataType: 'json',
+            data: {_token: '{{csrf_token()}}'},
+            success: function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            },
+          });
 
-            return false;
+          return false;
         }
         @endcan
 
         @can('admin.invite.export')
         // 导出邀请码
         function exportInvite() {
-            swal.fire({
-                title: '提示',
-                text: '确定导出所有邀请码吗',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = '{{route('admin.invite.export')}}';
-                }
-            });
+          swal.fire({
+            title: '{{ trans('admin.hint') }}',
+            text: '{{ trans('admin.confirm.export') }}',
+            icon: 'question',
+            showCancelButton: true,
+            cancelButtonText: '{{ trans('common.close') }}',
+            confirmButtonText: '{{ trans('common.confirm') }}',
+          }).then((result) => {
+            if (result.value) {
+              window.location.href = '{{route('admin.invite.export')}}';
+            }
+          });
         }
         @endcan
 
         const clipboard = new ClipboardJS('.mt-clipboard');
         clipboard.on('success', function() {
-            swal.fire({
-                title: '{{trans('common.copy.success')}}',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+          swal.fire({
+            title: '{{ trans('common.copy.success') }}',
+            icon: 'success',
+            timer: 1300,
+            showConfirmButton: false,
+          });
         });
         clipboard.on('error', function() {
-            swal.fire({
-                title: '{{trans('common.copy.failed')}}',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+          swal.fire({
+            title: '{{ trans('common.copy.failed') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
         });
     </script>
 @endsection

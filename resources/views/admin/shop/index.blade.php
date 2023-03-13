@@ -6,10 +6,10 @@
     <div class="page-content container-fluid">
         <div class="panel panel-bordered">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>商品列表</h1>
+                <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>{{ trans('admin.goods.title') }}</h1>
                 @can('admin.goods.create')
                     <div class="panel-actions">
-                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i>添加商品</a>
+                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
                     </div>
                 @endcan
             </div>
@@ -17,37 +17,37 @@
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" id="type" name="type">
-                            <option value="" hidden>类型</option>
-                            <option value="1">流量包</option>
-                            <option value="2">套餐</option>
+                            <option value="" hidden>{{ trans('model.goods.type') }}</option>
+                            <option value="1">{{ trans('admin.goods.type.package') }}</option>
+                            <option value="2">{{ trans('admin.goods.type.plan') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" id="status" name="status">
-                            <option value="" hidden>状态</option>
-                            <option value="1">上架</option>
-                            <option value="0">下架</option>
+                            <option value="" hidden>{{ trans('common.status.attribute') }}</option>
+                            <option value="1">{{ trans('admin.goods.status.yes') }}</option>
+                            <option value="0">{{ trans('admin.goods.status.no') }}</option>
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.goods.index')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.goods.index')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 名称</th>
-                        <th> 类型</th>
-                        <th> 图片</th>
-                        <th> 内含流量</th>
-                        <th> 售价</th>
-                        <th> 排序</th>
-                        <th> 使用 / 销售</th>
-                        <th> 热销</th>
-                        <th> 限购数</th>
-                        <th> {{trans('common.status')}}</th>
+                        <th> {{ trans('model.goods.name') }}</th>
+                        <th> {{ trans('model.goods.type') }}</th>
+                        <th> {{ trans('model.goods.logo') }}</th>
+                        <th> {{ trans('model.goods.traffic') }}</th>
+                        <th> {{ trans('model.goods.price') }}</th>
+                        <th> {{ trans('model.common.sort') }}</th>
+                        <th> {{ trans('admin.goods.sell_and_used') }}</th>
+                        <th> {{ trans('model.goods.hot') }}</th>
+                        <th> {{ trans('model.goods.limit_num') }}</th>
+                        <th> {{trans('common.status.attribute')}}</th>
                         <th> {{trans('common.action')}}</th>
                     </tr>
                     </thead>
@@ -58,11 +58,11 @@
                             <td> {{$goods->name}} </td>
                             <td>
                                 @if($goods->type === 1)
-                                    流量包
+                                    {{ trans('admin.goods.type.package') }}
                                 @elseif($goods->type === 2)
-                                    套餐
+                                    {{ trans('admin.goods.type.plan') }}
                                 @else
-                                    充值
+                                    {{ trans('admin.goods.type.top_up') }}
                                 @endif
                             </td>
                             <td style="background-color: {{$goods->color ?? 'white'}}" @if($goods->color)class="text-white"@endif>
@@ -71,7 +71,7 @@
                                         <img src="{{asset($goods->logo)}}" class="h-50" alt="logo"/>
                                     </a>
                                 @elseif($goods->color)
-                                    无 LOGO
+                                    {{ trans('common.none') }}
                                 @endif
                             </td>
                             <td> {{$goods->traffic_label}} </td>
@@ -84,13 +84,13 @@
                                 @endif
                             </td>
                             <td>
-                                {{$goods->limit_num ?: '无限制'}}
+                                {{$goods->limit_num ?: trans('common.unlimited')}}
                             </td>
                             <td>
                                 @if($goods->status)
-                                    <span class="badge badge-lg badge-success">上架</span>
+                                    <span class="badge badge-lg badge-success">{{ trans('admin.goods.status.yes') }}</span>
                                 @else
-                                    <span class="badge badge-lg badge-default">下架</span>
+                                    <span class="badge badge-lg badge-default">{{ trans('admin.goods.status.no') }}</span>
                                 @endif
                             </td>
                             <td>
@@ -117,7 +117,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$goodsList->total()}}</code> 个商品
+                        {!! trans('admin.goods.counts', ['num' => $goodsList->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
@@ -133,41 +133,41 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#type').val({{Request::query('type')}});
-            $('#status').val({{Request::query('status')}});
+      $(document).ready(function() {
+        $('#type').val({{Request::query('type')}});
+        $('#status').val({{Request::query('status')}});
 
-            $('select').on('change', function() { this.form.submit(); });
-        });
+        $('select').on('change', function() { this.form.submit(); });
+      });
 
-        @can('admin.goods.destroy')
-        // 删除商品
-        function delGoods(url, name) {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '确定删除商品 【' + name + '】 ?',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '取消',
-                confirmButtonText: '确定',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        url: url,
-                        method: 'DELETE',
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      @can('admin.goods.destroy')
+      // 删除商品
+      function delGoods(url, name) {
+        swal.fire({
+          title: '{{ trans('common.warning') }}',
+          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.cancel') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              url: url,
+              method: 'DELETE',
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
         @endcan
     </script>
 @endsection

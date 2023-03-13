@@ -20,7 +20,7 @@
                     <div class="panel-body pt-0 pb-60">
                         <div style="padding: 10px;">{!! $article->content !!}</div>
                         <div class="panel-footer text-right">
-                            <a href="{{route('admin.article.index')}}" class="btn btn-primary">返 回</a>
+                            <a href="{{route('admin.article.index')}}" class="btn btn-primary">{{ trans('common.back') }}</a>
                         </div>
                     </div>
                 </div>
@@ -56,12 +56,12 @@
       // 更换订阅地址
       function exchangeSubscribe() {
         swal.fire({
-          title: '{{trans('common.warning')}}',
-          text: '{{trans('user.subscribe.exchange_warning')}}',
+          title: '{{ trans('common.warning') }}',
+          text: '{{ trans('user.subscribe.exchange_warning') }}',
           icon: 'warning',
           showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
         }).then((result) => {
           if (result.value) {
             $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
@@ -77,7 +77,7 @@
 
       clipboard.on('success', function() {
         swal.fire({
-          title: '{{trans('common.copy.success')}}',
+          title: '{{ trans('common.copy.success') }}',
           icon: 'success',
           timer: 1300,
           showConfirmButton: false,
@@ -85,7 +85,7 @@
       });
       clipboard.on('error', function() {
         swal.fire({
-          title: '{{trans('common.copy.failed')}}',
+          title: '{{ trans('common.copy.failed') }}',
           icon: 'error',
           timer: 1500,
           showConfirmButton: false,

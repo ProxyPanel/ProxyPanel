@@ -7,8 +7,9 @@
                     <i class="icon wb-help-circle"></i> {{$ticket->title}}
                 </h1>
                 <div class="panel-actions btn-group">
-                    <button class="btn icon-1x btn-info btn-icon wb-user-circle" data-target="#userInfo" data-toggle="modal" type="button"> 用户信息</button>
-                    <a href="{{route('admin.ticket.index')}}" class="btn btn-default">返 回</a>
+                    <button class="btn icon-1x btn-info btn-icon wb-user-circle" data-target="#userInfo" data-toggle="modal"
+                            type="button"> {{ trans('admin.ticket.user_info') }}</button>
+                    <a href="{{route('admin.ticket.index')}}" class="btn btn-default">{{ trans('common.back') }}</a>
                     @if($ticket->status !== 2)
                         @can('admin.ticket.destroy')
                             <button class="btn btn-danger" onclick="closeTicket()"> {{trans('common.close')}} </button>
@@ -49,17 +50,17 @@
                         <span aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title">
-                        <i class="wb-user" aria-hidden="true"></i> 用户信息</h4>
+                        <i class="wb-user" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}</h4>
                 </div>
                 <div class="modal-body">
                     <ul class="list-group list-group-dividered px-20 mb-0">
-                        <h5>基础信息</h5>
+                        <h5>{{ trans('admin.node.info.basic') }}</h5>
                         <dl class="dl-horizontal row">
-                            <dt class="col-sm-3">昵称</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.nickname') }}</dt>
                             <dd class="col-sm-9">{{$user->nickname}}</dd>
-                            <dt class="col-sm-3">账号</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.username') }}</dt>
                             <dd class="col-sm-9">{{$user->username}}</dd>
-                            <dt class="col-sm-3">账号状态</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.account_status') }}</dt>
                             <dd class="col-sm-9">
                                 @if ($user->status > 0)
                                     <span class="badge badge-lg badge-primary">
@@ -75,21 +76,21 @@
                                     </span>
                                 @endif
                             </dd>
-                            <dt class="col-sm-3">等级</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.level') }}</dt>
                             <dd class="col-sm-9">{{$user->level}}</dd>
-                            <dt class="col-sm-3">分组</dt>
-                            <dd class="col-sm-9">{{$user->userGroup->name ?? '无分组'}}</dd>
-                            <dt class="col-sm-3">余额</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.group') }}</dt>
+                            <dd class="col-sm-9">{{$user->userGroup->name ?? trans('common.none')}}</dd>
+                            <dt class="col-sm-3">{{ trans('model.user.credit') }}</dt>
                             <dd class="col-sm-9">{{$user->credit}}</dd>
-                            <dt class="col-sm-3">流量</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.traffic_used') }}</dt>
                             <dd class="col-sm-9">{{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}}</dd>
-                            <dt class="col-sm-3">重置日期</dt>
-                            <dd class="col-sm-9">{{$user->reset_date ?? '无'}}</dd>
-                            <dt class="col-sm-3">最近使用</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.reset_date') }}</dt>
+                            <dd class="col-sm-9">{{$user->reset_date ?? trans('common.none')}}</dd>
+                            <dt class="col-sm-3">{{ trans('common.latest_at') }}</dt>
                             <dd class="col-sm-9">
-                                {{$user->t? date('Y-m-d H:i', $user->t): '未使用'}}
+                                {{$user->t? date('Y-m-d H:i', $user->t) : trans('common.status.unused')}}
                             </dd>
-                            <dt class="col-sm-3">过期日期</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.expired_date') }}</dt>
                             <dd class="col-sm-9">
                                 @if($user->expiration_status() !== 3)
                                     <span class="badge badge-lg badge-{{['danger','warning','default'][$user->expiration_status()]}}"> {{ $user->expiration_date }} </span>
@@ -97,41 +98,41 @@
                                     {{ $user->expiration_date }}
                                 @endif
                             </dd>
-                            <dt class="col-sm-3">备注</dt>
+                            <dt class="col-sm-3">{{ trans('model.user.remark') }}</dt>
                             <dt class="col-sm-3">{!! $user->remark !!}</dt>
                         </dl>
-                        <h5>代理信息</h5>
+                        <h5>{{ trans('admin.user.info.proxy') }}</h5>
                         <dl class="dl-horizontal row">
-                            <dt class="col-sm-3">开启状态</dt>
+                            <dt class="col-sm-3">{{ trans('common.status.attribute') }}</dt>
                             <dd class="col-sm-9">
                                 <span class="badge badge-lg badge-{{$user->enable?'info':'danger'}}">
                                     <i class="wb-{{$user->enable?'check':'close'}}" aria-hidden="true"></i>
                                 </span>
                             </dd>
-                            <dt class="col-sm-3">端口</dt>
-                            <dd class="col-sm-9">{!!$user->port? : '<span class="badge badge-lg badge-danger"> 未分配 </span>'!!}</dd>
+                            <dt class="col-sm-3">{{ trans('model.user.port') }}</dt>
+                            <dd class="col-sm-9">{!! $user->port? : '<span class="badge badge-lg badge-danger"> '.trans('common.none').' </span>' !!}</dd>
                         </dl>
-                        <h5>其他</h5>
+                        <h5>{{ trans('common.more') }}</h5>
                         <dl class="dl-horizontal row">
-                            <dt class="col-sm-3">邀请人信息</dt>
+                            <dt class="col-sm-3">{{ trans('admin.ticket.inviter_info') }}</dt>
                             <dd class="col-sm-9">
-                                {{$user->inviter->nickname ?? '无'}}
+                                {{$user->inviter->nickname ?? trans('common.none')}}
                             </dd>
                             @isset ($user->inviter)
-                                <dt class="col-sm-3 offset-md-1">账号</dt>
+                                <dt class="col-sm-3 offset-md-1">{{ trans('model.user.username') }}</dt>
                                 <dd class="col-sm-8">{{$user->inviter->username}}</dd>
-                                <dt class="col-sm-3 offset-md-1">等级</dt>
+                                <dt class="col-sm-3 offset-md-1">{{ trans('model.user.level') }}</dt>
                                 <dd class="col-sm-8">{{$user->inviter->level}}</dd>
-                                <dt class="col-sm-3 offset-md-1">最近使用</dt>
+                                <dt class="col-sm-3 offset-md-1">{{ trans('common.latest_at') }}</dt>
                                 <dd class="col-sm-8">
-                                    {{$user->inviter->t? date('Y-m-d H:i', $user->inviter->t): '未使用'}}
+                                    {{$user->inviter->t? date('Y-m-d H:i', $user->inviter->t): trans('common.status.unused')}}
                                 </dd>
                             @endif
                         </dl>
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('common.close')</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('common.close') }}</button>
                 </div>
             </div>
         </div>
@@ -143,7 +144,7 @@
         // 关闭工单
         function closeTicket() {
           swal.fire({
-            title: '确定关闭工单？',
+            title: '{{ trans('admin.ticket.close_confirm') }}',
             icon: 'question',
             showCancelButton: true,
             cancelButtonText: '{{trans('common.close')}}',
@@ -169,7 +170,7 @@
                   }
                 },
                 error: function() {
-                  swal.fire({title: '{{trans('user.ticket.error')}}', icon: 'error'});
+                  swal.fire({title: '{{  trans('user.ticket.error') }}', icon: 'error'});
                 },
               });
             }
@@ -216,7 +217,7 @@
                   }
                 },
                 error: function() {
-                  swal.fire({title: '未知错误！请查看运行日志', icon: 'error'});
+                  swal.fire({title: '{{ trans('admin.ticket.error') }}', icon: 'error'});
                 },
               });
             }

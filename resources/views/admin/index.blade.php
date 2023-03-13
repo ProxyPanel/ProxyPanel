@@ -12,7 +12,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">总用户</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalUserCount}}</span>
                                 @if ($todayRegister)
@@ -25,12 +25,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['enable'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['enable' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-info">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">有效用户</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.available_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$enableUserCount}}</span>
                             </div>
@@ -38,12 +38,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['paying'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['paying' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-info">
                                 <i class="icon md-money-box"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">付费用户</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.paid_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$payingUserCount}}</span>
                             </div>
@@ -51,12 +51,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['active'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['active' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-success">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{$expireDays}}日内活跃用户</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.active_days_users', ['days' => $expireDays]) }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$activeUserCount}}</span>
                             </div>
@@ -64,25 +64,25 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['unActive'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['unActive' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-warning">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{$expireDays}}日以上不活跃用户</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.inactive_days_users', ['days' => $expireDays]) }}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-40 font-weight-100">{{$unActiveUserCount}}</span>
+                                <span class="font-size-40 font-weight-100">{{$inactiveUserCount}}</span>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['online'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['online' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-success">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">当前在线</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.online_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$onlineUserCount}}</span>
                             </div>
@@ -90,12 +90,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['expireWarning'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['expireWarning' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-danger">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">临近到期</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.expiring_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$expireWarningUserCount}}</span>
                             </div>
@@ -103,12 +103,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['largeTraffic'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['largeTraffic' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-warning">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">流量大户（超过90%的用户）</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.overuse_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$largeTrafficUserCount}}</span>
                             </div>
@@ -116,12 +116,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.user.index', ['flowAbnormal'=>1])}}" class="card card-shadow">
+                    <a href="{{route('admin.user.index', ['flowAbnormal' => 1])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-danger">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">1小时内流量异常</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.abnormal_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$flowAbnormalUserCount}}</span>
                             </div>
@@ -136,7 +136,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-cloud"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">节点</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.nodes') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$nodeCount}}</span>
                             </div>
@@ -149,7 +149,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-info">
                                 <i class="icon md-cloud-off"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">维护中的节点</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.maintaining_nodes') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$unnormalNodeCount}}</span>
                             </div>
@@ -164,7 +164,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-time-countdown"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">记录的消耗流量</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.traffic_consumed') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalFlowCount}}</span>
                             </div>
@@ -177,7 +177,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-time-countdown"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">30日内消耗流量</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.traffic_days_consumed', ['days' => 30]) }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$flowCount}}</span>
                                 @if($todayFlowCount !== '0B')
@@ -197,7 +197,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-ticket-star"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">总订单数</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.orders') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalOrder}}</span>
                                 @if($todayOrder)
@@ -215,7 +215,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-info">
                                 <i class="icon md-ticket-star"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">在线支付订单数</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.online_orders') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalOnlinePayOrder}}</span>
                                 @if($todayOnlinePayOrder)
@@ -228,12 +228,12 @@
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.order', ['status'=>[1, 2]])}}" class="card card-shadow">
+                    <a href="{{route('admin.order', ['status' => [1, 2]])}}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-success">
                                 <i class="icon md-ticket-star"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">支付成功订单数</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.succeed_orders') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalSuccessOrder}}</span>
                                 @if($todaySuccessOrder)
@@ -253,7 +253,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-money"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">总余额</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.credit') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalCredit}}</span>
                             </div>
@@ -268,7 +268,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-warning">
                                 <i class="icon md-money"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">待提现佣金</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.withdrawing_commissions') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalWaitRefAmount}}</span>
                                 @if($todayWaitRefAmount)
@@ -288,7 +288,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-dark">
                                 <i class="icon md-money"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">已支出佣金</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.withdrawn_commissions') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$totalRefAmount}}</span>
                             </div>

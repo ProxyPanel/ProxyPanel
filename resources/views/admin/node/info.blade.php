@@ -12,96 +12,94 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">@isset($node)
-                        编辑节点
-                    @else
-                        添加节点
-                    @endisset</h2>
+                <h2 class="panel-title">
+                    {{ isset($node) ? trans('admin.action.edit_item', ['attribute' => trans('model.node.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.node.attribute')]) }}
+                </h2>
             </div>
             <div class="alert alert-info" role="alert">
                 <button class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">{{trans('common.close')}}</span>
                 </button>
-                <strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；
+                {!! trans('admin.node.info.hint') !!}
             </div>
             <div class="panel-body">
                 <form class="form-horizontal" onsubmit="return Submit()">
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="example-wrap">
-                                <h4 class="example-title">基础信息</h4>
+                                <h4 class="example-title">{{ trans('admin.node.info.basic') }}</h4>
                                 <div class="example">
                                     <div class="form-group row">
-                                        <label for="is_ddns" class="col-md-3 col-form-label">DDNS</label>
+                                        <label for="is_ddns" class="col-md-3 col-form-label">{{ trans('model.node.ddns') }}</label>
                                         <div class="col-md-9">
                                             <input type="checkbox" id="is_ddns" name="is_ddns" data-plugin="switchery" onchange="switchSetting('is_ddns')">
                                         </div>
                                         <div class="text-help offset-md-3">
-                                            动态IP节点需要<a href="https://github.com/NewFuture/DDNS" target="_blank">配置DDNS</a>，对此类型节点，节点阻断功能会通过域名进行检测
+                                            {!! trans('admin.node.info.ddns_hint') !!}
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="name" class="col-md-3 col-form-label"> 节点名称 </label>
+                                        <label for="name" class="col-md-3 col-form-label"> {{ trans('model.node.name') }} </label>
                                         <input type="text" class="form-control col-md-4" name="name" id="name" required>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="server" class="col-md-3 col-form-label"> 域名 </label>
-                                        <input type="text" class="form-control col-md-4" name="server" id="server" placeholder="服务器域名地址，填则优先取域名地址">
-                                        <span class="text-help offset-md-3">系统设置中开启【DDNS模式】，域名将会自动与下方IP内容进行绑定操作！无需再前往域名注册商页面修改IP信息了哟</span>
+                                        <label for="server" class="col-md-3 col-form-label"> {{ trans('model.node.domain') }} </label>
+                                        <input type="text" class="form-control col-md-4" name="server" id="server" placeholder="{{ trans('admin.node.info.domain_placeholder') }}">
+                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.domain_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="ip" class="col-md-3 col-form-label"> IPv4地址 </label>
-                                        <input type="text" class="form-control col-md-4" name="ip" id="ip" placeholder="服务器IPv4地址" required>
-                                        <span class="text-help offset-md-3">多IP使用“, ”分割，例：1.1.1.1, 8.8.8.8</span>
+                                        <label for="ip" class="col-md-3 col-form-label"> {{ trans('model.node.ipv4') }} </label>
+                                        <input type="text" class="form-control col-md-4" name="ip" id="ip" placeholder="{{ trans('admin.node.info.ipv4_placeholder') }}" required>
+                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.ipv4_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="ipv6" class="col-md-3 col-form-label"> IPv6地址 </label>
-                                        <input type="text" class="form-control col-md-4" name="ipv6" id="ipv6" placeholder="服务器IPv6地址，填写则用户可见，域名无效">
-                                        <span class="text-help offset-md-3">多IP使用“, ”分割，例：1.1.1.1, 8.8.8.8</span>
+                                        <label for="ipv6" class="col-md-3 col-form-label"> {{ trans('model.node.ipv6') }} </label>
+                                        <input type="text" class="form-control col-md-4" name="ipv6" id="ipv6" placeholder="{{ trans('admin.node.info.ipv6_placeholder') }}">
+                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.ipv6_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="push_port" class="col-md-3 col-form-label"> 消息推送端口 </label>
+                                        <label for="push_port" class="col-md-3 col-form-label"> {{ trans('model.node.push_port') }} </label>
                                         <input type="number" class="form-control col-md-4" name="push_port" value="1080" id="push_port">
-                                        <span class="text-help offset-md-3">必填且防火墙需放行，否则将导致消息推送异常</span>
+                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.push_port_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="traffic_rate" class="col-md-3 col-form-label"> 流量比例 </label>
+                                        <label for="traffic_rate" class="col-md-3 col-form-label"> {{ trans('model.node.data_rate') }} </label>
                                         <input type="number" class="form-control col-md-4" name="traffic_rate" value="1.0" id="traffic_rate" step="0.01" required>
-                                        <div class="text-help offset-md-3"> 举例：0.1用100M结算10M，5用100M结算500M</div>
+                                        <div class="text-help offset-md-3">{{ trans('admin.node.info.data_rate_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="level" class="col-md-3 col-form-label">等级</label>
+                                        <label for="level" class="col-md-3 col-form-label">{{ trans('model.node.level') }}</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="level" name="level">
                                             @foreach($levels as $level)
                                                 <option value="{{$level->level}}">{{$level->name}}</option>
                                             @endforeach
                                         </select>
-                                        <div class="text-help offset-md-3"> 等级：0-无等级，全部可见</div>
+                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.level_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="ruleGroup" class="col-md-3 col-form-label">审计分组</label>
+                                        <label for="ruleGroup" class="col-md-3 col-form-label">{{ trans('model.node.rule_group') }}</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick"
                                                 id="ruleGroup" name="ruleGroup">
-                                            <option value="">不使用</option>
+                                            <option value="">{{ trans('common.none') }}</option>
                                             @foreach($ruleGroups as $ruleGroup)
                                                 <option value="{{$ruleGroup->id}}">{{$ruleGroup->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="speed_limit" class="col-md-3 col-form-label">节点限速</label>
+                                        <label for="speed_limit" class="col-md-3 col-form-label">{{ trans('model.node.traffic_limit') }}</label>
                                         <div class="col-md-4 input-group p-0">
                                             <input type="number" class="form-control" id="speed_limit" name="speed_limit" value="1000" required>
                                             <span class="input-group-text">Mbps</span>
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="client_limit" class="col-md-3 col-form-label">设备数限制</label>
+                                        <label for="client_limit" class="col-md-3 col-form-label">{{ trans('model.node.client_limit') }}</label>
                                         <input type="number" class="form-control col-md-4" id="client_limit" name="client_limit" value="1000" required>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="labels" class="col-md-3 col-form-label">标签</label>
+                                        <label for="labels" class="col-md-3 col-form-label">{{ trans('model.node.label') }}</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="labels" name="labels"
                                                 multiple>
                                             @foreach($labels as $label)
@@ -110,7 +108,7 @@
                                         </select>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="country_code" class="col-md-3 col-form-label"> 国家/地区 </label>
+                                        <label for="country_code" class="col-md-3 col-form-label"> {{ trans('model.node.country') }} </label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                 class="col-md-5 form-control" name="country_code" id="country_code">
                                             @foreach($countries as $country)
@@ -119,22 +117,22 @@
                                         </select>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="description" class="col-md-3 col-form-label"> 描述 </label>
+                                        <label for="description" class="col-md-3 col-form-label"> {{ trans('model.common.description') }} </label>
                                         <input type="text" class="form-control col-md-6" name="description" id="description" placeholder="简单描述">
                                     </div>
                                     <div class="form-group row">
-                                        <label for="sort" class="col-md-3 col-form-label">排序</label>
+                                        <label for="sort" class="col-md-3 col-form-label">{{ trans('model.common.sort') }}</label>
                                         <input type="text" class="form-control col-md-4" name="sort" id="sort" value="1" required/>
-                                        <div class="text-help offset-md-3"> 排序值越大排越前 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</div>
+                                        <div class="text-help offset-md-3"> {{ trans('admin.sort_asc') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="is_udp" class="col-md-3 col-form-label">UDP</label>
+                                        <label for="is_udp" class="col-md-3 col-form-label">{{ trans('model.node.udp') }}</label>
                                         <div class="col-md-9">
                                             <input type="checkbox" id="is_udp" name="is_udp" data-plugin="switchery">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="status" class="col-md-3 col-form-label">状态</label>
+                                        <label for="status" class="col-md-3 col-form-label">{{ trans('common.status.attribute') }}</label>
                                         <div class="col-md-9">
                                             <input type="checkbox" id="status" name="status" data-plugin="switchery">
                                         </div>
@@ -144,74 +142,74 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="example-wrap">
-                                <h4 class="example-title">扩展信息</h4>
+                                <h4 class="example-title">{{ trans('admin.node.info.extend') }}</h4>
                                 <div class="example">
                                     <div class="form-group row">
-                                        <label for="is_display" class="col-md-3 col-form-label">显示 与 订阅</label>
+                                        <label for="is_display" class="col-md-3 col-form-label">{{ trans('model.node.display') }}</label>
                                         <ul class="col-md-9 list-unstyled list-inline">
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="invisible" name="is_display" value="0" checked/>
-                                                    <label for="invisible">完全不可见</label>
+                                                    <label for="invisible">{{ trans('admin.node.info.display.invisible') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="page_only" name="is_display" value="1"/>
-                                                    <label for="page_only">只显示于【{{ trans('user.menu.nodes') }}】页面</label>
+                                                    <label for="page_only">{{ trans('admin.node.info.display.node', ['trans' => trans('user.menu.nodes')]) }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="sub_only" name="is_display" value="2"/>
-                                                    <label for="sub_only">只显示于【订 阅】</label>
+                                                    <label for="sub_only">{{ trans('admin.node.info.display.sub') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="visible" name="is_display" value="3" checked/>
-                                                    <label for="visible">完全可见</label>
+                                                    <label for="visible">{{ trans('admin.node.info.display.all') }}</label>
                                                 </div>
                                             </li>
                                         </ul>
-                                        <div class="text-help offset-md-3"> 用户是否可以订阅/看到本节点</div>
+                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.display.hint') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="detection_type" class="col-md-3 col-form-label">节点阻断检测</label>
+                                        <label for="detection_type" class="col-md-3 col-form-label">{{ trans('model.node.detection') }}</label>
                                         <ul class="col-md-9 list-unstyled list-inline">
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="detect_disable" name="detection_type" value="0" checked/>
-                                                    <label for="detect_disable">关闭</label>
+                                                    <label for="detect_disable">{{ trans('common.close') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="detect_tcp" name="detection_type" value="1"/>
-                                                    <label for="detect_tcp">只检测TCP</label>
+                                                    <label for="detect_tcp">{{ trans('admin.node.info.detection.tcp') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="detect_icmp" name="detection_type" value="2"/>
-                                                    <label for="detect_icmp">只检测ICMP</label>
+                                                    <label for="detect_icmp">{{ trans('admin.node.info.detection.icmp') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="detect_all" name="detection_type" value="3"/>
-                                                    <label for="detect_all">检测全部</label>
+                                                    <label for="detect_all">{{ trans('admin.node.info.detection.all') }}</label>
                                                 </div>
                                             </li>
                                         </ul>
-                                        <div class="text-help offset-md-3"> 每30~60分钟随机进行节点阻断检测</div>
+                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.detection.hint') }}</div>
                                     </div>
                                     <!-- 中转 设置部分 -->
                                     <div class="form-group row">
-                                        <label for="relay_node_id" class="col-md-3 col-form-label">中转</label>
+                                        <label for="relay_node_id" class="col-md-3 col-form-label">{{ trans('model.node.transfer') }}</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick"
                                                 id="relay_node_id" name="relay_node_id">
-                                            <option value="">不使用</option>
+                                            <option value="">{{ trans('common.none') }}</option>
                                             @foreach($nodes as $name => $id)
                                                 <option value="{{$id}}">{{$id}} - {{$name}}</option>
                                             @endforeach
@@ -221,7 +219,7 @@
                                     <!-- 代理 设置部分 -->
                                     <div class="proxy-config">
                                         <div class="form-group row">
-                                            <label for="type" class="col-md-3 col-form-label">类型</label>
+                                            <label for="type" class="col-md-3 col-form-label">{{ trans('model.node.type') }}</label>
                                             <ul class="col-md-9 list-unstyled list-inline">
                                                 <li class="list-inline-item">
                                                     <div class="radio-custom radio-primary">
@@ -259,7 +257,7 @@
                                         <!-- SS/SSR 设置部分 -->
                                         <div class="ss-setting">
                                             <div class="form-group row">
-                                                <label for="method" class="col-md-3 col-form-label">加密方式</label>
+                                                <label for="method" class="col-md-3 col-form-label">{{ trans('model.node.method') }}</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="method" id="method">
                                                     @foreach (Helpers::methodList() as $method)
                                                         <option value="{{$method->name}}" @if(!isset($node) && $method->is_default) selected @endif>{{$method->name}}</option>
@@ -268,7 +266,7 @@
                                             </div>
                                             <div class="ssr-setting">
                                                 <div class="form-group row">
-                                                    <label for="protocol" class="col-md-3 col-form-label">协议</label>
+                                                    <label for="protocol" class="col-md-3 col-form-label">{{ trans('model.node.protocol') }}</label>
                                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="protocol"
                                                             id="protocol">
                                                         @foreach (Helpers::protocolList() as $protocol)
@@ -278,11 +276,11 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label for="protocol_param" class="col-md-3 col-form-label"> 协议参数 </label>
+                                                    <label for="protocol_param" class="col-md-3 col-form-label"> {{ trans('model.node.protocol_param') }} </label>
                                                     <input type="text" class="form-control col-md-4" name="protocol_param" id="protocol_param">
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label for="obfs" class="col-md-3 col-form-label">混淆</label>
+                                                    <label for="obfs" class="col-md-3 col-form-label">{{ trans('model.node.obfs') }}</label>
                                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" name="obfs" id="obfs">
                                                         @foreach (Helpers::obfsList() as $obfs)
                                                             <option value="{{$obfs->name}}" @if(!isset($node) && $obfs->is_default) selected @endif>{{$obfs->name}}</option>
@@ -290,52 +288,52 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group row obfs_param">
-                                                    <label for="obfs_param" class="col-md-3 col-form-label"> 混淆参数 </label>
+                                                    <label for="obfs_param" class="col-md-3 col-form-label"> {{ trans('model.node.obfs_param') }} </label>
                                                     <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
-                                                              placeholder="混淆不为 [plain] 时可填入参数进行流量伪装；&#13;&#10;混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；"></textarea>
+                                                              placeholder="{{ trans('admin.node.info.obfs_param_hint') }}"></textarea>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label">*兼容 SS</label>
+                                                    <label class="col-md-3 col-form-label">{{ trans('admin.node.proxy_info') }}</label>
                                                     <div class="text-help col-md-9">
-                                                        如果兼容请在服务端配置协议和混淆时加上<span class="red-700">_compatible</span>
+                                                        {!! trans('admin.node.proxy_info_hint') !!}
                                                     </div>
                                                 </div>
                                             </div>
                                             <hr/>
                                             <div class="form-group row">
-                                                <label for="single" class="col-md-3 col-form-label">单端口</label>
+                                                <label for="single" class="col-md-3 col-form-label">{{ trans('model.node.single') }}</label>
                                                 <div class="col-md-9">
                                                     <input type="checkbox" id="single" name="single" data-plugin="switchery" onchange="switchSetting('single')">
                                                 </div>
                                                 <div class="text-help offset-md-3">
-                                                    如果启用请配置服务端的<span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span>信息
+                                                    {!! trans('admin.node.info.additional_ports_hint') !!}
                                                 </div>
                                             </div>
                                             <div class="single-setting">
                                                 <div class="form-group row">
-                                                    <label for="single_port" class="col-md-3 col-form-label">[单] 端口</label>
+                                                    <label for="single_port" class="col-md-3 col-form-label">{{ trans('model.node.service_port') }}</label>
                                                     <input type="number" class="form-control col-md-4" name="port" id="single_port" value="443" hidden/>
-                                                    <span class="text-help offset-md-3"> 推荐80或443，服务端需要配置 <br>
-                                                    严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）</span>
+                                                    <span class="text-help offset-md-3"> {!! trans('admin.node.info.single_hint') !!}</span>
                                                 </div>
                                                 <div class="form-group row ssr-setting">
-                                                    <label for="passwd" class="col-md-3 col-form-label">[单] 密码</label>
-                                                    <input type="text" class="form-control col-md-4" name="passwd" id="passwd" placeholder="password">
+                                                    <label for="passwd" class="col-md-3 col-form-label">{{ trans('model.node.single_passwd') }}</label>
+                                                    <input type="text" class="form-control col-md-4" name="passwd" id="passwd"
+                                                           placeholder="{{ trans('validation.attributes.password') }}">
                                                 </div>
                                             </div>
                                         </div>
                                         <!-- V2ray 设置部分 -->
                                         <div class="v2ray-setting">
                                             <div class="form-group row">
-                                                <label for="v2_alter_id" class="col-md-3 col-form-label">额外ID</label>
+                                                <label for="v2_alter_id" class="col-md-3 col-form-label">{{ trans('model.node.v2_alter_id') }}</label>
                                                 <input type="text" class="form-control col-md-4" name="v2_alter_id" value="16" id="v2_alter_id"/>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_port" class="col-md-3 col-form-label">服务端口</label>
+                                                <label for="v2_port" class="col-md-3 col-form-label">{{ trans('model.node.service_port') }}</label>
                                                 <input type="number" class="form-control col-md-4" name="port" id="v2_port" value="10053" hidden/>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_method" class="col-md-3 col-form-label">加密方式</label>
+                                                <label for="v2_method" class="col-md-3 col-form-label">{{ trans('model.node.method') }}</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_method">
                                                     <option value="none">none</option>
                                                     <option value="auto">auto</option>
@@ -343,10 +341,10 @@
                                                     <option value="aes-128-gcm">aes-128-gcm</option>
                                                     <option value="chacha20-poly1305">chacha20-poly1305</option>
                                                 </select>
-                                                <div class="text-help offset-md-3"> 使用WebSocket传输协议时不要使用none</div>
+                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_method_hint') }}</div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_net" class="col-md-3 col-form-label">传输方式</label>
+                                                <label for="v2_net" class="col-md-3 col-form-label">{{ trans('model.node.v2_net') }}</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_net">
                                                     <option value="tcp">TCP</option>
                                                     <option value="http">HTTP/2</option>
@@ -355,49 +353,49 @@
                                                     <option value="domainsocket">DomainSocket</option>
                                                     <option value="quic">QUIC</option>
                                                 </select>
-                                                <div class="text-help offset-md-3"> 使用WebSocket传输协议时请启用TLS</div>
+                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_net_hint') }}</div>
                                             </div>
                                             <div class="form-group row v2_type">
-                                                <label for="v2_type" class="col-md-3 col-form-label">伪装类型</label>
+                                                <label for="v2_type" class="col-md-3 col-form-label">{{ trans('model.node.v2_cover') }}</label>
                                                 <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control" id="v2_type">
-                                                    <option value="none">无伪装</option>
-                                                    <option value="http">HTTP数据流</option>
+                                                    <option value="none">{{ trans('admin.node.info.v2_cover.none') }}</option>
+                                                    <option value="http">{{ trans('admin.node.info.v2_cover.http') }}</option>
                                                     <optgroup id="type_option" label="">
-                                                        <option value="srtp">视频通话数据 (SRTP)</option>
-                                                        <option value="utp">BT下载数据 (uTP)</option>
-                                                        <option value="wechat-video">微信视频通话</option>
-                                                        <option value="dtls">DTLS1.2数据包</option>
-                                                        <option value="wireguard">WireGuard数据包</option>
+                                                        <option value="srtp">{{ trans('admin.node.info.v2_cover.srtp') }}</option>
+                                                        <option value="utp">{{ trans('admin.node.info.v2_cover.utp') }}</option>
+                                                        <option value="wechat-video">{{ trans('admin.node.info.v2_cover.wechat') }}</option>
+                                                        <option value="dtls">{{ trans('admin.node.info.v2_cover.dtls') }}</option>
+                                                        <option value="wireguard">{{ trans('admin.node.info.v2_cover.wireguard') }}</option>
                                                     </optgroup>
                                                 </select>
                                             </div>
                                             <div class="form-group row v2_host">
-                                                <label for="v2_host" class="col-md-3 col-form-label">伪装域名</label>
+                                                <label for="v2_host" class="col-md-3 col-form-label">{{ trans('model.node.v2_host') }}</label>
                                                 <div class="col-md-4 pl-0">
                                                     <input type="text" class="form-control" name="v2_other" id="v2_host">
                                                 </div>
                                                 <div class="text-help offset-md-3">
-                                                    伪装类型为http时多个伪装域名逗号隔开，使用WebSocket传输协议时只允许单个
+                                                    {{ trans('admin.node.info.v2_host_hint') }}
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_path" class="col-md-3 col-form-label">路径 | 密钥</label>
+                                                <label for="v2_path" class="col-md-3 col-form-label">{{ trans('model.node.v2_path') }}</label>
                                                 <input type="text" class="form-control col-md-4" name="v2_path" id="v2_path">
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_sni" class="col-md-3 col-form-label">SNI</label>
+                                                <label for="v2_sni" class="col-md-3 col-form-label">{{ trans('model.node.v2_sni') }}</label>
                                                 <input type="text" class="form-control col-md-4" name="v2_sni" id="v2_sni">
                                             </div>
                                             <div class="form-group row">
-                                                <label for="v2_tls" class="col-md-3 col-form-label">连接TLS</label>
+                                                <label for="v2_tls" class="col-md-3 col-form-label">{{ trans('model.node.v2_tls') }}</label>
                                                 <div class="col-md-9">
                                                     <input type="checkbox" id="v2_tls" name="v2_tls" data-plugin="switchery" onchange="switchSetting('v2_tls')">
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="tls_provider" class="col-md-3 col-form-label">TLS配置</label>
+                                                <label for="tls_provider" class="col-md-3 col-form-label">{{ trans('model.node.v2_tls_provider') }}</label>
                                                 <input type="text" class="form-control col-md-9" name="tls_provider" id="tls_provider"/>
-                                                <div class="text-help offset-md-3"> 不同后端配置不同：
+                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_tls_provider_hint') }}
                                                     <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan" target="_blank">VNET-V2Ray</a>、
                                                     <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
                                                        target="_blank">V2Ray-Poseidon</a>
@@ -407,14 +405,14 @@
                                         <!-- Trojan 设置部分 -->
                                         <div class="trojan-setting">
                                             <div class="form-group row">
-                                                <label for="trojan_port" class="col-md-3 col-form-label">连接端口</label>
+                                                <label for="trojan_port" class="col-md-3 col-form-label">{{ trans('model.node.service_port') }}</label>
                                                 <input type="number" class="form-control col-md-4" name="port" id="trojan_port" value="443" hidden/>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="relay-config">
                                         <div class="form-group row">
-                                            <label for="relay_port" class="col-md-3 col-form-label">中转端口</label>
+                                            <label for="relay_port" class="col-md-3 col-form-label">{{ trans('model.node.relay_port') }}</label>
                                             <input type="number" class="form-control col-md-4" name="port" id="relay_port" value="443" hidden/>
                                         </div>
                                     </div>
@@ -422,8 +420,8 @@
                             </div>
                             <div class="col-md-12 form-actions">
                                 <div class="float-right">
-                                    <a href="{{route('admin.node.index')}}" class="btn btn-danger">返 回</a>
-                                    <button type="submit" class="btn btn-success">提 交</button>
+                                    <a href="{{route('admin.node.index')}}" class="btn btn-danger">{{ trans('common.back') }}</a>
+                                    <button type="submit" class="btn btn-success">{{ trans('common.submit') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -592,7 +590,7 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '提示', html: str, icon: 'error', confirmButtonText: '{{trans('common.confirm')}}'});
+              swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
             }
           },
         });

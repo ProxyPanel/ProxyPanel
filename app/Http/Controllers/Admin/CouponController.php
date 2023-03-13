@@ -147,7 +147,7 @@ class CouponController extends Controller
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（'.array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')].'）', '权重', '使用限制']);
             foreach ($voucherList as $k => $vo) {
                 $dateRange = $vo->start_time.' ~ '.$vo->end_time;
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
+                $sheet->fromArray([$vo->name, $vo->usable_times ?? trans('common.unlimited'), $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
             }
 
             // 折扣券
@@ -158,7 +158,7 @@ class CouponController extends Controller
             $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '折扣（折）', '权重', '使用限制']);
             foreach ($discountCouponList as $k => $vo) {
                 $dateRange = $vo->start_time.' ~ '.$vo->end_time;
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? '无限制', $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
+                $sheet->fromArray([$vo->name, $vo->usable_times ?? trans('common.unlimited'), $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
             }
 
             // 充值券

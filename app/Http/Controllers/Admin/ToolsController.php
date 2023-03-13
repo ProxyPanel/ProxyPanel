@@ -41,7 +41,7 @@ class ToolsController extends Controller
             }
 
             // 生成转换好的JSON文件
-            file_put_contents(public_path('downloads/decompile.json'), $txt);
+            //file_put_contents(public_path('downloads/decompile.json'), $txt);
 
             return Response::json(['status' => 'success', 'data' => $txt, 'message' => '反解析成功']);
         }

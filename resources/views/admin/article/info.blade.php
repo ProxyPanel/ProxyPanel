@@ -7,7 +7,9 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{isset($article)?'添加':'编辑'}} 文章</h2>
+                <h2 class="panel-title">
+                    {{ isset($article) ? trans('admin.action.edit_item', ['attribute' => trans('model.article.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.article.attribute')]) }}
+                </h2>
             </div>
             @if($errors->any())
                 <x-alert type="danger" :message="$errors->all()"/>
@@ -22,26 +24,26 @@
                         @method('PUT')
                     @endisset
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="type"> 类 型 </label>
+                        <label class="col-form-label col-md-2" for="type"> {{ trans('model.article.type') }} </label>
                         <div class="col-md-10 d-flex align-items-center">
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" value="1" checked/>
-                                <label for="type">文章</label>
+                                <label for="type">{{ trans('admin.article.type.knowledge') }}</label>
                             </div>
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" value="2"/>
-                                <label for="type">公告</label>
+                                <label for="type">{{ trans('admin.article.type.announcement') }}</label>
                             </div>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="title"> 标 题 </label>
+                        <label class="col-form-label col-md-2" for="title"> {{ trans('validation.attributes..title') }} </label>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="title" id="title" autofocus required/>
                         </div>
                     </div>
                     <div class="form-group row article">
-                        <label class="col-form-label col-md-2" for="category"> 类 别 </label>
+                        <label class="col-form-label col-md-2" for="category"> {{ trans('model.article.category') }} </label>
                         <div class="col-md-4">
                             @if(isset($categories))
                                 <input type="text" class="form-control" list="category_list" id="category" name="category"/>
@@ -53,11 +55,11 @@
                             @else
                                 <input type="text" class="form-control" id="category" name="category"/>
                             @endif
-                            <span class="text-help"> 同一类别将归类与同一文件夹下 </span>
+                            <span class="text-help"> {{ trans('admin.article.category_hint') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="language"> 语 言 </label>
+                        <label class="col-form-label col-md-2" for="language"> {{ trans('model.article.language') }} </label>
                         <div class="col-md-4">
                             <select class="form-control" data-plugin="selectpicker" id="language" name="language" data-style="btn-outline btn-primary">
                                 @foreach (config('common.language') as $key => $value)
@@ -69,21 +71,21 @@
                         </div>
                     </div>
                     <div class="form-group row article">
-                        <label class="col-form-label col-md-2" for="sort"> 排 序 </label>
+                        <label class="col-form-label col-md-2" for="sort"> {{ trans('model.common.sort') }} </label>
                         <div class="col-md-2">
                             <input type="number" class="form-control" name="sort" id="sort" value="10" min="0" max="255" required/>
-                            <span class="text-help"> 值越高显示时越靠前 </span>
+                            <span class="text-help"> {{ trans('admin.sort_asc') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="logo"> 头 图 </label>
+                        <label class="col-form-label col-md-2" for="logo"> {{ trans('model.article.logo') }} </label>
                         <div class="col-md-4" id="logoUpload">
                             <input type="file" id="logo" name="logo" data-plugin="dropify" data-default-file="{{asset($article->logo ?? '/assets/images/default.png')}}"/>
-                            <span class="text-help"> 推荐尺寸：100x75 </span>
+                            <span class="text-help"> {{ trans('admin.article.logo_hint') }} </span>
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="content"> 内 容 </label>
+                        <label class="col-form-label col-md-2" for="content"> {{ trans('validation.attributes.content') }} </label>
                         <div class="col-md-10">
                             <textarea class="form-control" name="content">
                                 @isset($article)
@@ -94,8 +96,8 @@
                     </div>
                     <div class="form-actions text-right">
                         <div class="btn-group">
-                            <a href="{{route('admin.article.index')}}" class="btn btn-danger">返 回</a>
-                            <button type="submit" class="btn btn-success">提 交</button>
+                            <a href="{{route('admin.article.index')}}" class="btn btn-danger">{{ trans('common.back') }}</a>
+                            <button type="submit" class="btn btn-success">{{ trans('common.submit') }}</button>
                         </div>
                     </div>
                 </form>

@@ -6,28 +6,28 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">流量变动记录</h3>
+                <h3 class="panel-title">{{ trans('admin.logs.user_data_modify_title') }}</h3>
             </div>
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-4 col-sm-6">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="用户账号"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
-                        <button type="submit" class="btn btn-primary">搜 索</button>
-                        <a href="{{route('admin.log.flow')}}" class="btn btn-danger">{{trans('common.reset')}}</a>
+                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
+                        <a href="{{route('admin.log.flow')}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> 用户账号</th>
-                        <th> 订单</th>
-                        <th> 变动前流量</th>
-                        <th> 变动后流量</th>
-                        <th> 描述</th>
-                        <th> 发生时间</th>
+                        <th> {{ trans('common.account') }}</th>
+                        <th> {{ trans('model.order.attribute') }}</th>
+                        <th> {{ trans('model.user_data_modify.before') }}</th>
+                        <th> {{ trans('model.user_data_modify.after') }}</th>
+                        <th> {{ trans('validation.attributes.description') }}</th>
+                        <th> {{ trans('model.user_data_modify.created_at') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -50,7 +50,7 @@
                                             {{$log->order->goods->name}}
                                         @endcan
                                     @else
-                                        【订单已删除】
+                                        【{{trans('common.deleted_item', ['attribute' => trans('model.order.attribute')])}}】
                                     @endif
                                 @endif
                             </td>
@@ -66,7 +66,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        共 <code>{{$userTrafficLogs->total()}}</code> 条记录
+                        {!! trans('admin.logs.counts', ['num' => $userTrafficLogs->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
