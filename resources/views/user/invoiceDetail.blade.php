@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-lg-3 offset-lg-6 text-right">
                         <h4>{{trans('user.invoice.detail')}}</h4>
-                        <p>{{ trans('model.aff.order_id') }}：
+                        <p>{{ trans('model.order.id') }}：
                             <a class="font-size-20" href="javascript:void(0)">{{$order->sn}}</a>
                         </p>
                         <p>{{trans('user.payment_method')}}

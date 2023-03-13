@@ -53,7 +53,7 @@ return [
     ],
     'oauth'            => [
         'type'       => '渠道',
-        'identifier' => ' 唯一标识',
+        'identifier' => '唯一标识',
     ],
     'user_group'       => [
         'attribute' => '用戶分组',
@@ -118,7 +118,7 @@ return [
     ],
     'order'            => [
         'attribute'      => '订单',
-        'id'             => '订单ID',
+        'id'             => '订单号',
         'original_price' => '原价',
         'price'          => '实价',
         'pay_way'        => '支付方式',
@@ -196,7 +196,6 @@ return [
     ],
     'aff'              => [
         'invitee'    => '消费者',
-        'order_id'   => '订单号',
         'amount'     => '消费金额',
         'commission' => '返利金额',
         'updated_at' => '处理时间',

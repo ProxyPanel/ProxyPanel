@@ -96,11 +96,11 @@ class Stripe extends Gateway
         } catch (UnexpectedValueException $e) {
             // Invalid payload
             http_response_code(400);
-            exit();
+            exit;
         } catch (SignatureVerificationException $e) {
             // Invalid signature
             http_response_code(400);
-            exit();
+            exit;
         }
 
         Log::info('【Stripe】Passed signature verification!');
@@ -133,7 +133,7 @@ class Stripe extends Gateway
         }
 
         http_response_code(200);
-        exit();
+        exit;
     }
 
     public function failedPayment(Session $session)

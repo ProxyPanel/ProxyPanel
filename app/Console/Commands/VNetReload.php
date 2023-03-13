@@ -21,7 +21,7 @@ class VNetReload extends Command
             reloadNode::dispatchNow($nodes);
         }
 
-        $jobTime = round((microtime(true) - $startTime), 4);
+        $jobTime = round(microtime(true) - $startTime, 4);
 
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }

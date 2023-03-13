@@ -63,7 +63,7 @@ class PaymentController extends Controller
                 return new Manual();
             default:
                 Log::emergency('未知支付：'.self::$method);
-                exit();
+                exit;
         }
     }
 

@@ -38,7 +38,7 @@ class TicketClosed extends Notification implements ShouldQueue
             ->subject(trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]))
             ->line($this->reason)
             ->action(trans('notification.view_ticket'), $this->url)
-            ->line(__('If your problem has not been solved, Feel free to open other one.'));
+            ->line(__('If your issue is not resolved, please create another ticket.'));
     }
 
     public function toCustom($notifiable)

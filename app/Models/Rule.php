@@ -16,11 +16,11 @@ class Rule extends Model
     public function getTypeLabelAttribute(): string
     {
         return [
-            1 => '正则表达式',
-            2 => '域 名',
-            3 => 'I P',
-            4 => '协 议',
-        ][$this->attributes['type']] ?? '未 知';
+            1 => trans('admin.rule.type.reg'),
+            2 => trans('admin.rule.type.domain'),
+            3 => trans('admin.rule.type.ip'),
+            4 => trans('admin.rule.type.protocol'),
+        ][$this->attributes['type']] ?? trans('common.status.unknown');
     }
 
     public function getTypeApiLabelAttribute(): string

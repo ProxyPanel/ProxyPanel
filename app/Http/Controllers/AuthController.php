@@ -269,7 +269,7 @@ class AuthController extends Controller
             $user->notifyNow(new AccountActivation($activeUserUrl));
 
             Session::flash('successMsg',
-                __("Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another."));
+                __("Thank you for signing up! Before you start, you need to verify your email by clicking on the link we have just sent to your email! If you haven't received an email, we would be happy to send another one."));
         } else {
             // 则直接给推荐人加流量
             if ($inviter_id) {
@@ -307,7 +307,7 @@ class AuthController extends Controller
                         return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
                     }
                     break;
-                //白名单
+                    //白名单
                 case 2:
                     if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
                         if ($returnType) {

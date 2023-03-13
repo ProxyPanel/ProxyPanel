@@ -183,7 +183,7 @@ class PKCS7Encoder
             $pad = 0;
         }
 
-        return substr($text, 0, (strlen($text) - $pad));
+        return substr($text, 0, strlen($text) - $pad);
     }
 }
 

@@ -55,7 +55,7 @@ return [
     'password'        => [
         'forget'   => 'Forgot password?',
         'new'      => 'Enter a new password',
-        'original' => 'Original Password',
+        'original' => 'Current Password',
         'reset'    => [
             'attribute' => 'Reset Password',
             'error'     => [

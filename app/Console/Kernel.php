@@ -47,9 +47,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('autoJob')->everyMinute();
-        $schedule->command('nodeStatusDetection')->everyTenMinutes();
         $schedule->command('serviceTimer')->everyTenMinutes();
+        $schedule->command('nodeStatusDetection')->everyTenMinutes();
         $schedule->command('autoClearLogs')->everyThirtyMinutes();
         $schedule->command('nodeHourlyTrafficStatistics')->hourly();
         $schedule->command('userHourlyTrafficMonitoring')->hourly();
@@ -59,6 +58,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('userExpireWarning')->dailyAt('20:00');
         $schedule->command('userDailyTrafficStatistics')->daily();
         $schedule->command('nodeDailyTrafficStatistics')->daily();
+        $schedule->command('autoJob')->everyMinute();
     }
 
     /**

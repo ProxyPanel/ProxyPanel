@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'account'         => '账号',
-    'available_date'  => '有效期',
+    'account'         => 'Tài khoản',
+    'available_date'  => 'Thời gian hiệu lực',
     'created_at'      => '创建时间',
     'expired_at'      => '到期时间',
     'updated_at'      => '更新时间',
@@ -30,7 +30,7 @@ return [
     'generate'        => '生 成',
     'generate_item'   => '生成:attribute',
     'to_safari'       => [0 => '点击右上角', 1 => '，选择在', 2 => 'Safari 中打开', 3 => '就可以正常访问本站了哟！'],
-    'update_browser'  => [0 => '您正在使用', 1 => '过时', 2 => ' 的浏览器。 请', 3 => '升级您的浏览器', 4 => '来获得最佳的浏览体验'],
+    'update_browser'  => [0 => '您正在使用', 1 => '过时', 2 => '的浏览器。 请', 3 => '升级您的浏览器', 4 => '来获得最佳的浏览体验'],
     'apply'           => '应 用',
     'avatar'          => '头像',
     'customize'       => '自定义',
@@ -75,8 +75,8 @@ return [
     'print'           => '打印',
     'unlimited'       => '无限制',
     'payment'         => [
-        'credit' => '余额',
-        'wechat' => '微信',
+        'credit' => 'Số dư',
+        'wechat' => 'WeChat',
         'alipay' => '支付宝',
         'crypto' => '虚拟货币',
         'manual' => '人工支付',

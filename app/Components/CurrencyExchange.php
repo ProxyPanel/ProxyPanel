@@ -61,7 +61,7 @@ class CurrencyExchange
                 return $rate;
             }
 
-            return round(($amount * $rate), 2);
+            return round($amount * $rate, 2);
         }
 
         return false;

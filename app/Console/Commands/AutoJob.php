@@ -50,7 +50,7 @@ class AutoJob extends Command
             Config::whereIn('name', ['maintenance_mode', 'maintenance_content', 'maintenance_time'])->update(['value' => null]);
         }
 
-        $jobTime = round((microtime(true) - $jobTime), 4);
+        $jobTime = round(microtime(true) - $jobTime, 4);
 
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }

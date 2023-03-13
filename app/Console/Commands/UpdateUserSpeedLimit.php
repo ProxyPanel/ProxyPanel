@@ -19,7 +19,7 @@ class UpdateUserSpeedLimit extends Command
             $order->user->update(['speed_limit' => $order->goods->speed_limit]);
         }
 
-        $jobTime = round((microtime(true) - $jobTime), 4);
+        $jobTime = round(microtime(true) - $jobTime, 4);
 
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }

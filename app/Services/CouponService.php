@@ -96,13 +96,11 @@ class CouponService
             }
 
             if (isset($coupon->limit['users']['newbie']['order']) && $this->user->orders()->exists()) { // 第一个套餐订单
-
                 return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.users'));
             }
 
             if (isset($coupon->limit['users']['newbie']['days']) && (time() > strtotime($this->user->created_at.' +'.$coupon->limit['users']['newbie']['days'].' days') ||
                     $this->user->orders()->whereCouponId($coupon->id)->exists())) { // 创号N天内, 且第一次用优惠券
-
                 return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.users'));
             }
         }

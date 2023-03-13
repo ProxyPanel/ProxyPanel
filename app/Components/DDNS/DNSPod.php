@@ -39,7 +39,7 @@ class DNSPod
         if ($domainList) {
             foreach ($domainList as $key => $domain) {
                 if (str_contains(self::$subDomain, $domain)) {
-                    return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.'), $key];
+                    return [$domain, rtrim(substr(self::$subDomain, 0, -strlen($domain)), '.'), $key];
                 }
             }
         }

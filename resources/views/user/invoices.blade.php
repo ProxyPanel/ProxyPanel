@@ -18,7 +18,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{trans('model.aff.order_id')}} </th>
+                        <th> {{trans('model.order.id')}} </th>
                         <th> {{trans('user.shop.service')}} </th>
                         <th> {{trans('user.payment_method')}} </th>
                         <th> {{trans('user.invoice.amount')}} </th>

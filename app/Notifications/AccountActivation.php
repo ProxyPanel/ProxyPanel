@@ -28,6 +28,6 @@ class AccountActivation extends Notification
             ->subject(__('Verify Email Address'))
             ->line(__('Please click the button below to verify your email address.'))
             ->action(__('Verify Your Email Address'), $this->url)
-            ->line(__('If you did not create an account, no further action is required.'));
+            ->line(__('If you did not request a password reset, please ignore this email.'));
     }
 }
