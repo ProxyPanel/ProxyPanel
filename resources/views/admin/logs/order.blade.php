@@ -22,7 +22,7 @@
                         <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="{{ trans('model.aff.order_id') }}"/>
+                        <input type="number" class="form-control" name="sn" value="{{Request::query('sn')}}" placeholder="{{ trans('model.order.id') }}"/>
                     </div>
                     <div class="form-group col-lg-6 col-sm-12">
                         <div class="input-group input-daterange" data-plugin="datepicker">
@@ -76,7 +76,7 @@
                     <tr>
                         <th> @sortablelink('id', '#')</th>
                         <th> {{ trans('common.account') }}</th>
-                        <th> @sortablelink('sn', trans('model.aff.order_id'))</th>
+                        <th> @sortablelink('sn', trans('model.order.id'))</th>
                         <th> {{ trans('model.goods.attribute') }}</th>
                         <th> {{ trans('model.coupon.attribute') }}</th>
                         <th> {{ trans('model.order.original_price') }}</th>

@@ -27,8 +27,8 @@ class NodeDailyReport extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(__('Nodes Daily Report'))
-            ->markdown('mail.simpleMarkdown', ['title' => __('Nodes Daily Report'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
+            ->subject(__('Daily Data Usage Report'))
+            ->markdown('mail.simpleMarkdown', ['title' => __('Daily Data Usage Report'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
     }
 
     private function markdownMessage()
@@ -44,7 +44,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => __('Nodes Daily Report'),
+            'title'   => __('Daily Data Usage Report'),
             'content' => $this->markdownMessage(),
             'url_type' => 'markdown',
         ];

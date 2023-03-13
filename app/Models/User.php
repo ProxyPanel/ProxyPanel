@@ -33,7 +33,7 @@ class User extends Authenticatable
 
     public function usedTrafficPercentage()
     {
-        return round(($this->used_traffic) / $this->transfer_enable, 2);
+        return round($this->used_traffic / $this->transfer_enable, 2);
     }
 
     public function getUsedTrafficAttribute(): int

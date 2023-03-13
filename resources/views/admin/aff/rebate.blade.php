@@ -37,7 +37,7 @@
                         <th> #</th>
                         <th> {{ trans('model.aff.invitee') }}</th>
                         <th> {{ trans('model.user.inviter') }}</th>
-                        <th> {{ trans('model.aff.order_id') }}</th>
+                        <th> {{ trans('model.order.id') }}</th>
                         <th> {{ trans('model.aff.amount') }}</th>
                         <th> {{ trans('model.aff.commission') }}</th>
                         <th> {{ trans('model.aff.created_at') }}</th>

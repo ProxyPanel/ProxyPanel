@@ -18,7 +18,7 @@ class ServiceTimer extends Command
 
         $this->decGoodsTraffic(); // 扣减用户到期商品的流量
 
-        $jobTime = round((microtime(true) - $jobTime), 4);
+        $jobTime = round(microtime(true) - $jobTime, 4);
 
         Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
     }
@@ -42,6 +42,8 @@ class ServiceTimer extends Command
                         'level'           => 0,
                     ]);
                     Helpers::addUserTrafficModifyLog($user->id, $order->id, $user->transfer_enable, 0, '[定时任务]用户所购商品到期，扣减商品对应的流量');
+
+                    sleep(1); // 保证一切都已经更新到位
 
                     $order->update(['is_expire' => 1]); // 过期本订单
                 }

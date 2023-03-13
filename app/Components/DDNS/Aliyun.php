@@ -33,7 +33,7 @@ class Aliyun
         if ($domainList) {
             foreach ($domainList as $domain) {
                 if (str_contains(self::$subDomain, $domain)) {
-                    return [$domain, rtrim(substr(self::$subDomain, 0, -(strlen($domain))), '.')];
+                    return [$domain, rtrim(substr(self::$subDomain, 0, -strlen($domain)), '.')];
                 }
             }
         }

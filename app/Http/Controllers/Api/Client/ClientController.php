@@ -14,12 +14,13 @@ use App\Services\ProxyService;
 use App\Services\UserService;
 use Arr;
 use Artisan;
-use function config;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Cache;
+
+use function config;
 
 class ClientController extends Controller
 {

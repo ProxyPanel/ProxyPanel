@@ -26,7 +26,7 @@ class CloudFlare
         if ($zoneInfo && Arr::has($zoneInfo, 'result.0.id')) {
             foreach ($zoneInfo['result'] as $zone) {
                 if (str_contains(self::$subDomain, $zone['name'])) {
-                    return [$zone['name'], rtrim(substr(self::$subDomain, 0, -(strlen($zone['name']))), '.'), $zone['id']];
+                    return [$zone['name'], rtrim(substr(self::$subDomain, 0, -strlen($zone['name'])), '.'), $zone['id']];
                 }
             }
         }

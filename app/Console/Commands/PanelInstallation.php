@@ -118,7 +118,7 @@ class PanelInstallation extends Command
             $oldValue = count($matches) ? $matches[0] : '';
 
             if ($oldValue) {
-                $contents = str_replace((string) ($oldValue), "{$key}={$value}", $contents);
+                $contents = str_replace((string) $oldValue, "{$key}={$value}", $contents);
             } else {
                 $contents .= "\n{$key}={$value}\n";
             }

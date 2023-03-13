@@ -65,7 +65,7 @@ class Payment extends Model
     {
         switch ($this->attributes['status']) {
             case -1:
-                $status_label =  trans('common.payment.status.fail');
+                $status_label = trans('common.payment.status.fail');
                 break;
             case 1:
                 $status_label = trans('common.payment.status.success');

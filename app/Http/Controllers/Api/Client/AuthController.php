@@ -6,12 +6,13 @@ use App\Components\Helpers;
 use App\Helpers\ClientApiResponse;
 use App\Helpers\ResponseEnum;
 use App\Services\UserService;
-use function auth;
-use function config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Validator;
+
+use function auth;
+use function config;
 
 class AuthController extends Controller
 {
