@@ -113,7 +113,11 @@ class PayPal extends Gateway
 
     protected function getCheckoutData($trade_no, $amount): array
     {
-        $amount = 0.3 + CurrencyExchange::convert('USD', $amount);
+        $converted = CurrencyExchange::convert('USD', $amount);
+        if ($converted === false) {
+            $converted = $amount / 7;
+        }
+        $amount = 0.3 + $converted;
 
         return [
             'invoice_id'          => $trade_no,
