@@ -132,6 +132,6 @@ return [
         'description'           => 'Description',
         'excerpt'               => 'Excerpt',
         'date'                  => 'Date',
-        'time'                  => 'Time',
+        'time'                  => 'Date/Time',
     ],
 ];

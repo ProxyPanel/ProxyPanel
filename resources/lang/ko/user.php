@@ -88,7 +88,7 @@ return [
     'invite'              => [
         'attribute'       => '초대 코드',
         'counts'          => '共 <code>:num</code> 个邀请码',
-        'tips'            => '< strong >: num < / strong > 초대장 코드를 생성할 수 있습니다.: days일 동안 유효합니다.',
+        'tips'            => '<strong>: num </strong > 초대장 코드를 생성할 수 있습니다.: days일 동안 유효합니다.',
         'logs'            => '초대 기록',
         'promotion'       => '당신의 초대 코드를 통해 등록하고 활성화하면, 양쪽 모두 <mark>:traffic</mark> 데이터 사용 인센티브를 받게 됩니다. 그들이 소비할 때, 당신은 그들의 소비 금액 <mark>:referral_percent%</mark>을 보상으로 받습니다.',
         'generate_failed' => '생성 실패: 초대코드 생성 불가',

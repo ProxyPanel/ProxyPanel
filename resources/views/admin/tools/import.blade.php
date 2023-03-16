@@ -6,7 +6,7 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.tools.import_title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.tools.import') }}</h2>
             </div>
             @if (Session::has('successMsg'))
                 <x-alert type="success" :message="Session::get('successMsg')"/>
