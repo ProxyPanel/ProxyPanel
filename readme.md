@@ -1,5 +1,6 @@
 # ProxyPanel 
 [![Crowdin](https://badges.crowdin.net/proxypanel/localized.svg)](https://crowdin.com/project/proxypanel)
+We are looking for translators who help us to translate this prjoect with other languages :)
 
 [简体中文](https://proxypanel.gitbook.io/wiki/)
 

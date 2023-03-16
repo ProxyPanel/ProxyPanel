@@ -58,7 +58,7 @@ return [
     'user_group'       => [
         'attribute' => 'User Group',
         'name'      => 'Group Name',
-        'nodes'     => 'Select Node',
+        'nodes'     => 'Select Nodes',
     ],
     'node'             => [
         'attribute'       => 'Node',
@@ -94,8 +94,8 @@ return [
         'single_passwd'   => '[Only] Password',
         'v2_alter_id'     => 'Alter ID',
         'v2_net'          => 'Transport',
-        'v2_cover'        => 'Camouflage type',
-        'v2_host'         => 'Camouflage domain',
+        'v2_cover'        => 'Spoofing type',
+        'v2_host'         => 'Spoofing domain',
         'v2_path'         => 'Path | Key',
         'v2_sni'          => 'SNI',
         'v2_tls'          => 'TLS',
@@ -162,7 +162,7 @@ return [
     ],
     'permission'       => [
         'attribute'   => 'Permission Behavior',
-        'description' => 'Description of behavior',
+        'description' => 'Description',
         'name'        => 'Route Name',
     ],
     'article'          => [
@@ -182,9 +182,9 @@ return [
         'type'               => 'Type',
         'value'              => 'Amount of preference',
         'priority'           => 'Priority',
-        'usable_times'       => 'Usage Count',
+        'usable_times'       => 'Useable times',
         'minimum'            => 'Discount condition',
-        'used'               => 'Personal Usage limit',
+        'used'               => 'Number of individual useable times',
         'levels'             => 'Ranking limit',
         'groups'             => 'Group Limit',
         'users_whitelist'    => 'Licensed User',
@@ -233,6 +233,6 @@ return [
         'before'     => 'Balance before operation',
         'after'      => 'Balance after operation',
         'amount'     => 'Amount of change',
-        'created_at' => 'Occurrence time',
+        'created_at' => 'Operation Date/Time',
     ],
 ];
