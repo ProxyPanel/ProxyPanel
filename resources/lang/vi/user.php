@@ -3,7 +3,7 @@
 return [
     'account'             => [
         'credit'           => '账户余额',
-        'status'           => '账号状态',
+        'status'           => 'Trạng Thái Tài Khoản',
         'level'            => '账号等级',
         'group'            => '所属分组',
         'speed_limit'      => '限速',
@@ -36,7 +36,6 @@ return [
     ],
     'purchase_to_unlock'  => '购买服务后解锁',
     'purchase_required'   => '本功能对非付费用户禁用！请',
-    'more'                => '更多',
     'attribute'           => [
         'node'    => '线路',
         'data'    => '流量',
@@ -66,11 +65,8 @@ return [
         'unbind'     => '解 绑',
     ],
     'coupon'              => [
-        'attribute' => '优惠券',
-        'voucher'   => '代金券',
-        'recharge'  => '充值券码',
-        'discount'  => '优惠',
-        'error'     => [
+        'discount' => '优惠',
+        'error'    => [
             'unknown'  => '无效优惠券',
             'used'     => '优惠券已被使用',
             'expired'  => '优惠券已过期',
@@ -94,8 +90,8 @@ return [
         'generate_failed' => '生成失败：已无邀请码生成名额',
     ],
     'reset_data'          => [
-        ''          => '重置流量',
-        'required'  => '需要',
+        'action'    => '重置流量',
+        'cost'      => '需要<code>:amount</code>',
         'cost_tips' => '本次重置流量将扣除余额 :amount！',
         'lack'      => '余额不足，请充值余额',
         'logs'      => '用户自行重置流量',
@@ -117,9 +113,9 @@ return [
     ],
     'inviter'             => '邀请者',
     'invitee'             => '受邀者',
-    'registered_at'       => '注册时间',
+    'registered_at'       => 'Ngày đăng ký',
     'bought_at'           => '购买日期',
-    'payment_method'      => '支付方式',
+    'payment_method'      => 'Phương thức thanh toán',
     'pay'                 => '支付',
     'input_coupon'        => '请输入充值券码',
     'recharge'            => '充值',
@@ -136,7 +132,7 @@ return [
         'change_amount'      => '充值金额',
         'change_amount_help' => '请输入充值金额',
         'buy'                => '购买',
-        'description'        => '描述',
+        'description'        => 'Mô tả',
         'service'            => '服务',
         'pay_credit'         => '余额支付',
         'pay_online'         => '在线支付',

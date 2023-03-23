@@ -25,9 +25,9 @@
                             <button type="button" class="btn btn-floating btn-sm btn-pure">
                                 <i class="icon wb-payment green-500"></i>
                             </button>
-                            <span class="font-weight-400">{{trans('user.reset_data.')}}</span>
+                            <span class="font-weight-400">{{trans('user.reset_data.action')}}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-20 font-weight-100">{{trans('user.reset_data.required')}} <code>{{$renewTraffic}}</code></span>
+                                <span class="font-size-20 font-weight-100">{!! trans('user.reset_data.cost', ['amount' => $renewTraffic]) !!}</span>
                                 <br/>
                                 <button class="btn btn-danger mt-10" onclick="resetTraffic()">{{trans('common.reset')}}</button>
                             </div>
@@ -63,7 +63,7 @@
                                             <div class="pricing-price text-white @if($goods->type === 1) text-center @endif">
                                                 <span class="pricing-amount">{{$goods->price_tag}}</span>
                                                 @if($goods->type === 2)
-                                                    <span class="pricing-period">/ {{$goods->days.trans_choice('validation.attributes.day', 1)}}</span>
+                                                    <span class="pricing-period">/ {{$goods->days.trans_choice('common.days.attribute', 1)}}</span>
                                                 @endif
                                             </div>
                                             @if($goods->description)
@@ -73,7 +73,7 @@
                                         <ul class="pricing-features">
                                             <li>
                                                 <strong>{{$goods->traffic_label}}</strong>{{trans('user.attribute.data')}}
-                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans_choice('validation.attributes.day', 1):'/'.trans('validation.attributes.month')!!}
+                                                {!!$goods->type === 1? ' <code>'.$dataPlusDays.'</code> '.trans_choice('common.days.attribute', 1):'/'.trans('validation.attributes.month')!!}
                                             </li>
                                             <li>
                                                 {!!trans('user.service.node_count', ['num' => $goods->node_count])!!}
@@ -114,7 +114,7 @@
                                     @if(sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
                                         <option value="1">{{trans('user.shop.pay_online')}}</option>
                                     @endif
-                                    <option value="2">{{trans('user.coupon.recharge')}}</option>
+                                    <option value="2">{{trans('admin.coupon.type.charge')}}</option>
                                 </select>
                             </div>
                         @endif
@@ -129,7 +129,7 @@
                         @endif
                         <div class="form-group row" id="charge_coupon_code">
                             <label for="charge_coupon"
-                                   class="offset-md-2 col-md-2 col-form-label"> {{trans('user.coupon.recharge')}} </label>
+                                   class="offset-md-2 col-md-2 col-form-label"> {{trans('admin.coupon.type.charge')}} </label>
                             <div class="col-md-6">
                                 <input type="text" class="form-control round" name="charge_coupon" id="charge_coupon" placeholder="{{trans('user.input_coupon')}}">
                             </div>
@@ -180,7 +180,7 @@
       // 重置流量
       function resetTraffic() {
         swal.fire({
-          title: '{{trans('user.reset_data.')}}',
+          title: '{{trans('user.reset_data.action')}}',
           text: '{{trans('user.reset_data.cost_tips', ['amount' => $renewTraffic])}}',
           icon: 'question',
           showCancelButton: true,
@@ -240,7 +240,7 @@
           });
         } else if (paymentType === 2) {
           if (charge_coupon === '') {
-            $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('user.coupon.attribute')])}}");
+            $('#charge_msg').show().html("{{trans('validation.required', ['attribute' => trans('model.coupon.attribute')])}}");
             $('#charge_coupon').focus();
             return false;
           }

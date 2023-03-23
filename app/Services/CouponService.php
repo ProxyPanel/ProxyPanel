@@ -124,7 +124,7 @@ class CouponService
         if ($coupon && $coupon->status === 0) {
             try {
                 Helpers::addUserCreditLog($this->user->id, null, $this->user->credit, $this->user->credit + $coupon->value, $coupon->value,
-                    trans('user.recharge').' - ['.trans('user.coupon.recharge').'：'.$coupon->sn.']'); // 写入用户余额变动日志
+                    trans('user.recharge').' - ['.trans('admin.coupon.type.charge').'：'.$coupon->sn.']'); // 写入用户余额变动日志
                 $this->user->updateCredit($coupon->value); // 余额充值
                 $coupon->used(); // 更改卡券状态
                 Helpers::addCouponLog(trans('user.recharge_credit'), $coupon->id); // 写入卡券使用日志

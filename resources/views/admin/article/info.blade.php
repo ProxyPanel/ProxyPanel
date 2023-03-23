@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="title"> {{ trans('validation.attributes..title') }} </label>
+                        <label class="col-form-label col-md-2" for="title"> {{ trans('validation.attributes.title') }} </label>
                         <div class="col-md-4">
                             <input type="text" class="form-control" name="title" id="title" autofocus required/>
                         </div>

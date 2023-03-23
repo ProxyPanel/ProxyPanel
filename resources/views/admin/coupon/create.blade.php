@@ -192,7 +192,7 @@
                                             </div>
                                             <input type="number" class="form-control col-md-3" name="days" id="days" value="{{old('days')}}"/>
                                             <div class="input-group-append">
-                                                <span class="input-group-text">{{ trans_choice('validation.attributes.day', 0) }}</span>
+                                                <span class="input-group-text">{{ trans_choice('common.days.attribute', 0) }}</span>
                                             </div>
                                         </div>
                                     </li>

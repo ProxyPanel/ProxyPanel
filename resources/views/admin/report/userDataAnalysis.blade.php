@@ -86,7 +86,7 @@
                   font: {size: 14},
                 },
               },
-              tooltip: label_callbacks(' {{ trans_choice('validation.attributes.day', 1) }}'),
+              tooltip: label_callbacks(' {{ trans_choice('common.days.attribute', 1) }}'),
             },
           };
 

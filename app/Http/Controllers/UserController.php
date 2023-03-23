@@ -185,7 +185,7 @@ class UserController extends Controller
             if ($request->has(['nickname', 'wechat', 'qq'])) {
                 $data = $request->only(['nickname', 'wechat', 'qq']);
                 if (empty($data['nickname'])) {
-                    return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('validation.attributes.nickname')]));
+                    return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('model.user.nickname')]));
                 }
 
                 if (! $user->update($data)) {
@@ -219,6 +219,7 @@ class UserController extends Controller
         }
         foreach ($goodsList as $goods) {
             $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
+            $goods->node_countries = $nodes->where('level', '<=', $goods->level)->pluck('country_code')->unique();
         }
 
         return view('user.services', [
@@ -421,7 +422,7 @@ class UserController extends Controller
             'value' => $ret->type === 2 ? $ret->value : Helpers::getPriceTag($ret->value),
         ];
 
-        return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('user.coupon.attribute')])]);
+        return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('model.coupon.attribute')])]);
     }
 
     // 购买服务
@@ -491,7 +492,7 @@ class UserController extends Controller
     public function switchToAdmin(): JsonResponse
     { // 转换成管理员的身份
         if (! Session::has('admin')) {
-            return Response::json(['status' => 'fail', 'message' => trans('errors.unauthorized')]);
+            return Response::json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
         }
 
         // 管理员信息重新写入user

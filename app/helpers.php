@@ -65,11 +65,11 @@ if (! function_exists('seconds2time')) {
         $hour = floor(($seconds % Day) / Hour);
         $minute = floor((($seconds % Day) % Hour) / Minute);
         if ($day > 0) {
-            return $day.trans_choice('validation.attributes.day', 1).$hour.trans_choice('validation.attributes.hour', 1).$minute.trans('validation.attributes.minute');
+            return $day.trans_choice('common.days.attribute', 1).$hour.trans_choice('common.hour', 1).$minute.trans('validation.attributes.minute');
         }
 
         if ($hour != 0) {
-            return $hour.trans_choice('validation.attributes.hour', 1).$minute.trans('validation.attributes.minute');
+            return $hour.trans_choice('common.hour', 1).$minute.trans('validation.attributes.minute');
         }
 
         return $minute.trans('validation.attributes.minute');

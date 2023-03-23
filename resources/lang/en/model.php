@@ -5,7 +5,7 @@ return [
         'id'             => 'User ID',
         'attribute'      => 'User',
         'nickname'       => 'Nickname',
-        'username'       => 'Account',
+        'username'       => 'Username',
         'password'       => 'Password',
         'credit'         => 'Balance',
         'invite_num'     => 'Available Invitation Code',

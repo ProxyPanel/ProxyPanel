@@ -48,7 +48,7 @@ class ArticleService extends BaseService
                 $accessArea = $this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->');
                 if ($accessArea) {
                     $body = strtr($body,
-                        [$accessArea => '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view content in this area!').'</div>']);
+                        [$accessArea => '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view the content in this area!').'</div>']);
                 }
             }
         }

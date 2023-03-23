@@ -102,7 +102,7 @@
                                 <label class="col-md-2 col-form-label" for="period">{{ trans('model.goods.period') }}</label>
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="period" id="period" value="30"/>
-                                    <span class="input-group-text"> {{ trans_choice('validation.attributes.day', 1) }}</span>
+                                    <span class="input-group-text"> {{ trans_choice('common.days.attribute', 1) }}</span>
                                     <span class="text-help"> {{ trans('admin.goods.info.period_hint') }} </span>
                                 </div>
                             </div>
@@ -137,7 +137,7 @@
                                 <label class="col-md-2 col-form-label" for="days">{{ trans('model.goods.available_date') }}</label>
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="days" id="days" value="30"/>
-                                    <span class="input-group-text">{{ trans_choice('validation.attributes.day', 1) }}</span>
+                                    <span class="input-group-text">{{ trans_choice('common.days.attribute', 1) }}</span>
                                     <span class="text-help"> {{ trans('admin.goods.info.available_date_hint') }} </span>
                                 </div>
                             </div>

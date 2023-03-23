@@ -9,19 +9,25 @@ return [
             'disable'   => 'Account activation has been disabled, you can sign in directly!',
             'throttle'  => 'You have triggered the activation request restriction, please do not operate too frequent! If you have any questions, please contact: email',
         ],
+        'promotion' => 'Account not yet activated, please [:action] first!',
         'sent'      => 'Activation Email has sent to your mailbox, please check your mailbox (Email may be in the Trash)',
-        'promotion' => ['0' => 'Account has not been activated, Please', '1' => 'before sign in!'],
     ],
     'aup'             => 'Acceptable Use Policy',
     'captcha'         => [
         'attribute' => 'Captcha',
-        'error'     => ['failed' => 'Captcha verification failed, please try again', 'timeout' => 'Invalid verification code! It maybe expired, please refresh and try again.'],
+        'error'     => [
+            'failed'  => 'Captcha verification failed, please try again',
+            'timeout' => 'Invalid verification code! It maybe expired, please refresh and try again.',
+        ],
         'required'  => 'Please complete the Captcha operation!',
         'sent'      => 'Email has been sent! Please check your mailbox! (Email may be in the Trash)',
     ],
     'email'           => [
-        'error' => ['banned' => 'Your email service provider was banned by our platform. Please use another valid email', 'invalid' => 'Your email service provider is not in our supported list. Please use another email
-'],
+        'error' => [
+            'banned'  => 'Your email service provider was banned by our platform. Please use another valid email',
+            'invalid' => 'Your email service provider is not in our supported list. Please use another email
+',
+        ],
     ],
     'error'           => [
         'account_baned'  => 'Your account has been banned!',
@@ -31,9 +37,12 @@ return [
         'repeat_request' => 'Please refresh the page and try again',
         'url_timeout'    => 'The link has expired, please try again',
     ],
+    'failed'          => 'These credentials do not match our records.',
     'invite'          => [
         'attribute'    => 'Invitation code',
-        'error'        => ['unavailable' => 'Invitation code is invalid!'],
+        'error'        => [
+            'unavailable' => 'Invitation code is invalid!',
+        ],
         'get'          => 'Click to get the invitation code',
         'not_required' => 'No invitation code is required, you can sign up directly!',
     ],
@@ -42,15 +51,15 @@ return [
     'maintenance'     => 'Maintenance',
     'maintenance_tip' => 'Maintenance in progress',
     'oauth'           => [
-        'bind_success'    => 'Binding successfully',
         'bind_failed'     => 'Binding failed',
+        'bind_success'    => 'Binding successfully',
         'login_failed'    => 'Third-party login failed!',
-        'register'        => 'Quick Registration',
-        'registered'      => 'Already registered, please sign in directly',
-        'register_failed' => 'Registration failed',
         'rebind_success'  => 'Re-binding successfully',
-        'unbind_success'  => 'Unbinding successfully',
+        'register'        => 'Quick Registration',
+        'register_failed' => 'Registration failed',
+        'registered'      => 'Already registered, please sign in directly',
         'unbind_failed'   => 'Unbinding failed',
+        'unbind_success'  => 'Unbinding successfully',
     ],
     'optional'        => 'Optional',
     'password'        => [
@@ -74,12 +83,16 @@ return [
     'register'        => [
         'attribute' => 'Sign up',
         'code'      => 'Registration Code',
-        'error'     => ['disable' => 'Sorry, we have temporarily stopped accepting new users', 'throttle' => 'Anti-bots is active! Please do not send register forms too frequently!'],
-        'promotion' => 'Still no account? Please go to ',
+        'error'     => [
+            'disable'  => 'Sorry, we have temporarily stopped accepting new users',
+            'throttle' => 'Anti-bots is active! Please do not send register forms too frequently!',
+        ],
         'failed'    => 'Registration failed, please try later',
+        'promotion' => 'Still no account? Please go to ',
         'success'   => 'Registration successfully',
     ],
     'remember_me'     => 'Remember me',
     'request'         => 'Request',
+    'throttle'        => 'Too many login attempts. Please try again in :seconds seconds.',
     'tos'             => 'Terms of Service',
 ];

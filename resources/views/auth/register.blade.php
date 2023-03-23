@@ -15,7 +15,7 @@
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input type="text" class="form-control" name="nickname" id="nickname"
                        value="{{old('nickname') ? : Request::query('nickname')}}" autocomplete="off" required/>
-                <label class="floating-label" for="username">{{trans('validation.attributes.nickname')}}</label>
+                <label class="floating-label" for="username">{{trans('model.user.nickname')}}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 @if($emailList)
@@ -35,7 +35,7 @@
                 @else
                     <input type="text" class="form-control" name="username" id="username" value="{{old('username')}}" required/>
                     <label class="floating-label" for="username">
-                        {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('validation.attributes.username')}}
+                        {{sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('model.user.username')}}
                     </label>
                 @endif
             </div>
