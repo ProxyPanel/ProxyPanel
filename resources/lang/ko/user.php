@@ -36,7 +36,6 @@ return [
     ],
     'purchase_to_unlock'  => '서비스 구매 후 잠금 해제',
     'purchase_required'   => '해당 기능은 유료 구매자에게만 제공됩니다!',
-    'more'                => '더 보기',
     'attribute'           => [
         'node'    => '회선',
         'data'    => '용량',
@@ -66,11 +65,8 @@ return [
         'unbind'     => '연동 해제',
     ],
     'coupon'              => [
-        'attribute' => '할인쿠폰',
-        'voucher'   => '상품권',
-        'recharge'  => '충전권',
-        'discount'  => '할인',
-        'error'     => [
+        'discount' => '할인',
+        'error'    => [
             'unknown'  => '유효하지 않은 쿠폰',
             'used'     => '이미 사용된 쿠폰',
             'expired'  => '쿠폰이 만료됨',
@@ -94,8 +90,8 @@ return [
         'generate_failed' => '생성 실패: 초대코드 생성 불가',
     ],
     'reset_data'          => [
-        ''          => '데이터 재설정',
-        'required'  => '필요',
+        'action'    => '데이터 재설정',
+        'cost'      => '需要<code>:amount</code>',
         'cost_tips' => '本次重置流量将扣除余额 :amount！',
         'lack'      => '잔액 부족, 잔액을 충전해주세요',
         'logs'      => '사용자 직접 용량을 초기화',

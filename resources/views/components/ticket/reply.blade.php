@@ -69,10 +69,10 @@
                         <div class="panel-body">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    {{ trans('validation.attributes.nickname') }}：{{ $user->nickname }}
+                                    {{ trans('model.user.nickname') }}：{{ $user->nickname }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('validation.attributes.username') }}：{{ $user->username }}
+                                    {{ trans('model.user.username') }}：{{ $user->username }}
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('user.attribute.data') }}：{{ flowAutoShow($user->used_traffic) }} / {{ flowAutoShow($user->transfer_enable) }}

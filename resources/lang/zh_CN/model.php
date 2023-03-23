@@ -5,7 +5,7 @@ return [
         'id'             => '用户ID',
         'attribute'      => '用户',
         'nickname'       => '昵称',
-        'username'       => '账号',
+        'username'       => '用户名',
         'password'       => '密码',
         'credit'         => '余额',
         'invite_num'     => '可用邀请码',

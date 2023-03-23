@@ -20,7 +20,7 @@
                         <tr>
                             <td class="text-middle">{{$goods->name}} </td>
                             <td>{{trans('common.available_date')}}
-                                <strong>{{$goods->type === 1? $dataPlusDays : $goods->days}} {{trans_choice('validation.attributes.day', 1)}}</strong>
+                                <strong>{{$goods->type === 1? $dataPlusDays : $goods->days}} {{trans_choice('common.days.attribute', 1)}}</strong>
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
                                 <br>
@@ -36,7 +36,7 @@
                     @if($goods->type <= 2)
                         <div class="col-lg-3 pl-30">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('user.coupon.attribute')}}"/>
+                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('model.coupon.attribute')}}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-info" onclick="redeemCoupon()">
                                         <i class="icon wb-loop" aria-hidden="true"></i> {{trans('common.apply')}}
@@ -93,7 +93,7 @@
               if (ret.data.type === 2) {
                 const discount = goods_price * (ret.data.value / 100);
 
-                coupon_text.innerHTML = '【{{trans('user.coupon.attribute')}}】：' + ret.data.name + '_'
+                coupon_text.innerHTML = '【{{trans('admin.coupon.type.discount')}}】：' + ret.data.name + '_'
                     + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: - ' + sign + discount.toFixed(2);
                 total_price = goods_price - discount;
               } else {
@@ -101,7 +101,7 @@
                 total_price = goods_price - ret.data.value.match(/(.*?[^0-9])(\d+\.?.*)/)[2];
                 total_price = total_price > 0 ? total_price : 0;
                 if (ret.data.type === 1) {
-                  coupon_text.innerHTML = '【{{trans('user.coupon.voucher')}}】：' + ret.data.name + ' －' + ret.data.value;
+                  coupon_text.innerHTML = '【{{trans('admin.coupon.type.voucher')}}】：' + ret.data.name + ' －' + ret.data.value;
                 }
               }
 

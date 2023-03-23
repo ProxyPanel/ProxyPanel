@@ -39,7 +39,7 @@
                         <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="{{ trans('model.user.id') }}"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('validation.attributes.username') }}"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('model.user.username') }}"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
                         <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="{{ trans('model.user.wechat') }}"/>
@@ -90,7 +90,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> @sortablelink('id', '#')</th>
-                        <th> {{ trans('validation.attributes.username') }}</th>
+                        <th> {{ trans('model.user.username') }}</th>
                         <th> @sortablelink('credit', trans('model.user.credit'))</th>
                         <th> @sortablelink('port', trans('model.user.port'))</th>
                         <th> {{ trans('model.subscribe.code') }}</th>

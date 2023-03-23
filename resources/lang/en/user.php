@@ -36,7 +36,6 @@ return [
     ],
     'purchase_to_unlock'  => 'Unlock after purchasing service',
     'purchase_required'   => 'This feature is disabled for non-paying users! Please',
-    'more'                => 'More',
     'attribute'           => [
         'node'    => 'Node',
         'data'    => 'Data',
@@ -66,11 +65,8 @@ return [
         'unbind'     => 'Unbind',
     ],
     'coupon'              => [
-        'attribute' => 'Coupon',
-        'voucher'   => 'Voucher',
-        'recharge'  => 'Gift Card',
-        'discount'  => 'Discount',
-        'error'     => [
+        'discount' => 'Discount',
+        'error'    => [
             'unknown'  => 'Unknown Coupon',
             'used'     => 'Coupon has been used',
             'expired'  => 'Expired',
@@ -94,8 +90,8 @@ return [
         'generate_failed' => 'Failed to generate',
     ],
     'reset_data'          => [
-        ''          => 'Reset Data',
-        'required'  => 'Required',
+        'action'    => 'Reset Data',
+        'cost'      => 'Need <code>:amount</code>',
         'cost_tips' => 'This following action will cost :amount!',
         'lack'      => 'Insufficient balance. Please recharge!',
         'logs'      => 'User purchase reset data',

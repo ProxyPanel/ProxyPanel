@@ -36,7 +36,6 @@ return [
     ],
     'purchase_to_unlock'  => '购买服务后解锁',
     'purchase_required'   => '本功能对非付费用户禁用！请',
-    'more'                => '更多',
     'attribute'           => [
         'node'    => '线路',
         'data'    => '流量',
@@ -66,11 +65,8 @@ return [
         'unbind'     => '解 绑',
     ],
     'coupon'              => [
-        'attribute' => '优惠券',
-        'voucher'   => '代金券',
-        'recharge'  => '充值券码',
-        'discount'  => '优惠',
-        'error'     => [
+        'discount' => '优惠',
+        'error'    => [
             'unknown'  => '无效优惠券',
             'used'     => '优惠券已被使用',
             'expired'  => '优惠券已过期',
@@ -94,8 +90,8 @@ return [
         'generate_failed' => '生成失败：已无邀请码生成名额',
     ],
     'reset_data'          => [
-        ''          => '重置流量',
-        'required'  => '需要',
+        'action'    => '重置流量',
+        'cost'      => '需要<code>:amount</code>',
         'cost_tips' => '本次重置流量将扣除余额 :amount！',
         'lack'      => '余额不足，请充值余额',
         'logs'      => '用户自行重置流量',

@@ -1,9 +1,9 @@
 <?php
 
 return [
-    'reset'     => '密码重置成功！',
-    'sent'      => '密码重置邮件已发送！',
-    'throttled' => '请稍候再试。',
-    'token'     => '密码重置令牌无效。',
-    'user'      => '找不到该邮箱对应的用户。',
+    'reset'     => 'Mật khẩu mới đã được cập nhật!',
+    'sent'      => 'Hướng dẫn cấp lại mật khẩu đã được gửi!',
+    'throttled' => 'Vui lòng đợi trước khi thử lại.',
+    'token'     => 'Mã khôi phục mật khẩu không hợp lệ.',
+    'user'      => 'Không tìm thấy người dùng với địa chỉ email này.',
 ];

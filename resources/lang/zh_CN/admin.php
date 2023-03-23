@@ -408,7 +408,7 @@ return [
         'name_hint'               => '会用于前端显示',
         'sn_hint'                 => '提供给用户使用卡券的卡券，留空则默认为8位随机码',
         'type'                    => [
-            'voucher'  => '抵用券',
+            'voucher'  => '代金券',
             'discount' => '折扣券',
             'charge'   => '充值券',
         ],

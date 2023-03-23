@@ -9,18 +9,24 @@ return [
             'disable'   => '本站关闭了账号激活子系统，您可以直接去登录！',
             'throttle'  => '您已触发本站激活请求限制机制，请勿频繁操作！如有问题，请联系:email',
         ],
+        'promotion' => '账号尚未激活，请先「:action」！',
         'sent'      => '激活链接已发送至您的邮箱，请稍作等待或查看垃圾箱',
-        'promotion' => ['0' => '账号尚未激活，请点击', '1' => '启动激活程序！'],
     ],
     'aup'             => '可接受使用条款',
     'captcha'         => [
         'attribute' => '验证码',
-        'error'     => ['failed' => '验证码验证失败，请重新输入', 'timeout' => '验证码不合法！可能已过期，请刷新后重试'],
+        'error'     => [
+            'failed'  => '验证码验证失败，请重新输入',
+            'timeout' => '验证码不合法！可能已过期，请刷新后重试',
+        ],
         'required'  => '请正确完成验证码操作',
         'sent'      => '验证码已发送至您的邮箱，请稍作等待或查看垃圾箱',
     ],
     'email'           => [
-        'error' => ['banned' => '本站屏蔽了您使用的邮箱服务商，请使用其他有效邮箱', 'invalid' => '使用邮箱不在本站支持邮箱列表内'],
+        'error' => [
+            'banned'  => '本站屏蔽了您使用的邮箱服务商，请使用其他有效邮箱',
+            'invalid' => '使用邮箱不在本站支持邮箱列表内',
+        ],
     ],
     'error'           => [
         'account_baned'  => '您的账号已被禁止登录！',
@@ -30,9 +36,12 @@ return [
         'repeat_request' => '请勿重复请求，请刷新后重试',
         'url_timeout'    => '链接已失效, 请重新操作',
     ],
+    'failed'          => '用户名或密码错误。',
     'invite'          => [
         'attribute'    => '邀请码',
-        'error'        => ['unavailable' => '邀请码不可用，请重试'],
+        'error'        => [
+            'unavailable' => '邀请码不可用，请重试',
+        ],
         'get'          => '点击获取邀请码',
         'not_required' => '无需邀请码,可直接注册！',
     ],
@@ -41,15 +50,15 @@ return [
     'maintenance'     => '维护',
     'maintenance_tip' => '网站维护中',
     'oauth'           => [
-        'bind_success'    => '绑定成功',
         'bind_failed'     => '绑定失败',
+        'bind_success'    => '绑定成功',
         'login_failed'    => '第三方登录失败！',
-        'register'        => '快速注册',
-        'registered'      => '已注册，请直接登录',
-        'register_failed' => '注册失败',
         'rebind_success'  => '重新绑定成功',
-        'unbind_success'  => '解绑成功',
+        'register'        => '快速注册',
+        'register_failed' => '注册失败',
+        'registered'      => '已注册，请直接登录',
         'unbind_failed'   => '解绑失败',
+        'unbind_success'  => '解绑成功',
     ],
     'optional'        => '可选',
     'password'        => [
@@ -73,12 +82,16 @@ return [
     'register'        => [
         'attribute' => '注 册',
         'code'      => '注册验证码',
-        'error'     => ['disable' => '抱歉，本站关闭了注册通道', 'throttle' => '防刷机制已激活，请勿频繁注册'],
-        'promotion' => '还没有账号？请去',
+        'error'     => [
+            'disable'  => '抱歉，本站关闭了注册通道',
+            'throttle' => '防刷机制已激活，请勿频繁注册',
+        ],
         'failed'    => '注册失败，请稍后尝试',
+        'promotion' => '还没有账号？请去',
         'success'   => '注册成功',
     ],
     'remember_me'     => '记住我',
     'request'         => '获 取',
+    'throttle'        => '您尝试的登录次数过多，请 :seconds 秒后再试。',
     'tos'             => '用户条款',
 ];

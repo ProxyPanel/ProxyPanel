@@ -36,7 +36,7 @@
                             <thead class="thead-default">
                             <tr>
                                 <th data-cell-style="cellStyle"> #</th>
-                                <th> {{trans('validation.attributes.username')}} </th>
+                                <th> {{trans('model.user.username')}} </th>
                                 <th> {{trans('user.registered_at')}}</th>
                             </tr>
                             </thead>

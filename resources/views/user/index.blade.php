@@ -25,9 +25,9 @@
                         @endif
                         <div class="content-text text-center mb-0">
                             @if(!$paying_user)
-                                <p class="ml-15 mt-15 text-left">{{trans('user.more')}}<code>{{trans('validation.attributes.time')}}</code></p>
-                                <p class="text-center">{{trans('user.more')}}<code>{{trans('user.attribute.data')}}</code></p>
-                                <p class="mb-15 mr-15 text-right">{{trans('user.more')}}<code>{{trans('user.attribute.node')}}</code></p>
+                                <p class="ml-15 mt-15 text-left">{{trans('common.more')}}<code>{{trans('validation.attributes.time')}}</code></p>
+                                <p class="text-center">{{trans('common.more')}}<code>{{trans('user.attribute.data')}}</code></p>
+                                <p class="mb-15 mr-15 text-right">{{trans('common.more')}}<code>{{trans('user.attribute.node')}}</code></p>
                                 <a href="{{route('shop')}}" class="btn btn-block btn-danger">{{trans('user.purchase_promotion')}}</a>
                             @elseif(Auth::user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10"></i>
@@ -93,7 +93,7 @@
                         <span class="font-weight-400">{{trans('user.account.time')}}</span>
                         <div class="content-text text-center mb-0">
                             @if($remainDays >= 0)
-                                <span class="font-size-40 font-weight-100">{{$remainDays.' '.trans_choice('validation.attributes.day', 1)}}</span>
+                                <span class="font-size-40 font-weight-100">{{$remainDays.' '.trans_choice('common.days.attribute', 1)}}</span>
                                 <p class="blue-grey-500 font-weight-300 m-0">{{$expireTime}}</p>
                             @else
                                 <span class="font-size-40 font-weight-100">{{trans('common.status.expire')}}</span>
@@ -247,7 +247,7 @@
                                     <ul class="nav nav-pills" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" data-toggle="tab" href="#daily" aria-controls="daily" role="tab" aria-expanded="true"
-                                               aria-selected="false">{{trans_choice('validation.attributes.day', 1)}}</a>
+                                               aria-selected="false">{{trans_choice('common.days.attribute', 1)}}</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#monthly" aria-controls="monthly" role="tab"
@@ -410,13 +410,13 @@
       new Chart(document.getElementById('dailyChart'), {
         type: 'line',
         data: datasets(@json($dayHours), @json($trafficHourly)),
-        options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
+        options: common_options(' {{trans_choice('common.hour', 2)}}'),
       });
 
       new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: datasets(@json($monthDays), @json($trafficDaily)),
-        options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
+        options: common_options(' {{trans_choice('common.days.attribute', 2)}}'),
       });
 
       @if($banedTime) // 封禁倒计时
@@ -441,7 +441,7 @@
         const minute = Math.floor((distance % 3600000) / 60000);
         let string = '';
         if (hour) {
-          string += hour + '{{ trans_choice('validation.attributes.hour', 1) }} ';
+          string += hour + '{{ trans_choice('common.hour', 1) }} ';
         }
         if (minute) {
           string += minute + '{{ trans('validation.attributes.minute') }}';

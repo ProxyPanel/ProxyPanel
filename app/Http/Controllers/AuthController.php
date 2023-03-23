@@ -84,8 +84,10 @@ class AuthController extends Controller
         if ($user->status === 0 && sysConfig('is_activate_account')) {
             Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion.0').'<a href="'.route('active').'?username='.$user->username.
-                '" target="_blank">👉【'.trans('common.active_item', ['attribute' => trans('common.account')]).'】👈</span></a><br>'.trans('auth.active.promotion.1'));
+            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion', [
+                'action' => '<a href="'.route('active', ['username' => $user->username]).'" 
+            target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</span></a><br>',
+            ]));
         }
 
         Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
@@ -93,52 +95,8 @@ class AuthController extends Controller
         return redirect()->back();
     }
 
-    // 校验验证码
-    private function check_captcha(Request $request)
-    {
-        switch (sysConfig('is_captcha')) {
-            case 1: // 默认图形验证码
-                if (! Captcha::check($request->input('captcha'))) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 2: // Geetest
-                $validator = Validator::make($request->all(), [
-                    'geetest_challenge' => 'required|geetest',
-                ]);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 3: // Google reCAPTCHA
-                $validator = Validator::make($request->all(), [
-                    'g-recaptcha-response' => 'required|NoCaptcha',
-                ]);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 4: // hCaptcha
-                $validator = Validator::make($request->all(), [
-                    'h-captcha-response' => 'required|HCaptcha',
-                ]);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            default: // 不启用验证码
-                break;
-        }
-
-        return false;
-    }
-
-    // 退出
     public function logout(Request $request): RedirectResponse
-    {
+    { // 退出
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -153,9 +111,8 @@ class AuthController extends Controller
         return view('auth.register', ['emailList' => (int) sysConfig('is_email_filtering') !== 2 ? false : EmailFilter::whereType(2)->get()]);
     }
 
-    // 注册
     public function register(RegisterRequest $request)
-    {
+    { // 注册
         $cacheKey = 'register_times_'.md5(IP::getClientIp()); // 注册限制缓存key
 
         $data = $request->validated();
@@ -289,16 +246,313 @@ class AuthController extends Controller
         return Redirect::route('login')->withInput();
     }
 
-    //邮箱检查
+    public function resetPassword(Request $request)
+    { // 重设密码页
+        if ($request->isMethod('POST')) {
+            // 校验请求
+            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
+
+            if ($validator->fails()) {
+                return Redirect::back()->withInput()->withErrors($validator->errors());
+            }
+
+            $username = $request->input('username');
+
+            // 是否开启重设密码
+            if (! sysConfig('password_reset_notification')) {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.disabled', ['email' => sysConfig('webmaster_email')]));
+            }
+
+            // 查找账号
+            $user = User::whereUsername($username)->firstOrFail();
+
+            // 24小时内重设密码次数限制
+            $resetTimes = 0;
+            if (Cache::has('resetPassword_'.md5($username))) {
+                $resetTimes = Cache::get('resetPassword_'.md5($username));
+                if ($resetTimes >= sysConfig('reset_password_times')) {
+                    return Redirect::back()->withErrors(trans('auth.password.reset.error.throttle', ['time' => sysConfig('reset_password_times')]));
+                }
+            }
+
+            // 生成取回密码的地址
+            $token = $this->addVerifyUrl($user->id, $username);
+
+            // 发送邮件
+            $resetUrl = route('resettingPasswd', $token);
+            $user->notifyNow(new PasswordReset($resetUrl));
+
+            Cache::put('resetPassword_'.md5($username), $resetTimes + 1, Day);
+
+            return Redirect::back()->with('successMsg', trans('auth.password.reset.sent'));
+        }
+
+        return view('auth.resetPassword');
+    }
+
+    public function reset(Request $request, $token)
+    { // 重设密码
+        if (! $token) {
+            return Redirect::route('login');
+        }
+
+        if ($request->isMethod('POST')) {
+            $validator = Validator::make($request->all(), [
+                'password' => 'required|min:6|confirmed',
+            ]);
+
+            if ($validator->fails()) {
+                return Redirect::back()->withInput()->withErrors($validator->errors());
+            }
+
+            $password = $request->input('password');
+            // 校验账号
+            $verify = Verify::type(1)->whereToken($token)->firstOrFail();
+            $user = $verify->user;
+            if (! $verify) {
+                return Redirect::route('login');
+            }
+
+            if ($user->status === -1) {
+                return Redirect::back()->withErrors(trans('auth.error.account_baned'));
+            }
+
+            if ($verify->status === 1) {
+                return Redirect::back()->withErrors(trans('auth.error.url_timeout'));
+            }
+
+            if (Hash::check($password, $verify->user->password)) {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.same'));
+            }
+
+            // 更新密码
+            if (! $user->update(['password' => $password])) {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.failed'));
+            }
+
+            // 置为已使用
+            $verify->status = 1;
+            $verify->save();
+
+            return Redirect::route('login')->with('successMsg', trans('auth.password.reset.success'));
+        }
+
+        $verify = Verify::type(1)->whereToken($token)->first();
+        if (! $verify) {
+            return Redirect::route('login');
+        }
+
+        if (time() - strtotime($verify->created_at) >= 1800) {
+            // 置为已失效
+            $verify->status = 2;
+            $verify->save();
+        }
+
+        return view('auth.reset', ['verify' => Verify::type(1)->whereToken($token)->first()]); // 重新获取一遍verify
+    }
+
+    public function activeUser(Request $request)
+    { // 激活账号页
+        if ($request->isMethod('POST')) {
+            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
+
+            if ($validator->fails()) {
+                return Redirect::back()->withInput()->withErrors($validator->errors());
+            }
+
+            $username = $request->input('username');
+
+            // 是否开启账号激活
+            if (! sysConfig('is_activate_account')) {
+                return Redirect::back()->withInput()->withErrors(trans('auth.active.error.disable'));
+            }
+
+            // 查找账号
+            $user = User::whereUsername($username)->firstOrFail();
+            if ($user->status === -1) {
+                return Redirect::back()->withErrors(trans('auth.error.account_baned'));
+            }
+
+            if ($user->status === 1) {
+                return Redirect::back()->withErrors(trans('auth.active.error.activated'));
+            }
+
+            // 24小时内激活次数限制
+            $activeTimes = 0;
+            if (Cache::has('activeUser_'.md5($username))) {
+                $activeTimes = Cache::get('activeUser_'.md5($username));
+                if ($activeTimes >= sysConfig('active_times')) {
+                    return Redirect::back()->withErrors(trans('auth.active.error.throttle', ['email' => sysConfig('webmaster_email')]));
+                }
+            }
+
+            // 生成激活账号的地址
+            $token = $this->addVerifyUrl($user->id, $username);
+
+            // 发送邮件
+            $activeUserUrl = route('activeAccount', $token);
+
+            Notification::route('mail', $username)->notifyNow(new AccountActivation($activeUserUrl));
+
+            Cache::put('activeUser_'.md5($username), $activeTimes + 1, Day);
+
+            return Redirect::back()->with('successMsg', trans('auth.active.sent'));
+        }
+
+        return view('auth.activeUser');
+    }
+
+    public function active($token)
+    { // 激活账号
+        if (! $token) {
+            return Redirect::route('login');
+        }
+
+        $verify = Verify::type(1)->with('user')->whereToken($token)->firstOrFail();
+        $user = $verify->user;
+        if (! $verify) {
+            return Redirect::route('login');
+        }
+
+        if (empty($user) || $verify->status > 0) {
+            Session::flash('errorMsg', trans('auth.error.url_timeout'));
+
+            return view('auth.active');
+        }
+
+        if ($user->status === 1) {
+            Session::flash('errorMsg', trans('auth.active.error.activated'));
+
+            return view('auth.active');
+        }
+
+        if (time() - strtotime($verify->created_at) >= 1800) {
+            Session::flash('errorMsg', trans('auth.error.url_timeout'));
+
+            // 置为已失效
+            $verify->status = 2;
+            $verify->save();
+
+            return view('auth.active');
+        }
+
+        // 更新账号状态
+        if (! $user->update(['status' => 1])) {
+            Session::flash('errorMsg', trans('common.active_item', ['attribute' => trans('common.failed')]));
+
+            return Redirect::back();
+        }
+
+        // 置为已使用
+        $verify->status = 1;
+        $verify->save();
+
+        // 账号激活后给邀请人送流量
+        $inviter = $user->inviter;
+        if ($inviter) {
+            $inviter->incrementData(sysConfig('referral_traffic') * MB);
+        }
+
+        Session::flash('successMsg', trans('common.active_item', ['attribute' => trans('common.success')]));
+
+        return view('auth.active');
+    }
+
+    public function sendCode(Request $request)
+    { // 发送注册验证码
+        $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user,username']);
+
+        if ($validator->fails()) {
+            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
+        }
+        $email = $request->input('username');
+        $ip = IP::getClientIP();
+
+        // 校验域名邮箱黑白名单
+        if (sysConfig('is_email_filtering')) {
+            $result = $this->emailChecker($email);
+            if ($result !== false) {
+                return $result;
+            }
+        }
+
+        // 是否开启注册发送验证码
+        if ((int) sysConfig('is_activate_account') !== 1) {
+            return Response::json(['status' => 'fail', 'message' => trans('auth.active.error.disable')]);
+        }
+
+        // 防刷机制
+        if (Cache::has('send_verify_code_'.md5($ip))) {
+            return Response::json(['status' => 'fail', 'message' => trans('auth.register.error.throttle')]);
+        }
+
+        // 发送邮件
+        $code = Str::random(6);
+        if (VerifyCode::create(['address' => $email, 'code' => $code])) { // 生成注册验证码
+            Notification::route('mail', $email)->notifyNow(new Verification($code));
+        }
+
+        Cache::put('send_verify_code_'.md5($ip), $ip, Minute);
+
+        return Response::json(['status' => 'success', 'message' => trans('auth.captcha.sent')]);
+    }
+
+    public function free()
+    { // 公开的邀请码列表
+        return view('auth.free', ['inviteList' => Invite::whereInviterId(null)->whereStatus(0)->paginate()]);
+    }
+
+    public function switchLang(string $locale): RedirectResponse
+    { // 切换语言
+        Session::put('locale', $locale);
+
+        return Redirect::back();
+    }
+
+    private function check_captcha(Request $request)
+    { // 校验验证码
+        switch (sysConfig('is_captcha')) {
+            case 1: // 默认图形验证码
+                if (! Captcha::check($request->input('captcha'))) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 2: // Geetest
+                $validator = Validator::make($request->all(), ['geetest_challenge' => 'required|geetest']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 3: // Google reCAPTCHA
+                $validator = Validator::make($request->all(), ['g-recaptcha-response' => 'required|NoCaptcha']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 4: // hCaptcha
+                $validator = Validator::make($request->all(), ['h-captcha-response' => 'required|HCaptcha']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            default: // 不启用验证码
+                break;
+        }
+
+        return false;
+    }
+
     private function emailChecker($email, $returnType = 0)
-    {
+    { // 邮箱检查
         $emailFilterList = EmailFilter::whereType(sysConfig('is_email_filtering'))->pluck('words')->toArray();
         $emailSuffix = explode('@', $email); // 提取邮箱后缀
 
         if ($emailSuffix) {
             switch (sysConfig('is_email_filtering')) {
-                // 黑名单
-                case 1:
+                case 1: // 黑名单
                     if (in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
                         if ($returnType) {
                             return Redirect::back()->withErrors(trans('auth.email.error.banned'));
@@ -307,8 +561,7 @@ class AuthController extends Controller
                         return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
                     }
                     break;
-                    //白名单
-                case 2:
+                case 2: // 白名单
                     if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
                         if ($returnType) {
                             return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
@@ -379,9 +632,8 @@ class AuthController extends Controller
         return false;
     }
 
-    // 生成申请的请求地址
     private function addVerifyUrl($uid, $email)
-    {
+    { // 生成申请的请求地址
         $token = md5(sysConfig('website_name').$email.microtime());
         $verify = new Verify();
         $verify->user_id = $uid;
@@ -389,275 +641,5 @@ class AuthController extends Controller
         $verify->save();
 
         return $token;
-    }
-
-    // 重设密码页
-    public function resetPassword(Request $request)
-    {
-        if ($request->isMethod('POST')) {
-            // 校验请求
-            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
-
-            if ($validator->fails()) {
-                return Redirect::back()->withInput()->withErrors($validator->errors());
-            }
-
-            $username = $request->input('username');
-
-            // 是否开启重设密码
-            if (! sysConfig('password_reset_notification')) {
-                return Redirect::back()->withErrors(trans('auth.password.reset.error.disabled', ['email' => sysConfig('webmaster_email')]));
-            }
-
-            // 查找账号
-            $user = User::whereUsername($username)->firstOrFail();
-
-            // 24小时内重设密码次数限制
-            $resetTimes = 0;
-            if (Cache::has('resetPassword_'.md5($username))) {
-                $resetTimes = Cache::get('resetPassword_'.md5($username));
-                if ($resetTimes >= sysConfig('reset_password_times')) {
-                    return Redirect::back()->withErrors(trans('auth.password.reset.error.throttle', ['time' => sysConfig('reset_password_times')]));
-                }
-            }
-
-            // 生成取回密码的地址
-            $token = $this->addVerifyUrl($user->id, $username);
-
-            // 发送邮件
-            $resetUrl = route('resettingPasswd', $token);
-            $user->notifyNow(new PasswordReset($resetUrl));
-
-            Cache::put('resetPassword_'.md5($username), $resetTimes + 1, Day);
-
-            return Redirect::back()->with('successMsg', trans('auth.password.reset.sent'));
-        }
-
-        return view('auth.resetPassword');
-    }
-
-    // 重设密码
-    public function reset(Request $request, $token)
-    {
-        if (! $token) {
-            return Redirect::route('login');
-        }
-
-        if ($request->isMethod('POST')) {
-            $validator = Validator::make($request->all(), [
-                'password' => 'required|min:6|confirmed',
-            ]);
-
-            if ($validator->fails()) {
-                return Redirect::back()->withInput()->withErrors($validator->errors());
-            }
-
-            $password = $request->input('password');
-            // 校验账号
-            $verify = Verify::type(1)->whereToken($token)->firstOrFail();
-            $user = $verify->user;
-            if (! $verify) {
-                return Redirect::route('login');
-            }
-
-            if ($user->status === -1) {
-                return Redirect::back()->withErrors(trans('auth.error.account_baned'));
-            }
-
-            if ($verify->status === 1) {
-                return Redirect::back()->withErrors(trans('auth.error.url_timeout'));
-            }
-
-            if (Hash::check($password, $verify->user->password)) {
-                return Redirect::back()->withErrors(trans('auth.password.reset.error.same'));
-            }
-
-            // 更新密码
-            if (! $user->update(['password' => $password])) {
-                return Redirect::back()->withErrors(trans('auth.password.reset.error.failed'));
-            }
-
-            // 置为已使用
-            $verify->status = 1;
-            $verify->save();
-
-            return Redirect::route('login')->with('successMsg', trans('auth.password.reset.success'));
-        }
-
-        $verify = Verify::type(1)->whereToken($token)->first();
-        if (! $verify) {
-            return Redirect::route('login');
-        }
-
-        if (time() - strtotime($verify->created_at) >= 1800) {
-            // 置为已失效
-            $verify->status = 2;
-            $verify->save();
-        }
-
-        return view('auth.reset', ['verify' => Verify::type(1)->whereToken($token)->first()]); // 重新获取一遍verify
-    }
-
-    // 激活账号页
-    public function activeUser(Request $request)
-    {
-        if ($request->isMethod('POST')) {
-            $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|exists:user,username']);
-
-            if ($validator->fails()) {
-                return Redirect::back()->withInput()->withErrors($validator->errors());
-            }
-
-            $username = $request->input('username');
-
-            // 是否开启账号激活
-            if (! sysConfig('is_activate_account')) {
-                return Redirect::back()->withInput()->withErrors(trans('auth.active.error.disable'));
-            }
-
-            // 查找账号
-            $user = User::whereUsername($username)->firstOrFail();
-            if ($user->status === -1) {
-                return Redirect::back()->withErrors(trans('auth.error.account_baned'));
-            }
-
-            if ($user->status === 1) {
-                return Redirect::back()->withErrors(trans('auth.active.error.activated'));
-            }
-
-            // 24小时内激活次数限制
-            $activeTimes = 0;
-            if (Cache::has('activeUser_'.md5($username))) {
-                $activeTimes = Cache::get('activeUser_'.md5($username));
-                if ($activeTimes >= sysConfig('active_times')) {
-                    return Redirect::back()->withErrors(trans('auth.active.error.throttle', ['email' => sysConfig('webmaster_email')]));
-                }
-            }
-
-            // 生成激活账号的地址
-            $token = $this->addVerifyUrl($user->id, $username);
-
-            // 发送邮件
-            $activeUserUrl = route('activeAccount', $token);
-
-            Notification::route('mail', $username)->notifyNow(new AccountActivation($activeUserUrl));
-
-            Cache::put('activeUser_'.md5($username), $activeTimes + 1, Day);
-
-            return Redirect::back()->with('successMsg', trans('auth.active.sent'));
-        }
-
-        return view('auth.activeUser');
-    }
-
-    // 激活账号
-    public function active($token)
-    {
-        if (! $token) {
-            return Redirect::route('login');
-        }
-
-        $verify = Verify::type(1)->with('user')->whereToken($token)->firstOrFail();
-        $user = $verify->user;
-        if (! $verify) {
-            return Redirect::route('login');
-        }
-
-        if (empty($user) || $verify->status > 0) {
-            Session::flash('errorMsg', trans('auth.error.url_timeout'));
-
-            return view('auth.active');
-        }
-
-        if ($user->status === 1) {
-            Session::flash('errorMsg', trans('auth.active.error.activated'));
-
-            return view('auth.active');
-        }
-
-        if (time() - strtotime($verify->created_at) >= 1800) {
-            Session::flash('errorMsg', trans('auth.error.url_timeout'));
-
-            // 置为已失效
-            $verify->status = 2;
-            $verify->save();
-
-            return view('auth.active');
-        }
-
-        // 更新账号状态
-        if (! $user->update(['status' => 1])) {
-            Session::flash('errorMsg', trans('common.active_item', ['attribute' => trans('common.failed')]));
-
-            return Redirect::back();
-        }
-
-        // 置为已使用
-        $verify->status = 1;
-        $verify->save();
-
-        // 账号激活后给邀请人送流量
-        $inviter = $user->inviter;
-        if ($inviter) {
-            $inviter->incrementData(sysConfig('referral_traffic') * MB);
-        }
-
-        Session::flash('successMsg', trans('common.active_item', ['attribute' => trans('common.success')]));
-
-        return view('auth.active');
-    }
-
-    // 发送注册验证码
-    public function sendCode(Request $request)
-    {
-        $validator = Validator::make($request->all(), ['username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user,username']);
-
-        if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
-        }
-        $email = $request->input('username');
-        $ip = IP::getClientIP();
-
-        // 校验域名邮箱黑白名单
-        if (sysConfig('is_email_filtering')) {
-            $result = $this->emailChecker($email);
-            if ($result !== false) {
-                return $result;
-            }
-        }
-
-        // 是否开启注册发送验证码
-        if ((int) sysConfig('is_activate_account') !== 1) {
-            return Response::json(['status' => 'fail', 'message' => trans('auth.active.error.disable')]);
-        }
-
-        // 防刷机制
-        if (Cache::has('send_verify_code_'.md5($ip))) {
-            return Response::json(['status' => 'fail', 'message' => trans('auth.register.error.throttle')]);
-        }
-
-        // 发送邮件
-        $code = Str::random(6);
-        if (VerifyCode::create(['address' => $email, 'code' => $code])) { // 生成注册验证码
-            Notification::route('mail', $email)->notifyNow(new Verification($code));
-        }
-
-        Cache::put('send_verify_code_'.md5($ip), $ip, Minute);
-
-        return Response::json(['status' => 'success', 'message' => trans('auth.captcha.sent')]);
-    }
-
-    // 公开的邀请码列表
-    public function free()
-    {
-        return view('auth.free', ['inviteList' => Invite::whereInviterId(null)->whereStatus(0)->paginate()]);
-    }
-
-    // 切换语言
-    public function switchLang(string $locale): RedirectResponse
-    {
-        Session::put('locale', $locale);
-
-        return Redirect::back();
     }
 }

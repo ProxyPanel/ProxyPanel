@@ -32,7 +32,7 @@
                             <th>{{trans('user.shop.description')}} </th>
                             <th>{{trans('user.shop.price')}}</th>
                             <th>{{trans('user.shop.quantity')}}</th>
-                            <th>{{trans('user.coupon.attribute')}}</th>
+                            <th>{{trans('model.coupon.attribute')}}</th>
                             <th>{{trans('user.shop.total')}}</th>
                             <th>{{trans('common.status.attribute')}}</th>
                         </tr>
@@ -45,7 +45,7 @@
                             <td>
                                 @if($order->goods)
                                     {{trans('common.available_date')}}
-                                    <code>{{$order->goods->days}}</code> {{trans_choice('validation.attributes.day', 1)}}
+                                    <code>{{$order->goods->days}}</code> {{trans_choice('common.days.attribute', 1)}}
                                     <br/>
                                     @if($order->goods->type === 2)
                                         <code>{{$order->goods->traffic_label}}</code>
@@ -54,7 +54,7 @@
                                         <code>{{$order->goods->traffic_label}}</code>
                                         {{trans('user.attribute.data')}}/
                                         <code>{{$order->goods->days}}</code>
-                                        {{trans_choice('validation.attributes.day', 1)}}
+                                        {{trans_choice('common.days.attribute', 1)}}
                                     @endif
                                 @else
                                     {{trans('user.recharge_credit')}}

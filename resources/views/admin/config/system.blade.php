@@ -106,7 +106,7 @@
                             <x-system.switch code="is_rand_port" :check="$is_rand_port"/>
                             <x-system.input-limit code="min_port" hcode="max_port" :value="$min_port" min="1000" max="$('#max_port').val()" :hvalue="$max_port" hmin="$
                             ('#min_port').val()" hmax="65535"/>
-                            <x-system.input-limit code="default_days" :value="$default_days" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.input-limit code="default_days" :value="$default_days" unit="{{ trans_choice('common.days.attribute', 1) }}"/>
                             <x-system.input-limit code="default_traffic" :value="$default_traffic" unit="MB"/>
                             <x-system.input-limit code="invite_num" :value="$invite_num"/>
                             <x-system.input-limit code="reset_password_times" :value="$reset_password_times"/>
@@ -114,8 +114,8 @@
                                              :list="[trans('common.status.closed') => '', trans('admin.setting.email.black') => 1, trans('admin.setting.email.white') => 2]"/>
                             <x-system.input-limit code="active_times" :value="$active_times"/>
                             <x-system.input-limit code="register_ip_limit" :value="$register_ip_limit"/>
-                            <x-system.input-limit code="user_invite_days" :value="$user_invite_days" min="1" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
-                            <x-system.input-limit code="admin_invite_days" :value="$admin_invite_days" min="1" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.input-limit code="user_invite_days" :value="$user_invite_days" min="1" unit="{{ trans_choice('common.days.attribute', 1) }}"/>
+                            <x-system.input-limit code="admin_invite_days" :value="$admin_invite_days" min="1" unit="{{ trans_choice('common.days.attribute', 1) }}"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="node">
                             <x-system.input code="subscribe_domain" :value="$subscribe_domain" :holder="trans('admin.system.placeholder.default_url', ['url' => $website_url])"
@@ -173,7 +173,7 @@
                             <hr class="col-10"/>
                             <x-system.select code="account_expire_notification" multiple="1"
                                              :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.site') => 'database']"/>
-                            <x-system.input-limit code="expire_days" :value="$expire_days" unit="{{ trans_choice('validation.attributes.day', 1) }}"/>
+                            <x-system.input-limit code="expire_days" :value="$expire_days" unit="{{ trans_choice('common.days.attribute', 1) }}"/>
                             <x-system.select code="data_exhaust_notification" multiple="1"
                                              :list="[trans('admin.system.notification.channel.email') => 'mail', trans('admin.system.notification.channel.site') => 'database']"/>
                             <x-system.input-limit code="traffic_warning_percent" :value="$traffic_warning_percent" unit="%"/>

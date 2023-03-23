@@ -125,7 +125,7 @@
             area_a('{{ trans('admin.report.current_month') }}',@json($data['currentMonth'])),
             area_b('{{ trans('admin.report.last_month') }} ',@json($data['lastMonth']))],
         },
-        options: common_options(' {{ trans_choice('validation.attributes.day', 1) }}'),
+        options: common_options(' {{ trans_choice('common.days.attribute', 1) }}'),
       });
 
       new Chart(document.getElementById('months'), {

@@ -89,13 +89,13 @@
       new Chart(document.getElementById('dailyChart'), {
         type: 'line',
         data: datasets(@json($dayHours), @json($trafficHourly)),
-        options: common_options(' {{trans_choice('validation.attributes.hour', 2)}}'),
+        options: common_options(' {{trans_choice('common.hour', 2)}}'),
       });
 
       new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: datasets(@json($monthDays), @json($trafficDaily)),
-        options: common_options(' {{trans_choice('validation.attributes.day', 2)}}'),
+        options: common_options(' {{trans_choice('common.days.attribute', 2)}}'),
       });
     </script>
 @endsection
