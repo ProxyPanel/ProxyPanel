@@ -41,7 +41,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> ID</th>
-                        <th> {{ trans('model.node.type') }}</th>
+                        <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.node.name') }}</th>
                         <th> {{ trans('model.node.domain') }}</th>
                         <th> IP</th>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <!--[if IE 8]>
-<html lang="{{app()->getLocale()}}" class="ie8 no-js css-menubar"> <![endif]-->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="ie8 no-js css-menubar"> <![endif]-->
 <!--[if IE 9]>
-<html lang="{{app()->getLocale()}}" class="ie9 no-js css-menubar"> <![endif]-->
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="ie9 no-js css-menubar"> <![endif]-->
 <!--[if !IE]><!-->
-<html lang="{{app()->getLocale()}}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <!--<![endif]-->
 <head>
     <meta charset="utf-8">

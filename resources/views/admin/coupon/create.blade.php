@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-2 col-form-label">{{ trans('model.coupon.type') }}</label>
+                        <label class="col-md-2 col-form-label">{{ trans('model.common.type') }}</label>
                         <div class="col-md-10 align-items-center">
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" id="voucher" value="1" checked/>

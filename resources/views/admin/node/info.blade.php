@@ -69,7 +69,7 @@
                                         <div class="text-help offset-md-3">{{ trans('admin.node.info.data_rate_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="level" class="col-md-3 col-form-label">{{ trans('model.node.level') }}</label>
+                                        <label for="level" class="col-md-3 col-form-label">{{ trans('model.common.level') }}</label>
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="level" name="level">
                                             @foreach($levels as $level)
                                                 <option value="{{$level->level}}">{{$level->name}}</option>
@@ -219,7 +219,7 @@
                                     <!-- 代理 设置部分 -->
                                     <div class="proxy-config">
                                         <div class="form-group row">
-                                            <label for="type" class="col-md-3 col-form-label">{{ trans('model.node.type') }}</label>
+                                            <label for="type" class="col-md-3 col-form-label">{{ trans('model.common.type') }}</label>
                                             <ul class="col-md-9 list-unstyled list-inline">
                                                 <li class="list-inline-item">
                                                     <div class="radio-custom radio-primary">

@@ -14,7 +14,6 @@ return [
         'traffic_used'   => '流量使用',
         'service'        => '代理',
         'group'          => '分组',
-        'level'          => '等级',
         'account_status' => '账号状态',
         'proxy_status'   => '代理状态',
         'expired_date'   => '过期日',
@@ -36,6 +35,8 @@ return [
         'extend'      => '扩展',
         'sort'        => '排序',
         'description' => '描述',
+        'type'        => '类型',
+        'level'       => '等级',
     ],
     'country'          => [
         'code' => 'ISO国家代码',
@@ -63,7 +64,6 @@ return [
     'node'             => [
         'attribute'       => '节点',
         'id'              => '节点ID',
-        'type'            => '类型',
         'name'            => '名称',
         'domain'          => '域名',
         'static'          => '存活',
@@ -74,7 +74,6 @@ return [
         'ipv4'            => 'IPv4地址',
         'ipv6'            => 'IPv6地址',
         'push_port'       => '消息推送端口',
-        'level'           => '等级',
         'rule_group'      => '审计分组',
         'traffic_limit'   => '节点限速',
         'client_limit'    => '设备数限制',
@@ -126,11 +125,9 @@ return [
     ],
     'goods'            => [
         'attribute'      => '商品',
-        'type'           => '类型',
         'name'           => '名称',
         'price'          => '售价',
         'category'       => '分类',
-        'level'          => '等级',
         'renew'          => '流量重置价格',
         'user_limit'     => '用户限速',
         'period'         => '重置周期',
@@ -145,7 +142,6 @@ return [
     ],
     'rule'             => [
         'attribute' => '规则',
-        'type'      => '类型',
         'name'      => '描述',
         'pattern'   => '值',
     ],
@@ -167,10 +163,9 @@ return [
     ],
     'article'          => [
         'attribute'  => '文章',
-        'type'       => '类 型',
-        'category'   => '类 别',
-        'language'   => '语 言',
-        'logo'       => '头 图',
+        'category'   => '类别',
+        'language'   => '语言',
+        'logo'       => '头图',
         'created_at' => '发布日期',
         'updated_at' => '最后更新',
     ],
@@ -179,9 +174,8 @@ return [
         'name'               => '卡券名称',
         'sn'                 => '使用券码',
         'logo'               => '卡券图片',
-        'type'               => '类型',
         'value'              => '优惠额度',
-        'priority'           => '权 重',
+        'priority'           => '权重',
         'usable_times'       => '使用次数',
         'minimum'            => '满减条件',
         'used'               => '个人限用',
@@ -208,7 +202,6 @@ return [
         'id'         => '申请单ID',
     ],
     'notification'     => [
-        'type'       => '类型',
         'address'    => '收信地址',
         'created_at' => '投递时间',
         'status'     => '投递状态',
@@ -226,7 +219,6 @@ return [
     'user_data_modify' => [
         'before'      => '变动前流量',
         'after'       => '变动后流量',
-        'description' => '描述',
         'created_at'  => '发生时间',
     ],
     'user_credit'      => [

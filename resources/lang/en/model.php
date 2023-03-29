@@ -14,7 +14,6 @@ return [
         'traffic_used'   => 'Data Usage',
         'service'        => 'Proxy',
         'group'          => 'Group',
-        'level'          => 'Level',
         'account_status' => 'Account Status',
         'proxy_status'   => 'Proxy Status',
         'expired_date'   => 'Expiration Date',
@@ -36,6 +35,8 @@ return [
         'extend'      => 'Extension',
         'sort'        => 'Priority',
         'description' => 'Description',
+        'type'        => 'Type',
+        'level'       => 'Rank',
     ],
     'country'          => [
         'code' => 'ISO Territory Code',
@@ -63,7 +64,6 @@ return [
     'node'             => [
         'attribute'       => 'Node',
         'id'              => 'Node ID',
-        'type'            => 'Type',
         'name'            => 'Name',
         'domain'          => 'Domain Name',
         'static'          => 'Alive',
@@ -74,7 +74,6 @@ return [
         'ipv4'            => 'IPv4 Address',
         'ipv6'            => 'IPv6 Address',
         'push_port'       => 'Message Push Port',
-        'level'           => 'Rank',
         'rule_group'      => 'Audit Group',
         'traffic_limit'   => 'Speed Limit',
         'client_limit'    => 'Devices Limit',
@@ -126,11 +125,9 @@ return [
     ],
     'goods'            => [
         'attribute'      => 'Product',
-        'type'           => 'Type',
         'name'           => 'Name',
         'price'          => 'Price',
         'category'       => 'Category',
-        'level'          => 'Rank',
         'renew'          => 'Data Reset Price',
         'user_limit'     => 'Speed limit',
         'period'         => 'Reset period',
@@ -145,7 +142,6 @@ return [
     ],
     'rule'             => [
         'attribute' => 'Audit Rule',
-        'type'      => 'Type',
         'name'      => 'Description',
         'pattern'   => 'Value',
     ],
@@ -167,7 +163,6 @@ return [
     ],
     'article'          => [
         'attribute'  => 'Article',
-        'type'       => 'Type',
         'category'   => 'Category',
         'language'   => 'Language',
         'logo'       => 'Image',
@@ -179,7 +174,6 @@ return [
         'name'               => 'Coupon Name',
         'sn'                 => 'Coupon Code',
         'logo'               => 'Coupon Image',
-        'type'               => 'Type',
         'value'              => 'Amount of preference',
         'priority'           => 'Priority',
         'usable_times'       => 'Useable times',
@@ -208,7 +202,6 @@ return [
         'id'         => 'Referral ID',
     ],
     'notification'     => [
-        'type'       => 'Type',
         'address'    => 'Receive Address',
         'created_at' => 'Delivery Time',
         'status'     => 'Delivery Status',
@@ -226,7 +219,6 @@ return [
     'user_data_modify' => [
         'before'      => 'Pre-change Data',
         'after'       => 'Data after change',
-        'description' => 'Description',
         'created_at'  => 'Operation Date/Time',
     ],
     'user_credit'      => [

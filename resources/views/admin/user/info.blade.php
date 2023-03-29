@@ -41,7 +41,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="level">{{ trans('model.user.level') }}</label>
+                                <label class="col-md-2 col-sm-3 col-form-label" for="level">{{ trans('model.common.level') }}</label>
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" name="level" id="level" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                         @foreach($levels as $level)

@@ -21,7 +21,7 @@
                             <a class="nav-link" data-toggle="tab" href="#obfs" aria-controls="obfs" role="tab">{{ trans('model.node.obfs') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <a class="nav-link" data-toggle="tab" href="#level" aria-controls="level" role="tab">{{ trans('model.node.level') }}</a>
+                            <a class="nav-link" data-toggle="tab" href="#level" aria-controls="level" role="tab">{{ trans('model.common.level') }}</a>
                         </li>
                         <li class="nav-item" role="presentation">
                             <a class="nav-link" data-toggle="tab" href="#country" aria-controls="country" role="tab">{{ trans('model.node.country') }}</a>
@@ -143,7 +143,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                 <tr>
-                                    <th> {{ trans('model.node.level') }}</th>
+                                    <th> {{ trans('model.common.level') }}</th>
                                     <th> {{ trans('validation.attributes.name') }}</th>
                                     <th> {{ trans('common.action') }}</th>
                                 </tr>
@@ -323,13 +323,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.node.level')]) }}</h4>
+                    <h4 class="modal-title">{{ trans('admin.action.add_item', ['attribute' => trans('model.common.level')]) }}</h4>
                 </div>
                 <form action="#" method="post" class="modal-body">
                     <div class="alert alert-danger" style="display: none;" id="level_msg"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input type="text" class="form-control" name="level" id="add_level" placeholder="{{ trans('model.node.level') }}">
+                            <input type="text" class="form-control" name="level" id="add_level" placeholder="{{ trans('model.common.level') }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <input type="text" class="form-control" name="level_name" id="add_level_name" placeholder="{{ trans('validation.attributes.name') }}">
@@ -439,7 +439,7 @@
         const level_name = $('#add_level_name').val();
 
         if (level.trim() === '') {
-          $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.node.level')]) }}');
+          $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.level')]) }}');
           $('#level').focus();
           return false;
         }
@@ -506,7 +506,7 @@
       function delLevel(id, name) { // 删除等级
           @can('admin.config.level.destroy')
           swal.fire({
-            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.level')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.common.level')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,

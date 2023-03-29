@@ -15,7 +15,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" name="type" id="type" onchange="this.form.submit()">
-                            <option value="" hidden>{{ trans('model.notification.type') }}</option>
+                            <option value="" hidden>{{ trans('model.common.type') }}</option>
                             @foreach(config('common.notification.labels') as $key => $value)
                                 <option value="{{$key}}">{{$value}}</option>
                             @endforeach
@@ -30,7 +30,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{ trans('model.notification.type') }}</th>
+                        <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.notification.address') }}</th>
                         <th> {{ trans('validation.attributes.title') }}</th>
                         <th> {{ trans('validation.attributes.content') }}</th>

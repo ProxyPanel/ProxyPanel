@@ -60,7 +60,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="level" name="level">
-                            <option value="" hidden>{{ trans('model.user.level') }}</option>
+                            <option value="" hidden>{{ trans('model.common.level') }}</option>
                             @foreach($levels as $key => $level)
                                 <option value="{{$key}}">{{$level}}</option>
                             @endforeach

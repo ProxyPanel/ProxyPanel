@@ -14,7 +14,6 @@ return [
         'traffic_used'   => 'Đã sử dụng',
         'service'        => 'Proxy',
         'group'          => 'Nhóm',
-        'level'          => 'Cấp',
         'account_status' => 'Trạng Thái Tài Khoản',
         'proxy_status'   => 'Trạng thái Proxy',
         'expired_date'   => 'Ngày hết hạn',
@@ -36,6 +35,8 @@ return [
         'extend'      => 'Mở rộng',
         'sort'        => 'Sắp xếp',
         'description' => 'Mô tả',
+        'type'        => 'Loại',
+        'level'       => 'Cấp độ',
     ],
     'country'          => [
         'code' => 'Mã quốc gia ISO',
@@ -63,7 +64,6 @@ return [
     'node'             => [
         'attribute'       => 'Node',
         'id'              => 'NodeID',
-        'type'            => 'Loại',
         'name'            => 'Tên',
         'domain'          => '域名',
         'static'          => '存活',
@@ -74,7 +74,6 @@ return [
         'ipv4'            => 'IPv4地址',
         'ipv6'            => 'IPv6地址',
         'push_port'       => '消息推送端口',
-        'level'           => 'Cấp độ',
         'rule_group'      => '审计分组',
         'traffic_limit'   => '节点限速',
         'client_limit'    => '设备数限制',
@@ -126,11 +125,9 @@ return [
     ],
     'goods'            => [
         'attribute'      => 'Sản phẩm',
-        'type'           => 'Loại',
         'name'           => 'Tên',
         'price'          => 'Giá',
         'category'       => 'Danh mục',
-        'level'          => 'Cấp độ',
         'renew'          => 'Giá reset data',
         'user_limit'     => 'Giới hạn người dùng',
         'period'         => 'Chu kì',
@@ -145,7 +142,6 @@ return [
     ],
     'rule'             => [
         'attribute' => 'Quy tắc',
-        'type'      => 'Loại',
         'name'      => 'Mô tả',
         'pattern'   => 'Giá trí',
     ],
@@ -167,10 +163,9 @@ return [
     ],
     'article'          => [
         'attribute'  => '文章',
-        'type'       => '类 型',
-        'category'   => '类 别',
-        'language'   => '语 言',
-        'logo'       => '头 图',
+        'category'   => '类别',
+        'language'   => '语言',
+        'logo'       => '头图',
         'created_at' => '发布日期',
         'updated_at' => '最后更新',
     ],
@@ -179,9 +174,8 @@ return [
         'name'               => '卡券名称',
         'sn'                 => '使用券码',
         'logo'               => '卡券图片',
-        'type'               => 'Loại',
         'value'              => '优惠额度',
-        'priority'           => '权 重',
+        'priority'           => '权重',
         'usable_times'       => '使用次数',
         'minimum'            => '满减条件',
         'used'               => '个人限用',
@@ -208,7 +202,6 @@ return [
         'id'         => '申请单ID',
     ],
     'notification'     => [
-        'type'       => 'Loại',
         'address'    => '收信地址',
         'created_at' => '投递时间',
         'status'     => '投递状态',
@@ -226,7 +219,6 @@ return [
     'user_data_modify' => [
         'before'      => '变动前流量',
         'after'       => '变动后流量',
-        'description' => 'Mô tả',
         'created_at'  => '发生时间',
     ],
     'user_credit'      => [

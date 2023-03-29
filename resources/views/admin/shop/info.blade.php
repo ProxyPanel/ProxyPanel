@@ -33,7 +33,7 @@
                     <div class="form-row">
                         <div class="col-lg-6 col-md-12">
                             <div class="form-group row">
-                                <label class="col-md-2 col-form-label">{{ trans('model.goods.type') }}</label>
+                                <label class="col-md-2 col-form-label">{{ trans('model.common.type') }}</label>
                                 <div class="col-md-10 align-items-center">
                                     <div class="radio-custom radio-primary radio-inline">
                                         <input type="radio" name="type" id="data_package" value="1"/>
@@ -72,7 +72,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="level" class="col-md-2 col-form-label">{{ trans('model.goods.level') }}</label>
+                                <label for="level" class="col-md-2 col-form-label">{{ trans('model.common.level') }}</label>
                                 <div class="col-md-4">
                                     <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="form-control" name="level" id="level">
                                         @foreach ($levels as $level)

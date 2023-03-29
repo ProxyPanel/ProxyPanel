@@ -17,7 +17,7 @@
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-4">
                         <select class="form-control" id="type" name="type">
-                            <option value="" hidden>{{ trans('model.goods.type') }}</option>
+                            <option value="" hidden>{{ trans('model.common.type') }}</option>
                             <option value="1">{{ trans('admin.goods.type.package') }}</option>
                             <option value="2">{{ trans('admin.goods.type.plan') }}</option>
                         </select>
@@ -39,7 +39,7 @@
                     <tr>
                         <th> #</th>
                         <th> {{ trans('model.goods.name') }}</th>
-                        <th> {{ trans('model.goods.type') }}</th>
+                        <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.goods.logo') }}</th>
                         <th> {{ trans('model.goods.traffic') }}</th>
                         <th> {{ trans('model.goods.price') }}</th>
