@@ -27,7 +27,7 @@
                         <th> {{ trans('model.user_credit.before') }}</th>
                         <th> {{ trans('model.user_credit.amount') }}</th>
                         <th> {{ trans('model.user_credit.after') }}</th>
-                        <th> {{ trans('validation.attributes.description') }}</th>
+                        <th> {{ trans('model.common.description') }}</th>
                         <th> {{ trans('model.user_credit.created_at') }}</th>
                     </tr>
                     </thead>

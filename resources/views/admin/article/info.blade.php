@@ -24,7 +24,7 @@
                         @method('PUT')
                     @endisset
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="type"> {{ trans('model.article.type') }} </label>
+                        <label class="col-form-label col-md-2" for="type"> {{ trans('model.common.type') }} </label>
                         <div class="col-md-10 d-flex align-items-center">
                             <div class="radio-custom radio-primary radio-inline">
                                 <input type="radio" name="type" value="1" checked/>

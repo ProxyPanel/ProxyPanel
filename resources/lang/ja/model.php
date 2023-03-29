@@ -14,7 +14,6 @@ return [
         'traffic_used'   => 'データ使用量',
         'service'        => 'プロキシ',
         'group'          => 'グループ',
-        'level'          => 'レベル',
         'account_status' => 'アカウント状態',
         'proxy_status'   => 'プロキシ状態',
         'expired_date'   => '終了日',
@@ -36,6 +35,8 @@ return [
         'extend'      => '拡張',
         'sort'        => '並べ替え',
         'description' => '説明',
+        'type'        => 'タイプ',
+        'level'       => 'レベル',
     ],
     'country'          => [
         'code' => 'ISO国コード',
@@ -63,7 +64,6 @@ return [
     'node'             => [
         'attribute'       => 'ノード',
         'id'              => 'ノードID',
-        'type'            => 'タイプ',
         'name'            => '注文番号による検索',
         'domain'          => 'ドメイン',
         'static'          => '生存',
@@ -74,7 +74,6 @@ return [
         'ipv4'            => 'ＩＰｖ４アドレス',
         'ipv6'            => 'IPv6アドレス',
         'push_port'       => 'メッセージポート:',
-        'level'           => 'レベル',
         'rule_group'      => '監査グループ',
         'traffic_limit'   => 'ノード制限速度',
         'client_limit'    => 'デバイスの制限',
@@ -126,11 +125,9 @@ return [
     ],
     'goods'            => [
         'attribute'      => '配送番号の設定',
-        'type'           => 'タイプ',
         'name'           => '注文番号による検索',
         'price'          => '販売価格',
         'category'       => 'カテゴリ',
-        'level'          => 'レベル',
         'renew'          => '使用量のリセット',
         'user_limit'     => 'ユーザー制限速度',
         'period'         => '期間をリセット',
@@ -145,7 +142,6 @@ return [
     ],
     'rule'             => [
         'attribute' => 'ルール',
-        'type'      => 'タイプ',
         'name'      => '説明',
         'pattern'   => '値',
     ],
@@ -167,7 +163,6 @@ return [
     ],
     'article'          => [
         'attribute'  => '記事',
-        'type'       => 'クラス',
         'category'   => 'クラス',
         'language'   => '話す',
         'logo'       => 'ヘッダ',
@@ -179,7 +174,6 @@ return [
         'name'               => 'カード券名',
         'sn'                 => 'クーポンコードを使用',
         'logo'               => 'カード券画像',
-        'type'               => 'タイプ',
         'value'              => '割引率',
         'priority'           => '重さ',
         'usable_times'       => '使用数',
@@ -208,7 +202,6 @@ return [
         'id'         => '単品ID',
     ],
     'notification'     => [
-        'type'       => 'タイプ',
         'address'    => '送信先アドレス',
         'created_at' => '配達日数',
         'status'     => '納品検収状態',
@@ -226,7 +219,6 @@ return [
     'user_data_modify' => [
         'before'      => '変更前のトラフィック',
         'after'       => '運用の後退率',
-        'description' => '説明',
         'created_at'  => 'タイムスタンプ',
     ],
     'user_credit'      => [

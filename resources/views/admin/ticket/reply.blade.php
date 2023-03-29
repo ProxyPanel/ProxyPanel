@@ -76,7 +76,7 @@
                                     </span>
                                 @endif
                             </dd>
-                            <dt class="col-sm-3">{{ trans('model.user.level') }}</dt>
+                            <dt class="col-sm-3">{{ trans('model.common.level') }}</dt>
                             <dd class="col-sm-9">{{$user->level}}</dd>
                             <dt class="col-sm-3">{{ trans('model.user.group') }}</dt>
                             <dd class="col-sm-9">{{$user->userGroup->name ?? trans('common.none')}}</dd>
@@ -121,7 +121,7 @@
                             @isset ($user->inviter)
                                 <dt class="col-sm-3 offset-md-1">{{ trans('model.user.username') }}</dt>
                                 <dd class="col-sm-8">{{$user->inviter->username}}</dd>
-                                <dt class="col-sm-3 offset-md-1">{{ trans('model.user.level') }}</dt>
+                                <dt class="col-sm-3 offset-md-1">{{ trans('model.common.level') }}</dt>
                                 <dd class="col-sm-8">{{$user->inviter->level}}</dd>
                                 <dt class="col-sm-3 offset-md-1">{{ trans('common.latest_at') }}</dt>
                                 <dd class="col-sm-8">

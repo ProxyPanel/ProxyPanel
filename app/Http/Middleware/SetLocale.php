@@ -2,10 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use Agent;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Session;
+
+use function app;
 
 class SetLocale
 {
@@ -18,14 +19,24 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Session::has('locale')) {
-            app()->setLocale(Session::get('locale'));
+        if (session()->has('locale')) {
+            $lang = session()->get('locale');
         } elseif ($request->query('locale')) {
-            Session::put('locale', $request->query('locale'));
-            app()->setLocale($request->query('locale'));
-        } elseif ($request->header('content-language')) {
-            Session::put('locale', $request->header('content-language'));
-            App::setLocale($request->header('content-language'));
+            $lang = $request->query('locale');
+        } elseif (Agent::languages()) {
+            $langs = array_keys(config('common.language'));
+            $langs_low = array_map('strtolower', $langs);
+            $accept = array_map('strtolower', str_replace('-', '_', Agent::languages()));
+            $intersects = array_intersect($accept, $langs_low);
+
+            if ($intersects) {
+                $lang = array_values($langs)[array_search(array_values($intersects)[0], $langs_low, true)];
+            }
+        }
+
+        if (isset($lang) && $lang !== app()->getLocale()) {
+            app()->setLocale($lang);
+            session()->put('locale', $lang);
         }
 
         return $next($request);

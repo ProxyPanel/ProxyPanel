@@ -26,7 +26,7 @@
                         <th> {{ trans('model.order.attribute') }}</th>
                         <th> {{ trans('model.user_data_modify.before') }}</th>
                         <th> {{ trans('model.user_data_modify.after') }}</th>
-                        <th> {{ trans('validation.attributes.description') }}</th>
+                        <th> {{ trans('model.common.description') }}</th>
                         <th> {{ trans('model.user_data_modify.created_at') }}</th>
                     </tr>
                     </thead>

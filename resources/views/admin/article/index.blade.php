@@ -20,7 +20,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="type" name="type">
-                            <option value="" hidden>{{ trans('model.article.type') }}</option>
+                            <option value="" hidden>{{ trans('model.common.type') }}</option>
                             <option value="1">{{ trans('admin.article.type.knowledge') }}</option>
                             <option value="2">{{ trans('admin.article.type.announcement') }}</option>
                         </select>
@@ -52,7 +52,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{ trans('model.article.type') }}</th>
+                        <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.article.category') }}</th>
                         <th> {{ trans('validation.attributes.title') }}</th>
                         <th> {{ trans('model.article.language') }}</th>

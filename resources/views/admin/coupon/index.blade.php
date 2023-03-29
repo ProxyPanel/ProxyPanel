@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group col-lg-3 col-sm-4">
                         <select class="form-control" name="type" id="type">
-                            <option value="" hidden>{{ trans('model.coupon.type') }}</option>
+                            <option value="" hidden>{{ trans('model.common.type') }}</option>
                             <option value="1">{{ trans('admin.coupon.type.voucher') }}</option>
                             <option value="2">{{ trans('admin.coupon.type.discount') }}</option>
                             <option value="3">{{ trans('admin.coupon.type.charge') }}</option>
@@ -51,7 +51,7 @@
                         <th> {{ trans('model.coupon.name') }}</th>
                         <th> {{ trans('model.coupon.sn') }}</th>
                         <th> {{ trans('model.coupon.logo') }}</th>
-                        <th> {{ trans('model.coupon.type') }}</th>
+                        <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.coupon.priority') }}</th>
                         <th> {{ trans('model.coupon.usable_times') }}</th>
                         <th> {{ trans('admin.coupon.discount') }}</th>
