@@ -35,13 +35,13 @@
                         <div class="panel-body">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    订单原价：{{ $order->origin_amount_tag }}
+                                    {{ trans('model.order.original_price') }}: {{ $order->origin_amount_tag }}
                                 </li>
                                 <li class="list-group-item">
-                                    实际支付金额：{{ $order->origin_amount_tag }}
+                                    {{ trans('model.order.price') }}: {{ $order->origin_amount_tag }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('user.payment_method') }}：
+                                    {{ trans('user.payment_method') }}:
                                     {{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}
                                 </li>
                                 <li class="list-group-item">
@@ -53,7 +53,7 @@
                                     </li>
                                 @endif
                                 <li class="list-group-item">
-                                    {{ trans('common.status.attribute') }}：{!! $order->status_label !!}
+                                    {{ trans('common.status.attribute') }}: {!! $order->status_label !!}
                                 </li>
                             </ul>
                         </div>
@@ -63,25 +63,25 @@
                     <div class="panel panel-line panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <i class="icon wb-user-circle" aria-hidden="true"></i> 用户信息
+                                <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
                             </h3>
                         </div>
                         <div class="panel-body">
                             <ul class="list-group">
                                 <li class="list-group-item">
-                                    {{ trans('model.user.nickname') }}：{{ $user->nickname }}
+                                    {{ trans('model.user.nickname') }}: {{ $user->nickname }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('model.user.username') }}：{{ $user->username }}
+                                    {{ trans('model.user.username') }}: {{ $user->username }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('user.attribute.data') }}：{{ flowAutoShow($user->used_traffic) }} / {{ flowAutoShow($user->transfer_enable) }}
+                                    {{ trans('model.user.traffic_used') }}: {{ flowAutoShow($user->used_traffic) }} / {{ flowAutoShow($user->transfer_enable) }}
                                 </li>
                                 <li class="list-group-item">
-                                    余额：{{ $user->credit }}
+                                    {{ trans('model.user.credit') }}: {{ $user->credit }}
                                 </li>
                                 <li class="list-group-item">
-                                    过期时间：{{ $user->expiration_date }}
+                                    {{ trans('model.user.expired_date') }}: {{ $user->expiration_date }}
                                 </li>
                             </ul>
                         </div>

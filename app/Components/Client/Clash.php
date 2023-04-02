@@ -3,8 +3,10 @@
 namespace App\Components\Client;
 
 /*
- * 本文件依据Clash文件编辑
- * https://github.com/Dreamacro/clash/tree/master/adapters/outbound
+ * 本文件依据
+ * https://github.com/Dreamacro/clash/tree/master/adapter/outbound
+ * https://github.com/Dreamacro/clash/wiki/Configuration#all-configuration-options
+ * https://lancellc.gitbook.io/clash/clash-config-file/proxies/config-a-shadowsocks-proxy
  *
  */
 
@@ -13,44 +15,44 @@ class Clash
     public static function buildShadowsocks($server)
     {
         return [
-            'name' => $server['name'],
-            'type' => 'ss',
-            'server' => $server['host'],
-            'port' => $server['port'],
+            'name'     => $server['name'],
+            'type'     => 'ss',
+            'server'   => $server['host'],
+            'port'     => $server['port'],
             'password' => $server['passwd'],
-            'cipher' => $server['method'],
-            'udp' => $server['udp'],
+            'cipher'   => $server['method'],
+            'udp'      => $server['udp'],
         ];
     }
 
     public static function buildShadowsocksr($server)
     {
         return [
-            'name' => $server['name'],
-            'type' => 'ssr',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'password' => $server['passwd'],
-            'cipher' => $server['method'],
-            'obfs' => $server['obfs'],
-            'protocol' => $server['protocol'],
-            'obfs-param' => $server['obfs_param'],
+            'name'           => $server['name'],
+            'type'           => 'ssr',
+            'server'         => $server['host'],
+            'port'           => $server['port'],
+            'password'       => $server['passwd'],
+            'cipher'         => $server['method'],
+            'obfs'           => $server['obfs'],
+            'obfs-param'     => $server['obfs_param'],
+            'protocol'       => $server['protocol'],
             'protocol-param' => $server['protocol_param'],
-            'udp' => $server['udp'],
+            'udp'            => $server['udp'],
         ];
     }
 
     public static function buildVmess($server)
     {
         $array = [
-            'name' => $server['name'],
-            'type' => 'vmess',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'uuid' => $server['uuid'],
+            'name'    => $server['name'],
+            'type'    => 'vmess',
+            'server'  => $server['host'],
+            'port'    => $server['port'],
+            'uuid'    => $server['uuid'],
             'alterId' => $server['v2_alter_id'],
-            'cipher' => $server['method'],
-            'udp' => $server['udp'],
+            'cipher'  => $server['method'],
+            'udp'     => $server['udp'],
         ];
 
         if ($server['v2_tls']) {
@@ -65,7 +67,6 @@ class Clash
             if ($server['v2_host']) {
                 $array['ws-opts']['headers'] = ['Host' => $server['v2_host']];
             }
-            // TODO: 2022.06.01 remove it
             $array['ws-path'] = $server['v2_path'];
             if ($server['v2_host']) {
                 $array['ws-headers'] = ['Host' => $server['v2_host']];
@@ -78,12 +79,12 @@ class Clash
     public static function buildTrojan($server)
     {
         $array = [
-            'name' => $server['name'],
-            'type' => 'trojan',
-            'server' => $server['host'],
-            'port' => $server['port'],
+            'name'     => $server['name'],
+            'type'     => 'trojan',
+            'server'   => $server['host'],
+            'port'     => $server['port'],
             'password' => $server['passwd'],
-            'udp' => $server['udp'],
+            'udp'      => $server['udp'],
         ];
 
         if (! empty($server['sni'])) {

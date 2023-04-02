@@ -41,7 +41,9 @@ return [
     'goto'            => '이전',
     'warning'         => '경고',
     'success'         => '성공',
+    'success_item'    => ':attribute成功',
     'failed'          => '실패',
+    'failed_item'     => ':attribute失败',
     'update'          => '갱신',
     'update_action'   => '갱신:action',
     'none'            => '없음',
@@ -78,14 +80,13 @@ return [
     'unlimited'       => '无限制',
     'payment'         => [
         'credit' => '余额',
-        'wechat' => '微信',
         'alipay' => '支付宝',
+        'qq'     => 'QQ钱包',
+        'wechat' => '微信支付',
         'crypto' => '虚拟货币',
         'manual' => '人工支付',
         'status' => [
             'wait'    => '待支付',
-            'fail'    => '支付失败',
-            'success' => '支付成功',
         ],
     ],
     'order'           => [
@@ -140,7 +141,7 @@ return [
     'import'          => '导 入',
     'or'              => '或',
     'more'            => '더 보기',
-    'to'              => '至',
+    'to'              => '에',
     'to_be_send'      => '待发送',
     'developing'      => '开发中！敬请期待',
 ];

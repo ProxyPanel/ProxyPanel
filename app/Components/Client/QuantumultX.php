@@ -2,6 +2,12 @@
 
 namespace App\Components\Client;
 
+/*
+ * 本文件依据
+ * https://github.com/crossutility/Quantumult-X/blob/master/server-complete.snippet
+ *
+ */
+
 class QuantumultX
 {
     public static function buildShadowsocks($server)
@@ -43,7 +49,7 @@ class QuantumultX
             "method={$server['method']}",
             "password={$server['uuid']}",
             'fast-open=true',
-            'udp-relay=true',
+            "udp-relay={$server['udp']}",
             "tag={$server['name']}",
         ];
 
@@ -82,7 +88,7 @@ class QuantumultX
             // Tips: allowInsecure=false = tls-verification=true
             // $server['allow_insecure'] ? 'tls-verification=false' : 'tls-verification=true',
             'fast-open=true',
-            'udp-relay=true',
+            "udp-relay={$server['udp']}",
             "tag={$server['name']}",
         ]);
 

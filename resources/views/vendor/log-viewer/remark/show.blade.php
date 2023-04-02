@@ -215,7 +215,7 @@
         <div class="modal-dialog modal-simple modal-center">
             <form id="deleteLogForm" class="modal-content" action="{{ route('log-viewer::logs.delete') }}" method="POST">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title">@lang('Delete log file')</h4>

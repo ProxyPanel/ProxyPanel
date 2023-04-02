@@ -521,7 +521,7 @@ return [
         'is_captcha'                    => 'Captcha',
         'is_checkin'                    => 'Check-in Reward',
         'is_clear_log'                  => 'Clean Logs',
-        'is_custom_subscribe'           => 'Various Subscriptions',
+        'is_custom_subscribe'           => 'Advanced Subscription',
         'is_email_filtering'            => 'Email Filtering',
         'is_forbid_robot'               => 'Forbid Bots Access',
         'is_free_code'                  => 'Free Invitation Code',
@@ -610,7 +610,6 @@ return [
         'wechat_qrcode'                 => 'WeChat QrCode',
         'wechat_secret'                 => 'Enterprise WeChat Secret',
         'wechat_token'                  => 'Enterprise WeChat Token',
-
         'hint'           => [
             'account_expire_notification'   => 'Notify users that their accounts are about to expire',
             'active_times'                  => 'The number of times a user can activate an account via email within 1 day',
@@ -749,7 +748,7 @@ return [
             ],
         ],
         'notification'   => [
-            'channel' => [
+            'channel'   => [
                 'telegram'   => 'Telegram',
                 'wechat'     => 'Enterprise WeChat',
                 'dingtalk'   => 'DingTalk',
@@ -762,6 +761,7 @@ return [
                 'tg_chat'    => 'TG Chat',
                 'site'       => 'Site Popup',
             ],
+            'send_test' => 'Send Test Message',
         ],
         'forbid'         => [
             'mainland' => 'Forbid Chinese Mainland Access',

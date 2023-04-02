@@ -31,7 +31,7 @@
                     </div>
                 </form>
                 {{--                <div class="alert alert-info alert-dismissible" role="alert">--}}
-                {{--                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">--}}
+                {{--                    <button type="button" class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">--}}
                 {{--                        <span aria-hidden="true">×</span></button>--}}
                 {{--                    仅会推送给关注了您的消息通道的用户 @can('admin.system.index')<a href="{{route('admin.system.index')}}" class="alert-link" target="_blank">设置PushBear</a> @else 设置PushBear @endcan--}}
                 {{--                </div>--}}
@@ -82,7 +82,7 @@
             <div class="modal-dialog modal-lg modal-center">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                             <span aria-hidden="true">×</span>
                         </button>
                         <h4 class="modal-title">{{ trans('admin.marketing.push.send') }}</h4>

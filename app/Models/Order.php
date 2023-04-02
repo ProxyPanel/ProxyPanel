@@ -177,7 +177,7 @@ class Order extends Model
         return [
             0 => trans('common.payment.credit'),
             1 => trans('common.payment.alipay'),
-            2 => 'QQ',
+            2 => trans('common.payment.qq'),
             3 => trans('common.payment.wechat'),
             4 => trans('common.payment.crypto'),
             5 => 'PayPal',

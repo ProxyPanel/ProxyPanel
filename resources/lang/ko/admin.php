@@ -535,7 +535,7 @@ return [
         'is_WeChatPay'                  => '微信支付',
         'iYuu_token'                    => 'IYUU令牌',
         'maintenance_content'           => '维护介绍内容',
-        'maintenance_mode'              => '维护模式',
+        'maintenance_mode'              => 'Maintenance Mode',
         'maintenance_time'              => '维护结束时间',
         'min_port'                      => '端口范围',
         'min_rand_traffic'              => '流量范围',
@@ -610,7 +610,6 @@ return [
         'wechat_qrcode'                 => '微 信二维码',
         'wechat_secret'                 => '微信企业应用密钥',
         'wechat_token'                  => '微信企业应用TOKEN',
-
         'hint'           => [
             'account_expire_notification'   => '通知用户账号即将到期',
             'active_times'                  => '24小时内可以通过邮件激活账号次数',
@@ -749,7 +748,7 @@ return [
             ],
         ],
         'notification'   => [
-            'channel' => [
+            'channel'   => [
                 'telegram'   => 'TG电报',
                 'wechat'     => '微信企业',
                 'dingtalk'   => '钉钉',
@@ -762,6 +761,7 @@ return [
                 'tg_chat'    => 'TG酱',
                 'site'       => '站内通知',
             ],
+            'send_test' => '发送测试消息',
         ],
         'forbid'         => [
             'mainland' => '阻拦大陆',

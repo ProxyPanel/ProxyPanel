@@ -27,7 +27,7 @@
                             <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}" />
                         </a>
                         <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
-                        <p class="user-job"><i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('common.payment.wechat')}}：
+                        <p class="user-job"><i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('model.user.wechat')}}：
                             @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif</p>
                         <p class="user-location"><i class="fa-brands fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
                             @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif</p>
@@ -103,11 +103,11 @@
                                         <input type="text" class="form-control col-md-6 round" name="nickname" id="nickname" value="{{Auth::getUser()->nickname}}"/>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="wechat" class="col-md-5 col-form-label">{{trans('common.payment.wechat')}}</label>
+                                        <label for="wechat" class="col-md-5 col-form-label">{{trans('model.user.wechat')}}</label>
                                         <input type="text" class="form-control col-md-6 round" name="wechat" id="wechat" value="{{Auth::getUser()->wechat}}"/>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="qq" class="col-md-5 col-form-label">QQ</label>
+                                        <label for="qq" class="col-md-5 col-form-label">{{trans('model.user.qq')}}</label>
                                         <input type="number" class="form-control col-md-6 round" name="qq" id="qq" value="{{Auth::getUser()->qq}}"/>
                                     </div>
                                     <div class="form-actions">

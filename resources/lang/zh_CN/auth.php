@@ -94,4 +94,5 @@ return [
     'request'         => '获 取',
     'throttle'        => '您尝试的登录次数过多，请 :seconds 秒后再试。',
     'tos'             => '用户条款',
+    'one-click_login' => '一键登录',
 ];

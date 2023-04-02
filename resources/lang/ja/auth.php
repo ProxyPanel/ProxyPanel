@@ -94,4 +94,5 @@ return [
     'request'         => '取込',
     'throttle'        => 'ログインの試行回数が多すぎます。:seconds 秒後にお試しください。',
     'tos'             => '使用条件',
+    'one-click_login' => 'ワンタッチログイン',
 ];

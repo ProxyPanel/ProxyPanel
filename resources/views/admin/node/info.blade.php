@@ -17,7 +17,7 @@
                 </h2>
             </div>
             <div class="alert alert-info" role="alert">
-                <button class="close" data-dismiss="alert" aria-label="Close">
+                <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
                     <span aria-hidden="true">&times;</span>
                     <span class="sr-only">{{trans('common.close')}}</span>
                 </button>
@@ -118,7 +118,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="description" class="col-md-3 col-form-label"> {{ trans('model.common.description') }} </label>
-                                        <input type="text" class="form-control col-md-6" name="description" id="description" placeholder="简单描述">
+                                        <input type="text" class="form-control col-md-6" name="description" id="description">
                                     </div>
                                     <div class="form-group row">
                                         <label for="sort" class="col-md-3 col-form-label">{{ trans('model.common.sort') }}</label>

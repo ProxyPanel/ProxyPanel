@@ -342,10 +342,10 @@ class UserController extends Controller
                 // 通知相关管理员
                 Notification::send(User::find(1), new TicketReplied($reply, route('admin.ticket.edit', $ticket)));
 
-                return Response::json(['status' => 'success', 'message' => trans('user.ticket.reply').trans('common.success')]);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
             }
 
-            return Response::json(['status' => 'fail', 'message' => trans('user.ticket.reply').trans('common.failed')]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.ticket.reply')])]);
         }
 
         return view('user.replyTicket', [
@@ -479,13 +479,13 @@ class UserController extends Controller
 
             DB::commit();
 
-            return Response::json(['status' => 'success', 'message' => trans('common.replace').trans('common.success')]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.replace')])]);
         } catch (Exception $e) {
             DB::rollBack();
 
             Log::error(trans('user.subscribe.error').'：'.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.replace').trans('common.failed').$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.replace')]).$e->getMessage()]);
         }
     }
 
@@ -518,10 +518,10 @@ class UserController extends Controller
         }
 
         if ((new CouponService($request->input('coupon_sn')))->charge()) {
-            return Response::json(['status' => 'success', 'message' => trans('user.recharge').trans('common.success')]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.recharge')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('user.recharge').trans('common.failed')]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
     }
 
     public function switchCurrency(string $code)// 切换语言

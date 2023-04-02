@@ -22,7 +22,7 @@ return [
         'unknown'      => 'Unknown subscribe URL! Please get a new one!',
         'sub_baned'    => 'Subscribe banned! Visit the web for detail',
         'user'         => 'Wrong URL, Account not exist!',
-        'user_disable' => 'Account Banned!',
+        'user_disable' => 'Account Disabled! Contact Support!',
         'baned_until'  => 'Account has been banned until :time, Please wait to unlock!',
         'out'          => 'OUT OF DATA! Please consider to purchase new data or reset it!',
         'expired'      => 'Account Expired! Please renew your purchase!',
