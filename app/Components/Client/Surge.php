@@ -26,6 +26,7 @@ class Surge
             $server['host'],
             $server['port'],
             "username={$server['uuid']}",
+            'vmess-aead=true',
             'tfo=true',
             "udp-relay={$server['udp']}",
         ];
@@ -50,6 +51,7 @@ class Surge
             $server['sni'] ? "sni={$server['sni']}" : '',
             'tfo=true',
             "udp-relay={$server['udp']}",
+            // "skip-cert-verify={$server['allow_insecure']}"
         ]);
 
         return implode(',', $config).PHP_EOL;

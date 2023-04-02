@@ -41,7 +41,9 @@ return [
     'goto'            => 'ホット',
     'warning'         => 'アラート',
     'success'         => '成功しました。',
+    'success_item'    => ':attribute にして下さい。',
     'failed'          => '失敗',
+    'failed_item'     => ':attribute は不正です。',
     'update'          => 'より新しい',
     'update_action'   => '更新:action',
     'none'            => 'いいえ',
@@ -78,14 +80,13 @@ return [
     'unlimited'       => '無制限',
     'payment'         => [
         'credit' => '残高',
-        'wechat' => 'マイクロレター',
         'alipay' => 'アリペイ',
+        'qq'     => 'QQウォレット',
+        'wechat' => 'WeChat 支払う',
         'crypto' => 'バーチャル通貨',
         'manual' => '自動決済',
         'status' => [
             'wait'    => '未支払',
-            'fail'    => '支払いに失敗しました',
-            'success' => 'お支払い完了',
         ],
     ],
     'order'           => [

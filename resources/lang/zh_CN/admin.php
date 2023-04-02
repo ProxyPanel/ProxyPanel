@@ -610,7 +610,6 @@ return [
         'wechat_qrcode'                 => '微 信二维码',
         'wechat_secret'                 => '微信企业应用密钥',
         'wechat_token'                  => '微信企业应用TOKEN',
-
         'hint'           => [
             'account_expire_notification'   => '通知用户账号即将到期',
             'active_times'                  => '24小时内可以通过邮件激活账号次数',
@@ -749,7 +748,7 @@ return [
             ],
         ],
         'notification'   => [
-            'channel' => [
+            'channel'   => [
                 'telegram'   => 'TG电报',
                 'wechat'     => '微信企业',
                 'dingtalk'   => '钉钉',
@@ -762,6 +761,7 @@ return [
                 'tg_chat'    => 'TG酱',
                 'site'       => '站内通知',
             ],
+            'send_test' => '发送测试消息',
         ],
         'forbid'         => [
             'mainland' => '阻拦大陆',

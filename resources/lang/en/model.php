@@ -36,7 +36,7 @@ return [
         'sort'        => 'Priority',
         'description' => 'Description',
         'type'        => 'Type',
-        'level'       => 'Rank',
+        'level'       => 'Level',
     ],
     'country'          => [
         'code' => 'ISO Territory Code',

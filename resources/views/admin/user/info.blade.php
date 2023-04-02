@@ -69,7 +69,7 @@
                                             <p class="form-control"> {{$user->credit}} </p>
                                             @can('admin.user.updateCredit')
                                                 <div class="input-group-append">
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit">充值</button>
+                                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit">{{ trans('admin.goods.type.top_up') }}</button>
                                                 </div>
                                             @endcan
                                         </div>
@@ -310,7 +310,7 @@
                 <div class="modal-dialog modal-simple modal-center">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
                                 <span aria-hidden="true">×</span>
                             </button>
                             <h4 class="modal-title">{{ trans('user.recharge') }}</h4>

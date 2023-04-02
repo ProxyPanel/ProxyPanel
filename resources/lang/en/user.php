@@ -181,6 +181,12 @@ return [
         'v2ray_only'       => 'Subscribe V2Ray Only',
         'trojan_only'      => 'Subscribe Trojan Only',
         'error'            => 'Exchange Link Error',
+        'info'             => [
+            'title'    => 'Account Summary [Not Live]',
+            'upload'   => 'Upload',
+            'download' => 'Download',
+            'total'    => 'Plan Traffic',
+        ],
     ],
     'ticket'              => [
         'attribute'           => 'Ticket',
@@ -211,5 +217,20 @@ return [
     'knowledge'           => [
         'title' => 'Knowledge Base',
         'basic' => 'Basic',
+    ],
+    'manual'              => [
+        'red_packet'     => 'Alipay red packet',
+        'hint'           => 'After scanning the code to pay, please continue to press 👇[Next]. After pressing 👇[Submit], the manual payment will be reviewed by the administrator!',
+        'step_1'         => 'Information',
+        'step_1_title'   => 'How to use manual payment correctly',
+        'step_2'         => 'Pay',
+        'step_2_title'   => 'Get the payment QR code and make payment',
+        'step_3'         => 'Complete',
+        'step_3_title'   => 'Waiting for payment to be manually confirmed',
+        'remark'         => 'Remark Username',
+        'remark_content' => 'Fill in the account used for login to speed up the review of the payment!',
+        'payment_hint'   => 'When you pay, please pay the corresponding amount',
+        'pre'            => 'Previous',
+        'next'           => 'Next',
     ],
 ];

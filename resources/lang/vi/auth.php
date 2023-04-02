@@ -62,11 +62,11 @@ return [
     ],
     'optional'        => '可选',
     'password'        => [
-        'forget'   => '忘记密码？',
+        'forget'   => 'Quên Mật Khẩu?',
         'new'      => '输入新密码',
         'original' => '原密码',
         'reset'    => [
-            'attribute' => '重置密码',
+            'attribute' => 'Đặt Lại Mật Khẩu',
             'error'     => [
                 'disabled' => '本站关闭了密码重置子系统，有事请联系 :email ',
                 'failed'   => '重设密码失败',
@@ -90,8 +90,9 @@ return [
         'promotion' => '还没有账号？请去',
         'success'   => '注册成功',
     ],
-    'remember_me'     => '记住我',
+    'remember_me'     => 'Ghi Nhớ',
     'request'         => '获 取',
     'throttle'        => 'Vượt quá số lần đăng nhập cho phép. Vui lòng thử lại sau :seconds giây.',
     'tos'             => '用户条款',
+    'one-click_login' => '一键登录',
 ];

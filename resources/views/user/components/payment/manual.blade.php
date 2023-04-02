@@ -64,7 +64,7 @@
 @section('content')
     <div id="ad">
         <button class="btn btn-pure btn-outline-light icon wb-close" type="button" onclick="document.getElementById('ad').style.display = 'none'"></button>
-        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" alt="支付宝领红包">
+        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" alt="{{ trans('user.manual.red_packet') }}">
     </div>
     <div class="page-content container">
         <div class="panel panel-bordered">
@@ -75,28 +75,28 @@
             </div>
             <div class="panel-body">
                 <div class="alert alert-info text-center">
-                    <p>扫完二维码，支付完成后。记得回来 点击👇【下一步】 直到 点击👇【{{trans('common.submit')}}】 才算正式支付完成呦！</p>
+                    <p>{{ trans('user.manual.hint') }}</p>
                 </div>
                 <div class="steps row w-p100">
                     <div class="step col-lg-4 current">
                         <span class="step-number">1</span>
                         <div class="step-desc">
-                            <span class="step-title">须知</span>
-                            <p>如何正确使用本支付</p>
+                            <span class="step-title">{{ trans('user.manual.step_1') }}</span>
+                            <p>{{ trans('user.manual.step_1_title') }}</p>
                         </div>
                     </div>
                     <div class="step col-lg-4">
                         <span class="step-number">2</span>
                         <div class="step-desc">
-                            <span class="step-title">支付</span>
-                            <p>获取支付二维码，进行支付</p>
+                            <span class="step-title">{{ trans('user.manual.step_2') }}</span>
+                            <p>{{ trans('user.manual.step_2_title') }}</p>
                         </div>
                     </div>
                     <div class="step col-lg-4">
                         <span class="step-number">3</span>
                         <div class="step-desc">
-                            <span class="step-title">完成</span>
-                            <p>等待支付被确认</p>
+                            <span class="step-title">{{ trans('user.manual.step_3') }}</span>
+                            <p>{{ trans('user.manual.step_3_title') }}</p>
                         </div>
                     </div>
                 </div>
@@ -114,17 +114,17 @@
                 <div class="tab">
                     <div class="wechat hide">
                         <div class="mx-auto text-center">
-                            <h4>备注账号</h4>
+                            <h4>{{ trans('user.manual.remark') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat1.png')}}" alt=""/>
-                            <h4>填入登录使用的账号</h4>
+                            <h4>{{ trans('user.manual.remark_content') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat2.png')}}" alt=""/>
                         </div>
                     </div>
                     <div class="alipay hide">
                         <div class="mx-auto text-center">
-                            <h4>备注账号</h4>
+                            <h4>{{ trans('user.manual.remark') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay1.png')}}" alt=""/>
-                            <h4>填入登录使用的账号</h4>
+                            <h4>{{ trans('user.manual.remark_content') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay2.png')}}" alt=""/>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
 
                 <div class="tab">
                     <div class="alert alert-danger text-center">
-                        支付时，请充值正确金额（多不退，少要补）
+                        {{ trans('user.manual.payment_hint') }}
                     </div>
                     <div class="mx-auto w-md-p50 w-lg-p25">
                         <ul class="list-group list-group-dividered">
@@ -168,8 +168,8 @@
                 </div>
 
                 <div class="clearfix">
-                    <button type="button" class="btn btn-lg btn-default float-left" id="prevBtn" onclick="nextPrev(-1)">上一步</button>
-                    <button type="button" class="btn btn-lg btn-primary float-right" id="nextBtn" onclick="nextPrev(1)">下一步</button>
+                    <button type="button" class="btn btn-lg btn-default float-left" id="prevBtn" onclick="nextPrev(-1)">{{ trans('user.manual.pre') }}</button>
+                    <button type="button" class="btn btn-lg btn-primary float-right" id="nextBtn" onclick="nextPrev(1)">{{ trans('user.manual.next') }}</button>
                 </div>
             </div>
         </div>

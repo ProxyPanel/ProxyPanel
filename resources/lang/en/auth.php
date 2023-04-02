@@ -95,4 +95,5 @@ return [
     'request'         => 'Request',
     'throttle'        => 'Too many login attempts. Please try again in :seconds seconds.',
     'tos'             => 'Terms of Service',
+    'one-click_login' => 'One-Click Login',
 ];

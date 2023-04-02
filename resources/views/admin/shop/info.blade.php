@@ -120,16 +120,15 @@
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="invite_num">{{ trans('model.goods.invite_num') }}</label>
-                                <div class="col-md-4 input-group">
+                                <div class="col-md-4">
                                     <input type="number" class="form-control" name="invite_num" id="invite_num" value="0" required/>
-                                    <span class="input-group-text">枚</span>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-form-label" for="limit_num">{{ trans('model.goods.limit_num') }}</label>
                                 <div class="col-md-4 input-group">
                                     <input type="number" class="form-control" name="limit_num" id="limit_num" value="0" required/>
-                                    <span class="input-group-text">次</span>
+                                    <span class="input-group-text">{{ trans('admin.times') }}</span>
                                     <span class="text-help"> {{ trans('admin.goods.info.limit_num_hint') }} </span>
                                 </div>
                             </div>

@@ -17,15 +17,17 @@ dns:
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
-  enhanced-mode: redir-host
+  enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   use-hosts: true
   nameserver:
     - https://doh.pub/dns-query
+    - https://dns.alidns.com/dns-query
   fallback:
-    - tls://1.0.0.1:853
-    - https://cloudflare-dns.com/dns-query
-    - https://dns.google/dns-query
+    - https://doh.dns.sb/dns-query
+    - https://dns.cloudflare.com/dns-query
+    - https://dns.twnic.tw/dns-query
+    - tls://8.8.4.4:853
   fallback-filter:
     geoip: true
     ipcidr:
@@ -42,6 +44,10 @@ proxy-groups:
 rules:
   # 自定义规则
   ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
+
+  # Google 中国服务
+  - DOMAIN-SUFFIX,services.googleapis.cn,$app_name
+  - DOMAIN-SUFFIX,xn--ngstr-lra8j.com,$app_name
 
   # Apple
   - DOMAIN,safebrowsing.urlsec.qq.com,DIRECT # 如果您并不信任此服务提供商或防止其下载消耗过多带宽资源，可以进入 Safari 设置，关闭 Fraudulent Website Warning 功能，并使用 REJECT 策略。
@@ -79,9 +85,6 @@ rules:
   # - DOMAIN,e.crashlytics.com,REJECT //注释此选项有助于大多数App开发者分析崩溃信息；如果您拒绝一切崩溃数据统计、搜集，请取消 # 注释。
 
   # 国内网站
-  - DOMAIN-SUFFIX,cn,DIRECT
-  - DOMAIN-KEYWORD,-cn,DIRECT
-
   - DOMAIN-SUFFIX,126.com,DIRECT
   - DOMAIN-SUFFIX,126.net,DIRECT
   - DOMAIN-SUFFIX,127.net,DIRECT
@@ -136,7 +139,6 @@ rules:
   - DOMAIN-SUFFIX,lecloud.com,DIRECT
   - DOMAIN-SUFFIX,lemicp.com,DIRECT
   - DOMAIN-SUFFIX,licdn.com,DIRECT
-  - DOMAIN-SUFFIX,linkedin.com,DIRECT
   - DOMAIN-SUFFIX,luoo.net,DIRECT
   - DOMAIN-SUFFIX,meituan.com,DIRECT
   - DOMAIN-SUFFIX,meituan.net,DIRECT
@@ -385,6 +387,8 @@ rules:
   - DOMAIN-SUFFIX,kat.cr,$app_name
   - DOMAIN-SUFFIX,klip.me,$app_name
   - DOMAIN-SUFFIX,libsyn.com,$app_name
+  - DOMAIN-SUFFIX,linkedin.com,$app_name
+  - DOMAIN-SUFFIX,line-apps.com,$app_name
   - DOMAIN-SUFFIX,linode.com,$app_name
   - DOMAIN-SUFFIX,lithium.com,$app_name
   - DOMAIN-SUFFIX,littlehj.com,$app_name
@@ -536,6 +540,26 @@ rules:
   - IP-CIDR6,2001:b28:f23d::/48,$app_name,no-resolve
   - IP-CIDR6,2001:b28:f23f::/48,$app_name,no-resolve
 
+  # Google 中国服务 services.googleapis.cn
+  - IP-CIDR,120.232.181.162/32,$app_name,no-resolve
+  - IP-CIDR,120.241.147.226/32,$app_name,no-resolve
+  - IP-CIDR,120.253.253.226/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.162/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.34/32,$app_name,no-resolve
+  - IP-CIDR,120.253.255.98/32,$app_name,no-resolve
+  - IP-CIDR,180.163.150.162/32,$app_name,no-resolve
+  - IP-CIDR,180.163.150.34/32,$app_name,no-resolve
+  - IP-CIDR,180.163.151.162/32,$app_name,no-resolve
+  - IP-CIDR,180.163.151.34/32,$app_name,no-resolve
+  - IP-CIDR,203.208.39.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.40.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.41.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.43.0/24,$app_name,no-resolve
+  - IP-CIDR,203.208.50.0/24,$app_name,no-resolve
+  - IP-CIDR,220.181.174.162/32,$app_name,no-resolve
+  - IP-CIDR,220.181.174.226/32,$app_name,no-resolve
+  - IP-CIDR,220.181.174.34/32,$app_name,no-resolve
+
   # LAN
   - DOMAIN,injections.adguard.org,DIRECT
   - DOMAIN,local.adguard.org,DIRECT
@@ -548,6 +572,10 @@ rules:
   - IP-CIDR,100.64.0.0/10,DIRECT
   - IP-CIDR,224.0.0.0/4,DIRECT
   - IP-CIDR6,fe80::/10,DIRECT
+
+  # 剩余未匹配的国内网站
+  - DOMAIN-SUFFIX,cn,DIRECT
+  - DOMAIN-KEYWORD,-cn,DIRECT
 
   # 最终规则
   - GEOIP,CN,DIRECT

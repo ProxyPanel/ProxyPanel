@@ -14,6 +14,7 @@ class ProxyService extends BaseService
     use ClientConfig;
 
     private static $user;
+    private static $servers;
 
     public function __construct()
     {
@@ -29,6 +30,11 @@ class ProxyService extends BaseService
     public function setUser(User $user)
     {
         self::$user = $user;
+    }
+
+    public function getServers()
+    {
+        return self::$servers;
     }
 
     public function getProxyText($target, $type = null)
@@ -47,7 +53,9 @@ class ProxyService extends BaseService
             $servers = Arr::random($servers, $max);
         }
 
-        return $this->clientConfig($servers, $target);
+        $this->setServers($servers);
+
+        return $this->clientConfig($target);
     }
 
     public function getNodeList($type = null, $isConfig = true)
@@ -186,7 +194,9 @@ class ProxyService extends BaseService
             return null;
         }
 
-        return $this->clientConfig($servers, $target);
+        $this->setServers($servers);
+
+        return $this->clientConfig($target);
     }
 
     public function getUserProxyConfig(array $server, bool $is_url): ?string // 用户显示用代理信息
@@ -210,5 +220,10 @@ class ProxyService extends BaseService
         }
 
         return $data;
+    }
+
+    private function setServers(array $servers)
+    {
+        self::$servers = $servers;
     }
 }

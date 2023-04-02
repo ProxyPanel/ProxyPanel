@@ -535,7 +535,7 @@ return [
         'is_WeChatPay'                  => '微信支付',
         'iYuu_token'                    => 'IYUU令牌',
         'maintenance_content'           => '维护介绍内容',
-        'maintenance_mode'              => '维护模式',
+        'maintenance_mode'              => 'Trạng Thái Bảo Trì',
         'maintenance_time'              => '维护结束时间',
         'min_port'                      => '端口范围',
         'min_rand_traffic'              => '流量范围',
@@ -544,7 +544,7 @@ return [
         'node_offline_notification'     => '节点离线提醒',
         'oauth_path'                    => '第三方登录平台',
         'offline_check_times'           => '离线提醒次数',
-        'password_reset_notification'   => '重置密码',
+        'password_reset_notification'   => 'Đặt Lại Mật Khẩu',
         'paybeaver_app_id'              => 'App ID',
         'paybeaver_app_secret'          => 'App Secret',
         'payjs_key'                     => '通信密钥',
@@ -610,7 +610,6 @@ return [
         'wechat_qrcode'                 => '微 信二维码',
         'wechat_secret'                 => '微信企业应用密钥',
         'wechat_token'                  => '微信企业应用TOKEN',
-
         'hint'           => [
             'account_expire_notification'   => '通知用户账号即将到期',
             'active_times'                  => '24小时内可以通过邮件激活账号次数',
@@ -749,11 +748,11 @@ return [
             ],
         ],
         'notification'   => [
-            'channel' => [
+            'channel'   => [
                 'telegram'   => 'TG电报',
                 'wechat'     => '微信企业',
                 'dingtalk'   => '钉钉',
-                'email'      => '邮箱',
+                'email'      => 'email',
                 'bark'       => 'Bark',
                 'serverchan' => 'ServerChan',
                 'pushdeer'   => 'PushDeer',
@@ -762,6 +761,7 @@ return [
                 'tg_chat'    => 'TG酱',
                 'site'       => '站内通知',
             ],
+            'send_test' => '发送测试消息',
         ],
         'forbid'         => [
             'mainland' => '阻拦大陆',

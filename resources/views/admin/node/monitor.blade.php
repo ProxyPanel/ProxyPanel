@@ -6,7 +6,7 @@
                 <h2 class="panel-title">{{ trans('admin.monitor.node') }}</h2>
             </div>
             <div class="alert alert-info alert-dismissible">
-                <button class="close" data-dismiss="alert" aria-label="Close">
+                <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
                     <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('common.close')}}</span>
                 </button>
                 <h4 class="block">{{$nodeName}}

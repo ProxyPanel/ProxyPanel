@@ -611,7 +611,6 @@ return [
         'wechat_qrcode'                 => 'やみのQRコード',
         'wechat_secret'                 => 'WeChat アプリキー',
         'wechat_token'                  => 'WeChat AppEN',
-
         'hint'           => [
             'account_expire_notification'   => 'ユーザーに通知して締め切られます',
             'active_times'                  => '24時間、メールからアカウントを使用した回数',
@@ -751,7 +750,7 @@ return [
             ],
         ],
         'notification'   => [
-            'channel' => [
+            'channel'   => [
                 'telegram'   => 'TGテレックス',
                 'wechat'     => 'マイクロ信企業',
                 'dingtalk'   => 'ピン留め',
@@ -764,6 +763,7 @@ return [
                 'tg_chat'    => 'TGジャム',
                 'site'       => '通知',
             ],
+            'send_test' => 'テストメールの送信',
         ],
         'forbid'         => [
             'mainland' => '連合の排除',

@@ -94,4 +94,5 @@ return [
     'request'         => '획득',
     'throttle'        => '너무 많은 로그인을 시도하였습니다. :seconds 초 후에 다시 시도하십시오.',
     'tos'             => '이용 약관',
+    'one-click_login' => '一键登录',
 ];

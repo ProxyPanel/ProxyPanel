@@ -34,7 +34,7 @@
     @if(sysConfig('oauth_path'))
         <div class="pb-5">
             <div class="line">
-                <span> 一键登录 </span>
+                <span> {{ trans('auth.one-click_login') }} </span>
             </div>
             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                 @if ($item === 'telegram')

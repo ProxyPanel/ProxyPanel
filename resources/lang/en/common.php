@@ -41,7 +41,9 @@ return [
     'goto'            => 'Goto',
     'warning'         => 'Warning',
     'success'         => 'Successfully',
+    'success_item'    => 'Successful :attribute',
     'failed'          => 'Failed',
+    'failed_item'     => ':attribute Failed',
     'update'          => 'Update',
     'update_action'   => 'Update :action',
     'none'            => 'None',
@@ -78,14 +80,13 @@ return [
     'unlimited'       => 'Unlimited',
     'payment'         => [
         'credit' => 'Balance',
-        'wechat' => 'WeChat',
         'alipay' => 'Alipay',
+        'qq'     => 'QQ Wallet',
+        'wechat' => 'WeChat Pay ',
         'crypto' => 'Crypto',
         'manual' => 'Manual Payment',
         'status' => [
             'wait'    => 'Awaiting payment',
-            'fail'    => 'Payment Failed',
-            'success' => 'Payment successful',
         ],
     ],
     'order'           => [

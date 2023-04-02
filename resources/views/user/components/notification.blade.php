@@ -39,13 +39,13 @@
                 </div>
             </div>
         @endif
-        <div class="dropdown-menu-footer">
-            <a class="dropdown-menu-footer-btn" href="javascript:void(0)" role="button">
-                <i class="icon wb-settings" aria-hidden="true"></i>
-            </a>
-            <a class="dropdown-item" href="javascript:void(0)" role="menuitem">
-                All notifications
-            </a>
-        </div>
+{{--        <div class="dropdown-menu-footer">--}}
+{{--            <a class="dropdown-menu-footer-btn" href="javascript:void(0)" role="button">--}}
+{{--                <i class="icon wb-settings" aria-hidden="true"></i>--}}
+{{--            </a>--}}
+{{--            <a class="dropdown-item" href="javascript:void(0)" role="menuitem">--}}
+{{--                All notifications--}}
+{{--            </a>--}}
+{{--        </div>--}}
     </div>
 </li>

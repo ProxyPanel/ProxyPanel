@@ -122,7 +122,7 @@
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close" style="position:absolute;">
+                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="{{ trans('common.close') }}" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
@@ -141,7 +141,7 @@
         <div class="modal-dialog modal-simple modal-sidebar modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="Close" style="position:absolute;">
+                    <button type="button" class="close mr-15" data-dismiss="modal" aria-label="{{ trans('common.close') }}" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
                     <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>

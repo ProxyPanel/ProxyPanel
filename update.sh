@@ -40,6 +40,6 @@ git fetch --all && git reset --hard origin/master && git pull
 check_sys
 check_composer
 php artisan optimize:clear
-composer install
+composer update
 php artisan panel:update
 set_permissions
