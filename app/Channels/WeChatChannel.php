@@ -33,13 +33,13 @@ class WeChatChannel
                     'button_list'             => [
                         [
                             'type'  => 1,
-                            'text'  => '否 決',
+                            'text'  => trans('common.status.reject'),
                             'style' => 3,
                             'url'   => $message['button'][0],
                         ],
                         [
                             'type'  => 1,
-                            'text'  => '确 认',
+                            'text'  => trans('common.confirm'),
                             'style' => 1,
                             'url'   => $message['button'][1],
                         ],

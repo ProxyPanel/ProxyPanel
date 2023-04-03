@@ -4,10 +4,8 @@ namespace App\Helpers;
 
 use App\Components\Client\Clash;
 use App\Components\Client\QuantumultX;
-use App\Components\Client\Surfboard;
 use App\Components\Client\Surge;
 use App\Components\Client\URLSchemes;
-use App\Components\Client\V2rayN;
 use File;
 use Symfony\Component\Yaml\Yaml;
 
@@ -105,7 +103,7 @@ trait ClientConfig
     {
         $user = $this->getUser();
         $webName = sysConfig('website_name');
-        header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($webName));
+        header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($webName).'.yaml');
         header('profile-update-interval: 24');
         header('profile-web-page-url:'.sysConfig('website_url'));
         if (sysConfig('is_custom_subscribe')) {

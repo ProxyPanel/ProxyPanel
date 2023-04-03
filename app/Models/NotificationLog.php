@@ -15,6 +15,6 @@ class NotificationLog extends Model
     // 通知类型
     public function getTypeLabelAttribute(): string
     {
-        return config('common.notification.labels')[$this->attributes['type']] ?? '未知';
+        return config('common.notification.labels')[$this->attributes['type']] ?? trans('common.status.unknown');
     }
 }

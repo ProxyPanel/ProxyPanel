@@ -49,11 +49,11 @@ class DingTalkChannel
                     'btnOrientation' => 1,
                     'btns'           => [
                         [
-                            'title'     => '否 決',
+                            'title'     => trans('common.status.reject'),
                             'actionURL' => $message['button'][0],
                         ],
                         [
-                            'title'     => '确 认',
+                            'title'     => trans('common.confirm'),
                             'actionURL' => $message['button'][1],
                         ],
                     ],
