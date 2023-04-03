@@ -2,10 +2,10 @@
 
 // 如何使用请参考 https://proxypanel.gitbook.io/wiki/page-modify#theme
 return [
-    'sidebar' => 'site-menubar-light',
+    'sidebar' => env('THEME_SIDEBAR', 'site-menubar-light'),
     'navbar'  => [
-        'inverse' => 'navbar-inverse',
-        'skin'    => 'bg-indigo-600',
+        'inverse' => env('THEME_NAVBAR_INVERSE', 'navbar-inverse'),
+        'skin'    => env('THEME_NAVBAR_SKIN', 'bg-indigo-600'),
     ],
-    'skin'    => '',
+    'skin'    => env('THEME_SKIN'),
 ];

@@ -124,7 +124,7 @@ return [
         'pending'           => '待处理',
         'unknown'           => '未 知',
         'available'         => '生效中',
-        'reject'            => '驳 回',
+        'reject'            => '否 決',
         'rejected'          => '已驳回',
         'review'            => '待审核',
         'reviewed'          => '审核通过待打款',

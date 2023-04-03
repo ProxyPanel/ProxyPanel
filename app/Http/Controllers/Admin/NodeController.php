@@ -47,9 +47,8 @@ class NodeController extends Controller
         return view('admin.node.index', ['nodeList' => $nodeList]);
     }
 
-    // 添加节点
     public function store(NodeRequest $request): JsonResponse
-    {
+    { // 添加节点
         try {
             if ($node = Node::create($this->nodeStore($request->validated()))) {
                 // 生成节点标签
@@ -80,14 +79,149 @@ class NodeController extends Controller
         ]);
     }
 
-    // 添加节点信息
+    public function clone(Node $node)
+    { // 克隆节点
+        $new = $node->replicate()->fill([
+            'name'   => $node->name.'_克隆',
+            'server' => null,
+        ]);
+        $new->save();
+
+        return redirect()->route('admin.node.edit', $new);
+    }
+
+    public function edit(Node $node)
+    { // 编辑节点页面
+        return view('admin.node.info', [
+            'node'       => $node,
+            'nodes'      => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
+            'countries'  => Country::orderBy('code')->get(),
+            'levels'     => Level::orderBy('level')->get(),
+            'ruleGroups' => RuleGroup::orderBy('id')->get(),
+            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs'      => NodeCertificate::orderBy('id')->get(),
+        ]);
+    }
+
+    public function update(NodeRequest $request, Node $node): JsonResponse
+    { // 编辑节点
+        try {
+            if ($node->update($this->nodeStore($request->validated()))) {
+                // 更新节点标签
+                $node->labels()->sync($request->input('labels'));
+
+                return Response::json(['status' => 'success', 'message' => '编辑成功']);
+            }
+        } catch (Exception $e) {
+            Log::error('编辑节点信息异常：'.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
+    }
+
+    public function destroy(Node $node): JsonResponse
+    { // 删除节点
+        try {
+            if ($node->delete()) {
+                return Response::json(['status' => 'success', 'message' => '删除成功']);
+            }
+        } catch (Exception $e) {
+            Log::error('删除线路失败：'.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => '删除线路失败：'.$e->getMessage()]);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '删除线路失败']);
+    }
+
+    public function checkNode(Node $node): JsonResponse
+    { // 节点IP阻断检测
+        foreach ($node->ips() as $ip) {
+            $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->port ?? 22); // ICMP
+            $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->port ?? 22); // TCP
+            $data[$ip] = [$icmp ? config('common.network_status')[$icmp] : ' ', $tcp ? config('common.network_status')[$tcp] : ' '];
+        }
+
+        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);
+    }
+
+    public function refreshGeo($id): JsonResponse
+    { // 刷新节点地理位置
+        $ret = false;
+        if ($id) {
+            $ret = Node::findOrFail($id)->refresh_geo();
+        } else {
+            foreach (Node::whereStatus(1)->get() as $node) {
+                $result = $node->refresh_geo();
+                if ($result && ! $ret) {
+                    $ret = true;
+                }
+            }
+        }
+
+        if ($ret) {
+            return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '【存在】获取地理位置更新失败！']);
+    }
+
+    public function reload($id): JsonResponse
+    { // 重载节点
+        $ret = false;
+        if ($id) {
+            $node = Node::findOrFail($id);
+            $ret = reloadNode::dispatchNow($node);
+        } else {
+            foreach (Node::whereStatus(1)->whereType(4)->get() as $node) {
+                $result = reloadNode::dispatchNow($node);
+                if ($result && ! $ret) {
+                    $ret = true;
+                }
+            }
+        }
+
+        if ($ret) {
+            return Response::json(['status' => 'success', 'message' => '重载成功！']);
+        }
+
+        return Response::json(['status' => 'fail', 'message' => '【存在】重载失败！']);
+    }
+
+    public function nodeMonitor(Node $node)
+    { // 节点流量监控
+        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
+    }
+
+    public function pingNode(Node $node): JsonResponse
+    { // Ping节点延迟
+        if ($node->is_ddns) {
+            if ($result = (new NetworkDetection)->ping($node->server)) {
+                return Response::json(['status' => 'success', 'message' => $result]);
+            }
+        } else {
+            $msg = null;
+            foreach ($node->ips() as $ip) {
+                $ret = (new NetworkDetection)->ping($ip);
+                if ($ret !== false) {
+                    $msg .= $ret.' <hr>';
+                }
+            }
+            if (isset($msg)) {
+                return Response::json(['status' => 'success', 'message' => $msg]);
+            }
+        }
+
+        return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
+    }
+
     private function nodeStore(array $info): array
-    {
+    { // 添加节点信息
         switch ($info['type']) {
             case 0:
-                $profile = [
-                    'method' => $info['method'],
-                ];
+                $profile = ['method' => $info['method']];
                 break;
             case 2:
                 $profile = [
@@ -137,158 +271,11 @@ class NodeController extends Controller
             'is_display'     => $info['is_display'],
             'is_ddns'        => $info['is_ddns'],
             'relay_node_id'  => $info['relay_node_id'],
-            'port'           => $info['port'],
+            'port'           => $info['port'] ?? 0,
             'push_port'      => $info['push_port'],
             'detection_type' => $info['detection_type'],
             'sort'           => $info['sort'],
             'status'         => $info['status'],
         ];
-    }
-
-    // 克隆节点
-    public function clone(Node $node)
-    {
-        $new = $node->replicate()->fill([
-            'name'   => $node->name.'_克隆',
-            'server' => null,
-        ]);
-        $new->save();
-
-        return redirect()->route('admin.node.edit', $new);
-    }
-
-    // 编辑节点页面
-    public function edit(Node $node)
-    {
-        return view('admin.node.info', [
-            'node'       => $node,
-            'nodes'      => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
-            'countries'  => Country::orderBy('code')->get(),
-            'levels'     => Level::orderBy('level')->get(),
-            'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs'      => NodeCertificate::orderBy('id')->get(),
-        ]);
-    }
-
-    // 编辑节点
-    public function update(NodeRequest $request, Node $node): JsonResponse
-    {
-        try {
-            if ($node->update($this->nodeStore($request->validated()))) {
-                // 更新节点标签
-                $node->labels()->sync($request->input('labels'));
-
-                return Response::json(['status' => 'success', 'message' => '编辑成功']);
-            }
-        } catch (Exception $e) {
-            Log::error('编辑节点信息异常：'.$e->getMessage());
-
-            return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
-    }
-
-    // 删除节点
-    public function destroy(Node $node): JsonResponse
-    {
-        try {
-            if ($node->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
-            }
-        } catch (Exception $e) {
-            Log::error('删除线路失败：'.$e->getMessage());
-
-            return Response::json(['status' => 'fail', 'message' => '删除线路失败：'.$e->getMessage()]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '删除线路失败']);
-    }
-
-    // 节点IP阻断检测
-    public function checkNode(Node $node): JsonResponse
-    {
-        foreach ($node->ips() as $ip) {
-            $icmp = (new NetworkDetection)->networkCheck($ip, true, $node->port ?? 22); // ICMP
-            $tcp = (new NetworkDetection)->networkCheck($ip, false, $node->port ?? 22); // TCP
-            $data[$ip] = [$icmp ? config('common.network_status')[$icmp] : ' ', $tcp ? config('common.network_status')[$tcp] : ' '];
-        }
-
-        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);
-    }
-
-    // 刷新节点地理位置
-    public function refreshGeo($id): JsonResponse
-    {
-        $ret = false;
-        if ($id) {
-            $ret = Node::findOrFail($id)->refresh_geo();
-        } else {
-            foreach (Node::whereStatus(1)->get() as $node) {
-                $result = $node->refresh_geo();
-                if ($result && ! $ret) {
-                    $ret = true;
-                }
-            }
-        }
-
-        if ($ret) {
-            return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '【存在】获取地理位置更新失败！']);
-    }
-
-    // 重载节点
-    public function reload($id): JsonResponse
-    {
-        $ret = false;
-        if ($id) {
-            $node = Node::findOrFail($id);
-            $ret = reloadNode::dispatchNow($node);
-        } else {
-            foreach (Node::whereStatus(1)->whereType(4)->get() as $node) {
-                $result = reloadNode::dispatchNow($node);
-                if ($result && ! $ret) {
-                    $ret = true;
-                }
-            }
-        }
-
-        if ($ret) {
-            return Response::json(['status' => 'success', 'message' => '重载成功！']);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => '【存在】重载失败！']);
-    }
-
-    // 节点流量监控
-    public function nodeMonitor(Node $node)
-    {
-        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
-    }
-
-    // Ping节点延迟
-    public function pingNode(Node $node): JsonResponse
-    {
-        if ($node->is_ddns) {
-            if ($result = (new NetworkDetection)->ping($node->server)) {
-                return Response::json(['status' => 'success', 'message' => $result]);
-            }
-        } else {
-            $msg = null;
-            foreach ($node->ips() as $ip) {
-                $ret = (new NetworkDetection)->ping($ip);
-                if ($ret !== false) {
-                    $msg .= $ret.' <hr>';
-                }
-            }
-            if (isset($msg)) {
-                return Response::json(['status' => 'success', 'message' => $msg]);
-            }
-        }
-
-        return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
     }
 }

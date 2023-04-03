@@ -35,7 +35,7 @@ class NodeRequest extends FormRequest
             'is_display'     => 'required|numeric|between:0,3',
             'detection_type' => 'required|numeric|between:0,3',
             'single'         => 'required|boolean',
-            'port'           => 'required_unless:single,0|numeric|between:1,65535|different:push_port',
+            'port'           => 'required_unless:single,"0"|numeric|between:1,65535|different:push_port',
             'passwd'         => 'exclude_unless:type,1,type,4|required_if:single,1|string|nullable',
             'v2_alter_id'    => 'nullable|numeric|between:0,65535',
             'v2_method'      => 'required_if:type,2',
