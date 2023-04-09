@@ -19,7 +19,7 @@ trait ClientConfig
         if (str_contains($target, 'quantumult')) {
             return $this->quantumult();
         }
-        if (str_contains($target, 'clash')) {
+        if (str_contains($target, 'clash') || str_contains($target, 'stash')) {
             return $this->clash();
         }
         if (str_contains($target, 'bob_vpn')) {
@@ -48,7 +48,7 @@ trait ClientConfig
         $user = $this->getUser();
         $uri = '';
         if (sysConfig('is_custom_subscribe')) {
-            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=$user->expiration_date");
+            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
         }
         foreach ($this->getServers() as $server) {
             if ($server['type'] === 'shadowsocks') {
@@ -72,7 +72,7 @@ trait ClientConfig
     {
         $user = $this->getUser();
         if (sysConfig('is_custom_subscribe')) {
-            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=$user->expiration_date");
+            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
         }
 
         return $this->origin();
@@ -107,7 +107,7 @@ trait ClientConfig
         header('profile-update-interval: 24');
         header('profile-web-page-url:'.sysConfig('website_url'));
         if (sysConfig('is_custom_subscribe')) {
-            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=$user->expired_at");
+            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
         }
         $custom_path = '/resources/rules/custom.clash.yaml';
         if ($client === 'bob') {
@@ -198,12 +198,12 @@ trait ClientConfig
                 }
                 $text .= ', '.trans('model.user.expired_date').": $user->expiration_date";
             } else {
-                $text .= trans('reason.user.account.reason.expired');
+                $text .= trans('user.account.reason.expired');
             }
             $uri .= $this->failedProxyReturn($text, 2);
         }
 
-        return $uri.$this->origin();
+        return base64_encode($uri.$this->origin(false));
     }
 
     private function shaodowsocksSIP008(): string
