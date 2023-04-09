@@ -49,7 +49,7 @@ class ProxyService extends BaseService
         }
 
         $max = (int) sysConfig('subscribe_max');
-        if ($max) { // 订阅数量限制
+        if ($max && count($servers) > $max) { // 订阅数量限制
             $servers = Arr::random($servers, $max);
         }
 
@@ -110,7 +110,7 @@ class ProxyService extends BaseService
                         'type'   => 'shadowsocks',
                         'passwd' => $user->passwd,
                     ], $node->profile);
-                    if ($node->port) {
+                    if ($node->port && $node->port !== 0) {
                         $config['port'] = $node->port;
                     } else {
                         $config['port'] = $user->port;
