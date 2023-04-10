@@ -41,7 +41,7 @@
                                     </div>
                                     <div class="radio-custom radio-primary radio-inline">
                                         <input type="radio" name="type" id="data_plan" value="2" checked/>
-                                        <label for="data_plan">{{ trans('admin.goods.type.2') }}</label>
+                                        <label for="data_plan">{{ trans('admin.goods.type.plan') }}</label>
                                     </div>
                                     <span class="text-help"> {{ trans('admin.goods.info.type_hint') }} </span>
                                 </div>

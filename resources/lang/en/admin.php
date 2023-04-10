@@ -110,7 +110,7 @@ return [
     ],
     'user'                => [
         'massive'         => [
-            'text'    => 'Number of User Generated',
+            'text'    => 'Number of Users to Generate',
             'button'  => 'Bulk Generation',
             'failed'  => 'Bulk generation failed',
             'succeed' => 'Bulk accounts generated successfully',
@@ -141,7 +141,7 @@ return [
             'counts' => 'Total of <code>:num</code> groups',
         ],
     ],
-    'zero_unlimited_hint' => 'Unset/0, as unlimited',
+    'zero_unlimited_hint' => 'Empty or 0 for unlimited',
     'node'                => [
         'traffic_monitor' => 'Usage Statistics',
         'refresh_geo'     => 'Refresh Geography',

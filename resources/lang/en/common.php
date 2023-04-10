@@ -95,7 +95,7 @@ return [
             'complete' => 'Completed',
             'prepaid'  => 'Prepaid',
             'ongoing'  => 'Using',
-            'review'   => 'Waiting for confirm',
+            'review'   => 'Pending',
         ],
     ],
     'recommend'       => 'Recommend',
@@ -107,7 +107,7 @@ return [
     'status'          => [
         'attribute'         => 'Status',
         'inactive'          => 'Inactive',
-        'disabled'          => 'Stop using',
+        'disabled'          => 'Disable',
         'banned'            => 'Banned',
         'normal'            => 'Normal',
         'enabled'           => 'Active',

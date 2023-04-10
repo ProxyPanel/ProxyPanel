@@ -20,7 +20,7 @@ return [
         'role'           => 'Role Permissions',
         'wechat'         => 'WeChat',
         'qq'             => 'QQ',
-        'remark'         => 'Remark',
+        'remark'         => 'Note',
         'uuid'           => 'VMess UUID',
         'proxy_passwd'   => 'Proxy Password',
         'proxy_method'   => 'Encryption Method',
