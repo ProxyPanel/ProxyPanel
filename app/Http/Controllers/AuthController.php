@@ -66,12 +66,15 @@ class AuthController extends Controller
             return Redirect::back()->withInput()->withErrors(trans('auth.error.login_error'));
         }
 
-        if ($request->routeIs('admin.login.post') && $user->cannot('admin.index')) {
-            // 管理页面登录
-            // 非权限者清场
+        if ($user->can('admin.index')) {
+            return redirect()->back();
+        }
+
+        if ($request->routeIs('admin.login.post')) {
+            // 管理页面登录, 非权限者清场
             Auth::logout();
 
-            return Redirect::route('login');
+            return Redirect::route('login')->withErrors(trans('common.failed_item', ['attribute' => trans('auth.login')]));
         }
 
         // 校验普通用户账号状态
@@ -84,15 +87,48 @@ class AuthController extends Controller
         if ($user->status === 0 && sysConfig('is_activate_account')) {
             Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion', [
-                'action' => '<a href="'.route('active', ['username' => $user->username]).'" 
-            target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</span></a><br>',
-            ]));
+            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion', ['action' => '<a href="'.route('active', ['username' => $user->username]).'" target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</a>']));
         }
 
         Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
 
         return redirect()->back();
+    }
+
+    private function check_captcha(Request $request)
+    { // 校验验证码
+        switch (sysConfig('is_captcha')) {
+            case 1: // 默认图形验证码
+                if (! Captcha::check($request->input('captcha'))) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 2: // Geetest
+                $validator = Validator::make($request->all(), ['geetest_challenge' => 'required|geetest']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 3: // Google reCAPTCHA
+                $validator = Validator::make($request->all(), ['g-recaptcha-response' => 'required|NoCaptcha']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            case 4: // hCaptcha
+                $validator = Validator::make($request->all(), ['h-captcha-response' => 'required|HCaptcha']);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+                }
+                break;
+            default: // 不启用验证码
+                break;
+        }
+
+        return false;
     }
 
     public function logout(Request $request): RedirectResponse
@@ -244,6 +280,104 @@ class AuthController extends Controller
         }
 
         return Redirect::route('login')->withInput();
+    }
+
+    private function emailChecker($email, $returnType = 0)
+    { // 邮箱检查
+        $emailFilterList = EmailFilter::whereType(sysConfig('is_email_filtering'))->pluck('words')->toArray();
+        $emailSuffix = explode('@', $email); // 提取邮箱后缀
+
+        if ($emailSuffix) {
+            switch (sysConfig('is_email_filtering')) {
+                case 1: // 黑名单
+                    if (in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                        if ($returnType) {
+                            return Redirect::back()->withErrors(trans('auth.email.error.banned'));
+                        }
+
+                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
+                    }
+                    break;
+                case 2: // 白名单
+                    if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
+                        if ($returnType) {
+                            return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
+                        }
+
+                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
+                    }
+                    break;
+                default:
+                    if ($returnType) {
+                        return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
+                    }
+
+                    return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 获取AFF.
+     *
+     * @param  string|null  $code  邀请码
+     * @param  int|null  $aff  URL中的aff参数
+     * @return array
+     */
+    private function getAff($code = null, $aff = null): array
+    {
+        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
+
+        // 有邀请码先用邀请码，用谁的邀请码就给谁返利
+        if ($code) {
+            $inviteCode = Invite::whereCode($code)->whereStatus(0)->first();
+            if ($inviteCode) {
+                $data['inviter_id'] = $inviteCode->inviter_id;
+                $data['code_id'] = $inviteCode->id;
+            }
+        }
+
+        // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
+        if (! $data['inviter_id']) {
+            // 检查一下cookie里有没有aff
+            $cookieAff = \request()->cookie('register_aff');
+            if ($cookieAff) {
+                $cookieAff = $this->affConvert($cookieAff);
+                $data['inviter_id'] = $cookieAff && User::find($cookieAff) ? $cookieAff : null;
+            } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
+                $aff = $this->affConvert($aff);
+                $data['inviter_id'] = $aff && User::find($aff) ? $aff : null;
+            }
+        }
+
+        return $data;
+    }
+
+    private function affConvert($aff)
+    {
+        if (is_numeric($aff)) {
+            return $aff;
+        }
+
+        $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
+        if ($decode) {
+            return $decode[0];
+        }
+
+        return false;
+    }
+
+    private function addVerifyUrl($uid, $email)
+    { // 生成申请的请求地址
+        $token = md5(sysConfig('website_name').$email.microtime());
+        $verify = new Verify();
+        $verify->user_id = $uid;
+        $verify->token = $token;
+        $verify->save();
+
+        return $token;
     }
 
     public function resetPassword(Request $request)
@@ -509,139 +643,5 @@ class AuthController extends Controller
         }
 
         return Redirect::back();
-    }
-
-    private function check_captcha(Request $request)
-    { // 校验验证码
-        switch (sysConfig('is_captcha')) {
-            case 1: // 默认图形验证码
-                if (! Captcha::check($request->input('captcha'))) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 2: // Geetest
-                $validator = Validator::make($request->all(), ['geetest_challenge' => 'required|geetest']);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 3: // Google reCAPTCHA
-                $validator = Validator::make($request->all(), ['g-recaptcha-response' => 'required|NoCaptcha']);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 4: // hCaptcha
-                $validator = Validator::make($request->all(), ['h-captcha-response' => 'required|HCaptcha']);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            default: // 不启用验证码
-                break;
-        }
-
-        return false;
-    }
-
-    private function emailChecker($email, $returnType = 0)
-    { // 邮箱检查
-        $emailFilterList = EmailFilter::whereType(sysConfig('is_email_filtering'))->pluck('words')->toArray();
-        $emailSuffix = explode('@', $email); // 提取邮箱后缀
-
-        if ($emailSuffix) {
-            switch (sysConfig('is_email_filtering')) {
-                case 1: // 黑名单
-                    if (in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
-                        if ($returnType) {
-                            return Redirect::back()->withErrors(trans('auth.email.error.banned'));
-                        }
-
-                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.banned')]);
-                    }
-                    break;
-                case 2: // 白名单
-                    if (! in_array(strtolower($emailSuffix[1]), $emailFilterList, true)) {
-                        if ($returnType) {
-                            return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
-                        }
-
-                        return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
-                    }
-                    break;
-                default:
-                    if ($returnType) {
-                        return Redirect::back()->withErrors(trans('auth.email.error.invalid'));
-                    }
-
-                    return Response::json(['status' => 'fail', 'message' => trans('auth.email.error.invalid')]);
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * 获取AFF.
-     *
-     * @param  string|null  $code  邀请码
-     * @param  int|null  $aff  URL中的aff参数
-     * @return array
-     */
-    private function getAff($code = null, $aff = null): array
-    {
-        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
-
-        // 有邀请码先用邀请码，用谁的邀请码就给谁返利
-        if ($code) {
-            $inviteCode = Invite::whereCode($code)->whereStatus(0)->first();
-            if ($inviteCode) {
-                $data['inviter_id'] = $inviteCode->inviter_id;
-                $data['code_id'] = $inviteCode->id;
-            }
-        }
-
-        // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
-        if (! $data['inviter_id']) {
-            // 检查一下cookie里有没有aff
-            $cookieAff = \request()->cookie('register_aff');
-            if ($cookieAff) {
-                $cookieAff = $this->affConvert($cookieAff);
-                $data['inviter_id'] = $cookieAff && User::find($cookieAff) ? $cookieAff : null;
-            } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-                $aff = $this->affConvert($aff);
-                $data['inviter_id'] = $aff && User::find($aff) ? $aff : null;
-            }
-        }
-
-        return $data;
-    }
-
-    private function affConvert($aff)
-    {
-        if (is_numeric($aff)) {
-            return $aff;
-        }
-
-        $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
-        if ($decode) {
-            return $decode[0];
-        }
-
-        return false;
-    }
-
-    private function addVerifyUrl($uid, $email)
-    { // 生成申请的请求地址
-        $token = md5(sysConfig('website_name').$email.microtime());
-        $verify = new Verify();
-        $verify->user_id = $uid;
-        $verify->token = $token;
-        $verify->save();
-
-        return $token;
     }
 }
