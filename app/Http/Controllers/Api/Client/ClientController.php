@@ -172,9 +172,7 @@ class ClientController extends Controller
         if (! $user->incrementData($traffic)) {
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.failed')]);
         }
-
-        // 写入用户流量变动记录
-        Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
+        Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
 
         // 多久后可以再签到
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;

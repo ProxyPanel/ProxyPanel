@@ -32,7 +32,7 @@ return [
         'announcement'       => 'Announcements',
         'wechat_push'        => 'WeChat Notification Service',
         'chat_group'         => 'Chat Group',
-        'empty_announcement' => 'No Announcement',
+        'empty_announcement' => 'No Announcements',
     ],
     'purchase_to_unlock'  => 'Unlock after purchasing service',
     'purchase_required'   => 'This feature is disabled for non-paying users! Please',
@@ -171,7 +171,6 @@ return [
         'rate'     => ':ratio time data consumption',
     ],
     'subscribe'           => [
-        'baned'            => 'Your subscription function is disabled, please contact the administrator to restore',
         'link'             => 'Subscription Link',
         'tips'             => 'Warning: Subscribe Link is for personal used only, Please do not show to anyone else. Otherwise, they may use your service without your permission',
         'exchange_warning' => 'Exchange Link:\n1. Old Link will be disabled\n2. Proxy connection password will be reset',

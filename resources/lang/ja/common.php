@@ -86,7 +86,7 @@ return [
         'crypto' => 'バーチャル通貨',
         'manual' => '自動決済',
         'status' => [
-            'wait'    => '未支払',
+            'wait' => '未支払',
         ],
     ],
     'order'           => [

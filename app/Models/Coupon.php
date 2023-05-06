@@ -46,4 +46,9 @@ class Coupon extends Model
 
         return $this->save();
     }
+
+    public function isExpired()
+    {
+        return $this->attributes['end_time'] < time() || $this->attributes['status'] === 2;
+    }
 }

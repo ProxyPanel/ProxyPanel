@@ -109,8 +109,7 @@ class UserController extends Controller
             }
 
             if ($user) {
-                // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, null, 0, $data['transfer_enable'], '后台手动添加用户');
+                Helpers::addUserTrafficModifyLog($user->id, 0, $data['transfer_enable'], '后台手动添加用户');
 
                 return Response::json(['status' => 'success', 'message' => '添加成功']);
             }
@@ -178,8 +177,7 @@ class UserController extends Controller
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
                 $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
-                // 写入用户流量变动记录
-                Helpers::addUserTrafficModifyLog($user->id, null, 0, 1024 * GB, trans('admin.user.massive.note'));
+                Helpers::addUserTrafficModifyLog($user->id, 0, 1024 * GB, trans('admin.user.massive.note'));
             }
 
             return Response::json(['status' => 'success', 'message' => trans('admin.user.massive.succeed')]);
@@ -247,9 +245,8 @@ class UserController extends Controller
                 $data['password'] = $password;
             }
 
-            // 写入用户流量变动记录
             if ($user->transfer_enable !== $data['transfer_enable']) {
-                Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
+                Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
             }
 
             if ($user->update($data)) {

@@ -73,7 +73,7 @@
                             </td>
                             <td> {{$subscribe->updated_at}} </td>
                             <td> {{$subscribe->ban_time ? date('Y-m-d H:i', $subscribe->ban_time): ''}} </td>
-                            <td> {{$subscribe->ban_desc}} </td>
+                            <td> {{ __($subscribe->ban_desc) }} </td>
                             <td>
                                 @can('admin.subscribe.set')
                                     <button class="btn btn-sm @if($subscribe->status === 0) btn-outline-success @else btn-outline-danger @endif"

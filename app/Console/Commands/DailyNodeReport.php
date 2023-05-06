@@ -6,6 +6,7 @@ use App\Models\Node;
 use App\Models\User;
 use App\Notifications\NodeDailyReport;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Log;
 use Notification;
 
@@ -19,13 +20,16 @@ class DailyNodeReport extends Command
         $jobTime = microtime(true);
 
         if (sysConfig('node_daily_notification')) {
-            $nodeList = Node::whereStatus(1)->with('dailyDataFlows')->get();
+            $date = date('Y-m-d', strtotime('-1 days'));
+            $nodeList = Node::with('dailyDataFlows')->whereHas('dailyDataFlows', function (Builder $query) use ($date) {
+                $query->whereDate('created_at', $date);
+            })->get();
             if ($nodeList->isNotEmpty()) {
                 $data = [];
                 $upload = 0;
                 $download = 0;
                 foreach ($nodeList as $node) {
-                    $log = $node->dailyDataFlows()->whereDate('created_at', date('Y-m-d', strtotime('-1 days')))->first();
+                    $log = $node->dailyDataFlows()->whereDate('created_at', $date)->first();
                     $data[] = [
                         'name'     => $node->name,
                         'upload'   => flowAutoShow($log->u ?? 0),
@@ -49,7 +53,6 @@ class DailyNodeReport extends Command
         }
 
         $jobTime = round(microtime(true) - $jobTime, 4);
-
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
+        Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 }

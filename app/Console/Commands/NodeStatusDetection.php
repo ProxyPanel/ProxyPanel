@@ -35,8 +35,7 @@ class NodeStatusDetection extends Command
         }
 
         $jobTime = round(microtime(true) - $jobTime, 4);
-
-        Log::info("---【{$this->description}】完成---，耗时 {$jobTime} 秒");
+        Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
     private function checkNodeStatus()

@@ -187,13 +187,13 @@ class Helpers
      * 记录流量变动日志.
      *
      * @param  int  $userId  用户ID
-     * @param  int|null  $orderId  订单ID
      * @param  int  $before  记录前的值
      * @param  int  $after  记录后的值
      * @param  string  $description  描述
+     * @param  int|null  $orderId  订单ID
      * @return bool
      */
-    public static function addUserTrafficModifyLog($userId, $orderId, $before, $after, $description = ''): bool
+    public static function addUserTrafficModifyLog(int $userId, int $before, int $after, string $description = '', $orderId = null): bool
     {
         $log = new UserDataModifyLog();
         $log->user_id = $userId;

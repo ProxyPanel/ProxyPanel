@@ -4,7 +4,7 @@ return [
     'attribute'               => 'NOTIFICATIONS',
     'new'                     => ':num new message|:num new messages',
     'empty'                   => 'No new message',
-    'payment_received'        => 'Order has paid, Amount: :amount! Click me to view detail',
+    'payment_received'        => 'Your order (Amount: :amount) is successfully paid. Click to view details',
     'account_expired'         => 'Account Going to Expire',
     'account_expired_content' => 'Your account will be expired after [:days] days. For your server experience, please renew your account ahead of time.',
     'account_expired_blade'   => 'Account will be expired in [:day] days, Please renew it in time',

@@ -26,3 +26,4 @@ _ide_helper.php
 node_modules/*
 composer.phar
 public/uploads/*
+composer.lock

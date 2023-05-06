@@ -230,7 +230,7 @@ class User extends Authenticatable
 
     public function scopeBannedUser($query)
     {
-        return $query->where('status', '>=', 0)->whereEnable(0);
+        return $query->where('status', '<>', -1)->whereEnable(0);
     }
 
     public function nodes($userLevel = -1, $userGroupId = -1)

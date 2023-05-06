@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'hour'            => '{1} Hour | {2} Clock',
+    'hour'            => '{1} Hour | {2} O\'clock',
     'account'         => 'Account',
     'available_date'  => 'Available Until/Period',
     'created_at'      => 'Created At',
@@ -61,7 +61,7 @@ return [
         'fullscreen' => 'Fullscreen',
     ],
     'days'            => [
-        'attribute' => '{1} Day | Day {2}',
+        'attribute' => '{1} Days | Day {2}',
         'sun'       => 'Sunday',
         'mon'       => 'Monday',
         'tue'       => 'Tuesday',
@@ -86,7 +86,7 @@ return [
         'crypto' => 'Crypto',
         'manual' => 'Manual Payment',
         'status' => [
-            'wait'    => 'Awaiting payment',
+            'wait' => 'Awaiting payment',
         ],
     ],
     'order'           => [
@@ -122,7 +122,7 @@ return [
         'unwithdrawn'       => 'Not withdrawn',
         'reply'             => 'Replied',
         'pending'           => 'Pending',
-        'unknown'           => 'Announcements',
+        'unknown'           => 'Unknown',
         'available'         => 'Active',
         'reject'            => 'Reject',
         'rejected'          => 'Rejected',

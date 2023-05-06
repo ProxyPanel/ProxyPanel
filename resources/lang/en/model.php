@@ -217,9 +217,9 @@ return [
         'log_time' => 'Record Time',
     ],
     'user_data_modify' => [
-        'before'      => 'Pre-change Data',
-        'after'       => 'Data after change',
-        'created_at'  => 'Operation Date/Time',
+        'before'     => 'Pre-change Data',
+        'after'      => 'Data after change',
+        'created_at' => 'Operation Date/Time',
     ],
     'user_credit'      => [
         'before'     => 'Balance before operation',

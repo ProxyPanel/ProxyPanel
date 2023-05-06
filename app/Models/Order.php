@@ -57,7 +57,7 @@ class Order extends Model
 
     public function scopeUserPrepay($query, $uid = null)
     {
-        return $query->uid($uid)->whereStatus(3);
+        return $query->uid($uid)->whereStatus(3)->oldest();
     }
 
     public function scopeActive($query)
@@ -109,36 +109,54 @@ class Order extends Model
         return $this->update(['status' => 3]);
     }
 
-    // 订单状态
-    public function getStatusLabelAttribute(): string
+    public function expired() // 预支付订单
     {
-        switch ($this->attributes['status']) {
+        return $this->update(['is_expire' => 1]);
+    }
+
+    public function getStatusLabelAttribute($isHtml): string
+    { // 订单状态
+        return $this->statusTags($this->attributes['status'], $this->attributes['is_expire']);
+    }
+
+    public function statusTags($status, $expire, $isHtml = true): string
+    {
+        switch ($status) {
             case -1:
-                $status_label = '<span class="badge badge-default">'.trans('common.order.status.cancel').'</span>';
+                $label = trans('common.order.status.cancel');
                 break;
             case 0:
-                $status_label = '<span class="badge badge-danger">'.trans('common.payment.status.wait').'</span>';
+                $tag = 1;
+                $label = trans('common.payment.status.wait');
                 break;
             case 1:
-                $status_label = '<span class="badge badge-info">'.trans('common.order.status.review').'</span>';
+                $tag = 2;
+                $label = trans('common.order.status.review');
                 break;
             case 2:
                 if ($this->attributes['goods_id'] === null) {
-                    $status_label = '<span class="badge badge-default">'.trans('common.order.status.complete').'</span>';
-                } elseif ($this->attributes['is_expire']) {
-                    $status_label = '<span class="badge badge-default">'.trans('common.status.expire').'</span>';
+                    $label = trans('common.order.status.complete');
+                } elseif ($expire) {
+                    $label = trans('common.status.expire');
                 } else {
-                    $status_label = '<span class="badge badge-success">'.trans('common.order.status.ongoing').'</span>';
+                    $tag = 3;
+                    $label = trans('common.order.status.ongoing');
                 }
                 break;
             case 3:
-                $status_label = '<span class="badge badge-info">'.trans('common.order.status.prepaid').'</span>';
+                $tag = 2;
+                $label = trans('common.order.status.prepaid');
                 break;
             default:
-                $status_label = trans('common.status.unknown');
+                $tag = 4;
+                $label = trans('common.status.unknown');
         }
 
-        return $status_label;
+        if ($isHtml) {
+            $label = '<span class="badge badge-'.['default', 'danger', 'info', 'success', 'warning'][$tag ?? 0].'">'.$label.'</span>';
+        }
+
+        return $label;
     }
 
     public function getOriginAmountAttribute($value)
