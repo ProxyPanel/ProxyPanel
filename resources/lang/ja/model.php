@@ -217,9 +217,9 @@ return [
         'log_time' => '記録時間',
     ],
     'user_data_modify' => [
-        'before'      => '変更前のトラフィック',
-        'after'       => '運用の後退率',
-        'created_at'  => 'タイムスタンプ',
+        'before'     => '変更前のトラフィック',
+        'after'      => '運用の後退率',
+        'created_at' => 'タイムスタンプ',
     ],
     'user_credit'      => [
         'before'     => '操作前残高',

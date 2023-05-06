@@ -610,7 +610,7 @@ return [
         'wechat_qrcode'                 => '微 信二维码',
         'wechat_secret'                 => '微信企业应用密钥',
         'wechat_token'                  => '微信企业应用TOKEN',
-        'hint'           => [
+        'hint'                          => [
             'account_expire_notification'   => '通知用户账号即将到期',
             'active_times'                  => '24小时内可以通过邮件激活账号次数',
             'admin_invite_days'             => '管理员生成邀请码的有效期',
@@ -687,7 +687,7 @@ return [
             'ticket_closed_notification'    => '工单关闭通知用户',
             'ticket_created_notification'   => '新工单通知管理/用户，取决于谁创建了新工单',
             'ticket_replied_notification'   => '工单回复通知对方',
-            'traffic_ban_time'              => '触发流量异常导致用户被封禁的时长，到期后自动解封',
+            'traffic_ban_time'              => '任何异常导致用户/订阅被封禁的时长, 到期后自动解封',
             'traffic_ban_value'             => '1小时内超过该值，则触发自动封号',
             'traffic_limit_time'            => '间隔多久才可以再次签到',
             'traffic_warning_percent'       => '【流量耗尽通知】开始阈值，每日通知用户',
@@ -708,7 +708,7 @@ return [
             'wechat_secret'                 => '应用的Secret（可能需要下载企业微信才能查看）',
             'wechat_token'                  => '应用管理->应用->设置API接收->TOKEN，URL设置：:url',
         ],
-        'placeholder'    => [
+        'placeholder'                   => [
             'default_url'           => '默认为 :url',
             'server_chan_key'       => '填入ServerChan的SCKEY->再点击更新',
             'pushDeer_key'          => '填入PushDeer的Push Key -> 再点击更新',
@@ -724,7 +724,7 @@ return [
             'tg_chat_token'         => '请到Telegram申请',
             'codepay_url'           => 'https://codepay.fateqq.com/creat_order/?',
         ],
-        'payment'        => [
+        'payment'                       => [
             'attribute' => '支付设置',
             'channel'   => [
                 'alipay'    => '支付宝F2F',
@@ -747,7 +747,7 @@ return [
                 'manual'    => '设置后会自动开启对应显示',
             ],
         ],
-        'notification'   => [
+        'notification'                  => [
             'channel'   => [
                 'telegram'   => 'TG电报',
                 'wechat'     => '微信企业',
@@ -763,33 +763,33 @@ return [
             ],
             'send_test' => '发送测试消息',
         ],
-        'forbid'         => [
+        'forbid'                        => [
             'mainland' => '阻拦大陆',
             'china'    => '阻拦中国',
             'oversea'  => '阻拦海外',
         ],
-        'username'       => [
+        'username'                      => [
             'email'  => '电子邮箱',
             'mobile' => '手机号码',
             'any'    => '任意用户名',
         ],
-        'active_account' => [
+        'active_account'                => [
             'before' => '注册前激活',
             'after'  => '注册后激活',
         ],
-        'ddns'           => [
+        'ddns'                          => [
             'namesilo'   => 'Namesilo',
             'aliyun'     => '阿里云(国际&国内)',
             'dnspod'     => 'DNSPod',
             'cloudflare' => 'CloudFlare',
         ],
-        'captcha'        => [
+        'captcha'                       => [
             'standard'  => '普通验证码',
             'geetest'   => '极 验',
             'recaptcha' => 'Google reCaptcha',
             'hcaptcha'  => 'hCaptcha',
         ],
-        'referral'       => [
+        'referral'                      => [
             'once' => '首购返利',
             'loop' => '循环返利',
         ],

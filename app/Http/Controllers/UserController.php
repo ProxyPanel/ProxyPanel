@@ -75,6 +75,7 @@ class UserController extends Controller
             'paying_user'      => $userService->isActivePaying(), // 付费用户判断
             'userLoginLog'     => $user->loginLogs()->latest()->first(), // 近期登录日志
             'subscribe_status' => $user->subscribe->status,
+            'subMsg'           => $user->subscribe->ban_desc,
             'subType'          => $subType,
             'subUrl'           => route('sub', $user->subscribe->code),
         ], $this->dataFlowChart($user->id)));
@@ -99,9 +100,7 @@ class UserController extends Controller
         if (! $user->incrementData($traffic)) {
             return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
         }
-
-        // 写入用户流量变动记录
-        Helpers::addUserTrafficModifyLog($user->id, null, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
+        Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
 
         // 多久后可以再签到
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
@@ -223,7 +222,7 @@ class UserController extends Controller
         }
 
         return view('user.services', [
-            'chargeGoodsList' => Goods::type(3)->whereStatus(1)->orderBy('price')->get(),
+            'chargeGoodsList' => Goods::type(3)->orderBy('price')->get(),
             'goodsList'       => $goodsList,
             'renewTraffic'    => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
             'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
@@ -270,16 +269,24 @@ class UserController extends Controller
 
     public function closePlan(): JsonResponse
     {
-        $activePlan = Order::userActivePlan()->firstOrFail();
-        $activePlan->is_expire = 1;
+        $activePlan = Order::userActivePlan()->first();
+        if ($activePlan) {
+            if ($activePlan->expired()) { // 关闭先前套餐后，新套餐自动运行
+                if (Order::userActivePlan()->exists()) {
+                    return Response::json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
+                }
 
-        if ($activePlan->save()) {
-            // 关闭先前套餐后，新套餐自动运行
-            if (Order::userActivePlan()->exists()) {
-                return Response::json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
+                return Response::json(['status' => 'success', 'message' => trans('common.close')]);
             }
+        } else {
+            $prepaidPlan = Order::userPrepay()->first();
+            if ($prepaidPlan) { // 关闭先前套餐后，新套餐自动运行
+                if ($prepaidPlan->complete()) {
+                    return Response::json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
+                }
 
-            return Response::json(['status' => 'success', 'message' => trans('common.close')]);
+                return Response::json(['status' => 'success', 'message' => trans('common.close')]);
+            }
         }
 
         return Response::json(['status' => 'fail', 'message' => trans('common.close_item', ['attribute' => trans('common.failed')])]);
@@ -462,6 +469,7 @@ class UserController extends Controller
             'subType'    => $data,
             'subUrl'     => route('sub', $subscribe->code),
             'subStatus'  => $subscribe->status,
+            'subMsg'     => $subscribe->ban_desc,
             'knowledges' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
         ]);
     }
@@ -470,12 +478,13 @@ class UserController extends Controller
     { // 更换订阅地址
         try {
             DB::beginTransaction();
+            $user = auth()->user();
 
             // 更换订阅码
-            auth()->user()->subscribe->update(['code' => Helpers::makeSubscribeCode()]);
+            $user->subscribe->update(['code' => Helpers::makeSubscribeCode()]);
 
             // 更换连接信息
-            auth()->user()->update(['passwd' => Str::random(), 'vmess_id' => Str::uuid()]);
+            $user->update(['passwd' => Str::random(), 'vmess_id' => Str::uuid()]);
 
             DB::commit();
 
@@ -508,9 +517,11 @@ class UserController extends Controller
     public function charge(Request $request): ?JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'coupon_sn' => ['required', Rule::exists('coupon', 'sn')->where(static function ($query) {
-                $query->whereType(3)->whereStatus(0);
-            })],
+            'coupon_sn' => [
+                'required', Rule::exists('coupon', 'sn')->where(static function ($query) {
+                    $query->whereType(3)->whereStatus(0);
+                }),
+            ],
         ]);
 
         if ($validator->fails()) {

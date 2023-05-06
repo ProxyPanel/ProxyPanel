@@ -86,7 +86,7 @@ return [
         'crypto' => '虚拟货币',
         'manual' => '人工支付',
         'status' => [
-            'wait'    => '待支付',
+            'wait' => '待支付',
         ],
     ],
     'order'           => [

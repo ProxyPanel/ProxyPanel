@@ -68,9 +68,9 @@ class SubscribeController extends Controller
     public function setSubscribeStatus(UserSubscribe $subscribe)
     {
         if ($subscribe->status) {
-            $subscribe->update(['status' => 0, 'ban_time' => time(), 'ban_desc' => '后台手动封禁']);
+            $subscribe->update(['status' => 0, 'ban_time' => strtotime(sysConfig('traffic_ban_time').' minutes'), 'ban_desc' => 'Your subscription has been disabled by the administrator, please contact the administrator to restore it']);
         } else {
-            $subscribe->update(['status' => 1, 'ban_time' => null, 'ban_desc' => '']);
+            $subscribe->update(['status' => 1, 'ban_time' => null, 'ban_desc' => null]);
         }
 
         return Response::json(['status' => 'success', 'message' => '操作成功']);

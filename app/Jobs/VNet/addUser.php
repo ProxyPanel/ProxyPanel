@@ -44,7 +44,7 @@ class addUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            if ($node->is_ddns) {
+            if (isset($node->is_ddns) && $node->is_ddns) {
                 $this->send($node->server.':'.$node->push_port, $node->auth->secret);
             } else { // 多IP支持
                 foreach ($node->ips() as $ip) {

@@ -611,7 +611,7 @@ return [
         'wechat_qrcode'                 => 'やみのQRコード',
         'wechat_secret'                 => 'WeChat アプリキー',
         'wechat_token'                  => 'WeChat AppEN',
-        'hint'           => [
+        'hint'                          => [
             'account_expire_notification'   => 'ユーザーに通知して締め切られます',
             'active_times'                  => '24時間、メールからアカウントを使用した回数',
             'admin_invite_days'             => '管理者により招待コードを生成する有効期間',
@@ -710,7 +710,7 @@ return [
             'wechat_secret'                 => 'アプリによるSecret(閲覧するにはエンタープライズ版をダウンロードする必要あり)あります',
             'wechat_token'                  => 'アプリマネージャー - アプリ->APIの受信->TOKEN、URLを設定：:url',
         ],
-        'placeholder'    => [
+        'placeholder'                   => [
             'default_url'           => 'デフォルトは :url',
             'server_chan_key'       => 'サーバーChant の「SCKEY-」ボタンを押す',
             'pushDeer_key'          => 'プッシュ型付きのPush Key ->更新をタップ',
@@ -726,7 +726,7 @@ return [
             'tg_chat_token'         => 'Telegram にアクセスする',
             'codepay_url'           => 'https://codepay.fateq.com/creat_order/?',
         ],
-        'payment'        => [
+        'payment'                       => [
             'attribute' => '支払い設定',
             'channel'   => [
                 'alipay'    => 'PayPalF2F',
@@ -749,7 +749,7 @@ return [
                 'manual'    => '対応する画面を表示するように変更する',
             ],
         ],
-        'notification'   => [
+        'notification'                  => [
             'channel'   => [
                 'telegram'   => 'TGテレックス',
                 'wechat'     => 'マイクロ信企業',
@@ -765,33 +765,33 @@ return [
             ],
             'send_test' => 'テストメールの送信',
         ],
-        'forbid'         => [
+        'forbid'                        => [
             'mainland' => '連合の排除',
             'china'    => '中国をブロックする',
             'oversea'  => 'ブロックを消す',
         ],
-        'username'       => [
+        'username'                      => [
             'email'  => 'メールアドレス',
             'mobile' => '携帯電話番号',
             'any'    => 'ユーザー名',
         ],
-        'active_account' => [
+        'active_account'                => [
             'before' => '登録する前にアクティブにする',
             'after'  => '登録後にアクティブにする',
         ],
-        'ddns'           => [
+        'ddns'                          => [
             'namesilo'   => 'Namesiilo',
             'aliyun'     => 'Aliyun (国際&国内)',
             'dnspod'     => 'DNS Pod',
             'cloudflare' => 'CloudFlarare',
         ],
-        'captcha'        => [
+        'captcha'                       => [
             'standard'  => '平均サイズ',
             'geetest'   => 'ベストプラス',
             'recaptcha' => 'Google reCaptcha',
             'hcaptcha'  => 'hCaptcha',
         ],
-        'referral'       => [
+        'referral'                      => [
             'once' => '初回購入',
             'loop' => 'ループ還元',
         ],

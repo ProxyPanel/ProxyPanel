@@ -70,7 +70,11 @@ class LogsController extends Controller
         $order = Order::findOrFail($request->input('oid'));
         $status = (int) $request->input('status');
 
-        if ($order->update(['status' => $status])) {
+        if ($order->status === 3 && $status === 2 && $order->goods->type === 2 && Order::userActivePlan($order->user_id)->exists()) {
+            return Response::json(['status' => 'fail', 'message' => '更新失败, 订单冲突']); // 防止预支付订单假激活
+        }
+
+        if ($order->update(['is_expire' => 0, 'expired_at' => null, 'status' => $status])) {
             return Response::json(['status' => 'success', 'message' => '更新成功']);
         }
 

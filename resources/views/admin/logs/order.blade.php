@@ -127,19 +127,19 @@
                                         @if ($order->status !== -1)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', -1)" role="menuitem">
                                                 <i class="icon wb-close" aria-hidden="true"></i>
-                                                {{ trans('admin.set_to', ['attribute' => trans('common.status.expire')]) }}
+                                                {{ trans('admin.set_to', ['attribute' => $order->statusTags(-1, 0, false)]) }}
                                             </a>
                                         @endif
                                         @if ($order->status !== 2)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 2)" role="menuitem">
                                                 <i class="icon wb-check" aria-hidden="true"></i>
-                                                {{ trans('admin.set_to', ['attribute' => trans('common.order.status.complete')]) }}
+                                                {{ trans('admin.set_to', ['attribute' => $order->statusTags(2, 0, false)]) }}
                                             </a>
                                         @endif
                                         @if ($order->status !== 3)
                                             <a class="dropdown-item" href="javascript:changeStatus('{{$order->id}}', 3)" role="menuitem">
                                                 <i class="icon wb-check-circle" aria-hidden="true"></i>
-                                                {{ trans('admin.set_to', ['attribute' => trans('common.order.status.prepaid')]) }}
+                                                {{ trans('admin.set_to', ['attribute' => $order->statusTags(3, 0, false)]) }}
                                             </a>
                                         @endif
                                     </div>

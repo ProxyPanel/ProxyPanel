@@ -29,14 +29,12 @@ class AutoClearLogs extends Command
     {
         $jobTime = microtime(true);
 
-        // 清除日志
         if (sysConfig('is_clear_log')) {
-            $this->clearLog();
+            $this->clearLog(); // 清除日志
         }
 
         $jobTime = round(microtime(true) - $jobTime, 4);
-
-        Log::info('---【'.$this->description.'】完成---，耗时'.$jobTime.'秒');
+        Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
     // 清除日志

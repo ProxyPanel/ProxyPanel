@@ -62,7 +62,7 @@
                                 $subscribe->ban_time ) }}</span>
                             </li>
                             <li class="list-group-item bg-blue-grey-100">
-                                <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}: <span class="float-right">{{ $subscribe->ban_desc }}</span>
+                                <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}: <span class="float-right">{{ __($subscribe->ban_desc) }}</span>
                             </li>
                         @endif
                         @can('admin.subscribe.set')

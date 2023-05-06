@@ -172,7 +172,7 @@ class Node extends Model
             'protocol'     => $this->profile['protocol'] ?? '',
             'obfs'         => $this->profile['obfs'] ?? '',
             'obfs_param'   => $this->profile['obfs_param'] ?? '',
-            'is_udp'       => $this->is_udp,
+            'is_udp'       => (int) $this->is_udp,
             'speed_limit'  => $this->getRawOriginal('speed_limit'),
             'client_limit' => $this->client_limit,
             'single'       => isset($this->profile['passwd']) ? 1 : 0,

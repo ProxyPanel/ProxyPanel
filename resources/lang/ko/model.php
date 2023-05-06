@@ -217,9 +217,9 @@ return [
         'log_time' => '记录时间',
     ],
     'user_data_modify' => [
-        'before'      => '变动前流量',
-        'after'       => '变动后流量',
-        'created_at'  => '发生时间',
+        'before'     => '变动前流量',
+        'after'      => '变动后流量',
+        'created_at' => '发生时间',
     ],
     'user_credit'      => [
         'before'     => '操作前余额',

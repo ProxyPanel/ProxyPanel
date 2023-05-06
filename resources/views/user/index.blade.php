@@ -185,7 +185,7 @@
                                             {{trans('common.copy.attribute')}}</button>
                                     </div>
                                 @else
-                                    <x-alert type="danger" :message="trans('user.subscribe.baned')"/>
+                                    <x-alert type="danger" :message="__($subMsg)"/>
                                 @endif
                             </div>
                         </div>
