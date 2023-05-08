@@ -18,6 +18,7 @@ return [
         'login_logs'            => env('TASKS_LOGIN_LOGS', '-3 month'), // 清除用户登陆日志
         'subscribe_logs'        => env('TASKS_SUBSCRIBE_LOGS', '-1 month'), // 清理用户订阅请求日志
         'traffic_logs'          => env('TASKS_TRAFFIC_LOGS', '-3 days'), // 清除用户流量日志
+        'unpaid_orders'         => env('UNPAID_ORDERS', '-1 year'), // 清除用户流量日志
     ],
     'close'              => [
         'tickets'             => env('TASKS_TICKETS', 72), // 自动关闭工单，单位：小时

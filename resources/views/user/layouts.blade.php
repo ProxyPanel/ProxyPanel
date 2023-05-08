@@ -118,7 +118,7 @@
                         <span class="site-menu-title">{{trans('user.menu.nodes')}}</span>
                     </a>
                 </li>
-                <li class="site-menu-item {{request()->routeIs('help') ? 'active open' : ''}}">
+                <li class="site-menu-item {{request()->routeIs('knowledge') ? 'active open' : ''}}">
                     <a href="{{route('knowledge')}}">
                         <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
                         <span class="site-menu-title">{{trans('user.menu.helps')}}</span>
