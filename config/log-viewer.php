@@ -17,8 +17,8 @@ return [
      */
 
     'pattern' => [
-        'prefix'    => Filesystem::PATTERN_PREFIX,    // 'laravel-'
-        'date'      => Filesystem::PATTERN_DATE,      // '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
+        'prefix' => Filesystem::PATTERN_PREFIX,    // 'laravel-'
+        'date' => Filesystem::PATTERN_DATE,      // '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'
         'extension' => Filesystem::PATTERN_EXTENSION, // '.log'
     ],
 
@@ -51,7 +51,7 @@ return [
         'enabled' => true,
 
         'attributes' => [
-            'prefix'     => 'admin/log-viewer',
+            'prefix' => 'admin/log-viewer',
             'middleware' => env('ARCANEDEV_LOGVIEWER_MIDDLEWARE') ? explode(',', env('ARCANEDEV_LOGVIEWER_MIDDLEWARE')) : ['web', 'admin'],
         ],
     ],
@@ -92,15 +92,15 @@ return [
      */
 
     'icons' => [
-        'all'       => 'fa-solid fa-fw fa-list-ul',
+        'all' => 'fa-solid fa-fw fa-list-ul',
         'emergency' => 'fa-solid fa-fw fa-life-ring',
-        'alert'     => 'fa-solid fa-fw fa-bullhorn',
-        'critical'  => 'fa-solid fa-fw fa-heart-pulse',
-        'error'     => 'fa-solid fa-fw fa-circle-xmark',
-        'warning'   => 'fa-solid fa-fw fa-triangle-exclamation',
-        'notice'    => 'fa-solid fa-fw fa-circle-exclamation',
-        'info'      => 'fa-solid fa-fw fa-circle-info',
-        'debug'     => 'fa-solid fa-fw fa-bug',
+        'alert' => 'fa-solid fa-fw fa-bullhorn',
+        'critical' => 'fa-solid fa-fw fa-heart-pulse',
+        'error' => 'fa-solid fa-fw fa-circle-xmark',
+        'warning' => 'fa-solid fa-fw fa-triangle-exclamation',
+        'notice' => 'fa-solid fa-fw fa-circle-exclamation',
+        'info' => 'fa-solid fa-fw fa-circle-info',
+        'debug' => 'fa-solid fa-fw fa-bug',
     ],
 
     /* -----------------------------------------------------------------
@@ -110,16 +110,16 @@ return [
 
     'colors' => [
         'levels' => [
-            'empty'     => '#D1D1D1',
-            'all'       => '#8A8A8A',
+            'empty' => '#D1D1D1',
+            'all' => '#8A8A8A',
             'emergency' => '#E62020',
-            'alert'     => '#FF4C52',
-            'critical'  => '#FF666B',
-            'error'     => '#F57D1B',
-            'warning'   => '#FCB900',
-            'notice'    => '#589FFC',
-            'info'      => '#28C0DE',
-            'debug'     => '#526069',
+            'alert' => '#FF4C52',
+            'critical' => '#FF666B',
+            'error' => '#F57D1B',
+            'warning' => '#FCB900',
+            'notice' => '#589FFC',
+            'info' => '#28C0DE',
+            'debug' => '#526069',
         ],
     ],
 

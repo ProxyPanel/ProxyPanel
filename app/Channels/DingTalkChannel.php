@@ -42,18 +42,18 @@ class DingTalkChannel
 
         if (isset($message['button'])) { // 独立跳转ActionCard类型
             $body = [
-                'msgtype'    => 'actionCard',
+                'msgtype' => 'actionCard',
                 'actionCard' => [
-                    'title'          => $message['title'],
-                    'text'           => $message['markdown'],
+                    'title' => $message['title'],
+                    'text' => $message['markdown'],
                     'btnOrientation' => 1,
-                    'btns'           => [
+                    'btns' => [
                         [
-                            'title'     => trans('common.status.reject'),
+                            'title' => trans('common.status.reject'),
                             'actionURL' => $message['button'][0],
                         ],
                         [
-                            'title'     => trans('common.confirm'),
+                            'title' => trans('common.confirm'),
                             'actionURL' => $message['button'][1],
                         ],
                     ],
@@ -63,16 +63,16 @@ class DingTalkChannel
             $msgId = Str::uuid(); // 生成对公消息查询URL
             $body = [
                 'msgtype' => 'link',
-                'link'    => [
-                    'title'      => $message['title'],
-                    'text'       => '请点击下方按钮【查看详情】',
+                'link' => [
+                    'title' => $message['title'],
+                    'text' => '请点击下方按钮【查看详情】',
                     'messageUrl' => route('message.show', ['type' => $message['url_type'], $msgId]),
                 ],
             ];
         } else { // 文本消息
             $body = [
                 'msgtype' => 'text',
-                'text'    => [
+                'text' => [
                     'content' => $message['content'],
                 ],
             ];

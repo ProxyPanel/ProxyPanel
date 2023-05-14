@@ -9,6 +9,7 @@ use Log;
 class ServiceTimer extends Command
 {
     protected $signature = 'serviceTimer';
+
     protected $description = '服务计时器';
 
     public function handle()

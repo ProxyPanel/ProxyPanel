@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class SsConfig extends Model
 {
     public $timestamps = false;
+
     protected $table = 'ss_config';
+
     protected $guarded = [];
 
     // 筛选默认

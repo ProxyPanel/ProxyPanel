@@ -15,12 +15,12 @@ class CodePay extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'id'         => sysConfig('codepay_id'),
-            'pay_id'     => $payment->trade_no,
-            'type'       => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
-            'price'      => $payment->amount,
-            'page'       => 1,
-            'outTime'    => 900,
+            'id' => sysConfig('codepay_id'),
+            'pay_id' => $payment->trade_no,
+            'type' => $request->input('type'),            //1支付宝支付 2QQ钱包 3微信支付
+            'price' => $payment->amount,
+            'page' => 1,
+            'outTime' => 900,
             'notify_url' => route('payment.notify', ['method' => 'codepay']),
             'return_url' => route('invoice'),
         ];

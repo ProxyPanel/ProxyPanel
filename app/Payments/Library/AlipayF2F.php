@@ -14,15 +14,16 @@ use RuntimeException;
 class AlipayF2F
 {
     private static $gatewayUrl = 'https://openapi.alipay.com/gateway.do';
+
     private $config;
 
     public function __construct(array $rawConfig = [])
     {
         $config = [
-            'app_id'      => $rawConfig['app_id'],
-            'public_key'  => '',
+            'app_id' => $rawConfig['app_id'],
+            'public_key' => '',
             'private_key' => '',
-            'notify_url'  => $rawConfig['notify_url'],
+            'notify_url' => $rawConfig['notify_url'],
         ];
 
         if ($rawConfig['ali_public_key']) {
@@ -82,8 +83,6 @@ class AlipayF2F
      * RSA2验签.
      *
      * @param  array  $data  待签名数据
-     * @param $sign
-     * @return bool
      *
      * @throws RuntimeException
      */
@@ -146,14 +145,14 @@ class AlipayF2F
     private function buildParams(): array
     {
         $params = [
-            'app_id'      => $this->config['app_id'] ?? '',
-            'method'      => $this->config['method'] ?? '',
-            'charset'     => 'utf-8',
-            'sign_type'   => 'RSA2',
-            'timestamp'   => date('Y-m-d H:m:s'),
+            'app_id' => $this->config['app_id'] ?? '',
+            'method' => $this->config['method'] ?? '',
+            'charset' => 'utf-8',
+            'sign_type' => 'RSA2',
+            'timestamp' => date('Y-m-d H:m:s'),
             'biz_content' => $this->config['biz_content'] ?? [],
-            'version'     => '1.0',
-            'notify_url'  => $this->config['notify_url'] ?? '',
+            'version' => '1.0',
+            'notify_url' => $this->config['notify_url'] ?? '',
         ];
         $params = array_filter($params);
         $params['sign'] = $this->encrypt($this->buildQuery($params));
@@ -165,7 +164,6 @@ class AlipayF2F
      * RSA2签名.
      *
      * @param  string  $data  签名的数组
-     * @return string
      *
      * @throws RuntimeException
      */

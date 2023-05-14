@@ -16,7 +16,9 @@ class UserSubscribe extends Model
     use Sortable;
 
     public $sortable = ['id', 'times'];
+
     protected $table = 'user_subscribe';
+
     protected $guarded = [];
 
     public function scopeUid($query)

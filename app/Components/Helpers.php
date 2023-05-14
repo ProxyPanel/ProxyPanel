@@ -52,25 +52,24 @@ class Helpers
      * @param  int|null  $date  可使用天数
      * @param  int|null  $inviter_id  邀请人
      * @param  string|null  $nickname  昵称
-     * @return User
      */
     public static function addUser(string $username, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $nickname = null): User
     {
         return User::create([
-            'nickname'        => $nickname ?? $username,
-            'username'        => $username,
-            'password'        => $password,
-            'port'            => self::getPort(), // 生成一个可用端口
-            'passwd'          => Str::random(),
-            'vmess_id'        => Str::uuid(),
-            'method'          => self::getDefaultMethod(),
-            'protocol'        => self::getDefaultProtocol(),
-            'obfs'            => self::getDefaultObfs(),
+            'nickname' => $nickname ?? $username,
+            'username' => $username,
+            'password' => $password,
+            'port' => self::getPort(), // 生成一个可用端口
+            'passwd' => Str::random(),
+            'vmess_id' => Str::uuid(),
+            'method' => self::getDefaultMethod(),
+            'protocol' => self::getDefaultProtocol(),
+            'obfs' => self::getDefaultObfs(),
             'transfer_enable' => $transfer_enable,
-            'expired_at'      => date('Y-m-d', strtotime($date.' days')),
-            'user_group_id'   => null,
-            'reg_ip'          => IP::getClientIp(),
-            'inviter_id'      => $inviter_id,
+            'expired_at' => date('Y-m-d', strtotime($date.' days')),
+            'user_group_id' => null,
+            'reg_ip' => IP::getClientIp(),
+            'inviter_id' => $inviter_id,
         ]);
     }
 
@@ -121,7 +120,6 @@ class Helpers
      * @param  string|null  $error  投递失败时记录的异常信息
      * @param  string|null  $msgId  对公查询ID
      * @param  string  $address  收信方
-     * @return int
      */
     public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, string $error = null, string $msgId = null, string $address = 'admin'): int
     {
@@ -145,7 +143,6 @@ class Helpers
      * @param  int  $couponId  优惠券ID
      * @param  int|null  $goodsId  商品ID
      * @param  int|null  $orderId  订单ID
-     * @return bool
      */
     public static function addCouponLog($description, $couponId, $goodsId = null, $orderId = null): bool
     {
@@ -167,7 +164,6 @@ class Helpers
      * @param  int  $after  记录后余额
      * @param  int  $amount  发生金额
      * @param  string  $description  描述
-     * @return bool
      */
     public static function addUserCreditLog($userId, $orderId, $before, $after, $amount, $description = ''): bool
     {
@@ -191,7 +187,6 @@ class Helpers
      * @param  int  $after  记录后的值
      * @param  string  $description  描述
      * @param  int|null  $orderId  订单ID
-     * @return bool
      */
     public static function addUserTrafficModifyLog(int $userId, int $before, int $after, string $description = '', $orderId = null): bool
     {
@@ -214,7 +209,6 @@ class Helpers
      * @param  int  $status  状态
      * @param  string  $error  报错
      * @param  string  $receiver  收件人
-     * @return int
      */
     public static function addMarketing(int $type, string $title, string $content, int $status = 1, string $error = '', string $receiver = ''): int
     {
@@ -261,7 +255,6 @@ class Helpers
      * Get price with money symbol in the user's preferred currency.
      *
      * @param  int|float  $amount  price
-     * @return string
      */
     public static function getPriceTag($amount): string
     {

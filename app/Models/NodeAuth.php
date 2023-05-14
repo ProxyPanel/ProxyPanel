@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class NodeAuth extends Model
 {
     protected $table = 'node_auth';
+
     protected $guarded = [];
 
     public function node(): BelongsTo

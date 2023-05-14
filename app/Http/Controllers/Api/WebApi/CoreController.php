@@ -27,8 +27,8 @@ class CoreController extends Controller
         $data = array_map('intval', $validator->validated());
 
         if ($node->heartbeats()->create([
-            'uptime'   => $data['uptime'],
-            'load'     => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
+            'uptime' => $data['uptime'],
+            'load' => implode(' ', [$data['cpu'] / 100, $data['mem'] / 100, $data['disk'] / 100]),
             'log_time' => time(),
         ])) {
             return $this->succeed();
@@ -99,8 +99,8 @@ class CoreController extends Controller
         if ($ruleGroup = $node->ruleGroup) {
             foreach ($ruleGroup->rules as $rule) {
                 $data[] = [
-                    'id'      => $rule->id,
-                    'type'    => $rule->type_api_label,
+                    'id' => $rule->id,
+                    'type' => $rule->type_api_label,
                     'pattern' => $rule->pattern,
                 ];
             }

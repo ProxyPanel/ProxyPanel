@@ -10,5 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 class CouponLog extends Model
 {
     public const UPDATED_AT = null;
+
     protected $table = 'coupon_log';
 }

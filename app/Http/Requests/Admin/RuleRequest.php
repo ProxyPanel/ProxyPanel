@@ -9,7 +9,7 @@ class RuleRequest extends FormRequest
     public function rules()
     {
         $rules = [
-            'name'    => 'required|string',
+            'name' => 'required|string',
             'pattern' => 'required|string',
         ];
 

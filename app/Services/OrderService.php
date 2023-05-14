@@ -11,8 +11,11 @@ use Log;
 class OrderService
 {
     public static $order;
+
     public static $user;
+
     public static $goods;
+
     public static $payment;
 
     public function __construct(Order $order)
@@ -87,10 +90,10 @@ class OrderService
         Order::whereId(self::$order->id)->first()->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
-            'invite_num'  => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-            'level'       => self::$goods->level,
+            'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
+            'level' => self::$goods->level,
             'speed_limit' => self::$goods->speed_limit,
-            'enable'      => 1,
+            'enable' => 1,
         ];
 
         // 无端口用户 添加端口
@@ -126,7 +129,7 @@ class OrderService
 
         return array_merge($data, [
             'transfer_enable' => self::$goods->traffic * MB,
-            'reset_time'      => $nextResetTime,
+            'reset_time' => $nextResetTime,
         ]);
     }
 
@@ -148,8 +151,8 @@ class OrderService
                 return $inviter->commissionLogs()
                     ->create([
                         'invitee_id' => $user->id,
-                        'order_id'   => self::$order->id,
-                        'amount'     => self::$order->amount,
+                        'order_id' => self::$order->id,
+                        'amount' => self::$order->amount,
                         'commission' => self::$order->amount * sysConfig('referral_percent'),
                     ]);
             }

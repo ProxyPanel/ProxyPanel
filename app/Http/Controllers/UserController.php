@@ -64,20 +64,20 @@ class UserController extends Controller
         }
 
         return view('user.index', array_merge([
-            'remainDays'       => now()->diffInDays($user->expired_at, false),
-            'resetDays'        => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
-            'unusedTraffic'    => flowAutoShow($unusedTraffic),
-            'expireTime'       => $user->expiration_date,
-            'banedTime'        => $user->ban_time,
-            'unusedPercent'    => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
-            'announcements'    => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
+            'remainDays' => now()->diffInDays($user->expired_at, false),
+            'resetDays' => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
+            'unusedTraffic' => flowAutoShow($unusedTraffic),
+            'expireTime' => $user->expiration_date,
+            'banedTime' => $user->ban_time,
+            'unusedPercent' => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
+            'announcements' => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
             'isTrafficWarning' => $user->isTrafficWarning(), // 流量异常判断
-            'paying_user'      => $userService->isActivePaying(), // 付费用户判断
-            'userLoginLog'     => $user->loginLogs()->latest()->first(), // 近期登录日志
+            'paying_user' => $userService->isActivePaying(), // 付费用户判断
+            'userLoginLog' => $user->loginLogs()->latest()->first(), // 近期登录日志
             'subscribe_status' => $user->subscribe->status,
-            'subMsg'           => $user->subscribe->ban_desc,
-            'subType'          => $subType,
-            'subUrl'           => route('sub', $user->subscribe->code),
+            'subMsg' => $user->subscribe->ban_desc,
+            'subType' => $subType,
+            'subUrl' => route('sub', $user->subscribe->code),
         ], $this->dataFlowChart($user->id)));
     }
 
@@ -223,9 +223,9 @@ class UserController extends Controller
 
         return view('user.services', [
             'chargeGoodsList' => Goods::type(3)->orderBy('price')->get(),
-            'goodsList'       => $goodsList,
-            'renewTraffic'    => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
-            'dataPlusDays'    => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
+            'goodsList' => $goodsList,
+            'renewTraffic' => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
+            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
         ]);
     }
 
@@ -262,7 +262,7 @@ class UserController extends Controller
     public function invoices(Request $request)
     {
         return view('user.invoices', [
-            'orderList'   => auth()->user()->orders()->with(['goods', 'payment'])->orderByDesc('id')->paginate(10)->appends($request->except('page')),
+            'orderList' => auth()->user()->orders()->with(['goods', 'payment'])->orderByDesc('id')->paginate(10)->appends($request->except('page')),
             'prepaidPlan' => Order::userPrepay()->exists(),
         ]);
     }
@@ -356,7 +356,7 @@ class UserController extends Controller
         }
 
         return view('user.replyTicket', [
-            'ticket'    => $ticket,
+            'ticket' => $ticket,
             'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
         ]);
     }
@@ -381,8 +381,8 @@ class UserController extends Controller
         }
 
         return view('user.invite', [
-            'num'              => auth()->user()->invite_num, // 还可以生成的邀请码数量
-            'inviteList'       => Invite::uid()->with(['invitee', 'inviter'])->paginate(10), // 邀请码列表
+            'num' => auth()->user()->invite_num, // 还可以生成的邀请码数量
+            'inviteList' => Invite::uid()->with(['invitee', 'inviter'])->paginate(10), // 邀请码列表
             'referral_traffic' => flowAutoShow(sysConfig('referral_traffic') * MB),
             'referral_percent' => sysConfig('referral_percent'),
         ]);
@@ -396,7 +396,7 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'message' => trans('user.invite.generate_failed')]);
         }
         $invite = $user->invites()->create([
-            'code'     => strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12)),
+            'code' => strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12)),
             'dateline' => date('Y-m-d H:i:s', strtotime(sysConfig('user_invite_days').' days')),
         ]);
         if ($invite) {
@@ -424,8 +424,8 @@ class UserController extends Controller
         }
 
         $data = [
-            'name'  => $ret->name,
-            'type'  => $ret->type,
+            'name' => $ret->name,
+            'type' => $ret->type,
             'value' => $ret->type === 2 ? $ret->value : Helpers::getPriceTag($ret->value),
         ];
 
@@ -441,8 +441,8 @@ class UserController extends Controller
 
         return view('user.buy', [
             'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
-            'activePlan'   => Order::userActivePlan()->exists(),
-            'goods'        => $good,
+            'activePlan' => Order::userActivePlan()->exists(),
+            'goods' => $good,
         ]);
     }
 
@@ -466,10 +466,10 @@ class UserController extends Controller
         $subscribe = auth()->user()->subscribe;
 
         return view('user.knowledge', [
-            'subType'    => $data,
-            'subUrl'     => route('sub', $subscribe->code),
-            'subStatus'  => $subscribe->status,
-            'subMsg'     => $subscribe->ban_desc,
+            'subType' => $data,
+            'subUrl' => route('sub', $subscribe->code),
+            'subStatus' => $subscribe->status,
+            'subMsg' => $subscribe->ban_desc,
             'knowledges' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
         ]);
     }

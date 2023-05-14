@@ -17,8 +17,11 @@ class Order extends Model
     use Sortable;
 
     public $sortable = ['id', 'sn', 'expired_at', 'created_at'];
+
     protected $table = 'order';
+
     protected $dates = ['expired_at'];
+
     protected $guarded = [];
 
     public function user(): BelongsTo

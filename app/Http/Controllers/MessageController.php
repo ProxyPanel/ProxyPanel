@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\NotificationLog;
-use Illuminate\Http\Request;
 use Illuminate\Mail\Markdown;
 
 class MessageController extends Controller

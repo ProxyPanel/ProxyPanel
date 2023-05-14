@@ -2,7 +2,6 @@
 
 namespace App\Jobs\VNet;
 
-use App\Models\Node;
 use App\Models\User;
 use Arr;
 use Exception;
@@ -23,6 +22,7 @@ class addUser implements ShouldQueue
     use SerializesModels;
 
     private $data;
+
     private $nodes;
 
     public function __construct($userIds, $nodes)
@@ -30,11 +30,11 @@ class addUser implements ShouldQueue
         $this->nodes = $nodes;
         foreach (User::findMany($userIds) as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'port'        => $user->port,
-                'passwd'      => $user->passwd,
+                'uid' => $user->id,
+                'port' => $user->port,
+                'passwd' => $user->passwd,
                 'speed_limit' => $user->speed_limit,
-                'enable'      => $user->enable,
+                'enable' => $user->enable,
             ];
         }
 

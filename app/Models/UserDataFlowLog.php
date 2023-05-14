@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserDataFlowLog extends Model
 {
     public $timestamps = false;
+
     protected $table = 'user_traffic_log';
+
     protected $guarded = [];
 
     // 关联账号

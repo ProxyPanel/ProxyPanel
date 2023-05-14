@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Verify extends Model
 {
     protected $table = 'verify';
+
     protected $guarded = [];
 
     // 筛选类型

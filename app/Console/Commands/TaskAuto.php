@@ -16,6 +16,7 @@ use Log;
 class TaskAuto extends Command
 {
     protected $signature = 'task:auto';
+
     protected $description = '自动任务';
 
     /*

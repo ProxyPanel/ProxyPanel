@@ -5,6 +5,7 @@ namespace App\Services;
 class ArticleService extends BaseService
 {
     private static $article;
+
     private static $valuables;
 
     public function __construct($article)
@@ -17,13 +18,13 @@ class ArticleService extends BaseService
         $subUrl = route('sub', $subscribe->code);
 
         self::$valuables = [
-            '{{siteName}}'           => $siteName,
+            '{{siteName}}' => $siteName,
             '{{urlEndcodeSiteName}}' => urlencode($siteName),
-            '{{urlEndcodeSiteUrl}}'  => urlencode($siteUrl),
-            '{{siteUrl}}'            => $siteUrl,
-            '{{subUrl}}'             => $subUrl,
-            '{{urlEncodeSubUrl}}'    => urlencode($subUrl),
-            '{{base64SubUrl}}'       => base64url_encode($subUrl),
+            '{{urlEndcodeSiteUrl}}' => urlencode($siteUrl),
+            '{{siteUrl}}' => $siteUrl,
+            '{{subUrl}}' => $subUrl,
+            '{{urlEncodeSubUrl}}' => urlencode($subUrl),
+            '{{base64SubUrl}}' => base64url_encode($subUrl),
         ];
     }
 

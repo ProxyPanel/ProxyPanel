@@ -14,9 +14,9 @@ class SSController extends Controller
     public function getNodeInfo(Node $node): JsonResponse // 获取节点信息
     {
         $data = [
-            'id'           => $node->id,
-            'method'       => $node->profile['method'] ?? '',
-            'speed_limit'  => $node->getRawOriginal('speed_limit'),
+            'id' => $node->id,
+            'method' => $node->profile['method'] ?? '',
+            'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'redirect_url' => sysConfig('redirect_url'),
         ];
@@ -32,11 +32,11 @@ class SSController extends Controller
     {
         foreach ($node->users() as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'port'        => $user->port,
-                'passwd'      => $user->passwd,
+                'uid' => $user->id,
+                'port' => $user->port,
+                'passwd' => $user->passwd,
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
-                'enable'      => $user->enable,
+                'enable' => $user->enable,
             ];
         }
 

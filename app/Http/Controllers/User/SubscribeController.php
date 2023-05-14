@@ -14,6 +14,7 @@ use Response;
 class SubscribeController extends Controller
 {
     private static $subType;
+
     private $proxyServer;
 
     // 通过订阅码获取订阅信息

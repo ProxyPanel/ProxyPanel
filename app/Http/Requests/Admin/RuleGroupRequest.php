@@ -9,8 +9,8 @@ class RuleGroupRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required|string',
-            'type'  => 'required|boolean',
+            'name' => 'required|string',
+            'type' => 'required|boolean',
             'rules' => 'nullable|exists:rule,id',
         ];
     }

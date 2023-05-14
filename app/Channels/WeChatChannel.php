@@ -22,26 +22,26 @@ class WeChatChannel
         if (isset($message['button'])) { // 按钮交互型
             // https://work.weixin.qq.com/api/doc/90000/90135/90236#%E6%8C%89%E9%92%AE%E4%BA%A4%E4%BA%92%E5%9E%8B
             $body = [
-                'touser'        => '@all',
-                'msgtype'       => 'template_card',
-                'agentid'       => sysConfig('wechat_aid'),
+                'touser' => '@all',
+                'msgtype' => 'template_card',
+                'agentid' => sysConfig('wechat_aid'),
                 'template_card' => [
-                    'card_type'               => 'button_interaction',
-                    'main_title'              => ['title' => $message['title']],
+                    'card_type' => 'button_interaction',
+                    'main_title' => ['title' => $message['title']],
                     'horizontal_content_list' => $message['body'],
-                    'task_id'                 => time().Str::random(),
-                    'button_list'             => [
+                    'task_id' => time().Str::random(),
+                    'button_list' => [
                         [
-                            'type'  => 1,
-                            'text'  => trans('common.status.reject'),
+                            'type' => 1,
+                            'text' => trans('common.status.reject'),
                             'style' => 3,
-                            'url'   => $message['button'][0],
+                            'url' => $message['button'][0],
                         ],
                         [
-                            'type'  => 1,
-                            'text'  => trans('common.confirm'),
+                            'type' => 1,
+                            'text' => trans('common.confirm'),
                             'style' => 1,
-                            'url'   => $message['button'][1],
+                            'url' => $message['button'][1],
                         ],
                     ],
                 ],
@@ -49,22 +49,22 @@ class WeChatChannel
         } elseif (isset($message['url_type'])) { // 文本卡片
             $msgId = Str::uuid(); // 生成对公消息查询URL
             $body = [
-                'touser'   => '@all',
-                'agentid'  => sysConfig('wechat_aid'),
-                'msgtype'  => 'textcard',
+                'touser' => '@all',
+                'agentid' => sysConfig('wechat_aid'),
+                'msgtype' => 'textcard',
                 'textcard' => [
-                    'title'       => $message['title'],
+                    'title' => $message['title'],
                     'description' => '请点击下方按钮【查看详情】',
-                    'url'         => route('message.show', ['type' => $message['url_type'], $msgId]),
-                    'btntxt'      => '查看详情',
+                    'url' => route('message.show', ['type' => $message['url_type'], $msgId]),
+                    'btntxt' => '查看详情',
                 ],
             ];
         } else { // 文本消息
             $body = [
-                'touser'                   => '@all',
-                'agentid'                  => sysConfig('wechat_aid'),
-                'msgtype'                  => 'text',
-                'text'                     => [
+                'touser' => '@all',
+                'agentid' => sysConfig('wechat_aid'),
+                'msgtype' => 'text',
+                'text' => [
                     'content' => $message['content'],
                 ],
                 'duplicate_check_interval' => 600,

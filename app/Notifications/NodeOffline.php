@@ -44,7 +44,7 @@ class NodeOffline extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.node_offline'),
+            'title' => trans('notification.node_offline'),
             'content' => $this->markdownMessage(),
             'url_type' => 'markdown',
         ];
@@ -53,10 +53,10 @@ class NodeOffline extends Notification implements ShouldQueue
     public function toBark($notifiable)
     {
         return [
-            'title'   => trans('notification.node_offline'),
+            'title' => trans('notification.node_offline'),
             'content' => $this->stringMessage(),
-            'group'   => '节点状态',
-            'icon'    => asset('assets/images/notification/offline.png'),
+            'group' => '节点状态',
+            'icon' => asset('assets/images/notification/offline.png'),
         ];
     }
 

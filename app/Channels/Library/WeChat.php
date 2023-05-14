@@ -96,7 +96,7 @@ class WeChat
         return sprintf($format, $encrypt, $signature, $timestamp, $nonce);
     }
 
-    public function DecryptMsg($sMsgSignature, $sTimeStamp = null, $sNonce, $sPostData, &$sMsg)
+    public function DecryptMsg($sMsgSignature, $sTimeStamp, $sNonce, $sPostData, &$sMsg)
     { // 检验消息的真实性，并且获取解密后的明文.
         //提取密文
         $array = $this->extract($sPostData);
@@ -195,6 +195,7 @@ class PKCS7Encoder
 class Prpcrypt
 {
     public $key;
+
     public $iv;
 
     public function __construct()
@@ -206,7 +207,6 @@ class Prpcrypt
     /**
      * 加密.
      *
-     * @param $text
      * @return array
      */
     public function encrypt($text)

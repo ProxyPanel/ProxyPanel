@@ -140,7 +140,7 @@ class OAuthController extends Controller
 
                     if ($user) {
                         $user->userAuths()->create([
-                            'type'       => $type,
+                            'type' => $type,
                             'identifier' => $info->getId(),
                             'credential' => $info->token,
                         ]);

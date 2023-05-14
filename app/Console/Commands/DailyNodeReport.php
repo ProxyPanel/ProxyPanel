@@ -13,6 +13,7 @@ use Notification;
 class DailyNodeReport extends Command
 {
     protected $signature = 'dailyNodeReport';
+
     protected $description = '自动报告节点昨日使用情况';
 
     public function handle()
@@ -31,19 +32,19 @@ class DailyNodeReport extends Command
                 foreach ($nodeList as $node) {
                     $log = $node->dailyDataFlows()->whereDate('created_at', $date)->first();
                     $data[] = [
-                        'name'     => $node->name,
-                        'upload'   => flowAutoShow($log->u ?? 0),
+                        'name' => $node->name,
+                        'upload' => flowAutoShow($log->u ?? 0),
                         'download' => flowAutoShow($log->d ?? 0),
-                        'total'    => $log->traffic ?? '',
+                        'total' => $log->traffic ?? '',
                     ];
                     $upload += $log->u ?? 0;
                     $download += $log->d ?? 0;
                 }
                 if ($data) {
                     $data[] = [
-                        'name'     => trans('notification.node.total'),
-                        'total'    => flowAutoShow($upload + $download),
-                        'upload'   => flowAutoShow($upload),
+                        'name' => trans('notification.node.total'),
+                        'total' => flowAutoShow($upload + $download),
+                        'upload' => flowAutoShow($upload),
                         'download' => flowAutoShow($download),
                     ];
 

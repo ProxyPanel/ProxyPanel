@@ -7,6 +7,7 @@ use Illuminate\View\Component;
 class ChatUnit extends Component
 {
     public $user;
+
     public $ticket;
 
     public function __construct($user, $ticket)

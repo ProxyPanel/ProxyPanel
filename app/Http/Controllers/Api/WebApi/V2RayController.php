@@ -18,24 +18,24 @@ class V2RayController extends Controller
         $tlsProvider = ! empty($node->profile['tls_provider']) ? $node->profile['tls_provider'] : sysConfig('v2ray_tls_provider');
 
         return $this->succeed([
-            'id'              => $node->id,
-            'is_udp'          => (bool) $node->is_udp,
-            'speed_limit'     => $node->getRawOriginal('speed_limit'),
-            'client_limit'    => $node->client_limit,
-            'push_port'       => $node->push_port,
-            'redirect_url'    => (string) sysConfig('redirect_url', ''),
-            'secret'          => $node->auth->secret,
-            'key'             => $cert ? $cert->key : '',
-            'pem'             => $cert ? $cert->pem : '',
-            'v2_license'      => (string) sysConfig('v2ray_license'),
-            'v2_alter_id'     => (int) $node->profile['v2_alter_id'],
-            'v2_port'         => $node->port,
-            'v2_method'       => $node->profile['method'] ?? '',
-            'v2_net'          => $node->profile['v2_net'] ?? '',
-            'v2_type'         => $node->profile['v2_type'] ?? '',
-            'v2_host'         => $node->profile['v2_host'] ?? '',
-            'v2_path'         => $node->profile['v2_path'] ?? '',
-            'v2_tls'          => (bool) ($node->profile['v2_tls'] ?? false),
+            'id' => $node->id,
+            'is_udp' => (bool) $node->is_udp,
+            'speed_limit' => $node->getRawOriginal('speed_limit'),
+            'client_limit' => $node->client_limit,
+            'push_port' => $node->push_port,
+            'redirect_url' => (string) sysConfig('redirect_url', ''),
+            'secret' => $node->auth->secret,
+            'key' => $cert ? $cert->key : '',
+            'pem' => $cert ? $cert->pem : '',
+            'v2_license' => (string) sysConfig('v2ray_license'),
+            'v2_alter_id' => (int) $node->profile['v2_alter_id'],
+            'v2_port' => $node->port,
+            'v2_method' => $node->profile['method'] ?? '',
+            'v2_net' => $node->profile['v2_net'] ?? '',
+            'v2_type' => $node->profile['v2_type'] ?? '',
+            'v2_host' => $node->profile['v2_host'] ?? '',
+            'v2_path' => $node->profile['v2_path'] ?? '',
+            'v2_tls' => (bool) ($node->profile['v2_tls'] ?? false),
             'v2_tls_provider' => $tlsProvider,
         ]);
     }
@@ -44,8 +44,8 @@ class V2RayController extends Controller
     {
         foreach ($node->users() as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'vmess_uid'   => $user->vmess_id,
+                'uid' => $user->id,
+                'vmess_uid' => $user->vmess_id,
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
             ];
         }

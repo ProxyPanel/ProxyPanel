@@ -50,10 +50,10 @@ class TaskHourly extends Command
                     $log->created_at = $created_at;
                 })->flatten()->toArray();
                 $overall = [ // 每小时节点流量合计
-                    'u'          => $logs->sum('u'),
-                    'd'          => $logs->sum('d'),
-                    'total'      => $logs->sum('total'),
-                    'traffic'    => flowAutoShow($logs->sum('total')),
+                    'u' => $logs->sum('u'),
+                    'd' => $logs->sum('d'),
+                    'total' => $logs->sum('total'),
+                    'traffic' => flowAutoShow($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
                 $data[] = $overall;
@@ -82,10 +82,10 @@ class TaskHourly extends Command
                     ->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
                 $total = $traffic->u + $traffic->d;
                 $node->hourlyDataFlows()->create([
-                    'u'          => $traffic->u,
-                    'd'          => $traffic->d,
-                    'total'      => $total,
-                    'traffic'    => flowAutoShow($total),
+                    'u' => $traffic->u,
+                    'd' => $traffic->d,
+                    'total' => $total,
+                    'traffic' => flowAutoShow($total),
                     'created_at' => $created_at,
                 ]);
             }

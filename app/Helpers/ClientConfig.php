@@ -37,9 +37,9 @@ trait ClientConfig
         if (str_contains($target, 'v2rayn') || str_contains($target, 'v2rayng') || str_contains($target, 'v2rayu')) {
             return $this->v2rayN();
         }
-//            if (strpos($target, 'shadowsocks') !== false) {
-//                exit($this->shaodowsocksSIP008());
-//            }
+        //            if (strpos($target, 'shadowsocks') !== false) {
+        //                exit($this->shaodowsocksSIP008());
+        //            }
         return $this->origin();
     }
 
@@ -218,9 +218,6 @@ trait ClientConfig
     }
 
     /**
-     * @param  string  $customConfig
-     * @param  string  $defaultConfig
-     * @param  string  $target
      * @return array|false|string|string[]
      */
     private function sugerLike(string $customConfig, string $defaultConfig, string $target = '')

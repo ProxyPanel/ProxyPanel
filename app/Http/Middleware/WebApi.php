@@ -5,19 +5,18 @@ namespace App\Http\Middleware;
 use App\Helpers\ResponseEnum;
 use App\Helpers\WebApiResponse;
 use Closure;
+use Illuminate\Http\Request;
 
 class WebApi
 {
     /**
      * Handle an incoming request.
      *
-     * @param  $request
-     * @param  Closure  $next
      * @return mixed
      */
     use WebApiResponse;
 
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $node = $request->node;
         $key = $request->header('key');

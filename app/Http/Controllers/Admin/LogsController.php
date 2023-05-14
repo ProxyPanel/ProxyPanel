@@ -186,7 +186,7 @@ class LogsController extends Controller
 
         return view('admin.logs.onlineIPMonitor', [
             'onlineIPLogs' => $onlineIPLogs,
-            'nodes'        => Node::whereStatus(1)->orderByDesc('sort')->latest()->get(),
+            'nodes' => Node::whereStatus(1)->orderByDesc('sort')->latest()->get(),
         ]);
     }
 

@@ -15,9 +15,9 @@ class PushPlusChannel
         $message = $notification->toCustom($notifiable);
 
         $response = Http::timeout(15)->post('https://www.pushplus.plus/send', [
-            'token'    => sysConfig('pushplus_token'),
-            'title'    => $message['title'],
-            'content'  => Markdown::parse($message['content'])->toHtml(),
+            'token' => sysConfig('pushplus_token'),
+            'title' => $message['title'],
+            'content' => Markdown::parse($message['content'])->toHtml(),
             'template' => 'html',
         ]);
 

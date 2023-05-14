@@ -7,6 +7,7 @@ use Illuminate\View\Component;
 class Alert extends Component
 {
     public $type;
+
     public $message;
 
     public function __construct($type, $message)

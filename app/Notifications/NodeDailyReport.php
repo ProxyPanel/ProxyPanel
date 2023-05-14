@@ -44,7 +44,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => __('Daily Data Usage Report'),
+            'title' => __('Daily Data Usage Report'),
             'content' => $this->markdownMessage(),
             'url_type' => 'markdown',
         ];

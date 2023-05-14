@@ -31,10 +31,10 @@ class Manual extends Gateway
         $goods = $payment->order->goods;
 
         return view('user.components.payment.manual', [
-            'payment'       => $payment,
-            'name'          => $goods->name ?? trans('user.recharge_credit'),
-            'days'          => $goods->days ?? 0,
-            'pay_type'      => $payment->order->pay_type_label ?: 0,
+            'payment' => $payment,
+            'name' => $goods->name ?? trans('user.recharge_credit'),
+            'days' => $goods->days ?? 0,
+            'pay_type' => $payment->order->pay_type_label ?: 0,
             'pay_type_icon' => $payment->order->pay_type_icon,
         ]);
     }

@@ -21,15 +21,15 @@ class SSRController extends Controller
     {
         foreach ($node->users() as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'port'        => $user->port,
-                'passwd'      => $user->passwd,
-                'method'      => $user->method,
-                'protocol'    => $user->protocol,
-                'obfs'        => $user->obfs,
-                'obfs_param'  => $node->profile['obfs_param'] ?? '',
+                'uid' => $user->id,
+                'port' => $user->port,
+                'passwd' => $user->passwd,
+                'method' => $user->method,
+                'protocol' => $user->protocol,
+                'obfs' => $user->obfs,
+                'obfs_param' => $node->profile['obfs_param'] ?? '',
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
-                'enable'      => $user->enable,
+                'enable' => $user->enable,
             ];
         }
 

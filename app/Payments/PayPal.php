@@ -23,19 +23,19 @@ class PayPal extends Gateway
         $config = [
             'mode' => 'live',
             'live' => [
-                'username'    => sysConfig('paypal_username'),
-                'password'    => sysConfig('paypal_password'),
-                'secret'      => sysConfig('paypal_secret'),
+                'username' => sysConfig('paypal_username'),
+                'password' => sysConfig('paypal_password'),
+                'secret' => sysConfig('paypal_secret'),
                 'certificate' => sysConfig('paypal_certificate'),
-                'app_id'      => sysConfig('paypal_app_id'),
+                'app_id' => sysConfig('paypal_app_id'),
             ],
 
             'payment_action' => 'Sale',
-            'currency'       => 'USD',
-            'billing_type'   => 'MerchantInitiatedBilling',
-            'notify_url'     => route('payment.notify', ['method' => 'paypal']),
-            'locale'         => 'zh_CN',
-            'validate_ssl'   => true,
+            'currency' => 'USD',
+            'billing_type' => 'MerchantInitiatedBilling',
+            'notify_url' => route('payment.notify', ['method' => 'paypal']),
+            'locale' => 'zh_CN',
+            'validate_ssl' => true,
         ];
         $this->provider->setApiCredentials($config);
     }
@@ -120,19 +120,19 @@ class PayPal extends Gateway
         $amount = 0.3 + $converted;
 
         return [
-            'invoice_id'          => $trade_no,
-            'items'               => [
+            'invoice_id' => $trade_no,
+            'items' => [
                 [
-                    'name'  => sysConfig('subject_name') ?: sysConfig('website_name'),
+                    'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
                     'price' => $amount,
-                    'desc'  => 'Description for'.(sysConfig('subject_name') ?: sysConfig('website_name')),
-                    'qty'   => 1,
+                    'desc' => 'Description for'.(sysConfig('subject_name') ?: sysConfig('website_name')),
+                    'qty' => 1,
                 ],
             ],
             'invoice_description' => $trade_no,
-            'return_url'          => route('paypal.checkout'),
-            'cancel_url'          => route('invoice'),
-            'total'               => $amount,
+            'return_url' => route('paypal.checkout'),
+            'cancel_url' => route('invoice'),
+            'total' => $amount,
         ];
     }
 }

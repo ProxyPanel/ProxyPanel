@@ -10,6 +10,7 @@ use Log;
 class VNetReload extends Command
 {
     protected $signature = 'vnet:reload';
+
     protected $description = 'VNet线路重置';
 
     public function handle()

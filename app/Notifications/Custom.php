@@ -15,6 +15,7 @@ class Custom extends Notification implements ShouldQueue
     use Queueable;
 
     private $title;
+
     private $content;
 
     public function __construct($title, $content)
@@ -38,7 +39,7 @@ class Custom extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => $this->title,
+            'title' => $this->title,
             'content' => $this->content,
         ];
     }
@@ -53,11 +54,11 @@ class Custom extends Notification implements ShouldQueue
     public function toBark($notifiable)
     {
         return [
-            'title'    => $this->title,
-            'content'  => $this->content,
-            'group'    => '自定义信息',
-            'icon'     => asset('assets/images/notification/custom.png'),
-            'sound'    => 'newmail',
+            'title' => $this->title,
+            'content' => $this->content,
+            'group' => '自定义信息',
+            'icon' => asset('assets/images/notification/custom.png'),
+            'sound' => 'newmail',
             'url_type' => 'markdown',
         ];
     }

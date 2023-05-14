@@ -10,6 +10,7 @@ use Log;
 class UserExpireWarning extends Command
 {
     protected $signature = 'userExpireWarning';
+
     protected $description = '用户临近到期自动提醒';
 
     public function handle()

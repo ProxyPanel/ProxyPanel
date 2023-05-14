@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ReferralLog extends Model
 {
     protected $table = 'referral_log';
+
     protected $guarded = [];
 
     public function scopeUid($query)

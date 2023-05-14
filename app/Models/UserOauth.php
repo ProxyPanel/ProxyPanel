@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserOauth extends Model
 {
     protected $table = 'user_oauth';
+
     protected $guarded = [];
 
     public function user(): BelongsTo

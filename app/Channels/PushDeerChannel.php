@@ -14,8 +14,8 @@ class PushDeerChannel
         $message = $notification->toCustom($notifiable);
 
         $response = Http::timeout(15)
-                ->post('https://api2.pushdeer.com/message/push?pushkey='.sysConfig('pushDeer_key').'&text='.urlencode($message['title']).'&desp='
-                    .urlencode($message['content']).'&type=markdown');
+            ->post('https://api2.pushdeer.com/message/push?pushkey='.sysConfig('pushDeer_key').'&text='.urlencode($message['title']).'&desp='
+                .urlencode($message['content']).'&type=markdown');
 
         // 发送成功
         if ($response->ok()) {

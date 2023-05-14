@@ -9,8 +9,11 @@ use Log;
 class CloudFlare
 {
     private static $apiHost = 'https://api.cloudflare.com/client/v4/';
+
     private static $subDomain;
+
     private $zoneIdentifier;
+
     private $client;
 
     public function __construct($subDomain)

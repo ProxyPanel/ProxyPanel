@@ -9,6 +9,7 @@ use Log;
 class Aliyun
 {
     private static $apiHost = 'https://alidns.aliyuncs.com/';
+
     private static $subDomain;
 
     public function __construct($subDomain)

@@ -13,8 +13,11 @@ class Coupon extends Model
     use SoftDeletes;
 
     protected $table = 'coupon';
+
     protected $casts = ['limit' => 'array', 'start_time' => 'date:Y-m-d', 'end_time' => 'date:Y-m-d'];
+
     protected $dates = ['deleted_at'];
+
     protected $guarded = [];
 
     // 筛选类型

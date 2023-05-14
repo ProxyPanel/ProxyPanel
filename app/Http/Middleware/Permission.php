@@ -12,7 +12,6 @@ class Permission
      * Handle an incoming request.
      *
      * @param  Request  $request
-     * @param  Closure  $next
      * @param  null  $guard
      * @return mixed
      */

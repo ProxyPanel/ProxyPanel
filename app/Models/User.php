@@ -22,8 +22,11 @@ class User extends Authenticatable
     use HasApiTokens, Notifiable, HasRoles, Sortable;
 
     public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
+
     protected $table = 'user';
+
     protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
+
     protected $guarded = [];
 
     public function routeNotificationForMail($notification)

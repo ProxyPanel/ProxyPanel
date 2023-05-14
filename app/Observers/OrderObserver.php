@@ -20,12 +20,12 @@ class OrderObserver
         if (Arr::exists($changes, 'is_expire') && $changes['is_expire'] === 1 && $order->goods->type === 2) {
             $user = $order->user;
             $user->update([ // 清理全部流量,重置重置日期和等级
-                'u'               => 0,
-                'd'               => 0,
+                'u' => 0,
+                'd' => 0,
                 'transfer_enable' => 0,
-                'reset_time'      => null,
-                'level'           => 0,
-                'enable'          => 0,
+                'reset_time' => null,
+                'level' => 0,
+                'enable' => 0,
             ]);
             Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, __('[Service Timer] Service Expiration'), $order->id);
 

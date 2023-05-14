@@ -21,6 +21,7 @@ class delUser implements ShouldQueue
     use SerializesModels;
 
     private $userIds;
+
     private $nodes;
 
     public function __construct($userIds, $nodes)

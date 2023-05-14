@@ -43,7 +43,6 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  Throwable  $exception
      * @return void
      *
      * @throws Throwable
@@ -63,7 +62,6 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param  Request  $request
-     * @param  Throwable  $exception
      * @return \Symfony\Component\HttpFoundation\Response
      *
      * @throws Throwable
@@ -109,7 +107,7 @@ class Handler extends ExceptionHandler
                 case $exception instanceof ErrorException: // 捕获系统错误异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json([
-                            'status'  => 'fail',
+                            'status' => 'fail',
                             'message' => trans('http-statuses.500').', '.trans('errors.visit').'<a href="'.route('log-viewer::dashboard').'" target="_blank">'.trans('errors.log').'</a>',
                         ], 500);
                     }

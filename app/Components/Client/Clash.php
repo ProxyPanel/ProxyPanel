@@ -15,44 +15,44 @@ class Clash
     public static function buildShadowsocks($server)
     {
         return [
-            'name'     => $server['name'],
-            'type'     => 'ss',
-            'server'   => $server['host'],
-            'port'     => $server['port'],
+            'name' => $server['name'],
+            'type' => 'ss',
+            'server' => $server['host'],
+            'port' => $server['port'],
             'password' => $server['passwd'],
-            'cipher'   => $server['method'],
-            'udp'      => $server['udp'],
+            'cipher' => $server['method'],
+            'udp' => $server['udp'],
         ];
     }
 
     public static function buildShadowsocksr($server)
     {
         return [
-            'name'           => $server['name'],
-            'type'           => 'ssr',
-            'server'         => $server['host'],
-            'port'           => $server['port'],
-            'password'       => $server['passwd'],
-            'cipher'         => $server['method'],
-            'obfs'           => $server['obfs'],
-            'obfs-param'     => $server['obfs_param'],
-            'protocol'       => $server['protocol'],
+            'name' => $server['name'],
+            'type' => 'ssr',
+            'server' => $server['host'],
+            'port' => $server['port'],
+            'password' => $server['passwd'],
+            'cipher' => $server['method'],
+            'obfs' => $server['obfs'],
+            'obfs-param' => $server['obfs_param'],
+            'protocol' => $server['protocol'],
             'protocol-param' => $server['protocol_param'],
-            'udp'            => $server['udp'],
+            'udp' => $server['udp'],
         ];
     }
 
     public static function buildVmess($server)
     {
         $array = [
-            'name'    => $server['name'],
-            'type'    => 'vmess',
-            'server'  => $server['host'],
-            'port'    => $server['port'],
-            'uuid'    => $server['uuid'],
+            'name' => $server['name'],
+            'type' => 'vmess',
+            'server' => $server['host'],
+            'port' => $server['port'],
+            'uuid' => $server['uuid'],
             'alterId' => $server['v2_alter_id'],
-            'cipher'  => $server['method'],
-            'udp'     => $server['udp'],
+            'cipher' => $server['method'],
+            'udp' => $server['udp'],
         ];
 
         if ($server['v2_tls']) {
@@ -79,12 +79,12 @@ class Clash
     public static function buildTrojan($server)
     {
         $array = [
-            'name'     => $server['name'],
-            'type'     => 'trojan',
-            'server'   => $server['host'],
-            'port'     => $server['port'],
+            'name' => $server['name'],
+            'type' => 'trojan',
+            'server' => $server['host'],
+            'port' => $server['port'],
             'password' => $server['passwd'],
-            'udp'      => $server['udp'],
+            'udp' => $server['udp'],
         ];
 
         if (! empty($server['sni'])) {

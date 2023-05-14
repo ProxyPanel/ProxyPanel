@@ -70,19 +70,19 @@ class NodeController extends Controller
     public function create()
     {
         return view('admin.node.info', [
-            'nodes'      => Node::orderBy('id')->pluck('id', 'name'),
-            'countries'  => Country::orderBy('code')->get(),
-            'levels'     => Level::orderBy('level')->get(),
+            'nodes' => Node::orderBy('id')->pluck('id', 'name'),
+            'countries' => Country::orderBy('code')->get(),
+            'levels' => Level::orderBy('level')->get(),
             'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs'      => NodeCertificate::orderBy('id')->get(),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
     public function clone(Node $node)
     { // 克隆节点
         $new = $node->replicate()->fill([
-            'name'   => $node->name.'_克隆',
+            'name' => $node->name.'_克隆',
             'server' => null,
         ]);
         $new->save();
@@ -93,13 +93,13 @@ class NodeController extends Controller
     public function edit(Node $node)
     { // 编辑节点页面
         return view('admin.node.info', [
-            'node'       => $node,
-            'nodes'      => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
-            'countries'  => Country::orderBy('code')->get(),
-            'levels'     => Level::orderBy('level')->get(),
+            'node' => $node,
+            'nodes' => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
+            'countries' => Country::orderBy('code')->get(),
+            'levels' => Level::orderBy('level')->get(),
             'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels'     => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs'      => NodeCertificate::orderBy('id')->get(),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
+            'certs' => NodeCertificate::orderBy('id')->get(),
         ]);
     }
 
@@ -225,14 +225,14 @@ class NodeController extends Controller
                 break;
             case 2:
                 $profile = [
-                    'method'      => $info['v2_method'],
+                    'method' => $info['v2_method'],
                     'v2_alter_id' => $info['v2_alter_id'],
-                    'v2_net'      => $info['v2_net'],
-                    'v2_type'     => $info['v2_type'],
-                    'v2_host'     => $info['v2_host'],
-                    'v2_path'     => $info['v2_path'],
-                    'v2_tls'      => $info['v2_tls'] ? 'tls' : '',
-                    'v2_sni'      => $info['v2_sni'],
+                    'v2_net' => $info['v2_net'],
+                    'v2_type' => $info['v2_type'],
+                    'v2_host' => $info['v2_host'],
+                    'v2_path' => $info['v2_path'],
+                    'v2_tls' => $info['v2_tls'] ? 'tls' : '',
+                    'v2_sni' => $info['v2_sni'],
                 ];
                 break;
             case 3:
@@ -243,39 +243,39 @@ class NodeController extends Controller
             case 1:
             case 4:
                 $profile = [
-                    'method'         => $info['method'],
-                    'protocol'       => $info['protocol'],
-                    'obfs'           => $info['obfs'],
-                    'obfs_param'     => $info['obfs_param'],
+                    'method' => $info['method'],
+                    'protocol' => $info['protocol'],
+                    'obfs' => $info['obfs'],
+                    'obfs_param' => $info['obfs_param'],
                     'protocol_param' => $info['protocol_param'],
-                    'passwd'         => $info['passwd'],
+                    'passwd' => $info['passwd'],
                 ];
                 break;
         }
 
         return [
-            'type'           => $info['type'],
-            'name'           => $info['name'],
-            'country_code'   => $info['country_code'],
-            'server'         => $info['server'],
-            'ip'             => $info['ip'],
-            'ipv6'           => $info['ipv6'],
-            'level'          => $info['level'],
-            'rule_group_id'  => $info['rule_group_id'],
-            'speed_limit'    => $info['speed_limit'],
-            'client_limit'   => $info['client_limit'],
-            'description'    => $info['description'],
-            'profile'        => $profile ?? [],
-            'traffic_rate'   => $info['traffic_rate'],
-            'is_udp'         => $info['is_udp'],
-            'is_display'     => $info['is_display'],
-            'is_ddns'        => $info['is_ddns'],
-            'relay_node_id'  => $info['relay_node_id'],
-            'port'           => $info['port'] ?? 0,
-            'push_port'      => $info['push_port'],
+            'type' => $info['type'],
+            'name' => $info['name'],
+            'country_code' => $info['country_code'],
+            'server' => $info['server'],
+            'ip' => $info['ip'],
+            'ipv6' => $info['ipv6'],
+            'level' => $info['level'],
+            'rule_group_id' => $info['rule_group_id'],
+            'speed_limit' => $info['speed_limit'],
+            'client_limit' => $info['client_limit'],
+            'description' => $info['description'],
+            'profile' => $profile ?? [],
+            'traffic_rate' => $info['traffic_rate'],
+            'is_udp' => $info['is_udp'],
+            'is_display' => $info['is_display'],
+            'is_ddns' => $info['is_ddns'],
+            'relay_node_id' => $info['relay_node_id'],
+            'port' => $info['port'] ?? 0,
+            'push_port' => $info['push_port'],
             'detection_type' => $info['detection_type'],
-            'sort'           => $info['sort'],
-            'status'         => $info['status'],
+            'sort' => $info['sort'],
+            'status' => $info['status'],
         ];
     }
 }

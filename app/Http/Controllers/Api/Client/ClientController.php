@@ -62,17 +62,17 @@ class ClientController extends Controller
         }
 
         $data['info'] = [
-            'user'                 => $userInfo,
-            'ssrSubToken'          => $user->subscribe->code,
-            'user_expire'          => $user_expire,
-            'subUrl'               => route('sub', $user->subscribe->code),
-            'baseUrl'              => sysConfig('subscribe_domain') ?? sysConfig('website_url'),
-            'ann'                  => $ann,
-            'avatar'               => $user->avatar,
-            'usedTraffic'          => flowAutoShow($total),
-            'enableTraffic'        => flowAutoShow($transfer_enable),
-            'unUsedTraffic'        => flowAutoShow($transfer_enable - $total),
-            'reset_time'           => now()->diffInDays($user->reset_time, false),
+            'user' => $userInfo,
+            'ssrSubToken' => $user->subscribe->code,
+            'user_expire' => $user_expire,
+            'subUrl' => route('sub', $user->subscribe->code),
+            'baseUrl' => sysConfig('subscribe_domain') ?? sysConfig('website_url'),
+            'ann' => $ann,
+            'avatar' => $user->avatar,
+            'usedTraffic' => flowAutoShow($total),
+            'enableTraffic' => flowAutoShow($transfer_enable),
+            'unUsedTraffic' => flowAutoShow($transfer_enable - $total),
+            'reset_time' => now()->diffInDays($user->reset_time, false),
             'android_index_button' => config('client.android_index_button'),
         ];
 
@@ -86,11 +86,11 @@ class ClientController extends Controller
         $data = [];
         foreach ($orders as $order) {
             $data[] = [
-                'id'           => $order->id,
+                'id' => $order->id,
                 'total_amount' => $order->amount * 100,
-                'plan'         => ['name' => $order->goods()->value('name') ?? '余额充值'],
-                'status'       => [-1 => 2, 0 => 0, 1 => 1, 2 => 3, 3 => 4][$order->status],
-                'created_at'   => strtotime($order->created_at),
+                'plan' => ['name' => $order->goods()->value('name') ?? '余额充值'],
+                'status' => [-1 => 2, 0 => 0, 1 => 1, 2 => 3, 3 => 4][$order->status],
+                'created_at' => strtotime($order->created_at),
             ];
         }
 
@@ -104,8 +104,8 @@ class ClientController extends Controller
         return $this->succeed(null, [
             'arr' => [
                 'todayUsedTraffic' => flowAutoShow($user->d),
-                'lastUsedTraffic'  => flowAutoShow($user->u),
-                'unUsedTraffic'    => flowAutoShow($user->transfer_enable - $user->d - $user->u),
+                'lastUsedTraffic' => flowAutoShow($user->u),
+                'unUsedTraffic' => flowAutoShow($user->transfer_enable - $user->d - $user->u),
             ],
         ]);
     }
@@ -134,7 +134,7 @@ class ClientController extends Controller
         $code = $user->invites()->whereStatus(0)->value('code');
 
         $data['invite_gift'] = trans('user.invite.promotion', [
-            'traffic'          => $referral_traffic,
+            'traffic' => $referral_traffic,
             'referral_percent' => $referral_percent * 100,
         ]);
 
@@ -266,14 +266,14 @@ class ClientController extends Controller
             config(['client.notice.title' => $ann->title, 'client.notice.content' => $ann->content]);
         }
         config([
-            'client.configured'      => true,
-            'client.name'            => sysConfig('website_name'),
+            'client.configured' => true,
+            'client.name' => sysConfig('website_name'),
             'client.node_class_name' => Level::all()->pluck('name', 'level')->toArray(),
-            'client.baseUrl'         => sysConfig('website_url'),
-            'client.subscribe_url'   => sysConfig('subscribe_domain') ?: sysConfig('website_url'),
-            'client.checkinMin'      => sysConfig('min_rand_traffic'),
-            'client.checkinMax'      => sysConfig('max_rand_traffic'),
-            'client.invite_gift'     => sysConfig('default_traffic') / 1024,
+            'client.baseUrl' => sysConfig('website_url'),
+            'client.subscribe_url' => sysConfig('subscribe_domain') ?: sysConfig('website_url'),
+            'client.checkinMin' => sysConfig('min_rand_traffic'),
+            'client.checkinMax' => sysConfig('max_rand_traffic'),
+            'client.invite_gift' => sysConfig('default_traffic') / 1024,
         ]);
     }
 

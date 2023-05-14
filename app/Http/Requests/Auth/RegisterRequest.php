@@ -12,7 +12,7 @@ class RegisterRequest extends FormRequest
             'nickname' => 'required|string',
             'username' => 'required|'.(sysConfig('username_type') ?? 'email').'|unique:user,username',
             'password' => 'required|string|min:6|confirmed',
-            'term'     => 'accepted',
+            'term' => 'accepted',
         ];
     }
 }

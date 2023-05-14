@@ -13,7 +13,6 @@ use App\Channels\WeChatChannel;
 use App\Models\Config;
 use Cache;
 use Illuminate\Support\ServiceProvider;
-use NotificationChannels\BearyChat\BearyChatChannel;
 use NotificationChannels\Telegram\TelegramChannel;
 
 class SettingServiceProvider extends ServiceProvider
@@ -64,7 +63,7 @@ class SettingServiceProvider extends ServiceProvider
 
         collect([
             'website_name' => 'app.name',
-            'website_url'  => 'app.url',
+            'website_url' => 'app.url',
         ])->each(function ($item, $key) {
             config([$item => config('settings.'.$key)]); // 设置APP有关的选项
         });
@@ -74,16 +73,15 @@ class SettingServiceProvider extends ServiceProvider
     {
         foreach (
             [
-                'telegram'   => TelegramChannel::class,
-                'beary'      => BearyChatChannel::class,
-                'bark'       => BarkChannel::class,
-                'pushPlus'   => PushPlusChannel::class,
+                'telegram' => TelegramChannel::class,
+                'bark' => BarkChannel::class,
+                'pushPlus' => PushPlusChannel::class,
                 'serverChan' => ServerChanChannel::class,
-                'tgChat'     => TgChatChannel::class,
-                'weChat'     => WeChatChannel::class,
-                'iYuu'       => iYuuChannel::class,
-                'pushDear'   => PushDeerChannel::class,
-                'dingTalk'   => DingTalkChannel::class,
+                'tgChat' => TgChatChannel::class,
+                'weChat' => WeChatChannel::class,
+                'iYuu' => iYuuChannel::class,
+                'pushDear' => PushDeerChannel::class,
+                'dingTalk' => DingTalkChannel::class,
             ] as $key => $channel
         ) {
             $index = array_search($key, $channels, true);

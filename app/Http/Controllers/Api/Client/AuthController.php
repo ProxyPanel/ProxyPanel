@@ -45,9 +45,9 @@ class AuthController extends Controller
             auth()->login($user, true);
 
             return $this->succeed([
-                'token'     => $user->createToken('client')->plainTextToken,
+                'token' => $user->createToken('client')->plainTextToken,
                 'expire_in' => time() + config('session.lifetime') * Minute,
-                'user'      => $userService->getProfile(),
+                'user' => $userService->getProfile(),
             ], null, ResponseEnum::USER_SERVICE_REGISTER_SUCCESS);
         }
 
@@ -58,7 +58,7 @@ class AuthController extends Controller
     {
         if (self::$client === 'bob') {
             $rules = [
-                'email'  => 'required|'.(sysConfig('username_type') ?? 'email'),
+                'email' => 'required|'.(sysConfig('username_type') ?? 'email'),
                 'passwd' => 'required|string|min:6',
             ];
         } else {
@@ -86,9 +86,9 @@ class AuthController extends Controller
             $userService = UserService::getInstance();
 
             return $this->succeed([
-                'token'     => $user->createToken('client')->plainTextToken,
+                'token' => $user->createToken('client')->plainTextToken,
                 'expire_in' => time() + config('session.lifetime') * Minute,
-                'user'      => $userService->getProfile(),
+                'user' => $userService->getProfile(),
             ], null, ResponseEnum::USER_SERVICE_LOGIN_SUCCESS);
         }
 

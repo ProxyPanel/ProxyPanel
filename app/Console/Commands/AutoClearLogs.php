@@ -19,6 +19,7 @@ use Log;
 class AutoClearLogs extends Command
 {
     protected $signature = 'autoClearLogs';
+
     protected $description = '自动清除日志';
 
     public function handle()
