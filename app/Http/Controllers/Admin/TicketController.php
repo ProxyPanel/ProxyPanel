@@ -54,8 +54,8 @@ class TicketController extends Controller
     public function edit(Ticket $ticket)
     {
         return view('admin.ticket.reply', [
-            'ticket'    => $ticket,
-            'user'      => $ticket->user,
+            'ticket' => $ticket,
+            'user' => $ticket->user,
             'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
         ]);
     }

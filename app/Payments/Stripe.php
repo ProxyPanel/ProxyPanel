@@ -29,16 +29,16 @@ class Stripe extends Gateway
 
         if ($type == 1 || $type == 3) {
             $source = Source::create([
-                'amount'               => ceil($payment->amount * 100),
-                'currency'             => strtolower(sysConfig('standard_currency')),
-                'type'                 => $type == 1 ? 'alipay' : 'wechat',
+                'amount' => ceil($payment->amount * 100),
+                'currency' => strtolower(sysConfig('standard_currency')),
+                'type' => $type == 1 ? 'alipay' : 'wechat',
                 'statement_descriptor' => $payment->trade_no,
-                'metadata'             => [
-                    'user_id'      => $payment->user_id,
+                'metadata' => [
+                    'user_id' => $payment->user_id,
                     'out_trade_no' => $payment->trade_no,
-                    'identifier'   => '',
+                    'identifier' => '',
                 ],
-                'redirect'             => [
+                'redirect' => [
                     'return_url' => route('invoice'),
                 ],
             ]);
@@ -150,21 +150,21 @@ class Stripe extends Gateway
 
         return [
             'payment_method_types' => ['card'],
-            'line_items'           => [
+            'line_items' => [
                 [
                     'price_data' => [
-                        'currency'     => 'usd',
+                        'currency' => 'usd',
                         'product_data' => ['name' => sysConfig('subject_name') ?: sysConfig('website_name')],
-                        'unit_amount'  => $unitAmount,
+                        'unit_amount' => $unitAmount,
                     ],
-                    'quantity'   => 1,
+                    'quantity' => 1,
                 ],
             ],
-            'mode'                 => 'payment',
-            'success_url'          => route('invoice'),
-            'cancel_url'           => route('invoice'),
-            'client_reference_id'  => $tradeNo,
-            'customer_email'       => Auth::getUser()->email,
+            'mode' => 'payment',
+            'success_url' => route('invoice'),
+            'cancel_url' => route('invoice'),
+            'client_reference_id' => $tradeNo,
+            'customer_email' => Auth::getUser()->email,
         ];
     }
 }

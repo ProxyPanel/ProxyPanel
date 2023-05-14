@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class Rule extends Model
 {
     public $timestamps = false;
+
     protected $table = 'rule';
+
     protected $guarded = [];
 
     public function getTypeLabelAttribute(): string

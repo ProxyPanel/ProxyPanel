@@ -11,8 +11,6 @@ class Affiliate
     /**
      * 返利识别.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

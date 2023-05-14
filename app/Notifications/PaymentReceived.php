@@ -13,6 +13,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     use Queueable;
 
     private $amount;
+
     private $sn;
 
     public function __construct($sn, $amount)
@@ -37,7 +38,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     public function toDataBase($notifiable)
     {
         return [
-            'sn'     => $this->sn,
+            'sn' => $this->sn,
             'amount' => $this->amount,
         ];
     }

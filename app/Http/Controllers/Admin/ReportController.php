@@ -84,8 +84,8 @@ class ReportController extends Controller
                 ->get()->transform(function ($item, $key) {
                     return [
                         'node_id' => $item->node_id,
-                        'date'    => (int) $item->date,
-                        'total'   => round($item->total / GB, 2),
+                        'date' => (int) $item->date,
+                        'total' => round($item->total / GB, 2),
                     ];
                 })->toArray();
 
@@ -98,8 +98,8 @@ class ReportController extends Controller
                 ->get()->transform(function ($item, $key) {
                     return [
                         'node_id' => $item->node_id,
-                        'date'    => (int) $item->date,
-                        'total'   => round($item->total / GB, 2),
+                        'date' => (int) $item->date,
+                        'total' => round($item->total / GB, 2),
                     ];
                 })->toArray();
         }

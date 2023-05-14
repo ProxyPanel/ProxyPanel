@@ -9,7 +9,7 @@ class SystemRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'  => 'required|exists:config,name',
+            'name' => 'required|exists:config,name',
             'value' => 'nullable',
         ];
     }

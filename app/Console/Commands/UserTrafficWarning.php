@@ -10,6 +10,7 @@ use Log;
 class UserTrafficWarning extends Command
 {
     protected $signature = 'userTrafficWarning';
+
     protected $description = '用户流量超过警告阈值自动发邮件提醒';
 
     public function handle()

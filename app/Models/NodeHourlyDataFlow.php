@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class NodeHourlyDataFlow extends Model
 {
     public const UPDATED_AT = null;
+
     protected $table = 'node_hourly_data_flow';
+
     protected $guarded = [];
 
     public function node(): BelongsTo

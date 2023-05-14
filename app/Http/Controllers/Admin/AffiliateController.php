@@ -30,7 +30,7 @@ class AffiliateController extends Controller
     public function detail(Request $request, ReferralApply $aff)
     {
         return view('admin.aff.detail', [
-            'referral'    => $aff->load('user:id,username'),
+            'referral' => $aff->load('user:id,username'),
             'commissions' => $aff->referral_logs()->with(['invitee:id,username', 'order.goods:id,name'])->paginate()->appends($request->except('page')),
         ]);
     }

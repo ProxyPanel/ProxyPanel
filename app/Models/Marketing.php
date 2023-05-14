@@ -10,14 +10,15 @@ use Illuminate\Database\Eloquent\Model;
 class Marketing extends Model
 {
     protected $table = 'marketing';
+
     protected $guarded = [];
 
     public function getStatusLabelAttribute(): string
     {
         return [
             -1 => '失败',
-            0  => '待推送',
-            1  => '成功',
+            0 => '待推送',
+            1 => '成功',
         ][$this->attributes['status']] ?? '';
     }
 }

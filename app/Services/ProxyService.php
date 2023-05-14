@@ -14,6 +14,7 @@ class ProxyService extends BaseService
     use ClientConfig;
 
     private static $user;
+
     private static $servers;
 
     public function __construct()
@@ -88,12 +89,12 @@ class ProxyService extends BaseService
     {
         $user = self::$user;
         $config = [
-            'id'    => $node->id,
-            'name'  => $node->name,
-            'area'  => $node->country->name,
-            'host'  => $node->host,
+            'id' => $node->id,
+            'name' => $node->name,
+            'area' => $node->country->name,
+            'host' => $node->host,
             'group' => sysConfig('website_name'),
-            'udp'   => $node->is_udp,
+            'udp' => $node->is_udp,
         ];
 
         if ($node->relay_node_id) {
@@ -107,7 +108,7 @@ class ProxyService extends BaseService
             switch ($node->type) {
                 case 0:
                     $config = array_merge($config, [
-                        'type'   => 'shadowsocks',
+                        'type' => 'shadowsocks',
                         'passwd' => $user->passwd,
                     ], $node->profile);
                     if ($node->port && $node->port !== 0) {
@@ -125,10 +126,10 @@ class ProxyService extends BaseService
                     break;
                 case 3:
                     $config = array_merge($config, [
-                        'type'   => 'trojan',
-                        'port'   => $node->port,
+                        'type' => 'trojan',
+                        'port' => $node->port,
                         'passwd' => $user->passwd,
-                        'sni'    => '',
+                        'sni' => '',
                     ], $node->profile);
                     break;
                 case 1:
@@ -161,17 +162,17 @@ class ProxyService extends BaseService
             case 2:
                 $url = sysConfig('website_url');
                 $result = 'vmess://'.base64url_encode(json_encode([
-                    'v'    => '2',
-                    'ps'   => $text,
-                    'add'  => $url,
+                    'v' => '2',
+                    'ps' => $text,
+                    'add' => $url,
                     'port' => 0,
-                    'id'   => 0,
-                    'aid'  => 0,
-                    'net'  => 'tcp',
+                    'id' => 0,
+                    'aid' => 0,
+                    'net' => 'tcp',
                     'type' => 'none',
                     'host' => $url,
                     'path' => '/',
-                    'tls'  => 'tls',
+                    'tls' => 'tls',
                 ], JSON_PRETTY_PRINT));
                 break;
             case 3:
@@ -203,7 +204,7 @@ class ProxyService extends BaseService
     {
         $type = $is_url ? new URLSchemes() : new Text();
         switch ($server['type']) {
-            case'shadowsocks':
+            case 'shadowsocks':
                 $data = $type->buildShadowsocks($server);
                 break;
             case 'shadowsocksr':

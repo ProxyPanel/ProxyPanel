@@ -13,9 +13,13 @@ class TicketClosed extends Notification implements ShouldQueue
     use Queueable;
 
     private $ticketId;
+
     private $title;
+
     private $url;
+
     private $reason;
+
     private $is_user;
 
     public function __construct($ticketId, $title, $url, $reason, $is_user = false)
@@ -44,7 +48,7 @@ class TicketClosed extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
+            'title' => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
             'content' => $this->reason,
         ];
     }
@@ -59,11 +63,11 @@ class TicketClosed extends Notification implements ShouldQueue
     public function toBark($notifiable)
     {
         return [
-            'title'   => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
+            'title' => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
             'content' => $this->reason,
-            'group'   => '工单',
-            'icon'    => asset('assets/images/notification/ticket.png'),
-            'url'     => $this->url,
+            'group' => '工单',
+            'icon' => asset('assets/images/notification/ticket.png'),
+            'url' => $this->url,
         ];
     }
 }

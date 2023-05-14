@@ -14,7 +14,7 @@ class RoleRequest extends FormRequest
         }
 
         return [
-            'name'        => 'required|string|unique:roles,name'.$unq_name,
+            'name' => 'required|string|unique:roles,name'.$unq_name,
             'description' => 'required|string',
             'permissions' => 'nullable|exists:permissions,name',
         ];

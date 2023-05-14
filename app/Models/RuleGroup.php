@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class RuleGroup extends Model
 {
     protected $table = 'rule_group';
+
     protected $guarded = [];
 
     public function getTypeLabelAttribute(): string

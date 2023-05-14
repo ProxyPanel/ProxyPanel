@@ -31,7 +31,6 @@ abstract class Gateway
      * @param  string  $trade_no  本地订单号
      * @param  string  $out_trade_no  外部订单号
      * @param  int  $amount  交易金额
-     * @return int
      */
     protected function addPamentCallback(string $trade_no, string $out_trade_no, int $amount): int
     {

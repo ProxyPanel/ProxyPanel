@@ -14,7 +14,9 @@ class TicketReplied extends Notification implements ShouldQueue
     use Queueable;
 
     private $reply;
+
     private $url;
+
     private $is_user;
 
     public function __construct($reply, $url, $is_user = false)
@@ -41,7 +43,7 @@ class TicketReplied extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
+            'title' => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
             'content' => trans('notification.ticket_content').strip_tags($this->reply->content),
         ];
     }
@@ -62,11 +64,11 @@ class TicketReplied extends Notification implements ShouldQueue
     public function toBark($notifiable)
     {
         return [
-            'title'   => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
+            'title' => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
             'content' => trans('notification.ticket_content').strip_tags($this->reply->content),
-            'group'   => '工单',
-            'icon'    => asset('assets/images/notification/ticket.png'),
-            'url'     => $this->url,
+            'group' => '工单',
+            'icon' => asset('assets/images/notification/ticket.png'),
+            'url' => $this->url,
         ];
     }
 }

@@ -44,14 +44,14 @@ class ImproveNodeTable extends Migration
                     break;
                 case 2:
                     $profile = [
-                        'method'      => $node->v2_method,
+                        'method' => $node->v2_method,
                         'v2_alter_id' => $node->v2_alter_id,
-                        'v2_net'      => $node->v2_net,
-                        'v2_type'     => $node->v2_type,
-                        'v2_host'     => $node->v2_host,
-                        'v2_path'     => $node->v2_path,
-                        'v2_tls'      => $node->v2_tls ? 'tls' : '',
-                        'v2_sni'      => $node->v2_sni,
+                        'v2_net' => $node->v2_net,
+                        'v2_type' => $node->v2_type,
+                        'v2_host' => $node->v2_host,
+                        'v2_path' => $node->v2_path,
+                        'v2_tls' => $node->v2_tls ? 'tls' : '',
+                        'v2_sni' => $node->v2_sni,
                     ];
                     break;
                 case 3:
@@ -62,12 +62,12 @@ class ImproveNodeTable extends Migration
                 case 1:
                 case 4:
                     $profile = [
-                        'method'         => $node->method,
-                        'protocol'       => $node->protocol,
-                        'obfs'           => $node->obfs,
-                        'obfs_param'     => $node->obfs_param,
+                        'method' => $node->method,
+                        'protocol' => $node->protocol,
+                        'obfs' => $node->obfs,
+                        'obfs_param' => $node->obfs_param,
                         'protocol_param' => $node->protocol_param,
-                        'passwd'         => $node->passwd,
+                        'passwd' => $node->passwd,
                     ];
                     break;
                 default:
@@ -76,23 +76,23 @@ class ImproveNodeTable extends Migration
 
             if ($node->relay_server && $node->relay_port) { // 创建 中转线路
                 $relayNodeData = [
-                    'type'           => 0,
-                    'name'           => $node->name.'↔️',
-                    'country_code'   => $node->country_code,
-                    'port'           => $node->relay_port,
-                    'level'          => $node->level,
-                    'rule_group_id'  => $node->rule_group_id,
-                    'speed_limit'    => $node->speed_limit,
-                    'client_limit'   => $node->client_limit,
-                    'description'    => $node->description,
-                    'geo'            => $node->geo,
-                    'traffic_rate'   => $node->traffic_rate,
-                    'relay_node_id'  => $node->id,
-                    'is_udp'         => $node->is_udp,
-                    'push_port'      => $node->push_port,
+                    'type' => 0,
+                    'name' => $node->name.'↔️',
+                    'country_code' => $node->country_code,
+                    'port' => $node->relay_port,
+                    'level' => $node->level,
+                    'rule_group_id' => $node->rule_group_id,
+                    'speed_limit' => $node->speed_limit,
+                    'client_limit' => $node->client_limit,
+                    'description' => $node->description,
+                    'geo' => $node->geo,
+                    'traffic_rate' => $node->traffic_rate,
+                    'relay_node_id' => $node->id,
+                    'is_udp' => $node->is_udp,
+                    'push_port' => $node->push_port,
                     'detection_type' => $node->detection_type,
-                    'sort'           => $node->sort,
-                    'status'         => $node->status,
+                    'sort' => $node->sort,
+                    'status' => $node->status,
                 ];
 
                 if (filter_var($node->relay_server, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
@@ -161,6 +161,7 @@ class ImproveNodeTable extends Migration
                 } catch (Exception $e) {
                     Log::emergency('中转删除失败，请手动在数据库中删除; '.$e->getMessage());
                 }
+
                 continue;
             }
             switch ($node->type) { // 回滚节点配置

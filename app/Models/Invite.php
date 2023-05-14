@@ -15,7 +15,9 @@ class Invite extends Model
     use SoftDeletes;
 
     protected $table = 'invite';
+
     protected $dates = ['dateline', 'deleted_at'];
+
     protected $guarded = [];
 
     public function scopeUid($query)

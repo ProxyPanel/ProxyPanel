@@ -9,7 +9,6 @@ use App\Models\ReferralApply;
 use App\Models\ReferralLog;
 use App\Services\UserService;
 use Auth;
-use Hashids\Hashids;
 use Illuminate\Http\JsonResponse;
 use Response;
 
@@ -23,15 +22,15 @@ class AffiliateController extends Controller
         }
 
         return view('user.referral', [
-            'referral_traffic'  => flowAutoShow(sysConfig('referral_traffic') * MB),
-            'referral_percent'  => sysConfig('referral_percent'),
-            'referral_money'    => Helpers::getPriceTag(sysConfig('referral_money')),
-            'totalAmount'       => ReferralLog::uid()->sum('commission') / 100,
-            'canAmount'         => Helpers::getPriceTag(ReferralLog::uid()->whereStatus(0)->sum('commission') / 100),
-            'aff_link'          => UserService::getInstance()->inviteURI(),
-            'referralLogList'   => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
+            'referral_traffic' => flowAutoShow(sysConfig('referral_traffic') * MB),
+            'referral_percent' => sysConfig('referral_percent'),
+            'referral_money' => Helpers::getPriceTag(sysConfig('referral_money')),
+            'totalAmount' => ReferralLog::uid()->sum('commission') / 100,
+            'canAmount' => Helpers::getPriceTag(ReferralLog::uid()->whereStatus(0)->sum('commission') / 100),
+            'aff_link' => UserService::getInstance()->inviteURI(),
+            'referralLogList' => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
             'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
-            'referralUserList'  => Auth::getUser()->invitees()->select(['username', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),
+            'referralUserList' => Auth::getUser()->invitees()->select(['username', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),
         ]);
     }
 

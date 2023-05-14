@@ -16,8 +16,8 @@ class TelegramService
     public function sendMessage(int $chatId, string $text, string $parseMode = '')
     {
         $this->request('sendMessage', [
-            'chat_id'    => $chatId,
-            'text'       => $text,
+            'chat_id' => $chatId,
+            'text' => $text,
             'parse_mode' => $parseMode,
         ]);
     }

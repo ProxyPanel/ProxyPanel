@@ -9,6 +9,7 @@ use Log;
 class DNSPod
 {
     private static $apiHost = 'https://dnsapi.cn/';
+
     private static $subDomain;
 
     public function __construct($subDomain)

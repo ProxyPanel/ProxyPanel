@@ -14,15 +14,15 @@ class TrojanController extends Controller
     public function getNodeInfo(Node $node): JsonResponse // 获取节点信息
     {
         return $this->succeed([
-            'id'           => $node->id,
-            'is_udp'       => (bool) $node->is_udp,
-            'speed_limit'  => $node->getRawOriginal('speed_limit'),
+            'id' => $node->id,
+            'is_udp' => (bool) $node->is_udp,
+            'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
-            'push_port'    => $node->push_port,
+            'push_port' => $node->push_port,
             'redirect_url' => sysConfig('redirect_url'),
-            'trojan_port'  => $node->port,
-            'secret'       => $node->auth->secret,
-            'license'      => sysConfig('trojan_license'),
+            'trojan_port' => $node->port,
+            'secret' => $node->auth->secret,
+            'license' => sysConfig('trojan_license'),
         ]);
     }
 
@@ -30,8 +30,8 @@ class TrojanController extends Controller
     {
         foreach ($node->users() as $user) {
             $data[] = [
-                'uid'         => $user->id,
-                'password'    => $user->passwd,
+                'uid' => $user->id,
+                'password' => $user->passwd,
                 'speed_limit' => $user->getRawOriginal('speed_limit'),
             ];
         }

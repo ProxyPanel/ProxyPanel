@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserBanedLog extends Model
 {
     protected $table = 'user_baned_log';
+
     protected $guarded = [];
 
     public function user(): BelongsTo

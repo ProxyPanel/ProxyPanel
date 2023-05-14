@@ -13,6 +13,7 @@ class ConfigClean extends Migration
         'hcaptcha_secret',
         'hcaptcha_sitekey',
     ];
+
     protected $newConfigs = [
         'captcha_key',
         'captcha_secret',

@@ -324,7 +324,6 @@ class AuthController extends Controller
      *
      * @param  string|null  $code  邀请码
      * @param  int|null  $aff  URL中的aff参数
-     * @return array
      */
     private function getAff($code = null, $aff = null): array
     {

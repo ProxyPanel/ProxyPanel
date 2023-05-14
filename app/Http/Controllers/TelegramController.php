@@ -111,7 +111,7 @@ class TelegramController extends Controller
         }
         $telegramService = new TelegramService();
         if (! $oauth = UserOauth::query()->where([
-            'type'       => 'telegram',
+            'type' => 'telegram',
             'identifier' => $msg->chat_id,
         ])->first()) {
             $this->help();

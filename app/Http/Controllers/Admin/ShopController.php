@@ -96,8 +96,8 @@ class ShopController extends Controller
     public function edit(Goods $good)
     {
         return view('admin.shop.info', [
-            'good'       => $good,
-            'levels'     => Level::orderBy('level')->get(),
+            'good' => $good,
+            'levels' => Level::orderBy('level')->get(),
             'categories' => GoodsCategory::all(),
         ]);
     }

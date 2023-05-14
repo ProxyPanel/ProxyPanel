@@ -16,6 +16,7 @@ use Notification;
 class NodeStatusDetection extends Command
 {
     protected $signature = 'nodeStatusDetection';
+
     protected $description = '节点状态检测';
 
     public function handle()

@@ -10,8 +10,6 @@ class isMaintenance
     /**
      * 校验是否开启维护模式.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

@@ -15,7 +15,9 @@ class Goods extends Model
     use SoftDeletes;
 
     protected $table = 'goods';
+
     protected $dates = ['deleted_at'];
+
     protected $guarded = [];
 
     public function orders(): HasMany

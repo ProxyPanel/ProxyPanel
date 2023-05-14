@@ -41,7 +41,7 @@ class AccountExpire extends Notification implements ShouldQueue
     public function toCustom($notifiable)
     {
         return [
-            'title'   => trans('notification.account_expired'),
+            'title' => trans('notification.account_expired'),
             'content' => trans('notification.account_expired_content', ['days' => $this->days]),
         ];
     }

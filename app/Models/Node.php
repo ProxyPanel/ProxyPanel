@@ -16,7 +16,9 @@ use Log;
 class Node extends Model
 {
     protected $table = 'node';
+
     protected $guarded = [];
+
     protected $casts = ['profile' => 'array'];
 
     public function labels()
@@ -167,19 +169,19 @@ class Node extends Model
     public function getSSRConfig(): array
     {
         return [
-            'id'           => $this->id,
-            'method'       => $this->profile['method'] ?? '',
-            'protocol'     => $this->profile['protocol'] ?? '',
-            'obfs'         => $this->profile['obfs'] ?? '',
-            'obfs_param'   => $this->profile['obfs_param'] ?? '',
-            'is_udp'       => (int) $this->is_udp,
-            'speed_limit'  => $this->getRawOriginal('speed_limit'),
+            'id' => $this->id,
+            'method' => $this->profile['method'] ?? '',
+            'protocol' => $this->profile['protocol'] ?? '',
+            'obfs' => $this->profile['obfs'] ?? '',
+            'obfs_param' => $this->profile['obfs_param'] ?? '',
+            'is_udp' => (int) $this->is_udp,
+            'speed_limit' => $this->getRawOriginal('speed_limit'),
             'client_limit' => $this->client_limit,
-            'single'       => isset($this->profile['passwd']) ? 1 : 0,
-            'port'         => (string) $this->port,
-            'passwd'       => $this->profile['passwd'] ?? '',
-            'push_port'    => $this->push_port,
-            'secret'       => $this->auth->secret,
+            'single' => isset($this->profile['passwd']) ? 1 : 0,
+            'port' => (string) $this->port,
+            'passwd' => $this->profile['passwd'] ?? '',
+            'push_port' => $this->push_port,
+            'secret' => $this->auth->secret,
             'redirect_url' => sysConfig('redirect_url', ''),
         ];
     }

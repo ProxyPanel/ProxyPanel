@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class PanelInstallation extends Command
 {
     protected $signature = 'panel:install';
+
     protected $description = 'ProxyPanel Installation (面板自主安装)';
 
     public function handle()
@@ -40,8 +41,8 @@ class PanelInstallation extends Command
             // 设置数据库信息
             $this->line(' 设置数据库信息');
             $this->saveToEnv([
-                'DB_HOST'     => $this->ask('请输入数据库地址（默认:localhost）', 'localhost'),
-                'DB_PORT'     => $this->ask('请输入数据库地址（默认:3306）', 3306),
+                'DB_HOST' => $this->ask('请输入数据库地址（默认:localhost）', 'localhost'),
+                'DB_PORT' => $this->ask('请输入数据库地址（默认:3306）', 3306),
                 'DB_DATABASE' => $this->ask('请输入数据库名'),
                 'DB_USERNAME' => $this->ask('请输入数据库用户名'),
                 'DB_PASSWORD' => $this->ask('请输入数据库密码'),

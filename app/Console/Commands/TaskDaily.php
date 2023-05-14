@@ -15,6 +15,7 @@ use Log;
 class TaskDaily extends Command
 {
     protected $signature = 'task:daily';
+
     protected $description = '每日任务';
 
     public function handle()
@@ -43,13 +44,13 @@ class TaskDaily extends Command
             ->where('expired_at', '<', date('Y-m-d')) // 过期
             ->chunk(config('tasks.chunk'), function ($users) use ($isBanStatus) {
                 $dirtyWorks = [
-                    'u'               => 0,
-                    'd'               => 0,
+                    'u' => 0,
+                    'd' => 0,
                     'transfer_enable' => 0,
-                    'enable'          => 0,
-                    'level'           => 0,
-                    'reset_time'      => null,
-                    'ban_time'        => null,
+                    'enable' => 0,
+                    'level' => 0,
+                    'reset_time' => null,
+                    'ban_time' => null,
                 ]; // 停止服务
                 $banMsg = __('[Daily Task] Account Expiration: Stop Service');
                 if ($isBanStatus) {
@@ -98,6 +99,7 @@ class TaskDaily extends Command
 
                     if (! $order) {// 无套餐用户跳过
                         Log::error('用户[ID：'.$user->id.'] 流量重置, 用户订单获取失败');
+
                         continue;
                     }
 
@@ -147,10 +149,10 @@ class TaskDaily extends Command
                 })->flatten()->toArray();
 
                 $data[] = [ // 每日节点流量合计
-                    'u'          => $logs->sum('u'),
-                    'd'          => $logs->sum('d'),
-                    'total'      => $logs->sum('total'),
-                    'traffic'    => flowAutoShow($logs->sum('total')),
+                    'u' => $logs->sum('u'),
+                    'd' => $logs->sum('d'),
+                    'total' => $logs->sum('total'),
+                    'traffic' => flowAutoShow($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
 
@@ -174,10 +176,10 @@ class TaskDaily extends Command
                     ->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
                 $total = $traffic->u + $traffic->d;
                 $node->dailyDataFlows()->create([
-                    'u'          => $traffic->u,
-                    'd'          => $traffic->d,
-                    'total'      => $total,
-                    'traffic'    => flowAutoShow($total),
+                    'u' => $traffic->u,
+                    'd' => $traffic->d,
+                    'total' => $total,
+                    'traffic' => flowAutoShow($total),
                     'created_at' => $created_at,
                 ]);
             }

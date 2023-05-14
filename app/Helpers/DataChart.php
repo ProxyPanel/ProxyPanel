@@ -45,10 +45,10 @@ trait DataChart
         $dailyData[date('j', strtotime(now())) - 1] = round(array_sum($hourlyData) + $currentFlow / GB, 3);
 
         return [
-            'trafficDaily'  => $dailyData,
+            'trafficDaily' => $dailyData,
             'trafficHourly' => $hourlyData,
-            'monthDays'     => range(1, date('j')), // 本月天数
-            'dayHours'      => range(0, date('G') + 1), // 本日小时
+            'monthDays' => range(1, date('j')), // 本月天数
+            'dayHours' => range(0, date('G') + 1), // 本日小时
         ];
     }
 }

@@ -17,10 +17,10 @@ class F2Fpay extends Gateway
     public function __construct()
     {
         self::$aliConfig = [
-            'app_id'          => sysConfig('f2fpay_app_id'),
-            'ali_public_key'  => sysConfig('f2fpay_public_key'),
+            'app_id' => sysConfig('f2fpay_app_id'),
+            'ali_public_key' => sysConfig('f2fpay_public_key'),
             'rsa_private_key' => sysConfig('f2fpay_private_key'),
-            'notify_url'      => route('payment.notify', ['method' => 'f2fpay']),
+            'notify_url' => route('payment.notify', ['method' => 'f2fpay']),
         ];
     }
 
@@ -29,7 +29,7 @@ class F2Fpay extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'subject'      => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'subject' => sysConfig('subject_name') ?: sysConfig('website_name'),
             'out_trade_no' => $payment->trade_no,
             'total_amount' => $payment->amount,
         ];

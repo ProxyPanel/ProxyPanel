@@ -77,9 +77,9 @@ class UserController extends Controller
         });
 
         return view('admin.user.index', [
-            'userList'   => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
+            'userList' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels'     => Level::all()->pluck('name', 'level')->toArray(),
+            'levels' => Level::all()->pluck('name', 'level')->toArray(),
         ]);
     }
 
@@ -131,9 +131,9 @@ class UserController extends Controller
         }
 
         return view('admin.user.info', [
-            'levels'     => Level::orderBy('level')->get(),
+            'levels' => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles'      => $roles ?? null,
+            'roles' => $roles ?? null,
         ]);
     }
 
@@ -146,10 +146,10 @@ class UserController extends Controller
         }
 
         return view('admin.user.info', [
-            'user'       => $user->load('inviter:id,username'),
-            'levels'     => Level::orderBy('level')->get(),
+            'user' => $user->load('inviter:id,username'),
+            'levels' => Level::orderBy('level')->get(),
             'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles'      => $roles ?? null,
+            'roles' => $roles ?? null,
         ]);
     }
 
@@ -282,7 +282,7 @@ class UserController extends Controller
     public function export(User $user)
     {
         return view('admin.user.export', [
-            'user'     => $user,
+            'user' => $user,
             'nodeList' => Node::whereStatus(1)->orderByDesc('sort')->orderBy('id')->paginate(15)->appends(\request('page')),
         ]);
     }

@@ -17,14 +17,14 @@ class EPay extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'pid'          => sysConfig('epay_mch_id'),
-            'type'         => [1 => 'alipay', 2 => 'qqpay', 3 => 'wxpay'][$request->input('type')] ?? 'alipay',
-            'notify_url'   => route('payment.notify', ['method' => 'epay']),
-            'return_url'   => route('invoice'),
+            'pid' => sysConfig('epay_mch_id'),
+            'type' => [1 => 'alipay', 2 => 'qqpay', 3 => 'wxpay'][$request->input('type')] ?? 'alipay',
+            'notify_url' => route('payment.notify', ['method' => 'epay']),
+            'return_url' => route('invoice'),
             'out_trade_no' => $payment->trade_no,
-            'name'         => sysConfig('subject_name') ?: sysConfig('website_name'),
-            'money'        => $payment->amount,
-            'sign_type'    => 'MD5',
+            'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
+            'money' => $payment->amount,
+            'sign_type' => 'MD5',
         ];
         $data['sign'] = $this->aliStyleSign($data, sysConfig('epay_key'));
 

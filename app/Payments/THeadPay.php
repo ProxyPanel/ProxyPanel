@@ -16,10 +16,10 @@ class THeadPay extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $data = [
-            'mchid'        => sysConfig('theadpay_mchid'),
+            'mchid' => sysConfig('theadpay_mchid'),
             'out_trade_no' => $payment->trade_no,
-            'total_fee'    => (string) ($payment->amount * 100),
-            'notify_url'   => route('payment.notify', ['method' => 'theadpay']),
+            'total_fee' => (string) ($payment->amount * 100),
+            'notify_url' => route('payment.notify', ['method' => 'theadpay']),
         ];
         $data['sign'] = $this->sign($data);
 

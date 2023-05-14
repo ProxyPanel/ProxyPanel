@@ -11,7 +11,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class UserCreditLog extends Model
 {
     public const UPDATED_AT = null;
+
     protected $table = 'user_credit_log';
+
     protected $guarded = [];
 
     public function user(): BelongsTo

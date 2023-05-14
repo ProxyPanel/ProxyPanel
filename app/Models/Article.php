@@ -13,7 +13,9 @@ class Article extends Model
     use SoftDeletes;
 
     protected $table = 'article';
+
     protected $dates = ['deleted_at'];
+
     protected $guarded = [];
 
     // 筛选类型

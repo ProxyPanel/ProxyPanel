@@ -25,7 +25,7 @@ class ArticleSeeder extends Seeder
 </ol>',
                 ],
 
-                254    => [
+                254 => [
                     '为什么我的账号状态显示是禁用?', '<p>账号在2种情况下会显示禁用；</p>
 <ol>
 <li>套餐过期/流量枯竭；此情况您需要重新购买/重置 <a href="services">【服 务】</a>；</li>
@@ -33,13 +33,13 @@ class ArticleSeeder extends Seeder
 </ol>
 <p>如您对禁用情况有疑问，可以创建<a href="tickets">【工 单】</a>，联系售后人员。</p>',
                 ],
-                253    => [
+                253 => [
                     '为什么我的订阅链接被禁用了？', '<p>订阅地址对于账号来说非常重要。所以本站对此设置了严格的限制措施，以防止用户无意间泄露给他人后，无法挽回。</p>
 <p>限制为： <code>24小时</code>内，订阅地址只允许请求 <code>20次</code></p>
 <p>解封，请在过一段时间并确定无误后，创建<a href="tickets">【工 单】</a>，联系售后人员</p>
 <p>小知识：如果您无意间的截图忘记将订阅地址打码了，您可以 点击上方 更换按钮</p>',
                 ],
-                252    => [
+                252 => [
                     '我想续费/购买服务，该怎么操作？', '<ol>
 <li>在线支付，本支付方式支持支付宝。支付后即开即用。前往 <a href="services">【服 务】</a> 选择想要购买的套餐，在订单界面选择<code>在线支付</code>即可。</li>
 <li>余额支付，本支付方法支持微信，支付宝。支付后需要等待充值到账，再购买服务。 ，充值后等待充值到账，一般会在<code>24小时</code>内到账，到账后可以在 <a href="services">【服 务】</a>页面查看您的账号余额。 在<a href="services">【服 务】</a> 选择想要购买的套餐，在订单界面选择<code>余额支付</code>即可。</li>
@@ -52,7 +52,7 @@ class ArticleSeeder extends Seeder
                 ],
             ],
             '下载&教程' => [
-                99    => [
+                99 => [
                     'Windows', '<ol>
 <li><a href="clients/ShadowsocksR-win.zip" target="_blank" rel="noopener">点击此处</a>下载客户端并启动</li>
 <li>运行 ShadowsocksR 文件夹内的 ShadowsocksR.exe</li>

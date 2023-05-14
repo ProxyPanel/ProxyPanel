@@ -13,6 +13,7 @@ use Response;
 class CouponService
 {
     public $code;
+
     public $user;
 
     public function __construct(string $code)

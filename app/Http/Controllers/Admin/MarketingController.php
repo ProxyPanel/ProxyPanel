@@ -39,11 +39,11 @@ class MarketingController extends Controller
         $title = $request->input('title');
         $content = $request->input('content');
 
-//        if (! sysConfig('is_push_bear')) {
-//            return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
-//        }
-//
-//        Notification::send(PushBearChannel::class, new Custom($title, $content));
+        //        if (! sysConfig('is_push_bear')) {
+        //            return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
+        //        }
+        //
+        //        Notification::send(PushBearChannel::class, new Custom($title, $content));
 
         return Response::json(['status' => 'fail', 'message' => '功能待开发']);
     }

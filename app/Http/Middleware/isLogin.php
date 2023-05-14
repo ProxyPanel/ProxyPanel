@@ -11,8 +11,6 @@ class isLogin
     /**
      * 校验是否已登录.
      *
-     * @param  Request  $request
-     * @param  Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

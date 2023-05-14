@@ -17,7 +17,9 @@ use Response;
 class PayBeaver extends Gateway
 {
     private $appId;
+
     private $appSecret;
+
     private $url = 'https://api.paybeaver.com/api/v1/developer';
 
     public function __construct()
@@ -31,11 +33,11 @@ class PayBeaver extends Gateway
         $payment = $this->creatNewPayment(Auth::id(), $request->input('id'), $request->input('amount'));
 
         $result = $this->createOrder([
-            'app_id'            => $this->appId,
+            'app_id' => $this->appId,
             'merchant_order_id' => $payment->trade_no,
-            'price_amount'      => $payment->amount * 100,
-            'notify_url'        => route('payment.notify', ['method' => 'paybeaver']),
-            'return_url'        => route('invoice'),
+            'price_amount' => $payment->amount * 110,
+            'notify_url' => route('payment.notify', ['method' => 'paybeaver']),
+            'return_url' => route('invoice'),
         ]);
 
         if (! isset($result['message']) && isset($result['data']['pay_url'])) {
