@@ -59,8 +59,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         });
 
         Route::resource('goods', 'ShopController')->except('show'); // 商品管理
-        Route::resource('coupon', 'CouponController')->except('edit', 'update'); // 优惠券
         Route::get('coupon/export', 'CouponController@exportCoupon')->name('coupon.export'); // 导出优惠券
+        Route::resource('coupon', 'CouponController')->except('edit', 'update'); // 优惠券
 
         Route::prefix('aff')->name('aff.')->group(function () {
             Route::get('/', 'AffiliateController@index')->name('index'); // 提现申请列表
