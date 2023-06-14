@@ -7,12 +7,14 @@ use App\Http\Requests\Admin\CouponRequest;
 use App\Models\Coupon;
 use App\Models\Level;
 use App\Models\UserGroup;
+use App\Utils\Helpers;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Redirect;
 use Response;
 use Str;
@@ -25,7 +27,7 @@ class CouponController extends Controller
         $query = Coupon::query();
 
         $request->whenFilled('sn', function ($sn) use ($query) {
-            $query->where('sn', 'like', "%{$sn}%");
+            $query->where('sn', 'like', "%$sn%");
         });
 
         foreach (['type', 'status'] as $field) {
@@ -48,7 +50,7 @@ class CouponController extends Controller
     }
 
     // 添加优惠券
-    public function store(CouponRequest $request)
+    public function store(CouponRequest $request): ?RedirectResponse
     {
         // 优惠卷LOGO
         $logo = null;
@@ -127,59 +129,36 @@ class CouponController extends Controller
     // 导出卡券
     public function exportCoupon(): void
     {
-        $voucherList = Coupon::type(1)->whereStatus(0)->get();
-        $discountCouponList = Coupon::type(2)->whereStatus(0)->get();
-        $refillList = Coupon::type(3)->whereStatus(0)->get();
+        $couponList = Coupon::whereStatus(0)->get();
 
         try {
-            $filename = '卡券'.date('Ymd').'.xlsx';
+            $filename = '卡券_Coupon_'.date('Ymd').'.xlsx';
             $spreadsheet = new Spreadsheet();
             $spreadsheet->getProperties()
                 ->setCreator('ProxyPanel')
                 ->setLastModifiedBy('ProxyPanel')
-                ->setTitle('邀请码')
-                ->setSubject('邀请码');
+                ->setTitle('卡券')
+                ->setSubject('卡券');
 
-            // 抵用券
-            $spreadsheet->setActiveSheetIndex(0);
             $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('抵用券');
-            $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '金额（'.array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')].'）', '权重', '使用限制']);
-            foreach ($voucherList as $k => $vo) {
-                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? trans('common.unlimited'), $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
+            $sheet->setTitle('卡券');
+            $sheet->fromArray([
+                trans('model.common.type'), trans('model.coupon.name'), trans('model.coupon.usable_times'), trans('common.available_date'), trans('common.expired_at'), trans('model.coupon.sn'), trans('admin.coupon.discount'),
+                trans('model.coupon.priority'), trans('model.rule.attribute'),
+            ]);
+
+            foreach ($couponList as $index => $coupon) {
+                $sheet->fromArray([
+                    [trans('common.status.unknown'), trans('admin.coupon.type.voucher'), trans('admin.coupon.type.discount'), trans('admin.coupon.type.charge')][$coupon->type], $coupon->name,
+                    $coupon->type === 3 ? trans('admin.coupon.single_use') : ($coupon->usable_times ?? trans('common.unlimited')), $coupon->start_time, $coupon->end_time, $coupon->sn,
+                    $coupon->type === 2 ? $coupon->value : Helpers::getPriceTag($coupon->value), $coupon->priority, json_encode($coupon->limit),
+                ], null, 'A'.($index + 2));
             }
 
-            // 折扣券
-            $spreadsheet->createSheet(1);
-            $spreadsheet->setActiveSheetIndex(1);
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('折扣券');
-            $sheet->fromArray(['名称', '使用次数', '有效期', '券码', '折扣（折）', '权重', '使用限制']);
-            foreach ($discountCouponList as $k => $vo) {
-                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
-                $sheet->fromArray([$vo->name, $vo->usable_times ?? trans('common.unlimited'), $dateRange, $vo->sn, $vo->value, $vo->priority, json_encode($vo->limit)], null, 'A'.($k + 2));
-            }
-
-            // 充值券
-            $spreadsheet->createSheet(2);
-            $spreadsheet->setActiveSheetIndex(2);
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('充值券');
-            $sheet->fromArray(['名称', '有效期', '券码', '金额（'.array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')].'）']);
-            foreach ($refillList as $k => $vo) {
-                $dateRange = $vo->start_time.' ~ '.$vo->end_time;
-                $sheet->fromArray([$vo->name, $dateRange, $vo->sn, $vo->value], null, 'A'.($k + 2));
-            }
-
-            // 指针切换回第一个sheet
-            $spreadsheet->setActiveSheetIndex(0);
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
-            //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');
             header('Cache-Control: max-age=0');
-            $writer = new Xlsx($spreadsheet);
+            $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $writer->save('php://output');
         } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
             Log::error('导出优惠券时报错：'.$e->getMessage());

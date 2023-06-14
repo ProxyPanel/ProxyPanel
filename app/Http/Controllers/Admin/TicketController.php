@@ -10,6 +10,7 @@ use App\Notifications\TicketClosed;
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketReplied;
 use Auth;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -24,7 +25,7 @@ class TicketController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -32,7 +33,7 @@ class TicketController extends Controller
     }
 
     // 创建工单
-    public function store(TicketRequest $request)
+    public function store(TicketRequest $request): JsonResponse
     {
         $data = $request->validated();
         $user = User::find($data['uid']) ?: User::whereUsername($data['username'])->first();
@@ -61,7 +62,7 @@ class TicketController extends Controller
     }
 
     // 回复工单
-    public function update(Request $request, Ticket $ticket)
+    public function update(Request $request, Ticket $ticket): JsonResponse
     {
         $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
@@ -82,7 +83,7 @@ class TicketController extends Controller
     }
 
     // 关闭工单
-    public function destroy(Ticket $ticket)
+    public function destroy(Ticket $ticket): JsonResponse
     {
         if (! $ticket->close()) {
             return Response::json(['status' => 'fail', 'message' => '关闭失败']);

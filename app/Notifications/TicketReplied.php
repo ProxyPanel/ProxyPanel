@@ -13,13 +13,13 @@ class TicketReplied extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $reply;
+    private TicketReply $reply;
 
-    private $url;
+    private string $url;
 
-    private $is_user;
+    private bool $is_user;
 
-    public function __construct($reply, $url, $is_user = false)
+    public function __construct(TicketReply $reply, string $url, bool $is_user = false)
     {
         $this->reply = $reply;
         $this->url = $url;
@@ -31,7 +31,7 @@ class TicketReplied extends Notification implements ShouldQueue
         return $this->is_user ? ['mail'] : sysConfig('ticket_replied_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]))
@@ -40,7 +40,7 @@ class TicketReplied extends Notification implements ShouldQueue
             ->action(trans('notification.view_ticket'), $this->url);
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
@@ -48,7 +48,7 @@ class TicketReplied extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))
@@ -56,12 +56,12 @@ class TicketReplied extends Notification implements ShouldQueue
             ->button(trans('notification.view_ticket'), $this->url);
     }
 
-    private function markdownMessage(TicketReply $reply)
+    private function markdownMessage(TicketReply $reply): string
     {
-        return "📮工单回复提醒 #{$reply->ticket->id}\n———————————————\n主题：\n`{$reply->ticket->title}`\n内容：\n`{$reply->content}`";
+        return "📮工单回复提醒 #{$reply->ticket->id}\n———————————————\n主题：\n`{$reply->ticket->title}`\n内容：\n`$reply->content`";
     }
 
-    public function toBark($notifiable)
+    public function toBark($notifiable): array
     {
         return [
             'title' => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),

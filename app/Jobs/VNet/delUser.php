@@ -7,6 +7,7 @@ use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -20,11 +21,11 @@ class delUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private $userIds;
+    private array|int $userIds;
 
-    private $nodes;
+    private Collection $nodes;
 
-    public function __construct($userIds, $nodes)
+    public function __construct(array|int $userIds, Collection $nodes)
     {
         $this->userIds = $userIds;
         $this->nodes = $nodes;
@@ -68,7 +69,7 @@ class delUser implements ShouldQueue
     }
 
     // 队列失败处理
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception): void
     {
         Log::alert('【删除用户】推送异常：'.$exception->getMessage());
     }

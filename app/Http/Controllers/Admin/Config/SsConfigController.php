@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\SsConfig;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -13,7 +14,7 @@ use Validator;
 class SsConfigController extends Controller
 {
     // 添加SS配置
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:ss_config,name',
@@ -32,7 +33,7 @@ class SsConfigController extends Controller
     }
 
     // 设置SS默认配置
-    public function update(SsConfig $ss)
+    public function update(SsConfig $ss): JsonResponse
     {
         // 去除该配置所属类型的默认值
         SsConfig::default()->type($ss->type)->update(['is_default' => 0]);
@@ -44,7 +45,7 @@ class SsConfigController extends Controller
     }
 
     // 删除SS配置
-    public function destroy(SsConfig $ss)
+    public function destroy(SsConfig $ss): JsonResponse
     {
         try {
             if ($ss->delete()) {

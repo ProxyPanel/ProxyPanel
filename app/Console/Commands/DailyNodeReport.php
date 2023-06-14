@@ -16,7 +16,7 @@ class DailyNodeReport extends Command
 
     protected $description = '自动报告节点昨日使用情况';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -33,8 +33,8 @@ class DailyNodeReport extends Command
                     $log = $node->dailyDataFlows()->whereDate('created_at', $date)->first();
                     $data[] = [
                         'name' => $node->name,
-                        'upload' => flowAutoShow($log->u ?? 0),
-                        'download' => flowAutoShow($log->d ?? 0),
+                        'upload' => formatBytes($log->u ?? 0),
+                        'download' => formatBytes($log->d ?? 0),
                         'total' => $log->traffic ?? '',
                     ];
                     $upload += $log->u ?? 0;
@@ -43,9 +43,9 @@ class DailyNodeReport extends Command
                 if ($data) {
                     $data[] = [
                         'name' => trans('notification.node.total'),
-                        'total' => flowAutoShow($upload + $download),
-                        'upload' => flowAutoShow($upload),
-                        'download' => flowAutoShow($download),
+                        'total' => formatBytes($upload + $download),
+                        'upload' => formatBytes($upload),
+                        'download' => formatBytes($download),
                     ];
 
                     Notification::send(User::role('Super Admin')->get(), new NodeDailyReport($data));

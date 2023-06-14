@@ -2,12 +2,12 @@
 
 namespace App\Observers;
 
-use App\Components\Helpers;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\PaymentConfirm;
 use App\Services\OrderService;
+use App\Utils\Helpers;
 use Arr;
 use Notification;
 
@@ -17,7 +17,7 @@ class OrderObserver
     {
         $changes = $order->getChanges();
         // 套餐订单-流量包订单互联
-        if (Arr::exists($changes, 'is_expire') && $changes['is_expire'] === 1 && $order->goods->type === 2) {
+        if (Arr::has($changes, 'is_expire') && $changes['is_expire'] === 1 && $order->goods->type === 2) {
             $user = $order->user;
             $user->update([ // 清理全部流量,重置重置日期和等级
                 'u' => 0,
@@ -33,7 +33,7 @@ class OrderObserver
             $this->activatePrepaidPlan($order->user_id); // 激活预支付套餐
         }
 
-        if (Arr::exists($changes, 'status')) {
+        if (Arr::has($changes, 'status')) {
             if ($changes['status'] === -1) { // 本地订单-在线订单 关闭互联
                 if ($order->payment) {
                     $order->payment->close(); // 关闭在线订单

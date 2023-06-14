@@ -12,9 +12,9 @@ class NodeDailyReport extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $data;
+    private array $data;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
@@ -24,14 +24,14 @@ class NodeDailyReport extends Notification implements ShouldQueue
         return sysConfig('node_daily_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(__('Daily Data Usage Report'))
             ->markdown('mail.simpleMarkdown', ['title' => __('Daily Data Usage Report'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
     }
 
-    private function markdownMessage()
+    private function markdownMessage(): string
     {
         $content = '| '.trans('user.attribute.node').' | '.trans('notification.node.upload').' | '.trans('notification.node.download').' | '.trans('notification.node.total')." |\r\n| :------ | :------: | :------: | ------: |\r\n";
         foreach ($this->data as $node) {
@@ -41,7 +41,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
         return $content;
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => __('Daily Data Usage Report'),
@@ -50,7 +50,7 @@ class NodeDailyReport extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))

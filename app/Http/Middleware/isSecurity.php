@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Components\IP;
+use App\Utils\IP;
 use Cache;
 use Closure;
 use Log;

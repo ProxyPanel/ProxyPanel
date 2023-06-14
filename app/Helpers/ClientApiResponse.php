@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 trait ClientApiResponse
 {
-    private static $client;
+    private static string $client;
 
     public function __construct(Request $request)
     {
@@ -16,17 +16,17 @@ trait ClientApiResponse
         }
     }
 
-    public function setClient($client)
+    public function setClient(string $client): void
     {
         self::$client = $client;
     }
 
-    public function succeed($data = null, $addition = null, $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
+    public function succeed(array|null $data = null, array|null $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
     {
         return $this->jsonResponse(1, $codeResponse, $data, $addition);
     }
 
-    private function jsonResponse($status, $codeResponse, $data = null, $addition = null): JsonResponse
+    private function jsonResponse(int $status, array $codeResponse, array|string|null $data = null, array|null $addition = null): JsonResponse
     {
         [$code, $message] = $codeResponse;
         $code = $code > 1000 ? (int) ($code / 1000) : $code;
@@ -47,8 +47,8 @@ trait ClientApiResponse
         return response()->json($result, $code, ['content-type' => 'application/json']);
     }
 
-    public function failed($codeResponse = ResponseEnum::HTTP_ERROR, $data = null, $addition = null): JsonResponse
+    public function failed(array $codeResponse = ResponseEnum::HTTP_ERROR, array|string|null $data = null): JsonResponse
     {
-        return $this->jsonResponse(0, $codeResponse, is_array($data) ? $data[0] : $data, $addition);
+        return $this->jsonResponse(0, $codeResponse, is_array($data) ? $data[0] : $data);
     }
 }

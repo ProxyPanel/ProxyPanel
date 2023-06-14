@@ -1,8 +1,8 @@
 @extends('auth.layouts')
 @section('title', trans('common.active_item', ['attribute' => trans('common.account')]))
 @section('content')
-    @if (Session::get('successMsg'))
-        <x-alert type="success" :message="Session::get('successMsg')"/>
+    @if (Session::has('successMsg'))
+        <x-alert type="success" :message="Session::pull('successMsg')"/>
     @endif
     @if($errors->any())
         <x-alert type="danger" :message="$errors->all()"/>

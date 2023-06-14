@@ -108,7 +108,7 @@
             </div>
             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                 @if ($item !== 'telegram')
-                    <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'register'])}}">
+                    <a class="btn btn-icon btn-pure" href="{{route('oauth.register', ['type' => $item])}}">
                         <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
                     </a>
                 @endif

@@ -22,7 +22,7 @@ class TaskAuto extends Command
     /*
      * 警告：除非熟悉业务流程，否则不推荐更改以下执行顺序，随意变更以下顺序可能导致系统异常
      */
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -43,7 +43,7 @@ class TaskAuto extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function orderTimer()
+    private function orderTimer(): void
     {
         Order::recentUnPay()->chunk(config('tasks.chunk'), function ($orders) {
             $orders->each->close();
@@ -54,7 +54,7 @@ class TaskAuto extends Command
         }); // 关闭未处理的人工支付订单
     }
 
-    private function expireCode()
+    private function expireCode(): void
     { // 注册验证码自动置无效 & 优惠券无效化
         // 注册验证码自动置无效
         VerifyCode::recentUnused()->update(['status' => 2]);
@@ -73,7 +73,7 @@ class TaskAuto extends Command
             ->update(['status' => 2]);
     }
 
-    private function blockSubscribes()
+    private function blockSubscribes(): void
     { // 封禁访问异常的订阅链接
         User::activeUser()
             ->with(['subscribe', 'subscribeLogs'])
@@ -95,7 +95,7 @@ class TaskAuto extends Command
             });
     }
 
-    private function unblockSubscribes()
+    private function unblockSubscribes(): void
     {
         UserSubscribe::whereStatus(0)->where('ban_time', '<=', time())->chunk(config('tasks.chunk'), function ($subscribes) {
             foreach ($subscribes as $subscribe) {
@@ -104,7 +104,7 @@ class TaskAuto extends Command
         });
     }
 
-    private function blockUsers()
+    private function blockUsers(): void
     { // 封禁账号
         // 禁用流量超限用户
         User::activeUser()
@@ -134,7 +134,7 @@ class TaskAuto extends Command
         }
     }
 
-    private function unblockUsers()
+    private function unblockUsers(): void
     { // 解封账号
         // 解封被临时封禁的账号
         User::bannedUser()

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Utils\IP;
 use DB;
 use Exception;
 use Illuminate\Http\Request;

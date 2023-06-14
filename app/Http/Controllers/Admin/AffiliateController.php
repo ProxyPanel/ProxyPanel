@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AffiliateController extends Controller
@@ -15,7 +16,7 @@ class AffiliateController extends Controller
         $query = ReferralApply::with('user:id,username');
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -36,7 +37,7 @@ class AffiliateController extends Controller
     }
 
     // 设置提现申请状态
-    public function setStatus(Request $request, ReferralApply $aff)
+    public function setStatus(Request $request, ReferralApply $aff): JsonResponse
     {
         $status = (int) $request->input('status');
 
@@ -61,13 +62,13 @@ class AffiliateController extends Controller
 
         $request->whenFilled('invitee_username', function ($username) use ($query) {
             $query->whereHas('invitee', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
         $request->whenFilled('inviter_username', function ($username) use ($query) {
             $query->whereHas('inviter', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 

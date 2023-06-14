@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\EmailFilter;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -19,7 +20,7 @@ class EmailFilterController extends Controller
     }
 
     // 添加邮箱后缀
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'type' => 'required|numeric|between:1,2',
@@ -44,7 +45,7 @@ class EmailFilterController extends Controller
     }
 
     // 删除邮箱后缀
-    public function destroy(EmailFilter $filter)
+    public function destroy(EmailFilter $filter): JsonResponse
     {
         try {
             if ($filter->delete()) {

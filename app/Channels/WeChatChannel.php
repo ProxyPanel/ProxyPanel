@@ -13,7 +13,7 @@ use Str;
 
 class WeChatChannel
 {
-    public function send($notifiable, Notification $notification)
+    public function send($notifiable, Notification $notification): false|array
     { // route('message.show', ['type' => 'markdownMsg', 'msgId' => ''])
         $message = $notification->toCustom($notifiable);
 
@@ -83,16 +83,14 @@ class WeChatChannel
             }
             // 发送失败
             Helpers::addNotificationLog($message['title'], $message['content'] ?? var_export($message['body'], true), 5, -1, $ret ? $ret['errmsg'] : '未知');
-
-            return false;
+        } else {
+            Log::critical('[企业微信] 消息推送异常：'.var_export($response, true)); // 发送错误
         }
-        // 发送错误
-        Log::critical('[企业微信] 消息推送异常：'.var_export($response, true));
 
         return false;
     }
 
-    private function getAccessToken()
+    private function getAccessToken(): ?string
     {
         if (Cache::has('wechat_access_token')) {
             $access_token = Cache::get('wechat_access_token');
@@ -111,9 +109,9 @@ class WeChatChannel
         return $access_token ?? null;
     }
 
-    public function verify(Request $request)
+    public function verify(Request $request): void
     {
-        $errCode = (new WeChat())->VerifyURL($request->input('msg_signature'), $request->input('timestamp'), $request->input('nonce'), $request->input('echostr'), $sEchoStr);
+        $errCode = (new WeChat())->verifyURL($request->input('msg_signature'), $request->input('timestamp'), $request->input('nonce'), $request->input('echostr'), $sEchoStr);
         if ($errCode === 0) {
             exit($sEchoStr);
         }

@@ -13,16 +13,20 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-lg-2 col-sm-2">
-                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="{{ trans('model.user.id') }}"/>
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}"
+                               placeholder="{{ trans('model.user.id') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('common.account') }}"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}"
+                               placeholder="{{ trans('common.account') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
-                        <input type="text" class="form-control" name="ip" value="{{Request::query('ip')}}" placeholder="IP"/>
+                        <input type="text" class="form-control" name="ip" value="{{Request::query('ip')}}"
+                               placeholder="IP"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-3">
-                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="{{ trans('model.user.port') }}"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}"
+                               placeholder="{{ trans('model.user.port') }}"/>
                     </div>
                     <div class="form-group col-lg-2 col-sm-5">
                         <select name="node_id" id="node_id" class="form-control" onchange="this.form.submit()">
@@ -55,17 +59,17 @@
                             <td>{{$log->id}}</td>
                             <td>{{$log->type}}</td>
                             <td>{{$log->node->name ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.node.attribute')]).'】'}}</td>
-                            <td>{{$log->user->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.user.attribute')]).'】'}}</td>
+                            <td>{{$log->user->username ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.user.attribute')]).'】'.'$log->user_id'}} </td>
                             <td>
-                                @if (strpos($log->ip, ',') !== false)
+                                @if (str_contains($log->ip, ','))
                                     @foreach (explode(',', $log->ip) as $ip)
-                                        <a href="https://www.ipip.net/ip/{{$ip}}.html" target="_blank">{{$ip}}</a>
+                                        <a href="https://db-ip.com/{{$ip}}" target="_blank">{{$ip}}</a>
                                     @endforeach
                                 @else
-                                    <a href="https://www.ipip.net/ip/{{$log->ip}}.html" target="_blank">{{$log->ip}}</a>
+                                    <a href="https://db-ip.com/{{$log->ip}}" target="_blank">{{$log->ip}}</a>
                                 @endif
                             </td>
-                            <td>{{strpos($log->ip, ',') !== false? '':$log->ipInfo}}</td>
+                            <td>{{$log->ipInfo?? ''}}</td>
                             <td>{{date('Y-m-d H:i:s',$log->created_at)}}</td>
                         </tr>
                     @endforeach
@@ -91,7 +95,7 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#node_id').val({{Request::query('node_id')}});
         });
     </script>

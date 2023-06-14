@@ -8,13 +8,8 @@ use Illuminate\Http\Request;
 
 class Affiliate
 {
-    /**
-     * 返利识别.
-     *
-     * @return mixed
-     */
-    public function handle(Request $request, Closure $next)
-    {
+    public function handle(Request $request, Closure $next): mixed
+    { // 返利识别
         $aff = $request->input('aff');
         if ($aff) {
             Cookie::queue('register_aff', $aff, 129600);

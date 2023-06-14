@@ -10,19 +10,19 @@ class Verification extends Notification
 {
     use Queueable;
 
-    private $code;
+    private string $code;
 
-    public function __construct($code)
+    public function __construct(string $code)
     {
         $this->code = $code;
     }
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.verification_account'))
@@ -31,7 +31,7 @@ class Verification extends Notification
             ->line(trans('notification.verification_limit', ['minutes' => config('tasks.close.verify')]));
     }
 
-    public function toArray($notifiable)
+    public function toArray($notifiable): array
     {
         return [
             //

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\Client;
 
-use App\Components\Helpers;
 use App\Helpers\ClientApiResponse;
 use App\Helpers\ResponseEnum;
 use App\Services\UserService;
+use App\Utils\Helpers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -83,12 +83,10 @@ class AuthController extends Controller
                 $request->session()->put('uid', $user->id);
             }
 
-            $userService = UserService::getInstance();
-
             return $this->succeed([
                 'token' => $user->createToken('client')->plainTextToken,
                 'expire_in' => time() + config('session.lifetime') * Minute,
-                'user' => $userService->getProfile(),
+                'user' => (new UserService)->getProfile(),
             ], null, ResponseEnum::USER_SERVICE_LOGIN_SUCCESS);
         }
 

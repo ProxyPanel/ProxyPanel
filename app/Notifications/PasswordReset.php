@@ -10,9 +10,9 @@ class PasswordReset extends Notification
 {
     use Queueable;
 
-    private $url;
+    private string $url;
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->url = $url;
     }
@@ -22,7 +22,7 @@ class PasswordReset extends Notification
         return sysConfig('password_reset_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(__('Reset Password Notification'))

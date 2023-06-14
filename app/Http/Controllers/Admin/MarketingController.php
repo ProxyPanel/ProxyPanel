@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Marketing;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -34,7 +35,7 @@ class MarketingController extends Controller
     }
 
     // 添加推送消息
-    public function addPushMarketing(Request $request)
+    public function addPushMarketing(Request $request): JsonResponse
     {
         $title = $request->input('title');
         $content = $request->input('content');

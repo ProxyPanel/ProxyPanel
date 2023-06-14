@@ -14,7 +14,7 @@ class TelegramController extends Controller
 {
     protected $msg;
 
-    public function webhook(Request $request)
+    public function webhook(Request $request): void
     {
         $this->msg = $this->getMessage($request->input());
         if (! $this->msg) {
@@ -59,7 +59,7 @@ class TelegramController extends Controller
         return $obj;
     }
 
-    private function fromSend()
+    private function fromSend(): void
     {
         switch ($this->msg->command) {
             case '/bind':
@@ -79,7 +79,7 @@ class TelegramController extends Controller
         }
     }
 
-    private function bind()
+    private function bind(): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
@@ -103,7 +103,7 @@ class TelegramController extends Controller
         $telegramService->sendMessage($msg->chat_id, '绑定成功');
     }
 
-    private function traffic()
+    private function traffic(): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
@@ -120,21 +120,21 @@ class TelegramController extends Controller
             return;
         }
         $user = $oauth->user;
-        $transferEnable = flowAutoShow($user->transfer_enable);
-        $up = flowAutoShow($user->u);
-        $down = flowAutoShow($user->d);
-        $remaining = flowAutoShow($user->transfer_enable - ($user->u + $user->d));
-        $text = "🚥流量查询\n———————————————\n计划流量：`{$transferEnable}`\n已用上行：`{$up}`\n已用下行：`{$down}`\n剩余流量：`{$remaining}`";
+        $transferEnable = formatBytes($user->transfer_enable);
+        $up = formatBytes($user->u);
+        $down = formatBytes($user->d);
+        $remaining = formatBytes($user->transfer_enable - ($user->u + $user->d));
+        $text = "🚥流量查询\n———————————————\n计划流量：`$transferEnable`\n已用上行：`$up`\n已用下行：`$down`\n剩余流量：`$remaining`";
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 
-    private function help()
+    private function help(): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
             return;
         }
-        $telegramService = new TelegramService();
+        $telegramService = new TelegramService;
         $commands = [
             '/bind 订阅地址 - 绑定你的'.sysConfig('website_name').'账号',
             '/traffic - 查询流量信息',
@@ -145,10 +145,10 @@ class TelegramController extends Controller
         $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
     }
 
-    private function getLatestUrl()
+    private function getLatestUrl(): void
     {
         $msg = $this->msg;
-        $telegramService = new TelegramService();
+        $telegramService = new TelegramService;
         $text = sprintf(
             '%s的最新网址是：%s',
             sysConfig('website_name'),
@@ -157,18 +157,19 @@ class TelegramController extends Controller
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 
-    private function unbind()
+    private function unbind(): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
             return;
         }
-        $user = User::with(['userAuths' => function ($query) use ($msg) {
-            $query->whereType('telegram')->whereIdentifier($msg->chat_id);
-        },
+        $user = User::with([
+            'userAuths' => function ($query) use ($msg) {
+                $query->whereType('telegram')->whereIdentifier($msg->chat_id);
+            },
         ])->first();
 
-        $telegramService = new TelegramService();
+        $telegramService = new TelegramService;
         if (! $user) {
             $this->help();
             $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
@@ -181,7 +182,7 @@ class TelegramController extends Controller
         $telegramService->sendMessage($msg->chat_id, '解绑成功', 'markdown');
     }
 
-    private function fromReply()
+    private function fromReply(): void
     {
         // ticket
         if (preg_match('/[#](.*)/', $this->msg->reply_text, $match)) {
@@ -189,15 +190,16 @@ class TelegramController extends Controller
         }
     }
 
-    private function replayTicket($ticketId)
+    private function replayTicket($ticketId): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
             return;
         }
-        $user = User::with(['userAuths' => function ($query) use ($msg) {
-            $query->whereType('telegram')->whereIdentifier($msg->chat_id);
-        },
+        $user = User::with([
+            'userAuths' => function ($query) use ($msg) {
+                $query->whereType('telegram')->whereIdentifier($msg->chat_id);
+            },
         ])->first();
 
         if (! $user) {
@@ -214,7 +216,6 @@ class TelegramController extends Controller
             }
             $ticket->reply()->create(['admin_id' => $admin->id, 'content' => $msg->text]);
         }
-        $telegramService = new TelegramService();
-        $telegramService->sendMessage($msg->chat_id, "#`{$ticketId}` 的工单已回复成功", 'markdown');
+        (new TelegramService)->sendMessage($msg->chat_id, "#`$ticketId` 的工单已回复成功", 'markdown');
     }
 }

@@ -13,13 +13,13 @@ class VNetReload extends Command
 
     protected $description = 'VNet线路重置';
 
-    public function handle()
+    public function handle(): void
     {
         $startTime = microtime(true);
 
         $nodes = Node::whereStatus(1)->whereType(4)->get();
         if ($nodes->isNotEmpty()) {
-            reloadNode::dispatchNow($nodes);
+            reloadNode::dispatchSync($nodes);
         }
 
         $jobTime = round(microtime(true) - $startTime, 4);

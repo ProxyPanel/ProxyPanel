@@ -7,7 +7,8 @@
                     <i class="icon wb-help-circle"></i> {{$ticket->title}}
                 </h1>
                 <div class="panel-actions btn-group">
-                    <button class="btn icon-1x btn-info btn-icon wb-user-circle" data-target="#userInfo" data-toggle="modal"
+                    <button class="btn icon-1x btn-info btn-icon wb-user-circle" data-target="#userInfo"
+                            data-toggle="modal"
                             type="button"> {{ trans('admin.ticket.user_info') }}</button>
                     <a href="{{route('admin.ticket.index')}}" class="btn btn-default">{{ trans('common.back') }}</a>
                     @if($ticket->status !== 2)
@@ -31,9 +32,11 @@
                 <div class="panel-footer pb-30">
                     <form>
                         <div class="input-group">
-                            <input type="text" class="form-control" id="editor" placeholder="{{trans('user.ticket.reply_placeholder')}}"/>
+                            <input type="text" class="form-control" id="editor"
+                                   placeholder="{{trans('user.ticket.reply_placeholder')}}"/>
                             <span class="input-group-btn">
-                                <button type="button" class="btn btn-primary" onclick="replyTicket()"> {{trans('common.send')}}</button>
+                                <button type="button" class="btn btn-primary"
+                                        onclick="replyTicket()"> {{trans('common.send')}}</button>
                             </span>
                         </div>
                     </form>
@@ -83,7 +86,8 @@
                             <dt class="col-sm-3">{{ trans('model.user.credit') }}</dt>
                             <dd class="col-sm-9">{{$user->credit}}</dd>
                             <dt class="col-sm-3">{{ trans('model.user.traffic_used') }}</dt>
-                            <dd class="col-sm-9">{{flowAutoShow($user->used_traffic)}} / {{$user->transfer_enable_formatted}}</dd>
+                            <dd class="col-sm-9">{{formatBytes($user->used_traffic)}}
+                                / {{$user->transfer_enable_formatted}}</dd>
                             <dt class="col-sm-3">{{ trans('model.user.reset_date') }}</dt>
                             <dd class="col-sm-9">{{$user->reset_date ?? trans('common.none')}}</dd>
                             <dt class="col-sm-3">{{ trans('common.latest_at') }}</dt>
@@ -132,7 +136,8 @@
                     </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('common.close') }}</button>
+                    <button type="button" class="btn btn-default"
+                            data-dismiss="modal">{{ trans('common.close') }}</button>
                 </div>
             </div>
         </div>
@@ -143,85 +148,94 @@
         @can('admin.ticket.destroy')
         // 关闭工单
         function closeTicket() {
-          swal.fire({
-            title: '{{ trans('admin.ticket.close_confirm') }}',
-            icon: 'question',
-            showCancelButton: true,
-            cancelButtonText: '{{trans('common.close')}}',
-            confirmButtonText: '{{trans('common.confirm')}}',
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                method: 'DELETE',
-                url: '{{route('admin.ticket.destroy', $ticket->id)}}',
-                async: true,
-                data: {_token: '{{csrf_token()}}'},
-                dataType: 'json',
-                success: function(ret) {
-                  if (ret.status === 'success') {
-                    swal.fire({
-                      title: ret.message,
-                      icon: 'success',
-                      timer: 1000,
-                      showConfirmButton: false,
-                    }).then(() => window.location.href = '{{route('admin.ticket.index')}}');
-                  } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                  }
-                },
-                error: function() {
-                  swal.fire({title: '{{  trans('user.ticket.error') }}', icon: 'error'});
-                },
-              });
-            }
-          });
+            swal.fire({
+                title: '{{ trans('admin.ticket.close_confirm') }}',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'DELETE',
+                        url: '{{route('admin.ticket.destroy', $ticket->id)}}',
+                        async: true,
+                        data: {_token: '{{csrf_token()}}'},
+                        dataType: 'json',
+                        success: function (ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false,
+                                }).then(() => window.location.href = '{{route('admin.ticket.index')}}');
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                        error: function () {
+                            swal.fire({title: '{{  trans('user.ticket.error') }}', icon: 'error'});
+                        },
+                    });
+                }
+            });
         }
         @endcan
 
         @can('admin.ticket.update')
         //回车检测
-        $(document).on('keypress', 'input', function(e) {
-          if (e.which === 13) {
-            replyTicket();
-            return false;
-          }
+        $(document).on('keypress', 'input', function (e) {
+            if (e.which === 13) {
+                replyTicket();
+                return false;
+            }
         });
 
         // 回复工单
         function replyTicket() {
-          const content = document.getElementById('editor').value;
+            const content = document.getElementById('editor').value;
 
-          if (content.trim() === '') {
-            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning', timer: 1500});
-            return false;
-          }
-          swal.fire({
-            title: '{{trans('user.ticket.reply_confirm')}}',
-            icon: 'question',
-            allowEnterKey: false,
-            showCancelButton: true,
-            cancelButtonText: '{{trans('common.close')}}',
-            confirmButtonText: '{{trans('common.confirm')}}',
-          }).then((result) => {
-            if (result.value) {
-              $.ajax({
-                method: 'PUT',
-                url: '{{route('admin.ticket.update', $ticket)}}',
-                data: {_token: '{{csrf_token()}}', content: content},
-                dataType: 'json',
-                success: function(ret) {
-                  if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                  } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                  }
-                },
-                error: function() {
-                  swal.fire({title: '{{ trans('admin.ticket.error') }}', icon: 'error'});
-                },
-              });
+            if (content.trim() === '') {
+                swal.fire({
+                    title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!',
+                    icon: 'warning',
+                    timer: 1500
+                });
+                return false;
             }
-          });
+            swal.fire({
+                title: '{{trans('user.ticket.reply_confirm')}}',
+                icon: 'question',
+                allowEnterKey: false,
+                showCancelButton: true,
+                cancelButtonText: '{{trans('common.close')}}',
+                confirmButtonText: '{{trans('common.confirm')}}',
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        method: 'PUT',
+                        url: '{{route('admin.ticket.update', $ticket)}}',
+                        data: {_token: '{{csrf_token()}}', content: content},
+                        dataType: 'json',
+                        success: function (ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false
+                                }).then(() => window.location.reload());
+                            } else {
+                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                            }
+                        },
+                        error: function () {
+                            swal.fire({title: '{{ trans('admin.ticket.error') }}', icon: 'error'});
+                        },
+                    });
+                }
+            });
         }
         @endcan
     </script>

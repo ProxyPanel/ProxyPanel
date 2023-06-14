@@ -20,7 +20,7 @@ class UserGroupObserver
     public function updated(UserGroup $userGroup): void
     {
         $changes = $userGroup->getChanges();
-        if (Arr::exists($changes, 'nodes')) {
+        if (Arr::has($changes, 'nodes')) {
             $nodes = Node::whereType(4)
                 ->whereIn('id', array_diff($userGroup->nodes ?? [], $userGroup->getOriginal('nodes') ?? []))
                 ->get();

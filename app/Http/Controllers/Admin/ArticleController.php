@@ -7,6 +7,8 @@ use App\Http\Requests\Admin\ArticleRequest;
 use App\Models\Article;
 use App\Services\ArticleService;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Log;
@@ -86,7 +88,7 @@ class ArticleController extends Controller
         return view('admin.article.info', compact('article', 'categories'));
     }
 
-    public function update(ArticleRequest $request, Article $article)
+    public function update(ArticleRequest $request, Article $article): RedirectResponse
     { // 编辑文章
         $data = $request->validated();
         $data['logo'] = $data['logo'] ?? null;
@@ -107,7 +109,7 @@ class ArticleController extends Controller
         return redirect()->back()->withInput()->withErrors('编辑失败');
     }
 
-    public function destroy(Article $article)
+    public function destroy(Article $article): JsonResponse
     { // 删除文章
         try {
             $article->delete();

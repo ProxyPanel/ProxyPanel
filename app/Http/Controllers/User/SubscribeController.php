@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use App\Services\ProxyService;
+use App\Utils\IP;
 use Illuminate\Http\Request;
 use Redirect;
 use Response;
 
 class SubscribeController extends Controller
 {
-    private static $subType;
+    private static int|null $subType;
 
-    private $proxyServer;
+    private ProxyService $proxyServer;
 
     // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, string $code)
@@ -26,7 +26,7 @@ class SubscribeController extends Controller
             return Redirect::route('login');
         }
         $code = $matches[0];
-        $this->proxyServer = ProxyService::getInstance();
+        $this->proxyServer = new ProxyService;
         self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
 
         // 检查订阅码是否有效
@@ -69,10 +69,10 @@ class SubscribeController extends Controller
         $subscribe->increment('times'); // 更新访问次数
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()])); // 记录每次请求
 
-        return ProxyService::getInstance()->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
+        return $this->proxyServer->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
     }
 
-    private function failed(string $text)
+    private function failed(string $text): \Illuminate\Http\Response
     { // 抛出错误的节点信息，用于兼容防止客户端订阅失败
         return Response::make(base64url_encode($this->proxyServer->failedProxyReturn($text, self::$subType ?? 1)));
     }

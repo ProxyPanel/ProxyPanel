@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
-use App\Components\IP;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\EmailFilter;
@@ -14,6 +12,8 @@ use App\Models\VerifyCode;
 use App\Notifications\AccountActivation;
 use App\Notifications\PasswordReset;
 use App\Notifications\Verification;
+use App\Utils\Helpers;
+use App\Utils\IP;
 use Auth;
 use Cache;
 use Captcha;
@@ -46,7 +46,7 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): RedirectResponse
     {
         $data = $request->validated();
 
@@ -87,7 +87,8 @@ class AuthController extends Controller
         if ($user->status === 0 && sysConfig('is_activate_account')) {
             Auth::logout(); // 强制销毁会话，因为Auth::attempt的时候会产生会话
 
-            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion', ['action' => '<a href="'.route('active', ['username' => $user->username]).'" target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</a>']));
+            return Redirect::back()->withInput()->withErrors(trans('auth.active.promotion',
+                ['action' => '<a href="'.route('active', ['username' => $user->username]).'" target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</a>']));
         }
 
         Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
@@ -158,11 +159,9 @@ class AuthController extends Controller
         $aff = $request->input('aff');
 
         // 防止重复提交
-        if ($register_token !== Session::get('register_token')) {
+        if ($register_token !== Session::pull('register_token')) {
             return Redirect::back()->withInput()->withErrors(trans('auth.error.repeat_request'));
         }
-
-        Session::forget('register_token');
 
         // 是否开启注册
         if (! sysConfig('is_register')) {
@@ -319,14 +318,8 @@ class AuthController extends Controller
         return false;
     }
 
-    /**
-     * 获取AFF.
-     *
-     * @param  string|null  $code  邀请码
-     * @param  int|null  $aff  URL中的aff参数
-     */
-    private function getAff($code = null, $aff = null): array
-    {
+    private function getAff(string $code = '', int $aff = 0): array
+    { // 获取AFF
         $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
 
         // 有邀请码先用邀请码，用谁的邀请码就给谁返利
@@ -340,35 +333,31 @@ class AuthController extends Controller
 
         // 没有用邀请码或者邀请码是管理员生成的，则检查cookie或者url链接
         if (! $data['inviter_id']) {
-            // 检查一下cookie里有没有aff
-            $cookieAff = \request()->cookie('register_aff');
-            if ($cookieAff) {
-                $cookieAff = $this->affConvert($cookieAff);
-                $data['inviter_id'] = $cookieAff && User::find($cookieAff) ? $cookieAff : null;
-            } elseif ($aff) { // 如果cookie里没有aff，就再检查一下请求的url里有没有aff，因为有些人的浏览器会禁用了cookie，比如chrome开了隐私模式
-                $aff = $this->affConvert($aff);
-                $data['inviter_id'] = $aff && User::find($aff) ? $aff : null;
+            $cookieAff = \request()?->cookie('register_aff'); // 检查一下cookie里有没有aff
+            if ($cookieAff || $aff) {
+                $data['inviter_id'] = $this->setInviter($aff ?: $cookieAff);
             }
         }
 
         return $data;
     }
 
-    private function affConvert($aff)
+    private function setInviter(string|int $aff): int|null
     {
+        $uid = 0;
         if (is_numeric($aff)) {
-            return $aff;
+            $uid = (int) $aff;
+        } else {
+            $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
+            if ($decode) {
+                $uid = $decode[0];
+            }
         }
 
-        $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
-        if ($decode) {
-            return $decode[0];
-        }
-
-        return false;
+        return $uid && User::whereId($uid)->exists() ? $uid : null;
     }
 
-    private function addVerifyUrl($uid, $email)
+    private function addVerifyUrl($uid, $email): string
     { // 生成申请的请求地址
         $token = md5(sysConfig('website_name').$email.microtime());
         $verify = new Verify();

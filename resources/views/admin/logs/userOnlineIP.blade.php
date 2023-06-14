@@ -82,7 +82,7 @@
                                                 <td>{{$log->node->name ?? '【'.trans('common.deleted_item', ['attribute' => trans('model.node.attribute')]).'】'}}</td>
                                                 <td>{{$log->type}}</td>
                                                 <td>
-                                                    <a href="https://www.ipip.net/ip/{{$log->ip}}.html" target="_blank">{{$log->ip}}</a>
+                                                    <a href="https://db-ip.com/{{$log->ip}}" target="_blank">{{$log->ip}}</a>
                                                 </td>
                                                 <td>{{date('Y-m-d H:i:s', $log->created_at)}}</td>
                                             </tr>

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,23 +26,23 @@ class Payment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function failed(): bool
+    { // 关闭支付单
+        return $this->close() && $this->order()->close();
+    }
+
+    public function close(): bool
+    { // 关闭支付单
+        return $this->update(['status' => -1]);
+    }
+
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
     }
 
-    public function close() // 关闭支付单
-    {
-        return $this->update(['status' => -1]);
-    }
-
-    public function failed() // 关闭支付单
-    {
-        return $this->close() && $this->order()->close();
-    }
-
-    public function complete() // 完成支付单
-    {
+    public function complete(): bool
+    { // 完成支付单
         return $this->update(['status' => 1]);
     }
 
@@ -64,18 +64,10 @@ class Payment extends Model
     // 订单状态
     public function getStatusLabelAttribute(): string
     {
-        switch ($this->attributes['status']) {
-            case -1:
-                $status_label = trans('common.failed_item', ['attribute' => trans('user.pay')]);
-                break;
-            case 1:
-                $status_label = trans('common.success_item', ['attribute' => trans('user.pay')]);
-                break;
-            case 0:
-            default:
-                $status_label = trans('common.payment.status.wait');
-        }
-
-        return $status_label;
+        return match ($this->attributes['status']) {
+            -1 => trans('common.failed_item', ['attribute' => trans('user.pay')]),
+            1 => trans('common.success_item', ['attribute' => trans('user.pay')]),
+            default => trans('common.payment.status.wait'),
+        };
     }
 }

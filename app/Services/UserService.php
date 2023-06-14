@@ -2,23 +2,19 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Hashids\Hashids;
 
-class UserService extends BaseService
+class UserService
 {
-    private static $user;
+    private static User $user;
 
-    public function __construct($user = null)
+    public function __construct(User $user = null)
     {
-        parent::__construct();
-        if (isset($user)) {
-            self::$user = $user;
-        } else {
-            self::$user = auth()->user();
-        }
+        self::$user = $user ?? auth()->user();
     }
 
-    public function getProfile()
+    public function getProfile(): array
     {
         $user = self::$user;
 
@@ -48,14 +44,11 @@ class UserService extends BaseService
         ];
     }
 
-    public function inviteURI($isCode = false): string
+    public function inviteURI(bool $isCode = false): string
     {
+        $uid = self::$user->id;
         $affSalt = sysConfig('aff_salt');
-        if (isset($affSalt)) {
-            $aff = (new Hashids($affSalt, 8))->encode(self::$user->id);
-        } else {
-            $aff = self::$user->id;
-        }
+        $aff = empty($affSalt) ? $uid : (new Hashids($affSalt, 8))->encode($uid);
 
         return $isCode ? $aff : sysConfig('website_url').route('register', ['aff' => $aff], false);
     }

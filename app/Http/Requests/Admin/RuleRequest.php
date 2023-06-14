@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RuleRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'name' => 'required|string',

@@ -50,7 +50,7 @@ class NodeRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'server.required_if' => '开启DDNS， 域名不能为空',

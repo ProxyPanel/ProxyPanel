@@ -32,8 +32,8 @@ proxies:
 
 proxy-groups:
   - { name: "SELECT", type: select, proxies: ["自动选择", "故障转移"] }
-  - { name: "自动选择", type: url-test, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 86400 }
-  - { name: "故障转移", type: fallback, proxies: [], url: "http://www.gstatic.com/generate_204", interval: 7200 }
+  - { name: "自动选择", type: url-test, proxies: [], url: "https://www.gstatic.com/generate_204", interval: 86400 }
+  - { name: "故障转移", type: fallback, proxies: [], url: "https://www.gstatic.com/generate_204", interval: 7200 }
 
 rules:
   # Apple

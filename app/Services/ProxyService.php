@@ -2,43 +2,42 @@
 
 namespace App\Services;
 
-use App\Components\Client\Text;
-use App\Components\Client\URLSchemes;
 use App\Helpers\ClientConfig;
 use App\Models\Node;
 use App\Models\User;
+use App\Utils\Clients\Text;
+use App\Utils\Clients\URLSchemes;
 use Arr;
 
-class ProxyService extends BaseService
+class ProxyService
 {
     use ClientConfig;
 
-    private static $user;
+    private static User $user;
 
-    private static $servers;
+    private static array $servers;
 
     public function __construct()
     {
-        parent::__construct();
         self::$user = auth()->user();
     }
 
-    public function getUser()
+    public function getUser(): User
     {
         return self::$user;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         self::$user = $user;
     }
 
-    public function getServers()
+    public function getServers(): array
     {
         return self::$servers;
     }
 
-    public function getProxyText($target, $type = null)
+    public function getProxyText(string $target, int $type = null)
     {
         $servers = $this->getNodeList($type);
         if (empty($servers)) {
@@ -59,7 +58,7 @@ class ProxyService extends BaseService
         return $this->clientConfig($target);
     }
 
-    public function getNodeList($type = null, $isConfig = true)
+    public function getNodeList(int $type = null, bool $isConfig = true): array
     {
         $query = self::$user->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
@@ -188,6 +187,11 @@ class ProxyService extends BaseService
         return $result.PHP_EOL;
     }
 
+    private function setServers(array $servers): void
+    {
+        self::$servers = $servers;
+    }
+
     public function getProxyCode($target, $type = null) // 客户端用代理信息
     {
         $servers = $this->getNodeList($type);
@@ -203,28 +207,12 @@ class ProxyService extends BaseService
     public function getUserProxyConfig(array $server, bool $is_url): ?string // 用户显示用代理信息
     {
         $type = $is_url ? new URLSchemes() : new Text();
-        switch ($server['type']) {
-            case 'shadowsocks':
-                $data = $type->buildShadowsocks($server);
-                break;
-            case 'shadowsocksr':
-                $data = $type->buildShadowsocksr($server);
-                break;
-            case 'v2ray':
-                $data = $type->buildVmess($server);
-                break;
-            case 'trojan':
-                $data = $type->buildTrojan($server);
-                break;
-            default:
-                $data = null;
-        }
 
-        return $data;
-    }
-
-    private function setServers(array $servers)
-    {
-        self::$servers = $servers;
+        return match ($server['type']) {
+            'shadowsocks' => $type->buildShadowsocks($server),
+            'shadowsocksr' => $type->buildShadowsocksr($server),
+            'v2ray' => $type->buildVmess($server),
+            'trojan' => $type->buildTrojan($server),
+        };
     }
 }

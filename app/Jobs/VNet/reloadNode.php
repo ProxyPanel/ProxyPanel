@@ -21,13 +21,10 @@ class reloadNode implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private $nodes;
+    private Collection $nodes;
 
-    public function __construct($nodes)
+    public function __construct(Collection $nodes)
     {
-        if (! $nodes instanceof Collection) {
-            $nodes = collect([$nodes]);
-        }
         $this->nodes = $nodes;
     }
 
@@ -59,16 +56,16 @@ class reloadNode implements ShouldQueue
             $message = $response->json();
             if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
                 if ($message['success'] === 'false') {
-                    Log::warning("【重载节点】失败：{$host} 反馈：".$message['content']);
+                    Log::warning("【重载节点】失败：$host 反馈：".$message['content']);
 
                     return false;
                 }
 
-                Log::notice("【重载节点】成功：{$host} 反馈：".$message['content']);
+                Log::notice("【重载节点】成功：$host 反馈：".$message['content']);
 
                 return true;
             }
-            Log::warning("【重载节点】失败：{$host}");
+            Log::warning("【重载节点】失败：$host");
         } catch (Exception $exception) {
             Log::alert('【重载节点】推送异常：'.$exception->getMessage());
         }
@@ -77,7 +74,7 @@ class reloadNode implements ShouldQueue
     }
 
     // 队列失败处理
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception): void
     {
         Log::alert('【重载节点】推送异常：'.$exception->getMessage());
     }

@@ -2,11 +2,11 @@
 
 namespace App\Observers;
 
-use App\Components\Helpers;
 use App\Jobs\VNet\addUser;
 use App\Jobs\VNet\delUser;
 use App\Jobs\VNet\editUser;
 use App\Models\User;
+use App\Utils\Helpers;
 use Arr;
 
 class UserObserver

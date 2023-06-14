@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Payments\CodePay;
-use App\Payments\EPay;
-use App\Payments\F2Fpay;
-use App\Payments\Local;
-use App\Payments\Manual;
-use App\Payments\PayBeaver;
-use App\Payments\PayJs;
-use App\Payments\PayPal;
-use App\Payments\Stripe;
-use App\Payments\THeadPay;
 use App\Services\CouponService;
+use App\Utils\Helpers;
+use App\Utils\Library\Templates\Gateway;
+use App\Utils\Payments\CodePay;
+use App\Utils\Payments\EPay;
+use App\Utils\Payments\F2Fpay;
+use App\Utils\Payments\Local;
+use App\Utils\Payments\Manual;
+use App\Utils\Payments\PayBeaver;
+use App\Utils\Payments\PayJs;
+use App\Utils\Payments\PayPal;
+use App\Utils\Payments\Stripe;
+use App\Utils\Payments\THeadPay;
 use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -27,7 +28,7 @@ use Response;
 
 class PaymentController extends Controller
 {
-    public static $method;
+    public static string $method;
 
     public static function notify(Request $request)
     {
@@ -38,7 +39,7 @@ class PaymentController extends Controller
         return self::getClient()->notify($request);
     }
 
-    public static function getClient()
+    public static function getClient(): Gateway
     {
         switch (self::$method) {
             case 'credit':
@@ -63,7 +64,7 @@ class PaymentController extends Controller
                 return new Manual();
             default:
                 Log::emergency('未知支付：'.self::$method);
-                exit;
+                exit(404);
         }
     }
 
@@ -176,7 +177,7 @@ class PaymentController extends Controller
             ]);
 
             // 使用优惠券，减少可使用次数
-            if (! empty($coupon)) {
+            if ($coupon !== null) {
                 if ($coupon->usable_times > 0) {
                     $coupon->decrement('usable_times');
                 }

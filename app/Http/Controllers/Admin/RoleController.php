@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RoleRequest;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -15,12 +17,7 @@ class RoleController extends Controller
         return view('admin.role.index', ['roles' => Role::with('permissions')->paginate(15)]);
     }
 
-    public function create()
-    {
-        return view('admin.role.info', ['permissions' => Permission::all()->pluck('description', 'name')]);
-    }
-
-    public function store(RoleRequest $request)
+    public function store(RoleRequest $request): RedirectResponse
     {
         if ($role = Role::create($request->only(['name', 'description']))) {
             $role->givePermissionTo($request->input('permissions') ?? []);
@@ -31,6 +28,11 @@ class RoleController extends Controller
         return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
+    public function create()
+    {
+        return view('admin.role.info', ['permissions' => Permission::all()->pluck('description', 'name')]);
+    }
+
     public function edit(Role $role)
     {
         return view('admin.role.info', [
@@ -39,7 +41,7 @@ class RoleController extends Controller
         ]);
     }
 
-    public function update(RoleRequest $request, Role $role)
+    public function update(RoleRequest $request, Role $role): RedirectResponse
     {
         if ($role->name === 'Super Admin') {
             return redirect()->back()->withInput()->withErrors('请勿修改超级管理员');
@@ -54,7 +56,7 @@ class RoleController extends Controller
         return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    public function destroy(Role $role)
+    public function destroy(Role $role): JsonResponse
     {
         try {
             if ($role->name === 'Super Admin') {

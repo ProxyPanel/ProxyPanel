@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -68,17 +68,10 @@ class ReferralLog extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        switch ($this->attributes['status']) {
-            case 1:
-                $status_label = '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>';
-                break;
-            case 2:
-                $status_label = '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>';
-                break;
-            default:
-                $status_label = '<span class="badge badge-sm badge-success">'.trans('common.status.unwithdrawn').'</span>';
-        }
-
-        return $status_label;
+        return match ($this->attributes['status']) {
+            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>',
+            2 => '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>',
+            default => '<span class="badge badge-sm badge-success">'.trans('common.status.unwithdrawn').'</span>',
+        };
     }
 }

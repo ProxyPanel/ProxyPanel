@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
 use App\Helpers\DataChart;
 use App\Models\Article;
 use App\Models\Coupon;
@@ -19,11 +18,13 @@ use App\Services\ArticleService;
 use App\Services\CouponService;
 use App\Services\ProxyService;
 use App\Services\UserService;
+use App\Utils\Helpers;
 use Cache;
 use DB;
 use Exception;
 use Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Log;
@@ -42,10 +43,8 @@ class UserController extends Controller
     {
         // 用户转换
         if (Session::has('user')) {
-            auth()->loginUsingId(Session::get('user'));
-            Session::forget('user');
+            auth()->loginUsingId(Session::pull('user'));
         }
-        $userService = UserService::getInstance();
         $user = auth()->user();
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->used_traffic;
@@ -66,13 +65,13 @@ class UserController extends Controller
         return view('user.index', array_merge([
             'remainDays' => now()->diffInDays($user->expired_at, false),
             'resetDays' => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
-            'unusedTraffic' => flowAutoShow($unusedTraffic),
+            'unusedTraffic' => formatBytes($unusedTraffic),
             'expireTime' => $user->expiration_date,
             'banedTime' => $user->ban_time,
             'unusedPercent' => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
             'announcements' => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
             'isTrafficWarning' => $user->isTrafficWarning(), // 流量异常判断
-            'paying_user' => $userService->isActivePaying(), // 付费用户判断
+            'paying_user' => (new UserService)->isActivePaying(), // 付费用户判断
             'userLoginLog' => $user->loginLogs()->latest()->first(), // 近期登录日志
             'subscribe_status' => $user->subscribe->status,
             'subMsg' => $user->subscribe->ban_desc,
@@ -106,7 +105,7 @@ class UserController extends Controller
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
         Cache::put('userCheckIn_'.$user->id, '1', $ttl);
 
-        return Response::json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => flowAutoShow($traffic)])]);
+        return Response::json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
 
     // 节点列表
@@ -114,7 +113,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if ($request->isMethod('POST')) {
-            $proxyServer = ProxyService::getInstance();
+            $proxyServer = new ProxyService;
             $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
             return Response::json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
@@ -134,7 +133,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function article(Article $article)
+    public function article(Article $article): JsonResponse
     { // 公告详情
         $articleService = new ArticleService($article);
 
@@ -200,7 +199,7 @@ class UserController extends Controller
     }
 
     // 商品列表
-    public function services(Request $request)
+    public function services()
     {
         $user = auth()->user();
         // 余额充值商品，只取10个
@@ -383,7 +382,7 @@ class UserController extends Controller
         return view('user.invite', [
             'num' => auth()->user()->invite_num, // 还可以生成的邀请码数量
             'inviteList' => Invite::uid()->with(['invitee', 'inviter'])->paginate(10), // 邀请码列表
-            'referral_traffic' => flowAutoShow(sysConfig('referral_traffic') * MB),
+            'referral_traffic' => formatBytes(sysConfig('referral_traffic') * MB),
             'referral_percent' => sysConfig('referral_percent'),
         ]);
     }
@@ -505,8 +504,7 @@ class UserController extends Controller
         }
 
         // 管理员信息重新写入user
-        $user = auth()->loginUsingId(Session::get('admin'));
-        Session::forget('admin');
+        $user = auth()->loginUsingId(Session::pull('admin'));
         if ($user) {
             return Response::json(['status' => 'success', 'message' => trans('common.toggle_action', ['action' => trans('common.success')])]);
         }
@@ -535,8 +533,8 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
     }
 
-    public function switchCurrency(string $code)// 切换语言
-    {
+    public function switchCurrency(string $code): RedirectResponse
+    { // 切换语言
         Session::put('currency', $code);
 
         return Redirect::back();

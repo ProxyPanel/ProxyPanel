@@ -71,7 +71,7 @@ class RuleController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 

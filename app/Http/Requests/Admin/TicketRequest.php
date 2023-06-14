@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class TicketRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'uid' => 'required_without:username|exists:user,id|numeric|nullable',

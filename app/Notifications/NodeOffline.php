@@ -12,9 +12,9 @@ class NodeOffline extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $data;
+    private array $data;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
@@ -24,14 +24,14 @@ class NodeOffline extends Notification implements ShouldQueue
         return sysConfig('node_offline_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.node_offline'))
             ->markdown('mail.simpleMarkdown', ['title' => trans('notification.node_offline_content'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
     }
 
-    private function markdownMessage()
+    private function markdownMessage(): string
     {
         $content = '';
         foreach ($this->data as $node) {
@@ -41,7 +41,7 @@ class NodeOffline extends Notification implements ShouldQueue
         return $content;
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.node_offline'),
@@ -50,7 +50,7 @@ class NodeOffline extends Notification implements ShouldQueue
         ];
     }
 
-    public function toBark($notifiable)
+    public function toBark($notifiable): array
     {
         return [
             'title' => trans('notification.node_offline'),
@@ -60,7 +60,7 @@ class NodeOffline extends Notification implements ShouldQueue
         ];
     }
 
-    private function stringMessage()
+    private function stringMessage(): string
     {
         $content = '';
         foreach ($this->data as $node) {
@@ -70,7 +70,7 @@ class NodeOffline extends Notification implements ShouldQueue
         return $content;
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))

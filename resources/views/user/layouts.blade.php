@@ -188,7 +188,7 @@
     </div>
     <div class="page">
         <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
-{{trans('common.update_browser.2')}}<a href="http://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
+{{trans('common.update_browser.2')}}<a href="https://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
         @yield('content')
     </div>
     <footer class="site-footer">
@@ -200,7 +200,7 @@
             <a href="{{sysConfig('website_url')}}" target="_blank">{{sysConfig('website_name')}}</a> 🈺
         </div>
     </footer>
-    @if(Session::get("admin"))
+    @if(Session::has("admin"))
         <div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0;">
             <div class="panel-body text-right">
                 <h5>{{trans('user.current_role')}}：{{Auth::getUser()->username}}</h5>
@@ -217,7 +217,7 @@
         <![endif]-->
         <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js"></script>
         @yield('javascript')
-        @if(Session::get('admin'))
+        @if(Session::has('admin'))
             <script>
               $('#return_to_admin').click(function() {
                 $.ajax({

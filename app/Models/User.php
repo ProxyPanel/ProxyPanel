@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
+use App\Utils\QQInfo;
 use Hash;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -19,7 +21,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable, HasRoles, Sortable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, Sortable;
 
     public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
 
@@ -34,7 +36,7 @@ class User extends Authenticatable
         return $this->username;
     }
 
-    public function usedTrafficPercentage()
+    public function usedTrafficPercentage(): float
     {
         return round($this->used_traffic / $this->transfer_enable, 2);
     }
@@ -141,7 +143,7 @@ class User extends Authenticatable
         return $this->hasOne(UserSubscribe::class);
     }
 
-    public function subUrl()
+    public function subUrl(): string
     {
         return route('sub', $this->subscribe->code);
     }
@@ -191,9 +193,9 @@ class User extends Authenticatable
         return Helpers::getPriceTag($this->credit);
     }
 
-    public function getTransferEnableFormattedAttribute()
+    public function getTransferEnableFormattedAttribute(): string
     {
-        return flowAutoShow($this->attributes['transfer_enable']);
+        return formatBytes($this->attributes['transfer_enable']);
     }
 
     public function getSpeedLimitAttribute()
@@ -201,7 +203,7 @@ class User extends Authenticatable
         return $this->attributes['speed_limit'] / Mbps;
     }
 
-    public function setPasswordAttribute($password)
+    public function setPasswordAttribute($password): string
     {
         return $this->attributes['password'] = Hash::make($password);
     }
@@ -214,9 +216,9 @@ class User extends Authenticatable
     public function getAvatarAttribute(): string
     {
         if ($this->qq) {
-            $url = "https://q1.qlogo.cn/g?b=qq&nk={$this->qq}&s=640";
+            $url = QQInfo::getQQAvatar($this->qq);
         } elseif (stripos(strtolower($this->username), '@qq.com') !== false) {
-            $url = "https://q1.qlogo.cn/g?b=qq&nk={$this->username}&s=640";
+            $url = QQInfo::getQQAvatar($this->username);
         } else {
             // $url = 'https://gravatar.loli.net/avatar/'.md5(strtolower(trim($this->username)))."?&d=identicon";
             // $url = 'https://robohash.org/'.md5(strtolower(trim($this->username))).'?set=set4&bgset=bg2&size=400x400';

@@ -7,25 +7,34 @@
         <h1 class="page-title cyan-600"><i class="icon wb-star"></i>{{trans('user.menu.referrals')}}</h1>
     </div>
     <div class="page-content  container-fluid">
-        <x-alert type="success" :message="trans('user.invite.promotion', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
+        <x-alert type="success"
+                 :message="trans('user.invite.promotion', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])"/>
         <div class="row">
             <div class="col-lg-5">
                 <!-- 推广链接 -->
-                <div class="card">
-                    <div class="card-block">
-                        <h4 class="card-title cyan-600"><i class="icon wb-link"></i>
-                            {{trans('user.referral.link')}}
-                        </h4>
-                        <div class="card-text form">
+                <div class="card card-inverse card-shadow bg-white node">
+                    <div class="card-block p-30 row">
+                        <div id="qrcode" class="col-auto"></div>
+                        <div class="col text-break">
+                            <h4 class="card-title cyan-600"><i class="icon wb-link"></i>
+                                {{trans('user.referral.link')}}
+                            </h4>
                             <div class="mt-clipboard-container input-group">
                                 <input type="text" id="mt-target-1" class="form-control" value="{{$aff_link}}"/>
-                                <button class="btn btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{$aff_link}}">
+                            </div>
+                            <div class="btn-group float-right pt-4">
+                                <button class="btn btn-outline-primary" onclick="Download()">
+                                    <i class="icon wb-download"></i> {{trans('common.download')}}
+                                </button>
+                                <button class="btn btn-info mt-clipboard" data-clipboard-action="copy"
+                                        data-clipboard-text="{{$aff_link}}">
                                     <i class="icon wb-copy"></i> {{trans('common.copy.attribute')}}
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <!-- 邀请记录 -->
                 <div class="card">
                     <div class="card-block">
@@ -114,7 +123,7 @@
                 <div class="card">
                     <div class="card-block">
                         <h4 class="card-title cyan-600"><i
-                                class="icon wb-star-outline"></i> {{trans('user.withdraw_logs')}}</h4>
+                                    class="icon wb-star-outline"></i> {{trans('user.withdraw_logs')}}</h4>
                         <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                             <thead class="thead-default">
                             <tr>
@@ -152,10 +161,48 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
+    <script src="/assets/custom/easy.qrcode.min.js"></script>
     <script>
+        // Options
+        const options = {
+            text: @json($aff_link),
+            dotScale: 0.9,
+            width: 144,
+            height: 144,
+            backgroundImage: '/assets/images/logo_original.png',
+            backgroundImageAlpha: 1,
+            PO_TL: '#007bff',
+            PI_TL: '#17a2b8',
+            PI_TR: '#fd7e14',
+            PO_TR: '#28a745',
+            PI_BL: '#ffc107',
+            PO_BL: '#17a2b8',
+            AO: '#fd7e14',
+            AI: '#20c997',
+            autoColor: true,
+        };
+
+        // Create QRCode Object
+        new QRCode(document.getElementById('qrcode'), options);
+
+        function Download() {
+            const canvas = document.getElementsByTagName("canvas")[0];
+            canvas.toBlob((blob) => {
+                let link = document.createElement('a');
+                link.download = 'qr.png';
+
+                let reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = () => {
+                    link.href = reader.result;
+                    link.click();
+                };
+            }, "image/png");
+        };
+
         // 申请提现
         function extractMoney() {
-            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function (ret) {
                 if (ret.status === 'success') {
                     swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
                         window.location.reload();
@@ -167,7 +214,7 @@
         }
 
         const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        clipboard.on('success', function () {
             swal.fire({
                 title: '{{trans('common.copy.success')}}',
                 icon: 'success',
@@ -175,7 +222,7 @@
                 showConfirmButton: false,
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on('error', function () {
             swal.fire({
                 title: '{{trans('common.copy.failed')}}',
                 icon: 'error',

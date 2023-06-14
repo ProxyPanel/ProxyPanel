@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -13,7 +14,7 @@ use Validator;
 class CountryController extends Controller
 {
     // 添加国家/地区
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'code' => 'required|string|unique:country,code',
@@ -32,7 +33,7 @@ class CountryController extends Controller
     }
 
     // 编辑国家/地区
-    public function update(Request $request, Country $country)
+    public function update(Request $request, Country $country): JsonResponse
     {
         $validator = Validator::make($request->all(), ['name' => 'required']);
 
@@ -54,7 +55,7 @@ class CountryController extends Controller
     }
 
     // 删除国家/地区
-    public function destroy(Country $country)
+    public function destroy(Country $country): JsonResponse
     {
         // 校验该国家/地区下是否存在关联节点
         if ($country->nodes()->exists()) {

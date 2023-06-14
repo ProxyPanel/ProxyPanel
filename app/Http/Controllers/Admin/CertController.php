@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CertRequest;
 use App\Models\NodeCertificate;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Log;
 
 class CertController extends Controller
 {
-    // 域名证书列表
     public function index()
     {
         $certs = NodeCertificate::orderBy('id')->paginate()->appends(request('page'));
@@ -28,12 +29,6 @@ class CertController extends Controller
         return view('admin.node.cert.index', ['certs' => $certs]);
     }
 
-    public function create()
-    {
-        return view('admin.node.cert.info');
-    }
-
-    // 添加域名证书
     public function store(CertRequest $request)
     {
         if ($cert = NodeCertificate::create($request->validated())) {
@@ -43,13 +38,17 @@ class CertController extends Controller
         return redirect()->back()->withInput()->withErrors('生成失败');
     }
 
-    // 编辑域名证书
+    public function create()
+    {
+        return view('admin.node.cert.info');
+    }
+
     public function edit(NodeCertificate $cert)
     {
         return view('admin.node.cert.info', compact('cert'));
     }
 
-    public function update(CertRequest $request, NodeCertificate $cert)
+    public function update(CertRequest $request, NodeCertificate $cert): RedirectResponse
     {
         if ($cert->update($request->validated())) {
             return redirect()->back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
@@ -58,8 +57,7 @@ class CertController extends Controller
         return redirect()->back()->withInput()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
     }
 
-    // 删除域名证书
-    public function destroy(NodeCertificate $cert)
+    public function destroy(NodeCertificate $cert): JsonResponse
     {
         try {
             if ($cert->delete()) {

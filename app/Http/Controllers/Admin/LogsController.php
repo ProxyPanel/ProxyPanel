@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\IP;
 use App\Helpers\DataChart;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
@@ -15,6 +14,8 @@ use App\Models\UserBanedLog;
 use App\Models\UserCreditLog;
 use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
+use App\Utils\IP;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -28,12 +29,12 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
         $request->whenFilled('sn', function ($value) use ($query) {
-            $query->where('sn', 'like', "%{$value}%");
+            $query->where('sn', 'like', "%$value%");
         });
 
         $request->whenFilled('start', function ($value) use ($query) {
@@ -65,7 +66,7 @@ class LogsController extends Controller
         return view('admin.logs.order', ['orders' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page'))]);
     }
 
-    public function changeOrderStatus(Request $request)
+    public function changeOrderStatus(Request $request): JsonResponse
     {
         $order = Order::findOrFail($request->input('oid'));
         $status = (int) $request->input('status');
@@ -100,7 +101,7 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -112,11 +113,11 @@ class LogsController extends Controller
             $query->where('log_time', '<=', strtotime($value) + 86399);
         });
 
-        $totalTraffic = flowAutoShow($query->sum('u') + $query->sum('d')); // 在分页前，计算总使用流量
+        $totalTraffic = formatBytes($query->sum('u') + $query->sum('d')); // 在分页前，计算总使用流量
         $dataFlowLogs = $query->latest('log_time')->paginate(20)->appends($request->except('page'));
         foreach ($dataFlowLogs as $log) {
-            $log->u = flowAutoShow($log->u);
-            $log->d = flowAutoShow($log->d);
+            $log->u = formatBytes($log->u);
+            $log->d = formatBytes($log->d);
             $log->log_time = date('Y-m-d H:i:s', $log->log_time);
         }
         $nodes = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
@@ -130,7 +131,7 @@ class LogsController extends Controller
         $query = NotificationLog::query();
 
         $request->whenFilled('username', function ($username) use ($query) {
-            $query->where('address', 'like', "%{$username}%");
+            $query->where('address', 'like', "%$username%");
         });
 
         $request->whenFilled('type', function ($type) use ($query) {
@@ -157,7 +158,7 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -173,7 +174,7 @@ class LogsController extends Controller
             });
         });
 
-        $onlineIPLogs = $query->groupBy('user_id', 'node_id')->latest()->paginate(20)->appends($request->except('page'));
+        $onlineIPLogs = $query->groupBy(['user_id', 'node_id'])->latest()->paginate(20)->appends($request->except('page'));
         foreach ($onlineIPLogs as $log) {
             // 跳过上报多IP的
             if ($log->ip === null || str_contains($log->ip, ',')) {
@@ -181,7 +182,7 @@ class LogsController extends Controller
             }
             $ipInfo = IP::getIPInfo($log->ip);
 
-            $log->ipInfo = implode(' ', $ipInfo);
+            $log->ipInfo = $ipInfo['address'].' '.$ipInfo['isp'];
         }
 
         return view('admin.logs.onlineIPMonitor', [
@@ -197,7 +198,7 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -211,7 +212,7 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -225,7 +226,7 @@ class LogsController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -239,7 +240,7 @@ class LogsController extends Controller
 
         foreach (['username', 'wechat', 'qq'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
-                $query->where($field, 'like', "%{$value}%");
+                $query->where($field, 'like', "%$value%");
             });
         }
 

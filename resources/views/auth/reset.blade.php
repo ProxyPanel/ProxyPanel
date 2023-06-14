@@ -3,8 +3,8 @@
 @section('content')
     <form action="{{url(Request::getRequestUri())}}" method="post" class="register-form">
         @csrf
-        @if(Session::get('successMsg'))
-            <x-alert type="success" :message="Session::get('successMsg')"/>
+        @if(Session::has('successMsg'))
+            <x-alert type="success" :message="Session::pull('successMsg')"/>
         @endif
         @if($errors->any())
             <x-alert type="danger" :message="$errors->all()"/>

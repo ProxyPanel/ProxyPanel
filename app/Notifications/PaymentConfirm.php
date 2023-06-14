@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use App\Models\User;
+use Hashids\Hashids;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\TelegramMessage;
@@ -12,14 +13,14 @@ class PaymentConfirm extends Notification
 {
     use Queueable;
 
-    private $order;
+    private Order $order;
 
-    private $sign;
+    private string $sign;
 
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->sign = string_encrypt($order->payment->id);
+        $this->sign = (new Hashids(config('app.key'), 8))->encode($order->payment->id);
     }
 
     public function via($notifiable)
@@ -41,14 +42,14 @@ class PaymentConfirm extends Notification
                 ->to($admin->telegram_user_id)
                 ->token(sysConfig('telegram_token'))
                 ->content($message)
-                ->button('否 決', route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 0]))
-                ->button('确 认', route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 1]));
+                ->button(trans('common.status.reject'), route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 0]))
+                ->button(trans('common.confirm'), route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 1]));
         }
 
         return false;
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         $order = $this->order;
         $goods = $this->order->goods;

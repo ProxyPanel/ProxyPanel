@@ -3,30 +3,14 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Redis;
 
 class ExampleTest extends TestCase
 {
     /**
      * A basic test example.
-     *
-     * @return void
      */
-    public function testBasicTest()
+    public function test_that_true_is_true(): void
     {
-        try {
-            //create redis instance
-            $redis = new Redis();
-            //connect with server and port
-            $redis->connect('localhost', 6379);
-            //set value
-            $redis->set('website', 'www.phpflow.com');
-            //get value
-            $website = $redis->get('website');
-            //print www.phpflow.com
-            echo $website;
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
-        }
+        $this->assertTrue(true);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\Level;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -13,7 +14,7 @@ use Validator;
 class LevelController extends Controller
 {
     // 添加等级
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'level' => 'required|numeric|unique:level,level',
@@ -32,7 +33,7 @@ class LevelController extends Controller
     }
 
     // 编辑等级
-    public function update(Request $request, Level $level)
+    public function update(Request $request, Level $level): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'level' => 'required|numeric|unique:level,level,'.$level->id,
@@ -51,7 +52,7 @@ class LevelController extends Controller
     }
 
     // 删除等级
-    public function destroy(Level $level)
+    public function destroy(Level $level): JsonResponse
     {
         // 校验该等级下是否存在关联账号
         if ($level->users()->exists()) {

@@ -12,7 +12,7 @@ class ServiceTimer extends Command
 
     protected $description = '服务计时器';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -22,7 +22,7 @@ class ServiceTimer extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function expiredPlan()
+    private function expiredPlan(): void
     {
         Order::activePlan()
             ->where('expired_at', '<=', date('Y-m-d H:i:s'))

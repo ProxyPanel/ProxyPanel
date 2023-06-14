@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Components\Helpers;
 use App\Models\Node;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketClosed;
 use App\Services\OrderService;
+use App\Utils\Helpers;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Log;
@@ -18,7 +18,7 @@ class TaskDaily extends Command
 
     protected $description = '每日任务';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -37,8 +37,8 @@ class TaskDaily extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function expireUser()// 过期用户处理
-    {
+    private function expireUser(): void
+    { // 过期用户处理
         $isBanStatus = sysConfig('is_ban_status');
         User::activeUser()
             ->where('expired_at', '<', date('Y-m-d')) // 过期
@@ -68,8 +68,8 @@ class TaskDaily extends Command
             });
     }
 
-    private function closeTickets()// 关闭用户超时未处理的工单
-    {
+    private function closeTickets(): void
+    { // 关闭用户超时未处理的工单
         Ticket::whereStatus(1)
             ->whereHas('reply', function ($q) {
                 $q->where('admin_id', '<>', null);
@@ -87,8 +87,8 @@ class TaskDaily extends Command
             });
     }
 
-    private function resetUserTraffic()// 重置用户流量
-    {
+    private function resetUserTraffic(): void
+    { // 重置用户流量
         User::where('status', '<>', -1)
             ->where('expired_at', '>', date('Y-m-d'))
             ->where('reset_time', '<=', date('Y-m-d'))
@@ -116,9 +116,8 @@ class TaskDaily extends Command
             });
     }
 
-    private function releaseAccountPort()
-    {
-        // 被封禁 / 过期N天 的账号自动释放端口
+    private function releaseAccountPort(): void
+    { // 被封禁 / 过期N天 的账号自动释放端口
         User::where('port', '<>', 0)
             ->where(function ($query) {
                 $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')));
@@ -126,7 +125,7 @@ class TaskDaily extends Command
             ->update(['port' => 0]);
     }
 
-    private function userTrafficStatistics()
+    private function userTrafficStatistics(): void
     {
         $created_at = date('Y-m-d 23:59:59', strtotime('-1 days'));
         $end = strtotime($created_at);
@@ -144,7 +143,7 @@ class TaskDaily extends Command
 
                 $data = $logs->each(function ($log) use ($created_at) {
                     $log->total = $log->u + $log->d;
-                    $log->traffic = flowAutoShow($log->total);
+                    $log->traffic = formatBytes($log->total);
                     $log->created_at = $created_at;
                 })->flatten()->toArray();
 
@@ -152,7 +151,7 @@ class TaskDaily extends Command
                     'u' => $logs->sum('u'),
                     'd' => $logs->sum('d'),
                     'total' => $logs->sum('total'),
-                    'traffic' => flowAutoShow($logs->sum('total')),
+                    'traffic' => formatBytes($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
 
@@ -161,7 +160,7 @@ class TaskDaily extends Command
         });
     }
 
-    private function nodeTrafficStatistics()
+    private function nodeTrafficStatistics(): void
     {
         $created_at = date('Y-m-d 23:59:59', strtotime('-1 day'));
         $end = strtotime($created_at);
@@ -179,7 +178,7 @@ class TaskDaily extends Command
                     'u' => $traffic->u,
                     'd' => $traffic->d,
                     'total' => $total,
-                    'traffic' => flowAutoShow($total),
+                    'traffic' => formatBytes($total),
                     'created_at' => $created_at,
                 ]);
             }

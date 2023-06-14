@@ -12,11 +12,11 @@ class PaymentReceived extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $amount;
+    private string $amount;
 
-    private $sn;
+    private string $sn;
 
-    public function __construct($sn, $amount)
+    public function __construct(string $sn, string $amount)
     {
         $this->amount = $amount;
         $this->sn = $sn;
@@ -27,7 +27,7 @@ class PaymentReceived extends Notification implements ShouldQueue
         return sysConfig('payment_received_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(__('Payment Received'))
@@ -35,7 +35,7 @@ class PaymentReceived extends Notification implements ShouldQueue
             ->action(__('Invoice Detail'), route('invoiceInfo', $this->sn));
     }
 
-    public function toDataBase($notifiable)
+    public function toDataBase($notifiable): array
     {
         return [
             'sn' => $this->sn,
@@ -44,7 +44,7 @@ class PaymentReceived extends Notification implements ShouldQueue
     }
 
     // todo: 需要重新审视发送对象
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->to($notifiable->telegram_user_id)

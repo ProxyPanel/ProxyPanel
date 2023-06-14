@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Config;
 use App\Http\Controllers\Controller;
 use App\Models\GoodsCategory;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
@@ -13,7 +14,7 @@ use Validator;
 class CategoryController extends Controller
 {
     // 添加等级
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), ['name' => 'required']);
 
@@ -29,7 +30,7 @@ class CategoryController extends Controller
     }
 
     // 编辑等级
-    public function update(Request $request, GoodsCategory $category)
+    public function update(Request $request, GoodsCategory $category): JsonResponse
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
@@ -47,7 +48,7 @@ class CategoryController extends Controller
     }
 
     // 删除等级
-    public function destroy(GoodsCategory $category)
+    public function destroy(GoodsCategory $category): JsonResponse
     {
         // 校验该等级下是否存在关联账号
         if ($category->goods()->exists()) {

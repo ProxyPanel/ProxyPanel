@@ -11,7 +11,7 @@
                 </h2>
             </div>
             @if (Session::has('analysisErrorMsg'))
-                <x-alert type="danger" :message="Session::get('analysisErrorMsg')"/>
+                <x-alert type="danger" :message="Session::pull('analysisErrorMsg')"/>
             @endif
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
