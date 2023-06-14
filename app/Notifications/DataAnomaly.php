@@ -12,15 +12,15 @@ class DataAnomaly extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $userId;
+    private int $userId;
 
-    private $upload;
+    private string $upload;
 
-    private $download;
+    private string $download;
 
-    private $total;
+    private string $total;
 
-    public function __construct($userId, $upload, $download, $total)
+    public function __construct(int $userId, string $upload, string $download, string $total)
     {
         $this->userId = $userId;
         $this->upload = $upload;
@@ -33,14 +33,14 @@ class DataAnomaly extends Notification implements ShouldQueue
         return sysConfig('data_anomaly_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.data_anomaly'))
             ->line(trans('notification.data_anomaly_content', ['id' => $this->userId, 'upload' => $this->upload, 'download' => $this->download, 'total' => $this->total]));
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.data_anomaly'),
@@ -48,7 +48,7 @@ class DataAnomaly extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))

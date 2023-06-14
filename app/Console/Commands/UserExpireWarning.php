@@ -13,7 +13,7 @@ class UserExpireWarning extends Command
 
     protected $description = '用户临近到期自动提醒';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -25,7 +25,7 @@ class UserExpireWarning extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function userExpireWarning()
+    private function userExpireWarning(): void
     {
         // 只取没被禁用的用户，其他不用管
         User::whereEnable(1)

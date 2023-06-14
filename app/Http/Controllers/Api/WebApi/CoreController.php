@@ -77,7 +77,7 @@ class CoreController extends Controller
             $u = $input['upload'] * $rate;
             $d = $input['download'] * $rate;
 
-            $formattedData[] = ['user_id' => $input['uid'], 'u' => $u, 'd' => $d, 'rate' => $rate, 'traffic' => flowAutoShow($u + $d), 'log_time' => time()];
+            $formattedData[] = ['user_id' => $input['uid'], 'u' => $u, 'd' => $d, 'rate' => $rate, 'traffic' => formatBytes($u + $d), 'log_time' => time()];
         }
 
         if (isset($formattedData) && $logs = $node->userDataFlowLogs()->createMany($formattedData)) { // 生成用户流量数据

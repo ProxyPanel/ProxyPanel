@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'nickname' => 'required|string',

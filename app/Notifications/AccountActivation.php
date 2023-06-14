@@ -10,19 +10,19 @@ class AccountActivation extends Notification
 {
     use Queueable;
 
-    private $url;
+    private string $url;
 
-    public function __construct($url)
+    public function __construct(string $url)
     {
         $this->url = $url;
     }
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)->subject(__('Verify Email Address'))->line(__('Please click the button below to verify your email address.'))
             ->action(__('Verify Your Email Address'), $this->url)

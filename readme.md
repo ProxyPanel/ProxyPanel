@@ -39,8 +39,8 @@ Buy me a Coffee?
 - Memory 1G +
 - Disk 10G +
 
-### Laravel 7
-- PHP >= 7.2.5 && < 8.0
+### This project is base on Laravel 10 Framwork
+- PHP >= 8.1
 - BCMath PHP Extension
 - Ctype PHP Extension
 - Fileinfo PHP extension
@@ -60,22 +60,8 @@ Buy me a Coffee?
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)
 - [@V2Ray](https://www.v2ray.com)
-- [@breakwa11](https://github.com/breakwa11)
-- [@glzjin](https://github.com/esdeathlove)
-- [@orvice](https://github.com/orvice)
-- [@Akkariiin](https://github.com/shadowsocksrr)
-- [@aiyahacke](https://github.com/aiyahacke)
 - [@ColetteContreras](https://github.com/ColetteContreras)
 - [@rc452860](https://github.com/rc452860)
-- [@pch18](https://github.com/pch18)
-- [@tonychanczm](https://github.com/tonychanczm)
-- [@91yun](https://github.com/91yun)
-- [@ToyoDAdoubi](https://github.com/ToyoDAdoubi)
-- [@ipcheck](https://ipcheck.need.sh)
-- [@cz88](http://www.cz88.net/index.shtml)
-- [@ip.sb](https://www.ip.sb)
-- [@ipip](https://www.ipip.net)
-- [@Bruskyii Panda](https://github.com/ssrpanel)
 
 ## License
 

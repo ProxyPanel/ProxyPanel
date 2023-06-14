@@ -94,7 +94,7 @@
                                 <td>{{$subscribe->id}}</td>
                                 <td>
                                     @if ($subscribe->request_ip)
-                                        <a href="https://www.ipip.net/ip/{{$subscribe->request_ip}}.html" target="_blank">{{$subscribe->request_ip}}</a>
+                                        <a href="https://db-ip.com/{{$subscribe->request_ip}}" target="_blank">{{$subscribe->request_ip}}</a>
                                     @endif
                                 </td>
                                 <td>{{$subscribe->ipInfo}}</td>

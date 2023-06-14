@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -70,18 +70,10 @@ class ReferralApply extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        switch ($this->attributes['status']) {
-            case 1:
-                $status_label = '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>';
-                break;
-            case 2:
-                $status_label = trans('common.status.withdrawn');
-                break;
-            case 0:
-            default:
-                $status_label = '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>';
-        }
-
-        return $status_label;
+        return match ($this->attributes['status']) {
+            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
+            2 => trans('common.status.withdrawn'),
+            default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
+        };
     }
 }

@@ -13,11 +13,11 @@ class UserTrafficWarning extends Command
 
     protected $description = '用户流量超过警告阈值自动发邮件提醒';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
-        if (sysConfig('data_exhaust_notification')) {// 用户流量超过警告阈值提醒
+        if (sysConfig('data_exhaust_notification')) { // 用户流量超过警告阈值提醒
             $this->userTrafficWarning();
         }
 
@@ -25,8 +25,8 @@ class UserTrafficWarning extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function userTrafficWarning()// 用户流量超过警告阈值提醒
-    {
+    private function userTrafficWarning(): void
+    { // 用户流量超过警告阈值提醒
         $trafficWarningPercent = sysConfig('traffic_warning_percent');
         User::activeUser()->where('transfer_enable', '>', 0)->chunk(config('tasks.chunk'), function ($users) use ($trafficWarningPercent) {
             foreach ($users as $user) {

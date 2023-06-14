@@ -28,13 +28,13 @@ class UserDataModifyLog extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function getBeforeAttribute($value)
+    public function getBeforeAttribute($value): string
     {
-        return $this->attributes['before'] = flowAutoShow($value);
+        return $this->attributes['before'] = formatBytes($value);
     }
 
-    public function getAfterAttribute($value)
+    public function getAfterAttribute($value): string
     {
-        return $this->attributes['after'] = flowAutoShow($value);
+        return $this->attributes['after'] = formatBytes($value);
     }
 }

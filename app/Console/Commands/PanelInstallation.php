@@ -15,7 +15,7 @@ class PanelInstallation extends Command
 
     protected $description = 'ProxyPanel Installation (面板自主安装)';
 
-    public function handle()
+    public function handle(): int
     {
         try {
             $bar = $this->output->createProgressBar(7);
@@ -102,9 +102,9 @@ class PanelInstallation extends Command
         return 0;
     }
 
-    private function saveToEnv($data = [])
+    private function saveToEnv($data = []): void
     {
-        function set_env_var($key, $value): bool
+        function set_env_var($key, $value): void
         {
             if (! is_bool(strpos($value, ' '))) {
                 $value = '"'.$value.'"';
@@ -114,30 +114,27 @@ class PanelInstallation extends Command
             $envPath = app()->environmentFilePath();
             $contents = file_get_contents($envPath);
 
-            preg_match("/^{$key}=[^\r\n]*/m", $contents, $matches);
+            preg_match("/^$key=[^\r\n]*/m", $contents, $matches);
 
             $oldValue = count($matches) ? $matches[0] : '';
 
             if ($oldValue) {
-                $contents = str_replace((string) $oldValue, "{$key}={$value}", $contents);
+                $contents = str_replace($oldValue, "$key=$value", $contents);
             } else {
-                $contents .= "\n{$key}={$value}\n";
+                $contents .= "\n$key=$value\n";
             }
 
             $file = fopen($envPath, 'wb');
             fwrite($file, $contents);
-
-            return fclose($file);
+            fclose($file);
         }
 
         foreach ($data as $key => $value) {
             set_env_var($key, $value);
         }
-
-        return true;
     }
 
-    private function editAdmin($email, $password)
+    private function editAdmin($email, $password): bool
     {
         $user = User::find(1);
         $user->username = $email;

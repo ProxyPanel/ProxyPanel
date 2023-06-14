@@ -215,7 +215,7 @@
                                     <x-alert type="danger" :message="$errors->all()"/>
                                 @endif
                                 @if (Session::has('successMsg'))
-                                    <x-alert type="success" :message="Session::get('successMsg')"/>
+                                    <x-alert type="success" :message="Session::pull('successMsg')"/>
                                 @endif
                             </div>
                             <x-system.input code="website_home_logo" :value="$website_home_logo" type="url"/>
@@ -295,11 +295,9 @@
                                             {!! trans('admin.system.payment.hint.paypal') !!}
                                         </div>
                                     </div>
-                                    <x-system.input code="paypal_username" :value="$paypal_username"/>
-                                    <x-system.input code="paypal_password" :value="$paypal_password"/>
-                                    <x-system.input code="paypal_secret" :value="$paypal_secret"/>
-                                    {{--<x-system.input code="paypal_certificate" :value="$paypal_certificate"/>--}}
-                                    {{--<x-system.input code="paypal_app_id" :value="$paypal_app_id"/>--}}
+                                    <x-system.input code="paypal_client_id" :value="$paypal_client_id"/>
+                                    <x-system.input code="paypal_client_secret" :value="$paypal_client_secret"/>
+                                    <x-system.input code="paypal_app_id" :value="$paypal_app_id"/>
                                 </x-system.tab-pane>
                                 <x-system.tab-pane id="Stripe">
                                     <div class="form-group col-lg-6 d-flex">
@@ -342,7 +340,7 @@
                                             <x-alert type="danger" :message="$errors->all()"/>
                                         @endif
                                         @if (Session::has('successMsg'))
-                                            <x-alert type="success" :message="Session::get('successMsg')"/>
+                                            <x-alert type="success" :message="Session::pull('successMsg')"/>
                                         @endif
                                     </div>
                                     <x-system.input code="alipay_qrcode" :value="$alipay_qrcode" type="url"/>

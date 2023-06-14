@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * 审计规则分组.
@@ -24,7 +25,7 @@ class RuleGroup extends Model
         return $type_label;
     }
 
-    public function rules()
+    public function rules(): BelongsToMany
     {
         return $this->belongsToMany(Rule::class);
     }

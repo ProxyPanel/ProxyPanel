@@ -54,7 +54,7 @@
                     <label class="col-md-2 col-form-label" for="value">{{ trans('model.coupon.value') }}</label>
                     <div class="col-md-10">
                         <p class="form-control text-fit">
-                            {{ trans_choice('admin.coupon.value', $coupon->type, ['num' => $coupon->type === 2 ? $coupon->value : \App\Components\Helpers::getPriceTag($coupon->value)]) }}
+                            {{ trans_choice('admin.coupon.value', $coupon->type, ['num' => $coupon->type === 2 ? $coupon->value : \App\Utils\Helpers::getPriceTag($coupon->value)]) }}
                         </p>
                     </div>
                 </div>
@@ -78,9 +78,10 @@
                     <hr>
                     @isset($coupon->limit['minimum'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="minimum">{{ trans('model.coupon.minimum') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="minimum">{{ trans('model.coupon.minimum') }}</label>
                             <div class="col-md-10">
-                                <p class="form-control text-fit">{!! trans('admin.coupon.minimum_hint', ['num' => \App\Components\Helpers::getPriceTag($coupon->limit['minimum'])]) !!}</p>
+                                <p class="form-control text-fit">{!! trans('admin.coupon.minimum_hint', ['num' => \App\Utils\Helpers::getPriceTag($coupon->limit['minimum'])]) !!}</p>
                             </div>
                         </div>
                     @endisset
@@ -94,9 +95,11 @@
                     @endisset
                     @isset($coupon->limit['users']['levels'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="levels">{{ trans('model.coupon.levels') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="levels">{{ trans('model.coupon.levels') }}</label>
                             <div class="col-md-10">
-                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="levels" multiple disabled>
+                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                        class="col-md-5 form-control show-tick" id="levels" multiple disabled>
                                     @foreach($levels as $key => $level)
                                         <option value="{{$key}}">{{$level}}</option>
                                     @endforeach
@@ -107,9 +110,11 @@
                     @endisset
                     @isset($coupon->limit['users']['groups'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="groups">{{ trans('model.coupon.groups') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="groups">{{ trans('model.coupon.groups') }}</label>
                             <div class="col-md-10">
-                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary" class="col-md-5 form-control show-tick" id="groups" multiple disabled>
+                                <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                        class="col-md-5 form-control show-tick" id="groups" multiple disabled>
                                     @foreach($userGroups as $key => $group)
                                         <option value="{{$key}}">{{$group}}</option>
                                     @endforeach
@@ -120,54 +125,65 @@
                     @endisset
                     @isset($coupon->limit['users']['white'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="users_whitelist">{{ trans('model.coupon.users_whitelist') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="users_whitelist">{{ trans('model.coupon.users_whitelist') }}</label>
                             <div class="col-md-6">
-                                <input class="form-control" data-plugin="tokenfield" id="users_whitelist" value="{{ implode(',', $coupon->limit['users']['white']) }}"
+                                <input class="form-control" data-plugin="tokenfield" id="users_whitelist"
+                                       value="{{ implode(',', $coupon->limit['users']['white']) }}"
                                        disabled/>
                             </div>
                         </div>
                     @endisset
                     @isset($coupon->limit['users']['black'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="users_blacklist">{{ trans('model.coupon.users_blacklist') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="users_blacklist">{{ trans('model.coupon.users_blacklist') }}</label>
                             <div class="col-md-6">
-                                <input class="form-control" data-plugin="tokenfield" id="users_blacklist" value="{{ implode(',', $coupon->limit['users']['black']) }}"
+                                <input class="form-control" data-plugin="tokenfield" id="users_blacklist"
+                                       value="{{ implode(',', $coupon->limit['users']['black']) }}"
                                        disabled/>
                             </div>
                         </div>
                     @endisset
                     @isset($coupon->limit['services']['white'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="services_whitelist">{{ trans('model.coupon.services_whitelist') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="services_whitelist">{{ trans('model.coupon.services_whitelist') }}</label>
                             <div class="col-md-6">
-                                <input class="form-control" data-plugin="tokenfield" id="services_whitelist" value="{{ implode(',', $coupon->limit['services']['white']) }}"
+                                <input class="form-control" data-plugin="tokenfield" id="services_whitelist"
+                                       value="{{ implode(',', $coupon->limit['services']['white']) }}"
                                        disabled/>
                             </div>
                         </div>
                     @endisset
                     @isset($coupon->limit['services']['black'])
                         <div class="form-group row">
-                            <label class="col-md-2 col-form-label" for="services_blacklist">{{ trans('model.coupon.services_blacklist') }}</label>
+                            <label class="col-md-2 col-form-label"
+                                   for="services_blacklist">{{ trans('model.coupon.services_blacklist') }}</label>
                             <div class="col-md-6">
-                                <input class="form-control" data-plugin="tokenfield" id="services_blacklist" value="{{ implode(',', $coupon->limit['services']['black']) }}"
+                                <input class="form-control" data-plugin="tokenfield" id="services_blacklist"
+                                       value="{{ implode(',', $coupon->limit['services']['black']) }}"
                                        disabled/>
                             </div>
                         </div>
                     @endisset
                     @isset($coupon->limit['users']['newbie'])
                         <div class="form-group row">
-                            <label for="newbie" class="col-md-2 col-form-label">{{ trans('model.coupon.newbie') }}</label>
+                            <label for="newbie"
+                                   class="col-md-2 col-form-label">{{ trans('model.coupon.newbie') }}</label>
                             <div class="col-md-10">
                                 <ul class="list-unstyled">
                                     <li class="list-group-item p-0">
                                         <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" id="coupon" {{ isset($coupon->limit['users']['newbie']['coupon']) ? 'checked' : '' }} disabled/>
+                                            <input type="checkbox" id="coupon"
+                                                   {{ isset($coupon->limit['users']['newbie']['coupon']) ? 'checked' : '' }} disabled/>
                                             <label for="coupon">{{ trans('admin.coupon.newbie.first_discount') }}</label>
                                         </div>
                                     </li>
                                     <li class="list-group-item p-0">
                                         <div class="checkbox-custom checkbox-primary">
-                                            <input type="checkbox" id="order" {{ isset($coupon->limit['users']['newbie']['order']) ? 'checked' : '' }} disabled/>
+                                            <input type="checkbox" id="order"
+                                                   {{ isset($coupon->limit['users']['newbie']['order']) ? 'checked' : '' }} disabled/>
                                             <label for="order">{{ trans('admin.coupon.newbie.first_order') }}</label>
                                         </div>
                                     </li>
@@ -206,14 +222,14 @@
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-tokenfield.js"></script>
     <script>
-      $(document).ready(function() {
-          @isset($coupon->limit['users']['levels'])
-          $('#levels').selectpicker('val', @json($coupon->limit['users']['levels']));
-          @endisset
+        $(document).ready(function () {
+            @isset($coupon->limit['users']['levels'])
+            $('#levels').selectpicker('val', @json($coupon->limit['users']['levels']));
+            @endisset
 
-          @isset($coupon->limit['users']['groups'])
-          $('#groups').selectpicker('val', @json($coupon->limit['users']['groups']));
-          @endisset
-      });
+            @isset($coupon->limit['users']['groups'])
+            $('#groups').selectpicker('val', @json($coupon->limit['users']['groups']));
+            @endisset
+        });
     </script>
 @endsection

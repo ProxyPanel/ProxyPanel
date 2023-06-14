@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * 审计规则.
@@ -35,7 +36,7 @@ class Rule extends Model
         ][$this->attributes['type']] ?? 'unknown';
     }
 
-    public function rule_groups()
+    public function rule_groups(): BelongsToMany
     {
         return $this->belongsToMany(RuleGroup::class);
     }

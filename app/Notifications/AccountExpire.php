@@ -11,9 +11,9 @@ class AccountExpire extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $days;
+    private int $days;
 
-    public function __construct($expire_days)
+    public function __construct(int $expire_days)
     {
         $this->days = $expire_days;
     }
@@ -23,7 +23,7 @@ class AccountExpire extends Notification implements ShouldQueue
         return sysConfig('account_expire_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.account_expired'))
@@ -31,14 +31,14 @@ class AccountExpire extends Notification implements ShouldQueue
             ->action(trans('notification.view_web'), url('/'));
     }
 
-    public function toDataBase($notifiable)
+    public function toDataBase($notifiable): array
     {
         return [
             'days' => $this->days,
         ];
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.account_expired'),

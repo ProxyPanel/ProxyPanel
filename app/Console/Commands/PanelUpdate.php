@@ -8,36 +8,11 @@ use Illuminate\Console\Command;
 
 class PanelUpdate extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'panel:update';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'ProxyPanel Version Update (面板更新)';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
         try {
             $bar = $this->output->createProgressBar(2);
@@ -59,7 +34,5 @@ class PanelUpdate extends Command
         } catch (Exception $e) {
             $this->error($e->getMessage());
         }
-
-        return 0;
     }
 }

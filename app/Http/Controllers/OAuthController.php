@@ -2,68 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Components\Helpers;
-use App\Components\IP;
 use App\Models\User;
 use App\Models\UserOauth;
+use App\Utils\Helpers;
+use App\Utils\IP;
 use Auth;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
 
 class OAuthController extends Controller
 {
-    public function simple(string $type)
+    public function simple(string $type): RedirectResponse
     {
         $info = Socialite::driver($type)->stateless()->user();
         if ($info) {
             $user = Auth::user();
 
             if ($user) {
-                return $this->bind($type, $user, $info);
+                return $this->binding($type, $user, $info);
             }
 
-            return $this->login($type, $info);
+            return $this->logging($type, $info);
         }
 
         return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 
-    private function bind(string $type, $user, $info)
+    private function binding(string $type, User $user, \Laravel\Socialite\Contracts\User $OauthUser): RedirectResponse
     {
-        $auth = $user->userAuths()->whereType($type)->first();
-        $data = ['type' => $type, 'identifier' => $info->getId(), 'credential' => $info->token];
-        if ($auth) {
-            $user->userAuths()->whereType($type)->update($data);
-
-            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.rebind_success'));
+        $data = ['type' => $type, 'identifier' => $OauthUser->getId(), 'credential' => $OauthUser->token];
+        if ($user->userAuths()->whereType($type)->updateOrCreate($data)) {
+            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.bind_success'));
         }
 
-        $user->userAuths()->create($data);
-
-        return redirect()->route('profile')->with('successMsg', trans('auth.oauth.bind_success'));
+        return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
     }
 
-    public function route(Request $request, string $type)
+    private function logging(string $type, \Laravel\Socialite\Contracts\User $OauthUser): RedirectResponse
     {
-        $action = $request->input('action');
-        $key = "services.{$type}.redirect";
-        if ($action === 'binding') {
-            config([$key => route('oauth.bind', ['type' => $type])]);
-        } elseif ($action === 'register') {
-            config([$key => route('oauth.register', ['type' => $type])]);
-        } else {
-            config([$key => route('oauth.login', ['type' => $type])]);
-        }
-
-        return Socialite::driver($type)->redirect();
-    }
-
-    private function login(string $type, $info)
-    {
-        $user = User::whereUsername($info->getEmail())->first();
+        $user = User::whereUsername($OauthUser->getEmail())->first();
         if (! isset($user)) {
-            $auth = UserOauth::whereType($type)->whereIdentifier($info->getId())->first();
+            $auth = UserOauth::whereType($type)->whereIdentifier($OauthUser->getId())->first();
             if (isset($auth)) {
                 $user = $auth->user;
             }
@@ -79,7 +59,17 @@ class OAuthController extends Controller
         return redirect()->route('login')->withErrors(trans('auth.error.not_found_user'));
     }
 
-    public function unsubscribe(string $type)
+    public function login(string $type): RedirectResponse
+    {
+        $info = Socialite::driver($type)->stateless()->user();
+        if ($info) {
+            return $this->logging($type, $info);
+        }
+
+        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
+    }
+
+    public function unbind(string $type): RedirectResponse
     {
         $user = Auth::user();
         if ($user && $user->userAuths()->whereType($type)->delete()) {
@@ -89,15 +79,14 @@ class OAuthController extends Controller
         return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_failed'));
     }
 
-    public function binding($type)
+    public function bind(string $type): RedirectResponse
     {
-        config(["services.{$type}.redirect" => route('oauth.bind', ['type' => $type])]);
         $info = Socialite::driver($type)->stateless()->user();
 
         if ($info) {
             $user = Auth::user();
             if ($user) {
-                return $this->bind($type, $user, $info);
+                return $this->binding($type, $user, $info);
             }
 
             return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
@@ -106,18 +95,7 @@ class OAuthController extends Controller
         return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
     }
 
-    public function logining($type)
-    {
-        config(["services.{$type}.redirect" => route('oauth.login', ['type' => $type])]);
-        $info = Socialite::driver($type)->stateless()->user();
-        if ($info) {
-            return $this->login($type, $info);
-        }
-
-        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
-    }
-
-    public function register($type)
+    public function register(string $type): RedirectResponse
     {
         if (! sysConfig('is_register')) {
             return redirect()->route('register')->withErrors(trans('auth.register.error.disable'));
@@ -127,31 +105,21 @@ class OAuthController extends Controller
             return redirect()->route('register')->withErrors(trans('validation.required', ['attribute' => trans('auth.invite.attribute')]));
         }
 
-        config(["services.{$type}.redirect" => route('oauth.register', ['type' => $type])]);
-        $info = Socialite::driver($type)->stateless()->user();
+        $OauthUser = Socialite::driver($type)->stateless()->user();
 
-        // 排除重复用户注册
-        if ($info) {
-            $user = User::whereUsername($info->getEmail())->first();
-            if (! $user) {
-                $user = UserOauth::whereIdentifier($info->getId())->first();
-                if (! $user) {
-                    $user = Helpers::addUser($info->getEmail(), Str::random(), MB * ((int) sysConfig('default_traffic')), null, $info->getNickname());
+        if ($OauthUser) {
+            if (User::whereUsername($OauthUser->getEmail())->doesntExist() && UserOauth::whereIdentifier($OauthUser->getId())->doesntExist()) { // 排除重复用户注册
+                $user = Helpers::addUser($OauthUser->getEmail(), Str::random(), MB * ((int) sysConfig('default_traffic')), null, $OauthUser->getNickname());
 
-                    if ($user) {
-                        $user->userAuths()->create([
-                            'type' => $type,
-                            'identifier' => $info->getId(),
-                            'credential' => $info->token,
-                        ]);
+                $user->userAuths()->create([
+                    'type' => $type,
+                    'identifier' => $OauthUser->getId(),
+                    'credential' => $OauthUser->token,
+                ]);
 
-                        Auth::login($user);
+                Auth::login($user);
 
-                        return redirect()->route('login');
-                    }
-
-                    return redirect()->route('register')->withErrors(trans('auth.oauth.register_failed'));
-                }
+                return redirect()->route('login');
             }
 
             return redirect()->route('login')->withErrors(trans('auth.oauth.registered'));

@@ -16,7 +16,7 @@ class Invite extends Model
 
     protected $table = 'invite';
 
-    protected $dates = ['dateline', 'deleted_at'];
+    protected $casts = ['dateline' => 'datetime', 'deleted_at' => 'datetime'];
 
     protected $guarded = [];
 
@@ -37,20 +37,11 @@ class Invite extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        switch ($this->attributes['status']) {
-            case 0:
-                $status_label = '<span class="badge badge-success">'.trans('common.status.unused').'</span>';
-                break;
-            case 1:
-                $status_label = '<span class="badge badge-danger">'.trans('common.status.used').'</span>';
-                break;
-            case 2:
-                $status_label = '<span class="badge badge-default">'.trans('common.status.expire').'</span>';
-                break;
-            default:
-                $status_label = '<span class="badge badge-default"> '.trans('common.status.unknown').' </span>';
-        }
-
-        return $status_label;
+        return match ($this->attributes['status']) {
+            0 => '<span class="badge badge-success">'.trans('common.status.unused').'</span>',
+            1 => '<span class="badge badge-danger">'.trans('common.status.used').'</span>',
+            2 => '<span class="badge badge-default">'.trans('common.status.expire').'</span>',
+            default => '<span class="badge badge-default"> '.trans('common.status.unknown').' </span>',
+        };
     }
 }

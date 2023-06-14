@@ -18,6 +18,7 @@ return [
         'domain' => env('MAILGUN_DOMAIN'),
         'secret' => env('MAILGUN_SECRET'),
         'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+        'scheme' => 'https',
     ],
 
     'postmark' => [
@@ -79,9 +80,17 @@ return [
         'redirect' => '/oauth/telegram/redirect',
     ],
 
-    'baidu' => [
-        'app_ak' => env('BAIDU_APP_AK'),
+    'ip' => [
+        'baidu_ak' => env('BAIDU_APP_AK'),
+        'ipinfo_token' => env('IPINFO_ACCESS_TOKEN'),
+        'IP2Location_key' => env('IP2LOCATION_API_KEY'),
+        'ip-api_key' => env('IP_API_KEY'),
+        'ipdata_key' => env('IPDATA_API_KEY'),
     ],
 
-    'apiLayer' => env('API_LAYER_API_KEY'),
+    'currency' => [
+        'exchangerate-api_key' => env('EXCAHNGERATE_API_KEY'),
+        'apiLayer_key' => env('API_LAYER_API_KEY'),
+    ],
+
 ];

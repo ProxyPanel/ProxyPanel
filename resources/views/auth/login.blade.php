@@ -6,8 +6,8 @@
         @if($errors->any())
             <x-alert type="danger" :message="$errors->all()"/>
         @endif
-        @if (Session::get('successMsg'))
-            <x-alert type="success" :message="Session::get('successMsg')"/>
+        @if (Session::has('successMsg'))
+            <x-alert type="success" :message="Session::pull('successMsg')"/>
         @endif
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input type="text" class="form-control" name="username" value="{{old('username')}}" required/>
@@ -42,7 +42,7 @@
                         {!! Socialite::driver('telegram')->getButton() !!}
                     </div>
                 @else
-                    <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['type' => $item, 'action' => 'login'])}}">
+                    <a class="btn btn-icon btn-pure" href="{{route('oauth.login', ['type' => $item])}}">
                         <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
                     </a>
                 @endif

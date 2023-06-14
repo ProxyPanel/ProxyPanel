@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +16,7 @@ class Goods extends Model
 
     protected $table = 'goods';
 
-    protected $dates = ['deleted_at'];
+    protected $casts = ['deleted_at' => 'datetime'];
 
     protected $guarded = [];
 
@@ -35,7 +35,7 @@ class Goods extends Model
         return $value / 100;
     }
 
-    public function setPriceAttribute($value)
+    public function setPriceAttribute($value): void
     {
         $this->attributes['price'] = $value * 100;
     }
@@ -50,7 +50,7 @@ class Goods extends Model
         return $value / 100;
     }
 
-    public function setRenewAttribute($value)
+    public function setRenewAttribute($value): void
     {
         $this->attributes['renew'] = $value * 100;
     }
@@ -60,9 +60,9 @@ class Goods extends Model
         return Helpers::getPriceTag($this->renew);
     }
 
-    public function getTrafficLabelAttribute()
+    public function getTrafficLabelAttribute(): string
     {
-        return flowAutoShow($this->attributes['traffic'] * MB);
+        return formatBytes($this->attributes['traffic'] * MB);
     }
 
     public function setSpeedLimitAttribute($value)

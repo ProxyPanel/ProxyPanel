@@ -11,7 +11,7 @@ use Log;
 
 class getUser
 {
-    public function existsinVNet(User $user)
+    public function existsinVNet(User $user): array
     {
         $nodeList = [];
         foreach ($user->nodes()->whereType(4)->get() as $node) {
@@ -24,7 +24,7 @@ class getUser
         return $nodeList;
     }
 
-    public function list(Node $node, string $mode = 'uid')
+    public function list(Node $node, string $mode = 'uid'): false|array
     {
         $list = $this->send(($node->server ?: $node->ips()[0]).':'.$node->push_port, $node->auth->secret);
 
@@ -43,7 +43,7 @@ class getUser
         return false;
     }
 
-    private function send(string $host, string $secret)
+    private function send(string $host, string $secret): false|array
     {
         try {
             $response = Http::baseUrl($host)->timeout(20)->withHeaders(['secret' => $secret])->get('api/user/list');

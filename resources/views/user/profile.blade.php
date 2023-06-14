@@ -39,7 +39,7 @@
                         <div class="user-socials list-group-gap list-group-full row m-0">
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                                 <a class="list-group-item justify-content-center @if(in_array($item, $auth)) col-10 @else col-12 @endif"
-                                   @if($item !== 'telegram') href="{{route('oauth.route', ['type' => $item, 'action' => 'binding'])}}" @endif>
+                                   @if($item !== 'telegram') href="{{route('oauth.bind', ['type' => $item])}}" @endif>
                                     <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
                                     @if(in_array($item, $auth))
                                         <span class="red-600">{{trans('user.oauth.rebind')}}</span>
@@ -51,7 +51,7 @@
                                     @endif
                                 </a>
                                 @if(in_array($item, $auth))
-                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unsubscribe', ['type' => $item])}}">{{trans('user.oauth.unbind')}}</a>
+                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unbind', ['type' => $item])}}">{{trans('user.oauth.unbind')}}</a>
                                 @endif
                             @endforeach
                         </div>
@@ -61,7 +61,7 @@
             <div class="col-lg-7">
                 <div class="panel">
                     @if (Session::has('successMsg'))
-                        <x-alert type="success" :message="Session::get('successMsg')"/>
+                        <x-alert type="success" :message="Session::pull('successMsg')"/>
                     @endif
                     @if($errors->any())
                         <x-alert type="danger" :message="$errors->all()"/>

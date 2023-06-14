@@ -13,13 +13,13 @@ class TicketCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $ticket;
+    private Ticket $ticket;
 
-    private $url;
+    private string $url;
 
-    private $is_user;
+    private bool $is_user;
 
-    public function __construct(Ticket $ticket, $url, $is_user = false)
+    public function __construct(Ticket $ticket, string $url, bool $is_user = false)
     {
         $this->ticket = $ticket;
         $this->url = $url;
@@ -31,7 +31,7 @@ class TicketCreated extends Notification implements ShouldQueue
         return $this->is_user ? ['mail'] : sysConfig('ticket_created_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.new_ticket', ['title' => $this->ticket->title]))
@@ -40,7 +40,7 @@ class TicketCreated extends Notification implements ShouldQueue
             ->action(trans('notification.view_ticket'), $this->url);
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.new_ticket', ['title' => $this->ticket->title]),
@@ -48,7 +48,7 @@ class TicketCreated extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))
@@ -56,12 +56,12 @@ class TicketCreated extends Notification implements ShouldQueue
             ->button(trans('notification.view_ticket'), $this->url);
     }
 
-    private function markdownMessage($ticket)
+    private function markdownMessage($ticket): string
     {
-        return "📮工单提醒 #{$ticket->id}\n———————————————\n主题：\n`{$ticket->title}`\n内容：\n`{$ticket->content}`";
+        return "📮工单提醒 #$ticket->id\n———————————————\n主题：\n`$ticket->title`\n内容：\n`$ticket->content`";
     }
 
-    public function toBark($notifiable)
+    public function toBark($notifiable): array
     {
         return [
             'title' => trans('notification.new_ticket', ['title' => $this->ticket->title]),

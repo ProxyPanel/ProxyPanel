@@ -23,7 +23,7 @@ class V2RayController extends Controller
             'speed_limit' => $node->getRawOriginal('speed_limit'),
             'client_limit' => $node->client_limit,
             'push_port' => $node->push_port,
-            'redirect_url' => (string) sysConfig('redirect_url', ''),
+            'redirect_url' => (string) sysConfig('redirect_url'),
             'secret' => $node->auth->secret,
             'key' => $cert ? $cert->key : '',
             'pem' => $cert ? $cert->pem : '',

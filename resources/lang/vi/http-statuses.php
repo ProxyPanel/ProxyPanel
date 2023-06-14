@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     '0' => 'Lỗi Không Xác Định',
     '100' => 'Tiếp Tục',
     '101' => 'Chuyển Đổi Giao Thức',
     '102' => 'Đang Xử Lí',
-    '200' => 'OK',
+    '200' => 'VÂNG',
     '201' => 'Đã Tạo',
     '202' => 'Đã Chấp Nhận',
     '203' => 'Thông Tin Không Có Thẩm Quyền',
@@ -47,12 +49,15 @@ return [
     '422' => 'Không Thể Xử Lí yêu Cầu',
     '423' => 'Đã Khóa',
     '424' => 'Không Phụ Thuộc',
+    '425' => 'Quá Sớm',
     '426' => 'Yêu Cầu Nâng Cấp',
     '428' => 'Yêu Cầu Điều Kiện Tiên Quyết',
     '429' => 'Quá Nhiều Yêu Cầu',
     '431' => 'Header Của Yêu Cầu Quá Lớn',
+    '444' => 'Đóng Kết Nối Với Không Phản Hồi',
     '449' => 'Thử Lại Với',
     '451' => 'Không Có Sẵn Vì Lí Do Pháp Lí',
+    '499' => 'Khách Đóng Yêu Cầu',
     '500' => 'Lỗi Từ Máy Chủ Nội Bộ',
     '501' => 'Không Được Thực Hiện',
     '502' => 'Cổng Không Hợp Lệ',
@@ -72,5 +77,8 @@ return [
     '524' => 'Xảy Ra Thời Gian Chờ',
     '525' => 'Kết Nối SSL Không Thành Công',
     '526' => 'Chứng Chỉ SSL Không Hợp Lệ',
+    '527' => 'Lỗi Railgun',
+    '598' => 'Lỗi Hết Thời Gian Đọc Mạng',
+    '599' => 'Lỗi Quá Thời Gian Kết Nối Mạng',
     'unknownError' => 'Lỗi Không Xác Định',
 ];

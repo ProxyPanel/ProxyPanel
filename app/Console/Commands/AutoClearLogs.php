@@ -22,7 +22,7 @@ class AutoClearLogs extends Command
 
     protected $description = '自动清除日志';
 
-    public function handle()
+    public function handle(): void
     {
         $jobTime = microtime(true);
 
@@ -35,7 +35,7 @@ class AutoClearLogs extends Command
     }
 
     // 清除日志
-    private function clearLog()
+    private function clearLog(): void
     {
         try {
             NodeDailyDataFlow::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.node_daily_logs'))))->delete(); // 清除节点每天流量数据日志
@@ -50,7 +50,7 @@ class AutoClearLogs extends Command
 
             NodeOnlineIp::where('created_at', '<=', strtotime(config('tasks.clean.node_online_ips')))->delete(); // 清除用户连接IP
 
-            UserDailyDataFlow::where('node_id', '<>', null)
+            UserDailyDataFlow::where('node_id', '<>')
                 ->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_nodes'))))
                 ->orWhere('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_daily_logs_total'))))
                 ->delete(); // 清除用户各节点 / 节点总计的每天流量数据日志

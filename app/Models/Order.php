@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\Helpers;
+use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,9 +20,9 @@ class Order extends Model
 
     protected $table = 'order';
 
-    protected $dates = ['expired_at'];
-
     protected $guarded = [];
+
+    protected $casts = ['expired_at' => 'datetime'];
 
     public function user(): BelongsTo
     {
@@ -92,32 +92,32 @@ class Order extends Model
         return $query->uid($uid)->activePackage();
     }
 
-    public function close() // 关闭订单
-    {
+    public function close(): bool
+    { // 关闭订单
         return $this->update(['status' => -1]);
     }
 
-    public function paid() // 支付需要确认的订单
-    {
+    public function paid(): bool
+    { // 支付需要确认的订单
         return $this->update(['status' => 1]);
     }
 
-    public function complete() // 完成订单
-    {
+    public function complete(): bool
+    { // 完成订单
         return $this->update(['status' => 2]);
     }
 
-    public function prepay() // 预支付订单
-    {
+    public function prepay(): bool
+    { // 预支付订单
         return $this->update(['status' => 3]);
     }
 
-    public function expired() // 预支付订单
-    {
+    public function expired(): bool
+    { // 预支付订单
         return $this->update(['is_expire' => 1]);
     }
 
-    public function getStatusLabelAttribute($isHtml): string
+    public function getStatusLabelAttribute(): string
     { // 订单状态
         return $this->statusTags($this->attributes['status'], $this->attributes['is_expire']);
     }

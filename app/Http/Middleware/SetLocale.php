@@ -17,8 +17,8 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        if (session()->has('locale')) {
-            $lang = session()->get('locale');
+        if ($request->session()->has('locale')) {
+            $lang = $request->session()->get('locale');
         } elseif ($request->query('locale')) {
             $lang = $request->query('locale');
         } elseif (Agent::languages()) {

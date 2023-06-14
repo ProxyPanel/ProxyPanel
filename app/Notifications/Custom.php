@@ -14,29 +14,29 @@ class Custom extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $title;
+    private string $title;
 
-    private $content;
+    private string $content;
 
-    public function __construct($title, $content)
+    public function __construct(string $title, string $content)
     {
         $this->title = $title;
         $this->content = $content;
     }
 
-    public function via($notifiable)
+    public function via($notifiable): array
     {
         return $notifiable ?? ['mail', BarkChannel::class, TelegramChannel::class];
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject($this->title)
             ->markdown('mail.custom', ['content' => $this->content]);
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => $this->title,
@@ -44,14 +44,14 @@ class Custom extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))
             ->content($this->content);
     }
 
-    public function toBark($notifiable)
+    public function toBark($notifiable): array
     {
         return [
             'title' => $this->title,

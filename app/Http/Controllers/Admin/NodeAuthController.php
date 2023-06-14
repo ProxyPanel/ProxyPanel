@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\NodeAuth;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Response;
 use Str;
 
@@ -18,7 +19,7 @@ class NodeAuthController extends Controller
     }
 
     // 添加节点授权
-    public function store()
+    public function store(): JsonResponse
     {
         $nodes = Node::whereStatus(1)->doesntHave('auth')->orderBy('id')->get();
 
@@ -33,7 +34,7 @@ class NodeAuthController extends Controller
     }
 
     // 重置节点授权
-    public function update(NodeAuth $auth)
+    public function update(NodeAuth $auth): JsonResponse
     {
         if ($auth->update(['key' => Str::random(), 'secret' => Str::random(8)])) {
             return Response::json(['status' => 'success', 'message' => '操作成功']);
@@ -43,7 +44,7 @@ class NodeAuthController extends Controller
     }
 
     // 删除节点授权
-    public function destroy(NodeAuth $auth)
+    public function destroy(NodeAuth $auth): JsonResponse
     {
         try {
             $auth->delete();

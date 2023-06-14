@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\Helpers;
-use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -16,6 +14,8 @@ use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
 use App\Models\UserOauth;
 use App\Services\ProxyService;
+use App\Utils\Helpers;
+use App\Utils\IP;
 use Arr;
 use Auth;
 use Exception;
@@ -41,7 +41,7 @@ class UserController extends Controller
 
         foreach (['username', 'wechat', 'qq'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
-                $query->where($field, 'like', "%{$value}%");
+                $query->where($field, 'like', "%$value%");
             });
         }
 
@@ -67,7 +67,7 @@ class UserController extends Controller
 
         // 不活跃用户
         $request->whenFilled('paying', function () use ($query) {
-            $payingUser = Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
+            $payingUser = Order::whereStatus(2)->where('goods_id', '<>')->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
             $query->whereIn('id', $payingUser);
         });
 
@@ -153,7 +153,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         if ($user->id === 1) {
             return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
@@ -172,7 +172,7 @@ class UserController extends Controller
         return Response::json(['status' => 'fail', 'message' => '删除失败']);
     }
 
-    public function batchAddUsers()
+    public function batchAddUsers(): ?JsonResponse
     {
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
@@ -208,7 +208,7 @@ class UserController extends Controller
         return Response::json(['status' => 'success', 'message' => '流量重置成功']);
     }
 
-    public function update(UserUpdateRequest $request, User $user)
+    public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
         $data['passwd'] = $request->input('passwd') ?? Str::random();
@@ -289,7 +289,7 @@ class UserController extends Controller
 
     public function exportProxyConfig(Request $request, User $user): JsonResponse
     {
-        $proxyServer = ProxyService::getInstance();
+        $proxyServer = new ProxyService;
         $proxyServer->setUser($user);
         $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
@@ -303,7 +303,7 @@ class UserController extends Controller
         return view('admin.user.oauth', compact('list'));
     }
 
-    public function VNetInfo(User $user)
+    public function VNetInfo(User $user): JsonResponse
     {
         $nodes = $user->nodes()->whereType(4)->get(['node.id', 'node.name']);
         $nodeList = (new getUser())->existsinVNet($user);

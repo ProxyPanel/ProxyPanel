@@ -12,17 +12,17 @@ class TicketClosed extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $ticketId;
+    private int $ticketId;
 
-    private $title;
+    private string $title;
 
-    private $url;
+    private string $url;
 
-    private $reason;
+    private string $reason;
 
-    private $is_user;
+    private bool $is_user;
 
-    public function __construct($ticketId, $title, $url, $reason, $is_user = false)
+    public function __construct(int $ticketId, string $title, string $url, string $reason, bool $is_user = false)
     {
         $this->ticketId = $ticketId;
         $this->title = $title;
@@ -36,7 +36,7 @@ class TicketClosed extends Notification implements ShouldQueue
         return $this->is_user ? ['mail'] : sysConfig('ticket_closed_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]))
@@ -45,7 +45,7 @@ class TicketClosed extends Notification implements ShouldQueue
             ->line(__('If your issue is not resolved, please create another ticket.'));
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
@@ -53,14 +53,14 @@ class TicketClosed extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))
             ->content($this->reason);
     }
 
-    public function toBark($notifiable)
+    public function toBark($notifiable): array
     {
         return [
             'title' => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),

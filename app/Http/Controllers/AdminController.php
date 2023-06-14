@@ -35,7 +35,7 @@ class AdminController extends Controller
             'todayRegister' => User::whereDate('created_at', date('Y-m-d'))->count(), // 今日注册用户
             'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
             'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数,
-            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
+            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>')->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
             'inactiveUserCount' => User::whereEnable(1)->whereBetween('t', [1, $past])->count(), // 不活跃用户数
             'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
             'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))])->count(), // 临近过期用户数
@@ -43,9 +43,9 @@ class AdminController extends Controller
             'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
             'nodeCount' => Node::count(),
             'unnormalNodeCount' => Node::whereStatus(0)->count(),
-            'flowCount' => flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total')),
-            'todayFlowCount' => flowAutoShow(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total')),
-            'totalFlowCount' => flowAutoShow(NodeDailyDataFlow::sum('total')),
+            'flowCount' => formatBytes(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total')),
+            'todayFlowCount' => formatBytes(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total')),
+            'totalFlowCount' => formatBytes(NodeDailyDataFlow::sum('total')),
             'totalCredit' => User::where('credit', '<>', 0)->sum('credit') / 100,
             'totalWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100,
             'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100,
@@ -81,7 +81,7 @@ class AdminController extends Controller
     }
 
     // 导出邀请码
-    public function exportInvite()
+    public function exportInvite(): void
     {
         $inviteList = Invite::whereStatus(0)->orderBy('id')->get();
         $filename = '邀请码'.date('Ymd').'.xlsx';

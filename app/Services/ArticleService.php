@@ -2,16 +2,14 @@
 
 namespace App\Services;
 
-class ArticleService extends BaseService
+use App\Models\Article;
+
+class ArticleService
 {
-    private static $article;
+    private static array $valuables;
 
-    private static $valuables;
-
-    public function __construct($article)
+    public function __construct(private readonly Article $article)
     {
-        parent::__construct();
-        self::$article = $article;
         $siteName = sysConfig('website_name');
         $siteUrl = sysConfig('website_url');
         $subscribe = auth()->user()->subscribe;
@@ -19,8 +17,8 @@ class ArticleService extends BaseService
 
         self::$valuables = [
             '{{siteName}}' => $siteName,
-            '{{urlEndcodeSiteName}}' => urlencode($siteName),
-            '{{urlEndcodeSiteUrl}}' => urlencode($siteUrl),
+            '{{urlEncodeSiteName}}' => urlencode($siteName),
+            '{{urlEncodeSiteUrl}}' => urlencode($siteUrl),
             '{{siteUrl}}' => $siteUrl,
             '{{subUrl}}' => $subUrl,
             '{{urlEncodeSubUrl}}' => urlencode($subUrl),
@@ -28,21 +26,18 @@ class ArticleService extends BaseService
         ];
     }
 
-    /**
-     * @return mixed
-     */
-    public function getContent()
+    public function getContent(): string
     {
-        $content = self::$article->content;
-        $this->formatAccessable($content);
+        $content = $this->article->content;
+        $this->formatAccessible($content);
         $this->formatValuables($content);
 
         return $content;
     }
 
-    private function formatAccessable(&$body)
+    private function formatAccessible(string &$body): void
     {
-        $noAccess = ! UserService::getInstance()->isActivePaying();
+        $noAccess = ! (new UserService)->isActivePaying();
 
         if ($noAccess) {
             while ($this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->', true) !== '') {
@@ -62,14 +57,14 @@ class ArticleService extends BaseService
         }
     }
 
-    private function getInBetween($input, $start, $end, $bodyOnly = false): string
+    private function getInBetween(string $input, string $start, string $end, bool $bodyOnly = false): string
     {
         $substr = substr($input, strpos($input, $start) + strlen($start), strpos($input, $end) - strlen($input));
 
         return $bodyOnly ? $substr : $start.$substr.$end;
     }
 
-    private function formatValuables(&$body)
+    private function formatValuables(string &$body): void
     {
         $body = strtr($body, self::$valuables);
     }

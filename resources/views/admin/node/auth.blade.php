@@ -128,7 +128,7 @@
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
                                 {{ trans('admin.node.auth.deploy.update') }}curl -L -s https://bit.ly/2HswWko | bash
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s http://mrw.so/5IHPR4 | bash
+                                {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://mrw.so/5IHPR4 | bash
                                 <br>
                                 {{ trans('admin.node.auth.deploy.start') }}systemctl start v2ray
                                 <br>
@@ -149,7 +149,7 @@
                                 <div class="alert alert-info text-break">
                                     <div class="text-center red-700 mb-5">Trojan-Poseidon</div>
                                     (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
-                                    && curl -L -s http://mrw.so/6cMfGy \<br>
+                                    && curl -L -s https://mrw.so/6cMfGy \<br>
                                     | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
                                     NODE_ID={{$auth->node->id}} \<br>
                                     NODE_KEY={{$auth->key}} \<br>
@@ -158,9 +158,9 @@
                                     <br>
                                     <br>
                                     <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                    {{ trans('admin.node.auth.deploy.update') }}curl -L -s http://mrw.so/6cMfGy | bash
+                                    {{ trans('admin.node.auth.deploy.update') }}curl -L -s https://mrw.so/6cMfGy | bash
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s http://mrw.so/5ulpvu | bash
+                                    {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://mrw.so/5ulpvu | bash
                                     <br>
                                     {{ trans('admin.node.auth.deploy.start') }}systemctl start trojanp
                                     <br>

@@ -8,6 +8,7 @@ use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -21,15 +22,15 @@ class addUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private $data;
+    private array $data;
 
-    private $nodes;
+    private Collection $nodes;
 
-    public function __construct($userIds, $nodes)
+    public function __construct(array $userIds, Collection $nodes)
     {
         $this->nodes = $nodes;
         foreach (User::findMany($userIds) as $user) {
-            $data[] = [
+            $this->data[] = [
                 'uid' => $user->id,
                 'port' => $user->port,
                 'passwd' => $user->passwd,
@@ -37,8 +38,6 @@ class addUser implements ShouldQueue
                 'enable' => $user->enable,
             ];
         }
-
-        $this->data = $data ?? [];
     }
 
     public function handle(): void
@@ -63,7 +62,7 @@ class addUser implements ShouldQueue
                 if ($message['success'] === 'false') {
                     Log::alert("【新增用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
                 } else {
-                    Log::notice("【新增用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, true).'）');
+                    Log::notice("【新增用户】推送成功（推送地址：{$host}，内容：".json_encode($this->data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT).'）');
                 }
             }
         } catch (Exception $exception) {
@@ -72,7 +71,7 @@ class addUser implements ShouldQueue
     }
 
     // 队列失败处理
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception): void
     {
         Log::alert('【新增用户】推送异常：'.$exception->getMessage());
     }

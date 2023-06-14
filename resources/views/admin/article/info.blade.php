@@ -15,7 +15,7 @@
                 <x-alert type="danger" :message="$errors->all()"/>
             @endif
             @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::get('successMsg')"/>
+                <x-alert type="success" :message="Session::pull('successMsg')"/>
             @endif
             <div class="panel-body">
                 <form action="{{ isset($article) ? route('admin.article.update', $article) : route('admin.article.store')}}" class="form-horizontal" enctype="multipart/form-data"

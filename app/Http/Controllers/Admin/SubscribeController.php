@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Components\IP;
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
+use App\Utils\IP;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Response;
 
@@ -23,7 +24,7 @@ class SubscribeController extends Controller
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
-                $query->where('username', 'like', "%{$username}%");
+                $query->where('username', 'like', "%$username%");
             });
         });
 
@@ -46,7 +47,7 @@ class SubscribeController extends Controller
         });
 
         $request->whenFilled('ip', function ($value) use ($query) {
-            $query->where('request_ip', 'like', "%{$value}%");
+            $query->where('request_ip', 'like', "%$value%");
         });
 
         if ($request->filled('start')) {
@@ -57,7 +58,7 @@ class SubscribeController extends Controller
         foreach ($subscribeLogs as $log) {
             // 跳过上报多IP的
             if ($log->request_ip) {
-                $log->ipInfo = implode(' ', IP::getIPInfo($log->request_ip));
+                $log->ipInfo = IP::getIPInfo($log->request_ip)['address'] ?? null;
             }
         }
 
@@ -65,7 +66,7 @@ class SubscribeController extends Controller
     }
 
     // 设置用户的订阅的状态
-    public function setSubscribeStatus(UserSubscribe $subscribe)
+    public function setSubscribeStatus(UserSubscribe $subscribe): JsonResponse
     {
         if ($subscribe->status) {
             $subscribe->update(['status' => 0, 'ban_time' => strtotime(sysConfig('traffic_ban_time').' minutes'), 'ban_desc' => 'Your subscription has been disabled by the administrator, please contact the administrator to restore it']);

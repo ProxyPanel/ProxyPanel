@@ -7,7 +7,7 @@ use Artisan;
 
 class ConfigObserver
 {
-    public function updated(Config $config) // 更新设定
+    public function updated(Config $config): void
     {
         Artisan::call('optimize:clear');
         if (! config('app.debug')) {

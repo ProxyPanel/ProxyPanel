@@ -11,9 +11,9 @@ class DataExhaust extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $percent;
+    private float|int $percent;
 
-    public function __construct($percent)
+    public function __construct(float|int $percent)
     {
         $this->percent = $percent;
     }
@@ -23,7 +23,7 @@ class DataExhaust extends Notification implements ShouldQueue
         return sysConfig('data_exhaust_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.traffic_warning'))
@@ -32,7 +32,7 @@ class DataExhaust extends Notification implements ShouldQueue
             ->action(trans('notification.view_web'), url('/'));
     }
 
-    public function toDataBase($notifiable)
+    public function toDataBase($notifiable): array
     {
         return [
             'percent' => $this->percent,

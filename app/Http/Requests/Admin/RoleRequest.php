@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RoleRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         $unq_name = '';
         if (in_array($this->method(), ['PATCH', 'PUT'], true)) {

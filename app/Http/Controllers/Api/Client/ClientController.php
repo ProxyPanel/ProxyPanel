@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\Client;
 
-use App\Components\Helpers;
 use App\Helpers\ClientApiResponse;
 use App\Helpers\ResponseEnum;
 use App\Models\Article;
@@ -12,6 +11,7 @@ use App\Models\ReferralLog;
 use App\Models\Ticket;
 use App\Services\ProxyService;
 use App\Services\UserService;
+use App\Utils\Helpers;
 use Arr;
 use Artisan;
 use Illuminate\Database\Eloquent\Builder;
@@ -43,7 +43,7 @@ class ClientController extends Controller
             return false;
         }
 
-        $userInfo = UserService::getInstance()->getProfile();
+        $userInfo = (new UserService)->getProfile();
         $userInfo['user_name'] = $user->nickname;
         $userInfo['email'] = $user->username;
         $userInfo['class_expire'] = $user->expiration_date;
@@ -69,9 +69,9 @@ class ClientController extends Controller
             'baseUrl' => sysConfig('subscribe_domain') ?? sysConfig('website_url'),
             'ann' => $ann,
             'avatar' => $user->avatar,
-            'usedTraffic' => flowAutoShow($total),
-            'enableTraffic' => flowAutoShow($transfer_enable),
-            'unUsedTraffic' => flowAutoShow($transfer_enable - $total),
+            'usedTraffic' => formatBytes($total),
+            'enableTraffic' => formatBytes($transfer_enable),
+            'unUsedTraffic' => formatBytes($transfer_enable - $total),
             'reset_time' => now()->diffInDays($user->reset_time, false),
             'android_index_button' => config('client.android_index_button'),
         ];
@@ -79,7 +79,7 @@ class ClientController extends Controller
         return $this->succeed(null, $data);
     }
 
-    public function getOrders(Request $request)
+    public function getOrders(Request $request): JsonResponse
     {
         $user = $request->user();
         $orders = $user->orders()->orderByDesc('id')->limit(8)->get();
@@ -97,20 +97,20 @@ class ClientController extends Controller
         return $this->succeed($data);
     }
 
-    public function getUserTransfer()
+    public function getUserTransfer(): JsonResponse
     {
         $user = auth()->user();
 
         return $this->succeed(null, [
             'arr' => [
-                'todayUsedTraffic' => flowAutoShow($user->d),
-                'lastUsedTraffic' => flowAutoShow($user->u),
-                'unUsedTraffic' => flowAutoShow($user->transfer_enable - $user->d - $user->u),
+                'todayUsedTraffic' => formatBytes($user->d),
+                'lastUsedTraffic' => formatBytes($user->u),
+                'unUsedTraffic' => formatBytes($user->transfer_enable - $user->d - $user->u),
             ],
         ]);
     }
 
-    public function shop()
+    public function shop(): JsonResponse
     {
         $shops = [
             'keys' => [],
@@ -124,11 +124,11 @@ class ClientController extends Controller
         return $this->succeed($shops);
     }
 
-    public function getInvite()
+    public function getInvite(): JsonResponse
     {
         $user = auth()->user();
 
-        $referral_traffic = flowAutoShow(sysConfig('referral_traffic') * MB);
+        $referral_traffic = formatBytes(sysConfig('referral_traffic') * MB);
         $referral_percent = sysConfig('referral_percent');
         // 邀请码
         $code = $user->invites()->whereStatus(0)->value('code');
@@ -138,8 +138,10 @@ class ClientController extends Controller
             'referral_percent' => $referral_percent * 100,
         ]);
 
-        $data['invite_code'] = $code ?? UserService::getInstance()->inviteURI(true);
-        $data['invite_url'] = UserService::getInstance()->inviteURI();
+        $userService = new UserService;
+
+        $data['invite_code'] = $code ?? $userService->inviteURI(true);
+        $data['invite_url'] = $userService->inviteURI();
         $data['invite_text'] = $data['invite_url'].'&(复制整段文字到浏览器打开即可访问),找梯子最重要的就是稳定,这个已经上线三年了,一直稳定没有被封过,赶紧下载备用吧!'.($code ? '安装后打开填写我的邀请码【'.$code.'】,你还能多得3天会员.' : '');
         // 累计数据
         $data['back_sum'] = ReferralLog::uid()->sum('commission') / 100;
@@ -178,14 +180,14 @@ class ClientController extends Controller
         $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
         Cache::put('userCheckIn_'.$user->id, '1', $ttl);
 
-        return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => flowAutoShow($traffic)])]);
+        return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
 
-    public function proxyCheck(Request $request)
+    public function proxyCheck(Request $request): JsonResponse
     {
         $md5 = $request->get('md5', '');
 
-        $proxy = ProxyService::getInstance()->getProxyCode('clash');
+        $proxy = (new ProxyService)->getProxyCode('clash');
         if (strtolower(md5(json_encode($proxy))) === strtolower($md5)) {
             return $this->succeed(false);
         }
@@ -197,12 +199,12 @@ class ClientController extends Controller
     {
         $flag = strtolower($request->input('flag') ?? ($request->userAgent() ?? ''));
 
-        return ProxyService::getInstance()->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
+        return (new ProxyService)->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
     }
 
-    public function getProxyList()
+    public function getProxyList(): JsonResponse
     {
-        $proxyServer = ProxyService::getInstance();
+        $proxyServer = new ProxyService;
 
         $servers = [];
         foreach ($proxyServer->getNodeList(null, false) as $node) {
@@ -221,7 +223,7 @@ class ClientController extends Controller
         return $this->succeed($servers);
     }
 
-    private function getOnlineCount(&$node, int $online)
+    private function getOnlineCount(&$node, int $online): void
     {
         $node['flag'] = $node['area'];
 
@@ -237,7 +239,7 @@ class ClientController extends Controller
         }
     }
 
-    public function getconfig()
+    public function getconfig(): JsonResponse
     {
         $config = $this->clientConfig();
         Arr::forget($config, ['read', 'configured']);
@@ -258,7 +260,7 @@ class ClientController extends Controller
         return $key ? config('client.'.$key) : config('client');
     }
 
-    private function setClientConfig() //
+    private function setClientConfig(): void
     {
         $ann = Article::type(2)->latest()->first();
 
@@ -277,7 +279,7 @@ class ClientController extends Controller
         ]);
     }
 
-    public function checkClientVersion(Request $request)
+    public function checkClientVersion(Request $request): JsonResponse
     {
         $version = $request->input('version');
         $type = $request->input('type');
@@ -294,7 +296,7 @@ class ClientController extends Controller
         return $this->succeed(null, ['enable' => true, 'download_url' => $vpn['download_url'], 'must' => $vpn['must'], 'message' => $vpn['message']], [200, $vpn['message']]);
     }
 
-    public function ticketList()
+    public function ticketList(): JsonResponse
     {
         $ticket = Ticket::where('user_id', auth()->user()->id)->selectRaw('id, title, UNIX_TIMESTAMP(created_at) as datetime, status')->orderBy('created_at', 'DESC')->get();
 

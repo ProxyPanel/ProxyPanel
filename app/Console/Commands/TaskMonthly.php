@@ -32,13 +32,13 @@ class TaskMonthly extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function cleanAccounts()
+    private function cleanAccounts(): void
     {
         User::where('expired_at', '<', date('Y-m-d'))->where('transfer_enable', '==', 0)->whereEnable(0)
             ->whereRaw('u + d > transfer_enable')->update(['u' => 0, 'd' => 0]);
     }
 
-    private function clearLog()
+    private function clearLog(): void
     {
         try {
             NotificationLog::where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.notification_logs'))))->delete(); // 清理通知日志

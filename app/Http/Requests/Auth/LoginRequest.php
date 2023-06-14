@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
 {
-    public function rules()
+    public function rules(): array
     {
         return [
             'username' => 'required|'.(sysConfig('username_type') ?? 'email'),

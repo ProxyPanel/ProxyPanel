@@ -109,7 +109,7 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-4">
-                        {{ trans('admin.article.counts', ['num' => $articles->total()]) }}
+                        {!! trans('admin.article.counts', ['num' => $articles->total()]) !!}
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">

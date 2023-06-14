@@ -8,6 +8,7 @@ use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -21,11 +22,11 @@ class editUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private $data;
+    private array $data;
 
-    private $nodes;
+    private Collection $nodes;
 
-    public function __construct(User $user, $nodes)
+    public function __construct(User $user, Collection $nodes)
     {
         $this->nodes = $nodes;
         $this->data = [
@@ -73,7 +74,7 @@ class editUser implements ShouldQueue
     }
 
     // 队列失败处理
-    public function failed(Throwable $exception)
+    public function failed(Throwable $exception): void
     {
         Log::alert('【编辑用户】推送异常：'.$exception->getMessage());
     }

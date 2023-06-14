@@ -21,7 +21,6 @@ use Str;
 
 class ShopController extends Controller
 {
-    // 商品列表
     public function index(Request $request)
     {
         $query = Goods::query();
@@ -42,13 +41,6 @@ class ShopController extends Controller
         return view('admin.shop.index', ['goodsList' => $goodsList]);
     }
 
-    // 添加商品页面
-    public function create()
-    {
-        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get(), 'categories' => GoodsCategory::all()]);
-    }
-
-    // 添加商品
     public function store(ShopStoreRequest $request): RedirectResponse
     {
         $data = $request->validated();
@@ -81,9 +73,8 @@ class ShopController extends Controller
         return Redirect::back()->withInput()->withErrors('添加商品信息失败');
     }
 
-    // 图片上传
     public function fileUpload(UploadedFile $file)
-    {
+    { // 图片上传
         $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
         if (! $file->storeAs('public', $fileName)) {
             return Redirect::back()->withInput()->withErrors('Logo存储失败');
@@ -92,7 +83,11 @@ class ShopController extends Controller
         return 'upload/'.$fileName;
     }
 
-    // 编辑商品页面
+    public function create()
+    {
+        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get(), 'categories' => GoodsCategory::all()]);
+    }
+
     public function edit(Goods $good)
     {
         return view('admin.shop.info', [
@@ -102,8 +97,7 @@ class ShopController extends Controller
         ]);
     }
 
-    // 编辑商品
-    public function update(ShopUpdateRequest $request, Goods $good)
+    public function update(ShopUpdateRequest $request, Goods $good): RedirectResponse
     {
         $data = $request->validated();
 
@@ -132,7 +126,6 @@ class ShopController extends Controller
         return Redirect::back()->withInput()->withErrors('编辑失败');
     }
 
-    // 删除商品
     public function destroy(Goods $good): JsonResponse
     {
         try {

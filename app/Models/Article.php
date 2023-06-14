@@ -14,7 +14,7 @@ class Article extends Model
 
     protected $table = 'article';
 
-    protected $dates = ['deleted_at'];
+    protected $casts = ['deleted_at' => 'datetime'];
 
     protected $guarded = [];
 

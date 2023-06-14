@@ -13,9 +13,9 @@ class NodeBlocked extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    private $data;
+    private array $data;
 
-    public function __construct($data)
+    public function __construct(array $data)
     {
         $this->data = $data;
     }
@@ -25,14 +25,14 @@ class NodeBlocked extends Notification implements ShouldQueue
         return sysConfig('node_blocked_notification');
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
             ->subject(trans('notification.node_block'))
             ->markdown('mail.simpleMarkdown', ['title' => trans('notification.block_report'), 'content' => $this->markdownMessage(), 'url' => route('admin.node.index')]);
     }
 
-    private function markdownMessage()
+    private function markdownMessage(): string
     {
         $content = '| '.trans('user.attribute.node').' | IP | ICMP | TCP'." |\r\n| :------ | :------: | :------: | :------: | \r\n";
         $tail = '';
@@ -40,7 +40,7 @@ class NodeBlocked extends Notification implements ShouldQueue
             $case = $node;
             Arr::forget($case, ['message', 'name']);
             foreach ($case as $ip => $info) {
-                $content .= "| {$node['name']} | {$ip} | ".($info['icmp'] ?? '✔️').' | '.($info['tcp'] ?? '✔️')." |\r\n";
+                $content .= "| {$node['name']} | $ip | ".($info['icmp'] ?? '✔️').' | '.($info['tcp'] ?? '✔️')." |\r\n";
             }
             if (Arr::hasAny($node, ['message'])) {
                 $tail .= "- {$node['name']}: {$node['message']}\r\n";
@@ -50,7 +50,7 @@ class NodeBlocked extends Notification implements ShouldQueue
         return $content.$tail;
     }
 
-    public function toCustom($notifiable)
+    public function toCustom($notifiable): array
     {
         return [
             'title' => trans('notification.node_block'),
@@ -59,7 +59,7 @@ class NodeBlocked extends Notification implements ShouldQueue
         ];
     }
 
-    public function toTelegram($notifiable)
+    public function toTelegram($notifiable): TelegramMessage
     {
         return TelegramMessage::create()
             ->token(sysConfig('telegram_token'))

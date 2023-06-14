@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Components\IP;
+use App\Utils\IP;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -21,7 +21,7 @@ class Node extends Model
 
     protected $casts = ['profile' => 'array'];
 
-    public function labels()
+    public function labels(): BelongsToMany
     {
         return $this->belongsToMany(Label::class);
     }
@@ -73,12 +73,12 @@ class Node extends Model
 
     public function relayNode(): BelongsTo
     {
-        return $this->belongsTo(Node::class);
+        return $this->belongsTo(__CLASS__);
     }
 
     public function childNodes(): hasMany
     {
-        return $this->hasMany(Node::class, 'relay_node_id', 'id');
+        return $this->hasMany(__CLASS__, 'relay_node_id', 'id');
     }
 
     public function userGroups(): BelongsToMany
@@ -110,9 +110,9 @@ class Node extends Model
     {
         $ip = $this->ips();
         if ($ip !== []) {
-            $data = IP::IPSB($ip[0]); // 复数IP都以第一个为准
+            $data = IP::getIPGeo($ip[0]); // 复数IP都以第一个为准
 
-            if ($data) {
+            if ($data !== null) {
                 self::withoutEvents(function () use ($data) {
                     $this->update(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
                 });
@@ -182,7 +182,7 @@ class Node extends Model
             'passwd' => $this->profile['passwd'] ?? '',
             'push_port' => $this->push_port,
             'secret' => $this->auth->secret,
-            'redirect_url' => sysConfig('redirect_url', ''),
+            'redirect_url' => sysConfig('redirect_url'),
         ];
     }
 }

@@ -14,9 +14,7 @@ class Coupon extends Model
 
     protected $table = 'coupon';
 
-    protected $casts = ['limit' => 'array', 'start_time' => 'date:Y-m-d', 'end_time' => 'date:Y-m-d'];
-
-    protected $dates = ['deleted_at'];
+    protected $casts = ['limit' => 'array', 'start_time' => 'date:Y-m-d', 'end_time' => 'date:Y-m-d', 'deleted_at' => 'datetime'];
 
     protected $guarded = [];
 
@@ -36,21 +34,21 @@ class Coupon extends Model
         return $this->attributes['end_time'] = strtotime($value);
     }
 
-    public function used()
+    public function used(): bool
     {
         $this->attributes['status'] = 1;
 
         return $this->save();
     }
 
-    public function expired()
+    public function expired(): bool
     {
         $this->attributes['status'] = 2;
 
         return $this->save();
     }
 
-    public function isExpired()
+    public function isExpired(): bool
     {
         return $this->attributes['end_time'] < time() || $this->attributes['status'] === 2;
     }

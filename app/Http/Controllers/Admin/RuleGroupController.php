@@ -7,22 +7,16 @@ use App\Http\Requests\Admin\RuleGroupRequest;
 use App\Models\Rule;
 use App\Models\RuleGroup;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 
 class RuleGroupController extends Controller
 {
-    // 审计规则分组列表
     public function index()
     {
         return view('admin.rule.group.index', ['ruleGroups' => RuleGroup::paginate(15)->appends(request('page'))]);
     }
 
-    // 添加审计规则分组页面
-    public function create()
-    {
-        return view('admin.rule.group.info', ['rules' => Rule::all()]);
-    }
-
-    // 添加审计规则分组
     public function store(RuleGroupRequest $request)
     {
         if ($group = RuleGroup::create($request->only('name', 'type'))) {
@@ -34,7 +28,11 @@ class RuleGroupController extends Controller
         return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    // 编辑审计规则分组页面
+    public function create()
+    {
+        return view('admin.rule.group.info', ['rules' => Rule::all()]);
+    }
+
     public function edit(RuleGroup $group)
     {
         return view('admin.rule.group.info', [
@@ -43,8 +41,7 @@ class RuleGroupController extends Controller
         ]);
     }
 
-    // 编辑审计规则分组
-    public function update(RuleGroupRequest $request, RuleGroup $group)
+    public function update(RuleGroupRequest $request, RuleGroup $group): RedirectResponse
     {
         if ($group->update($request->only(['name', 'type']))) {
             $group->rules()->sync($request->input('rules'));
@@ -55,8 +52,7 @@ class RuleGroupController extends Controller
         return redirect()->back()->withInput()->withErrors('操作失败');
     }
 
-    // 删除审计规则分组
-    public function destroy(RuleGroup $group)
+    public function destroy(RuleGroup $group): JsonResponse
     {
         try {
             $group->delete();

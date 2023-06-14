@@ -8,7 +8,7 @@
     <div class="page-content container-fluid">
         <div class="row" data-plugin="matchHeight" data-by-row="true">
             @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::get('successMsg')" class="col-md-12"/>
+                <x-alert type="success" :message="Session::pull('successMsg')" class="col-md-12"/>
             @endif
             <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12">
                 <div class="card card-shadow">

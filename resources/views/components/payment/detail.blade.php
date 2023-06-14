@@ -29,7 +29,8 @@
                     <div class="panel panel-line @if( $order->status === 2 ) panel-success @else panel-danger @endif">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <i class="icon wb-shopping-cart" aria-hidden="true"></i> {{trans('user.invoice.detail')}}
+                                <i class="icon wb-shopping-cart"
+                                   aria-hidden="true"></i> {{trans('user.invoice.detail')}}
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -63,7 +64,8 @@
                     <div class="panel panel-line panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
+                                <i class="icon wb-user-circle"
+                                   aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -75,7 +77,8 @@
                                     {{ trans('model.user.username') }}: {{ $user->username }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('model.user.traffic_used') }}: {{ flowAutoShow($user->used_traffic) }} / {{ flowAutoShow($user->transfer_enable) }}
+                                    {{ trans('model.user.traffic_used') }}: {{ formatBytes($user->used_traffic) }}
+                                    / {{ formatBytes($user->transfer_enable) }}
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('model.user.credit') }}: {{ $user->credit }}

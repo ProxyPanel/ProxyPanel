@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * 国家/地区.
@@ -21,7 +22,7 @@ class Country extends Model
 
     protected $guarded = [];
 
-    public function nodes()
+    public function nodes(): HasMany
     {
         return $this->hasMany(Node::class, 'country_code');
     }

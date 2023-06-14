@@ -15,7 +15,7 @@
                 </div>
             </div>
             @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::get('successMsg')"/>
+                <x-alert type="success" :message="Session::pull('successMsg')"/>
             @endif
             @if($errors->any())
                 <x-alert type="danger" :message="$errors->all()"/>

@@ -27,7 +27,7 @@ class TaskHourly extends Command
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
     }
 
-    private function userTrafficStatistics()
+    private function userTrafficStatistics(): void
     {
         $created_at = date('Y-m-d H:59:59', strtotime('-1 hour'));
         $end = strtotime($created_at);
@@ -46,14 +46,14 @@ class TaskHourly extends Command
 
                 $data = $logs->each(function ($log) use ($created_at) {
                     $log->total = $log->u + $log->d;
-                    $log->traffic = flowAutoShow($log->total);
+                    $log->traffic = formatBytes($log->total);
                     $log->created_at = $created_at;
                 })->flatten()->toArray();
                 $overall = [ // 每小时节点流量合计
                     'u' => $logs->sum('u'),
                     'd' => $logs->sum('d'),
                     'total' => $logs->sum('total'),
-                    'traffic' => flowAutoShow($logs->sum('total')),
+                    'traffic' => formatBytes($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
                 $data[] = $overall;
@@ -61,13 +61,13 @@ class TaskHourly extends Command
 
                 // 用户流量异常警告
                 if ($data_anomaly_notification && $overall['total'] >= $traffic_ban_value) {
-                    Notification::send(User::find(1), new DataAnomaly($user->username, flowAutoShow($overall['u']), flowAutoShow($overall['d']), $overall['traffic']));
+                    Notification::send(User::find(1), new DataAnomaly($user->username, formatBytes($overall['u']), formatBytes($overall['d']), $overall['traffic']));
                 }
             }
         });
     }
 
-    private function nodeTrafficStatistics()
+    private function nodeTrafficStatistics(): void
     {
         $created_at = date('Y-m-d H:59:59', strtotime('-1 hour'));
         $end = strtotime($created_at);
@@ -85,7 +85,7 @@ class TaskHourly extends Command
                     'u' => $traffic->u,
                     'd' => $traffic->d,
                     'total' => $total,
-                    'traffic' => flowAutoShow($total),
+                    'traffic' => formatBytes($total),
                     'created_at' => $created_at,
                 ]);
             }

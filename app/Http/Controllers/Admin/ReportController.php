@@ -81,7 +81,7 @@ class ReportController extends Controller
             $data['hourlyFlow'] = $user->hourlyDataFlows()->whereNotNull('node_id')
                 ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 days')))
                 ->selectRaw('node_id, (DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, total')
-                ->get()->transform(function ($item, $key) {
+                ->get()->transform(function ($item) {
                     return [
                         'node_id' => $item->node_id,
                         'date' => (int) $item->date,
@@ -95,7 +95,7 @@ class ReportController extends Controller
                 ->whereMonth('created_at', date('n'))
                 ->where('total', '>', 6000000)
                 ->selectRaw('node_id, (DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, total')
-                ->get()->transform(function ($item, $key) {
+                ->get()->transform(function ($item) {
                     return [
                         'node_id' => $item->node_id,
                         'date' => (int) $item->date,

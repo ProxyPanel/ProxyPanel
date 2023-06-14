@@ -2,16 +2,16 @@
 
 namespace App\Helpers;
 
-use App\Components\Client\Clash;
-use App\Components\Client\QuantumultX;
-use App\Components\Client\Surge;
-use App\Components\Client\URLSchemes;
+use App\Utils\Clients\Clash;
+use App\Utils\Clients\QuantumultX;
+use App\Utils\Clients\Surge;
+use App\Utils\Clients\URLSchemes;
 use File;
 use Symfony\Component\Yaml\Yaml;
 
 trait ClientConfig
 {
-    private function clientConfig(string $target)
+    private function clientConfig(string $target): string
     {
         if (str_contains($target, 'quantumult%20x')) {
             return $this->quantumultX();
@@ -37,9 +37,9 @@ trait ClientConfig
         if (str_contains($target, 'v2rayn') || str_contains($target, 'v2rayng') || str_contains($target, 'v2rayu')) {
             return $this->v2rayN();
         }
-        //            if (strpos($target, 'shadowsocks') !== false) {
-        //                exit($this->shaodowsocksSIP008());
-        //            }
+        //        if (str_contains($target, 'shadowsocks')) {
+        //            exit($this->shaodowsocksSIP008());
+        //        }
         return $this->origin();
     }
 
@@ -99,7 +99,7 @@ trait ClientConfig
         return $encode ? base64_encode($uri) : $uri;
     }
 
-    private function clash($client = false)
+    private function clash(string $client = ''): string
     {
         $user = $this->getUser();
         $webName = sysConfig('website_name');
@@ -152,7 +152,7 @@ trait ClientConfig
         return str_replace('$app_name', $webName, Yaml::dump($config, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE));
     }
 
-    private function surfboard()
+    private function surfboard(): string
     {
         $defaultConfig = base_path().'/resources/rules/default.surfboard.conf';
         $customConfig = base_path().'/resources/rules/custom.surfboard.conf';
@@ -160,67 +160,7 @@ trait ClientConfig
         return $this->sugerLike($customConfig, $defaultConfig);
     }
 
-    private function surge(string $target)
-    {
-        $defaultConfig = base_path().'/resources/rules/default.surge.conf';
-        $customConfig = base_path().'/resources/rules/custom.surge.conf';
-
-        return $this->sugerLike($customConfig, $defaultConfig, $target);
-    }
-
-    private function shadowrocket(): string
-    {
-        //display remaining traffic and expire date
-        $uri = '';
-        $user = $this->getUser();
-        if (sysConfig('is_custom_subscribe')) {
-            $upload = flowAutoShow($user->u);
-            $download = flowAutoShow($user->d);
-            $totalTraffic = flowAutoShow($user->transfer_enable);
-            $uri = "STATUS=📤:{$upload}📥:{$download}⏳:{$totalTraffic}📅:$user->expiration_date\r\n";
-        }
-        $uri .= $this->origin(false);
-
-        return base64_encode($uri);
-    }
-
-    private function v2rayN()
-    {
-        $uri = '';
-        $user = $this->getUser();
-        if (sysConfig('is_custom_subscribe')) {
-            $text = '';
-            if ($user->expiration_date > date('Y-m-d')) {
-                if ($user->transfer_enable === 0) {
-                    $text .= trans('user.account.remain').': 0';
-                } else {
-                    $text .= trans('user.account.remain').': '.flowAutoShow($user->transfer_enable);
-                }
-                $text .= ', '.trans('model.user.expired_date').": $user->expiration_date";
-            } else {
-                $text .= trans('user.account.reason.expired');
-            }
-            $uri .= $this->failedProxyReturn($text, 2);
-        }
-
-        return base64_encode($uri.$this->origin(false));
-    }
-
-    private function shaodowsocksSIP008(): string
-    {
-        foreach ($this->getServers() as $server) {
-            if ($server['type'] === 'shadowsocks') {
-                $configs[] = URLSchemes::buildShadowsocksSIP008($server);
-            }
-        }
-
-        return json_encode(['version' => 1, 'remark' => sysConfig('website_name'), 'servers' => $configs ?? []], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * @return array|false|string|string[]
-     */
-    private function sugerLike(string $customConfig, string $defaultConfig, string $target = '')
+    private function sugerLike(string $customConfig, string $defaultConfig, string $target = ''): string
     {
         if (File::exists($customConfig)) {
             $config = file_get_contents($customConfig);
@@ -253,9 +193,9 @@ trait ClientConfig
         }
 
         if (sysConfig('is_custom_subscribe')) {
-            $upload = flowAutoShow($user->u);
-            $download = flowAutoShow($user->d);
-            $totalTraffic = flowAutoShow($user->transfer_enable);
+            $upload = formatBytes($user->u);
+            $download = formatBytes($user->d);
+            $totalTraffic = formatBytes($user->transfer_enable);
             $subscribeInfo = "title=$webName".trans('user.subscribe.info.title').', content='.trans('user.subscribe.info.upload').": $upload\\n".trans('user.subscribe.info.download').": $download\\n".trans('user.subscribe.info.total').": $totalTraffic\\n".trans('model.user.expired_date').": $user->expired_at";
             $config = str_replace('$subscribe_info', $subscribeInfo, $config);
         }
@@ -263,5 +203,62 @@ trait ClientConfig
         return str_replace(['$subs_link', '$subs_domain', '$proxies', '$proxy_group'],
             [route('sub', $user->subscribe->code), $_SERVER['HTTP_HOST'], $proxies, rtrim($proxyGroup, ', ')],
             $config);
+    }
+
+    private function surge(string $target): string
+    {
+        $defaultConfig = base_path().'/resources/rules/default.surge.conf';
+        $customConfig = base_path().'/resources/rules/custom.surge.conf';
+
+        return $this->sugerLike($customConfig, $defaultConfig, $target);
+    }
+
+    private function shadowrocket(): string
+    {
+        //display remaining traffic and expire date
+        $uri = '';
+        $user = $this->getUser();
+        if (sysConfig('is_custom_subscribe')) {
+            $upload = formatBytes($user->u);
+            $download = formatBytes($user->d);
+            $totalTraffic = formatBytes($user->transfer_enable);
+            $uri = "STATUS=📤:{$upload}📥:{$download}⏳:{$totalTraffic}📅:$user->expiration_date\r\n";
+        }
+        $uri .= $this->origin(false);
+
+        return base64_encode($uri);
+    }
+
+    private function v2rayN(): string
+    {
+        $uri = '';
+        $user = $this->getUser();
+        if (sysConfig('is_custom_subscribe')) {
+            $text = '';
+            if ($user->expiration_date > date('Y-m-d')) {
+                if ($user->transfer_enable === 0) {
+                    $text .= trans('user.account.remain').': 0';
+                } else {
+                    $text .= trans('user.account.remain').': '.formatBytes($user->transfer_enable);
+                }
+                $text .= ', '.trans('model.user.expired_date').": $user->expiration_date";
+            } else {
+                $text .= trans('user.account.reason.expired');
+            }
+            $uri .= $this->failedProxyReturn($text, 2);
+        }
+
+        return base64_encode($uri.$this->origin(false));
+    }
+
+    private function shaodowsocksSIP008(): string
+    {
+        foreach ($this->getServers() as $server) {
+            if ($server['type'] === 'shadowsocks') {
+                $configs[] = URLSchemes::buildShadowsocksSIP008($server);
+            }
+        }
+
+        return json_encode(['version' => 1, 'remark' => sysConfig('website_name'), 'servers' => $configs ?? []], JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
     }
 }

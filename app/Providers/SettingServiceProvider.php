@@ -17,7 +17,7 @@ use NotificationChannels\Telegram\TelegramChannel;
 
 class SettingServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $toApp = collect([
             2 => ['geetest.id', 'geetest.key'],
@@ -69,7 +69,7 @@ class SettingServiceProvider extends ServiceProvider
         });
     }
 
-    private static function setChannel(array $channels)
+    private static function setChannel(array $channels): array
     {
         foreach (
             [
