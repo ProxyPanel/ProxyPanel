@@ -2,7 +2,7 @@
 @section('title', trans('auth.maintenance'))
 @section('body_class','page-login-v3 layout-full')
 @section('layout_content')
-    <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">>
+    <div class="page vertical-align text-center" data-animsition-in="fade-in" data-animsition-out="fade-out">
         <div class="page-content vertical-align-middle">
             <i class="icon wb-settings icon-spin font-size-70" aria-hidden="true"></i>
             <h2>{{trans('auth.maintenance_tip')}}</h2>
