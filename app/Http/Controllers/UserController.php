@@ -416,16 +416,16 @@ class UserController extends Controller
             return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
         }
 
-        $ret = (new CouponService($coupon_sn))->search($good); // 检查券合规性
+        $coupon = (new CouponService($coupon_sn))->search($good); // 检查券合规性
 
-        if (! $ret instanceof Coupon) {
-            return $ret;
+        if (! $coupon instanceof Coupon) {
+            return $coupon;
         }
 
         $data = [
-            'name' => $ret->name,
-            'type' => $ret->type,
-            'value' => $ret->type === 2 ? $ret->value : Helpers::getPriceTag($ret->value),
+            'name' => $coupon->name,
+            'type' => $coupon->type,
+            'value' => $coupon->type === 2 ? $coupon->value : Helpers::getPriceTag($coupon->value),
         ];
 
         return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('model.coupon.attribute')])]);

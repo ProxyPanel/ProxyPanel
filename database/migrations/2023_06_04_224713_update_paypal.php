@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Config;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -13,11 +14,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        foreach (self::$newConfigs as $config) {
-            Config::insert(['name' => $config]);
-        }
-        foreach (self::$dropConfigs as $config) {
-            Config::destroy(['name' => $config]);
+        if (Config::exists()) {
+            foreach (self::$newConfigs as $config) {
+                Config::insert(['name' => $config]);
+            }
+            foreach (self::$dropConfigs as $config) {
+                Config::destroy(['name' => $config]);
+            }
         }
     }
 

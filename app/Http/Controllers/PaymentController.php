@@ -19,7 +19,6 @@ use App\Utils\Payments\PayJs;
 use App\Utils\Payments\PayPal;
 use App\Utils\Payments\Stripe;
 use App\Utils\Payments\THeadPay;
-use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -90,6 +89,7 @@ class PaymentController extends Controller
     {
         $goods_id = $request->input('goods_id');
         $coupon_sn = $request->input('coupon_sn');
+        $coupon = null;
         self::$method = $request->input('method');
         $credit = $request->input('amount');
         $pay_type = $request->input('pay_type');
@@ -126,12 +126,11 @@ class PaymentController extends Controller
 
             // 使用优惠券
             if ($coupon_sn) {
-                $ret = (new CouponService($coupon_sn))->search($goods); // 检查券合规性
+                $coupon = (new CouponService($coupon_sn))->search($goods); // 检查券合规性
 
-                if (! $ret instanceof Coupon) {
-                    return $ret;
+                if (! $coupon instanceof Coupon) {
+                    return $coupon;
                 }
-                $coupon = $ret;
 
                 // 计算实际应支付总价
                 $amount = $coupon->type === 2 ? $goods->price * $coupon->value / 100 : $goods->price - $coupon->value;
@@ -149,7 +148,7 @@ class PaymentController extends Controller
                 if (Order::uid()->whereStatus(0)->exists()) {
                     return Response::json(['status' => 'fail', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
                 }
-            } elseif (Auth::getUser()->credit < $amount) { // 验证账号余额是否充足
+            } elseif (auth()->user()->credit < $amount) { // 验证账号余额是否充足
                 return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
             }
 
@@ -169,7 +168,7 @@ class PaymentController extends Controller
                 'sn' => date('ymdHis').random_int(100000, 999999),
                 'user_id' => auth()->id(),
                 'goods_id' => $credit ? null : $goods_id,
-                'coupon_id' => $coupon->id ?? null,
+                'coupon_id' => $coupon?->id,
                 'origin_amount' => $credit ?: ($goods->price ?? 0),
                 'amount' => $amount,
                 'pay_type' => $pay_type,
