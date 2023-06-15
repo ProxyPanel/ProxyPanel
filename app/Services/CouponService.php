@@ -21,7 +21,7 @@ class CouponService
         $this->user = Auth::getUser();
     }
 
-    public function search(Goods $goods): JsonResponse|bool
+    public function search(Goods $goods): JsonResponse|Coupon
     { // 寻找合适的券
         $coupons = Coupon::whereSn($this->code)->whereIn('type', [1, 2])->orderByDesc('priority')->get();
         if ($coupons->isNotEmpty()) {
@@ -31,11 +31,9 @@ class CouponService
                     return $coupon;
                 }
             }
-
-            return $ret ?? $this->failedReturn(trans('common.failed'), trans('user.coupon.error.unknown'));
         }
 
-        return $this->failedReturn(trans('common.failed'), trans('user.coupon.error.unknown'));
+        return $ret ?? $this->failedReturn(trans('common.failed'), trans('user.coupon.error.unknown'));
     }
 
     private function check(Goods $goods, Coupon $coupon): JsonResponse|bool
