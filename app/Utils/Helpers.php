@@ -49,11 +49,11 @@ class Helpers
      * @param  string  $username  用户
      * @param  string  $password  用户密码
      * @param  int  $transfer_enable  可用流量
-     * @param  int|null  $date  可使用天数
+     * @param  string|null  $date  可使用天数
      * @param  int|null  $inviter_id  邀请人
      * @param  string|null  $nickname  昵称
      */
-    public static function addUser(string $username, string $password, int $transfer_enable, int $date = null, int $inviter_id = null, string $nickname = null): User
+    public static function addUser(string $username, string $password, int $transfer_enable, string $date = null, int $inviter_id = null, string $nickname = null): User
     {
         return User::create([
             'nickname' => $nickname ?? $username,
@@ -66,7 +66,7 @@ class Helpers
             'protocol' => self::getDefaultProtocol(),
             'obfs' => self::getDefaultObfs(),
             'transfer_enable' => $transfer_enable,
-            'expired_at' => date('Y-m-d', strtotime($date.' days')),
+            'expired_at' => date('Y-m-d', strtotime("$date days")),
             'user_group_id' => null,
             'reg_ip' => IP::getClientIp(),
             'inviter_id' => $inviter_id,
