@@ -41,7 +41,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Schema::defaultStringLength(191);
         Paginator::useBootstrap();
 
         // 检测是否强制跳转https
