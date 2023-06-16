@@ -35,11 +35,7 @@ class SsConfigController extends Controller
     // 设置SS默认配置
     public function update(SsConfig $ss): JsonResponse
     {
-        // 去除该配置所属类型的默认值
-        SsConfig::default()->type($ss->type)->update(['is_default' => 0]);
-
-        // 将该ID对应记录值置为默认值
-        $ss->update(['is_default' => 1]);
+        $ss->setDefault();
 
         return Response::json(['status' => 'success', 'message' => '操作成功']);
     }
