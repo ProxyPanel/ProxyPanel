@@ -12,16 +12,16 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - 使用优惠码：`31F6PFTY4I5T` 可得 89%折扣 | Use `31F6PFTY4I5T` get 11% off
 - [快车道Kuaichedao](https://kuaichedao.co/aff.php?aff=3)
     - 节日有活动，能拿到优惠码；
-    - HKT 家宽不保证SLA，但混到骨折码，那是真便宜；
+    - HKT 家宽不保证SLA，但混到骨折码，那是真实惠；
     - 也有不少CMI BGP 的产品，可以上。
 - [V.PS](https://vps.hosting/?affid=1138)
     - 背靠强者XTOM
     - 适合大量入搞负载均衡的小VPS
     - 东京 延迟还不错，带宽过得去，就是流量少了点
-    - 活动还不少，最近（2023-05-16）被DDOS了， 直接给受影响的地区送了1个月，公关YYDS
+    - 推荐 月付, IP被墙更换要8欧元
 
 ## Project
-- [Demo](https://demo.proxypanel.cf/) Demo will always on dev/latest code, rather than the stable version.
+- [Demo](https://demo.proxypanel.cf/) will always on dev/latest code, rather than the stable version. For showcase purposes.
     - Account: test@test.com
     - Password: 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/)
@@ -30,31 +30,36 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
 - [Upcoming](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
 - [Telegram](https://t.me/+nW8AwsPPUsliYzg1)
 
-## Funding
-Buy me a Coffee?
-- PayPal [paypal.me/brettonye](https://www.paypal.com/paypalme/brettonye)
-- USDT-TRC20 TFMxq91oPCnoxDXBiEgRzab5N6GFnAbTT5
-
 ## Requirements
-- Memory 1G +
-- Disk 10G +
+- Memory 1G+
+- Disk 10G+
 
-### This project is base on Laravel 10 Framwork
-- PHP >= 8.1
-- BCMath PHP Extension
-- Ctype PHP Extension
-- Fileinfo PHP extension
-- JSON PHP Extension
-- Mbstring PHP Extension
-- OpenSSL PHP Extension
-- PDO PHP Extension
-- Tokenizer PHP Extension
-- XML PHP Extension
-- Redis PHP Extension
-- Imagick PHP Extension
+### Laravel 10
+This project is base on Laravel 10 Framework This means anything Laravel 10 is required to install will also required by this project.
+- PHP 8.1+
+  - Ctype PHP Extension
+  - cURL PHP Extension
+  - DOM PHP Extension
+  - Fileinfo PHP Extension
+  - Filter PHP Extension
+  - Hash PHP Extension
+  - Mbstring PHP Extension
+  - OpenSSL PHP Extension
+  - PCRE PHP Extension
+  - PDO PHP Extension
+  - Session PHP Extension
+  - Tokenizer PHP Extension
+  - XML PHP Extension
+  - Redis PHP Extension
+- Composer 2.2.0+
 
 ### Database
-- Mysql 5.5 + (Recommend 5.7+)
+- One of the following
+  - MariaDB 10.3+ [Version Policy](https://mariadb.org/about/#maintenance-policy)
+  - MySQL 5.7+ [Version Policy](https://en.wikipedia.org/wiki/MySQL#Release_history)
+  - PostgreSQL 10.0+ [Version Policy](https://www.postgresql.org/support/versioning/)
+  - SQLite 3.8.8+
+  - SQL Server 2017+ [Version Policy](https://docs.microsoft.com/en-us/lifecycle/products/?products=sql-server)
 - Redis
 
 ## Thanks
@@ -65,4 +70,9 @@ Buy me a Coffee?
 
 ## License
 
-ProxyPanel is open-sourced software licensed under the GPL-3.0 license.
+ProxyPanel is an open-sourced software licensed under the GPL-3.0 license.
+
+## Funding
+Buy me a Coffee ☕?
+- PayPal [paypal.me/brettonye](https://www.paypal.com/paypalme/brettonye)
+- USDT-TRC20 TFMxq91oPCnoxDXBiEgRzab5N6GFnAbTT5
