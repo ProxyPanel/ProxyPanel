@@ -21,13 +21,9 @@ check_sys() {
 #检查composer是否安装
 check_composer() {
   if [ ! -f "/usr/bin/composer" ]; then
-    if [[ "${release}" == "centos" ]]; then
-      yum install -y composer
-    else
-      apt-get install -y composer
-    fi
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
   else
-    if [[ $(composer --version | cut -d" " -f3) < 2.2.0 ]]; then
+    if [[ $(composer -n --version --no-ansi | cut -d" " -f3) < 2.2.0 ]]; then
       composer self-update
     fi
   fi
