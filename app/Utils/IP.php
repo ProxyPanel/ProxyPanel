@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use Arr;
+use Cache;
 use Exception;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
@@ -24,8 +25,15 @@ class IP
 
     public static function getIPInfo(string $ip): ?array
     {// 获取IP地址信息
+        $info = Cache::tags('IP_INFO')->get($ip);
+
+        if ($info) {
+            return $info;
+        }
+
         $ret = null;
         $source = 0;
+
         if (app()->getLocale() === 'zh_CN') {
             if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) { // 中文ipv4
                 while ($source <= 5 && ($ret === null || (is_array($ret) && empty(array_filter($ret))))) {
@@ -77,7 +85,8 @@ class IP
         }
 
         if ($ret !== null) {
-            $ret['address'] = implode(' ', Arr::except(array_filter($ret), ['isp']));
+            $ret['address'] = implode(' ', Arr::except(array_filter($ret), ['isp', 'latitude', 'longitude']));
+            Cache::tags('IP_INFO')->put($ip, $ret, Day); // Store information for reduce API Calls
         }
 
         return $ret;
@@ -239,34 +248,6 @@ class IP
                     'area' => $location[1],
                 ];
             }
-        }
-
-        return null;
-    }
-
-    private static function userAgentInfo(string $ip): ?array
-    { // 开发依据: https://ip.useragentinfo.com/api
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            $response = Http::timeout(15)->get("https://ip.useragentinfo.com/ipv6/$ip");
-        } else {
-            $response = Http::timeout(15)->withBody("ip:$ip")->get('https://ip.useragentinfo.com/json');
-        }
-
-        if ($response->ok()) {
-            $data = $response->json();
-            if ($data['code'] === 200 && $data['ip'] === $ip) {
-                return [
-                    'country' => $data['country'],
-                    'region' => $data['province'],
-                    'city' => $data['city'],
-                    'isp' => $data['isp'],
-                    'area' => $data['area'],
-                ];
-            }
-
-            Log::error('【userAgentInfo】IP查询失败：'.$data ?? '');
-        } else {
-            Log::error('【userAgentInfo】查询无效：'.$ip);
         }
 
         return null;
@@ -571,5 +552,33 @@ class IP
         }
 
         return Arr::only($ret, ['latitude', 'longitude']);
+    }
+
+    private static function userAgentInfo(string $ip): ?array
+    { // 开发依据: https://ip.useragentinfo.com/api
+        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $response = Http::timeout(15)->get("https://ip.useragentinfo.com/ipv6/$ip");
+        } else {
+            $response = Http::timeout(15)->withBody("ip:$ip")->get('https://ip.useragentinfo.com/json');
+        }
+
+        if ($response->ok()) {
+            $data = $response->json();
+            if ($data['code'] === 200 && $data['ip'] === $ip) {
+                return [
+                    'country' => $data['country'],
+                    'region' => $data['province'],
+                    'city' => $data['city'],
+                    'isp' => $data['isp'],
+                    'area' => $data['area'],
+                ];
+            }
+
+            Log::error('【userAgentInfo】IP查询失败：'.$data ?? '');
+        } else {
+            Log::error('【userAgentInfo】查询无效：'.$ip);
+        }
+
+        return null;
     }
 }
