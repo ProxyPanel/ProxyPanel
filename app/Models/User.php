@@ -306,7 +306,7 @@ class User extends Authenticatable
 
     public function isTrafficWarning(): bool
     { // 流量异常警告
-        return (sysConfig('traffic_ban_value') * GB) <= $this->recentTrafficUsed();
+        return ((int) sysConfig('traffic_ban_value') * GB) <= $this->recentTrafficUsed();
     }
 
     public function recentTrafficUsed()

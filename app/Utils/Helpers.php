@@ -245,7 +245,7 @@ class Helpers
     {
         $ipLocation = IP::getIPInfo($ip);
 
-        if (empty($ipLocation) || empty($ipLocation['country'])) {
+        if (empty($ipLocation)) {
             Log::warning(trans('errors.get_ip').'：'.$ip);
         }
 
@@ -255,8 +255,8 @@ class Helpers
         $log->country = $ipLocation['country'] ?? '';
         $log->province = $ipLocation['region'] ?? '';
         $log->city = $ipLocation['city'] ?? '';
-        $log->county = $ipLocation['county'] ?? '';
-        $log->isp = $ipLocation['isp'] ?? ($ipLocation['organization'] ?? '');
+        $log->county = '';
+        $log->isp = $ipLocation['isp'] ?? '';
         $log->area = $ipLocation['area'] ?? '';
         $log->save();
 
@@ -266,7 +266,7 @@ class Helpers
     public static function getPriceTag(int|float $amount): string
     { // Get price with money symbol in the user's preferred currency.
         $currentCurrency = session('currency');
-        $standard = sysConfig('standard_currency', 'CNY');
+        $standard = sysConfig('standard_currency');
         $currencyLib = array_column(config('common.currency'), 'symbol', 'code');
         if (! empty($currentCurrency) && isset($currencyLib[$currentCurrency]) && $currentCurrency !== $standard) {
             $convert = CurrencyExchange::convert($currentCurrency, $amount);

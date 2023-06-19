@@ -125,7 +125,7 @@
                                 </li>
                                 <li class="list-group-item px-0">
                                     <i class="icon wb-map"></i>
-                                    {{trans('user.attribute.address')}}：{{$userLoginLog->area ?: $userLoginLog->country.' '.$userLoginLog->province.' '.$userLoginLog->city}}
+                                    {{trans('user.attribute.address')}}：{{$userLoginLog->country.' '.$userLoginLog->province.' '.$userLoginLog->city.' '.$userLoginLog->area}}
                                 </li>
                             </ul>
                         </div>

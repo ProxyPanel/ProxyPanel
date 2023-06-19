@@ -17,7 +17,7 @@ class CurrencyExchange
     public static function convert(string $target, float|int $amount, string $base = 'default'): ?float
     {
         if ($base === 'default') {
-            $base = sysConfig('standard_currency', 'CNY');
+            $base = sysConfig('standard_currency');
         }
         $cacheKey = "Currency_{$base}_{$target}_ExRate";
         $isStored = Cache::has($cacheKey);

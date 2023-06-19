@@ -33,7 +33,7 @@ class TaskHourly extends Command
         $end = strtotime($created_at);
         $start = $end - 3599;
         $data_anomaly_notification = sysConfig('data_anomaly_notification');
-        $traffic_ban_value = sysConfig('traffic_ban_value') * GB;
+        $traffic_ban_value = (int) sysConfig('traffic_ban_value') * GB;
         User::activeUser()->with('dataFlowLogs')->WhereHas('dataFlowLogs')->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
         })->chunk(config('tasks.chunk'), function ($users) use ($traffic_ban_value, $start, $end, $created_at, $data_anomaly_notification) {
