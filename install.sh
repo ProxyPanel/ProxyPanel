@@ -78,20 +78,39 @@ set_permissions() {
   chmod -R 777 storage/
 }
 
-set_crontab() {
-  cmd="php $(dirname "$path")/artisan schedule:run >> /dev/null 2>&1"
+set_schedule() {
+  cmd="php $PWD/artisan schedule:run >> /dev/null 2>&1"
   cronjob="* * * * * $cmd"
   (
     crontab -u www -l | grep -v -F "$cmd"
     echo "$cronjob"
   ) | crontab -u www -
+}
 
-  cmd="bash $(dirname "$path")/queue.sh"
-  cronjob="*/10 * * * * $cmd"
-  (
-    crontab -l | grep -v -F "$cmd"
-    echo "$cronjob"
-  ) | crontab -
+set_horizon() {
+  if ! command -v supervisorctl &>/dev/null; then
+    if [[ "${release}" == "centos" ]]; then
+      yum install -y supervisor
+    else
+      apt-get install -y supervisor
+    fi
+  fi
+
+  if [ ! -f /etc/supervisor/conf.d/horizon.conf ]; then
+    echo "
+              [program:horizon]
+              process_name=%(program_name)s
+              command=php $PWD/artisan horizon
+              autostart=true
+              autorestart=true
+              user=www
+              redirect_stderr=true
+              stdout_logfile=$PWD/storage/logs/horizon.log
+              stopwaitsecs=3600" >>/etc/supervisor/conf.d/horizon.conf
+    supervisorctl reread
+    supervisorctl update
+    supervisorctl start horizon
+  fi
 }
 
 clean_files
@@ -100,4 +119,5 @@ check_composer
 composer install
 php artisan panel:install
 set_permissions
-set_crontab
+set_schedule
+set_horizon

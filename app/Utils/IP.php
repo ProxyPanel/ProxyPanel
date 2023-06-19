@@ -87,12 +87,12 @@ class IP
     { // 开发依据: https://ip-api.com/docs/api:json
         $key = config('services.ip.ip-api_key');
         if ($key) {
-            $response = Http::timeout(15)->withHeaders(['Origin' => 'https://members.ip-api.com'])->acceptJson()->get("https://pro.ip-api.com/json/$ip?fields=49881&key=$key&lang=".str_replace('_', '-', app()->getLocale()));
+            $response = Http::timeout(10)->withHeaders(['Origin' => 'https://members.ip-api.com'])->acceptJson()->get("https://pro.ip-api.com/json/$ip?fields=49881&key=$key&lang=".str_replace('_', '-', app()->getLocale()));
             if (! $response->ok()) {
-                $response = Http::timeout(15)->acceptJson()->get("http://ip-api.com/json/$ip?fields=49881&lang=".str_replace('_', '-', app()->getLocale()));
+                $response = Http::timeout(10)->acceptJson()->get("http://ip-api.com/json/$ip?fields=49881&lang=".str_replace('_', '-', app()->getLocale()));
             }
         } else {
-            $response = Http::timeout(15)->acceptJson()->get("http://ip-api.com/json/$ip?fields=49881&lang=".str_replace('_', '-', app()->getLocale()));
+            $response = Http::timeout(10)->acceptJson()->get("http://ip-api.com/json/$ip?fields=49881&lang=".str_replace('_', '-', app()->getLocale()));
         }
 
         if ($response->ok()) {
@@ -124,7 +124,7 @@ class IP
         } else {
             $url = "https://qifu-api.baidubce.com/ip/geo/v1/district?ip=$ip";
         }
-        $response = Http::timeout(15)->get($url);
+        $response = Http::timeout(10)->get($url);
         $data = $response->json();
         if ($response->ok()) {
             if ($data['code'] === 'Success') {
@@ -149,7 +149,7 @@ class IP
 
     private static function TenAPI(string $ip): ?array
     { // 开发依据: https://docs.tenapi.cn/utility/getip.html
-        $response = Http::timeout(15)->asForm()->post('https://tenapi.cn/v2/getip', ['ip' => $ip]);
+        $response = Http::timeout(10)->asForm()->post('https://tenapi.cn/v2/getip', ['ip' => $ip]);
         if ($response->ok()) {
             $data = $response->json();
 
@@ -159,7 +159,7 @@ class IP
                     'region' => $data['data']['province'],
                     'city' => $data['data']['city'],
                     'isp' => $data['data']['isp'],
-                    'area' => $data['data']['area'],
+                    'area' => '',
                 ];
             }
         }

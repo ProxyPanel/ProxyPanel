@@ -433,6 +433,22 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('viewHorizon')
+                                <li class="site-menu-item">
+                                    <a href="{{route('horizon.index')}}" target="_blank">
+                                        <span class="site-menu-title"> Horizon </span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @if(config('app.debug') && config('app.env') === 'local')
+                                @can('viewTelescope')
+                                    <li class="site-menu-item">
+                                        <a href="{{route('telescope')}}" target="_blank">
+                                            <span class="site-menu-title"> Telescope </span>
+                                        </a>
+                                    </li>
+                                @endcan
+                            @endif
                         </ul>
                     </li>
                 @endcanany
