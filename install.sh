@@ -55,13 +55,9 @@ check_sys() {
 #检查composer是否安装
 check_composer() {
   if [ ! -f "/usr/bin/composer" ]; then
-    if [[ "${release}" == "centos" ]]; then
-      yum install -y composer
-    else
-      apt-get install -y composer
-    fi
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
   else
-    if [[ $(composer --version | cut -d" " -f3) < 2.2.0 ]]; then
+    if [[ $(composer -n --version --no-ansi | cut -d" " -f3) < 2.2.0 ]]; then
       composer self-update
     fi
   fi
@@ -98,15 +94,16 @@ set_horizon() {
 
   if [ ! -f /etc/supervisor/conf.d/horizon.conf ]; then
     echo "
-              [program:horizon]
-              process_name=%(program_name)s
-              command=php $PWD/artisan horizon
-              autostart=true
-              autorestart=true
-              user=www
-              redirect_stderr=true
-              stdout_logfile=$PWD/storage/logs/horizon.log
-              stopwaitsecs=3600" >>/etc/supervisor/conf.d/horizon.conf
+      [program:horizon]
+      process_name=%(program_name)s
+      command=php $PWD/artisan horizon
+      autostart=true
+      autorestart=true
+      user=www
+      redirect_stderr=true
+      stdout_logfile=$PWD/storage/logs/horizon.log
+      stopwaitsecs=3600" >>/etc/supervisor/conf.d/horizon.conf
+
     supervisorctl reread
     supervisorctl update
     supervisorctl start horizon
