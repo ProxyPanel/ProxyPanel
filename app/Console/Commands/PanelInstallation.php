@@ -67,7 +67,12 @@ class PanelInstallation extends Command
 
             // 初始化数据库
             $this->line(' 导入数据库');
-            Artisan::call('migrate --seed');
+            try {
+                Artisan::call('migrate --seed');
+            } catch (Exception $e) {
+                Artisan::call('db:wipe');
+                abort(500, '导入数据库失败'.$e->getMessage());
+            }
             $this->info('数据库导入完成');
             $bar->advance();
 

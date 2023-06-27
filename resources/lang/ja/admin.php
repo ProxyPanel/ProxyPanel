@@ -703,7 +703,7 @@ return [
             'website_name' => 'メール作成時に通知',
             'website_security_code' => '空でない場合はアクセスするには<a href=":url" target="_blank">セキュリティコードを入力</a>する必要があります',
             'website_url' => 'パスワードのリセット、オンライン決済を行うには',
-            'web_api_url' => '例：https://demo.proxypanel.cf',
+            'web_api_url' => '例：'.config('app.url'),
             'wechat_aid' => '<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>アプリ管理</a>からアプリケーションを - AgentId で作成してください',
             'wechat_cid' => '<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>私の企業</a>から企業IDを入手',
             'wechat_encodingAESKey' => 'アプリマネージャー - アプリ->API受信->EncodingAESKey',

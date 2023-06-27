@@ -80,4 +80,5 @@
             @endswitch
         });
     </script>
+    <script src="https://ad.ddo.jp/728x90.js.php?ddo_id=proxypanel&ddo_i={{(int) floor(time() / 60)}}" type="text/javascript" defer></script>
 @endsection

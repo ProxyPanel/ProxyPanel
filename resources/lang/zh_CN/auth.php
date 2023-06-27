@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'accept_term' => '我已阅读并同意遵守',
     'active' => [
@@ -60,6 +62,7 @@ return [
         'unbind_failed' => '解绑失败',
         'unbind_success' => '解绑成功',
     ],
+    'one-click_login' => '一键登录',
     'optional' => '可选',
     'password' => [
         'forget' => '忘记密码？',
@@ -68,12 +71,12 @@ return [
         'reset' => [
             'attribute' => '重置密码',
             'error' => [
+                'demo' => '演示环境禁止修改管理员密码',
                 'disabled' => '本站关闭了密码重置子系统，有事请联系 :email ',
                 'failed' => '重设密码失败',
-                'throttle' => '24小时内只能重设密码 :time 次，请勿频繁操作',
                 'same' => '新密码不可与旧密码一样，请重新输入',
+                'throttle' => '24小时内只能重设密码 :time 次，请勿频繁操作',
                 'wrong' => '旧密码错误，请重新输入',
-                'demo' => '演示环境禁止修改管理员密码',
             ],
             'sent' => '重置成功，请查看所用邮箱（邮件可能在垃圾箱中）',
             'success' => '新密码设置成功，请前往登录页面',
@@ -94,5 +97,4 @@ return [
     'request' => '获 取',
     'throttle' => '您尝试的登录次数过多，请 :seconds 秒后再试。',
     'tos' => '用户条款',
-    'one-click_login' => '一键登录',
 ];

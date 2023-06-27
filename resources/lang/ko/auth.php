@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'accept_term' => '약관을 확인하였으며, 이에 동의합니다.',
     'active' => [
@@ -60,6 +62,7 @@ return [
         'unbind_failed' => '연동 해제 실패',
         'unbind_success' => '연동 해제 성공',
     ],
+    'one-click_login' => '一键登录',
     'optional' => '옵션',
     'password' => [
         'forget' => '비밀번호를 잊으셨나요?',
@@ -68,12 +71,12 @@ return [
         'reset' => [
             'attribute' => '비밀번호 재설정',
             'error' => [
+                'demo' => '관리자 페이지 비밀번호 변경 금지',
                 'disabled' => '현재 비밀번호 재설정이 불가합니다. 다음 이메일로 연락 주세요: email',
                 'failed' => '비밀번호 재설정 실패',
-                'throttle' => '24시간 이내 비밀번호 재설정 : time 회만 가능, 잦은 시도를 하지 마십시오.',
                 'same' => '새 비밀번호는 기존 비밀번호와 같을 수 없습니다, 다시 입력해주세요.',
+                'throttle' => '24시간 이내 비밀번호 재설정 : time 회만 가능, 잦은 시도를 하지 마십시오.',
                 'wrong' => '이진 비밀번호 오류, 다시 입력해주세요.',
-                'demo' => '관리자 페이지 비밀번호 변경 금지',
             ],
             'sent' => '재설정 성공, 모든 이메일을 확인해주세요. (없을 경우 스팸메일 확인)',
             'success' => '새 비밀번호 설정 성공,  로그인 페이지로 가십시오.',
@@ -94,5 +97,4 @@ return [
     'request' => '획득',
     'throttle' => '너무 많은 로그인을 시도하였습니다. :seconds 초 후에 다시 시도하십시오.',
     'tos' => '이용 약관',
-    'one-click_login' => '一键登录',
 ];

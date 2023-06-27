@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'accept_term' => 'I have read and accepted',
     'active' => [
@@ -61,6 +63,7 @@ return [
         'unbind_failed' => 'Unbinding failed',
         'unbind_success' => 'Unbinding successfully',
     ],
+    'one-click_login' => 'One-Click Login',
     'optional' => 'Optional',
     'password' => [
         'forget' => 'Forgot password?',
@@ -69,12 +72,12 @@ return [
         'reset' => [
             'attribute' => 'Reset Password',
             'error' => [
+                'demo' => 'You can not change administrator password under Demo environment',
                 'disabled' => 'We have disabled the password reset function, please contact :email for help',
                 'failed' => 'Password reset failed',
-                'throttle' => 'You can only reset your password :time times within 24 hours, please do not operate frequently.',
                 'same' => 'New password cannot be the same as old password, please re-enter',
+                'throttle' => 'You can only reset your password :time times within 24 hours, please do not operate frequently.',
                 'wrong' => 'Password incorrect, please try again',
-                'demo' => 'You can not change administrator password under Demo environment',
             ],
             'sent' => 'Reset link has sent to your mailbox, please check the email (Email may be in the Trash)',
             'success' => 'New password set successfully, you can sign in now',
@@ -95,5 +98,4 @@ return [
     'request' => 'Request',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
     'tos' => 'Terms of Service',
-    'one-click_login' => 'One-Click Login',
 ];

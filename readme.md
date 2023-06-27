@@ -2,7 +2,7 @@
 [![Crowdin](https://badges.crowdin.net/proxypanel/localized.svg)](https://crowdin.com/project/proxypanel)
 We are looking for translators who help us to translate this prjoect with other languages :)
 
-[简体中文](https://proxypanel.gitbook.io/wiki/)
+[中文WIKI](https://proxypanel.gitbook.io/wiki/)
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET
 
@@ -21,7 +21,7 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - 活动还不少，最近（2023-05-16）被DDOS了， 直接给受影响的地区送了1个月，公关YYDS
 
 ## Project
-- [Demo](https://demo.proxypanel.cf/) Demo will always on dev/latest code, rather than the stable version.
+- [Demo](https://proxypanel.ddo.jp) will always on dev/latest code, rather than the stable version. For showcase purposes.
     - Account: test@test.com
     - Password: 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/)
@@ -54,29 +54,19 @@ Buy me a Coffee?
 - Imagick PHP Extension
 
 ### Database
-- Mysql 5.5 + (Recommend 5.7+)
+- One of the following
+  - MySQL 5.6+ [Version Policy](https://en.wikipedia.org/wiki/MySQL#Release_history)
+  - PostgreSQL 9.4+ [Version Policy](https://www.postgresql.org/support/versioning/)
+  - SQLite 3.8.8+
+  - SQL Server 2017+ [Version Policy](https://docs.microsoft.com/en-us/lifecycle/products/?products=sql-server)
 - Redis
 
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)
 - [@V2Ray](https://www.v2ray.com)
-- [@breakwa11](https://github.com/breakwa11)
-- [@glzjin](https://github.com/esdeathlove)
-- [@orvice](https://github.com/orvice)
-- [@Akkariiin](https://github.com/shadowsocksrr)
-- [@aiyahacke](https://github.com/aiyahacke)
 - [@ColetteContreras](https://github.com/ColetteContreras)
 - [@rc452860](https://github.com/rc452860)
-- [@pch18](https://github.com/pch18)
-- [@tonychanczm](https://github.com/tonychanczm)
-- [@91yun](https://github.com/91yun)
-- [@ToyoDAdoubi](https://github.com/ToyoDAdoubi)
-- [@ipcheck](https://ipcheck.need.sh)
-- [@cz88](http://www.cz88.net/index.shtml)
-- [@ip.sb](https://www.ip.sb)
-- [@ipip](https://www.ipip.net)
-- [@Bruskyii Panda](https://github.com/ssrpanel)
 
 ## License
 
-ProxyPanel is open-sourced software licensed under the GPL-3.0 license.
+ProxyPanel is an open-sourced software licensed under the GPL-3.0 license.

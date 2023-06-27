@@ -200,15 +200,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 mb-30">
-                        <div class="card card-shadow text-center h-full">
-                            <div class="card-block">
-                                <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>{{trans('user.home.chat_group')}}</h4>
-                                <a class="card-link btn btn-lg btn-primary" href="https://t.me/+nW8AwsPPUsliYzg1" target="_blank" rel="noopener">
-                                    Telegram {{trans('user.home.chat_group')}} <i class="fa-brands fa-telegram"></i></a>
+                    @if (config('common.contact.telegram'))
+                        <div class="col-xl-4 mb-30">
+                            <div class="card card-shadow text-center h-full">
+                                <div class="card-block">
+                                    <h4 class="card-title"><i class="wb-bell mr-10 yellow-600"></i>{{trans('user.home.chat_group')}}</h4>
+                                    <a class="card-link btn btn-lg btn-primary" href="{{  config('common.contact.telegram') }}" target="_blank" rel="noopener">
+                                        Telegram {{trans('user.home.chat_group')}} <i class="fa-brands fa-telegram"></i></a>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
                 <div class="row" data-plugin="matchHeight" data-by-row="true">
                     <div class="col-xxl-6 mb-30">

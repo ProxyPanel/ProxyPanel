@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     '0' => 'Unknown Error',
     '100' => 'Continue',
@@ -27,7 +29,7 @@ return [
     '401' => 'Unauthorized',
     '402' => 'Payment Required',
     '403' => 'Forbidden',
-    '404' => 'Page Not Found',
+    '404' => 'Not Found',
     '405' => 'Method Not Allowed',
     '406' => 'Not Acceptable',
     '407' => 'Proxy Authentication Required',
@@ -47,12 +49,15 @@ return [
     '422' => 'Unprocessable Entity',
     '423' => 'Locked',
     '424' => 'Failed Dependency',
+    '425' => 'Too Early',
     '426' => 'Upgrade Required',
     '428' => 'Precondition Required',
     '429' => 'Too Many Requests',
     '431' => 'Request Header Fields Too Large',
+    '444' => 'Connection Closed Without Response',
     '449' => 'Retry With',
     '451' => 'Unavailable For Legal Reasons',
+    '499' => 'Client Closed Request',
     '500' => 'Internal Server Error',
     '501' => 'Not Implemented',
     '502' => 'Bad Gateway',
@@ -72,5 +77,8 @@ return [
     '524' => 'A Timeout Occurred',
     '525' => 'SSL Handshake Failed',
     '526' => 'Invalid SSL Certificate',
+    '527' => 'Railgun Error',
+    '598' => 'Network Read Timeout Error',
+    '599' => 'Network Connect Timeout Error',
     'unknownError' => 'Unknown Error',
 ];
