@@ -21,7 +21,7 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - 推荐 月付, IP被墙更换要8欧元
 
 ## Project
-- [Demo](https://demo.proxypanel.cf/) will always on dev/latest code, rather than the stable version. For showcase purposes.
+- [Demo](https://proxypanel.ddo.jp) will always on dev/latest code, rather than the stable version. For showcase purposes.
     - Account: test@test.com
     - Password: 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/)

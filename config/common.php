@@ -92,4 +92,9 @@ return [
         'ca' => ['name' => 'Canadian dollar', 'code' => 'CAD', 'symbol' => 'C$'],
         'tw' => ['name' => '新臺幣', 'code' => 'TWD', 'symbol' => 'NT$'],
     ],
+
+    'contact' => [
+        'telegram' => env('CONTACT_TELEGRAM', 'https://t.me/+nW8AwsPPUsliYzg1'),
+        'qq' => env('CONTACT_QQ', null),
+    ],
 ];

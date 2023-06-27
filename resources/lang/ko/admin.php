@@ -699,7 +699,7 @@ return [
             'website_name' => '发邮件时展示',
             'website_security_code' => '非空时必须通过<a href=":url" target="_blank">安全入口</a>加上安全码才可访问',
             'website_url' => '生成重置密码、在线支付必备',
-            'web_api_url' => '例：https://demo.proxypanel.cf',
+            'web_api_url' => '例：'.config('app.url'),
             'wechat_aid' => '在<a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>应用管理</a>自建中创建应用 - AgentId',
             'wechat_cid' => '获取<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>我的企业</a>中的企业ID',
             'wechat_encodingAESKey' => '应用管理->应用->设置API接收->EncodingAESKey',
