@@ -152,7 +152,7 @@ class ConfigSeeder extends Seeder
             'is_invite_register' => 2,
             'website_name' => 'ProxyPanel',
             'reset_password_times' => 3,
-            'website_url' => 'https://demo.proxypanel.cf',
+            'website_url' => config('app.url'),
             'active_times' => 3,
             'is_checkin' => 1,
             'min_rand_traffic' => 10,
