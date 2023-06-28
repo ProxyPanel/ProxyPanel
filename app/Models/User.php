@@ -222,6 +222,7 @@ class User extends Authenticatable
         } else {
             // $url = 'https://gravatar.loli.net/avatar/'.md5(strtolower(trim($this->username)))."?&d=identicon";
             // $url = 'https://robohash.org/'.md5(strtolower(trim($this->username))).'?set=set4&bgset=bg2&size=400x400';
+            // $url = 'https://api.dicebear.com/6.x/thumbs/svg?seed='.$this->username.'&radius=50';
             $url = 'https://api.btstu.cn/sjtx/api.php?lx=c1&format=images&method=zsy';
         }
 
