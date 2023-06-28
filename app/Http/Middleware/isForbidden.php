@@ -33,11 +33,11 @@ class isForbidden
         }
 
         $ip = IP::getClientIP();
-        if ($ip !== '::1') {
-            $ipLocation = IP::getIPInfo($ip);
+        $ipLocation = IP::getIPInfo($ip);
 
+        if ($ipLocation !== false) {
             // 拒绝无IP请求
-            if (! $ipLocation || empty(array_filter($ipLocation))) {
+            if (empty($ipLocation) || empty(array_filter($ipLocation))) {
                 return Response::view('auth.error', ['message' => trans('errors.forbidden.access')], 403);
             }
 

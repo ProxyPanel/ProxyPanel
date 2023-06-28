@@ -37,7 +37,7 @@
     "Password": "비밀번호",
     "Payment for #:sn has been received! Total amount: :amount.": "您成功支付了订单#:sn, 总金额为 :amount.",
     "Payment Received": "주문서 결제 성공",
-    "Payment Required": "Payment Required",
+    "Payment Required": "결제 필요",
     "Please click the button below to verify your email address.": "이메일 주소를 확인하려면 아래 버튼을 클릭하십시오.",
     "Regards": "안부",
     "Register": "회원가입",

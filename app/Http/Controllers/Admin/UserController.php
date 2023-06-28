@@ -94,7 +94,7 @@ class UserController extends Controller
         Arr::forget($data, 'uuid');
         $data['transfer_enable'] *= GB;
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
-        $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+        $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark'] ?? '');
         $data['reg_ip'] = IP::getClientIp();
         $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
         $user = User::create($data);

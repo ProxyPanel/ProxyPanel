@@ -20,7 +20,7 @@ use Throwable;
 class Handler extends ExceptionHandler
 {
     protected $dontReport = [
-        //        HttpException::class,
+        ConnectionException::class,
         ValidationException::class,
     ];
 

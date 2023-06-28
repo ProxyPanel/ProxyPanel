@@ -699,7 +699,7 @@ return [
             'website_name' => 'Show on email and etc.',
             'website_security_code' => 'When not empty, must be accessed via <a href=":url" target="_blank">Secure Portal</a> to access the website',
             'website_url' => 'Main domain that this panel will be using for everything links related as default',
-            'web_api_url' => 'Example: '.config('app.url'),
+            'web_api_url' => 'For example: '.config('app.url'),
             'wechat_aid' => 'Create an app in <a href=https://work.weixin.qq.com/wework_admin/frame#apps arget=_blank>app management page</a>, get AgentId',
             'wechat_cid' => 'Get the CID in<a href=https://work.weixin.qq.com/wework_admin/frame#profile target=_blank>My Enterprise page</a>',
             'wechat_encodingAESKey' => 'App Management ⇒ Application ⇒ Set API ⇒ EncodingAESKey',
