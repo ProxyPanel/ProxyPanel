@@ -125,7 +125,7 @@
                             <x-system.switch code="is_custom_subscribe" :check="$is_custom_subscribe"/>
                             <x-system.input code="web_api_url" :value="$web_api_url" type="url"/>
                             <x-system.input code="v2ray_license" :value="$v2ray_license"/>
-                            <x-system.input code="trojan_license" value="$trojan_license"/>
+                            <x-system.input code="trojan_license" :value="$trojan_license"/>
                             <x-system.input code="v2ray_tls_provider" :value="$v2ray_tls_provider"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
@@ -473,8 +473,7 @@
 
       function disablePayment(op) {
         for (let i = 1; i < op.length; i++) {
-            @json($payments).
-          includes(op[i].value)
+            @json($payments).includes(op[i].value)
               ? op[i].disabled = false
               : op[i].disabled = true;
         }

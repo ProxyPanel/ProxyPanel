@@ -14,19 +14,16 @@ class RuleGroup extends Model
 
     protected $guarded = [];
 
-    public function getTypeLabelAttribute(): string
-    {
-        if ($this->attributes['type']) {
-            $type_label = '<span class="badge badge-danger">'.trans('admin.rule.group.type.off').'</span>';
-        } else {
-            $type_label = '<span class="badge badge-primary">'.trans('admin.rule.group.type.on').'</span>';
-        }
-
-        return $type_label;
-    }
-
     public function rules(): BelongsToMany
     {
         return $this->belongsToMany(Rule::class);
+    }
+
+    public function getTypeLabelAttribute(): string
+    {
+        return match ($this->attributes['type']) {
+            0 => '<span class="badge badge-primary">'.trans('admin.rule.group.type.on').'</span>',
+            1 => '<span class="badge badge-danger">'.trans('admin.rule.group.type.off').'</span>',
+        };
     }
 }

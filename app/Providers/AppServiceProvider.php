@@ -44,7 +44,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         // 检测是否强制跳转https
-        if (env('SESSION_SECURE_COOKIE', false)) { // todo
+        if (config('session.secure')) {
             URL::forceScheme('https');
         }
 

@@ -16,28 +16,30 @@ class Rule extends Model
 
     protected $guarded = [];
 
+    public function rule_groups(): BelongsToMany
+    {
+        return $this->belongsToMany(RuleGroup::class);
+    }
+
     public function getTypeLabelAttribute(): string
     {
-        return [
+        return match ($this->attributes['type']) {
             1 => trans('admin.rule.type.reg'),
             2 => trans('admin.rule.type.domain'),
             3 => trans('admin.rule.type.ip'),
             4 => trans('admin.rule.type.protocol'),
-        ][$this->attributes['type']] ?? trans('common.status.unknown');
+            default => trans('common.status.unknown'),
+        };
     }
 
     public function getTypeApiLabelAttribute(): string
     {
-        return [
+        return match ($this->attributes['type']) {
             1 => 'reg',
             2 => 'domain',
             3 => 'ip',
             4 => 'protocol',
-        ][$this->attributes['type']] ?? 'unknown';
-    }
-
-    public function rule_groups(): BelongsToMany
-    {
-        return $this->belongsToMany(RuleGroup::class);
+            default => 'unknown',
+        };
     }
 }

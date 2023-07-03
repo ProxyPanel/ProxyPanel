@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -16,13 +18,13 @@ class Order extends Model
 {
     use Sortable;
 
-    public $sortable = ['id', 'sn', 'expired_at', 'created_at'];
+    public array $sortable = ['id', 'sn', 'expired_at', 'created_at'];
 
     protected $table = 'order';
 
     protected $guarded = [];
 
-    protected $casts = ['expired_at' => 'datetime'];
+    protected $casts = ['origin_amount' => money::class, 'amount' => money::class, 'expired_at' => 'datetime'];
 
     public function user(): BelongsTo
     {
@@ -44,50 +46,55 @@ class Order extends Model
         return $this->hasOne(Payment::class);
     }
 
-    public function scopeUid($query, $uid = null)
+    public function scopeUid(Builder $query, int $uid = 0): Builder
     {
         return $query->whereUserId($uid ?: Auth::id());
     }
 
-    public function scopeRecentUnPay($query, int $minutes = 0)
+    public function scopeRecentUnPay(Builder $query, int $minutes = 0): Builder
     {
         if (! $minutes) {
-            $minutes = config('tasks.close.orders');
+            $minutes = (int) config('tasks.close.orders');
         }
 
-        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.$minutes.' minutes')));
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-$minutes minutes")));
     }
 
-    public function scopeUserPrepay($query, $uid = null)
+    public function scopeUserPrepay(Builder $query, int $uid = 0): Builder
     {
         return $query->uid($uid)->whereStatus(3)->oldest();
     }
 
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->whereIsExpire(0)->whereStatus(2);
     }
 
-    public function scopeActivePlan($query)
+    public function scopeActivePlan(Builder $query): Builder
     {
-        return $query->active()->with('goods')->whereHas('goods', static function ($query) {
+        return $query->active()->isPlan();
+    }
+
+    public function scopeIsPlan(Builder $query): Builder
+    {
+        return $query->with('goods')->whereHas('goods', function ($query) {
             $query->whereType(2);
         });
     }
 
-    public function scopeActivePackage($query)
+    public function scopeActivePackage(Builder $query): Builder
     {
         return $query->active()->with('goods')->whereHas('goods', static function ($query) {
             $query->whereType(1);
         });
     }
 
-    public function scopeUserActivePlan($query, $uid = null)
+    public function scopeUserActivePlan(Builder $query, int $uid = 0): Builder
     {
         return $query->uid($uid)->activePlan();
     }
 
-    public function scopeUserActivePackage($query, $uid = null)
+    public function scopeUserActivePackage(Builder $query, int $uid = 0): Builder
     {
         return $query->uid($uid)->activePackage();
     }
@@ -122,7 +129,7 @@ class Order extends Model
         return $this->statusTags($this->attributes['status'], $this->attributes['is_expire']);
     }
 
-    public function statusTags($status, $expire, $isHtml = true): string
+    public function statusTags(int $status, bool $expire, bool $isHtml = true): string
     {
         switch ($status) {
             case -1:
@@ -162,29 +169,9 @@ class Order extends Model
         return $label;
     }
 
-    public function getOriginAmountAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setOriginAmountAttribute($value)
-    {
-        return $this->attributes['origin_amount'] = $value * 100;
-    }
-
     public function getOriginAmountTagAttribute(): string
     {
         return Helpers::getPriceTag($this->origin_amount);
-    }
-
-    public function getAmountAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setAmountAttribute($value)
-    {
-        return $this->attributes['amount'] = $value * 100;
     }
 
     public function getAmountTagAttribute(): string
@@ -195,7 +182,7 @@ class Order extends Model
     // 支付渠道
     public function getPayTypeLabelAttribute(): string
     {
-        return [
+        return match ($this->attributes['pay_type']) {
             0 => trans('common.payment.credit'),
             1 => trans('common.payment.alipay'),
             2 => trans('common.payment.qq'),
@@ -204,7 +191,8 @@ class Order extends Model
             5 => 'PayPal',
             6 => 'Stripe',
             7 => trans('common.payment.manual'),
-        ][$this->attributes['pay_type']] ?? '';
+            default => '',
+        };
     }
 
     // 支付图标

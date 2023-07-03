@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\datestamp;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -14,24 +16,14 @@ class Coupon extends Model
 
     protected $table = 'coupon';
 
-    protected $casts = ['limit' => 'array', 'start_time' => 'date:Y-m-d', 'end_time' => 'date:Y-m-d', 'deleted_at' => 'datetime'];
+    protected $casts = ['limit' => 'array', 'start_time' => datestamp::class, 'end_time' => datestamp::class, 'deleted_at' => 'datetime'];
 
     protected $guarded = [];
 
     // 筛选类型
-    public function scopeType($query, $type)
+    public function scopeType(Builder $query, int $type): Builder
     {
         return $query->whereType($type);
-    }
-
-    public function setStartTimeAttribute($value)
-    {
-        return $this->attributes['start_time'] = strtotime($value);
-    }
-
-    public function setEndTimeAttribute($value)
-    {
-        return $this->attributes['end_time'] = strtotime($value);
     }
 
     public function used(): bool

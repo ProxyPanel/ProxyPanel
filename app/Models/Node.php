@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Casts\data_rate;
 use App\Utils\IP;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -19,7 +21,7 @@ class Node extends Model
 
     protected $guarded = [];
 
-    protected $casts = ['profile' => 'array'];
+    protected $casts = ['speed_limit' => data_rate::class, 'profile' => 'array'];
 
     public function labels(): BelongsToMany
     {
@@ -96,7 +98,7 @@ class Node extends Model
         return $this->hasOne(Level::class, 'level', 'level');
     }
 
-    public function users()
+    public function users(): Collection
     {
         return User::activeUser()
             ->where('level', '>=', $this->attributes['level'])
@@ -140,25 +142,16 @@ class Node extends Model
         return array_map('trim', explode(',', $ip));
     }
 
-    public function getSpeedLimitAttribute($value)
-    {
-        return $value / Mbps;
-    }
-
-    public function setSpeedLimitAttribute($value)
-    {
-        return $this->attributes['speed_limit'] = $value * Mbps;
-    }
-
     public function getTypeLabelAttribute(): string
     {
-        return [
+        return match ($this->attributes['type']) {
             0 => 'Shadowsocks',
             1 => 'ShadowsocksR',
             2 => 'V2Ray',
             3 => 'Trojan',
             4 => 'VNet',
-        ][$this->attributes['type']] ?? 'UnKnown';
+            default => 'UnKnown',
+        };
     }
 
     public function getHostAttribute(): string
