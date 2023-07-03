@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\data_rate;
+use App\Casts\money;
 use App\Utils\Helpers;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -16,7 +19,7 @@ class Goods extends Model
 
     protected $table = 'goods';
 
-    protected $casts = ['deleted_at' => 'datetime'];
+    protected $casts = ['price' => money::class, 'renew' => money::class, 'speed_limit' => data_rate::class, 'deleted_at' => 'datetime'];
 
     protected $guarded = [];
 
@@ -25,34 +28,14 @@ class Goods extends Model
         return $this->hasMany(Order::class);
     }
 
-    public function scopeType($query, $type)
+    public function scopeType(Builder $query, int $type): Builder
     {
         return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');
-    }
-
-    public function getPriceAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setPriceAttribute($value): void
-    {
-        $this->attributes['price'] = $value * 100;
     }
 
     public function getPriceTagAttribute(): string
     {
         return Helpers::getPriceTag($this->price);
-    }
-
-    public function getRenewAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setRenewAttribute($value): void
-    {
-        $this->attributes['renew'] = $value * 100;
     }
 
     public function getRenewTagAttribute(): string
@@ -63,15 +46,5 @@ class Goods extends Model
     public function getTrafficLabelAttribute(): string
     {
         return formatBytes($this->attributes['traffic'] * MB);
-    }
-
-    public function setSpeedLimitAttribute($value)
-    {
-        return $this->attributes['speed_limit'] = $value * Mbps;
-    }
-
-    public function getSpeedLimitAttribute($value)
-    {
-        return $value / Mbps;
     }
 }

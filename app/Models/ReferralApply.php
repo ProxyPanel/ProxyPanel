@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,11 +16,11 @@ class ReferralApply extends Model
 {
     protected $table = 'referral_apply';
 
-    protected $casts = ['link_logs' => 'array'];
+    protected $casts = ['before' => money::class, 'after' => money::class, 'amount' => money::class, 'link_logs' => 'array'];
 
     protected $guarded = [];
 
-    public function scopeUid($query)
+    public function scopeUid(Builder $query): Builder
     {
         return $query->whereUserId(Auth::id());
     }
@@ -28,39 +30,9 @@ class ReferralApply extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function referral_logs()
+    public function referral_logs(): ReferralLog|\Illuminate\Database\Query\Builder
     {
         return ReferralLog::whereIn('id', $this->link_logs);
-    }
-
-    public function getBeforeAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setBeforeAttribute($value): void
-    {
-        $this->attributes['before'] = $value * 100;
-    }
-
-    public function getAfterAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setAfterAttribute($value): void
-    {
-        $this->attributes['after'] = $value * 100;
-    }
-
-    public function getAmountAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setAmountAttribute($value): void
-    {
-        $this->attributes['amount'] = $value * 100;
     }
 
     public function getAmountTagAttribute(): string

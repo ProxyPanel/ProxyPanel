@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -27,12 +28,12 @@ class UserHourlyDataFlow extends Model
     }
 
     // 用户每时使用总流量
-    public function scopeUserHourly($query, $uid)
+    public function scopeUserHourly(Builder $query, int $uid): Builder
     {
         return $query->whereUserId($uid)->whereNodeId(null);
     }
 
-    public function scopeUserRecentUsed($query, $uid)
+    public function scopeUserRecentUsed(Builder $query, int $uid): Builder
     {
         return $query->userHourly($uid)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900));
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -20,7 +21,7 @@ class Invite extends Model
 
     protected $guarded = [];
 
-    public function scopeUid($query)
+    public function scopeUid(Builder $query): Builder
     {
         return $query->whereInviterId(Auth::id());
     }

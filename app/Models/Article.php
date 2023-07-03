@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -19,12 +20,12 @@ class Article extends Model
     protected $guarded = [];
 
     // 筛选类型
-    public function scopeType($query, $type)
+    public function scopeType(Builder $query, int $type): Builder
     {
         return $query->whereType($type);
     }
 
-    public function scopeLang($query, $language = null)
+    public function scopeLang(Builder $query, ?string $language = null): Builder
     {
         return $query->whereLanguage($language ?? app()->getLocale());
     }

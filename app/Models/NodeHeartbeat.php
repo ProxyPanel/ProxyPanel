@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,7 +16,7 @@ class NodeHeartbeat extends Model
 
     protected $guarded = [];
 
-    public function scopeRecently($query)
+    public function scopeRecently(Builder $query): Builder
     {
         return $query->where('log_time', '>=', strtotime(config('tasks.recently_heartbeat')))->latest('log_time');
     }

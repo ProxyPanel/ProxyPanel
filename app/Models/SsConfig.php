@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -15,14 +16,14 @@ class SsConfig extends Model
 
     protected $guarded = [];
 
-    public function scopeDefault($query): void
+    public function scopeDefault(Builder $query): Builder
     {  // 筛选默认
-        $query->whereIsDefault(1);
+        return $query->whereIsDefault(1);
     }
 
-    public function scopeType($query, int $type): void
+    public function scopeType(Builder $query, int $type): Builder
     { // 筛选类型
-        $query->whereType($type);
+        return $query->whereType($type);
     }
 
     public function setDefault(): bool

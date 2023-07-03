@@ -15,10 +15,11 @@ class Marketing extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return [
+        return match ($this->attributes['status']) {
             -1 => '失败',
             0 => '待推送',
             1 => '成功',
-        ][$this->attributes['status']] ?? '';
+            default => '',
+        };
     }
 }

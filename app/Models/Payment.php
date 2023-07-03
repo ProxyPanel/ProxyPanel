@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -16,7 +18,9 @@ class Payment extends Model
 
     protected $guarded = [];
 
-    public function scopeUid($query)
+    protected $casts = ['amount' => money::class];
+
+    public function scopeUid(Builder $query): Builder
     {
         return $query->whereUserId(Auth::id());
     }
@@ -44,16 +48,6 @@ class Payment extends Model
     public function complete(): bool
     { // 完成支付单
         return $this->update(['status' => 1]);
-    }
-
-    public function getAmountAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setAmountAttribute($value)
-    {
-        return $this->attributes['amount'] = $value * 100;
     }
 
     public function getAmountTagAttribute(): string

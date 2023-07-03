@@ -79,14 +79,22 @@ class OrderService
 
     private function setPrepaidPlan(): bool
     { // 设置预支付套餐, 刷新账号有效时间用于流量重置判断
-        Order::whereId($this->order->id)->first()->prepay(); // 直接编辑$this->order->prepay() [手动修改]会加不上
+        $this->order->prepay();
 
-        return self::$user->update(['expired_at' => date('Y-m-d', strtotime(self::$user->expired_at.' +'.self::$goods->days.' days'))]);
+        return self::$user->update(['expired_at' => $this->getFinallyExpiredTime()]);
+    }
+
+    public function getFinallyExpiredTime(): string
+    { // 推算最新的到期时间
+        $orders = self::$user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
+        $current = $orders->where('status', '==', 2)->first();
+
+        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->format('Y-m-d');
     }
 
     public function activatePlan(): bool
     { // 激活套餐
-        Order::whereId($this->order->id)->first()->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
+        $this->order->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
@@ -109,27 +117,23 @@ class OrderService
 
     public function resetTimeAndData(string|null $expired_at = null): array
     { // 计算下次重置与账号过期时间
-        $data = ['u' => 0, 'd' => 0];
-        // 账号有效期
-        if (! $expired_at) {
-            $expired_at = date('Y-m-d', strtotime(self::$goods->days.' days'));
-            foreach (Order::userPrepay($this->order->user_id)->with('goods')->get() as $paidOrder) {//拿出可能存在的其余套餐, 推算最新的到期时间
-                //取出对应套餐信息
-                $expired_at = date('Y-m-d', strtotime("$expired_at +".$paidOrder->goods->days.' days'));
-            }
-            $data['expired_at'] = $expired_at;
+        if (! $expired_at) { // 账号有效期
+            $expired_at = $this->getFinallyExpiredTime();
         }
 
         //账号流量重置日期
-        $nextResetTime = date('Y-m-d', strtotime(self::$goods->period.' days'));
+        $nextResetTime = now()->addDays(self::$goods->period)->format('Y-m-d');
         if ($nextResetTime >= $expired_at) {
             $nextResetTime = null;
         }
 
-        return array_merge($data, [
+        return [
+            'u' => 0,
+            'd' => 0,
             'transfer_enable' => self::$goods->traffic * MB,
+            'expired_at' => $expired_at,
             'reset_time' => $nextResetTime,
-        ]);
+        ];
     }
 
     private function setCommissionExpense(User $user)

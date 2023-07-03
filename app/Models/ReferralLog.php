@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,9 +16,11 @@ class ReferralLog extends Model
 {
     protected $table = 'referral_log';
 
+    protected $casts = ['amount' => money::class, 'commission' => money::class];
+
     protected $guarded = [];
 
-    public function scopeUid($query)
+    public function scopeUid(Builder $query): Builder
     {
         return $query->whereInviterId(Auth::id());
     }
@@ -34,26 +38,6 @@ class ReferralLog extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
-    }
-
-    public function getAmountAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function getCommissionAttribute($value)
-    {
-        return $value / 100;
-    }
-
-    public function setAmountAttribute($value): void
-    {
-        $this->attributes['amount'] = $value * 100;
-    }
-
-    public function setCommissionAttribute($value): void
-    {
-        $this->attributes['commission'] = $value * 100;
     }
 
     public function getAmountTagAttribute(): string

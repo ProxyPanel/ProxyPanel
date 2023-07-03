@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -15,7 +16,7 @@ class Verify extends Model
     protected $guarded = [];
 
     // 筛选类型
-    public function scopeType($query, $type)
+    public function scopeType(Builder $query, int $type): Builder
     {
         return $query->whereType($type);
     }

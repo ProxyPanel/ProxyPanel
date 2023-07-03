@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -26,9 +27,8 @@ class UserDailyDataFlow extends Model
         return $this->belongsTo(Node::class);
     }
 
-    // 用户每天使用总流量
-    public function scopeUserDaily($query, $uid)
-    {
+    public function scopeUserDaily(Builder $query, int $uid): Builder
+    { // 用户每天使用总流量
         return $query->whereUserId($uid)->whereNodeId(null);
     }
 }

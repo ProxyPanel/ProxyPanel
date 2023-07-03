@@ -70,11 +70,10 @@ class TaskDaily extends Command
 
     private function closeTickets(): void
     { // 关闭用户超时未处理的工单
-        Ticket::whereStatus(1)
+        Ticket::whereStatus(1)->with('reply')
             ->whereHas('reply', function ($q) {
                 $q->where('admin_id', '<>', null);
             })
-            ->has('reply')
             ->where('updated_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.close.tickets').' hours')))
             ->chunk(config('tasks.chunk'), function ($tickets) {
                 foreach ($tickets as $ticket) {
@@ -92,7 +91,7 @@ class TaskDaily extends Command
         User::where('status', '<>', -1)
             ->where('expired_at', '>', date('Y-m-d'))
             ->where('reset_time', '<=', date('Y-m-d'))
-            ->with('orders')->whereHas('orders')
+            ->with('orders')->has('orders')
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐

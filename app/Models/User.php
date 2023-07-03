@@ -2,9 +2,12 @@
 
 namespace App\Models;
 
+use App\Casts\data_rate;
+use App\Casts\money;
 use App\Utils\Helpers;
 use App\Utils\QQInfo;
 use Hash;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,11 +26,11 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles, Sortable;
 
-    public $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
+    public array $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
 
     protected $table = 'user';
 
-    protected $casts = ['expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
+    protected $casts = ['credit' => money::class, 'speed_limit' => data_rate::class, 'expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
 
     protected $guarded = [];
 
@@ -178,16 +181,6 @@ class User extends Authenticatable
         return Level::whereLevel($this->attributes['level'])->first()->name;
     }
 
-    public function getCreditAttribute()
-    {
-        return $this->attributes['credit'] / 100;
-    }
-
-    public function setCreditAttribute($value)
-    {
-        return $this->attributes['credit'] = $value * 100;
-    }
-
     public function getCreditTagAttribute(): string
     {
         return Helpers::getPriceTag($this->credit);
@@ -198,19 +191,9 @@ class User extends Authenticatable
         return formatBytes($this->attributes['transfer_enable']);
     }
 
-    public function getSpeedLimitAttribute()
-    {
-        return $this->attributes['speed_limit'] / Mbps;
-    }
-
-    public function setPasswordAttribute($password): string
+    public function setPasswordAttribute(string $password): string
     {
         return $this->attributes['password'] = Hash::make($password);
-    }
-
-    public function setSpeedLimitAttribute($value)
-    {
-        return $this->attributes['speed_limit'] = $value * Mbps;
     }
 
     public function getAvatarAttribute(): string
@@ -229,27 +212,27 @@ class User extends Authenticatable
         return $url;
     }
 
-    public function scopeActiveUser($query)
+    public function scopeActiveUser(Builder $query): Builder
     {
         return $query->where('status', '<>', -1)->whereEnable(1);
     }
 
-    public function scopeBannedUser($query)
+    public function scopeBannedUser(Builder $query): Builder
     {
         return $query->where('status', '<>', -1)->whereEnable(0);
     }
 
-    public function nodes($userLevel = -1, $userGroupId = -1)
+    public function nodes(?int $userLevel = null, int $userGroupId = 0): Node|Builder
     {
-        if ($userGroupId === -1 && $this->attributes['user_group_id']) {
+        if ($userGroupId === 0 && $this->attributes['user_group_id']) { // 使用默认的用户分组
             $query = $this->userGroup->nodes();
-        } elseif ($userGroupId !== -1 && $userGroupId) {
+        } elseif ($userGroupId) { // 使用给的用户分组
             $query = UserGroup::findOrFail($userGroupId)->nodes();
-        } else {
+        } else { // 无用户分组
             $query = Node::query();
         }
 
-        return $query->whereStatus(1)->where('level', '<=', $userLevel !== -1 && $userLevel !== null ? $userLevel : $this->attributes['level'] ?? 0);
+        return $query->whereStatus(1)->where('level', '<=', $userLevel ?? $this->attributes['level'] ?? 0);
     }
 
     public function userGroup(): BelongsTo
@@ -277,7 +260,7 @@ class User extends Authenticatable
     }
 
     public function isNotCompleteOrderByUserId(int $userId): bool
-    { // 添加用户余额
+    {
         return Order::uid($userId)->whereIn('status', [0, 1])->exists();
     }
 
