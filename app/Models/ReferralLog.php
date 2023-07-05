@@ -6,6 +6,7 @@ use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -40,22 +41,28 @@ class ReferralLog extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function getAmountTagAttribute(): string
+    protected function amountTag(): Attribute
     {
-        return Helpers::getPriceTag($this->amount);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->amount),
+        );
     }
 
-    public function getCommissionTagAttribute(): string
+    protected function commissionTag(): Attribute
     {
-        return Helpers::getPriceTag($this->commission);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->commission),
+        );
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return match ($this->attributes['status']) {
-            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>',
-            2 => '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>',
-            default => '<span class="badge badge-sm badge-success">'.trans('common.status.unwithdrawn').'</span>',
-        };
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                1 => '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>',
+                2 => '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>',
+                default => '<span class="badge badge-sm badge-success">'.trans('common.status.unwithdrawn').'</span>',
+            },
+        );
     }
 }

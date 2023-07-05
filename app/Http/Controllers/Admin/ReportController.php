@@ -11,7 +11,7 @@ class ReportController extends Controller
 {
     public function accounting()
     {
-        $orders = Order::where('status', '>=', 2)->whereHas('goods')->latest()->get(['created_at', 'amount']);
+        $orders = Order::where('status', '>=', 2)->has('goods')->latest()->get(['created_at', 'amount']);
         $ordersByDay = $orders->groupBy(function ($item) {
             return $item->created_at->format('Y-m-d');
         })->map(function ($row) {
@@ -85,7 +85,7 @@ class ReportController extends Controller
                     return [
                         'node_id' => $item->node_id,
                         'date' => (int) $item->date,
-                        'total' => round($item->total / GB, 2),
+                        'total' => round($item->total / GiB, 2),
                     ];
                 })->toArray();
 
@@ -99,7 +99,7 @@ class ReportController extends Controller
                     return [
                         'node_id' => $item->node_id,
                         'date' => (int) $item->date,
-                        'total' => round($item->total / GB, 2),
+                        'total' => round($item->total / GiB, 2),
                     ];
                 })->toArray();
         }

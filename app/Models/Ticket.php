@@ -46,7 +46,7 @@ class Ticket extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match ($this->attributes['status']) {
+        return match ($this->status) {
             0 => '<span class="badge badge-lg badge-success">'.trans('common.status.pending').'</span>',
             1 => '<span class="badge badge-lg badge-danger">'.trans('common.status.reply').'</span>',
             2 => '<span class="badge badge-lg badge-default">'.trans('common.status.closed').'</span>',

@@ -227,7 +227,7 @@ class AuthController extends Controller
         $affArr = $this->getAff($invite_code, $aff);
         $inviter_id = $affArr['inviter_id'];
 
-        $transfer_enable = MB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
+        $transfer_enable = MiB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
         // 创建新用户
         if (! $user = Helpers::addUser($data['username'], $data['password'], $transfer_enable, sysConfig('default_days'), $inviter_id, $data['nickname'])) { // 注册失败，抛出异常
@@ -267,7 +267,7 @@ class AuthController extends Controller
             if ($inviter_id) {
                 $referralUser = User::find($inviter_id);
                 if ($referralUser && $referralUser->expiration_date >= date('Y-m-d')) {
-                    $referralUser->incrementData(sysConfig('referral_traffic') * MB);
+                    $referralUser->incrementData(sysConfig('referral_traffic') * MiB);
                 }
             }
 
@@ -572,7 +572,7 @@ class AuthController extends Controller
         // 账号激活后给邀请人送流量
         $inviter = $user->inviter;
         if ($inviter) {
-            $inviter->incrementData(sysConfig('referral_traffic') * MB);
+            $inviter->incrementData(sysConfig('referral_traffic') * MiB);
         }
 
         Session::flash('successMsg', trans('common.active_item', ['attribute' => trans('common.success')]));

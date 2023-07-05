@@ -126,7 +126,7 @@ class Order extends Model
 
     public function getStatusLabelAttribute(): string
     { // 订单状态
-        return $this->statusTags($this->attributes['status'], $this->attributes['is_expire']);
+        return $this->statusTags($this->status, $this->is_expire);
     }
 
     public function statusTags(int $status, bool $expire, bool $isHtml = true): string
@@ -144,7 +144,7 @@ class Order extends Model
                 $label = trans('common.order.status.review');
                 break;
             case 2:
-                if ($this->attributes['goods_id'] === null) {
+                if ($this->goods_id === null) {
                     $label = trans('common.order.status.complete');
                 } elseif ($expire) {
                     $label = trans('common.status.expire');
@@ -182,7 +182,7 @@ class Order extends Model
     // 支付渠道
     public function getPayTypeLabelAttribute(): string
     {
-        return match ($this->attributes['pay_type']) {
+        return match ($this->pay_type) {
             0 => trans('common.payment.credit'),
             1 => trans('common.payment.alipay'),
             2 => trans('common.payment.qq'),
@@ -198,12 +198,12 @@ class Order extends Model
     // 支付图标
     public function getPayTypeIconAttribute(): string
     {
-        return '/assets/images/payment/'.config('common.payment.icon')[$this->attributes['pay_type']] ?? 'coin.png';
+        return '/assets/images/payment/'.config('common.payment.icon')[$this->pay_type] ?? 'coin.png';
     }
 
     // 支付方式
     public function getPayWayLabelAttribute(): string
     {
-        return config('common.payment.labels')[$this->attributes['pay_way']] ?? '未知';
+        return config('common.payment.labels')[$this->pay_way] ?? '未知';
     }
 }

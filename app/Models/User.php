@@ -178,7 +178,7 @@ class User extends Authenticatable
 
     public function getLevelNameAttribute(): string
     {
-        return Level::whereLevel($this->attributes['level'])->first()->name;
+        return Level::whereLevel($this->level)->first()->name;
     }
 
     public function getCreditTagAttribute(): string
@@ -224,7 +224,7 @@ class User extends Authenticatable
 
     public function nodes(?int $userLevel = null, int $userGroupId = 0): Node|Builder
     {
-        if ($userGroupId === 0 && $this->attributes['user_group_id']) { // 使用默认的用户分组
+        if ($userGroupId === 0 && $this->user_group_id) { // 使用默认的用户分组
             $query = $this->userGroup->nodes();
         } elseif ($userGroupId) { // 使用给的用户分组
             $query = UserGroup::findOrFail($userGroupId)->nodes();
@@ -232,7 +232,7 @@ class User extends Authenticatable
             $query = Node::query();
         }
 
-        return $query->whereStatus(1)->where('level', '<=', $userLevel ?? $this->attributes['level'] ?? 0);
+        return $query->whereStatus(1)->where('level', '<=', $userLevel ?? $this->level ?? 0);
     }
 
     public function userGroup(): BelongsTo
@@ -290,7 +290,7 @@ class User extends Authenticatable
 
     public function isTrafficWarning(): bool
     { // 流量异常警告
-        return ((int) sysConfig('traffic_ban_value') * GB) <= $this->recentTrafficUsed();
+        return ((int) sysConfig('traffic_ban_value') * GiB) <= $this->recentTrafficUsed();
     }
 
     public function recentTrafficUsed()

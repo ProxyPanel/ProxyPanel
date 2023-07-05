@@ -70,8 +70,8 @@ class OrderService
 
     private function activatePackage(): bool
     { // 激活流量包
-        if (self::$user->incrementData(self::$goods->traffic * MB)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MB, self::$user->transfer_enable, '['.$this->order->pay_way.']加上用户购买的套餐流量', $this->order->id);
+        if (self::$user->incrementData(self::$goods->traffic * MiB)) {
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, '['.$this->order->pay_way.']加上用户购买的套餐流量', $this->order->id);
         }
 
         return false;
@@ -130,7 +130,7 @@ class OrderService
         return [
             'u' => 0,
             'd' => 0,
-            'transfer_enable' => self::$goods->traffic * MB,
+            'transfer_enable' => self::$goods->traffic * MiB,
             'expired_at' => $expired_at,
             'reset_time' => $nextResetTime,
         ];

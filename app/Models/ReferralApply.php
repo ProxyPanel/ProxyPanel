@@ -6,6 +6,7 @@ use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -35,17 +36,21 @@ class ReferralApply extends Model
         return ReferralLog::whereIn('id', $this->link_logs);
     }
 
-    public function getAmountTagAttribute(): string
+    protected function amountTag(): Attribute
     {
-        return Helpers::getPriceTag($this->amount);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->amount),
+        );
     }
 
-    public function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return match ($this->attributes['status']) {
-            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
-            2 => trans('common.status.withdrawn'),
-            default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
-        };
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
+                2 => trans('common.status.withdrawn'),
+                default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
+            },
+        );
     }
 }

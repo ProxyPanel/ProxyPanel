@@ -21,7 +21,7 @@ class TicketController extends Controller
     {
         $query = Ticket::where(function ($query) {
             $query->whereAdminId(Auth::id())->orwhere('admin_id');
-        });
+        })->with('user');
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
@@ -29,7 +29,7 @@ class TicketController extends Controller
             });
         });
 
-        return view('admin.ticket.index', ['ticketList' => $query->with('user')->latest()->paginate(10)->appends($request->except('page'))]);
+        return view('admin.ticket.index', ['ticketList' => $query->latest()->paginate(10)->appends($request->except('page'))]);
     }
 
     // 创建工单

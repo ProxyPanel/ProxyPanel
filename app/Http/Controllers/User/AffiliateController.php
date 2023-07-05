@@ -22,7 +22,7 @@ class AffiliateController extends Controller
         }
 
         return view('user.referral', [
-            'referral_traffic' => formatBytes(sysConfig('referral_traffic') * MB),
+            'referral_traffic' => formatBytes(sysConfig('referral_traffic'), 'MiB'),
             'referral_percent' => sysConfig('referral_percent'),
             'referral_money' => Helpers::getPriceTag(sysConfig('referral_money')),
             'totalAmount' => ReferralLog::uid()->sum('commission') / 100,

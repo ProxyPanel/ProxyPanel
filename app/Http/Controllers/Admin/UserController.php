@@ -92,7 +92,7 @@ class UserController extends Controller
         $data['passwd'] = $data['passwd'] ?? Str::random();
         $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
         Arr::forget($data, 'uuid');
-        $data['transfer_enable'] *= GB;
+        $data['transfer_enable'] *= GiB;
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark'] ?? '');
         $data['reg_ip'] = IP::getClientIp();
@@ -176,8 +176,8 @@ class UserController extends Controller
     {
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
-                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GB, 365);
-                Helpers::addUserTrafficModifyLog($user->id, 0, 1024 * GB, trans('admin.user.massive.note'));
+                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GiB, 365);
+                Helpers::addUserTrafficModifyLog($user->id, 0, 1024 * GiB, trans('admin.user.massive.note'));
             }
 
             return Response::json(['status' => 'success', 'message' => trans('admin.user.massive.succeed')]);
@@ -214,7 +214,7 @@ class UserController extends Controller
         $data['passwd'] = $request->input('passwd') ?? Str::random();
         $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
         Arr::forget($data, ['roles', 'uuid', 'password']);
-        $data['transfer_enable'] *= GB;
+        $data['transfer_enable'] *= GiB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);

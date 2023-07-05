@@ -61,7 +61,7 @@ class RuleController extends Controller
     // 用户触发审计规则日志
     public function ruleLogList(Request $request)
     {
-        $query = RuleLog::query();
+        $query = RuleLog::with(['node:id,name', 'user:id,username', 'rule:id,name']);
 
         foreach (['user_id', 'node_id', 'rule_id'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
@@ -78,7 +78,7 @@ class RuleController extends Controller
         return view('admin.rule.log', [
             'nodes' => Node::all(),
             'rules' => Rule::all(),
-            'ruleLogs' => $query->with('node:id,name', 'user:id,username', 'rule:id,name')->latest()->paginate(15)->appends($request->except('page')),
+            'ruleLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
         ]);
     }
 

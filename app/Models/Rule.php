@@ -23,7 +23,7 @@ class Rule extends Model
 
     public function getTypeLabelAttribute(): string
     {
-        return match ($this->attributes['type']) {
+        return match ($this->type) {
             1 => trans('admin.rule.type.reg'),
             2 => trans('admin.rule.type.domain'),
             3 => trans('admin.rule.type.ip'),
@@ -34,7 +34,7 @@ class Rule extends Model
 
     public function getTypeApiLabelAttribute(): string
     {
-        return match ($this->attributes['type']) {
+        return match ($this->type) {
             1 => 'reg',
             2 => 'domain',
             3 => 'ip',

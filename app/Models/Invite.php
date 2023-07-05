@@ -38,7 +38,7 @@ class Invite extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match ($this->attributes['status']) {
+        return match ($this->status) {
             0 => '<span class="badge badge-success">'.trans('common.status.unused').'</span>',
             1 => '<span class="badge badge-danger">'.trans('common.status.used').'</span>',
             2 => '<span class="badge badge-default">'.trans('common.status.expire').'</span>',
