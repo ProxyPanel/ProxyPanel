@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\data_rate;
 use App\Utils\IP;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -101,7 +102,7 @@ class Node extends Model
     public function users(): Collection
     {
         return User::activeUser()
-            ->where('level', '>=', $this->attributes['level'])
+            ->where('level', '>=', $this->level)
             ->where(function ($query) {
                 $query->whereIn('user_group_id', $this->userGroups->pluck('id'))->orWhereNull('user_group_id');
             })
@@ -129,34 +130,38 @@ class Node extends Model
     public function ips(int $type = 4): array
     {
         // 使用DDNS的node先通过gethostbyname获取ip地址
-        if ($this->attributes['is_ddns'] ?? 0) { // When ddns is enabled, only domain can be used to check the ip
-            $ip = gethostbyname($this->attributes['server']);
-            if (strcmp($ip, $this->attributes['server']) === 0) {
-                Log::warning('获取 【'.$this->attributes['server'].'】 IP失败'.$ip);
+        if ($this->is_ddns ?? 0) { // When ddns is enabled, only domain can be used to check the ip
+            $ip = gethostbyname($this->server);
+            if (strcmp($ip, $this->server) === 0) {
+                Log::warning('获取 【'.$this->server.'】 IP失败'.$ip);
                 $ip = '';
             }
         } else {
-            $ip = $type === 4 ? $this->attributes['ip'] : $this->attributes['ipv6']; // check the multiple existing of ip
+            $ip = $type === 4 ? $this->ip : $this->ipv6; // check the multiple existing of ip
         }
 
         return array_map('trim', explode(',', $ip));
     }
 
-    public function getTypeLabelAttribute(): string
+    protected function typeLabel(): Attribute
     {
-        return match ($this->attributes['type']) {
-            0 => 'Shadowsocks',
-            1 => 'ShadowsocksR',
-            2 => 'V2Ray',
-            3 => 'Trojan',
-            4 => 'VNet',
-            default => 'UnKnown',
-        };
+        return Attribute::make(
+            get: fn () => match ($this->type) {
+                0 => 'Shadowsocks',
+                1 => 'ShadowsocksR',
+                2 => 'V2Ray',
+                3 => 'Trojan',
+                4 => 'VNet',
+                default => 'UnKnown',
+            },
+        );
     }
 
-    public function getHostAttribute(): string
+    protected function host(): Attribute
     {
-        return $this->server ?? $this->ip ?? $this->ipv6;
+        return Attribute::make(
+            get: fn () => $this->server ?? $this->ip ?? $this->ipv6,
+        );
     }
 
     public function getSSRConfig(): array

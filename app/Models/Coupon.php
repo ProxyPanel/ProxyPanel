@@ -28,20 +28,20 @@ class Coupon extends Model
 
     public function used(): bool
     {
-        $this->attributes['status'] = 1;
+        $this->status = 1;
 
         return $this->save();
     }
 
     public function expired(): bool
     {
-        $this->attributes['status'] = 2;
+        $this->status = 2;
 
         return $this->save();
     }
 
     public function isExpired(): bool
     {
-        return $this->attributes['end_time'] < time() || $this->attributes['status'] === 2;
+        return $this->end_time < time() || $this->status === 2;
     }
 }

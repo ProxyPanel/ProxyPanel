@@ -21,7 +21,7 @@ class RuleGroup extends Model
 
     public function getTypeLabelAttribute(): string
     {
-        return match ($this->attributes['type']) {
+        return match ($this->type) {
             0 => '<span class="badge badge-primary">'.trans('admin.rule.group.type.on').'</span>',
             1 => '<span class="badge badge-danger">'.trans('admin.rule.group.type.off').'</span>',
         };

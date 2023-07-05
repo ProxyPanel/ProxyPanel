@@ -29,7 +29,7 @@ class UserFactory extends Factory
             'method' => Helpers::getDefaultMethod(),
             'protocol' => Helpers::getDefaultProtocol(),
             'obfs' => Helpers::getDefaultObfs(),
-            'transfer_enable' => (int) sysConfig('default_traffic') * MB,
+            'transfer_enable' => (int) sysConfig('default_traffic') * MiB,
             'expired_at' => date('Y-m-d', strtotime(sysConfig('default_days').' days')),
             'user_group_id' => null,
         ];

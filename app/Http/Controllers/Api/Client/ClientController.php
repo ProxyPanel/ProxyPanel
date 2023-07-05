@@ -116,7 +116,7 @@ class ClientController extends Controller
             'keys' => [],
             'data' => [],
         ];
-        foreach (GoodsCategory::query()->whereStatus(1)->whereHas('goods')->get() as $category) {
+        foreach (GoodsCategory::query()->whereStatus(1)->with('goods')->has('goods')->get() as $category) {
             $shops['keys'][] = $category['name'];
             $shops['data'][$category['name']] = $category->goods()->get(['name', 'price', 'traffic'])->append('traffic_label')->toArray();
         }
@@ -128,7 +128,7 @@ class ClientController extends Controller
     {
         $user = auth()->user();
 
-        $referral_traffic = formatBytes(sysConfig('referral_traffic') * MB);
+        $referral_traffic = formatBytes(sysConfig('referral_traffic'), 'MiB');
         $referral_percent = sysConfig('referral_percent');
         // 邀请码
         $code = $user->invites()->whereStatus(0)->value('code');
@@ -146,7 +146,7 @@ class ClientController extends Controller
         // 累计数据
         $data['back_sum'] = ReferralLog::uid()->sum('commission') / 100;
         $data['user_num'] = $user->invitees()->count();
-        $data['list'] = $user->invitees()->whereHas('orders', function (Builder $query) {
+        $data['list'] = $user->invitees()->with('orders')->whereHas('orders', function (Builder $query) {
             $query->where('status', '>=', 2)->where('amount', '>', 0);
         })->selectRaw('username as user_name, UNIX_TIMESTAMP(created_at) as datetime, id')->orderByDesc('created_at')->limit(10)->get()->toArray();
         foreach ($data['list'] as &$item) {
@@ -169,7 +169,7 @@ class ClientController extends Controller
             return response()->json(['ret' => 0, 'title' => trans('common.success'), 'msg' => trans('user.home.attendance.done')]);
         }
 
-        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MB;
+        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MiB;
 
         if (! $user->incrementData($traffic)) {
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.failed')]);

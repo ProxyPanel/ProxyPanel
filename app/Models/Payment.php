@@ -6,6 +6,7 @@ use App\Casts\money;
 use App\Utils\Helpers;
 use Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -50,18 +51,21 @@ class Payment extends Model
         return $this->update(['status' => 1]);
     }
 
-    public function getAmountTagAttribute(): string
+    protected function amountTag(): Attribute
     {
-        return Helpers::getPriceTag($this->amount);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->amount),
+        );
     }
 
-    // 订单状态
-    public function getStatusLabelAttribute(): string
-    {
-        return match ($this->attributes['status']) {
-            -1 => trans('common.failed_item', ['attribute' => trans('user.pay')]),
-            1 => trans('common.success_item', ['attribute' => trans('user.pay')]),
-            default => trans('common.payment.status.wait'),
-        };
+    protected function statusLabel(): Attribute
+    { // 订单状态
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                -1 => trans('common.failed_item', ['attribute' => trans('user.pay')]),
+                1 => trans('common.success_item', ['attribute' => trans('user.pay')]),
+                default => trans('common.payment.status.wait'),
+            },
+        );
     }
 }

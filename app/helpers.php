@@ -1,7 +1,7 @@
 <?php
 
-const MB = 1048576;
-const GB = 1073741824;
+const MiB = 1048576;
+const GiB = 1073741824;
 
 const Minute = 60;
 const Hour = 3600;
@@ -27,13 +27,18 @@ if (! function_exists('base64url_decode')) {
 
 // 根据流量值自动转换单位输出
 if (! function_exists('formatBytes')) {
-    function formatBytes($bytes, int $precision = 2): string
+    function formatBytes(int $bytes, string $base = '', int $precision = 2): string
     {
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
         $bytes = max($bytes, 0);
         $power = floor(($bytes ? log($bytes) : 0) / log(1024));
         $power = min($power, count($units) - 1);
         $bytes /= 1024 ** $power;
+
+        if ($base) {
+            $basePower = array_search($base, $units);
+            $power += max($basePower, 0);
+        }
 
         return round($bytes, $precision).' '.$units[$power];
     }

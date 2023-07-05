@@ -6,6 +6,7 @@ use App\Casts\data_rate;
 use App\Casts\money;
 use App\Utils\Helpers;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -33,18 +34,24 @@ class Goods extends Model
         return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');
     }
 
-    public function getPriceTagAttribute(): string
+    protected function priceTag(): Attribute
     {
-        return Helpers::getPriceTag($this->price);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->price),
+        );
     }
 
-    public function getRenewTagAttribute(): string
+    protected function renewTag(): Attribute
     {
-        return Helpers::getPriceTag($this->renew);
+        return Attribute::make(
+            get: fn () => Helpers::getPriceTag($this->renew),
+        );
     }
 
-    public function getTrafficLabelAttribute(): string
+    protected function trafficLabel(): Attribute
     {
-        return formatBytes($this->attributes['traffic'] * MB);
+        return Attribute::make(
+            get: fn () => formatBytes($this->traffic, 'MiB'),
+        );
     }
 }

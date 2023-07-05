@@ -15,7 +15,7 @@ class PaymentCallback extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return match ($this->attributes['status']) {
+        return match ($this->status) {
             'WAIT_BUYER_PAY' => '等待买家付款',
             'WAIT_SELLER_SEND_GOODS' => '等待卖家发货',
             'TRADE_SUCCESS' => '交易成功',

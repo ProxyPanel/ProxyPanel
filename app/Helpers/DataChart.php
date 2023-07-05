@@ -38,16 +38,16 @@ trait DataChart
 
         // 节点一天内的流量
         foreach ($hourlyFlow as $date => $dataFlow) {
-            $hourlyData[$date] = round($dataFlow / GB, 3);
+            $hourlyData[$date] = round($dataFlow / GiB, 3);
         }
-        $hourlyData[$lastHour] = round($currentFlow / GB, 3);
+        $hourlyData[$lastHour] = round($currentFlow / GiB, 3);
 
         // 节点一个月内的流量
         foreach ($dailyFlow as $date => $dataFlow) {
-            $dailyData[$date - 1] = round($dataFlow / GB, 3);
+            $dailyData[$date - 1] = round($dataFlow / GiB, 3);
         }
 
-        $dailyData[$lastDay - 1] = round(array_sum($hourlyData) + $currentFlow / GB, 3);
+        $dailyData[$lastDay - 1] = round(array_sum($hourlyData) + $currentFlow / GiB, 3);
 
         return [
             'trafficDaily' => $dailyData,

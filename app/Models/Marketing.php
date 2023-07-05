@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -13,13 +14,15 @@ class Marketing extends Model
 
     protected $guarded = [];
 
-    public function getStatusLabelAttribute(): string
+    protected function statusLabel(): Attribute
     {
-        return match ($this->attributes['status']) {
-            -1 => '失败',
-            0 => '待推送',
-            1 => '成功',
-            default => '',
-        };
+        return Attribute::make(
+            get: fn () => match ($this->status) {
+                -1 => '失败',
+                0 => '待推送',
+                1 => '成功',
+                default => '',
+            },
+        );
     }
 }

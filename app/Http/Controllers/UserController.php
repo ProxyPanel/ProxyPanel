@@ -94,7 +94,7 @@ class UserController extends Controller
             return Response::json(['status' => 'success', 'title' => trans('common.success'), 'message' => trans('user.home.attendance.done')]);
         }
 
-        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MB;
+        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MiB;
 
         if (! $user->incrementData($traffic)) {
             return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
@@ -382,7 +382,7 @@ class UserController extends Controller
         return view('user.invite', [
             'num' => auth()->user()->invite_num, // 还可以生成的邀请码数量
             'inviteList' => Invite::uid()->with(['invitee', 'inviter'])->paginate(10), // 邀请码列表
-            'referral_traffic' => formatBytes(sysConfig('referral_traffic') * MB),
+            'referral_traffic' => formatBytes(sysConfig('referral_traffic'), 'MiB'),
             'referral_percent' => sysConfig('referral_percent'),
         ]);
     }
