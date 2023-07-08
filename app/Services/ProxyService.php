@@ -17,9 +17,9 @@ class ProxyService
 
     private static array $servers;
 
-    public function __construct()
+    public function __construct(?User $user)
     {
-        self::$user = auth()->user();
+        self::$user = $user ?? auth()->user();
     }
 
     public function getUser(): User
@@ -27,17 +27,12 @@ class ProxyService
         return self::$user;
     }
 
-    public function setUser(User $user): void
-    {
-        self::$user = $user;
-    }
-
     public function getServers(): array
     {
         return self::$servers;
     }
 
-    public function getProxyText(string $target, int $type = null)
+    public function getProxyText(string $target, ?int $type = null): string
     {
         $servers = $this->getNodeList($type);
         if (empty($servers)) {
@@ -58,14 +53,14 @@ class ProxyService
         return $this->clientConfig($target);
     }
 
-    public function getNodeList(int $type = null, bool $isConfig = true): array
+    public function getNodeList(?int $type = null, bool $isConfig = true): array
     {
         $query = self::$user->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
-        if (isset($type)) {
+        if ($type) {
             if ($type === 1) {
                 $query = $query->whereIn('type', [1, 4]);
-            } elseif ($type) {
+            } else {
                 $query = $query->whereType($type);
             }
         }
@@ -84,16 +79,16 @@ class ProxyService
         return $nodes;
     }
 
-    public function getProxyConfig(Node $node) // 提取节点信息
-    {
+    public function getProxyConfig(Node $node): array
+    { // 提取节点信息
         $user = self::$user;
         $config = [
-            'id' => $node->id,
-            'name' => $node->name,
-            'area' => $node->country->name,
-            'host' => $node->host,
+            'id'    => $node->id,
+            'name'  => $node->name,
+            'area'  => $node->country->name,
+            'host'  => $node->host,
             'group' => sysConfig('website_name'),
-            'udp' => $node->is_udp,
+            'udp'   => $node->is_udp,
         ];
 
         if ($node->relay_node_id) {
@@ -107,7 +102,7 @@ class ProxyService
             switch ($node->type) {
                 case 0:
                     $config = array_merge($config, [
-                        'type' => 'shadowsocks',
+                        'type'   => 'shadowsocks',
                         'passwd' => $user->passwd,
                     ], $node->profile);
                     if ($node->port && $node->port !== 0) {
@@ -125,10 +120,10 @@ class ProxyService
                     break;
                 case 3:
                     $config = array_merge($config, [
-                        'type' => 'trojan',
-                        'port' => $node->port,
+                        'type'   => 'trojan',
+                        'port'   => $node->port,
                         'passwd' => $user->passwd,
-                        'sni' => '',
+                        'sni'    => '',
                     ], $node->profile);
                     break;
                 case 1:
@@ -155,36 +150,15 @@ class ProxyService
         return $config;
     }
 
-    public function failedProxyReturn(string $text, $type = 1): string
+    public function failedProxyReturn(string $text, int $type = 1): string
     {
-        switch ($type) {
-            case 2:
-                $url = sysConfig('website_url');
-                $result = 'vmess://'.base64url_encode(json_encode([
-                    'v' => '2',
-                    'ps' => $text,
-                    'add' => $url,
-                    'port' => 0,
-                    'id' => 0,
-                    'aid' => 0,
-                    'net' => 'tcp',
-                    'type' => 'none',
-                    'host' => $url,
-                    'path' => '/',
-                    'tls' => 'tls',
-                ], JSON_PRETTY_PRINT));
-                break;
-            case 3:
-                $result = 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text);
-                break;
-            case 1:
-            case 4:
-            default:
-                $result = 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(sysConfig('website_name')).'&udpport=0&uot=0');
-                break;
-        }
+        $url = sysConfig('website_url');
 
-        return $result.PHP_EOL;
+        return match ($type) {
+            1 => 'vmess://'.base64url_encode(json_encode(['v' => '2', 'ps' => $text, 'add' => $url, 'port' => 0, 'id' => 0, 'aid' => 0, 'net' => 'tcp', 'type' => 'none', 'host' => $url, 'path' => '/', 'tls' => 'tls'], JSON_PRETTY_PRINT)),
+            2 => 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text),
+            default => 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:'.base64url_encode('0000').'/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(sysConfig('website_name')).'&udpport=0&uot=0'),
+        }.PHP_EOL;
     }
 
     private function setServers(array $servers): void
@@ -192,8 +166,8 @@ class ProxyService
         self::$servers = $servers;
     }
 
-    public function getProxyCode($target, $type = null) // 客户端用代理信息
-    {
+    public function getProxyCode(string $target, ?int $type = null): ?string
+    {// 客户端用代理信息
         $servers = $this->getNodeList($type);
         if (empty($servers)) {
             return null;
@@ -204,8 +178,8 @@ class ProxyService
         return $this->clientConfig($target);
     }
 
-    public function getUserProxyConfig(array $server, bool $is_url): ?string // 用户显示用代理信息
-    {
+    public function getUserProxyConfig(array $server, bool $is_url): string
+    { // 用户显示用代理信息
         $type = $is_url ? new URLSchemes() : new Text();
 
         return match ($server['type']) {
