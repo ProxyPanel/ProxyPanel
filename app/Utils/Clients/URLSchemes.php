@@ -21,19 +21,6 @@ class URLSchemes implements Client
         return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?obfsparam='.base64url_encode($server['obfs_param']).'&protoparam='.base64url_encode($server['protocol_param']).'&remarks='.base64url_encode($server['name']).'&group='.base64url_encode($server['group']).'&udpport='.$server['udp'].'&uot=0').PHP_EOL;
     }
 
-    // TODO: More study required about id usage https://shadowsocks.org/en/wiki/SIP008-Online-Configuration-Delivery.html
-    public static function buildShadowsocksSIP008(array $server): array
-    {
-        return [
-            'id' => $server['id'],
-            'remark' => $server['name'],
-            'server' => $server['host'],
-            'server_port' => $server['port'],
-            'password' => $server['passwd'],
-            'method' => $server['method'],
-        ];
-    }
-
     public static function buildVmess(array $server): string
     {
         $config = [

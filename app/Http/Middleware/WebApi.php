@@ -36,6 +36,8 @@ class WebApi
             return $this->failed(ResponseEnum::CLIENT_HTTP_UNSYNCHRONIZE_TIMER);
         }
 
+        $request->route()->forgetParameter('prefix');
+
         return $next($request);
     }
 }

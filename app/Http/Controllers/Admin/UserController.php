@@ -289,8 +289,7 @@ class UserController extends Controller
 
     public function exportProxyConfig(Request $request, User $user): JsonResponse
     {
-        $proxyServer = new ProxyService;
-        $proxyServer->setUser($user);
+        $proxyServer = new ProxyService($user);
         $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
 
         return Response::json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
