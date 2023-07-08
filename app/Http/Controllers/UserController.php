@@ -158,7 +158,7 @@ class UserController extends Controller
                 }
 
                 // 演示环境禁止改管理员密码
-                if ($user->id === 1 && config('app.demo')) {
+                if ($user->id === 1 && config('app.env') === 'demo') {
                     return Redirect::back()->withErrors(trans('auth.password.reset.error.demo'));
                 }
 

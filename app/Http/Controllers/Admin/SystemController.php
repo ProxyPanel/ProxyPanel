@@ -152,7 +152,7 @@ class SystemController extends Controller
         }
 
         // 演示环境禁止修改特定配置项
-        if (config('app.demo')) {
+        if (config('app.env') === 'demo') {
             $denyConfig = [
                 'website_url',
                 'is_captcha',

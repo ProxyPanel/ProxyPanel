@@ -241,7 +241,7 @@ class UserController extends Controller
 
             // 非演示环境才可以修改管理员密码
             $password = $request->input('password');
-            if (! empty($password) && ! (config('app.demo') && $user->id === 1)) {
+            if (! empty($password) && (config('app.env') !== 'demo' || $user->id !== 1)) {
                 $data['password'] = $password;
             }
 
