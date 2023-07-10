@@ -43,15 +43,21 @@ class OrderObserver
                     $this->returnCoupon($order, $order->coupon);
                 }
 
-                if ($order->goods && $order->goods->type === 2 && $order->getOriginal('status') === 2 && Order::userActivePlan($order->user_id)->where('id', '<>', $order->id)->doesntExist()) { // 下一个套餐
+                if ($order->goods && $order->goods->type === 2 && $order->getOriginal('status') === 2 && Order::userPrepay($order->user_id)->exists()) { // 下一个套餐
                     $this->activatePrepaidPlan($order->user_id);
+                } else {
+                    (new OrderService($order))->refreshAccountExpiration();
                 }
             } elseif ($changes['status'] === 1) { // 待确认支付 通知管理
                 Notification::send(User::find(1), new PaymentConfirm($order));
             } elseif ($changes['status'] === 2 && $order->getOriginal('status') !== 3) { // 本地订单-在线订单 支付成功互联
                 (new OrderService($order))->receivedPayment();
-            } elseif ($changes['status'] === 3 && Order::userActivePlan($order->user_id)->doesntExist()) {
-                $this->activatePrepaidPlan($order->user_id);
+            } elseif ($changes['status'] === 3) {
+                if (Order::userActivePlan($order->user_id)->doesntExist()) {
+                    $this->activatePrepaidPlan($order->user_id);
+                } else {
+                    (new OrderService($order))->refreshAccountExpiration();
+                }
             }
         }
     }

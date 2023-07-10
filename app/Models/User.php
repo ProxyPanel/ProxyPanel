@@ -223,9 +223,9 @@ class User extends Authenticatable
         return $query->where('status', '<>', -1)->whereEnable(0);
     }
 
-    public function nodes(?int $userLevel = null, int $userGroupId = 0): Node|Builder|BelongsToMany
+    public function nodes(?int $userLevel = null, ?int $userGroupId = null): Node|Builder|BelongsToMany
     {
-        if ($userGroupId === 0 && $this->user_group_id) { // 使用默认的用户分组
+        if ($userGroupId === null && $this->user_group_id) { // 使用默认的用户分组
             $query = $this->userGroup->nodes();
         } elseif ($userGroupId) { // 使用给的用户分组
             $query = UserGroup::findOrFail($userGroupId)->nodes();
