@@ -18,7 +18,7 @@ class OrderService
 
     public static Payment|null $payment;
 
-    public function __construct(private readonly Order $order)
+    public function __construct(private Order $order)
     { // 获取需要的信息
         self::$user = $order->user;
         self::$goods = $order->goods;
@@ -42,7 +42,7 @@ class OrderService
                     break;
                 case 2: // 套餐
                     if (Order::userActivePlan(self::$user->id)->where('id', '<>', $this->order->id)->exists()) {// 判断套餐是否直接激活
-                        $ret = $this->setPrepaidPlan();
+                        $ret = $this->order->prepay();
                     } else {
                         $ret = $this->activatePlan();
                     }
@@ -75,21 +75,6 @@ class OrderService
         }
 
         return false;
-    }
-
-    private function setPrepaidPlan(): bool
-    { // 设置预支付套餐, 刷新账号有效时间用于流量重置判断
-        $this->order->prepay();
-
-        return self::$user->update(['expired_at' => $this->getFinallyExpiredTime()]);
-    }
-
-    public function getFinallyExpiredTime(): string
-    { // 推算最新的到期时间
-        $orders = self::$user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
-        $current = $orders->where('status', '==', 2)->first();
-
-        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->format('Y-m-d');
     }
 
     public function activatePlan(): bool
@@ -136,6 +121,14 @@ class OrderService
         ];
     }
 
+    private function getFinallyExpiredTime(): string
+    { // 推算最新的到期时间
+        $orders = self::$user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
+        $current = $orders->where('status', '==', 2)->first();
+
+        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->format('Y-m-d');
+    }
+
     private function setCommissionExpense(User $user)
     { // 佣金计算
         $referralType = sysConfig('referral_type');
@@ -160,6 +153,25 @@ class OrderService
                     ]);
             }
         }
+    }
+
+    public function refreshAccountExpiration(): bool
+    { // 刷新账号有效时间
+        $data = ['expired_at' => $this->getFinallyExpiredTime()];
+
+        if ($data['expired_at'] === now()->format('Y-m-d')) {
+            $data = array_merge([
+                'u' => 0,
+                'd' => 0,
+                'transfer_enable' => 0,
+                'enable' => 0,
+                'level' => 0,
+                'reset_time' => null,
+                'ban_time' => null,
+            ], $data);
+        }
+
+        return self::$user->update($data);
     }
 
     public function activatePrepaidPlan(): bool
