@@ -318,7 +318,7 @@ class AuthController extends Controller
         return false;
     }
 
-    private function getAff(string $code = '', int $aff = 0): array
+    private function getAff(?string $code, ?int $aff): array
     { // 获取AFF
         $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
 
@@ -342,7 +342,7 @@ class AuthController extends Controller
         return $data;
     }
 
-    private function setInviter(string|int $aff): int|null
+    private function setInviter(string|int $aff): ?int
     {
         $uid = 0;
         if (is_numeric($aff)) {

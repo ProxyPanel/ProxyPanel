@@ -99,7 +99,7 @@ trait ClientConfig
         return $encode ? base64_encode($uri) : $uri;
     }
 
-    private function clash(string $client = ''): string
+    private function clash(?string $client = null): string
     {
         $user = $this->getUser();
         $webName = sysConfig('website_name');

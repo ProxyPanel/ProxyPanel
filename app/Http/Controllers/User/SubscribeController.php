@@ -14,7 +14,7 @@ use Response;
 
 class SubscribeController extends Controller
 {
-    private static int|null $subType;
+    private static ?int $subType;
 
     private ProxyService $proxyServer;
 

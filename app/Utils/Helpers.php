@@ -53,7 +53,7 @@ class Helpers
      * @param  int|null  $inviter_id  邀请人
      * @param  string|null  $nickname  昵称
      */
-    public static function addUser(string $username, string $password, int $transfer_enable, string $date = null, int $inviter_id = null, string $nickname = null): User
+    public static function addUser(string $username, string $password, int $transfer_enable, ?string $date = null, ?int $inviter_id = null, ?string $nickname = null): User
     {
         return User::create([
             'nickname' => $nickname ?? $username,
@@ -133,7 +133,7 @@ class Helpers
      * @param  string|null  $msgId  对公查询ID
      * @param  string  $address  收信方
      */
-    public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, string $error = null, string $msgId = null, string $address = 'admin'): int
+    public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, ?string $error = null, ?string $msgId = null, string $address = 'admin'): int
     {
         $log = new NotificationLog();
         $log->type = $type;
@@ -156,7 +156,7 @@ class Helpers
      * @param  int|null  $goodsId  商品ID
      * @param  int|null  $orderId  订单ID
      */
-    public static function addCouponLog($description, $couponId, $goodsId = null, $orderId = null): bool
+    public static function addCouponLog(string $description, int $couponId, ?int $goodsId = null, ?int $orderId = null): bool
     {
         $log = new CouponLog();
         $log->coupon_id = $couponId;
@@ -175,9 +175,9 @@ class Helpers
      * @param  int  $before  记录前余额
      * @param  int  $after  记录后余额
      * @param  int  $amount  发生金额
-     * @param  string  $description  描述
+     * @param  string|null  $description  描述
      */
-    public static function addUserCreditLog($userId, $orderId, $before, $after, $amount, $description = ''): bool
+    public static function addUserCreditLog(int $userId, ?int $orderId, int $before, int $after, int $amount, ?string $description = null): bool
     {
         $log = new UserCreditLog();
         $log->user_id = $userId;
@@ -197,10 +197,10 @@ class Helpers
      * @param  int  $userId  用户ID
      * @param  int  $before  记录前的值
      * @param  int  $after  记录后的值
-     * @param  string  $description  描述
+     * @param  string|null  $description  描述
      * @param  int|null  $orderId  订单ID
      */
-    public static function addUserTrafficModifyLog(int $userId, int $before, int $after, string $description = '', $orderId = null): bool
+    public static function addUserTrafficModifyLog(int $userId, int $before, int $after, ?string $description = null, ?int $orderId = null): bool
     {
         $log = new UserDataModifyLog();
         $log->user_id = $userId;
@@ -215,14 +215,14 @@ class Helpers
     /**
      * 推销信息推送
      *
+     * @param  string  $receiver  收件人
      * @param  int  $type  渠道类型
      * @param  string  $title  标题
      * @param  string  $content  内容
      * @param  int  $status  状态
-     * @param  string  $error  报错
-     * @param  string  $receiver  收件人
+     * @param  string|null  $error  报错
      */
-    public static function addMarketing(int $type, string $title, string $content, int $status = 1, string $error = '', string $receiver = ''): bool
+    public static function addMarketing(string $receiver, int $type, string $title, string $content, int $status = 1, ?string $error = null): bool
     {
         $marketing = new Marketing();
         $marketing->type = $type;

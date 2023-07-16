@@ -21,7 +21,7 @@ trait ClientApiResponse
         self::$client = $client;
     }
 
-    public function succeed(array|null $data = null, array|null $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
+    public function succeed(?array $data = null, ?array $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
     {
         return $this->jsonResponse(1, $codeResponse, $data, $addition);
     }

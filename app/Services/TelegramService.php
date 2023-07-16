@@ -8,7 +8,7 @@ class TelegramService
 {
     private static string $api;
 
-    public function __construct(string $token = null)
+    public function __construct(?string $token = null)
     {
         self::$api = 'https://api.telegram.org/bot'.($token ?? sysConfig('telegram_token')).'/';
     }
