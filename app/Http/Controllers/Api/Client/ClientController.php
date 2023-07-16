@@ -247,7 +247,7 @@ class ClientController extends Controller
         return $this->succeed(null, ['config' => $config]);
     }
 
-    private function clientConfig($key = '')
+    private function clientConfig(?string $key = null)
     {
         if (! config('client')) {
             Artisan::call('config:cache');

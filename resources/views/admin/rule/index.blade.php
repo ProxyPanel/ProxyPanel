@@ -35,7 +35,7 @@
                     <thead class="thead-default">
                     <tr>
                         <th> #</th>
-                        <th> {{ trans('model.rule.type') }}</th>
+                        <th> {{ trans('model.rule.attribute') }}</th>
                         <th> {{ trans('model.rule.name') }}</th>
                         <th> {{ trans('model.rule.pattern') }}</th>
                         <th> {{trans('common.action')}}</th>
@@ -101,7 +101,7 @@
                         <div class="form-row">
                             <div class="col-12">
                                 <div class="form-group row">
-                                    <label class="col-md-2 col-sm-3 col-form-label" for="add_type">{{ trans('model.rule.type') }}</label>
+                                    <label class="col-md-2 col-sm-3 col-form-label" for="add_type">{{ trans('model.rule.attribute') }}</label>
                                     <div class="col-xl-4 col-sm-8">
                                         <select class="form-control" name="add_type" id="add_type" data-plugin="selectpicker" data-style="btn-outline btn-primary">
                                             <option value="1">{{ trans('admin.rule.type.reg') }}</option>

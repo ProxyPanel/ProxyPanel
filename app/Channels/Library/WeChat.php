@@ -9,7 +9,7 @@ use Str;
 
 class WeChat
 {
-    public function EncryptMsg(string $sReplyMsg, int|null $sTimeStamp, string $sNonce, string &$sEncryptMsg)
+    public function EncryptMsg(string $sReplyMsg, ?int $sTimeStamp, string $sNonce, string &$sEncryptMsg)
     { //将公众平台回复用户的消息加密打包.
         //加密
         $array = (new Prpcrypt())->encrypt($sReplyMsg);
@@ -72,7 +72,7 @@ class WeChat
         return sprintf($format, $encrypt, $signature, $timestamp, $nonce);
     }
 
-    public function DecryptMsg(string $sMsgSignature, int|null $sTimeStamp, string $sNonce, string $sPostData, string &$sMsg)
+    public function DecryptMsg(string $sMsgSignature, ?int $sTimeStamp, string $sNonce, string $sPostData, string &$sMsg)
     { // 检验消息的真实性，并且获取解密后的明文.
         //提取密文
         $array = $this->extract($sPostData);

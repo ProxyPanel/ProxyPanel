@@ -9,7 +9,7 @@ class UserService
 {
     private static User $user;
 
-    public function __construct(User $user = null)
+    public function __construct(?User $user = null)
     {
         self::$user = $user ?? auth()->user();
     }

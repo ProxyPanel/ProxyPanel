@@ -38,7 +38,7 @@ class CloudFlare implements DNS
         exit(400);
     }
 
-    private function send(string $action, array $parameters = [], string $identifier = null): array
+    private function send(string $action, array $parameters = [], ?string $identifier = null): array
     {
         $client = Http::timeout(10)->retry(3, 1000)->withHeaders($this->auth)->baseUrl($this->apiHost)->asJson();
 

@@ -17,7 +17,7 @@ class ProxyService
 
     private static array $servers;
 
-    public function __construct(?User $user)
+    public function __construct(?User $user = null)
     {
         self::$user = $user ?? auth()->user();
     }
@@ -83,12 +83,12 @@ class ProxyService
     { // 提取节点信息
         $user = self::$user;
         $config = [
-            'id'    => $node->id,
-            'name'  => $node->name,
-            'area'  => $node->country->name,
-            'host'  => $node->host,
+            'id' => $node->id,
+            'name' => $node->name,
+            'area' => $node->country->name,
+            'host' => $node->host,
             'group' => sysConfig('website_name'),
-            'udp'   => $node->is_udp,
+            'udp' => $node->is_udp,
         ];
 
         if ($node->relay_node_id) {
@@ -102,7 +102,7 @@ class ProxyService
             switch ($node->type) {
                 case 0:
                     $config = array_merge($config, [
-                        'type'   => 'shadowsocks',
+                        'type' => 'shadowsocks',
                         'passwd' => $user->passwd,
                     ], $node->profile);
                     if ($node->port && $node->port !== 0) {
@@ -120,10 +120,10 @@ class ProxyService
                     break;
                 case 3:
                     $config = array_merge($config, [
-                        'type'   => 'trojan',
-                        'port'   => $node->port,
+                        'type' => 'trojan',
+                        'port' => $node->port,
                         'passwd' => $user->passwd,
-                        'sni'    => '',
+                        'sni' => '',
                     ], $node->profile);
                     break;
                 case 1:

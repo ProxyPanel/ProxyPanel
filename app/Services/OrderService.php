@@ -14,9 +14,9 @@ class OrderService
 {
     public static User $user;
 
-    public static Goods|null $goods;
+    public static ?Goods $goods;
 
-    public static Payment|null $payment;
+    public static ?Payment $payment;
 
     public function __construct(private Order $order)
     { // 获取需要的信息
@@ -100,7 +100,7 @@ class OrderService
         return false;
     }
 
-    public function resetTimeAndData(string|null $expired_at = null): array
+    public function resetTimeAndData(?string $expired_at = null): array
     { // 计算下次重置与账号过期时间
         if (! $expired_at) { // 账号有效期
             $expired_at = $this->getFinallyExpiredTime();
