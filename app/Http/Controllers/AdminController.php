@@ -9,6 +9,7 @@ use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeDailyDataFlow;
+use App\Models\NodeHourlyDataFlow;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
@@ -28,9 +29,9 @@ class AdminController extends Controller
     public function index()
     {
         $past = strtotime('-'.sysConfig('expire_days').' days');
+        $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', date('Y-m-d'))->sum(\DB::raw('u + d'));
 
         return view('admin.index', [
-            'expireDays' => sysConfig('expire_days'),
             'totalUserCount' => User::count(), // 总用户数
             'todayRegister' => User::whereDate('created_at', date('Y-m-d'))->count(), // 今日注册用户
             'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
@@ -42,10 +43,10 @@ class AdminController extends Controller
             'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
             'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
             'nodeCount' => Node::count(),
-            'unnormalNodeCount' => Node::whereStatus(0)->count(),
-            'flowCount' => formatBytes(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d', strtotime('-30 days')))->sum('total')),
-            'todayFlowCount' => formatBytes(NodeDailyDataFlow::where('created_at', '>=', date('Y-m-d'))->sum('total')),
-            'totalFlowCount' => formatBytes(NodeDailyDataFlow::sum('total')),
+            'abnormalNodeCount' => Node::whereStatus(0)->count(),
+            'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', date('n'))->sum(\DB::raw('u + d'))),
+            'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
+            'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(\DB::raw('u + d'))),
             'totalCredit' => User::where('credit', '<>', 0)->sum('credit') / 100,
             'totalWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100,
             'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100,

@@ -71,7 +71,7 @@ class ReportController extends Controller
         if (isset($user)) {
             // 用户当前小时在各线路消耗流量
             $data['currentHourlyFlow'] = $user->dataFlowLogs()
-                ->where('log_time', '>=', strtotime(date('Y-m-d H:00')))
+                ->where('log_time', '>=', now()->startOfHour()->timestamp)
                 ->groupBy('node_id')
                 ->selectRaw('node_id, sum(u + d) as total')
                 ->get()->toArray();
@@ -79,8 +79,8 @@ class ReportController extends Controller
             // 用户今天各小时在各线路消耗流量
             $data['hours'] = range(0, 23);
             $data['hourlyFlow'] = $user->hourlyDataFlows()->whereNotNull('node_id')
-                ->where('created_at', '>=', date('Y-m-d H:i:s', strtotime('-1 days')))
-                ->selectRaw('node_id, (DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, total')
+                ->whereDate('created_at', now())
+                ->selectRaw('node_id, (DATE_FORMAT(user_hourly_data_flow.created_at, "%k")) as date, u + d as total')
                 ->get()->transform(function ($item) {
                     return [
                         'node_id' => $item->node_id,
@@ -93,8 +93,7 @@ class ReportController extends Controller
             $data['days'] = range(1, date('j'));
             $data['dailyFlow'] = $user->dailyDataFlows()->whereNotNull('node_id')
                 ->whereMonth('created_at', date('n'))
-                ->where('total', '>', 6000000)
-                ->selectRaw('node_id, (DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, total')
+                ->selectRaw('node_id, (DATE_FORMAT(user_daily_data_flow.created_at, "%e")) as date, u + d as total')
                 ->get()->transform(function ($item) {
                     return [
                         'node_id' => $item->node_id,

@@ -45,23 +45,21 @@ class TaskHourly extends Command
                     ->get();
 
                 $data = $logs->each(function ($log) use ($created_at) {
-                    $log->total = $log->u + $log->d;
-                    $log->traffic = formatBytes($log->total);
                     $log->created_at = $created_at;
-                })->flatten()->toArray();
+                })->toArray();
                 $overall = [ // 每小时节点流量合计
+                    'node_id' => null,
                     'u' => $logs->sum('u'),
                     'd' => $logs->sum('d'),
-                    'total' => $logs->sum('total'),
-                    'traffic' => formatBytes($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
                 $data[] = $overall;
                 $user->hourlyDataFlows()->createMany($data);
+                $overall['total'] = $overall['u'] + $overall['d'];
 
                 // 用户流量异常警告
                 if ($data_anomaly_notification && $overall['total'] >= $traffic_ban_value) {
-                    Notification::send(User::find(1), new DataAnomaly($user->username, formatBytes($overall['u']), formatBytes($overall['d']), $overall['traffic']));
+                    Notification::send(User::find(1), new DataAnomaly($user->username, formatBytes($overall['u']), formatBytes($overall['d']), formatBytes($overall['total'])));
                 }
             }
         });
@@ -77,17 +75,8 @@ class TaskHourly extends Command
             $query->whereBetween('log_time', [$start, $end]);
         })->chunk(config('tasks.chunk'), function ($nodes) use ($start, $end, $created_at) {
             foreach ($nodes as $node) {
-                $traffic = $node->userDataFlowLogs()
-                    ->whereBetween('log_time', [$start, $end])
-                    ->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
-                $total = $traffic->u + $traffic->d;
-                $node->hourlyDataFlows()->create([
-                    'u' => $traffic->u,
-                    'd' => $traffic->d,
-                    'total' => $total,
-                    'traffic' => formatBytes($total),
-                    'created_at' => $created_at,
-                ]);
+                $traffic = $node->userDataFlowLogs()->whereBetween('log_time', [$start, $end])->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
+                $node->hourlyDataFlows()->create(['u' => $traffic->u, 'd' => $traffic->d, 'created_at' => $created_at]);
             }
         });
     }

@@ -126,10 +126,10 @@ class TaskDaily extends Command
 
     private function userTrafficStatistics(): void
     {
-        $created_at = date('Y-m-d 23:59:59', strtotime('-1 days'));
+        $created_at = date('Y-m-d 23:59:59', strtotime('yesterday'));
         $end = strtotime($created_at);
         $start = $end - 86399;
-        // todo: laravel10 得改
+
         User::activeUser()->with('dataFlowLogs')->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
         })->chunk(config('tasks.chunk'), function ($users) use ($start, $end, $created_at) {
@@ -141,16 +141,13 @@ class TaskDaily extends Command
                     ->get();
 
                 $data = $logs->each(function ($log) use ($created_at) {
-                    $log->total = $log->u + $log->d;
-                    $log->traffic = formatBytes($log->total);
                     $log->created_at = $created_at;
-                })->flatten()->toArray();
+                })->toArray();
 
                 $data[] = [ // 每日节点流量合计
+                    'node_id' => null,
                     'u' => $logs->sum('u'),
                     'd' => $logs->sum('d'),
-                    'total' => $logs->sum('total'),
-                    'traffic' => formatBytes($logs->sum('total')),
                     'created_at' => $created_at,
                 ];
 
@@ -161,25 +158,16 @@ class TaskDaily extends Command
 
     private function nodeTrafficStatistics(): void
     {
-        $created_at = date('Y-m-d 23:59:59', strtotime('-1 day'));
+        $created_at = date('Y-m-d 23:59:59', strtotime('yesterday'));
         $end = strtotime($created_at);
         $start = $end - 86399;
 
-        Node::orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
+        Node::with('userDataFlowLogs')->whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
         })->chunk(config('tasks.chunk'), function ($nodes) use ($start, $end, $created_at) {
             foreach ($nodes as $node) {
-                $traffic = $node->userDataFlowLogs()
-                    ->whereBetween('log_time', [$start, $end])
-                    ->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
-                $total = $traffic->u + $traffic->d;
-                $node->dailyDataFlows()->create([
-                    'u' => $traffic->u,
-                    'd' => $traffic->d,
-                    'total' => $total,
-                    'traffic' => formatBytes($total),
-                    'created_at' => $created_at,
-                ]);
+                $log = $node->userDataFlowLogs()->whereBetween('log_time', [$start, $end])->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
+                $node->dailyDataFlows()->create(['u' => $log->u, 'd' => $log->d, 'created_at' => $created_at]);
             }
         });
     }

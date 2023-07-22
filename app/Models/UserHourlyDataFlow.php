@@ -42,11 +42,11 @@ class UserHourlyDataFlow extends Model
     public function trafficAbnormal(): array
     {
         $userTotalTrafficList = self::whereNodeId(null)
-            ->where('total', '>', MiB * 50)
+            ->where('d', '>', MiB * 10)
             ->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900))
             ->groupBy('user_id')
-            ->selectRaw('user_id, sum(total) as totalTraffic')->pluck('totalTraffic', 'user_id')
-            ->toArray(); // 只统计50M以上的记录，加快速度
+            ->selectRaw('user_id, sum(u + d) as total')->pluck('total', 'user_id')
+            ->toArray(); // 只统计10M以上的记录，加快速度
         foreach ($userTotalTrafficList as $user => $traffic) {
             if ($traffic > (int) sysConfig('traffic_ban_value') * GiB) {
                 $result[] = $user;
