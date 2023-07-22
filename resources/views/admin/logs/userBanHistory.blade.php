@@ -46,7 +46,7 @@
                                     【{{trans('common.deleted_item', ['attribute' => trans('common.account')])}}】
                                 @endif
                             </td>
-                            <td> {{$log->time}}{{ trans('admin.minute') }}</td>
+                            <td> {{$log->time}} {{ trans('admin.minute') }}</td>
                             <td> {{$log->description}} </td>
                             <td> {{$log->created_at}} </td>
                             <td> {{date('Y-m-d H:i:s', $log->user->t)}} </td>

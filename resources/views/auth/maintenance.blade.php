@@ -23,8 +23,8 @@
             const hours = Math.floor(distance % 86400000 / 3600000);
             const minutes = Math.floor(distance % 3600000 / 60000);
             const seconds = Math.floor(distance % 60000 / 1000);
-            document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> {{trans_choice('common.days.attribute', 1)}} </span>: ' +
-                hours + ' <span>{{trans_choice('common.hour', 1)}}</span>: ' + minutes + ' <span>{{trans('validation.attributes.minute')}} </span>: ' +
+            document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> ' + @json(trans_choice('common.days.attribute', 1)) + ' </span>: ' +
+                hours + ' <span>' + @json(trans_choice('common.hour', 1)) + '</span>: ' + minutes + ' <span>{{trans('validation.attributes.minute')}} </span>: ' +
                 seconds + '<span> {{trans('validation.attributes.second')}}</span> </h2>';
             if (distance <= 0) {
                 clearInterval(x);

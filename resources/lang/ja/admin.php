@@ -13,8 +13,8 @@ return [
         'abnormal_users' => '1時間利用例外',
         'nodes' => 'ノード',
         'maintaining_nodes' => 'メンテナンス中のノード',
-        'traffic_consumed' => 'レコードの消費量',
-        'traffic_days_consumed' => ':days の使用状況',
+        'current_month_traffic_consumed' => '今月の消費量',
+        'days_traffic_consumed' => ':days データの消費量',
         'orders' => '合計注文数',
         'online_orders' => 'オンライン決済注文数',
         'succeed_orders' => '成功注文数',
@@ -152,7 +152,7 @@ return [
         'refresh_geo_all' => '全てのノードの情報を再読込',
         'reload_confirm' => 'ノードを再読込しますか？',
         'info' => [
-            'hint' => '<strong>注意：</strong> 添加节点后自动生成的<code>ID</code>，即为该节点部署ShadowsocksR Python版后端时<code>usermysql.json</code>中的<code>node_id</code>的值，同时也是部署V2Ray后端时的<code>nodeId</code>的值；',
+            'hint' => '<strong>注意：</strong> ノードを追加した後に自動生成される<code>ID</code>は、ノードにShadowsocksR Python版バックエンドをデプロイしたときの<code>usermysql.json</code>の<code>node_id</code>の値であり、同時にV2Rayバックエンドをデプロイしたときの<code>nodeId</code>の値でもあります',
             'basic' => '一般的な情報',
             'ddns_hint' => '動的IPノードは<a href="https://github.com/NewFuture/DDNS" target="_blank">DDNS</a>を設定する必要があります。この型のノードがブロックされ、ドメインによる検出機能はドメインで行います。',
             'domain_placeholder' => 'ドメインのネームスペースです。ドメインの優先を優先',
@@ -193,7 +193,7 @@ return [
             ],
             'v2_host_hint' => '偽装型は、http中に存在する複数のドメインのカンマで区切り、WebSocketを使用した際に通信プロトコルを使用する場合にのみ適用されます。',
             'v2_tls_provider_hint' => '異なるバックエンドが構成され：',
-            'single_hint' => '推荐80或443，服务端需要配置 <br> 严格模式：用户的端口无法连接，只能通过以下指定的端口进行连接（<a href="javascript:showPortsOnlyConfig();">如何配置</a>）',
+            'single_hint' => '80または443を推奨します。サーバー側で設定が必要です <br> 厳格モード：ユーザーのポートに接続できず、以下の指定されたポートからのみ接続できます（<a href=“javascript:showPortsOnlyConfig();”>設定方法</a>）',
         ],
         'proxy_info' => '*SSドット',
         'proxy_info_hint' => 'サーバー構成プロトコルを使用するときは、<span class="red-700">_compatible</span> を混乱させていることを確認してください.',
@@ -250,7 +250,7 @@ return [
             'not_enough' => 'アクセス数が15000件以下で、データ分析に失敗しました',
         ],
         'convert' => [
-            'title' => '格式转换 <small>Shadowsocks 转 ShadowsocksR</small>',
+            'title' => 'フォーマット変換 <small>Shadowsocks から ShadowsocksR へ</small>',
             'content_placeholder' => '設定値を入力してください！',
         ],
         'decompile' => [

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'hour' => '{1} タイム|{2} ポイント',
+    'hour' => '{1} 時間|{2} 時',
     'account' => 'アカウント',
     'available_date' => '有効期限',
     'created_at' => '作成日時',
@@ -9,17 +9,18 @@ return [
     'updated_at' => '更新日時',
     'latest_at' => '最近の回',
     'back' => '帰還',
+    'back_to' => '開始まで戻る:page',
     'cancel' => '中止',
     'close' => '閉鎖',
     'close_item' => ':attribute は無効なものです。',
     'confirm' => 'ああ',
-    'continues' => '作業を実行',
+    'continues' => '続けます',
     'open' => '撃て',
     'send' => '送信',
     'view' => '確認',
     'reset' => '設定',
     'copy' => [
-        'attribute' => '回復時間',
+        'attribute' => 'コピー',
         'success' => 'コピー成功',
         'failed' => 'コピーに失敗しました。手動でコピーしてください。',
     ],
@@ -61,7 +62,7 @@ return [
         'fullscreen' => 'フルスクリーン',
     ],
     'days' => [
-        'attribute' => '{1} 日|{2}',
+        'attribute' => '{1} 日間|{2} 日目',
         'sun' => '日曜日',
         'mon' => '月曜日',
         'tue' => '火曜日',
