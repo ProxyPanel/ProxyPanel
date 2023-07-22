@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -28,13 +29,17 @@ class UserDataModifyLog extends Model
         return $this->belongsTo(Order::class);
     }
 
-    public function getBeforeAttribute($value): string
+    public function before(): Attribute
     {
-        return $this->attributes['before'] = formatBytes($value);
+        return Attribute::make(
+            get: static fn (int $value) => formatBytes($value),
+        );
     }
 
-    public function getAfterAttribute($value): string
+    public function after(): Attribute
     {
-        return $this->attributes['after'] = formatBytes($value);
+        return Attribute::make(
+            get: static fn (int $value) => formatBytes($value),
+        );
     }
 }

@@ -70,26 +70,6 @@
             };
           }
 
-          const common_options = {
-            stack: 'node_id',
-            parsing: {
-              xAxisKey: 'date',
-              yAxisKey: 'total',
-            },
-            responsive: true,
-            plugins: {
-              legend: {
-                labels: {
-                  padding: 20,
-                  usePointStyle: true,
-                  pointStyle: 'circle',
-                  font: {size: 14},
-                },
-              },
-              tooltip: label_callbacks(' {{ trans_choice('common.days.attribute', 1) }}'),
-            },
-          };
-
           function area_a(label, data) {
             return {
               label: label,
@@ -110,7 +90,33 @@
               labels: @json($data['hours']),
               datasets: [area_a('{{ trans('admin.report.today') }}',@json($data['hourlyFlow']))],
             },
-            options: common_options,
+            options: {
+                // stack: 'node_id',
+                parsing: {
+                    xAxisKey: 'date',
+                    yAxisKey: 'total',
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {size: 14},
+                        },
+                    },
+                    tooltip: label_callbacks(' {{ trans_choice('common.hour', 2) }}'),
+                },
+            },
           });
 
           new Chart(document.getElementById('dailyBar'), {
@@ -119,7 +125,33 @@
               labels: @json($data['days']),
               datasets: [area_a('{{ trans('admin.report.current_month') }}',@json($data['dailyFlow']))],
             },
-            options: common_options,
+            options: {
+                // stack: 'node_id',
+                parsing: {
+                    xAxisKey: 'date',
+                    yAxisKey: 'total',
+                },
+                scales: {
+                    x: {
+                        stacked: true
+                    },
+                    y: {
+                        stacked: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: {size: 14},
+                        },
+                    },
+                    tooltip: label_callbacks(' {{ trans_choice('common.days.attribute', 1) }}'),
+                },
+            },
           });
         </script>
     @endisset

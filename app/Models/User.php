@@ -296,7 +296,7 @@ class User extends Authenticatable
 
     public function recentTrafficUsed()
     {
-        return UserHourlyDataFlow::userRecentUsed($this->id)->sum('total');
+        return UserHourlyDataFlow::userRecentUsed($this->id)->sum(\DB::raw('u + d'));
     }
 
     public function orders(): HasMany

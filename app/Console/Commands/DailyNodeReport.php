@@ -2,11 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
 use App\Models\User;
 use App\Notifications\NodeDailyReport;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 use Log;
 use Notification;
 
@@ -21,35 +20,29 @@ class DailyNodeReport extends Command
         $jobTime = microtime(true);
 
         if (sysConfig('node_daily_notification')) {
-            $date = date('Y-m-d', strtotime('-1 days'));
-            $nodeList = Node::with('dailyDataFlows')->whereHas('dailyDataFlows', function (Builder $query) use ($date) {
-                $query->whereDate('created_at', $date);
-            })->get();
-            if ($nodeList->isNotEmpty()) {
-                $data = [];
-                $upload = 0;
-                $download = 0;
-                foreach ($nodeList as $node) {
-                    $log = $node->dailyDataFlows()->whereDate('created_at', $date)->first();
-                    $data[] = [
-                        'name' => $node->name,
-                        'upload' => formatBytes($log->u ?? 0),
-                        'download' => formatBytes($log->d ?? 0),
-                        'total' => $log->traffic ?? '',
-                    ];
-                    $upload += $log->u ?? 0;
-                    $download += $log->d ?? 0;
-                }
-                if ($data) {
-                    $data[] = [
-                        'name' => trans('notification.node.total'),
-                        'total' => formatBytes($upload + $download),
-                        'upload' => formatBytes($upload),
-                        'download' => formatBytes($download),
-                    ];
+            $nodeDailyLogs = NodeDailyDataFlow::with('node:id,name')->has('node')->orderBy('node_id')->whereDate('created_at', date('Y-m-d', strtotime('yesterday')))->get();
 
-                    Notification::send(User::role('Super Admin')->get(), new NodeDailyReport($data));
-                }
+            $data = [];
+            foreach ($nodeDailyLogs as $log) {
+                $data[] = [
+                    'name' => $log->node->name,
+                    'upload' => formatBytes($log->u),
+                    'download' => formatBytes($log->d),
+                    'total' => formatBytes($log->u + $log->d),
+                ];
+            }
+
+            if ($data) {
+                $u = $nodeDailyLogs->sum('u');
+                $d = $nodeDailyLogs->sum('d');
+                $data[] = [
+                    'name' => trans('notification.node.total'),
+                    'upload' => formatBytes($u),
+                    'download' => formatBytes($d),
+                    'total' => formatBytes($u + $d),
+                ];
+
+                Notification::send(User::role('Super Admin')->get(), new NodeDailyReport($data));
             }
         }
 

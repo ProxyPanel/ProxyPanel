@@ -9,9 +9,6 @@ return new class extends Migration
 
     private static array $newConfigs = ['paypal_client_id', 'paypal_client_secret'];
 
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         if (Config::exists()) {
@@ -24,9 +21,6 @@ return new class extends Migration
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         foreach (self::$newConfigs as $config) {

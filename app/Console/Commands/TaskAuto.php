@@ -81,13 +81,13 @@ class TaskAuto extends Command
                 $query->whereStatus(1); // 获取有订阅且未被封禁用户
             })
             ->whereHas('subscribeLogs', function (Builder $query) {
-                $query->where('request_time', '>=', date('Y-m-d H:i:s', strtotime('-1 day'))); //    ->distinct()->count('request_ip');
+                $query->whereDate('request_time', '>=', now()->subDay()); //    ->distinct()->count('request_ip');
             }, '>=', sysConfig('subscribe_ban_times'))
             ->chunk(config('tasks.chunk'), function ($users) {
                 $trafficBanTime = sysConfig('traffic_ban_time');
                 $ban_time = strtotime($trafficBanTime.' minutes');
                 $dirtyWorks = ['status' => 0, 'ban_time' => $ban_time, 'ban_desc' => 'Subscription link receive abnormal access and banned by the system'];
-                $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Job] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
+                $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
                 foreach ($users as $user) {
                     $user->subscribe->update($dirtyWorks);
                     $user->banedLogs()->create($banMsg); // 记录封禁日志
@@ -112,7 +112,7 @@ class TaskAuto extends Command
             ->chunk(config('tasks.chunk'), function ($users) {
                 foreach ($users as $user) {
                     $user->update(['enable' => 0]);
-                    $user->banedLogs()->create(['description' => __('[Auto Job] Blocked service: Run out of traffic')]); // 写入日志
+                    $user->banedLogs()->create(['description' => __('[Auto Task] Blocked service: Run out of traffic')]); // 写入日志
                 }
             });
 
@@ -127,7 +127,7 @@ class TaskAuto extends Command
                         // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
                         if ($user->isTrafficWarning()) {
                             $user->update(['enable' => 0, 'ban_time' => $ban_time]);
-                            $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => __('[Auto Job] Blocked service: Abnormal traffic within 1 hour')]); // 写入日志
+                            $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked service: Abnormal traffic within 1 hour')]); // 写入日志
                         }
                     }
                 });

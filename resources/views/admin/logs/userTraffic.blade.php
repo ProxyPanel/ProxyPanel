@@ -54,10 +54,10 @@
                                     @endif
                                 @endif
                             </td>
-                            <td> {{$log->before}} </td>
-                            <td> {{$log->after}} </td>
-                            <td> {{$log->description}} </td>
-                            <td> {{$log->created_at}} </td>
+                            <td> {{ $log->before }} </td>
+                            <td> {{ $log->after }} </td>
+                            <td> {{ $log->description }} </td>
+                            <td> {{ $log->created_at }} </td>
                         </tr>
                     @endforeach
                     </tbody>
@@ -70,7 +70,7 @@
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$userTrafficLogs->links()}}
+                            {{ $userTrafficLogs->links() }}
                         </nav>
                     </div>
                 </div>

@@ -56,7 +56,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-success">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.active_days_users', ['days' => $expireDays]) }}</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.active_days_users', ['days' => sysConfig('expire_days')]) }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$activeUserCount}}</span>
                             </div>
@@ -69,7 +69,7 @@
                             <button type="button" class="btn btn-floating btn-sm btn-warning">
                                 <i class="icon md-account"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.inactive_days_users', ['days' => $expireDays]) }}</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.inactive_days_users', ['days' => sysConfig('expire_days')]) }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$inactiveUserCount}}</span>
                             </div>
@@ -151,7 +151,7 @@
                             </button>
                             <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.maintaining_nodes') }}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-40 font-weight-100">{{$unnormalNodeCount}}</span>
+                                <span class="font-size-40 font-weight-100">{{$abnormalNodeCount}}</span>
                             </div>
                         </div>
                     </a>
@@ -164,25 +164,25 @@
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-time-countdown"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.traffic_consumed') }}</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.days_traffic_consumed', ['days' => now()->diffInDays((new DateTime())->modify(config('tasks.clean.node_daily_logs')))]) }}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-40 font-weight-100">{{$totalFlowCount}}</span>
+                                <span class="font-size-40 font-weight-100">{{ $totalTrafficUsage }}</span>
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-xl-3 col-md-6 info-panel">
-                    <a href="{{route('admin.log.traffic')}}" class="card card-shadow">
+                    <a href="{{ route('admin.log.traffic') }}" class="card card-shadow">
                         <div class="card-block bg-white">
                             <button type="button" class="btn btn-floating btn-sm btn-primary">
                                 <i class="icon md-time-countdown"></i>
                             </button>
-                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.traffic_days_consumed', ['days' => 30]) }}</span>
+                            <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.current_month_traffic_consumed') }}</span>
                             <div class="content-text text-center mb-0">
-                                <span class="font-size-40 font-weight-100">{{$flowCount}}</span>
-                                @if($todayFlowCount !== '0B')
+                                <span class="font-size-40 font-weight-100">{{ $monthlyTrafficUsage }}</span>
+                                @if( $dailyTrafficUsage !== 0 )
                                     <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
-                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$todayFlowCount}}
+                                    <i class="icon wb-triangle-up" aria-hidden="true"></i> {{ $dailyTrafficUsage }}
                                 </span>
                                 @endif
                             </div>
