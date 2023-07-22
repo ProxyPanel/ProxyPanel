@@ -53,7 +53,7 @@
               intersect: false,
               callbacks: {
                 title: function(context) {
-                  return context[0].label + tail;
+                  return context[0].label + ' ' + tail;
                 },
                 label: function(context) {
                   let label = context.dataset.label || '';
@@ -114,7 +114,7 @@
                             font: {size: 14},
                         },
                     },
-                    tooltip: label_callbacks(' {{ trans_choice('common.hour', 2) }}'),
+                    tooltip: label_callbacks(@json(trans_choice('common.hour', 2))),
                 },
             },
           });
@@ -149,7 +149,7 @@
                             font: {size: 14},
                         },
                     },
-                    tooltip: label_callbacks(' {{ trans_choice('common.days.attribute', 1) }}'),
+                    tooltip: label_callbacks(@json(trans_choice('common.days.attribute', 2))),
                 },
             },
           });

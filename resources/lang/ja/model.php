@@ -190,7 +190,7 @@ return [
     ],
     'aff' => [
         'invitee' => '消費者',
-        'amount' => '金銭的額',
+        'amount' => '消費金額',
         'commission' => '払戻額',
         'updated_at' => '処理時間',
         'created_at' => '注文なし',

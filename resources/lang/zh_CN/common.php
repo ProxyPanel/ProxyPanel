@@ -9,6 +9,7 @@ return [
     'updated_at' => '更新时间',
     'latest_at' => '最近时间',
     'back' => '返 回',
+    'back_to' => '返回至:page',
     'cancel' => '取 消',
     'close' => '关 闭',
     'close_item' => '关闭:attribute',

@@ -359,7 +359,7 @@
             x: {
               ticks: {
                 callback: function(value) {
-                  return this.getLabelForValue(value) + tail;
+                  return this.getLabelForValue(value) + ' ' + tail;
                 },
               },
               grid: {
@@ -385,7 +385,7 @@
               intersect: false,
               callbacks: {
                 title: function(context) {
-                  return context[0].label + tail;
+                  return context[0].label + ' ' + tail;
                 },
                 label: function(context) {
                   return context.parsed.y + ' GB';
@@ -412,13 +412,13 @@
       new Chart(document.getElementById('dailyChart'), {
         type: 'line',
         data: datasets(@json($dayHours), @json($trafficHourly)),
-        options: common_options(' {{trans_choice('common.hour', 2)}}'),
+        options: common_options(@json(trans_choice('common.hour', 2))),
       });
 
       new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: datasets(@json($monthDays), @json($trafficDaily)),
-        options: common_options(' {{trans_choice('common.days.attribute', 2)}}'),
+        options: common_options(@json(trans_choice('common.days.attribute', 2))),
       });
 
       @if($banedTime) // 封禁倒计时
@@ -443,13 +443,13 @@
         const minute = Math.floor((distance % 3600000) / 60000);
         let string = '';
         if (hour) {
-          string += hour + '{{ trans_choice('common.hour', 1) }} ';
+          string += hour + ' ' + @json(trans_choice('common.hour', 1));
         }
         if (minute) {
-          string += minute + '{{ trans('validation.attributes.minute') }}';
+          string += ' ' + minute + ' ' + @json(trans('validation.attributes.minute'));
         }
         if (seconds) {
-          string += ' ' + Math.floor((distance % 60000) / 1000) + '{{trans('validation.attributes.second')}}';
+          string += ' ' + Math.floor((distance % 60000) / 1000) + ' ' + @json(trans('validation.attributes.second'));
         }
         document.getElementById(id).innerHTML = string;
 

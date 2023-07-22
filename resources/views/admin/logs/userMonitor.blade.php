@@ -35,7 +35,7 @@
             x: {
               ticks: {
                 callback: function(value) {
-                  return this.getLabelForValue(value) + tail;
+                  return this.getLabelForValue(value) + ' ' + tail;
                 },
               },
               grid: {
@@ -62,7 +62,7 @@
               intersect: false,
               callbacks: {
                 title: function(context) {
-                  return context[0].label + tail;
+                  return context[0].label + ' ' + tail;
                 },
                 label: function(context) {
                   return context.parsed.y + ' GB';
@@ -89,13 +89,13 @@
       new Chart(document.getElementById('dailyChart'), {
         type: 'line',
         data: datasets(@json($dayHours), @json($trafficHourly)),
-        options: common_options(' {{trans_choice('common.hour', 2)}}'),
+        options: common_options(@json(trans_choice('common.hour', 2))),
       });
 
       new Chart(document.getElementById('monthlyChart'), {
         type: 'line',
         data: datasets(@json($monthDays), @json($trafficDaily)),
-        options: common_options(' {{trans_choice('common.days.attribute', 2)}}'),
+        options: common_options(@json(trans_choice('common.days.attribute', 2))),
       });
     </script>
 @endsection

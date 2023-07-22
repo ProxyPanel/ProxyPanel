@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'hour' => '{1} Hour | {2} O\'clock',
+    'hour' => '{1} Hour|{2} O\'clock',
     'account' => 'Account',
     'available_date' => 'Available Until/Period',
     'created_at' => 'Created At',
@@ -9,6 +9,7 @@ return [
     'updated_at' => 'Updated At',
     'latest_at' => 'Latest Activity',
     'back' => 'Back',
+    'back_to' => 'Back to :page',
     'cancel' => 'Cancel',
     'close' => 'Close',
     'close_item' => 'Close :attribute',
@@ -61,7 +62,7 @@ return [
         'fullscreen' => 'Fullscreen',
     ],
     'days' => [
-        'attribute' => '{1} Days | Day {2}',
+        'attribute' => '{1} Days|{2} Day',
         'sun' => 'Sunday',
         'mon' => 'Monday',
         'tue' => 'Tuesday',
