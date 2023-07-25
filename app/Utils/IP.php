@@ -32,7 +32,7 @@ class IP
             return false;
         }
 
-        if ($info) {
+        if ($info && ! empty(array_filter($info))) {
             return $info;
         }
 
@@ -147,6 +147,10 @@ class IP
         $data = $response->json();
         if ($response->ok()) {
             if ($data['code'] === 'Success') {
+                if (empty(array_filter($data['data']))) {
+                    return null;
+                }
+
                 return [
                     'country' => $data['data']['country'],
                     'region' => $data['data']['prov'],
