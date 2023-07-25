@@ -34,9 +34,9 @@
                         <tr>
                             <td> {{$auth->node_id}} </td>
                             <td> {{$auth->node->type_label}} </td>
-                            <td> {{Str::limit($auth->node->name, 20) ?? ''}} </td>
-                            <td> {{$auth->node->server ?? ''}} </td>
-                            <td> {{$auth->node->ip ?? ''}} </td>
+                            <td> {{Str::limit($auth->node->name, 20)}} </td>
+                            <td> {{$auth->node->server}} </td>
+                            <td> {{$auth->node->ip}} </td>
                             <td><span class="badge badge-lg badge-info"> {{$auth->key}} </span></td>
                             <td><span class="badge badge-lg badge-info"> {{$auth->secret}} </span></td>
                             <td>

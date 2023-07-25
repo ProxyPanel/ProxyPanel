@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'account' => [
         'credit' => '账户余额',
@@ -11,13 +13,13 @@ return [
         'time' => '套餐时长',
         'last_login' => '最近登录',
         'reset' => '{0} 还有 <code id="restTime">:days</code> 重置流量|[1,*] 还有 :days 天重置流量',
-        'connect_password' => '连接密码',
+        'connect_password' => '代理连接密码',
         'reason' => [
             'normal' => '账号一切正常',
             'expired' => '您的账号套餐已过期',
-            'overused' => '本时段使用流量超过 <code>:data</code> GB触发系统限制<br/> <code id="banedTime">:min</code> 后解除限制',
-            'traffic_exhausted' => '您的账号[流量]消耗殆尽',
-            'unknown' => '未知原因，请尝试[刷新]你的浏览器！多次无果后再请开工单联系管理',
+            'overused' => '本时段使用流量超过 <code>:data</code> GB触发限制<br/> <code id="banedTime">:min</code> 后解除',
+            'traffic_exhausted' => '您的[流量]已消耗殆尽',
+            'unknown' => '未知原因，请尝试[刷新]浏览器！如问题持续请联系客服',
         ],
     ],
     'home' => [
@@ -83,8 +85,8 @@ return [
     'error_response' => '出现了错误，请稍后再试。',
     'invite' => [
         'attribute' => '邀请码',
-        'counts' => '共 <code>:num</code> 个邀请码',
-        'tips' => '可生成<strong> :num </strong>枚邀请码，:days 日内有效',
+        'counts' => '共计 <code>:num</code> 枚邀请码',
+        'tips' => '剩余 <strong>:num</strong> 枚可用邀请名额，邀请码创建后:days 日内有效',
         'logs' => '邀请记录',
         'promotion' => '通过您的邀请码注册并激活，你们双方都将获得<mark>:traffic</mark>流量奖励；当他们消费时，您将获得他们消费金额的<mark>:referral_percent%</mark>作为奖励。',
         'generate_failed' => '生成失败：已无邀请码生成名额',
@@ -99,7 +101,7 @@ return [
     ],
     'referral' => [
         'link' => '推广链接',
-        'total' => '合计返利 :amount（ :total 次），满 :money 可以申请提现。',
+        'total' => '合计返利 :amount（:total 次），满 :money 可以申请提现。',
         'logs' => '佣金记录',
         'failed' => '申请失败',
         'success' => '申请成功',
@@ -176,7 +178,7 @@ return [
         'exchange_warning' => '更换订阅地址将导致:\n1.旧地址立即失效\n2.连接密码被更改',
         'custom' => '自定义订阅',
         'ss_only' => '只订阅SS',
-        'ssr_only' => '只订阅SSR (包含SS)',
+        'ssr_only' => '只订阅SSR（包含SS）',
         'v2ray_only' => '只订阅V2Ray',
         'trojan_only' => '只订阅Trojan',
         'error' => '更换订阅地址异常',
@@ -219,7 +221,7 @@ return [
     ],
     'manual' => [
         'red_packet' => '支付宝领红包',
-        'hint' => '扫码支付后, 请继续点击👇【下一步】，直到👇【提 交】才算正式支付完成！！！',
+        'hint' => '扫码支付后，请继续点击👇【下一步】，直到👇【提 交】才算正式支付完成！！',
         'step_1' => '须知',
         'step_1_title' => '如何正确人工支付',
         'step_2' => '支付',

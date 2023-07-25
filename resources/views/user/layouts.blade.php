@@ -205,7 +205,7 @@
             <div class="panel-body text-right">
                 <h5>{{trans('user.current_role')}}：{{Auth::getUser()->username}}</h5>
                 <button type="button" class="btn btn-danger btn-block mt-20" id="return_to_admin">
-                    {{trans('common.back').trans('user.menu.admin_dashboard')}}
+                    {{ trans('common.back_to', ['page' => trans('user.menu.admin_dashboard')]) }}
                 </button>
             </div>
         </div>

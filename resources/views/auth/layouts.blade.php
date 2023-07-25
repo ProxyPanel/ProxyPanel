@@ -4,6 +4,43 @@
     <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/css/login-v3.min.css" rel="stylesheet">
     @yield('css')
+    <style>
+        @media (max-width: 768px) {
+            #ad img {
+                width: 40vw;
+            }
+        }
+
+        @media (min-width: 768px) {
+            #ad img {
+                width: 30vw;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #ad img {
+                width: 20vw;
+            }
+        }
+
+        #ad {
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            bottom: 0;
+            background-color:rgba(255,255,255,0.80);
+        }
+
+        #ad img {
+            max-width: 300px;
+        }
+
+        #ad > button {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+    </style>
 @endsection
 @section('body_class', 'page-login-v3 layout-full position-relative')
 @section('layout_content')
@@ -23,6 +60,13 @@
                          class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/>
                     {{trans('common.to_safari.2')}}<br>{{trans('common.to_safari.3')}}</p>
             </div>
+        </div>
+    @endif
+
+    @if (config('version.ads'))
+        <div id="ad" class="px-25 py-10">
+            <button class="btn btn-pure btn-outline-default icon wb-close" type="button" onclick="document.getElementById('ad').style.display = 'none'"></button>
+            {!! config('version.ads') !!}
         </div>
     @endif
     <div class="page vertical-align text-center cover-up" data-animsition-in="fade-in" data-animsition-out="fade-out">

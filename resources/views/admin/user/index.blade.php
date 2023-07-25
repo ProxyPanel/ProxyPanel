@@ -22,7 +22,7 @@
                     <div class="panel-actions">
                         @can('admin.user.batch')
                             <button class="btn btn-outline-default" onclick="batchAddUsers()">
-                                <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('admin.user.massive.button') }}
+                                <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.generate') }}
                             </button>
                         @endcan
                         @can('admin.user.create')
