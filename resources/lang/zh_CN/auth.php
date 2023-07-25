@@ -9,7 +9,7 @@ return [
         'error' => [
             'activated' => '账号已激活，无需再次激活',
             'disable' => '本站关闭了账号激活子系统，您可以直接去登录！',
-            'throttle' => '您已触发本站激活请求限制机制，请勿频繁操作！如有问题，请联系:email',
+            'throttle' => '您已触发本站激活请求限制，请勿频繁操作！如有问题，请联系:email',
         ],
         'promotion' => '账号尚未激活，请先「:action」！',
         'sent' => '激活链接已发送至您的邮箱，请稍作等待或查看垃圾箱',
@@ -36,7 +36,7 @@ return [
         'login_failed' => '登录失败，请检查邮箱或密码是否输入正确！',
         'not_found_user' => '未找到关联账号，请使用其他方式登录',
         'repeat_request' => '请勿重复请求，请刷新后重试',
-        'url_timeout' => '链接已失效, 请重新操作',
+        'url_timeout' => '链接已失效，请重新操作',
     ],
     'failed' => '用户名或密码错误。',
     'invite' => [
@@ -45,10 +45,10 @@ return [
             'unavailable' => '邀请码不可用，请重试',
         ],
         'get' => '点击获取邀请码',
-        'not_required' => '无需邀请码,可直接注册！',
+        'not_required' => '无需邀请码，可直接注册！',
     ],
-    'login' => '登 录',
-    'logout' => '登 出',
+    'login' => '登录',
+    'logout' => '登出',
     'maintenance' => '维护',
     'maintenance_tip' => '网站维护中',
     'oauth' => [
@@ -72,7 +72,7 @@ return [
             'attribute' => '重置密码',
             'error' => [
                 'demo' => '演示环境禁止修改管理员密码',
-                'disabled' => '本站关闭了密码重置子系统，有事请联系 :email ',
+                'disabled' => '本站关闭了密码重置子系统，有事请联系 :email',
                 'failed' => '重设密码失败',
                 'same' => '新密码不可与旧密码一样，请重新输入',
                 'throttle' => '24小时内只能重设密码 :time 次，请勿频繁操作',
@@ -83,7 +83,7 @@ return [
         ],
     ],
     'register' => [
-        'attribute' => '注 册',
+        'attribute' => '注册',
         'code' => '注册验证码',
         'error' => [
             'disable' => '抱歉，本站关闭了注册通道',
@@ -94,7 +94,7 @@ return [
         'success' => '注册成功',
     ],
     'remember_me' => '记住我',
-    'request' => '获 取',
+    'request' => '获取',
     'throttle' => '您尝试的登录次数过多，请 :seconds 秒后再试。',
     'tos' => '用户条款',
 ];

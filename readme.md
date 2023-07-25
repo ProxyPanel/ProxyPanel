@@ -6,20 +6,6 @@ We are looking for translators who help us to translate this prjoect with other 
 
 Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET
 
-## Nice VPS
-- [Kdatacenter](https://www.kdatacenter.com/myportal/?affid=470)
-    - 韩国SK线路，19刀（优惠后16.91刀）  1TB流量/月 性价比不错
-    - 使用优惠码：`31F6PFTY4I5T` 可得 89%折扣 | Use `31F6PFTY4I5T` get 11% off
-- [快车道Kuaichedao](https://kuaichedao.co/aff.php?aff=3)
-    - 节日有活动，能拿到优惠码；
-    - HKT 家宽不保证SLA，但混到骨折码，那是真实惠；
-    - 也有不少CMI BGP 的产品，可以上。
-- [V.PS](https://vps.hosting/?affid=1138)
-    - 背靠强者XTOM
-    - 适合大量入搞负载均衡的小VPS
-    - 东京 延迟还不错，带宽过得去，就是流量少了点
-    - 推荐 月付, IP被墙更换要8欧元
-
 ## Project
 - [Demo](https://proxypanel.ddo.jp) will always on dev/latest code, rather than the stable version. For showcase purposes.
     - Account: test@test.com
@@ -61,6 +47,33 @@ This project is base on Laravel 10 Framework This means anything Laravel 10 is r
   - SQLite 3.8.8+
   - SQL Server 2017+ [Version Policy](https://docs.microsoft.com/en-us/lifecycle/products/?products=sql-server)
 - Redis
+
+## ADS
+- 【EtoPay】国际支付，安全稳定
+    - 开户门槛：无
+    - 业务范围：机场、idc、发卡
+    - 结算周期：D+2
+    - 结算方式：USDT
+    - 结算门槛：100cny
+    - 结算手续费：1%
+    - 通道费率：
+        - 💰 WechatPay（微信支付）7%
+        - 💰 Alipay（支付宝支付）7%
+    - 开户联系: [@etopay888](https://t.me/etopay888)
+
+## Nice VPS
+- [Kdatacenter](https://www.kdatacenter.com/myportal/?affid=470)
+    - 韩国SK线路，19刀（优惠后16.91刀）  1TB流量/月 性价比不错
+    - 使用优惠码：`31F6PFTY4I5T` 可得 89%折扣 | Use `31F6PFTY4I5T` get 11% off
+- [快车道Kuaichedao](https://kuaichedao.co/aff.php?aff=3)
+    - 节日有活动，能拿到优惠码；
+    - HKT 家宽不保证SLA，但混到骨折码，那是真实惠；
+    - 也有不少CMI BGP 的产品，可以上。
+- [V.PS](https://vps.hosting/?affid=1138)
+    - 背靠强者XTOM
+    - 适合大量入搞负载均衡的小VPS
+    - 东京 延迟还不错，带宽过得去，就是流量少了点
+    - 推荐 月付, IP被墙更换要8欧元
 
 ## Thanks
 - [@shadowsocks](https://github.com/shadowsocks)
