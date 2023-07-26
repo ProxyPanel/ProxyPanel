@@ -156,7 +156,7 @@
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
                                                     <input type="radio" id="page_only" name="is_display" value="1"/>
-                                                    <label for="page_only">{{ trans('admin.node.info.display.node', ['trans' => trans('user.menu.nodes')]) }}</label>
+                                                    <label for="page_only">{{ trans('admin.node.info.display.node') }}</label>
                                                 </div>
                                             </li>
                                             <li class="list-inline-item">
@@ -290,7 +290,7 @@
                                                 <div class="form-group row obfs_param">
                                                     <label for="obfs_param" class="col-md-3 col-form-label"> {{ trans('model.node.obfs_param') }} </label>
                                                     <textarea class="form-control col-md-8" rows="5" name="obfs_param" id="obfs_param"
-                                                              placeholder="{{ trans('admin.node.info.obfs_param_hint') }}"></textarea>
+                                                              placeholder="{!! trans('admin.node.info.obfs_param_hint') !!}"></textarea>
                                                 </div>
                                                 <div class="form-group row">
                                                     <label class="col-md-3 col-form-label">{{ trans('admin.node.proxy_info') }}</label>
