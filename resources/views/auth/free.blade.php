@@ -1,7 +1,7 @@
 @extends('auth.layouts')
 @section('title',sysConfig('website_name'))
 @section('content')
-    <h4 class="caption-subject font-dark bold">{{trans('common.free').trans('auth.invite.attribute')}}</h4>
+    <h4 class="caption-subject font-dark bold">{{ '['.trans('common.free').'] '.trans('auth.invite.attribute')}}</h4>
     <div class="table-responsive">
         <table class="table table-hover text-center">
             @if(sysConfig('is_invite_register'))

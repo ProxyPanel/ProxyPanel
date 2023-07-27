@@ -111,7 +111,7 @@
                                     <input type="number" class="form-control col-md-3" name="minimum" id="minimum"
                                            value="{{old('minimum')}}" step="0.01"/>
                                 </div>
-                                <span class="text-help"> {!! trans('admin.coupon.minimum_hint', ['num' => 'N']).trans('admin.zero_unlimited_hint') !!} </span>
+                                <span class="text-help"> {!! trans('admin.coupon.minimum_hint', ['num' => 'N']).' '.trans('admin.zero_unlimited_hint') !!} </span>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -122,7 +122,7 @@
                                            value="{{old('used')}}" step="1"/>
                                     <span class="input-group-text">{{ trans('admin.times') }}</span>
                                 </div>
-                                <span class="text-help"> {!! trans('admin.coupon.used_hint', ['num' => 'N']).trans('admin.zero_unlimited_hint') !!}</span>
+                                <span class="text-help"> {!! trans('admin.coupon.used_hint', ['num' => 'N']).' '.trans('admin.zero_unlimited_hint') !!}</span>
                             </div>
                         </div>
                         <div class="form-group row">

@@ -160,7 +160,7 @@
                                             </div>
                                         @endif
                                         <div class="form-group row">
-                                            <label class="col-md-auto col-form-label" for="client">{{trans('user.client').trans('common.customize')}}</label>
+                                            <label class="col-md-auto col-form-label" for="client">{{  trans('user.client') }}</label>
                                             <div class="col">
                                                 <select class="form-control" id="client" name="client" data-plugin="selectpicker" data-style="btn-primary btn-outline"
                                                         title="{{trans('common.default')}}">

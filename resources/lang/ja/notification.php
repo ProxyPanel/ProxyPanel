@@ -6,7 +6,7 @@ return [
     'attribute' => '通知',
     'new' => '新しいメッセージが:num件あります',
     'empty' => '新しいメッセージはありません',
-    'payment_received' => '支払いを受け取りました。金額: :amount 円。注文の詳細を見る',
+    'payment_received' => '支払いを受け取りました。金額: :amount。注文の詳細を見る',
     'account_expired' => 'アカウントの有効期限切れ注意',
     'account_expired_content' => ':days日後にアカウントが期限切れとなります。サービスを継続するためには早めに更新してください。',
     'account_expired_blade' => ':days日後にアカウントが期限切れになります。早めに更新してください。',
