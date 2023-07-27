@@ -101,19 +101,19 @@
                                 <br>
                                 <br>
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                {{ trans('admin.node.auth.deploy.update') }}{{ trans('admin.node.auth.deploy.same') }}
+                                {{ trans('admin.node.auth.deploy.update') }}: {{ trans('admin.node.auth.deploy.same') }}
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://bit.ly/3oO3HZy | bash -s -- --remove
+                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3oO3HZy | bash -s -- --remove
                                 <br>
-                                {{ trans('admin.node.auth.deploy.start') }}systemctl start vnet-v2ray
+                                {{ trans('admin.node.auth.deploy.start') }}: systemctl start vnet-v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.stop') }}systemctl stop vnet-v2ray
+                                {{ trans('admin.node.auth.deploy.stop') }}: systemctl stop vnet-v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.status') }}systemctl status vnet-v2ray
+                                {{ trans('admin.node.auth.deploy.status') }}: systemctl status vnet-v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}journalctl -x -n 300 --no-pager -u vnet-v2ray
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u vnet-v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.real_time_logs') }}journalctl -u vnet-v2ray -f
+                                {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u vnet-v2ray -f
                             </div>
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
@@ -126,19 +126,19 @@
                                 <br>
                                 <br>
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                {{ trans('admin.node.auth.deploy.update') }}curl -L -s https://bit.ly/2HswWko | bash
+                                {{ trans('admin.node.auth.deploy.update') }}: curl -L -s https://bit.ly/2HswWko | bash
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://mrw.so/5IHPR4 | bash
+                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://mrw.so/5IHPR4 | bash
                                 <br>
-                                {{ trans('admin.node.auth.deploy.start') }}systemctl start v2ray
+                                {{ trans('admin.node.auth.deploy.start') }}: systemctl start v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.stop') }}systemctl stop v2ray
+                                {{ trans('admin.node.auth.deploy.stop') }}: systemctl stop v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.status') }}systemctl status v2ray
+                                {{ trans('admin.node.auth.deploy.status') }}: systemctl status v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}journalctl -x -n 300 --no-pager -u v2ray
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.real_time_logs') }}journalctl -u v2ray -f
+                                {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u v2ray -f
                             </div>
                         @elseif($auth->node->type === 3)
                             @if(!$auth->node->server)
@@ -158,19 +158,19 @@
                                     <br>
                                     <br>
                                     <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                    {{ trans('admin.node.auth.deploy.update') }}curl -L -s https://mrw.so/6cMfGy | bash
+                                    {{ trans('admin.node.auth.deploy.update') }}: curl -L -s https://mrw.so/6cMfGy | bash
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://mrw.so/5ulpvu | bash
+                                    {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://mrw.so/5ulpvu | bash
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.start') }}systemctl start trojanp
+                                    {{ trans('admin.node.auth.deploy.start') }}: systemctl start trojanp
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.stop') }}systemctl stop trojanp
+                                    {{ trans('admin.node.auth.deploy.stop') }}: systemctl stop trojanp
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.status') }}systemctl status trojanp
+                                    {{ trans('admin.node.auth.deploy.status') }}: systemctl status trojanp
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.recent_logs') }}journalctl -x -n 300 --no-pager -u trojanp
+                                    {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u trojanp
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.real_time_logs') }}journalctl -u trojanp -f
+                                    {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u trojanp -f
                                 </div>
                             @endif
                         @else
@@ -185,21 +185,21 @@
                                 <br>
                                 <br>
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                {{ trans('admin.node.auth.deploy.update') }}{{ trans('admin.node.auth.deploy.same') }}
+                                {{ trans('admin.node.auth.deploy.update') }}: {{ trans('admin.node.auth.deploy.same') }}
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove
+                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove
                                 <br>
-                                {{ trans('admin.node.auth.deploy.start') }}systemctl start vnet
+                                {{ trans('admin.node.auth.deploy.start') }}: systemctl start vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.stop') }}systemctl stop vnet
+                                {{ trans('admin.node.auth.deploy.stop') }}: systemctl stop vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.restart') }}systemctl restart vnet
+                                {{ trans('admin.node.auth.deploy.restart') }}: systemctl restart vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.status') }}systemctl status vnet
+                                {{ trans('admin.node.auth.deploy.status') }}: systemctl status vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}journalctl -x -n 300 --no-pager -u vnet
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.real_time_logs') }}journalctl -u vnet -f
+                                {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u vnet -f
                             </div>
                         @endif
                     </div>

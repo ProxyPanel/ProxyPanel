@@ -4,7 +4,7 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title cyan-600">
-                    <i class="icon wb-payment"></i>{{sysConfig('website_name').trans('user.shop.pay_online')}}
+                    <i class="icon wb-payment"></i>{{sysConfig('website_name').' - '.trans('user.shop.pay_online')}}
                 </h1>
             </div>
             <div class="panel-body border-primary ml-auto mr-auto w-p75">
