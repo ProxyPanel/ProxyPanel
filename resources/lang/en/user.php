@@ -12,7 +12,7 @@ return [
         'remain' => 'Data Remaining',
         'time' => 'Duration',
         'last_login' => 'Last Login',
-        'reset' => '{0} Data will reset in <code id="restTime">:days</code> |{1} :days day left to reset data |[1,*] :days days left to reset data',
+        'reset' => '{0} Data will reset in <code id="restTime">:days</code> |{1} :days day left to reset data |[2,*] :days days left to reset data',
         'connect_password' => 'Proxy Connection Password',
         'reason' => [
             'normal' => 'Account normal',
