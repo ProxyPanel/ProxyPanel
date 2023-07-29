@@ -17,9 +17,14 @@ class ProxyService
 
     private static array $servers;
 
-    public function __construct(?User $user = null)
+    public function __construct(User|null $user = null)
     {
-        self::$user = $user ?? auth()->user();
+        $this->setUser($user ?? auth()->user());
+    }
+
+    public function setUser(User|null $user): void
+    {
+        self::$user = $user;
     }
 
     public function getUser(): User

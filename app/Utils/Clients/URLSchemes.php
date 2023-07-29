@@ -9,7 +9,7 @@ class URLSchemes implements Client
     public static function buildShadowsocks(array $server): string
     {
         $name = rawurlencode($server['name']);
-        $str = base64url_encode("{$server['method']}:{$server['method']}");
+        $str = base64url_encode("{$server['method']}:{$server['passwd']}");
 
         return "ss://$str@{$server['host']}:{$server['port']}#$name".PHP_EOL;
     }
@@ -18,7 +18,14 @@ class URLSchemes implements Client
     {
         $setting = "{$server['host']}:{$server['port']}:{$server['protocol']}:{$server['method']}:{$server['obfs']}:";
 
-        return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?obfsparam='.base64url_encode($server['obfs_param']).'&protoparam='.base64url_encode($server['protocol_param']).'&remarks='.base64url_encode($server['name']).'&group='.base64url_encode($server['group']).'&udpport='.$server['udp'].'&uot=0').PHP_EOL;
+        return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?'.http_build_query([
+            'obfsparam' => $server['obfs_param'] ? base64url_encode($server['obfs_param']) : '',
+            'protoparam' => $server['protocol_param'] ? base64url_encode($server['protocol_param']) : '',
+            'remarks' => $server['name'] ? base64url_encode($server['name']) : '',
+            'group' => $server['group'] ? base64url_encode($server['group']) : '',
+            'udpport' => $server['udp'],
+            'uot' => 0,
+        ])).PHP_EOL;
     }
 
     public static function buildVmess(array $server): string
