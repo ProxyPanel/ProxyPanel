@@ -21,7 +21,7 @@ class IP
 {
     private static bool $is_ipv4;
 
-    public static function getClientIP(): string|null
+    public static function getClientIP(): ?string
     { // 获取访客真实IP
         return request()?->ip();
     }
@@ -109,7 +109,7 @@ class IP
         return $ret;
     }
 
-    private static function ipApi(string $ip): array|null
+    private static function ipApi(string $ip): ?array
     { // 开发依据: https://ip-api.com/docs/api:json
         $key = config('services.ip.ip-api_key');
         if ($key) {
@@ -148,7 +148,7 @@ class IP
         return Http::timeout(10)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
     }
 
-    private static function Baidu(string $ip): array|null
+    private static function Baidu(string $ip): ?array
     {// 通过api.map.baidu.com查询IP地址的详细信息
         $key = config('services.ip.baidu_ak');
         if ($key) {
@@ -180,7 +180,7 @@ class IP
         return null;
     }
 
-    private static function baiduBce(string $ip): array|null
+    private static function baiduBce(string $ip): ?array
     {
         if (self::$is_ipv4) {
             $url = "https://qifu-api.baidubce.com/ip/geo/v1/district?ip=$ip";
@@ -210,7 +210,7 @@ class IP
         return null;
     }
 
-    private static function ipGeoLocation(string $ip): array|null
+    private static function ipGeoLocation(string $ip): ?array
     { // 开发依据: https://ipgeolocation.io/documentation.html
         $response = self::setBasicHttp()->withHeaders(['Origin' => 'https://ipgeolocation.io'])
             ->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=".config('common.language.'.app()->getLocale().'.1'));
@@ -231,7 +231,7 @@ class IP
         return null;
     }
 
-    private static function TaoBao(string $ip): array|null
+    private static function TaoBao(string $ip): ?array
     { // 通过ip.taobao.com查询IP地址的详细信息 依据 https://ip.taobao.com/instructions 开发
         $response = self::setBasicHttp()->retry(2)->post("https://ip.taobao.com/outGetIpInfo?ip=$ip&accessKey=alibaba-inc");
 
@@ -256,7 +256,7 @@ class IP
         return null;
     }
 
-    private static function speedtest(string $ip): array|null
+    private static function speedtest(string $ip): ?array
     {
         $response = self::setBasicHttp()->get("https://forge.speedtest.cn/api/location/info?ip=$ip");
         $data = $response->json();
@@ -281,7 +281,7 @@ class IP
         return null;
     }
 
-    private static function TenAPI(string $ip): array|null
+    private static function TenAPI(string $ip): ?array
     { // 开发依据: https://docs.tenapi.cn/utility/getip.html
         $response = self::setBasicHttp()->asForm()->post('https://tenapi.cn/v2/getip', ['ip' => $ip]);
         if ($response->ok()) {
@@ -301,7 +301,7 @@ class IP
         return null;
     }
 
-    private static function fkcoder(string $ip): array|null
+    private static function fkcoder(string $ip): ?array
     { // 开发依据: https://www.fkcoder.com/
         $response = self::setBasicHttp()->acceptJson()->get("https://www.fkcoder.com/ip?ip=$ip");
         if ($response->ok()) {
@@ -319,7 +319,7 @@ class IP
         return null;
     }
 
-    private static function juHe(string $ip): array|null
+    private static function juHe(string $ip): ?array
     { // 开发依据: https://www.juhe.cn/docs/api/id/1
         $response = self::setBasicHttp()->asForm()->post('https://apis.juhe.cn/ip/Example/query.php', ['IP' => $ip]);
         if ($response->ok()) {
@@ -338,7 +338,7 @@ class IP
         return null;
     }
 
-    private static function ip2Region(string $ip): array|null
+    private static function ip2Region(string $ip): ?array
     { // 通过ip2Region查询IP地址的详细信息 数据库不经常更新
         try {
             $data = (new XdbSearcher())->search($ip);
@@ -376,7 +376,7 @@ class IP
         ];
     }
 
-    private static function ipjiance(string $ip): array|null
+    private static function ipjiance(string $ip): ?array
     {
         $response = self::setBasicHttp()->get("https://www.ipjiance.com/api/geoip/report?ip=$ip");
         $data = $response->json();
@@ -401,7 +401,7 @@ class IP
         return null;
     }
 
-    private static function IPSB(string $ip): array|null
+    private static function IPSB(string $ip): ?array
     { // 通过api.ip.sb查询IP地址的详细信息
         try {
             $response = self::setBasicHttp()->post("https://api.ip.sb/geoip/$ip");
@@ -424,7 +424,7 @@ class IP
         return null;
     }
 
-    private static function ipinfo(string $ip): array|null
+    private static function ipinfo(string $ip): ?array
     { // 开发依据: https://ipinfo.io/account/home
         $key = config('services.ip.ipinfo_token');
         if ($key) {
@@ -452,7 +452,7 @@ class IP
         return null;
     }
 
-    private static function ip234(string $ip): array|null
+    private static function ip234(string $ip): ?array
     {
         $response = self::setBasicHttp()->get("https://ip234.in/search_ip?ip=$ip");
         $data = $response->json();
@@ -477,7 +477,7 @@ class IP
         return null;
     }
 
-    private static function dbIP(string $ip): array|null
+    private static function dbIP(string $ip): ?array
     { // 开发依据: https://db-ip.com/api/doc.php
         $response = self::setBasicHttp()->acceptJson()->get("https://api.db-ip.com/v2/free/$ip");
         if ($response->ok()) {
@@ -495,7 +495,7 @@ class IP
         return null;
     }
 
-    private static function IP2Online(string $ip): array|null
+    private static function IP2Online(string $ip): ?array
     { // 开发依据: https://www.ip2location.io/ip2location-documentation
         $key = config('services.ip.IP2Location_key');
         if ($key) {
@@ -518,7 +518,7 @@ class IP
         return null;
     }
 
-    private static function ipdata(string $ip): array|null
+    private static function ipdata(string $ip): ?array
     { // 开发依据: https://docs.ipdata.co/docs
         $key = config('services.ip.ipdata_key');
         if ($key) {
@@ -541,7 +541,7 @@ class IP
         return null;
     }
 
-    private static function ipApiCo(string $ip): array|null
+    private static function ipApiCo(string $ip): ?array
     { // 开发依据: https://ipapi.co/api/
         $response = self::setBasicHttp()->get("https://ipapi.co/$ip/json/");
         if ($response->ok()) {
@@ -561,7 +561,7 @@ class IP
         return null;
     }
 
-    private static function ip2Location(string $ip): array|null
+    private static function ip2Location(string $ip): ?array
     { // 通过ip2Location查询IP地址的详细信息
         $filePath = database_path('IP2LOCATION-LITE-DB5.IPV6.BIN'); // 来源: https://lite.ip2location.com/database-download
         try {
@@ -584,7 +584,7 @@ class IP
         return null;
     }
 
-    private static function GeoIP2(string $ip): array|null
+    private static function GeoIP2(string $ip): ?array
     {// 通过GeoIP2查询IP地址的详细信息
         $filePath = database_path('GeoLite2-City.mmdb'); // 来源：https://github.com/PrxyHunter/GeoLite2/releases
         try {
@@ -606,7 +606,7 @@ class IP
         return null;
     }
 
-    private static function ipApiCom(string $ip): array|null
+    private static function ipApiCom(string $ip): ?array
     { // 开发依据: https://docs.ipdata.co/docs
         $response = self::setBasicHttp()->get("https://ipapi.com/ip_api.php?ip=$ip");
         if ($response->ok()) {
@@ -626,7 +626,7 @@ class IP
         return null;
     }
 
-    public static function getIPGeo(string $ip): array|null
+    public static function getIPGeo(string $ip): ?array
     {
         $ret = null;
         $source = 0;
@@ -653,7 +653,7 @@ class IP
         return Arr::only($ret, ['latitude', 'longitude']);
     }
 
-    private static function userAgentInfo(string $ip): array|null
+    private static function userAgentInfo(string $ip): ?array
     { // 开发依据: https://ip.useragentinfo.com/api
         if (self::$is_ipv4) {
             $response = self::setBasicHttp()->withBody("ip:$ip")->get('https://ip.useragentinfo.com/json');

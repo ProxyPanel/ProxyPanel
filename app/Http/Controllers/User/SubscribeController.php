@@ -31,6 +31,7 @@ class SubscribeController extends Controller
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
+        $this->proxyServer = new ProxyService();
         if (! $subscribe) {
             return $this->failed(trans('errors.subscribe.unknown'));
         }
@@ -41,6 +42,7 @@ class SubscribeController extends Controller
 
         // 检查用户是否有效
         $user = $subscribe->user;
+        $this->proxyServer->setUser($user);
         if (! $user) {
             return $this->failed(trans('errors.subscribe.user'));
         }
@@ -65,7 +67,7 @@ class SubscribeController extends Controller
 
             return $this->failed(trans('errors.subscribe.question'));
         }
-        $this->proxyServer = new ProxyService($user);
+
         $subscribe->increment('times'); // 更新访问次数
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()])); // 记录每次请求
 
