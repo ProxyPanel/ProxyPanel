@@ -142,7 +142,7 @@ class LogsController extends Controller
     }
 
     // 在线IP监控（实时）
-    public function onlineIPMonitor(Request $request, ?int $id = null)
+    public function onlineIPMonitor(Request $request, int $id = null)
     {
         $query = NodeOnlineIp::with(['node:id,name', 'user:id,username'])->where('created_at', '>=', strtotime('-2 minutes'));
 
