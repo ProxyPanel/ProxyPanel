@@ -74,24 +74,26 @@ return [
     ],
 
     'language' => [
-        'zh_CN' => ['简体中文', 'cn'],
+        'de' => ['Deutsch', 'de'],
         'en' => ['English', 'us'],
+        'fa' => ['فارسی', 'ir'],
         'ja' => ['日本語', 'jp'],
         'ko' => ['한국어', 'kr'],
         'vi' => ['Tiếng Việt', 'vn'],
+        'zh_CN' => ['简体中文', 'cn'],
     ],
 
     'currency' => [
-        'cn' => ['name' => '人民币', 'code' => 'CNY', 'symbol' => '¥'],
-        'us' => ['name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$'],
-        'gb' => ['name' => 'Pound sterling', 'code' => 'GBP', 'symbol' => '£'],
-        'hk' => ['name' => '港元', 'code' => 'HKD', 'symbol' => 'HK$'],
-        'sg' => ['name' => 'Singapore dollar', 'code' => 'SGD', 'symbol' => 'S$'],
-        'eu' => ['name' => 'Euro', 'code' => 'EUR', 'symbol' => '€'],
-        'jp' => ['name' => '日本円', 'code' => 'JPY', 'symbol' => '¥'],
-        'kr' => ['name' => '대한민국 원', 'code' => 'KRW', 'symbol' => '₩'],
         'ca' => ['name' => 'Canadian dollar', 'code' => 'CAD', 'symbol' => 'C$'],
+        'eu' => ['name' => 'Euro', 'code' => 'EUR', 'symbol' => '€'],
+        'gb' => ['name' => 'Pound sterling', 'code' => 'GBP', 'symbol' => '£'],
+        'sg' => ['name' => 'Singapore dollar', 'code' => 'SGD', 'symbol' => 'S$'],
+        'us' => ['name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$'],
+        'cn' => ['name' => '人民币', 'code' => 'CNY', 'symbol' => '¥'],
         'tw' => ['name' => '新臺幣', 'code' => 'TWD', 'symbol' => 'NT$'],
+        'jp' => ['name' => '日本円', 'code' => 'JPY', 'symbol' => '¥'],
+        'hk' => ['name' => '港元', 'code' => 'HKD', 'symbol' => 'HK$'],
+        'kr' => ['name' => '대한민국 원', 'code' => 'KRW', 'symbol' => '₩'],
     ],
 
     'contact' => [

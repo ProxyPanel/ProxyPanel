@@ -38,10 +38,10 @@
                         </div>
                         <div class="user-socials list-group-gap list-group-full row m-0">
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                                <a class="list-group-item justify-content-center @if(in_array($item, $auth)) col-10 @else col-12 @endif"
+                                <a class="list-group-item justify-content-center @if(in_array($item, $auth, true)) col-10 @else col-12 @endif"
                                    @if($item !== 'telegram') href="{{route('oauth.bind', ['type' => $item])}}" @endif>
-                                    <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg mr-10" aria-hidden="true"></i> {{config('common.oauth.labels')[$item]}} :
-                                    @if(in_array($item, $auth))
+                                    <i class="fa-brands {{ config('common.oauth.icon')[$item] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($item) }} :
+                                    @if(in_array($item, $auth, true))
                                         <span class="red-600">{{trans('user.oauth.rebind')}}</span>
                                     @else
                                         <span class="grey-500">{{trans('user.oauth.not_bind')}}</span>
@@ -50,7 +50,7 @@
                                         {!! Socialite::driver('telegram')->getButton() !!}
                                     @endif
                                 </a>
-                                @if(in_array($item, $auth))
+                                @if(in_array($item, $auth, true))
                                     <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unbind', ['type' => $item])}}">{{trans('user.oauth.unbind')}}</a>
                                 @endif
                             @endforeach
