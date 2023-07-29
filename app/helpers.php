@@ -27,7 +27,7 @@ if (! function_exists('base64url_decode')) {
 
 // 根据流量值自动转换单位输出
 if (! function_exists('formatBytes')) {
-    function formatBytes(int $bytes, ?string $base = null, int $precision = 2): string
+    function formatBytes(int $bytes, string $base = null, int $precision = 2): string
     {
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
         $bytes = max($bytes, 0);
@@ -70,7 +70,7 @@ if (! function_exists('formatTime')) {
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig(?string $key = null, ?string $default = null): array|string|null
+    function sysConfig(string $key = null, string $default = null): array|string|null
     {
         return $key ? config("settings.$key", $default) : config('settings');
     }
