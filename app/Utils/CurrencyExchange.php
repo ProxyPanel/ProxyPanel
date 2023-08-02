@@ -3,52 +3,65 @@
 namespace App\Utils;
 
 use Cache;
+use Exception;
 use Http;
+use Illuminate\Http\Client\PendingRequest;
 use Log;
 
 class CurrencyExchange
 {
+    private static PendingRequest $basicRequest;
+
     /**
      * @param  string  $target  target Currency
      * @param  float|int  $amount  exchange amount
-     * @param  string  $base  Base Currency
+     * @param  string|null  $base  Base Currency
      * @return float|null amount in target currency
      */
-    public static function convert(string $target, float|int $amount, string $base = 'default'): ?float
+    public static function convert(string $target, float|int $amount, string $base = null): ?float
     {
-        if ($base === 'default') {
-            $base = sysConfig('standard_currency');
+        if ($base === null) {
+            $base = (string) sysConfig('standard_currency');
         }
         $cacheKey = "Currency_{$base}_{$target}_ExRate";
-        $isStored = Cache::has($cacheKey);
 
-        if ($isStored) {
+        if (Cache::has($cacheKey)) {
             return round($amount * Cache::get($cacheKey), 2);
         }
 
-        $source = 0;
-        $rate = null;
-        while ($source <= 7 && $rate === null) {
-            $rate = match ($source) {
-                0 => self::exchangerateApi($base, $target),
-                1 => self::k780($base, $target),
-                2 => self::it120($base, $target),
-                3 => self::exchangerate($base, $target),
-                4 => self::fixer($base, $target),
-                5 => self::currencyData($base, $target),
-                6 => self::exchangeRatesData($base, $target),
-                7 => self::jsdelivrFile($base, $target),
-            };
-            $source++;
-        }
+        $apis = ['exchangerateApi', 'k780', 'it120', 'exchangerate', 'fixer', 'currencyData', 'exchangeRatesData', 'jsdelivrFile'];
+        self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
 
-        if ($rate !== null) {
-            Cache::put($cacheKey, $rate, Day);
+        foreach ($apis as $api) {
+            try {
+                $rate = self::callApis($api, $base, $target);
+                if ($rate !== null) {
+                    Cache::put($cacheKey, $rate, Day);
 
-            return round($amount * $rate, 2);
+                    return round($amount * $rate, 2);
+                }
+            } catch (Exception $e) {
+                Log::error("[$api] 币种汇率信息获取报错: ".$e->getMessage());
+
+                continue;
+            }
         }
 
         return null;
+    }
+
+    private static function callApis(string $api, string $base, string $target): ?float
+    {
+        return match ($api) {
+            'exchangerateApi' => self::exchangerateApi($base, $target),
+            'k780' => self::k780($base, $target),
+            'it120' => self::it120($base, $target),
+            'exchangerate' => self::exchangerate($base, $target),
+            'fixer' => self::fixer($base, $target),
+            'currencyData' => self::currencyData($base, $target),
+            'exchangeRatesData' => self::exchangeRatesData($base, $target),
+            'jsdelivrFile' => self::jsdelivrFile($base, $target),
+        };
     }
 
     private static function exchangerateApi(string $base, string $target): ?float
@@ -59,7 +72,7 @@ class CurrencyExchange
         } else {
             $url = "https://open.er-api.com/v6/latest/$base";
         }
-        $response = Http::get($url);
+        $response = self::$basicRequest->get($url);
         if ($response->ok()) {
             $data = $response->json();
 
@@ -76,7 +89,7 @@ class CurrencyExchange
 
     private static function k780(string $base, string $target): ?float
     { // Reference: https://www.nowapi.com/api/finance.rate
-        $response = Http::get("https://sapi.k780.com/?app=finance.rate&scur=$base&tcur=$target&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json");
+        $response = self::$basicRequest->get("https://sapi.k780.com/?app=finance.rate&scur=$base&tcur=$target&appkey=10003&sign=b59bc3ef6191eb9f747dd4e83c99f2a4&format=json");
         if ($response->ok()) {
             $data = $response->json();
 
@@ -93,7 +106,7 @@ class CurrencyExchange
 
     private static function it120(string $base, string $target): ?float
     { // Reference: https://www.it120.cc/help/fnun8g.html
-        $response = Http::get("https://api.it120.cc/gooking/forex/rate?fromCode=$target&toCode=$base");
+        $response = self::$basicRequest->get("https://api.it120.cc/gooking/forex/rate?fromCode=$target&toCode=$base");
         if ($response->ok()) {
             $data = $response->json();
 
@@ -110,7 +123,7 @@ class CurrencyExchange
 
     private static function exchangerate(string $base, string $target): ?float
     { // Reference: https://exchangerate.host/#/
-        $response = Http::get("https://api.exchangerate.host/latest?base=$base&symbols=$target");
+        $response = self::$basicRequest->get("https://api.exchangerate.host/latest?base=$base&symbols=$target");
         if ($response->ok()) {
             $data = $response->json();
 
@@ -128,7 +141,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/fixer-api RATE LIMIT: 100 Requests / Monthly!!!!
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = Http::withHeaders(['apikey' => $key])->get("https://api.apilayer.com/fixer/latest?symbols=$target&base=$base");
+            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/fixer/latest?symbols=$target&base=$base");
             if ($response->ok()) {
                 $data = $response->json();
 
@@ -149,7 +162,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/currency_data-api RATE LIMIT: 100 Requests / Monthly
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = Http::withHeaders(['apikey' => $key])->get("https://api.apilayer.com/currency_data/live?source=$base&currencies=$target");
+            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/currency_data/live?source=$base&currencies=$target");
             if ($response->ok()) {
                 $data = $response->json();
 
@@ -170,7 +183,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/exchangerates_data-api RATE LIMIT: 250 Requests / Monthly
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = Http::withHeaders(['apikey' => $key])->get("https://api.apilayer.com/exchangerates_data/latest?symbols=$target&base=$base");
+            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/exchangerates_data/latest?symbols=$target&base=$base");
             if ($response->ok()) {
                 $data = $response->json();
 
@@ -188,7 +201,7 @@ class CurrencyExchange
 
     private static function jsdelivrFile(string $base, string $target): ?float
     { // Reference: https://github.com/fawazahmed0/currency-api
-        $response = Http::get('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/'.strtolower($base).'/'.strtolower($target).'.min.json');
+        $response = self::$basicRequest->get('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/'.strtolower($base).'/'.strtolower($target).'.min.json');
         if ($response->ok()) {
             $data = $response->json();
 

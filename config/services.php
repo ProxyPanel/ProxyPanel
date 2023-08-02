@@ -86,6 +86,7 @@ return [
         'IP2Location_key' => env('IP2LOCATION_API_KEY'),
         'ip-api_key' => env('IP_API_KEY'),
         'ipdata_key' => env('IPDATA_API_KEY'),
+        'bjjii_key' => env('BJJII_KEY'),
     ],
 
     'currency' => [
