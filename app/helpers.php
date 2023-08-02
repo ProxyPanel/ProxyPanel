@@ -36,8 +36,7 @@ if (! function_exists('formatBytes')) {
         $bytes /= 1024 ** $power;
 
         if ($base) {
-            $basePower = array_search($base, $units);
-            $power += max($basePower, 0);
+            $power += max(array_search($base, $units), 0);
         }
 
         return round($bytes, $precision).' '.$units[$power];
@@ -48,7 +47,7 @@ if (! function_exists('formatBytes')) {
 if (! function_exists('formatTime')) {
     function formatTime(int $seconds): string
     {
-        $output = '';
+        $timeString = '';
         $units = [
             trans('validation.attributes.day') => 86400,
             trans('validation.attributes.hour') => 3600,
@@ -56,15 +55,14 @@ if (! function_exists('formatTime')) {
             trans('validation.attributes.second') => 1,
         ];
 
-        foreach ($units as $unit => $value) {
-            if ($seconds >= $value) {
-                $count = floor($seconds / $value);
-                $output .= $count.$unit;
-                $seconds %= $value;
+        foreach ($units as $unitName => $secondsInUnit) {
+            if ($seconds >= $secondsInUnit) {
+                $timeString .= floor($seconds / $secondsInUnit).' '.$unitName.' ';
+                $seconds %= $secondsInUnit;
             }
         }
 
-        return $output;
+        return trim($timeString);
     }
 }
 
@@ -97,20 +95,12 @@ if (! function_exists('array_clean')) {
 if (! function_exists('string_urlsafe')) {
     function string_urlsafe($string, $force_lowercase = true, $anal = false): string
     {
-        $strip = [
-            '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '=', '+', '[', '{', ']', '}', '\\', '|', ';', ':', '"', "'", '&#8216;', '&#8217;', '&#8220;',
-            '&#8221;', '&#8211;', '&#8212;', 'â€”', 'â€“', ',', '<', '.', '>', '/', '?',
-        ];
-        $clean = trim(str_replace($strip, '_', strip_tags($string)));
+        $clean = preg_replace('/[~`!@#$%^&*()_=+\[\]{}\\|;:"\'<>,.?\/]/', '_', strip_tags($string));
         $clean = preg_replace('/\s+/', '-', $clean);
         $clean = ($anal) ? preg_replace('/[^a-zA-Z0-9]/', '', $clean) : $clean;
 
         if ($force_lowercase) {
-            if (function_exists('mb_strtolower')) {
-                $clean = mb_strtolower($clean, 'UTF-8');
-            } else {
-                $clean = strtolower($clean);
-            }
+            $clean = function_exists('mb_strtolower') ? mb_strtolower($clean, 'UTF-8') : strtolower($clean);
         }
 
         return $clean;

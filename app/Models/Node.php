@@ -115,7 +115,7 @@ class Node extends Model
         if ($ip !== []) {
             $data = IP::getIPGeo($ip[0]); // 复数IP都以第一个为准
 
-            if ($data !== null) {
+            if ($data) {
                 self::withoutEvents(function () use ($data) {
                     $this->update(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
                 });
