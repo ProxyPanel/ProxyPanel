@@ -88,13 +88,13 @@
               $('#coupon_sn').parent().prepend(
                   '<div class="input-group-prepend"><span class="input-group-text bg-green-700"><i class="icon wb-check white" aria-hidden="true"></i></span></div>');
               // 根据类型计算折扣后的总金额
-              let total_price = 0;
+              let total_price;
               let coupon_text = document.getElementById('discount');
               if (ret.data.type === 2) {
-                const discount = goods_price * (ret.data.value / 100);
+                const discount = goods_price * (1 - ret.data.value / 100);
 
-                coupon_text.innerHTML = '【{{trans('admin.coupon.type.discount')}}】：' + ret.data.name + '_'
-                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: - ' + sign + discount.toFixed(2);
+                coupon_text.innerHTML = '【{{trans('admin.coupon.type.discount')}}】：' + ret.data.name + ' _ '
+                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: ➖ ' + sign + discount.toFixed(2);
                 total_price = goods_price - discount;
               } else {
                 console.log(ret.data.value);
