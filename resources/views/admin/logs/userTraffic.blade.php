@@ -50,7 +50,7 @@
                                             {{$log->order->goods->name}}
                                         @endcan
                                     @else
-                                        【{{trans('common.deleted_item', ['attribute' => trans('model.order.attribute')])}}】
+                                        【{{ trans('common.deleted_item', ['attribute' => trans('model.order.attribute')]) }}】
                                     @endif
                                 @endif
                             </td>

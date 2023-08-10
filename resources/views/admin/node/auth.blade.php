@@ -103,7 +103,8 @@
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
                                 {{ trans('admin.node.auth.deploy.update') }}: {{ trans('admin.node.auth.deploy.same') }}
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3oO3HZy | bash -s -- --remove
+                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3oO3HZy |
+                                bash -s -- --remove
                                 <br>
                                 {{ trans('admin.node.auth.deploy.start') }}: systemctl start vnet-v2ray
                                 <br>
@@ -111,7 +112,8 @@
                                 <br>
                                 {{ trans('admin.node.auth.deploy.status') }}: systemctl status vnet-v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u vnet-v2ray
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u
+                                vnet-v2ray
                                 <br>
                                 {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u vnet-v2ray -f
                             </div>
@@ -136,7 +138,8 @@
                                 <br>
                                 {{ trans('admin.node.auth.deploy.status') }}: systemctl status v2ray
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u v2ray
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u
+                                v2ray
                                 <br>
                                 {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u v2ray -f
                             </div>
@@ -158,9 +161,11 @@
                                     <br>
                                     <br>
                                     <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                                    {{ trans('admin.node.auth.deploy.update') }}: curl -L -s https://mrw.so/6cMfGy | bash
+                                    {{ trans('admin.node.auth.deploy.update') }}: curl -L -s https://mrw.so/6cMfGy |
+                                    bash
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://mrw.so/5ulpvu | bash
+                                    {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://mrw.so/5ulpvu |
+                                    bash
                                     <br>
                                     {{ trans('admin.node.auth.deploy.start') }}: systemctl start trojanp
                                     <br>
@@ -168,7 +173,8 @@
                                     <br>
                                     {{ trans('admin.node.auth.deploy.status') }}: systemctl status trojanp
                                     <br>
-                                    {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u trojanp
+                                    {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager
+                                    -u trojanp
                                     <br>
                                     {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u trojanp -f
                                 </div>
@@ -187,7 +193,8 @@
                                 <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
                                 {{ trans('admin.node.auth.deploy.update') }}: {{ trans('admin.node.auth.deploy.same') }}
                                 <br>
-                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove
+                                {{ trans('admin.node.auth.deploy.uninstall') }}: curl -L -s https://bit.ly/3828OP1 |
+                                bash -s -- --remove
                                 <br>
                                 {{ trans('admin.node.auth.deploy.start') }}: systemctl start vnet
                                 <br>
@@ -197,7 +204,8 @@
                                 <br>
                                 {{ trans('admin.node.auth.deploy.status') }}: systemctl status vnet
                                 <br>
-                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u vnet
+                                {{ trans('admin.node.auth.deploy.recent_logs') }}: journalctl -x -n 300 --no-pager -u
+                                vnet
                                 <br>
                                 {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u vnet -f
                             </div>
@@ -227,7 +235,12 @@
           if (result.value) {
             $.post('{{route('admin.node.auth.store')}}', {_token: '{{csrf_token()}}'}, function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }
@@ -242,7 +255,8 @@
       function deleteAuth(id) {
         swal.fire({
           title: '{{ trans('admin.hint') }}',
-          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node_auth.attribute')]) }}' + id + '{{ trans('admin.confirm.delete.1') }}',
+          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node_auth.attribute')]) }}' + id +
+              '{{ trans('admin.confirm.delete.1') }}',
           icon: 'info',
           showCancelButton: true,
           cancelButtonText: '{{trans('common.close')}}',
@@ -256,7 +270,12 @@
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
                 } else {
                   swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
@@ -286,7 +305,12 @@
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
                 } else {
                   swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }

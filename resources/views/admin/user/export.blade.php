@@ -98,59 +98,60 @@
     <script src="/assets/custom/easy.qrcode.min.js" type="text/javascript"></script>
     @can('admin.user.exportProxy')
         <script>
-            function getInfo(id, type) {
-                $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
-                    function (ret) {
-                        if (ret.status === 'success') {
-                            switch (type) {
-                                case 'code':
-                                    swal.fire({
-                                        html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
-                                            '</textarea>' +
-                                            '<a href="' + ret.data + '" class="btn btn-block btn-danger mt-4">{{ trans('common.open') }} ' +
-                                            ret.title + '</a>',
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                case 'qrcode':
-                                    swal.fire({
-                                        title: '{{trans('user.scan_qrcode')}}',
-                                        html: '<div id="qrcode"></div><button class="btn btn-block btn-outline-primary mt-4" onclick="Download()"> <i class="icon wb-download"></i> {{trans('common.download')}}</button>',
-                                        onBeforeOpen: () => {
-                                            new QRCode(document.getElementById("qrcode"), {text: ret.data});
-                                        },
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                case 'text':
-                                    swal.fire({
-                                        title: '{{trans('user.node.info')}}',
-                                        html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
-                                            '</textarea>',
-                                        showConfirmButton: false,
-                                    });
-                                    break;
-                                default:
-                                    swal.fire({title: ret.title, text: ret.data});
-                            }
-                        }
-                    });
-            }
+          function getInfo(id, type) {
+            $.post("{{route('admin.user.exportProxy', $user)}}", {_token: '{{csrf_token()}}', id: id, type: type},
+                function(ret) {
+                  if (ret.status === 'success') {
+                    switch (type) {
+                      case 'code':
+                        swal.fire({
+                          html: '<textarea class="form-control" rows="8" readonly="readonly">' + ret.data +
+                              '</textarea>' +
+                              '<a href="' + ret.data +
+                              '" class="btn btn-block btn-danger mt-4">{{ trans('common.open') }} ' +
+                              ret.title + '</a>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'qrcode':
+                        swal.fire({
+                          title: '{{trans('user.scan_qrcode')}}',
+                          html: '<div id="qrcode"></div><button class="btn btn-block btn-outline-primary mt-4" onclick="Download()"> <i class="icon wb-download"></i> {{trans('common.download')}}</button>',
+                          onBeforeOpen: () => {
+                            new QRCode(document.getElementById('qrcode'), {text: ret.data});
+                          },
+                          showConfirmButton: false,
+                        });
+                        break;
+                      case 'text':
+                        swal.fire({
+                          title: '{{trans('user.node.info')}}',
+                          html: '<textarea class="form-control" rows="12" readonly="readonly">' + ret.data +
+                              '</textarea>',
+                          showConfirmButton: false,
+                        });
+                        break;
+                      default:
+                        swal.fire({title: ret.title, text: ret.data});
+                    }
+                  }
+                });
+          }
 
-            function Download() {
-                const canvas = document.getElementsByTagName("canvas")[0];
-                canvas.toBlob((blob) => {
-                    let link = document.createElement('a');
-                    link.download = 'qr.png';
+          function Download() {
+            const canvas = document.getElementsByTagName('canvas')[0];
+            canvas.toBlob((blob) => {
+              let link = document.createElement('a');
+              link.download = 'qr.png';
 
-                    let reader = new FileReader();
-                    reader.readAsDataURL(blob);
-                    reader.onload = () => {
-                        link.href = reader.result;
-                        link.click();
-                    };
-                }, "image/png");
-            }
+              let reader = new FileReader();
+              reader.readAsDataURL(blob);
+              reader.onload = () => {
+                link.href = reader.result;
+                link.click();
+              };
+            }, 'image/png');
+          }
         </script>
     @endcan
 @endsection

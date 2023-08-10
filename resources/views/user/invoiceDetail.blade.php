@@ -15,13 +15,15 @@
                     </div>
                     <div class="col-lg-3 offset-lg-6 text-right">
                         <h4>{{trans('user.invoice.detail')}}</h4>
-                        <p>{{ trans('model.order.id') }}：
-                            <a class="font-size-20" href="javascript:void(0)">{{$order->sn}}</a>
+                        <p>{{ trans('model.order.id') }}
+                            :<a class="font-size-20" href="javascript:void(0)">{{$order->sn}}</a>
                         </p>
                         <p>{{trans('user.payment_method')}}
-                            ：{{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</p>
+                            : {{$order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online')}}</p>
                         <p>{{trans('user.bought_at')}}: {{$order->created_at}}</p>
-                        @if($order->expired_at)<p>{{trans('common.expired_at')}}: {{$order->expired_at}}</p>@endif
+                        @if($order->expired_at)
+                            <p>{{trans('common.expired_at')}}: {{$order->expired_at}}</p>
+                        @endif
                     </div>
                 </div>
                 <div class="page-invoice-table table-responsive">

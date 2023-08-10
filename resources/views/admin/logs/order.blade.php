@@ -179,7 +179,9 @@
         $('#is_expire').selectpicker('val', @json(Request::query('is_expire')));
         $('#pay_way').selectpicker('val', @json(Request::query('pay_way')));
         $('#status').selectpicker('val', @json(Request::query('status')));
-        $('select').on('change', function() { this.form.submit(); });
+        $('select').on('change', function() {
+          this.form.submit();
+        });
       });
 
       // 有效期
@@ -190,7 +192,12 @@
       function changeStatus(id, status) {
         $.post('{{route('admin.order.edit')}}', {_token: '{{csrf_token()}}', oid: id, status: status}, function(ret) {
           if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+            swal.fire({
+              title: ret.message,
+              icon: 'success',
+              timer: 1000,
+              showConfirmButton: false,
+            }).then(() => window.location.reload());
           } else {
             swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
           }

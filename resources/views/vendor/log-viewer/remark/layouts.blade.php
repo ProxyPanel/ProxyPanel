@@ -184,30 +184,24 @@
         </div>
     </nav>
     <div class="page ml-0">
-        <!--[if lt IE 8]>
-        <p class="browserupgrade">您正在使用 <strong>过时/老旧</strong> 的浏览器。 为了您的使用体验，请
-            <a href="https://browsehappy.com/">升级您的浏览器</a> <br/>You are using an <strong>outdated</strong> browser. Please
-            <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.
-        </p>
-        <![endif]-->
+        <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
+{{trans('common.update_browser.2')}}<a href="https://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
         <div class="container-fluid">
             @yield('content')
         </div>
     </div>
     <footer class="site-footer ml-0">
-        <div class="site-footer-legal">
-            © 2017 - 2022 <a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} </a> {{__('All rights reserved
-            .')}}
+        <div class="site-footer-legal">© 2017 -
+            2023<a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} </a> {{__('All rights reserved.')}}
         </div>
         <div class="site-footer-right">
-            Base on <a href="https://github.com/ARCANEDEV/LogViewer" target="_blank">LogViewer</a> 🚀 Version: <code> {{ log_viewer()->version() }} </code>
+            Base on <a href="https://github.com/ARCANEDEV/LogViewer" target="_blank">LogViewer</a> 🚀
+            Version:<code> {{ log_viewer()->version() }} </code>
         </div>
     </footer>
-@yield('modals')
+    @yield('modals')
 @endsection
 @section('layout_javascript')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"
-            integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous"
-            referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     @yield('javascript')
 @endsection

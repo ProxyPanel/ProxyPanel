@@ -51,7 +51,10 @@
                 label += ': ';
               }
               if (context.parsed.y !== null) {
-                label += new Intl.NumberFormat('ch-CN', {style: 'currency', currency: '{{sysConfig('standard_currency')}}'}).format(context.parsed.y);
+                label += new Intl.NumberFormat('ch-CN', {
+                  style: 'currency',
+                  currency: '{{sysConfig('standard_currency')}}',
+                }).format(context.parsed.y);
               }
               return label;
             },

@@ -24,13 +24,18 @@
                 <div class="user-info card card-shadow text-center">
                     <div class="user-base card-block">
                         <a class="avatar img-bordered avatar-100" href="javascript:void(0)">
-                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}" />
+                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}"/>
                         </a>
                         <h4 class="user-name">{{Auth::getUser()->nickname}}</h4>
-                        <p class="user-job"><i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i> {{trans('model.user.wechat')}}：
-                            @if(Auth::getUser()->wechat) {{Auth::getUser()->wechat}} @else {{trans('common.none')}} @endif</p>
-                        <p class="user-location"><i class="fa-brands fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ：
-                            @if(Auth::getUser()->qq) {{Auth::getUser()->qq}} @else {{trans('common.none')}} @endif</p>
+                        <p class="user-job">
+                            <i class="fa-brands fa-weixin fa-lg mr-10" aria-hidden="true"></i>
+                            {{trans('model.user.wechat')}}: {{Auth::getUser()->wechat ?? trans('common.none')}}</p>
+                        <p class="user-location"><i class="fa-brands fa-qq fa-lg mr-10" aria-hidden="true"></i> QQ:
+                            @if(Auth::getUser()->qq)
+                                {{Auth::getUser()->qq}}
+                            @else
+                                {{trans('common.none')}}
+                            @endif</p>
                     </div>
                     @if(sysConfig('oauth_path'))
                         <div class="line">
@@ -40,7 +45,8 @@
                             @foreach (json_decode(sysConfig('oauth_path')) as $item)
                                 <a class="list-group-item justify-content-center @if(in_array($item, $auth, true)) col-10 @else col-12 @endif"
                                    @if($item !== 'telegram') href="{{route('oauth.bind', ['type' => $item])}}" @endif>
-                                    <i class="fa-brands {{ config('common.oauth.icon')[$item] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($item) }} :
+                                    <i class="fa-brands {{ config('common.oauth.icon')[$item] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($item) }}
+                                    :
                                     @if(in_array($item, $auth, true))
                                         <span class="red-600">{{trans('user.oauth.rebind')}}</span>
                                     @else

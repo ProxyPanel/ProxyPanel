@@ -8,7 +8,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-settings"></i>{{ trans('admin.setting.system.title') }}</h1>
+                <h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.system.title') }}</h1>
             </div>
             <div class="panel-body">
                 <div class="nav-tabs-horizontal" data-plugin="tabs">
@@ -473,9 +473,8 @@
 
       function disablePayment(op) {
         for (let i = 1; i < op.length; i++) {
-            @json($payments).includes(op[i].value)
-              ? op[i].disabled = false
-              : op[i].disabled = true;
+            @json($payments).
+          includes(op[i].value) ? op[i].disabled = false : op[i].disabled = true;
         }
       }
 
@@ -488,7 +487,11 @@
       // 系统设置更新
       function systemUpdate(systemItem, value) {
           @can('admin.system.update')
-          $.post('{{route('admin.system.update')}}', {_token: '{{csrf_token()}}', name: systemItem, value: value}, function(ret) {
+          $.post('{{route('admin.system.update')}}', {
+            _token: '{{csrf_token()}}',
+            name: systemItem,
+            value: value,
+          }, function(ret) {
             if (ret.status === 'success') {
               swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false});
             } else {
@@ -496,7 +499,12 @@
             }
           });
           @else
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcan
       }
 
@@ -565,9 +573,10 @@
           if (ret.status === 'success') {
             swal.fire({
               title: '易支付信息(仅供参考)',
-              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' + ret.data['account'] +
-                  '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) + '% | 微信 - ' + (100 - ret.data['wxrate']) +
-                  '% | QQ钱包 - ' + (100 - ret.data['qqrate']) + '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
+              html: '商户状态: ' + ret.data['active'] + ' | 账号余额： ' + ret.data['money'] + ' | 结算账号：' +
+                  ret.data['account'] + '<br\><br\>渠道手续费：【支付宝 - ' + (100 - ret.data['alirate']) +
+                  '% | 微信 - ' + (100 - ret.data['wxrate']) + '% | QQ钱包 - ' + (100 - ret.data['qqrate']) +
+                  '%】<br\><br\> 请按照支付平台的介绍为准，本信息纯粹为Api获取信息',
               icon: 'info',
             });
           } else {

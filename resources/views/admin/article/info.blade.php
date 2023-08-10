@@ -64,7 +64,8 @@
                             <select class="form-control" data-plugin="selectpicker" id="language" name="language" data-style="btn-outline btn-primary">
                                 @foreach (config('common.language') as $key => $value)
                                     <option value="{{$key}}">
-                                        <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                        <i class="fi fi-{{$value[1]}}" aria-hidden="true"></i>
+                                        <span style="padding: inherit;">{{$value[0]}}</span>
                                     </option>
                                 @endforeach
                             </select>

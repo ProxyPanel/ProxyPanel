@@ -52,12 +52,10 @@
             }
         </style>
         <div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
-            <div class="font-size-16 h-p33 pl-20 pt-20"
-                 style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
-                <p>{{trans('common.to_safari.0')}} <i
-                            class="icon wb-more-horizontal"></i>{{trans('common.to_safari.1')}}
-                    <img src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png"
-                         class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/>
+            <div class="font-size-16 h-p33 pl-20 pt-20" style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
+                <p>{{trans('common.to_safari.0')}}
+                    <i class="icon wb-more-horizontal" aria-hidden="true"></i>{{trans('common.to_safari.1')}}
+                    <img src="//gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png" class="w-30 h-30 vertical-align-middle m-3" alt="Safari"/>
                     {{trans('common.to_safari.2')}}<br>{{trans('common.to_safari.3')}}</p>
             </div>
         </div>
@@ -76,22 +74,19 @@
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="brand">
-                                <img src="{{sysConfig('website_home_logo')? asset(sysConfig('website_home_logo')) :'/assets/images/logo64.png'}}"
-                                     class="brand-img" alt="logo"/>
+                                <img src="{{sysConfig('website_home_logo')? asset(sysConfig('website_home_logo')) :'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
                                 <h3 class="brand-text">{{sysConfig('website_name')}}</h3>
                             </div>
                         </div>
                         <div class="ribbon ribbon-reverse ribbon-info ribbon-clip">
-                            <button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown"
-                                    aria-expanded="false">
-                                <i class="font-size-20 wb-globe"></i>
+                            <button class="ribbon-inner btn dropdown-toggle pt-0" id="language" data-toggle="dropdown" aria-expanded="false">
+                                <i class="font-size-20 wb-globe" aria-hidden="true"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-bullet" aria-labelledby="language" role="menu">
                                 @foreach (config('common.language') as $key => $value)
-                                    <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}"
-                                       role="menuitem">
-                                        <i class="fi fi-{{$value[1]}}"></i> <span
-                                                style="padding: inherit;">{{$value[0]}}</span>
+                                    <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}" role="menuitem">
+                                        <i class="fi fi-{{$value[1]}}" aria-hidden="true"></i>
+                                        <span style="padding: inherit;">{{$value[0]}}</span>
                                     </a>
                                 @endforeach
                             </div>

@@ -112,7 +112,7 @@
                                         <select data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                                 class="col-md-5 form-control" name="country_code" id="country_code">
                                             @foreach($countries as $country)
-                                                <option value="{{$country->code}}">{{$country->code}} - {{$country->name}}</option>
+                                                <option value="{{$country->code}}">{{ $country->code.' - '.$country->name }}</option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -590,7 +590,12 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                html: str,
+                icon: 'error',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              });
             }
           },
         });
@@ -744,7 +749,8 @@
 
         swal.fire({
           title: '[节点 user-config.json 配置示例]',
-          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' + content + '</div>',
+          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
+              content + '</div>',
           icon: 'info',
         });
       }
@@ -757,7 +763,8 @@
 
         swal.fire({
           title: '[节点 user-config.json 配置示例]',
-          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' + content + '</div>',
+          html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
+              content + '</div>',
           icon: 'info',
         });
       }

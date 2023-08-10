@@ -6,10 +6,13 @@
     <div class="page-content container-fluid">
         <div class="panel panel-bordered">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-shopping-cart" aria-hidden="true"></i>{{ trans('admin.goods.title') }}</h1>
+                <h1 class="panel-title">
+                    <i class="icon wb-shopping-cart" aria-hidden="true"></i>{{ trans('admin.goods.title') }}</h1>
                 @can('admin.goods.create')
                     <div class="panel-actions">
-                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
+                        <a href="{{route('admin.goods.create')}}" class="btn btn-primary">
+                            <i class="icon wb-plus"></i> {{ trans('common.add') }}
+                        </a>
                     </div>
                 @endcan
             </div>
@@ -137,7 +140,9 @@
         $('#type').val({{Request::query('type')}});
         $('#status').val({{Request::query('status')}});
 
-        $('select').on('change', function() { this.form.submit(); });
+        $('select').on('change', function() {
+          this.form.submit();
+        });
       });
 
       @can('admin.goods.destroy')
@@ -145,7 +150,8 @@
       function delGoods(url, name) {
         swal.fire({
           title: '{{ trans('common.warning') }}',
-          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.attribute')]) }}' + name +
+              '{{ trans('admin.confirm.delete.1') }}',
           icon: 'warning',
           showCancelButton: true,
           cancelButtonText: '{{ trans('common.cancel') }}',
@@ -159,7 +165,12 @@
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
                 } else {
                   swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }

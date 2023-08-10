@@ -75,7 +75,8 @@
           function deleteUserGroup(url, name) {
             swal.fire({
               title: '{{ trans('admin.hint') }}',
-              text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.user_group.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+              text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.user_group.attribute')]) }}' +
+                  name + '{{ trans('admin.confirm.delete.1') }}',
               icon: 'info',
               showCancelButton: true,
               cancelButtonText: '{{ trans('common.close') }}',
@@ -89,7 +90,12 @@
                   dataType: 'json',
                   success: function(ret) {
                     if (ret.status === 'success') {
-                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                      swal.fire({
+                        title: ret.message,
+                        icon: 'success',
+                        timer: 1000,
+                        showConfirmButton: false,
+                      }).then(() => window.location.reload());
                     } else {
                       swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }

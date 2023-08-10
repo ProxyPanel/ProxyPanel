@@ -36,24 +36,19 @@
             <div class="panel-body">
                 <form class="form-row">
                     <div class="form-group col-xxl-1 col-lg-1 col-md-1 col-sm-4">
-                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}"
-                               placeholder="{{ trans('model.user.id') }}"/>
+                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="{{ trans('model.user.id') }}"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}"
-                               placeholder="{{ trans('model.user.username') }}"/>
+                        <input type="text" class="form-control" name="username" value="{{Request::query('username')}}" placeholder="{{ trans('model.user.username') }}"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}"
-                               placeholder="{{ trans('model.user.wechat') }}"/>
+                        <input type="text" class="form-control" name="wechat" value="{{Request::query('wechat')}}" placeholder="{{ trans('model.user.wechat') }}"/>
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <input type="number" class="form-control" name="qq" value="{{Request::query('qq')}}"
-                               placeholder="{{ trans('model.user.qq') }}"/>
+                        <input type="number" class="form-control" name="qq" value="{{Request::query('qq')}}" placeholder="{{ trans('model.user.qq') }}"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 col-md-2 col-sm-4">
-                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}"
-                               placeholder="{{ trans('model.user.port') }}"/>
+                        <input type="number" class="form-control" name="port" value="{{Request::query('port')}}" placeholder="{{ trans('model.user.port') }}"/>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="user_group_id" name="user_group_id">
@@ -114,17 +109,16 @@
                             <td> {{$user->username}} </td>
                             <td> {{$user->credit}} </td>
                             <td>
-                                {!! $user->port? : '<span class="badge badge-lg badge-danger"> '.trans('common.none').' </span>' !!}
+                                {!! $user->port?: '<span class="badge badge-lg badge-danger"> '.trans('common.none').' </span>' !!}
                             </td>
                             <td>
-                                <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy"
-                                   data-clipboard-text="{{$user->subUrl()}}">{{$user->subscribe->code}}</a>
+                                <a href="javascript:" class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{$user->subUrl()}}">{{$user->subscribe->code}}</a>
                             </td>
                             <td> {{formatBytes($user->used_traffic)}} / {{$user->transfer_enable_formatted}} </td>
                             <td> {{$user->t? date('Y-m-d H:i', $user->t): trans('common.status.unused')}} </td>
                             <td>
                                 @if($user->expiration_status() !== 3)
-                                    <span class="badge badge-lg badge-{{['danger','warning','default'][$user->expiration_status()]}}"> {{ $user->expiration_date }} </span>
+                                    <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status()] }}"> {{ $user->expiration_date }} </span>
                                 @else
                                     {{ $user->expiration_date }}
                                 @endif
@@ -145,74 +139,54 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-lg badge-{{$user->enable?'info':'danger'}}">
-                                    <i class="wb-{{$user->enable?'check':'close'}}" aria-hidden="true"></i>
+                                <span class="badge badge-lg badge-{{ $user->enable ? 'info' : 'danger' }}">
+                                    <i class="wb-{{ $user->enable ? 'check' : 'close' }}" aria-hidden="true"></i>
                                 </span>
                             </td>
                             <td>
                                 @canany(['admin.user.edit', 'admin.user.destroy', 'admin.user.export', 'admin.user.monitor', 'admin.user.online', 'admin.user.reset', 'admin.user.switch'])
-                                    <button type="button" class="btn btn-primary dropdown-toggle"
-                                            data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-boundary="viewport" data-toggle="dropdown" aria-expanded="false">
                                         <i class="icon wb-wrench" aria-hidden="true"></i>
                                     </button>
                                     <div class="dropdown-menu" role="menu">
                                         @can('admin.user.edit')
-                                            <a class="dropdown-item"
-                                               href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}"
-                                               role="menuitem">
-                                                <i class="icon wb-edit"
-                                                   aria-hidden="true"></i> {{ trans('common.edit') }}
+                                            <a class="dropdown-item" href="{{route('admin.user.edit', ['user'=>$user->id, Request::getQueryString()])}}" role="menuitem">
+                                                <i class="icon wb-edit" aria-hidden="true"></i> {{ trans('common.edit') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.destroy')
-                                            <a class="dropdown-item"
-                                               href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->username}}')"
-                                               role="menuitem">
-                                                <i class="icon wb-trash"
-                                                   aria-hidden="true"></i> {{ trans('common.delete') }}
+                                            <a class="dropdown-item" href="javascript:delUser('{{route('admin.user.destroy', $user->id)}}','{{$user->username}}')" role="menuitem">
+                                                <i class="icon wb-trash" aria-hidden="true"></i> {{ trans('common.delete') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.export')
-                                            <a class="dropdown-item" href="{{route('admin.user.export', $user)}}"
-                                               role="menuitem">
-                                                <i class="icon wb-code"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.proxy_info') }}
+                                            <a class="dropdown-item" href="{{route('admin.user.export', $user)}}" role="menuitem">
+                                                <i class="icon wb-code" aria-hidden="true"></i> {{ trans('admin.user.proxy_info') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.monitor')
-                                            <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}"
-                                               role="menuitem">
-                                                <i class="icon wb-stats-bars"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.traffic_monitor') }}
+                                            <a class="dropdown-item" href="{{route('admin.user.monitor', $user)}}" role="menuitem">
+                                                <i class="icon wb-stats-bars" aria-hidden="true"></i> {{ trans('admin.user.traffic_monitor') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.online')
-                                            <a class="dropdown-item" href="{{route('admin.user.online', $user)}}"
-                                               role="menuitem">
-                                                <i class="icon wb-cloud"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.online_monitor') }}
+                                            <a class="dropdown-item" href="{{route('admin.user.online', $user)}}" role="menuitem">
+                                                <i class="icon wb-cloud" aria-hidden="true"></i> {{ trans('admin.user.online_monitor') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.reset')
-                                            <a class="dropdown-item"
-                                               href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}')"
-                                               role="menuitem">
-                                                <i class="icon wb-reload"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.reset_traffic') }}
+                                            <a class="dropdown-item" href="javascript:resetTraffic('{{$user->id}}','{{$user->username}}')" role="menuitem">
+                                                <i class="icon wb-reload" aria-hidden="true"></i> {{ trans('admin.user.reset_traffic') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.switch')
-                                            <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')"
-                                               role="menuitem">
-                                                <i class="icon wb-user"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.user_view') }}
+                                            <a class="dropdown-item" href="javascript:switchToUser('{{$user->id}}')" role="menuitem">
+                                                <i class="icon wb-user" aria-hidden="true"></i> {{ trans('admin.user.user_view') }}
                                             </a>
                                         @endcan
                                         @can('admin.user.VNetInfo')
-                                            <a class="dropdown-item" href="javascript:VNetInfo('{{$user->id}}')"
-                                               role="menuitem">
-                                                <i id="vent_{{$user->id}}" class="icon wb-link-broken"
-                                                   aria-hidden="true"></i> {{ trans('admin.user.connection_test') }}
+                                            <a class="dropdown-item" href="javascript:VNetInfo('{{$user->id}}')" role="menuitem">
+                                                <i id="vent_{{$user->id}}" class="icon wb-link-broken" aria-hidden="true"></i> {{ trans('admin.user.connection_test') }}
                                             </a>
                                         @endcan
                                     </div>
@@ -243,182 +217,184 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#user_group_id').val({{Request::query('user_group_id')}});
-            $('#level').val({{Request::query('level')}});
-            $('#status').val({{Request::query('status')}});
-            $('#enable').val({{Request::query('enable')}});
-            $('select').on('change', function () {
-                this.form.submit();
-            });
+      $(document).ready(function() {
+        $('#user_group_id').val({{Request::query('user_group_id')}});
+        $('#level').val({{Request::query('level')}});
+        $('#status').val({{Request::query('status')}});
+        $('#enable').val({{Request::query('enable')}});
+        $('select').on('change', function() {
+          this.form.submit();
         });
+      });
 
-        @can('admin.user.batch')
-        // 批量生成账号
-        function batchAddUsers() {
-            swal.fire({
-                title: '{{ trans('admin.user.massive.text') }}',
-                input: 'range',
-                inputAttributes: {min: 1, max: 10},
-                inputValue: 1,
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.batch')}}', {
-                        _token: '{{csrf_token()}}',
-                        amount: result.value
-                    }, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
+      @can('admin.user.batch')
+      // 批量生成账号
+      function batchAddUsers() {
+        swal.fire({
+          title: '{{ trans('admin.user.massive.text') }}',
+          input: 'range',
+          inputAttributes: {min: 1, max: 10},
+          inputValue: 1,
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.batch')}}', {
+              _token: '{{csrf_token()}}',
+              amount: result.value,
+            }, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
-        }
-        @endcan
+          }
+        });
+      }
+      @endcan
 
-        @can('admin.user.destroy')
-        // 删除账号
-        function delUser(url, username) {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.user.attribute')]) }}' + username + '{{ trans('admin.confirm.delete.1') }}',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: url,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false
-                                }).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.reset')
-        // 重置流量
-        function resetTraffic(id, username) {
-            swal.fire({
-                title: '{{trans('common.warning')}}',
-                text: '{{ trans('admin.user.reset_confirm.0') }}' + username + '{{ trans('admin.user.reset_confirm.1') }}',
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{ csrf_token() }}'}, function (ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.switch')
-        // 切换用户身份
-        function switchToUser(id) {
-            $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{ csrf_token() }}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({
-                        title: ret.message,
-                        icon: 'success',
-                        timer: 1000,
-                        showConfirmButton: false
-                    }).then(() => window.location.href = '/');
-                } else {
-                    swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-            });
-        }
-        @endcan
-
-        @can('admin.user.VNetInfo')
-        // 节点连通性测试
-        function VNetInfo(id) {
+      @can('admin.user.destroy')
+      // 删除账号
+      function delUser(url, username) {
+        swal.fire({
+          title: '{{trans('common.warning')}}',
+          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.user.attribute')]) }}' + username +
+              '{{ trans('admin.confirm.delete.1') }}',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
             $.ajax({
-                method: 'POST',
-                url: '{{route('admin.user.VNetInfo', '')}}/' + id,
-                data: {_token: '{{csrf_token()}}'},
-                beforeSend: function () {
-                    $('#vent_' + id).removeClass('wb-link-broken').addClass('wb-loop icon-spin');
-                },
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        let str = '';
-                        for (let i in ret.data) {
-                            str += '<tr><td>' + ret.data[i]['id'] + '</td><td>' + ret.data[i]['name'] + '</td><td>' + ret.data[i]['avaliable'] + '</td></tr>';
-                        }
-                        swal.fire({
-                            title: ret.title,
-                            icon: 'info',
-                            html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> {{ trans('model.node.attribute') }} </th> <th> {{ trans('common.status.attribute')
-                 }} </th></thead><tbody>' + str + '</tbody></table>',
-                            showConfirmButton: false,
-                        });
-                    } else {
-                        swal.fire({title: ret.title, text: ret.data, icon: 'error'});
-                    }
-                },
-                complete: function () {
-                    $('#vent_' + id).removeClass('wb-loop icon-spin').addClass('wb-link-broken');
-                },
+              method: 'DELETE',
+              url: url,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                }
+              },
             });
-        }
-        @endcan
+          }
+        });
+      }
+      @endcan
 
-        const clipboard = new ClipboardJS('.copySubscribeLink');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: 'success',
-                timer: 1000,
-                showConfirmButton: false,
+      @can('admin.user.reset')
+      // 重置流量
+      function resetTraffic(id, username) {
+        swal.fire({
+          title: '{{trans('common.warning')}}',
+          text: '{{ trans('admin.user.reset_confirm.0') }}' + username + '{{ trans('admin.user.reset_confirm.1') }}',
+          icon: 'warning',
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('admin.user.reset', '')}}/' + id, {_token: '{{ csrf_token() }}'}, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
             });
+          }
         });
-        clipboard.on('error', function () {
+      }
+      @endcan
+
+      @can('admin.user.switch')
+      // 切换用户身份
+      function switchToUser(id) {
+        $.post('{{route('admin.user.switch', '')}}/' + id, {_token: '{{ csrf_token() }}'}, function(ret) {
+          if (ret.status === 'success') {
             swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+              title: ret.message,
+              icon: 'success',
+              timer: 1000,
+              showConfirmButton: false,
+            }).then(() => window.location.href = '/');
+          } else {
+            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+          }
         });
+      }
+      @endcan
+
+      @can('admin.user.VNetInfo')
+      // 节点连通性测试
+      function VNetInfo(id) {
+        $.ajax({
+          method: 'POST',
+          url: '{{route('admin.user.VNetInfo', '')}}/' + id,
+          data: {_token: '{{csrf_token()}}'},
+          beforeSend: function() {
+            $('#vent_' + id).removeClass('wb-link-broken').addClass('wb-loop icon-spin');
+          },
+          success: function(ret) {
+            if (ret.status === 'success') {
+              let str = '';
+              for (let i in ret.data) {
+                str += '<tr><td>' + ret.data[i]['id'] + '</td><td>' + ret.data[i]['name'] + '</td><td>' +
+                    ret.data[i]['avaliable'] + '</td></tr>';
+              }
+              swal.fire({
+                title: ret.title,
+                icon: 'info',
+                html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> {{ trans('model.node.attribute') }} </th> <th> {{ trans('common.status.attribute')
+                 }} </th></thead><tbody>' + str + '</tbody></table>',
+                showConfirmButton: false,
+              });
+            } else {
+              swal.fire({title: ret.title, text: ret.data, icon: 'error'});
+            }
+          },
+          complete: function() {
+            $('#vent_' + id).removeClass('wb-loop icon-spin').addClass('wb-link-broken');
+          },
+        });
+      }
+      @endcan
+
+      const clipboard = new ClipboardJS('.copySubscribeLink');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '{{ trans('common.copy.success') }}',
+          icon: 'success',
+          timer: 1000,
+          showConfirmButton: false,
+        });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '{{ trans('common.copy.failed') }}',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      });
     </script>
 @endsection

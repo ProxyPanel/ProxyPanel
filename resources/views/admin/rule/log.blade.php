@@ -94,7 +94,9 @@
         $('#node_id').val({{Request::query('node_id')}});
         $('#rule_id').val({{Request::query('rule_id')}});
 
-        $('select').on('change', function() { this.form.submit(); });
+        $('select').on('change', function() {
+          this.form.submit();
+        });
       });
 
       @can('admin.rule.clear')
@@ -111,7 +113,12 @@
           if (result.value) {
             $.post("{{route('admin.rule.clear')}}", {_token: '{{csrf_token()}}'}, function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'});
               }

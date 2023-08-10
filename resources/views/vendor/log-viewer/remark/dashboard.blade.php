@@ -40,18 +40,18 @@
 
 @section('javascript')
     <script>
-        new Chart(document.getElementById('stats-doughnut-chart'),
-            {
-                type: 'doughnut',
-                data: {!! $chartData !!},
-                options: {
-                    plugins:{
-                        legend: {
-                            position: 'bottom',
-                        },
-                    }
+      new Chart(document.getElementById('stats-doughnut-chart'),
+          {
+            type: 'doughnut',
+            data: {!! $chartData !!},
+            options: {
+              plugins: {
+                legend: {
+                  position: 'bottom',
                 },
+              },
             },
-        );
+          },
+      );
     </script>
 @endsection

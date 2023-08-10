@@ -67,7 +67,8 @@
             <div class="col-lg-4 order-lg-2 order-1">
                 <div class="panel panel-bordered">
                     <div class="panel-heading p-20">
-                        <h3 class="panel-title cyan-600"><i class="icon ti-headphone-alt"></i>{{trans('user.ticket.working_hour')}}</h3>
+                        <h3 class="panel-title cyan-600">
+                            <i class="icon ti-headphone-alt"></i>{{trans('user.ticket.working_hour')}}</h3>
                     </div>
                     <div class="panel-body pt-0">
                         <ul class="list-group list-group-dividered list-group-full vertical-align-middle">
@@ -129,42 +130,53 @@
 @endsection
 @section('javascript')
     <script>
-        // 发起工单
-        function createTicket() {
-            const title = $('#title').val();
-            const content = $('#content').val();
+      // 发起工单
+      function createTicket() {
+        const title = $('#title').val();
+        const content = $('#content').val();
 
-            if (title.trim() === '') {
-                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}!', icon: 'warning'});
-                return false;
-            }
-
-            if (content.trim() === '') {
-                swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!', icon: 'warning'});
-                return false;
-            }
-
-            swal.fire({
-                title: '{{trans('user.ticket.submit_tips')}}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{trans('common.close')}}',
-                confirmButtonText: '{{trans('common.confirm')}}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{route('openTicket')}}', {
-                        _token: '{{csrf_token()}}',
-                        title: title,
-                        content: content,
-                    }, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
-                    });
-                }
-            });
+        if (title.trim() === '') {
+          swal.fire({
+            title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.title')])}}!',
+            icon: 'warning',
+          });
+          return false;
         }
+
+        if (content.trim() === '') {
+          swal.fire({
+            title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.content')])}}!',
+            icon: 'warning',
+          });
+          return false;
+        }
+
+        swal.fire({
+          title: '{{trans('user.ticket.submit_tips')}}',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{trans('common.close')}}',
+          confirmButtonText: '{{trans('common.confirm')}}',
+        }).then((result) => {
+          if (result.value) {
+            $.post('{{route('openTicket')}}', {
+              _token: '{{csrf_token()}}',
+              title: title,
+              content: content,
+            }, function(ret) {
+              if (ret.status === 'success') {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            });
+          }
+        });
+      }
     </script>
 @endsection

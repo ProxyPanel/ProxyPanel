@@ -6,7 +6,8 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.common.title') }}</h1>
+                <h1 class="panel-title">
+                    <i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.common.title') }}</h1>
             </div>
             <div class="panel-body container-fluid">
                 <div class="nav-tabs-vertical" data-plugin="tabs">
@@ -474,7 +475,12 @@
         });
           @endcan
           @cannot('admin.config.level.store')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -491,7 +497,12 @@
             dataType: 'json',
             success: function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }
@@ -499,14 +510,20 @@
           });
           @endcan
           @cannot('admin.config.level.update')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
       function delLevel(id, name) { // 删除等级
           @can('admin.config.level.destroy')
           swal.fire({
-            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.common.level')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.common.level')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -521,7 +538,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }
@@ -531,7 +553,12 @@
           });
           @endcan
           @cannot('admin.config.level.destroy')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -576,7 +603,12 @@
         });
           @endcan
           @cannot('admin.config.category.store')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -593,7 +625,12 @@
             dataType: 'json',
             success: function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }
@@ -601,14 +638,20 @@
           });
           @endcan
           @cannot('admin.config.category.update')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
       function delCategory(id, name) { // 删除分类
           @can('admin.config.category.destroy')
           swal.fire({
-            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.category')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.category')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -623,7 +666,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }
@@ -633,7 +681,12 @@
           });
           @endcan
           @cannot('admin.config.category.destroy')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -682,7 +735,12 @@
         });
           @endcan
           @cannot('admin.config.country.store')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -695,7 +753,12 @@
             dataType: 'json',
             success: function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'});
               }
@@ -703,14 +766,20 @@
           });
           @endcan
           @cannot('admin.config.country.update')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
       function delCountry(code, name) { // 删除国家/地区
           @can('admin.config.country.destroy')
           swal.fire({
-            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.country')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.country')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -725,7 +794,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }
@@ -735,7 +809,12 @@
           });
           @endcan
           @cannot('admin.config.country.destroy')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -775,7 +854,12 @@
         });
           @endcan
           @cannot('admin.config.ss.store')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -788,7 +872,12 @@
             dataType: 'json',
             success: function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }
@@ -796,14 +885,20 @@
           });
           @endcan
           @cannot('admin.config.ss.update')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
       function delConfig(id, name) { // 删除配置
           @can('admin.config.ss.destroy')
           swal.fire({
-            title: '{{ trans('admin.confirm.delete.0', ['attribute' => '']) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            title: '{{ trans('admin.confirm.delete.0', ['attribute' => '']) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'question',
             allowEnterKey: false,
             showCancelButton: true,
@@ -818,7 +913,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }
@@ -828,7 +928,12 @@
           });
           @endcan
           @cannot('admin.config.ss.destroy')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -875,7 +980,12 @@
         });
           @endcan
           @cannot('admin.config.label.store')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -892,7 +1002,12 @@
             dataType: 'json',
             success: function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }
@@ -900,7 +1015,12 @@
           });
           @endcan
           @cannot('admin.config.label.update')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
 
@@ -908,7 +1028,8 @@
           @can('admin.config.label.destroy')
           swal.fire({
             title: '{{ trans('common.warning') }}',
-            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.label')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.label')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: '{{trans('common.close')}}',
@@ -921,7 +1042,12 @@
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
                 } else {
                   swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
@@ -930,7 +1056,12 @@
           });
           @endcan
           @cannot('admin.config.label.destroy')
-          swal.fire({title: '{{ trans('admin.setting.no_permission') }}', icon: 'error', timer: 1500, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.setting.no_permission') }}',
+            icon: 'error',
+            timer: 1500,
+            showConfirmButton: false,
+          });
           @endcannot
       }
     </script>

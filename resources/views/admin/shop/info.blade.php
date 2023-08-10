@@ -11,8 +11,7 @@
             <div class="panel-heading">
                 <h1 class="panel-title">
                     <i class="icon wb-shopping-cart" aria-hidden="true"></i>
-                    {{ isset($good) ? trans('admin.action.edit_item', ['attribute' => trans('model.goods.attribute')]) : trans('admin.action.add_item', ['attribute' => trans
-                    ('model.goods.attribute')]) }}
+                    {{ isset($good) ? trans('admin.action.edit_item', ['attribute' => trans('model.goods.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.goods.attribute')]) }}
                 </h1>
                 <div class="panel-actions">
                     <a href="{{route('admin.goods.index')}}" class="btn btn-danger">{{ trans('common.back') }}</a>
@@ -190,7 +189,8 @@
                                 </div>
                             </div>
                             <div class="form-actions col-12 text-right">
-                                <button type="submit" class="btn btn-success"><i class="icon wb-check"></i>{{ trans('common.submit') }}</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="icon wb-check"></i>{{ trans('common.submit') }}</button>
                             </div>
                         </div>
                     </div>

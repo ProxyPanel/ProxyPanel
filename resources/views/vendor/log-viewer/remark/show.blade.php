@@ -4,6 +4,7 @@
  * @var  Illuminate\Pagination\LengthAwarePaginator $entries
  * @var  string|null $query
  */
+
 ?>
 
 @extends('vendor.log-viewer.remark.layouts')
@@ -86,7 +87,8 @@
                                 <div class="input-group-append">
                                     @unless (is_null($query))
                                         <a href="{{ route('log-viewer::logs.show', [$log->date]) }}" class="btn btn-secondary">
-                                            (@lang(':count results', ['count' => $entries->count()])) <i class="fa-solid fa-fw fa-xmark"></i>
+                                            (@lang(':count results', ['count' => $entries->count()]))
+                                            <i class="fa-solid fa-fw fa-xmark"></i>
                                         </a>
                                     @endunless
                                     <button id="search-btn" class="btn btn-primary">
@@ -126,7 +128,8 @@
                             </thead>
                             <tbody>
                             @forelse($entries as $key => $entry)
-                                <?php /** @var  Arcanedev\LogViewer\Entities\LogEntry $entry */ ?>
+                                    <?php
+                                    /** @var  Arcanedev\LogViewer\Entities\LogEntry $entry */ ?>
                                 <tr>
                                     <td>
                                         {{ $key+1 }}
@@ -236,53 +239,53 @@
 
 @section('javascript')
     <script>
-        $(function() {
-            const deleteLogModal = $('div#deleteLogModal'),
-                deleteLogForm = $('form#deleteLogForm'),
-                submitBtn = deleteLogForm.find('button[type=submit]');
+      $(function() {
+        const deleteLogModal = $('div#deleteLogModal'),
+            deleteLogForm = $('form#deleteLogForm'),
+            submitBtn = deleteLogForm.find('button[type=submit]');
 
-            deleteLogForm.on('submit', function(event) {
-                event.preventDefault();
-                submitBtn.button('loading');
+        deleteLogForm.on('submit', function(event) {
+          event.preventDefault();
+          submitBtn.button('loading');
 
-                $.ajax({
-                    url: $(this).attr('action'),
-                    type: $(this).attr('method'),
-                    dataType: 'json',
-                    data: $(this).serialize(),
-                    success: function(data) {
-                        submitBtn.button('reset');
-                        if (data.result === 'success') {
-                            deleteLogModal.modal('hide');
-                            location.replace("{{ route('log-viewer::logs.list') }}");
-                        } else {
-                            alert('OOPS ! This is a lack of coffee exception !');
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('AJAX ERROR ! Check the console !');
-                        console.error(errorThrown);
-                        submitBtn.button('reset');
-                    },
-                });
+          $.ajax({
+            url: $(this).attr('action'),
+            type: $(this).attr('method'),
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function(data) {
+              submitBtn.button('reset');
+              if (data.result === 'success') {
+                deleteLogModal.modal('hide');
+                location.replace("{{ route('log-viewer::logs.list') }}");
+              } else {
+                alert('OOPS ! This is a lack of coffee exception !');
+              }
+            },
+            error: function(xhr, textStatus, errorThrown) {
+              alert('AJAX ERROR ! Check the console !');
+              console.error(errorThrown);
+              submitBtn.button('reset');
+            },
+          });
 
-                return false;
-            });
-
-            @unless (empty(log_styler()->toHighlight()))
-            @php
-                $htmlHighlight = version_compare(PHP_VERSION, '7.4.0') >= 0
-                    ? join('|', log_styler()->toHighlight())
-                    : join(log_styler()->toHighlight(), '|')
-            @endphp
-
-            $('.stack-content').each(function() {
-                const $this = $(this);
-                const html = $this.html().trim().replace(/({!! $htmlHighlight !!})/gm, '<strong>$1</strong>');
-
-                $this.html(html);
-            });
-            @endunless
+          return false;
         });
+
+          @unless (empty(log_styler()->toHighlight()))
+          @php
+              $htmlHighlight = version_compare(PHP_VERSION, '7.4.0') >= 0
+                  ? join('|', log_styler()->toHighlight())
+                  : join(log_styler()->toHighlight(), '|')
+          @endphp
+
+          $('.stack-content').each(function() {
+            const $this = $(this);
+            const html = $this.html().trim().replace(/({!! $htmlHighlight !!})/gm, '<strong>$1</strong>');
+
+            $this.html(html);
+          });
+          @endunless
+      });
     </script>
 @endsection

@@ -22,8 +22,10 @@
                         <thead class="thead-default">
                         <tr>
                             <th colspan="6">
-                                {{ trans('model.referral.id') }}: {{$referral->id}} | {{ trans('model.referral.user') }}: {{$referral->user->username}} |
-                                {{ trans('model.referral.amount') }}: {{$referral->amount_tag}} | {{ trans('model.referral.created_at') }}: {{$referral->created_at}}
+                                {{ trans('model.referral.id') }}: {{$referral->id}}
+                                |{{ trans('model.referral.user') }}: {{$referral->user->username}}
+                                |{{ trans('model.referral.amount') }}: {{$referral->amount_tag}}
+                                | {{ trans('model.referral.created_at') }}: {{$referral->created_at}}
                             </th>
                         </tr>
                         <tr>

@@ -108,7 +108,12 @@
         function addEmailSuffix() {
           const words = $('#words').val();
           if (words.trim() === '') {
-            swal.fire({title: '{{ trans('validation.required', ['attribute' => trans('admin.setting.email.tail')]) }}', icon: 'warning', timer: 1000, showConfirmButton: false});
+            swal.fire({
+              title: '{{ trans('validation.required', ['attribute' => trans('admin.setting.email.tail')]) }}',
+              icon: 'warning',
+              timer: 1000,
+              showConfirmButton: false,
+            });
             $('#words').focus();
             return false;
           }
@@ -119,7 +124,12 @@
             words: words,
           }, function(ret) {
             if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
             } else {
               swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
@@ -132,7 +142,8 @@
         function delSuffix(id, name) {
           swal.fire({
             title: '{{ trans('common.warning') }}',
-            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('admin.setting.email.tail')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('admin.setting.email.tail')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: '{{ trans('common.cancel') }}',
@@ -146,7 +157,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }

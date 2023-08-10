@@ -163,72 +163,72 @@
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/custom/easy.qrcode.min.js"></script>
     <script>
-        // Options
-        const options = {
-            text: @json($aff_link),
-            dotScale: 0.9,
-            width: 144,
-            height: 144,
-            backgroundImage: '/assets/images/logo_original.png',
-            backgroundImageAlpha: 1,
-            PO_TL: '#007bff',
-            PI_TL: '#17a2b8',
-            PI_TR: '#fd7e14',
-            PO_TR: '#28a745',
-            PI_BL: '#ffc107',
-            PO_BL: '#17a2b8',
-            AO: '#fd7e14',
-            AI: '#20c997',
-            autoColor: true,
-        };
+      // Options
+      const options = {
+        text: @json($aff_link),
+        dotScale: 0.9,
+        width: 144,
+        height: 144,
+        backgroundImage: '/assets/images/logo_original.png',
+        backgroundImageAlpha: 1,
+        PO_TL: '#007bff',
+        PI_TL: '#17a2b8',
+        PI_TR: '#fd7e14',
+        PO_TR: '#28a745',
+        PI_BL: '#ffc107',
+        PO_BL: '#17a2b8',
+        AO: '#fd7e14',
+        AI: '#20c997',
+        autoColor: true,
+      };
 
-        // Create QRCode Object
-        new QRCode(document.getElementById('qrcode'), options);
+      // Create QRCode Object
+      new QRCode(document.getElementById('qrcode'), options);
 
-        function Download() {
-            const canvas = document.getElementsByTagName("canvas")[0];
-            canvas.toBlob((blob) => {
-                let link = document.createElement('a');
-                link.download = 'qr.png';
+      function Download() {
+        const canvas = document.getElementsByTagName('canvas')[0];
+        canvas.toBlob((blob) => {
+          let link = document.createElement('a');
+          link.download = 'qr.png';
 
-                let reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onload = () => {
-                    link.href = reader.result;
-                    link.click();
-                };
-            }, "image/png");
-        };
+          let reader = new FileReader();
+          reader.readAsDataURL(blob);
+          reader.onload = () => {
+            link.href = reader.result;
+            link.click();
+          };
+        }, 'image/png');
+      }
 
-        // 申请提现
-        function extractMoney() {
-            $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function (ret) {
-                if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    swal.fire(ret.title, ret.message, 'error');
-                }
+      // 申请提现
+      function extractMoney() {
+        $.post('{{route('applyCommission')}}', {_token: '{{csrf_token()}}'}, function(ret) {
+          if (ret.status === 'success') {
+            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
+              window.location.reload();
             });
-        }
-
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function () {
-            swal.fire({
-                title: '{{trans('common.copy.success')}}',
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-            });
+          } else {
+            swal.fire(ret.title, ret.message, 'error');
+          }
         });
-        clipboard.on('error', function () {
-            swal.fire({
-                title: '{{trans('common.copy.failed')}}',
-                icon: 'error',
-                timer: 1500,
-                showConfirmButton: false,
-            });
+      }
+
+      const clipboard = new ClipboardJS('.mt-clipboard');
+      clipboard.on('success', function() {
+        swal.fire({
+          title: '{{trans('common.copy.success')}}',
+          icon: 'success',
+          timer: 1300,
+          showConfirmButton: false,
         });
+      });
+      clipboard.on('error', function() {
+        swal.fire({
+          title: '{{trans('common.copy.failed')}}',
+          icon: 'error',
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      });
     </script>
 @endsection

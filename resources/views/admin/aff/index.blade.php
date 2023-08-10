@@ -76,19 +76,23 @@
                                         @can('admin.aff.setStatus')
                                             @if($apply->status === 0)
                                                 <a href="javascript:setStatus('{{$apply->id}}','1')" class="btn btn-sm btn-success">
-                                                    <i class="icon wb-check" aria-hidden="true"></i>{{ trans('common.status.pass') }}</a>
+                                                    <i class="icon wb-check" aria-hidden="true"></i>{{ trans('common.status.pass') }}
+                                                </a>
                                                 <a href="javascript:setStatus('{{$apply->id}}','-1')" class="btn btn-sm btn-danger">
-                                                    <i class="icon wb-close" aria-hidden="true"></i>{{ trans('common.status.reject') }}</a>
+                                                    <i class="icon wb-close" aria-hidden="true"></i>{{ trans('common.status.reject') }}
+                                                </a>
                                             @elseif($apply->status === 1)
                                                 @can('admin.user.updateCredit')
                                                     <a href="javascript:handleUserCredit('{{$apply->user->id}}','{{$apply->amount}}', '{{$apply->id}}','2')" class="btn
                                                     btn-sm
                                                     btn-success">
                                                         <i id="makePayment_{{$apply->id}}" class="icon wb-payment"
-                                                           aria-hidden="true"></i> {{ trans('common.status.send_to_credit') }} </a>
+                                                           aria-hidden="true"></i> {{ trans('common.status.send_to_credit') }}
+                                                    </a>
                                                 @endcan
                                                 <a href="javascript:setStatus('{{$apply->id}}', '2')" class="btn btn-sm btn-primary">
-                                                    <i class="icon wb-check-circle" aria-hidden="true"></i> {{ trans('common.status.paid') }} </a>
+                                                    <i class="icon wb-check-circle" aria-hidden="true"></i> {{ trans('common.status.paid') }}
+                                                </a>
                                             @endif
                                         @endcan
                                         @can('admin.aff.detail')
@@ -140,7 +144,12 @@
           dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
             } else {
               swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
@@ -152,7 +161,12 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                html: str,
+                icon: 'error',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              });
             }
           },
         });

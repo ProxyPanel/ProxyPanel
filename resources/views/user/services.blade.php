@@ -190,7 +190,12 @@
           if (result.value) {
             $.post('{{route('resetTraffic')}}', {_token: '{{csrf_token()}}'}, function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({
                   title: ret.message,
@@ -210,7 +215,13 @@
         const amount = parseInt($('#amount').val());
         if (paymentType === 1) {
           if (amount <= 0) {
-            swal.fire({title: '{{trans('common.error')}}', text: '{{trans('user.payment.error')}}', icon: 'warning', timer: 1000, showConfirmButton: false});
+            swal.fire({
+              title: '{{trans('common.error')}}',
+              text: '{{trans('user.payment.error')}}',
+              icon: 'warning',
+              timer: 1000,
+              showConfirmButton: false,
+            });
             return false;
           }
 

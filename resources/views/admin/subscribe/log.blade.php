@@ -39,35 +39,37 @@
                 <div class="col-sm-12 col-xl-2">
                     <ul class="list-group list-group-gap">
                         <li class="list-group-item bg-blue-grey-100">
-                            <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('model.user.nickname') }}: <span class="float-right">{{ $subscribe->user->nickname ??
-                             trans('common.deleted_item', ['attribute' => trans('common.account')])}}</span>
+                            <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('model.user.nickname') }}:
+                            <span class="float-right">{{ $subscribe->user->nickname ?? trans('common.deleted_item', ['attribute' => trans('common.account')])}}</span>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
-                            <i class="icon wb-envelope" aria-hidden="true"></i> {{ trans('model.user.username') }}: <span class="float-right">{{ $subscribe->user->username ??
-                            trans('common.deleted_item', ['attribute' => trans('model.user.attribute')])}}</span>
+                            <i class="icon wb-envelope" aria-hidden="true"></i> {{ trans('model.user.username') }}:
+                            <span class="float-right">{{ $subscribe->user->username ?? trans('common.deleted_item', ['attribute' => trans('model.user.attribute')])}}</span>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
-                            <i class="icon wb-heart" aria-hidden="true"></i> {{ trans('common.status.attribute') }}: <span class="float-right">{!! $subscribe->status ? '<i class="green-600
-                             icon wb-check" aria-hidden="true"></i>' : '<i class="red-600 icon wb-close" aria-hidden="true"></i>' !!}</span>
+                            <i class="icon wb-heart" aria-hidden="true"></i> {{ trans('common.status.attribute') }}:
+                            <span class="float-right">{!! $subscribe->status ? '<i class="green-600 icon wb-check" aria-hidden="true"></i>' : '<i class="red-600 icon wb-close" aria-hidden="true"></i>' !!}</span>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
-                            <i class="icon wb-bell" aria-hidden="true"></i> {{ trans('model.subscribe.req_times') }}: <code class="float-right">{{ $subscribe->times }}</code>
+                            <i class="icon wb-bell" aria-hidden="true"></i> {{ trans('model.subscribe.req_times') }}:
+                            <code class="float-right">{{ $subscribe->times }}</code>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
-                            <i class="icon wb-time" aria-hidden="true"></i> {{ trans('model.subscribe.updated_at') }}: <span class="float-right">{{ $subscribe->updated_at }}</span>
+                            <i class="icon wb-time" aria-hidden="true"></i> {{ trans('model.subscribe.updated_at') }}:
+                            <span class="float-right">{{ $subscribe->updated_at }}</span>
                         </li>
                         @if($subscribe->ban_time)
                             <li class="list-group-item bg-blue-grey-100">
-                                <i class="icon wb-power" aria-hidden="true"></i> {{ trans('model.subscribe.ban_time') }}: <span class="float-right">{{ date('Y-m-d H:i',
-                                $subscribe->ban_time ) }}</span>
+                                <i class="icon wb-power" aria-hidden="true"></i> {{ trans('model.subscribe.ban_time') }}
+                                : <span class="float-right">{{ date('Y-m-d H:i', $subscribe->ban_time ) }}</span>
                             </li>
                             <li class="list-group-item bg-blue-grey-100">
-                                <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}: <span class="float-right">{{ __($subscribe->ban_desc) }}</span>
+                                <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}:
+                                <span class="float-right">{{ __($subscribe->ban_desc) }}</span>
                             </li>
                         @endif
                         @can('admin.subscribe.set')
-                            <button class="list-group-item btn btn-block @if($subscribe->status) btn-danger @else btn-success @endif"
-                                    onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
+                            <button class="list-group-item btn btn-block @if($subscribe->status) btn-danger @else btn-success @endif" onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
                                 @if($subscribe->status === 0)
                                     <i class="icon wb-unlock" aria-hidden="true"></i> {{ trans('common.status.enabled') }}
                                 @else

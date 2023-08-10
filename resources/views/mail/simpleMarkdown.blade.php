@@ -1,10 +1,10 @@
 @component('mail::message')
-# {{$title}}
+    # {{$title}}
 
-{!! $content !!}
+    {!! $content !!}
 
-@component('mail::button', ['url' => $url])
-{{trans('notification.view_web')}}
-@endcomponent
+    @component('mail::button', ['url' => $url])
+        {{trans('notification.view_web')}}
+    @endcomponent
 @endcomponent
 
