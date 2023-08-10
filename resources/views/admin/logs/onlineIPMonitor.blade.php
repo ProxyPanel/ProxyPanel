@@ -95,8 +95,8 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#node_id').val({{Request::query('node_id')}});
-        });
+      $(document).ready(function() {
+        $('#node_id').val({{Request::query('node_id')}});
+      });
     </script>
 @endsection

@@ -178,100 +178,104 @@
 
 @section('javascript')
     <script>
-        let currentTab = 0; // Current tab is set to be the first tab (0)
-        showTab(currentTab); // Display the current tab
-        show({{sysConfig('wechat_qrcode')? 0 : 1}});
+      let currentTab = 0; // Current tab is set to be the first tab (0)
+      showTab(currentTab); // Display the current tab
+      show({{sysConfig('wechat_qrcode')? 0 : 1}});
 
-        function showTab(n) {
-            // This function will display the specified tab of the form ...
-            const x = document.getElementsByClassName('tab');
-            x[n].style.display = 'block';
-            // ... and fix the Previous/Next buttons:
-            if (n === 0) {
-                document.getElementById('prevBtn').style.display = 'none';
-            } else {
-                document.getElementById('prevBtn').style.display = 'inline';
-            }
-
-            if (n === x.length - 1) {
-                document.getElementById('payment-group').style.display = 'none';
-                document.getElementById('nextBtn').classList.remove('btn-primary');
-                document.getElementById('nextBtn').classList.add('btn-success');
-                document.getElementById('nextBtn').innerHTML = '{{trans('common.submit')}}';
-            } else {
-                document.getElementById('payment-group').style.display = 'inline-flex';
-                document.getElementById('nextBtn').innerHTML = '下一步';
-                document.getElementById('nextBtn').classList.remove('btn-success');
-                document.getElementById('nextBtn').classList.add('btn-primary');
-                document.getElementById('nextBtn').style.display = 'inline';
-            }
-
-            fixStepIndicator(n);
+      function showTab(n) {
+        // This function will display the specified tab of the form ...
+        const x = document.getElementsByClassName('tab');
+        x[n].style.display = 'block';
+        // ... and fix the Previous/Next buttons:
+        if (n === 0) {
+          document.getElementById('prevBtn').style.display = 'none';
+        } else {
+          document.getElementById('prevBtn').style.display = 'inline';
         }
 
-        function nextPrev(n) {
-            // This function will figure out which tab to display
-            const x = document.getElementsByClassName('tab');
-            // if you have reached the end of the form... :
-            if (currentTab === x.length - 1 && n === 1) {
-                //...the form gets submitted:
-                $.post('{{route('manual.inform', ['payment' => $payment->trade_no])}}', {_token: '{{csrf_token()}}'}, function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({title: '已受理', text: ret.message, icon: 'success'}).then(() => window.location.href = '{{route('invoice')}}');
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                    }
-                });
-                return false;
-            } else {
-                x[currentTab].style.display = 'none';// Hide the current tab:
-                currentTab += n;// Increase or decrease the current tab by 1:
-            }
-
-            showTab(currentTab);
+        if (n === x.length - 1) {
+          document.getElementById('payment-group').style.display = 'none';
+          document.getElementById('nextBtn').classList.remove('btn-primary');
+          document.getElementById('nextBtn').classList.add('btn-success');
+          document.getElementById('nextBtn').innerHTML = '{{trans('common.submit')}}';
+        } else {
+          document.getElementById('payment-group').style.display = 'inline-flex';
+          document.getElementById('nextBtn').innerHTML = '下一步';
+          document.getElementById('nextBtn').classList.remove('btn-success');
+          document.getElementById('nextBtn').classList.add('btn-primary');
+          document.getElementById('nextBtn').style.display = 'inline';
         }
 
-        function fixStepIndicator(n) {
-            // This function removes the "current" class of all steps...
-            let i, x = document.getElementsByClassName('step');
-            for (i = 0; i < x.length; i++) {
-                x[i].className = x[i].className.replace(' current', ' ');
+        fixStepIndicator(n);
+      }
+
+      function nextPrev(n) {
+        // This function will figure out which tab to display
+        const x = document.getElementsByClassName('tab');
+        // if you have reached the end of the form... :
+        if (currentTab === x.length - 1 && n === 1) {
+          //...the form gets submitted:
+          $.post('{{route('manual.inform', ['payment' => $payment->trade_no])}}', {_token: '{{csrf_token()}}'}, function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: '已受理',
+                text: ret.message,
+                icon: 'success',
+              }).then(() => window.location.href = '{{route('invoice')}}');
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
-            //... and adds the "active" class to the current step:
-            x[n].className += ' current';
+          });
+          return false;
+        } else {
+          x[currentTab].style.display = 'none';// Hide the current tab:
+          currentTab += n;// Increase or decrease the current tab by 1:
         }
 
-        function show(check) {
-            @if(sysConfig('wechat_qrcode'))
-            const $wechat = document.getElementsByClassName('wechat');
-            const $btn_wechat = document.getElementById('btn-wechat');
-            if (check) {
-                for (let i = 0; i < $wechat.length; i++) {
-                    $wechat[i].style.display = 'none';
-                }
-                $btn_wechat.classList.remove('btn-success');
-            } else {
-                for (let i = 0; i < $wechat.length; i++) {
-                    $wechat[i].style.display = 'inline';
-                }
-                $btn_wechat.classList.add('btn-success');
-            }
-            @endif
-            @if(sysConfig('alipay_qrcode'))
-            const $alipay = document.getElementsByClassName('alipay');
-            const $btn_alipay = document.getElementById('btn-alipay');
-            if (check) {
-                for (let i = 0; i < $alipay.length; i++) {
-                    $alipay[i].style.display = 'inline';
-                }
-                $btn_alipay.classList.add('btn-primary');
-            } else {
-                for (let i = 0; i < $alipay.length; i++) {
-                    $alipay[i].style.display = 'none';
-                }
-                $btn_alipay.classList.remove('btn-primary');
-            }
-            @endif
+        showTab(currentTab);
+      }
+
+      function fixStepIndicator(n) {
+        // This function removes the "current" class of all steps...
+        let i, x = document.getElementsByClassName('step');
+        for (i = 0; i < x.length; i++) {
+          x[i].className = x[i].className.replace(' current', ' ');
         }
+        //... and adds the "active" class to the current step:
+        x[n].className += ' current';
+      }
+
+      function show(check) {
+          @if(sysConfig('wechat_qrcode'))
+        const $wechat = document.getElementsByClassName('wechat');
+        const $btn_wechat = document.getElementById('btn-wechat');
+        if (check) {
+          for (let i = 0; i < $wechat.length; i++) {
+            $wechat[i].style.display = 'none';
+          }
+          $btn_wechat.classList.remove('btn-success');
+        } else {
+          for (let i = 0; i < $wechat.length; i++) {
+            $wechat[i].style.display = 'inline';
+          }
+          $btn_wechat.classList.add('btn-success');
+        }
+          @endif
+          @if(sysConfig('alipay_qrcode'))
+        const $alipay = document.getElementsByClassName('alipay');
+        const $btn_alipay = document.getElementById('btn-alipay');
+        if (check) {
+          for (let i = 0; i < $alipay.length; i++) {
+            $alipay[i].style.display = 'inline';
+          }
+          $btn_alipay.classList.add('btn-primary');
+        } else {
+          for (let i = 0; i < $alipay.length; i++) {
+            $alipay[i].style.display = 'none';
+          }
+          $btn_alipay.classList.remove('btn-primary');
+        }
+          @endif
+      }
     </script>
 @endsection

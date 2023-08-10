@@ -89,7 +89,8 @@
             <div class="panel-footer">
                 <div class="row">
                     <div class="col-sm-6">
-                        {!! trans('admin.logs.counts', ['num' => $dataFlowLogs->total()]) !!} | <code>{{$totalTraffic}}</code>
+                        {!! trans('admin.logs.counts', ['num' => $dataFlowLogs->total()]) !!} |
+                        <code>{{$totalTraffic}}</code>
                     </div>
                     <div class="col-sm-6">
                         <nav class="Page navigation float-right">

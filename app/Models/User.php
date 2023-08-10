@@ -6,6 +6,7 @@ use App\Casts\data_rate;
 use App\Casts\money;
 use App\Utils\Helpers;
 use App\Utils\QQInfo;
+use DB;
 use Hash;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -296,7 +297,7 @@ class User extends Authenticatable
 
     public function recentTrafficUsed()
     {
-        return UserHourlyDataFlow::userRecentUsed($this->id)->sum(\DB::raw('u + d'));
+        return UserHourlyDataFlow::userRecentUsed($this->id)->sum(DB::raw('u + d'));
     }
 
     public function orders(): HasMany

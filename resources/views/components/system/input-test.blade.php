@@ -10,7 +10,9 @@
                 </span>
             </div>
             @if(trans('admin.system.hint.'.$code) !== 'admin.system.hint.'.$code)
-                <span class="text-help"> {!! trans('admin.system.hint.'.$code) !!} @can('admin.test.notify')（<a href="javascript:sendTestNotification('{{$test}}');">{{ trans('admin.system.notification.send_test') }}</a>）@endcan</span>
+                <span class="text-help"> {!! trans('admin.system.hint.'.$code) !!} @can('admin.test.notify')
+                        <a href="javascript:sendTestNotification('{{$test}}');">[{{ trans('admin.system.notification.send_test') }}]</a>
+                    @endcan</span>
             @endisset
         </div>
     </div>

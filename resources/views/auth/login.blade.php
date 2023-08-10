@@ -60,25 +60,25 @@
 @endsection
 @section('javascript')
     <script>
-        $('#login-form').submit(function(event) {
-            @switch(sysConfig('is_captcha'))
-            @case(3)
-            // 先检查Google reCAPTCHA有没有进行验证
-            if ($('#g-recaptcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-                return false;
-            }
-            @break
-            @case(4)
-            // 先检查Google reCAPTCHA有没有进行验证
-            if ($('#h-captcha-response').val() === '') {
-                swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
-                return false;
-            }
-            @break
-            @default
-            @endswitch
-        });
+      $('#login-form').submit(function(event) {
+          @switch(sysConfig('is_captcha'))
+          @case(3)
+        // 先检查Google reCAPTCHA有没有进行验证
+        if ($('#g-recaptcha-response').val() === '') {
+          swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+          return false;
+        }
+          @break
+          @case(4)
+        // 先检查Google reCAPTCHA有没有进行验证
+        if ($('#h-captcha-response').val() === '') {
+          swal.fire({title: '{{trans('auth.captcha.required')}}', icon: 'error'});
+          return false;
+        }
+          @break
+          @default
+          @endswitch
+      });
     </script>
     <script src="https://ad.ddo.jp/728x90.js.php?ddo_id=proxypanel&ddo_i={{(int) floor(time() / 60)}}" type="text/javascript" defer></script>
 @endsection

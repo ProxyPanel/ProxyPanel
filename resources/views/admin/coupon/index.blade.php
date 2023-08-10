@@ -129,66 +129,67 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#type').val({{Request::query('type')}});
-            $('#status').val({{Request::query('status')}});
+      $(document).ready(function() {
+        $('#type').val({{Request::query('type')}});
+        $('#status').val({{Request::query('status')}});
 
-            $('select').on('change', function () {
-                this.form.submit();
-            });
+        $('select').on('change', function() {
+          this.form.submit();
         });
+      });
 
-        @can('admin.coupon.export')
-        // 批量导出卡券
-        function exportCoupon() {
-            swal.fire({
-                title: '{{ trans('admin.coupon.export_title') }}',
-                text: '{{ trans('admin.confirm.export') }}？',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    window.location.href = '{{route('admin.coupon.export')}}';
-                }
-            });
-        }
-        @endcan
+      @can('admin.coupon.export')
+      // 批量导出卡券
+      function exportCoupon() {
+        swal.fire({
+          title: '{{ trans('admin.coupon.export_title') }}',
+          text: '{{ trans('admin.confirm.export') }}？',
+          icon: 'question',
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
+            window.location.href = '{{route('admin.coupon.export')}}';
+          }
+        });
+      }
+      @endcan
 
-        @can('admin.coupon.destroy')
-        // 删除卡券
-        function delCoupon(id, name) {
-            swal.fire({
-                title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.coupon.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'DELETE',
-                        url: '{{route('admin.coupon.destroy', '')}}/' + id,
-                        data: {_token: '{{csrf_token()}}'},
-                        dataType: 'json',
-                        success: function (ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false
-                                }).then(() => window.location.reload());
-                            } else {
-                                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                            }
-                        },
-                    });
+      @can('admin.coupon.destroy')
+      // 删除卡券
+      function delCoupon(id, name) {
+        swal.fire({
+          title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.coupon.attribute')]) }}' + name +
+              '{{ trans('admin.confirm.delete.1') }}',
+          icon: 'question',
+          allowEnterKey: false,
+          showCancelButton: true,
+          cancelButtonText: '{{ trans('common.close') }}',
+          confirmButtonText: '{{ trans('common.confirm') }}',
+        }).then((result) => {
+          if (result.value) {
+            $.ajax({
+              method: 'DELETE',
+              url: '{{route('admin.coupon.destroy', '')}}/' + id,
+              data: {_token: '{{csrf_token()}}'},
+              dataType: 'json',
+              success: function(ret) {
+                if (ret.status === 'success') {
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
+                } else {
+                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }
+              },
             });
-        }
+          }
+        });
+      }
         @endcan
     </script>
 @endsection

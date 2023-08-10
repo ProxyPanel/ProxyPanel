@@ -9,7 +9,9 @@
                 <h3 class="panel-title">{{ trans('admin.article.title') }}</h3>
                 @can('admin.article.create')
                     <div class="panel-actions">
-                        <a href="{{route('admin.article.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
+                        <a href="{{route('admin.article.create')}}" class="btn btn-primary">
+                            <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.add') }}
+                        </a>
                     </div>
                 @endcan
             </div>
@@ -38,7 +40,8 @@
                             <option value="" hidden>{{ trans('model.article.language') }}</option>
                             @foreach (config('common.language') as $key => $value)
                                 <option value="{{$key}}">
-                                    <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                    <i class="fi fi-{{$value[1]}}" aria-hidden="true"></i>
+                                    <span style="padding: inherit;">{{$value[0]}}</span>
                                 </option>
                             @endforeach
                         </select>
@@ -79,7 +82,7 @@
                                 {{ Str::limit($article->title, 50) }}
                             </td>
                             <td>
-                            {!! isset(config('common.language')[$article->language]) ? '<i class="fi fi-'.config('common.language')[$article->language][1].'"></i>
+                            {!! isset(config('common.language')[$article->language]) ? '<i class="fi fi-'.config('common.language')[$article->language][1].' aria-hidden="true"></i>
                              <span style="padding: inherit;">'.config('common.language')[$article->language][0].'</span>': __('common.status.unknown') !!}
                             <td> {{$article->sort}} </td>
                             <td> {{$article->created_at}} </td>
@@ -88,15 +91,15 @@
                                     <div class="btn-group">
                                         @can('admin.article.show')
                                             <a href="{{route('admin.article.show',$article)}}" class="btn btn-outline-success">
-                                                <i class="icon wb-eye"></i></a>
+                                                <i class="icon wb-eye" aria-hidden="true"></i></a>
                                         @endcan
                                         @can('admin.article.edit')
                                             <a href="{{route('admin.article.edit',['article'=>$article->id, 'page'=>Request::query('page')])}}" class="btn btn-outline-primary">
-                                                <i class="icon wb-edit"></i></a>
+                                                <i class="icon wb-edit" aria-hidden="true"></i></a>
                                         @endcan
                                         @can('admin.article.destroy')
                                             <a class="btn btn-outline-danger" href="javascript:delArticle('{{route('admin.article.destroy',$article->id)}}', '{{$article->id}}')">
-                                                <i class="icon wb-close"></i></a>
+                                                <i class="icon wb-close" aria-hidden="true"></i></a>
                                         @endcan
                                     </div>
                                 @endcanany
@@ -131,13 +134,16 @@
             $('#type').val('{{Request::query('type')}}');
             $('#category').val('{{Request::query('category')}}');
             $('#language').val('{{Request::query('language')}}');
-            $('select').on('change', function() { this.form.submit(); });
+            $('select').on('change', function() {
+              this.form.submit();
+            });
           });
 
           // 删除文章
           function delArticle(url, id) {
             swal.fire({
-              title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.article.attribute')]) }}' + id + '{{ trans('admin.confirm.delete.1') }}',
+              title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.article.attribute')]) }}' + id +
+                  '{{ trans('admin.confirm.delete.1') }}',
               icon: 'question',
               showCancelButton: true,
               cancelButtonText: '{{ trans('common.close') }}',
@@ -151,7 +157,12 @@
                   dataType: 'json',
                   success: function(ret) {
                     if (ret.status === 'success') {
-                      swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                      swal.fire({
+                        title: ret.message,
+                        icon: 'success',
+                        timer: 1000,
+                        showConfirmButton: false,
+                      }).then(() => window.location.reload());
                     } else {
                       swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                     }

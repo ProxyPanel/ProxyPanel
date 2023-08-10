@@ -222,14 +222,14 @@
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-tokenfield.js"></script>
     <script>
-        $(document).ready(function () {
-            @isset($coupon->limit['users']['levels'])
-            $('#levels').selectpicker('val', @json($coupon->limit['users']['levels']));
-            @endisset
+      $(document).ready(function() {
+          @isset($coupon->limit['users']['levels'])
+          $('#levels').selectpicker('val', @json($coupon->limit['users']['levels']));
+          @endisset
 
-            @isset($coupon->limit['users']['groups'])
-            $('#groups').selectpicker('val', @json($coupon->limit['users']['groups']));
-            @endisset
-        });
+          @isset($coupon->limit['users']['groups'])
+          $('#groups').selectpicker('val', @json($coupon->limit['users']['groups']));
+          @endisset
+      });
     </script>
 @endsection

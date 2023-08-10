@@ -50,7 +50,8 @@
                         <div class="dropdown-menu" role="menu">
                             @foreach (config('common.language') as $key => $value)
                                 <a class="dropdown-item" href="{{route('lang', ['locale' => $key])}}" role="menuitem">
-                                    <i class="fi fi-{{$value[1]}}"></i> <span style="padding: inherit;">{{$value[0]}}</span>
+                                    <i class="fi fi-{{$value[1]}}" aria-hidden="true"></i>
+                                    <span style="padding: inherit;">{{$value[0]}}</span>
                                 </a>
                             @endforeach
                         </div>
@@ -62,7 +63,8 @@
                         <div class="dropdown-menu" role="menu">
                             @foreach (config('common.currency') as $country_code => $currency)
                                 <a class="dropdown-item" href="{{route('currency', ['code' => $currency['code']])}}" role="menuitem">
-                                    <i class="fi fi-{{$country_code}}"></i> <span style="padding: inherit;">{{$currency['symbol'].' '.$currency['name']}}</span>
+                                    <i class="fi fi-{{$country_code}}" aria-hidden="true"></i>
+                                    <span style="padding: inherit;">{{$currency['symbol'].' '.$currency['name']}}</span>
                                 </a>
                             @endforeach
                         </div>
@@ -249,4 +251,4 @@
         {!! sysConfig('website_analytics') !!}
         <!-- 客服 -->
         {!! sysConfig('website_customer_service') !!}
-@endsection
+        @endsection

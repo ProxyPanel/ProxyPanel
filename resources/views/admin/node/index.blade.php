@@ -31,7 +31,9 @@
                             </button>
                         @endcan
                         @can('admin.node.create')
-                            <a href="{{route('admin.node.create')}}" class="btn btn-primary"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
+                            <a href="{{route('admin.node.create')}}" class="btn btn-primary">
+                                <i class="icon wb-plus"></i> {{ trans('common.add') }}
+                            </a>
                         @endcan
                     </div>
                 @endcan
@@ -156,7 +158,8 @@
                             @foreach($node->childNodes as $childNode)
                                 <tr class="bg-blue-grey-200 grey-700 table-borderless frontlin">
                                     <td></td>
-                                    <td><i class="float-left fa-solid fa-right-left" aria-hidden="true"></i> <strong>{{ trans('model.node.transfer') }}</strong></td>
+                                    <td><i class="float-left fa-solid fa-right-left" aria-hidden="true"></i>
+                                        <strong>{{ trans('model.node.transfer') }}</strong></td>
                                     <td> {{ $childNode->name }} </td>
                                     <td> {{ $childNode->server }} </td>
                                     <td> {{ $childNode->is_ddns ? trans('model.node.ddns') : $childNode->ip }} </td>
@@ -263,12 +266,14 @@
               if (ret.status === 'success') {
                 let str = '';
                 for (let i in ret.message) {
-                  str += '<tr><td>' + i + '</td><td>' + ret.message[i][0] + '</td><td>' + ret.message[i][1] + '</td></tr>';
+                  str += '<tr><td>' + i + '</td><td>' + ret.message[i][0] + '</td><td>' + ret.message[i][1] +
+                      '</td></tr>';
                 }
                 swal.fire({
                   title: ret.title,
                   icon: 'info',
-                  html: '<table class="my-20"><thead class="thead-default"><tr><th> IP </th><th> ICMP </th> <th> TCP </th></thead><tbody>' + str + '</tbody></table>',
+                  html: '<table class="my-20"><thead class="thead-default"><tr><th> IP </th><th> ICMP </th> <th> TCP </th></thead><tbody>' +
+                      str + '</tbody></table>',
                   showConfirmButton: false,
                 });
               } else {
@@ -373,7 +378,8 @@
         function delNode(id, name) {
           swal.fire({
             title: '{{trans('common.warning')}}',
-            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+            text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.attribute')]) }}' + name +
+                '{{ trans('admin.confirm.delete.1') }}',
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: '{{trans('common.close')}}',
@@ -387,7 +393,12 @@
                 dataType: 'json',
                 success: function(ret) {
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }

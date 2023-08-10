@@ -16,6 +16,7 @@ use App\Models\ReferralLog;
 use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
+use DB;
 use Illuminate\Http\JsonResponse;
 use Log;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -29,7 +30,7 @@ class AdminController extends Controller
     public function index()
     {
         $past = strtotime('-'.sysConfig('expire_days').' days');
-        $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', date('Y-m-d'))->sum(\DB::raw('u + d'));
+        $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', date('Y-m-d'))->sum(DB::raw('u + d'));
 
         return view('admin.index', [
             'totalUserCount' => User::count(), // 总用户数
@@ -44,9 +45,9 @@ class AdminController extends Controller
             'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
             'nodeCount' => Node::count(),
             'abnormalNodeCount' => Node::whereStatus(0)->count(),
-            'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', date('n'))->sum(\DB::raw('u + d'))),
+            'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', date('n'))->sum(DB::raw('u + d'))),
             'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
-            'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(\DB::raw('u + d'))),
+            'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(DB::raw('u + d'))),
             'totalCredit' => User::where('credit', '<>', 0)->sum('credit') / 100,
             'totalWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100,
             'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100,

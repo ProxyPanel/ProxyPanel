@@ -4,7 +4,7 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title cyan-600">
-                    <i class="icon wb-payment"></i>{{sysConfig('website_name').' - '.trans('user.shop.pay_online')}}
+                    <i class="icon wb-payment" aria-hidden="true"></i>{{sysConfig('website_name').' - '.trans('user.shop.pay_online')}}
                 </h1>
             </div>
             <div class="panel-body border-primary ml-auto mr-auto w-p75">
@@ -41,39 +41,39 @@
     @if($payment->qr_code && $payment->url)
         <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script>
-            // Options
-            const options = {
-                text: @json($payment->url),
-                backgroundImage: '{{asset($pay_type_icon)}}',
-                autoColor: true,
-            };
+          // Options
+          const options = {
+            text: @json($payment->url),
+            backgroundImage: '{{asset($pay_type_icon)}}',
+            autoColor: true,
+          };
 
-            // Create QRCode Object
-            new QRCode(document.getElementById('qrcode'), options);
+          // Create QRCode Object
+          new QRCode(document.getElementById('qrcode'), options);
         </script>
     @endif
 
     <script>
-        // 检查支付单状态
-        const r = window.setInterval(function() {
-            $.ajax({
-                method: 'GET',
-                url: '{{route('orderStatus')}}',
-                data: {trade_no: '{{$payment->trade_no}}'},
-                dataType: 'json',
-                success: function(ret) {
-                    window.clearInterval();
-                    if (ret.status === 'success') {
-                        swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false}).then(() => {
-                            window.location.href = '{{route('invoice')}}';
-                        });
-                    } else if (ret.status === 'error') {
-                        swal.fire({title: ret.message, icon: 'error', timer: 1500, showConfirmButton: false}).then(() => {
-                            window.location.href = '{{route('invoice')}}';
-                        });
-                    }
-                },
-            });
-        }, 3000);
+      // 检查支付单状态
+      const r = window.setInterval(function() {
+        $.ajax({
+          method: 'GET',
+          url: '{{route('orderStatus')}}',
+          data: {trade_no: '{{$payment->trade_no}}'},
+          dataType: 'json',
+          success: function(ret) {
+            window.clearInterval();
+            if (ret.status === 'success') {
+              swal.fire({title: ret.message, icon: 'success', timer: 1500, showConfirmButton: false}).then(() => {
+                window.location.href = '{{route('invoice')}}';
+              });
+            } else if (ret.status === 'error') {
+              swal.fire({title: ret.message, icon: 'error', timer: 1500, showConfirmButton: false}).then(() => {
+                window.location.href = '{{route('invoice')}}';
+              });
+            }
+          },
+        });
+      }, 3000);
     </script>
 @endsection

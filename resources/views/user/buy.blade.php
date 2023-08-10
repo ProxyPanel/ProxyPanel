@@ -24,7 +24,8 @@
                                 <br>
                                 <strong>{{$goods->traffic_label}}</strong> {{trans('user.attribute.data')}}
                                 <br>
-                                {{trans('user.account.speed_limit')}}<strong> {{ $goods->speed_limit ? $goods->speed_limit.' Mbps' : trans('user.service.unlimited') }} </strong>
+                                {{trans('user.account.speed_limit')}}
+                                <strong> {{ $goods->speed_limit ? $goods->speed_limit.' Mbps' : trans('user.service.unlimited') }} </strong>
                             </td>
                             <td class="text-middle"> {{$goods->price_tag}} </td>
                             <td class="text-middle"> x 1</td>
@@ -36,7 +37,8 @@
                     @if($goods->type <= 2)
                         <div class="col-lg-3 pl-30">
                             <div class="input-group">
-                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn" placeholder="{{trans('model.coupon.attribute')}}"/>
+                                <input type="text" class="form-control" name="coupon_sn" id="coupon_sn"
+                                       placeholder="{{trans('model.coupon.attribute')}}"/>
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-info" onclick="redeemCoupon()">
                                         <i class="icon wb-loop" aria-hidden="true"></i> {{trans('common.apply')}}
@@ -58,8 +60,9 @@
                         <div class="float-right">
                             @include('user.components.purchase')
                             @if($goods->type <= 2)
-                                <button class="btn btn-flat mt-2 mx-0 p-0" onclick="pay('credit','0')">
-                                    <img src="/assets/images/payment/creditpay.svg" height="48px" alt="{{trans('user.shop.pay_credit')}}"/>
+                                <button class="btn btn-flat mt-2 mx-0 p-0" onclick="pay('credit', '0')">
+                                    <img src="/assets/images/payment/creditpay.svg" height="48px"
+                                         alt="{{trans('user.shop.pay_credit')}}"/>
                                 </button>
                             @endif
                         </div>
@@ -71,8 +74,7 @@
 @endsection
 @section('javascript')
     <script>
-      // 校验优惠券是否可用
-      function redeemCoupon() {
+      function redeemCoupon() { // 校验优惠券是否可用
         const coupon_sn = $('#coupon_sn').val();
         let tag = '{{$goods->price_tag}}'.match(/(.*?[^0-9])(\d+\.?.*)/);
         const goods_price = tag[2];
@@ -93,15 +95,17 @@
               if (ret.data.type === 2) {
                 const discount = goods_price * (1 - ret.data.value / 100);
 
-                coupon_text.innerHTML = '【{{trans('admin.coupon.type.discount')}}】：' + ret.data.name + ' _ '
-                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: ➖ ' + sign + discount.toFixed(2);
+                coupon_text.innerHTML = '【{{trans('admin.coupon.type.discount')}}】: ' + ret.data.name + ' _ '
+                    + (100 - ret.data.value) + '%<br> {{trans('user.coupon.discount')}}: ➖ ' + sign +
+                    discount.toFixed(2);
                 total_price = goods_price - discount;
               } else {
                 console.log(ret.data.value);
                 total_price = goods_price - ret.data.value.match(/(.*?[^0-9])(\d+\.?.*)/)[2];
                 total_price = total_price > 0 ? total_price : 0;
                 if (ret.data.type === 1) {
-                  coupon_text.innerHTML = '【{{trans('admin.coupon.type.voucher')}}】：' + ret.data.name + ' －' + ret.data.value;
+                  coupon_text.innerHTML = '【{{trans('admin.coupon.type.voucher')}}】: ' + ret.data.name + ' －' +
+                      ret.data.value;
                 }
               }
 
@@ -127,10 +131,8 @@
         });
       }
 
-      // 检查预支付
-      function pay(method, pay_type) {
-        // 存在套餐 和 购买类型为套餐时 出现提示
-        if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') {
+      function pay(method, pay_type) { // 检查预支付
+        if ('{{$activePlan}}' === '1' && '{{$goods->type}}' === '2') { // 存在套餐 和 购买类型为套餐时 出现提示
           swal.fire({
             title: '{{trans('user.shop.conflict')}}',
             html: '{!! trans('user.shop.conflict_tips') !!}',
@@ -140,15 +142,15 @@
             confirmButtonText: '{{trans('common.continues')}}',
           }).then((result) => {
             if (result.value) {
-              contiousPay(method, pay_type);
+              continuousPayment(method, pay_type);
             }
           });
         } else {
-          contiousPay(method, pay_type);
+          continuousPayment(method, pay_type);
         }
       }
 
-      function contiousPay(method, pay_type) {
+      function continuousPayment(method, pay_type) {
         const goods_id = '{{$goods->id}}';
         const coupon_sn = $('#coupon_sn').val();
         $.ajax({
@@ -164,14 +166,10 @@
           },
           success: function(ret) {
             if (ret.status === 'success') {
-              swal.fire({
-                title: ret.message,
-                icon: 'success',
-                timer: 1300,
-                showConfirmButton: false,
-              });
+              swal.fire({title: ret.message, icon: 'success', timer: 1300, showConfirmButton: false});
               if (method === 'credit') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.href = '{{route('invoice')}}');
+                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).
+                    then(() => window.location.href = '{{route('invoice')}}');
               }
               if (ret.data) {
                 window.location.href = '{{route('orderDetail', '')}}/' + ret.data;

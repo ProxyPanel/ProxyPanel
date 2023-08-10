@@ -8,7 +8,8 @@
             <div class="panel-heading">
                 <h3 class="panel-title">{{ trans('admin.marketing.email.title') }}</h3>
                 <div class="panel-actions">
-                    <button class="btn btn-primary" onclick="send()"><i class="icon wb-envelope"></i>{{ trans('admin.marketing.email.group_send') }}</button>
+                    <button class="btn btn-primary" onclick="send()">
+                        <i class="icon wb-envelope"></i>{{ trans('admin.marketing.email.group_send') }}</button>
                 </div>
             </div>
             <div class="panel-body">

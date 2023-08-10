@@ -125,7 +125,8 @@
                     <button type="button" class="close mr-15" data-dismiss="modal" aria-label="{{ trans('common.close') }}" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.tos')}} <small>2019年11月28日10:49</small></h4>
+                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.tos')}}
+                        <small>2019年11月28日10:49</small></h4>
                 </div>
                 <div class="modal-body">
                     @include('auth.docs.tos')
@@ -144,7 +145,8 @@
                     <button type="button" class="close mr-15" data-dismiss="modal" aria-label="{{ trans('common.close') }}" style="position:absolute;">
                         <span aria-hidden="true">×</span>
                     </button>
-                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.aup')}} <small>2019年11月28日10:49</small></h4>
+                    <h4 class="modal-title">{{sysConfig('website_name')}}- {{trans('auth.aup')}}
+                        <small>2019年11月28日10:49</small></h4>
                 </div>
                 <div class="modal-body">
                     @include('auth.docs.aup')
@@ -169,7 +171,11 @@
           let email = $('#emailHead').val().trim();
           const emailTail = $('#emailTail').val();
           if (email === '') {
-            swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+            swal.fire({
+              title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}',
+              icon: 'warning',
+              timer: 1500,
+            });
             return false;
           }
           email += '@' + emailTail;
@@ -187,7 +193,11 @@
             @endif
 
             if (email === '') {
-              swal.fire({title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}', icon: 'warning', timer: 1500});
+              swal.fire({
+                title: '{{trans('validation.required', ['attribute' => trans('validation.attributes.email')])}}',
+                icon: 'warning',
+                timer: 1500,
+              });
               return false;
             }
 

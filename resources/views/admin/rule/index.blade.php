@@ -163,7 +163,12 @@
           success: function(ret) {
             $('#add').modal('hide');
             if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
             } else {
               swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
@@ -176,7 +181,12 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                html: str,
+                icon: 'error',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              });
             }
           },
         });
@@ -197,7 +207,12 @@
           dataType: 'json',
           success: function(ret) {
             if (ret.status === 'success') {
-              swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.reload());
             } else {
               swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
@@ -209,7 +224,12 @@
               $.each(errors.errors, function(index, value) {
                 str += '<li>' + value + '</li>';
               });
-              swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                html: str,
+                icon: 'error',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              });
             }
           },
         });
@@ -221,7 +241,8 @@
       function delRule(url, name) {
         swal.fire({
           title: '{{trans('common.warning')}}',
-          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.rule.attribute')]) }}' + name + '{{ trans('admin.confirm.delete.1') }}',
+          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.rule.attribute')]) }}' + name +
+              '{{ trans('admin.confirm.delete.1') }}',
           icon: 'warning',
           showCancelButton: true,
           cancelButtonText: '{{trans('common.close')}}',
@@ -235,7 +256,12 @@
               dataType: 'json',
               success: function(ret) {
                 if (ret.status === 'success') {
-                  swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                  swal.fire({
+                    title: ret.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false,
+                  }).then(() => window.location.reload());
                 } else {
                   swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                 }

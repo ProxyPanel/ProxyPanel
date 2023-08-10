@@ -148,12 +148,18 @@
           }
 
           if (title.trim() === '') {
-            swal.fire({title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.title')]) }}', icon: 'warning'});
+            swal.fire({
+              title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.title')]) }}',
+              icon: 'warning',
+            });
             return false;
           }
 
           if (content.trim() === '') {
-            swal.fire({title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.content')]) }}', icon: 'warning'});
+            swal.fire({
+              title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.content')]) }}',
+              icon: 'warning',
+            });
             return false;
           }
 
@@ -179,7 +185,12 @@
                 success: function(ret) {
                   $('#add_ticket_modal').modal('hide');
                   if (ret.status === 'success') {
-                    swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                    swal.fire({
+                      title: ret.message,
+                      icon: 'success',
+                      timer: 1000,
+                      showConfirmButton: false,
+                    }).then(() => window.location.reload());
                   } else {
                     swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
                   }
@@ -192,7 +203,12 @@
                     $.each(errors.errors, function(index, value) {
                       str += '<li>' + value + '</li>';
                     });
-                    swal.fire({title: '{{ trans('admin.hint') }}', html: str, icon: 'error', confirmButtonText: '{{ trans('common.confirm') }}'});
+                    swal.fire({
+                      title: '{{ trans('admin.hint') }}',
+                      html: str,
+                      icon: 'error',
+                      confirmButtonText: '{{ trans('common.confirm') }}',
+                    });
                   }
                 },
               });

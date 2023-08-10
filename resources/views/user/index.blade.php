@@ -14,27 +14,30 @@
                 <div class="card card-shadow">
                     <div class="card-block p-20">
                         <button type="button" class="btn btn-floating btn-sm btn-pure">
-                            <i class="wb-heart red-500"></i>
+                            <i class="wb-heart red-500" aria-hidden="true"></i>
                         </button>
                         <span class="font-weight-400">{{trans('user.account.status')}}</span>
                         @if(sysConfig('is_checkin'))
                             <button class="btn btn-md btn-round btn-info float-right" onclick="checkIn()">
-                                <i class="wb-star yellow-400 mr-5"></i>
+                                <i class="wb-star yellow-400 mr-5" aria-hidden="true"></i>
                                 {{trans('user.home.attendance.attribute')}}
                             </button>
                         @endif
                         <div class="content-text text-center mb-0">
                             @if(!$paying_user)
-                                <p class="ml-15 mt-15 text-left">{{trans('common.more')}}<code>{{trans('validation.attributes.time')}}</code></p>
-                                <p class="text-center">{{trans('common.more')}}<code>{{trans('user.attribute.data')}}</code></p>
-                                <p class="mb-15 mr-15 text-right">{{trans('common.more')}}<code>{{trans('user.attribute.node')}}</code></p>
+                                <p class="ml-15 mt-15 text-left">{{trans('common.more')}}
+                                    <code>{{trans('validation.attributes.time')}}</code></p>
+                                <p class="text-center">{{trans('common.more')}}
+                                    <code>{{trans('user.attribute.data')}}</code></p>
+                                <p class="mb-15 mr-15 text-right">{{trans('common.more')}}
+                                    <code>{{trans('user.attribute.node')}}</code></p>
                                 <a href="{{route('shop')}}" class="btn btn-block btn-danger">{{trans('user.purchase_promotion')}}</a>
                             @elseif(Auth::user()->enable)
-                                <i class="wb-check green-400 font-size-40 mr-10"></i>
+                                <i class="wb-check green-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('common.status.normal')}}</span>
                                 <p class="font-weight-300 m-0 green-500">{{trans('user.account.reason.normal')}}</p>
                             @elseif($remainDays < 0)
-                                <i class="wb-close red-400 font-size-40 mr-10"></i>
+                                <i class="wb-close red-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('common.status.expire')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.expired')}}</p>
                             @elseif($unusedTraffic === '0B')
@@ -68,7 +71,8 @@
                                         {{$unusedTraffic}}
                                     @endif
                                     <br/>
-                                    <h4>{{trans('user.account.level')}}：<code class="font-size-20">{{Auth::user()->level}}</code></h4>
+                                    <h4>{{trans('user.account.level')}}:
+                                        <code class="font-size-20">{{Auth::user()->level}}</code></h4>
                                 </div>
                                 <div class="text-center font-weight-300 blue-grey-500 mb-10">
                                     @if(isset($resetDays) && $resetDays >= 0)
@@ -112,20 +116,20 @@
                             <span class="font-weight-400 mb-10">{{trans('user.account.last_login')}}</span>
                             <ul class="list-group list-group-dividered px-20 mb-0">
                                 <li class="list-group-item px-0">
-                                    <i class="icon wb-time"></i>
-                                    {{trans('validation.attributes.time')}}：{{date_format($userLoginLog->created_at,'Y/m/d H:i')}}
+                                    <i class="icon wb-time"></i>{{trans('validation.attributes.time')}}
+                                    : {{date_format($userLoginLog->created_at,'Y/m/d H:i')}}
                                 </li>
                                 <li class="list-group-item px-0">
                                     <i class="icon wb-code"></i>
-                                    {{trans('user.attribute.ip')}}：{{$userLoginLog->ip}}
+                                    {{trans('user.attribute.ip')}}: {{$userLoginLog->ip}}
                                 </li>
                                 <li class="list-group-item px-0">
                                     <i class="icon wb-cloud"></i>
-                                    {{trans('user.attribute.isp')}}：{{$userLoginLog->isp}}
+                                    {{trans('user.attribute.isp')}}: {{$userLoginLog->isp}}
                                 </li>
                                 <li class="list-group-item px-0">
-                                    <i class="icon wb-map"></i>
-                                    {{trans('user.attribute.address')}}：{{$userLoginLog->country.' '.$userLoginLog->province.' '.$userLoginLog->city.' '.$userLoginLog->area}}
+                                    <i class="icon wb-map"></i>{{trans('user.attribute.address')}}
+                                    : {{$userLoginLog->country.' '.$userLoginLog->province.' '.$userLoginLog->city.' '.$userLoginLog->area}}
                                 </li>
                             </ul>
                         </div>
@@ -137,7 +141,8 @@
                     <div class="col-xl-4 mb-30">
                         <div class="card card-shadow h-full">
                             <div class="card-block text-center">
-                                <h3 class="card-header-transparent"><i class="icon wb-link-intact"></i>{{trans('user.subscribe.link')}}</h3>
+                                <h3 class="card-header-transparent">
+                                    <i class="icon wb-link-intact"></i>{{trans('user.subscribe.link')}}</h3>
                                 @if($subscribe_status)
                                     <div class="card-body">
                                         @if(count($subType)>1)
@@ -230,7 +235,8 @@
                                     <div class="pb-10" data-role="content">
                                         @forelse($announcements as $announcement)
                                             <h2 class="text-center">{!!$announcement->title!!}</h2>
-                                            <p class="text-right"><small>{{trans('common.updated_at')}} <code>{{$announcement->updated_at}}</code></small></p>
+                                            <p class="text-right"><small>{{trans('common.updated_at')}}
+                                                    <code>{{$announcement->updated_at}}</code></small></p>
                                             {!! $announcement->content !!}
                                         @empty
                                             <p class="text-center font-size-40">{{trans('user.home.empty_announcement')}}</p>
@@ -243,7 +249,8 @@
                     <div class="col-xxl-6">
                         <div class="panel panel-primary panel-line h-full">
                             <div class="panel-heading">
-                                <h1 class="panel-title"><i class="wb-pie-chart mr-10"></i>{{trans('user.home.traffic_logs')}}
+                                <h1 class="panel-title">
+                                    <i class="wb-pie-chart mr-10"></i>{{trans('user.home.traffic_logs')}}
                                 </h1>
                                 <div class="panel-actions">
                                     <ul class="nav nav-pills" role="tablist">
@@ -298,7 +305,12 @@
           if (result.value) {
             $.post('{{route('changeSub')}}', {_token: '{{csrf_token()}}'}, function(ret) {
               if (ret.status === 'success') {
-                swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => window.location.reload());
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => window.location.reload());
               } else {
                 swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
               }

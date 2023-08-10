@@ -32,7 +32,12 @@
         const content = $('#content').val();
 
         if (content.trim() === '') {
-          swal.fire({title: '{{ trans('admin.tools.decompile.content_placeholder') }}', icon: 'warning', timer: 1000, showConfirmButton: false});
+          swal.fire({
+            title: '{{ trans('admin.tools.decompile.content_placeholder') }}',
+            icon: 'warning',
+            timer: 1000,
+            showConfirmButton: false,
+          });
           return;
         }
         swal.fire({

@@ -10,8 +10,8 @@
                 <h3 class="panel-title">{{ trans('admin.marketing.push.title') }}</h3>
                 @can('admin.marketing.add')
                     <div class="panel-actions">
-                        <button type="button" class="btn btn-primary disabled" data-toggle="modal" data-target="#send_modal"><i
-                                    class="icon wb-plus"></i>{{ trans('admin.marketing.push.send') }}</button>
+                        <button type="button" class="btn btn-primary disabled" data-toggle="modal" data-target="#send_modal">
+                            <i class="icon wb-plus"></i>{{ trans('admin.marketing.push.send') }}</button>
                     </div>
                 @endcan
             </div>

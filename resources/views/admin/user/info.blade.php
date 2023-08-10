@@ -385,209 +385,209 @@
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        $(document).ready(function () {
-            @isset($user)
-            $('#nickname').val('{{$user->nickname}}');
-            $('#username').val('{{$user->username}}');
-            $('#level').selectpicker('val', '{{$user->level}}');
-            $('#group').selectpicker('val', '{{$user->user_group_id}}');
-            $('#invite_num').val('{{$user->invite_num}}');
-            $('#reset_time').val('{{$user->reset_date}}');
-            $('#expired_at').val('{{$user->expiration_date}}');
-            $("input[name='status'][value='{{$user->status}}']").click();
-            $('#wechat').val('{{$user->wechat}}');
-            $('#qq').val('{{$user->qq}}');
-            $('#remark').val('{{$user->remark}}');
-            $('#port').val('{{$user->port}}');
-            $('#passwd').val('{{$user->passwd}}');
-            $('#method').selectpicker('val', '{{$user->method}}');
-            $('#transfer_enable').val('{{$user->transfer_enable / GiB}}');
-            $("input[name='enable'][value='{{$user->enable}}']").click();
-            $('#protocol').selectpicker('val', '{{$user->protocol}}');
-            $('#obfs').selectpicker('val', '{{$user->obfs}}');
-            $('#speed_limit').val('{{$user->speed_limit}}');
-            $('#uuid').val('{{$user->vmess_id}}');
-            $('#roles').selectpicker('val', @json($user->roles()->pluck('name')));
-            @else
-            $('#level').selectpicker('val', '0');
-            @endisset
-        });
+      $(document).ready(function() {
+          @isset($user)
+          $('#nickname').val('{{$user->nickname}}');
+        $('#username').val('{{$user->username}}');
+        $('#level').selectpicker('val', '{{$user->level}}');
+        $('#group').selectpicker('val', '{{$user->user_group_id}}');
+        $('#invite_num').val('{{$user->invite_num}}');
+        $('#reset_time').val('{{$user->reset_date}}');
+        $('#expired_at').val('{{$user->expiration_date}}');
+        $("input[name='status'][value='{{$user->status}}']").click();
+        $('#wechat').val('{{$user->wechat}}');
+        $('#qq').val('{{$user->qq}}');
+        $('#remark').val('{{$user->remark}}');
+        $('#port').val('{{$user->port}}');
+        $('#passwd').val('{{$user->passwd}}');
+        $('#method').selectpicker('val', '{{$user->method}}');
+        $('#transfer_enable').val('{{$user->transfer_enable / GiB}}');
+        $("input[name='enable'][value='{{$user->enable}}']").click();
+        $('#protocol').selectpicker('val', '{{$user->protocol}}');
+        $('#obfs').selectpicker('val', '{{$user->obfs}}');
+        $('#speed_limit').val('{{$user->speed_limit}}');
+        $('#uuid').val('{{$user->vmess_id}}');
+        $('#roles').selectpicker('val', @json($user->roles()->pluck('name')));
+          @else
+          $('#level').selectpicker('val', '0');
+          @endisset
+      });
 
-        $('.input-daterange>input').datepicker({
-            format: 'yyyy-mm-dd',
-        });
+      $('.input-daterange>input').datepicker({
+        format: 'yyyy-mm-dd',
+      });
 
-        @isset($user)
-        @can('admin.user.switch')
-        // 切换用户身份
-        function switchToUser() {
-            $.ajax({
-                url: '{{route('admin.user.switch', $user)}}',
-                data: {'_token': '{{csrf_token()}}'},
-                dataType: 'json',
-                method: 'POST',
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(() => window.location.href = '/');
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                    }
-                },
-            });
-        }
-        @endcan
-
-        @can('admin.user.updateCredit')
-        // 余额充值
-        function handleUserCredit() {
-            const amount = $('#amount').val();
-            const reg = /^(-?)\d+(\.\d+)?$/; //只可以是正负数字
-
-            if (amount.trim() === '' || amount === 0 || !reg.test(amount)) {
-                $('#msg').show().html('{{ trans('user.shop.change_amount_help') }}');
-                $('#name').focus();
-                return false;
+      @isset($user)
+      @can('admin.user.switch')
+      // 切换用户身份
+      function switchToUser() {
+        $.ajax({
+          url: '{{route('admin.user.switch', $user)}}',
+          data: {'_token': '{{csrf_token()}}'},
+          dataType: 'json',
+          method: 'POST',
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: ret.message,
+                icon: 'success',
+                timer: 1000,
+                showConfirmButton: false,
+              }).then(() => window.location.href = '/');
+            } else {
+              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
             }
+          },
+        });
+      }
+      @endcan
 
-            $.ajax({
-                url: '{{route('admin.user.updateCredit', $user)}}',
-                method: 'POST',
-                data: {_token: '{{csrf_token()}}', amount: amount},
-                beforeSend: function () {
-                    $('#msg').show().html('{{ trans('user.recharging') }}');
-                },
-                success: function (ret) {
-                    if (ret.status === 'fail') {
-                        $('#msg').show().html(ret.message);
-                        return false;
-                    } else {
-                        $('#handle_user_credit').modal('hide');
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        } else {
-                            swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                        }
+      @can('admin.user.updateCredit')
+      // 余额充值
+      function handleUserCredit() {
+        const amount = $('#amount').val();
+        const reg = /^(-?)\d+(\.\d+)?$/; //只可以是正负数字
+
+        if (amount.trim() === '' || amount === 0 || !reg.test(amount)) {
+          $('#msg').show().html('{{ trans('user.shop.change_amount_help') }}');
+          $('#name').focus();
+          return false;
+        }
+
+        $.ajax({
+          url: '{{route('admin.user.updateCredit', $user)}}',
+          method: 'POST',
+          data: {_token: '{{csrf_token()}}', amount: amount},
+          beforeSend: function() {
+            $('#msg').show().html('{{ trans('user.recharging') }}');
+          },
+          success: function(ret) {
+            if (ret.status === 'fail') {
+              $('#msg').show().html(ret.message);
+              return false;
+            } else {
+              $('#handle_user_credit').modal('hide');
+              if (ret.status === 'success') {
+                swal.fire({
+                  title: ret.message,
+                  icon: 'success',
+                  timer: 1000,
+                  showConfirmButton: false,
+                }).then(() => {
+                  window.location.reload();
+                });
+              } else {
+                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+              }
+            }
+          },
+          error: function() {
+            $('#msg').show().html('{{ trans('common.request_failed') }}');
+          },
+          complete: function() {
+          },
+        });
+      }
+      @endcan
+      @endisset
+
+      // ajax同步提交
+      function Submit() {
+        // 用途
+        let usage = '';
+        $.each($('input:checkbox[name=\'usage\']'), function() {
+          if (this.checked) {
+            usage += $(this).val() + ',';
+          }
+        });
+
+        $.ajax({
+          method: @isset($user)'PUT' @else 'POST' @endisset,
+          url: '{{isset($user)? route('admin.user.update', $user) : route('admin.user.store')}}',
+          dataType: 'json',
+          data: {
+            _token: '{{csrf_token()}}',
+            nickname: $('#nickname').val(),
+            username: $('#username').val(),
+            password: $('#password').val(),
+            port: $('#port').val(),
+            passwd: $('#passwd').val(),
+            uuid: $('#uuid').val(),
+            transfer_enable: $('#transfer_enable').val(),
+            enable: $('input:radio[name=\'enable\']:checked').val(),
+            method: $('#method option:selected').val(),
+            protocol: $('#protocol option:selected').val(),
+            obfs: $('#obfs option:selected').val(),
+            speed_limit: $('#speed_limit').val(),
+            wechat: $('#wechat').val(),
+            qq: $('#qq').val(),
+            expired_at: $('#expired_at').val(),
+            remark: $('#remark').val(),
+            level: $('#level').val(),
+            user_group_id: $('#group').val(),
+            roles: $('#roles').val(),
+            reset_time: $('#reset_time').val(),
+            invite_num: $('#invite_num').val(),
+            status: $('input:radio[name=\'status\']:checked').val(),
+          },
+          success: function(ret) {
+            if (ret.status === 'success') {
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                text: '{{ trans('admin.user.update_help') }}',
+                icon: 'question',
+                showCancelButton: true,
+                cancelButtonText: '{{ trans('common.close') }}',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              }).then((result) => {
+                    if (result.value) {
+                      window.location.href = '{!! route('admin.user.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') !!}';
                     }
-                },
-                error: function () {
-                    $('#msg').show().html('{{ trans('common.request_failed') }}');
-                },
-                complete: function () {
-                },
-            });
-        }
-        @endcan
-        @endisset
+                  },
+              );
+            } else {
+              swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
+            }
+          },
+          error: function(data) {
+            let str = '';
+            const errors = data.responseJSON;
+            if ($.isEmptyObject(errors) === false) {
+              $.each(errors.errors, function(index, value) {
+                str += '<li>' + value + '</li>';
+              });
+              swal.fire({
+                title: '{{ trans('admin.hint') }}',
+                html: str,
+                icon: 'error',
+                confirmButtonText: '{{ trans('common.confirm') }}',
+              });
+            }
+          },
+        });
 
-        // ajax同步提交
-        function Submit() {
-            // 用途
-            let usage = '';
-            $.each($('input:checkbox[name=\'usage\']'), function () {
-                if (this.checked) {
-                    usage += $(this).val() + ',';
-                }
-            });
+        return false;
+      }
 
-            $.ajax({
-                method: @isset($user)'PUT' @else 'POST' @endisset,
-                url: '{{isset($user)? route('admin.user.update', $user) : route('admin.user.store')}}',
-                dataType: 'json',
-                data: {
-                    _token: '{{csrf_token()}}',
-                    nickname: $('#nickname').val(),
-                    username: $('#username').val(),
-                    password: $('#password').val(),
-                    port: $('#port').val(),
-                    passwd: $('#passwd').val(),
-                    uuid: $('#uuid').val(),
-                    transfer_enable: $('#transfer_enable').val(),
-                    enable: $('input:radio[name=\'enable\']:checked').val(),
-                    method: $('#method option:selected').val(),
-                    protocol: $('#protocol option:selected').val(),
-                    obfs: $('#obfs option:selected').val(),
-                    speed_limit: $('#speed_limit').val(),
-                    wechat: $('#wechat').val(),
-                    qq: $('#qq').val(),
-                    expired_at: $('#expired_at').val(),
-                    remark: $('#remark').val(),
-                    level: $('#level').val(),
-                    user_group_id: $('#group').val(),
-                    roles: $('#roles').val(),
-                    reset_time: $('#reset_time').val(),
-                    invite_num: $('#invite_num').val(),
-                    status: $('input:radio[name=\'status\']:checked').val(),
-                },
-                success: function (ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: '{{ trans('admin.hint') }}',
-                            text: '{{ trans('admin.user.update_help') }}',
-                            icon: 'question',
-                            showCancelButton: true,
-                            cancelButtonText: '{{ trans('common.close') }}',
-                            confirmButtonText: '{{ trans('common.confirm') }}',
-                        }).then((result) => {
-                                if (result.value) {
-                                    window.location.href = '{!! route('admin.user.index').(Request::getQueryString()?('?'.Request::getQueryString()):'') !!}';
-                                }
-                            },
-                        );
-                    } else {
-                        swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false});
-                    }
-                },
-                error: function (data) {
-                    let str = '';
-                    const errors = data.responseJSON;
-                    if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function (index, value) {
-                            str += '<li>' + value + '</li>';
-                        });
-                        swal.fire({
-                            title: '{{ trans('admin.hint') }}',
-                            html: str,
-                            icon: 'error',
-                            confirmButtonText: '{{ trans('common.confirm') }}'
-                        });
-                    }
-                },
-            });
+      // 生成随机端口
+      function makePort() {
+        $.get('{{route('getPort')}}', function(ret) {
+          $('#port').val(ret);
+        });
+      }
 
-            return false;
-        }
+      // 生成UUID
+      function makeUUID() {
+        $.get('{{route('createUUID')}}', function(ret) {
+          $('#uuid').val(ret);
+        });
+      }
 
-        // 生成随机端口
-        function makePort() {
-            $.get('{{route('getPort')}}', function (ret) {
-                $('#port').val(ret);
-            });
-        }
-
-        // 生成UUID
-        function makeUUID() {
-            $.get('{{route('createUUID')}}', function (ret) {
-                $('#uuid').val(ret);
-            });
-        }
-
-        // 生成随机密码
-        function makePasswd() {
-            $.get('{{route('createStr')}}', function (ret) {
-                $('#passwd').val(ret);
-            });
-        }
+      // 生成随机密码
+      function makePasswd() {
+        $.get('{{route('createStr')}}', function(ret) {
+          $('#passwd').val(ret);
+        });
+      }
     </script>
 @endsection
