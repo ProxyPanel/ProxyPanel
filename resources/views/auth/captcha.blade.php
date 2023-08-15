@@ -27,5 +27,12 @@
             {!! HCaptcha::renderJs(Session::get('locale')) !!}
         </div>
         @break
+    @case(5)
+        <!-- Turnstile -->
+        <div class="form-group form-material floating w-p100" data-plugin="formMaterial">
+            {{ \romanzipp\Turnstile\Captcha::getScript() }}
+            {{ \romanzipp\Turnstile\Captcha::getChallenge() }}
+        </div>
+        @break
     @default
 @endswitch
