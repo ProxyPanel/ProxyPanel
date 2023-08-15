@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use Arr;
 use Exception;
 use Http;
@@ -23,9 +24,13 @@ class reloadNode implements ShouldQueue
 
     private Collection $nodes;
 
-    public function __construct(Collection $nodes)
+    public function __construct(Collection|Node $nodes)
     {
-        $this->nodes = $nodes;
+        if ($nodes instanceof Collection) {
+            $this->nodes = $nodes;
+        } else {
+            $this->nodes = $nodes->get();
+        }
     }
 
     public function handle(): bool
