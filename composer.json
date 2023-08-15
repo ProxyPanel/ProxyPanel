@@ -32,6 +32,7 @@
     "mews/captcha": "^3.2",
     "mews/purifier": "^3.3",
     "phpoffice/phpspreadsheet": "^1.16",
+    "romanzipp/laravel-turnstile": "^1.1",
     "socialiteproviders/telegram": "^4.1",
     "spatie/laravel-permission": "^5.10",
     "srmklive/paypal": "^3.0",

@@ -787,6 +787,7 @@ return [
             'geetest' => 'Geetest',
             'recaptcha' => 'Google ReCaptcha',
             'hcaptcha' => 'hCaptcha',
+            'turnstile' => 'Turnstile',
         ],
         'referral' => [
             'once' => '初回購入のみリベート',

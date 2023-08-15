@@ -787,6 +787,7 @@ return [
             'geetest' => '极验',
             'recaptcha' => '구글 reCaptcha',
             'hcaptcha' => 'hCaptcha',
+            'turnstile' => 'Turnstile',
         ],
         'referral' => [
             'once' => '첫 구매 리베이트',

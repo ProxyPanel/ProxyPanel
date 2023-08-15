@@ -789,6 +789,7 @@ return [
             'geetest' => 'جی‌تست',
             'recaptcha' => 'ری‌کپچای گوگل',
             'hcaptcha' => 'اچ‌کپچا',
+            'turnstile' => 'Turnstile',
         ],
         'referral' => [
             'once' => 'بازگشت درآمد اولین خرید',

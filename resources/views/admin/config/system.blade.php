@@ -8,7 +8,8 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title"><i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.system.title') }}</h1>
+                <h1 class="panel-title">
+                    <i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.system.title') }}</h1>
             </div>
             <div class="panel-body">
                 <div class="nav-tabs-horizontal" data-plugin="tabs">
@@ -129,13 +130,11 @@
                             <x-system.input code="v2ray_tls_provider" :value="$v2ray_tls_provider"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
-                            <x-system.select code="ddns_mode"
-                                             :list="[trans('common.status.closed') => '', trans('admin.system.ddns.namesilo') => 'namesilo', trans('admin.system.ddns.aliyun') => 'aliyun', trans('admin.system.ddns.dnspod') =>  'dnspod', trans('admin.system.ddns.cloudflare') => 'cloudflare']"/>
+                            <x-system.select code="ddns_mode" :list="[trans('common.status.closed') => '', trans('admin.system.ddns.namesilo') => 'namesilo', trans('admin.system.ddns.aliyun') => 'aliyun', trans('admin.system.ddns.dnspod') =>  'dnspod', trans('admin.system.ddns.cloudflare') => 'cloudflare']"/>
                             <x-system.input code="ddns_key" :value="$ddns_key"/>
                             <x-system.input code="ddns_secret" :value="$ddns_secret"/>
                             <hr class="col-lg-12">
-                            <x-system.select code="is_captcha"
-                                             :list="[trans('common.status.closed') => '', trans('admin.system.captcha.standard') => 1, trans('admin.system.captcha.geetest') => 2, trans('admin.system.captcha.recaptcha') => 3, trans('admin.system.captcha.hcaptcha') => 4]"/>
+                            <x-system.select code="is_captcha" :list="[trans('common.status.closed') => '', trans('admin.system.captcha.standard') => 1, trans('admin.system.captcha.geetest') => 2, trans('admin.system.captcha.recaptcha') => 3, trans('admin.system.captcha.hcaptcha') => 4, trans('admin.system.captcha.turnstile') => 5]"/>
                             <x-system.input code="captcha_key" :value="$captcha_key"/>
                             <x-system.input code="captcha_secret" :value="$captcha_secret"/>
                         </x-system.tab-pane>

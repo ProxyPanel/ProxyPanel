@@ -787,6 +787,7 @@ return [
             'geetest' => '极验',
             'recaptcha' => 'Google reCaptcha',
             'hcaptcha' => 'hCaptcha',
+            'turnstile' => 'Turnstile',
         ],
         'referral' => [
             'once' => 'Hoa hồng đầu tiên',

@@ -25,6 +25,7 @@ use Illuminate\Http\Request;
 use Notification;
 use Redirect;
 use Response;
+use romanzipp\Turnstile\Rules\TurnstileCaptcha;
 use Session;
 use Str;
 use Validator;
@@ -52,7 +53,7 @@ class AuthController extends Controller
 
         // 是否校验验证码
         $captcha = $this->check_captcha($request);
-        if ($captcha !== false) {
+        if ($captcha !== true) {
             return $captcha;
         }
 
@@ -96,7 +97,7 @@ class AuthController extends Controller
         return redirect()->back();
     }
 
-    private function check_captcha(Request $request)
+    private function check_captcha(Request $request): RedirectResponse|bool
     { // 校验验证码
         switch (sysConfig('is_captcha')) {
             case 1: // 默认图形验证码
@@ -125,11 +126,18 @@ class AuthController extends Controller
                     return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
                 }
                 break;
+            case 5: // Turnstile
+                $validator = Validator::make($request->all(), ['cf-turnstile-response' => ['required', 'string', new TurnstileCaptcha()]]);
+
+                if ($validator->fails()) {
+                    return Redirect::back()->withInput()->withErrors($validator->errors());
+                }
+                break;
             default: // 不启用验证码
                 break;
         }
 
-        return false;
+        return true;
     }
 
     public function logout(Request $request): RedirectResponse
@@ -205,7 +213,7 @@ class AuthController extends Controller
 
         // 是否校验验证码
         $captcha = $this->check_captcha($request);
-        if ($captcha !== false) {
+        if ($captcha !== true) {
             return $captcha;
         }
 

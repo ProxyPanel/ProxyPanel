@@ -787,6 +787,7 @@ return [
             'geetest' => '极 验',
             'recaptcha' => 'Google reCaptcha',
             'hcaptcha' => 'hCaptcha',
+            'turnstile' => 'Turnstile',
         ],
         'referral' => [
             'once' => '首购返利',

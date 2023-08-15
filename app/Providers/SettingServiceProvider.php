@@ -23,6 +23,7 @@ class SettingServiceProvider extends ServiceProvider
             2 => ['geetest.id', 'geetest.key'],
             3 => ['NoCaptcha.secret', 'NoCaptcha.sitekey'],
             4 => ['HCaptcha.secret', 'HCaptcha.sitekey'],
+            5 => ['turnstile.secret_key', 'turnstile.site_key'],
         ]);
 
         $notifications = [
@@ -61,12 +62,7 @@ class SettingServiceProvider extends ServiceProvider
             config([$toApp[config('settings.is_captcha')][1] => config('settings.captcha_key')]);
         }
 
-        collect([
-            'website_name' => 'app.name',
-            'website_url' => 'app.url',
-        ])->each(function ($item, $key) {
-            config([$item => config('settings.'.$key)]); // 设置APP有关的选项
-        });
+        collect(['website_name' => 'app.name', 'website_url' => 'app.url'])->each(fn ($item, $key) => config([$item => config('settings.'.$key)]));
     }
 
     private static function setChannel(array $channels): array
