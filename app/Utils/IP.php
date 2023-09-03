@@ -54,7 +54,7 @@ class IP
 
         if (app()->getLocale() === 'zh_CN') {
             if (self::$is_ipv4) {
-                $ret = self::IPLookup(['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'TenAPI', 'fkcoder', 'vore', 'juHe', 'vvhan', 'ipjiance', 'ip2Region', 'IPIP']);
+                $ret = self::IPLookup(['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'TenAPI', 'fkcoder', 'vore', 'juHe', 'vvhan', 'ipjiance', 'ip2Region', 'IPDB']);
             } else {
                 $ret = self::IPLookup(['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TenAPI', 'vore', 'ip2Region']);
             }
@@ -103,7 +103,7 @@ class IP
             'fkcoder' => self::fkcoder($ip),
             'juHe' => self::juHe($ip),
             'ip2Region' => self::ip2Region($ip),
-            'IPIP' => self::IPIP($ip),
+            'IPDB' => self::IPDB($ip),
             'ipjiance' => self::ipjiance($ip),
             'IPSB' => self::IPSB($ip),
             'ipinfo' => self::ipinfo($ip),
@@ -369,16 +369,16 @@ class IP
         return null;
     }
 
-    private static function IPIP(string $ip): array
-    { // 通过IPIP离线数据查询IP地址的详细信息
-        $filePath = database_path('ipipfree.ipdb'); // 来源: https://www.ipip.net/free_download/
+    private static function IPDB(string $ip): array
+    { // 通过IPDB格式的离线数据查询IP地址的详细信息
+        $filePath = database_path('qqwry.ipdb'); // 来源: https://github.com/metowolf/qqwry.ipdb
         $location = (new City($filePath))->findMap($ip, 'CN');
 
         return [
             'country' => $location['country_name'],
             'region' => $location['region_name'],
             'city' => $location['city_name'],
-            'isp' => null,
+            'isp' => $location['isp_domain'],
             'area' => null,
         ];
     }
@@ -570,7 +570,7 @@ class IP
 
     private static function ip2Location(string $ip): ?array
     { // 通过ip2Location查询IP地址的详细信息
-        $filePath = database_path('IP2LOCATION-LITE-DB5.IPV6.BIN'); // 来源: https://lite.ip2location.com/database-download
+        $filePath = database_path('IP2LOCATION-LITE-DB11.IPV6.BIN'); // 来源: https://lite.ip2location.com/database-download
         try {
             $location = (new Database($filePath, Database::FILE_IO))
                 ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME, Database::LATITUDE, Database::LONGITUDE]);
@@ -666,6 +666,31 @@ class IP
                     'city' => $data['info']['city'],
                     'isp' => $data['info']['isp'],
                     'area' => null,
+                ];
+            }
+        }
+
+        return null;
+    }
+
+    private static function cz88(string $ip): ?array
+    {
+        $response = self::$basicRequest->get("https://www.cz88.net/api/cz88/ip/base?ip=$ip");
+        if ($response->ok()) {
+            $data = $response->json();
+
+            if ($data['success'] && $data['data']['ip'] === $ip) {
+                $data = $data['data'];
+                $location = $data['locations'] ? $data['locations'][0] : null;
+
+                return [
+                    'country' => $data['country'],
+                    'region' => $data['province'],
+                    'city' => $data['city'],
+                    'isp' => $data['isp'],
+                    'area' => $data['districts'],
+                    'latitude' => $location ? $location['latitude'] : null,
+                    'longitude' => $location ? $location['longitude'] : null,
                 ];
             }
         }
