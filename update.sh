@@ -1,23 +1,5 @@
-#!/usr/bin/env bash
-#检查系统
-check_sys() {
-  # shellcheck disable=SC2002
-  if [[ -f /etc/redhat-release ]]; then
-    release="centos"
-  elif cat /etc/issue | grep -q -E -i "debian"; then
-    release="debian"
-  elif cat /etc/issue | grep -q -E -i "ubuntu"; then
-    release="ubuntu"
-  elif cat /etc/issue | grep -q -E -i "centos|red hat|redhat"; then
-    release="centos"
-  elif cat /proc/version | grep -q -E -i "debian"; then
-    release="debian"
-  elif cat /proc/version | grep -q -E -i "ubuntu"; then
-    release="ubuntu"
-  elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
-    release="centos"
-  fi
-}
+#!/bin/bash
+
 #检查composer是否安装
 check_composer() {
   if [ ! -f "/usr/bin/composer" ]; then
@@ -36,10 +18,13 @@ set_permissions() {
   chmod -R 777 storage/
 }
 
-git fetch --all && git reset --hard origin/master && git pull
-check_sys
+git fetch -f
+git reset -q --hard origin/master
+git pull -q
 check_composer
 php artisan optimize:clear
 composer update
 php artisan panel:update
 set_permissions
+echo -e "\e[32mCheck For newest IP database files | 检测IP数据附件文件最新版本\e[0m"
+cd scripts/ && bash download_dbs.sh && cd ../
