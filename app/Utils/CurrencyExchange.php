@@ -11,6 +11,7 @@ use Log;
 class CurrencyExchange
 {
     private static PendingRequest $basicRequest;
+    private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'wsj', 'valutafx', 'baidu', 'unionpay', 'exchangerate', 'jsdelivrFile', 'it120', 'k780'];
 
     /**
      * @param  string  $target  target Currency
@@ -28,11 +29,9 @@ class CurrencyExchange
         if (Cache::has($cacheKey)) {
             return round($amount * Cache::get($cacheKey), 2);
         }
+        self::setClient();
 
-        $apis = ['exchangerateApi', 'k780', 'it120', 'exchangerate', 'fixer', 'currencyData', 'exchangeRatesData', 'jsdelivrFile'];
-        self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-
-        foreach ($apis as $api) {
+        foreach (self::$apis as $api) {
             try {
                 $rate = self::callApis($api, $base, $target);
                 if ($rate !== null) {
@@ -41,13 +40,18 @@ class CurrencyExchange
                     return round($amount * $rate, 2);
                 }
             } catch (Exception $e) {
-                Log::error("[$api] ±ÒÖÖ»ãÂÊÐÅÏ¢»ñÈ¡±¨´í: ".$e->getMessage());
+                Log::error("[$api] å¸ç§æ±‡çŽ‡ä¿¡æ¯èŽ·å–æŠ¥é”™: ".$e->getMessage());
 
                 continue;
             }
         }
 
         return null;
+    }
+
+    private static function setClient(): void
+    {
+        self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
     }
 
     private static function callApis(string $api, string $base, string $target): ?float
@@ -61,23 +65,26 @@ class CurrencyExchange
             'currencyData' => self::currencyData($base, $target),
             'exchangeRatesData' => self::exchangeRatesData($base, $target),
             'jsdelivrFile' => self::jsdelivrFile($base, $target),
+            'duckduckgo' => self::duckduckgo($base, $target),
+            'wise' => self::wise($base, $target),
+            'wsj' => self::wsj($base, $target),
+            'valutafx' => self::valutafx($base, $target),
+            'unionpay' => self::unionpay($base, $target),
+            'baidu' => self::baidu($base, $target),
         };
     }
 
     private static function exchangerateApi(string $base, string $target): ?float
     { // Reference: https://www.exchangerate-api.com/docs/php-currency-api
         $key = config('services.currency.exchangerate-api_key');
-        if ($key) {
-            $url = "https://v6.exchangerate-api.com/v6/$key/pair/$base/$target";
-        } else {
-            $url = "https://open.er-api.com/v6/latest/$base";
-        }
+        $url = $key ? "https://v6.exchangerate-api.com/v6/$key/pair/$base/$target" : "https://open.er-api.com/v6/latest/$base";
+
         $response = self::$basicRequest->get($url);
         if ($response->ok()) {
             $data = $response->json();
 
             if ($data['result'] === 'success') {
-                return $data[$key ? 'conversion_rate' : 'rates'][$target];
+                return $key ? $data['conversion_rate'] : $data['rates'][$target];
             }
             Log::emergency('[CurrencyExchange]exchangerateApi exchange failed with following message: '.$data['error-type']);
         } else {
@@ -209,5 +216,97 @@ class CurrencyExchange
         }
 
         return null;
+    }
+
+    private static function duckduckgo(string $base, string $target): ?float
+    { // Reference: https://duckduckgo.com  http://www.xe.com/
+        $response = self::$basicRequest->get("https://duckduckgo.com/js/spice/currency_convert/1/$base/$target");
+        if ($response->ok()) {
+            $data = $response->json();
+
+            return $data['conversion']['converted-amount'];
+        }
+
+        return null;
+    }
+
+    private static function wise(string $base, string $target): ?float
+    { // Reference: https://wise.com/zh-cn/currency-converter/
+        $response = self::$basicRequest->withHeaders(['Authorization' => 'Basic OGNhN2FlMjUtOTNjNS00MmFlLThhYjQtMzlkZTFlOTQzZDEwOjliN2UzNmZkLWRjYjgtNDEwZS1hYzc3LTQ5NGRmYmEyZGJjZA=='])->get("https://api.wise.com/v1/rates?source=$base&target=$target");
+        if ($response->ok()) {
+            $data = $response->json();
+
+            return $data[0]['rate'];
+        }
+
+        return null;
+    }
+
+    private static function wsj(string $base, string $target): ?float
+    { // Reference: https://www.wsj.com/market-data/quotes/fx/USDCNY
+        $response = self::$basicRequest->get("https://www.wsj.com/market-data/quotes/ajax/fx/9/$base$target?source=$base&target=$base$target&value=1");
+        if ($response->ok()) {
+            $data = $response->body();
+            preg_match('/<span[^>]*>([\d\.]+)<\/span>/', $data, $matches);
+
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    private static function valutafx(string $base, string $target): ?float
+    { // Reference: https://www.valutafx.com/convert/
+        $response = self::$basicRequest->get("https://www.valutafx.com/api/v2/rates/lookup?isoTo=$target&isoFrom=$base&amount=1");
+        if ($response->ok()) {
+            $data = $response->json();
+
+            return $data['Rate'];
+        }
+
+        return null;
+    }
+
+    private static function unionpay(string $base, string $target): ?float
+    { // Reference: https://www.unionpayintl.com/cn/rate/
+        $response = self::$basicRequest->get('https://www.unionpayintl.com/upload/jfimg/'.date('Ymd').'.json');
+        if (! $response->ok()) {
+            $response = self::$basicRequest->get('https://www.unionpayintl.com/upload/jfimg/'.date('Ymd', strtotime('-1 day')).'.json');
+        }
+
+        if ($response->ok()) {
+            $data = $response->json();
+
+            return collect($data['exchangeRateJson'])->where('baseCur', $target)->where('transCur', $base)->pluck('rateData')->first();
+        }
+
+        return null;
+    }
+
+    private static function baidu(string $base, string $target): ?float
+    { // Reference: https://www.unionpayintl.com/cn/rate/
+        $response = self::$basicRequest->get("https://finance.pae.baidu.com/vapi/async?from_money=$base&to_money=$target&srcid=5293");
+
+        if ($response->ok()) {
+            $data = $response->json();
+
+            return $data['Result'][0]['DisplayData']['resultData']['tplData']['money2_num'];
+        }
+
+        return null;
+    }
+
+    public static function unionTest(string $target, string $base = null): void
+    {
+        self::setClient();
+        foreach (self::$apis as $api) {
+            try {
+                echo $api.': '.self::callApis($api, $base, $target).PHP_EOL;
+            } catch (Exception $e) {
+                Log::error("[$api] å¸ç§æ±‡çŽ‡ä¿¡æ¯èŽ·å–æŠ¥é”™: ".$e->getMessage());
+
+                continue;
+            }
+        }
     }
 }
