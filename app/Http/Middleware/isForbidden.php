@@ -17,7 +17,7 @@ class isForbidden
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
-    {
+    { // 限制机器人、指定IP访问.
         // 拒绝机器人访问
         if (sysConfig('is_forbid_robot') && Agent::isRobot()) {
             Log::warning('识别到机器人('.IP::getClientIp().')访问');

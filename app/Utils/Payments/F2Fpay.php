@@ -41,8 +41,8 @@ class F2Fpay extends PaymentService implements Gateway
             $result = $gateWay->qrCharge($data);
             $payment->update(['qr_code' => 1, 'url' => $result['qr_code']]);
         } catch (Exception $e) {
-            $payment->failed();
             Log::alert('【支付宝当面付】支付错误: '.$e->getMessage());
+            $payment->failed();
             exit;
         }
 
@@ -53,7 +53,7 @@ class F2Fpay extends PaymentService implements Gateway
     {
         try {
             $result = (new AlipayF2F(self::$aliConfig))->tradeQuery($request->only('out_trade_no', 'trade_no'));
-            Log::notice('【支付宝当面付】回调验证查询：'.var_export($result, true));
+            Log::notice('【支付宝当面付】回调验证验证：'.var_export($result, true));
         } catch (Exception $e) {
             Log::alert('【支付宝当面付】回调信息错误: '.$e->getMessage());
             exit;

@@ -37,6 +37,7 @@ trait ClientConfig
         if (str_contains($target, 'v2rayn') || str_contains($target, 'v2rayng') || str_contains($target, 'v2rayu')) {
             return $this->v2rayN();
         }
+
         //        if (str_contains($target, 'shadowsocks')) {
         //            exit($this->shaodowsocksSIP008());
         //        }

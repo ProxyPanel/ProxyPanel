@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use App\Models\User;
 use Arr;
 use Exception;
@@ -26,9 +27,14 @@ class editUser implements ShouldQueue
 
     private Collection $nodes;
 
-    public function __construct(User $user, Collection $nodes)
+    public function __construct(User $user, Collection|Node $nodes)
     {
-        $this->nodes = $nodes;
+        if ($nodes instanceof Collection) {
+            $this->nodes = $nodes;
+        } else {
+            $this->nodes = new Collection([$nodes]);
+        }
+
         $this->data = [
             'uid' => $user->id,
             'port' => (int) $user->port,

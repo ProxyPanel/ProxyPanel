@@ -33,7 +33,7 @@ class Payment extends Model
 
     public function failed(): bool
     { // 关闭支付单
-        return $this->close() && $this->order()->close();
+        return $this->close() && $this->order->close();
     }
 
     public function close(): bool

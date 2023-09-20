@@ -9,7 +9,7 @@ use Log;
 
 class iYuuChannel
 {
-    private $token;
+    private ?string $token;
 
     public function __construct()
     {

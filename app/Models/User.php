@@ -26,7 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, Sortable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, Sortable;
 
     public array $sortable = ['id', 'credit', 'port', 't', 'expired_at'];
 

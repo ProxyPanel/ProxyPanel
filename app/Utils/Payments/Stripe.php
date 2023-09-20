@@ -82,7 +82,7 @@ class Stripe extends PaymentService implements Gateway
         }
     }
 
-    protected function getCheckoutSessionData(string $tradeNo, int $amount, int $type): array
+    protected function getCheckoutSessionData(string $tradeNo, float|int $amount, int $type): array
     {
         $unitAmount = $amount * 100;
 

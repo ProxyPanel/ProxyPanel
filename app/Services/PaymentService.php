@@ -9,7 +9,7 @@ use Str;
 
 class PaymentService
 {
-    final public function createPayment(int $uid, int $oid, int $amount): Payment
+    final public function createPayment(int $uid, int $oid, float|int $amount): Payment
     {
         $payment = new Payment();
         $payment->trade_no = Str::random(8);
@@ -24,9 +24,9 @@ class PaymentService
     /**
      * @param  string  $trade_no  本地订单号
      * @param  string  $out_trade_no  外部订单号
-     * @param  int  $amount  交易金额
+     * @param  float|int  $amount  交易金额
      */
-    final protected function createPaymentCallback(string $trade_no, string $out_trade_no, int $amount): int
+    final protected function createPaymentCallback(string $trade_no, string $out_trade_no, float|int $amount): int
     {
         $log = new PaymentCallback();
         $log->trade_no = $trade_no;

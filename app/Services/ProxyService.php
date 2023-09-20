@@ -13,7 +13,7 @@ class ProxyService
 {
     use ClientConfig;
 
-    private static User $user;
+    private static ?User $user;
 
     private static array $servers;
 

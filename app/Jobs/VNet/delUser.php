@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use Arr;
 use Exception;
 use Http;
@@ -21,14 +22,15 @@ class delUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    private array|int $userIds;
-
     private Collection $nodes;
 
-    public function __construct(array|int $userIds, Collection $nodes)
+    public function __construct(private readonly array|int $userIds, Collection|Node $nodes)
     {
-        $this->userIds = $userIds;
-        $this->nodes = $nodes;
+        if ($nodes instanceof Collection) {
+            $this->nodes = $nodes;
+        } else {
+            $this->nodes = new Collection([$nodes]);
+        }
     }
 
     public function handle(): void
