@@ -18,8 +18,6 @@ class AuthController extends Controller
 {
     use ClientApiResponse;
 
-    private static $method;
-
     public function __construct(Request $request)
     {
         if (str_contains($request->userAgent(), 'bob_vpn')) {
