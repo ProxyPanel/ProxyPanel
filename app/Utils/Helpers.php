@@ -172,12 +172,12 @@ class Helpers
      *
      * @param  int  $userId  用户ID
      * @param  int|null  $orderId  订单ID
-     * @param  int  $before  记录前余额
-     * @param  int  $after  记录后余额
-     * @param  int  $amount  发生金额
+     * @param  float|int  $before  记录前余额
+     * @param  float|int  $after  记录后余额
+     * @param  float|int  $amount  发生金额
      * @param  string|null  $description  描述
      */
-    public static function addUserCreditLog(int $userId, ?int $orderId, int $before, int $after, int $amount, string $description = null): bool
+    public static function addUserCreditLog(int $userId, ?int $orderId, float|int $before, float|int $after, float|int $amount, string $description = null): bool
     {
         $log = new UserCreditLog();
         $log->user_id = $userId;

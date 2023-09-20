@@ -29,7 +29,7 @@ class reloadNode implements ShouldQueue
         if ($nodes instanceof Collection) {
             $this->nodes = $nodes;
         } else {
-            $this->nodes = $nodes->get();
+            $this->nodes = new Collection([$nodes]);
         }
     }
 

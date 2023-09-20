@@ -326,7 +326,7 @@ class AuthController extends Controller
         return false;
     }
 
-    private function getAff(?string $code, ?int $aff): array
+    private function getAff(?string $code, string|int|null $aff): array
     { // 获取AFF
         $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
 

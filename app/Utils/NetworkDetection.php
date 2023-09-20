@@ -14,7 +14,7 @@ class NetworkDetection
     public function ping(string $ip): ?string
     { // 用外部API进行Ping检测. TODO: 无权威外部API，功能缺失
         $testers = ['oiowebPing', 'xiaoapiPing', 'yum6Ping'];
-        self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+        self::$basicRequest = Http::timeout(20)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
 
         foreach ($testers as $tester) {
             try {
@@ -127,7 +127,7 @@ class NetworkDetection
     private function networkCheck(string $ip, int $port): ?array
     { // 通过众多API进行节点阻断检测.
         $checkers = ['toolsdaquan', 'flyzy2005', 'idcoffer', 'ip112', 'upx8', 'vps234', 'rss', 'gd', 'vps1352'];
-        self::$basicRequest = Http::timeout(10)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+        self::$basicRequest = Http::timeout(15)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
 
         foreach ($checkers as $checker) {
             try {

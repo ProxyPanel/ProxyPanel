@@ -18,7 +18,7 @@ class OrderService
 
     public static ?Payment $payment;
 
-    public function __construct(private Order $order)
+    public function __construct(private readonly Order $order)
     { // 获取需要的信息
         self::$user = $order->user;
         self::$goods = $order->goods;
@@ -79,7 +79,7 @@ class OrderService
 
     public function activatePlan(): bool
     { // 激活套餐
-        $this->order->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
+        $this->order->refresh()->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
         $oldData = self::$user->transfer_enable;
         $updateData = [
             'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
@@ -129,7 +129,7 @@ class OrderService
         return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->format('Y-m-d');
     }
 
-    private function setCommissionExpense(User $user)
+    private function setCommissionExpense(User $user): void
     { // 佣金计算
         $referralType = sysConfig('referral_type');
 

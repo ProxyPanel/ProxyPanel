@@ -2,6 +2,7 @@
 
 namespace App\Jobs\VNet;
 
+use App\Models\Node;
 use App\Models\User;
 use Arr;
 use Exception;
@@ -26,9 +27,14 @@ class addUser implements ShouldQueue
 
     private Collection $nodes;
 
-    public function __construct(array $userIds, Collection $nodes)
+    public function __construct(array|int $userIds, Collection|Node $nodes)
     {
-        $this->nodes = $nodes;
+        if ($nodes instanceof Collection) {
+            $this->nodes = $nodes;
+        } else {
+            $this->nodes = new Collection([$nodes]);
+        }
+
         foreach (User::findMany($userIds) as $user) {
             $this->data[] = [
                 'uid' => $user->id,

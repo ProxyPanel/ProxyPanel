@@ -77,7 +77,7 @@ class PayPal extends PaymentService implements Gateway
         exit;
     }
 
-    protected function getCheckoutData($trade_no, $amount): array
+    protected function getCheckoutData(string $trade_no, float|int $amount): array
     {
         $converted = CurrencyExchange::convert('USD', $amount);
         if ($converted === false) {

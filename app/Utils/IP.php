@@ -247,11 +247,11 @@ class IP
             $data = $message['data'];
             if ($message['code'] === 0 && $data['ip'] === $ip) {
                 return [
-                    'country' => 'xx' !== strtolower($data['country']) ?: null,
-                    'region' => 'xx' !== strtolower($data['region']) ?: null,
-                    'city' => 'xx' !== strtolower($data['city']) ?: null,
-                    'isp' => 'xx' !== strtolower($data['isp']) ?: null,
-                    'area' => 'xx' !== strtolower($data['area']) ?: null,
+                    'country' => strtolower($data['country']) !== 'xx' ?: null,
+                    'region' => strtolower($data['region']) !== 'xx' ?: null,
+                    'city' => strtolower($data['city']) !== 'xx' ?: null,
+                    'isp' => strtolower($data['isp']) !== 'xx' ?: null,
+                    'area' => strtolower($data['area']) !== 'xx' ?: null,
                 ];
             }
 

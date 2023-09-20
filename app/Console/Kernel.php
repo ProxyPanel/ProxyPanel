@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('nodeStatusDetection')->everyTenMinutes();
         $schedule->command('autoClearLogs')->everyThirtyMinutes();
         $schedule->command('task:hourly')->hourly();
-        $schedule->command('task:daily')->dailyAt('02:30');
+        $schedule->command('task:daily')->dailyAt('00:05');
         $schedule->command('dailyNodeReport')->dailyAt('09:30');
         $schedule->command('userTrafficWarning')->dailyAt('10:30');
         $schedule->command('userExpireWarning')->dailyAt('20:30');

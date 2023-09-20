@@ -33,7 +33,7 @@ class PaymentController extends Controller
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
-        Log::notice(self::$method.'回调接口：'.self::$method.var_export($request->all(), true));
+        Log::notice('[{method}] 回调接口：{body}', ['method' => self::$method, 'body' => var_export($request->all(), true)]);
 
         return self::getClient()->notify($request);
     }

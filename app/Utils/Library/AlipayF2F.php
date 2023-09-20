@@ -92,7 +92,7 @@ class AlipayF2F
 
     private function send(): array
     {
-        $response = Http::get(self::$gatewayUrl, $this->buildParams())->json();
+        $response = Http::timeout(15)->get(self::$gatewayUrl, $this->buildParams())->json();
         $resKey = str_replace('.', '_', $this->config['method']).'_response';
         if (! isset($response[$resKey])) {
             throw new RuntimeException('请求错误-看起来是请求失败');
