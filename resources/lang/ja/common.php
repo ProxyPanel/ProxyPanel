@@ -82,7 +82,7 @@ return [
     'print' => '印刷',
     'unlimited' => '無制限',
     'payment' => [
-        'credit' => 'クレジット',
+        'credit' => '残高',
         'alipay' => 'Alipay',
         'qq' => 'QQウォレット',
         'wechat' => 'WeChatペイ',
@@ -134,7 +134,7 @@ return [
         'paid' => '支払済み',
         'payment_pending' => '支払保留中',
         'pass' => 'パス',
-        'send_to_credit' => 'クレジットに入金',
+        'send_to_credit' => '残高への支払い',
         'waiting_tobe_send' => '配信待ち',
     ],
     'stay_unchanged' => '空欄のままで変更なし',
