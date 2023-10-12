@@ -11,6 +11,7 @@ use Log;
 class CurrencyExchange
 {
     private static PendingRequest $basicRequest;
+
     private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'wsj', 'valutafx', 'baidu', 'unionpay', 'exchangerate', 'jsdelivrFile', 'it120', 'k780'];
 
     /**

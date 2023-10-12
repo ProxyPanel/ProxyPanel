@@ -88,6 +88,8 @@ class NodeStatusDetection extends Command
                     if ($node->detection_type !== 2 && $status['tcp'] !== 1) {
                         $data[$node_id][$ip]['tcp'] = config('common.network_status')[$status['tcp']];
                     }
+
+                    sleep(2);
                 }
             }
 
@@ -115,8 +117,6 @@ class NodeStatusDetection extends Command
             if (isset($data[$node_id])) {
                 $data[$node_id]['name'] = $node->name;
             }
-
-            sleep(5);
         }
 
         if (isset($data)) { //只有在出现阻断线路时，才会发出警报
@@ -126,5 +126,35 @@ class NodeStatusDetection extends Command
         }
 
         Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700); // 随机生成下次检测时间
+
+        $this->reliveNode();
+    }
+
+    private function reliveNode(): void
+    {
+        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
+        foreach (Node::whereRelayNodeId(null)->whereStatus(0)->whereIn('id', $onlineNode)->where('detection_type', '<>', 0)->get() as $node) {
+            $ips = $node->ips();
+            $result = count($ips);
+            foreach ($ips as $ip) {
+                if ($node->detection_type) {
+                    $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
+
+                    if ($node->detection_type === 1 && $status['tcp'] === 1) {
+                        $result--;
+                    } elseif ($node->detection_type === 2 && $status['icmp'] === 1) {
+                        $result--;
+                    } elseif ($status['tcp'] === 1 && $status['icmp'] === 1) {
+                        $result--;
+                    }
+
+                    sleep(1);
+                }
+            }
+
+            if ($result === 0) {
+                $node->update(['status' => 1]);
+            }
+        }
     }
 }
