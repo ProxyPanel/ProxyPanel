@@ -17,7 +17,7 @@ class AlipayF2F
 
     private array $config;
 
-    public function __construct(array $rawConfig = [])
+    public function __construct(array $rawConfig)
     {
         $config = [
             'app_id' => $rawConfig['app_id'],
@@ -70,7 +70,7 @@ class AlipayF2F
         return $beginStr.wordwrap($keyStr, 64, "\n", true).$endStr;
     }
 
-    public function tradeQuery($content)
+    public function tradeQuery(array $content): array
     {
         $this->setMethod('alipay.trade.query');
         $this->setContent($content);
@@ -78,12 +78,12 @@ class AlipayF2F
         return $this->send();
     }
 
-    private function setMethod($method): void
+    private function setMethod(string $method): void
     {
         $this->config['method'] = $method;
     }
 
-    private function setContent($content): void
+    private function setContent(array $content): void
     {
         $content = array_filter($content);
         ksort($content);
@@ -92,7 +92,7 @@ class AlipayF2F
 
     private function send(): array
     {
-        $response = Http::timeout(15)->get(self::$gatewayUrl, $this->buildParams())->json();
+        $response = Http::timeout(15)->retry(2)->get(self::$gatewayUrl, $this->buildParams())->json();
         $resKey = str_replace('.', '_', $this->config['method']).'_response';
         if (! isset($response[$resKey])) {
             throw new RuntimeException('请求错误-看起来是请求失败');
@@ -161,7 +161,7 @@ class AlipayF2F
      *
      * @throws RuntimeException
      */
-    public function rsaVerify(array $data, $sign): bool
+    public function rsaVerify(array $data, string $sign): bool
     {
         unset($data['sign'], $data['sign_type']);
         $publicKey = openssl_pkey_get_public($this->config['public_key']);
@@ -172,7 +172,7 @@ class AlipayF2F
         return (bool) openssl_verify(json_encode($data), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
     }
 
-    public function qrCharge($content)
+    public function qrCharge(array $content): array
     {
         $this->setMethod('alipay.trade.precreate');
         $this->setContent($content);

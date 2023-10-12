@@ -182,9 +182,9 @@ class Helpers
         $log = new UserCreditLog();
         $log->user_id = $userId;
         $log->order_id = $orderId;
-        $log->before = $before;
-        $log->after = $after;
-        $log->amount = $amount;
+        $log->before = round($before, 2);
+        $log->after = round($after, 2);
+        $log->amount = round($amount, 2);
         $log->description = $description;
         $log->created_at = date('Y-m-d H:i:s');
 

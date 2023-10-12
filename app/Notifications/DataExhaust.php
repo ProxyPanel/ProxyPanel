@@ -15,7 +15,7 @@ class DataExhaust extends Notification implements ShouldQueue
 
     public function __construct(float|int $percent)
     {
-        $this->percent = $percent;
+        $this->percent = round($percent, 2);
     }
 
     public function via($notifiable)
