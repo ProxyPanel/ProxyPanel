@@ -59,7 +59,7 @@ class TaskHourly extends Command
 
                 // 用户流量异常警告
                 if ($data_anomaly_notification && $overall['total'] >= $traffic_ban_value) {
-                    Notification::send(User::find(1), new DataAnomaly($user->username, formatBytes($overall['u']), formatBytes($overall['d']), formatBytes($overall['total'])));
+                    Notification::send(User::find(1), new DataAnomaly($user->id, formatBytes($overall['u']), formatBytes($overall['d']), formatBytes($overall['total'])));
                 }
             }
         });

@@ -155,7 +155,7 @@ class ProxyService
         return $config;
     }
 
-    public function failedProxyReturn(string $text, int $type = 1): string
+    public function failedProxyReturn(string $text, ?int $type = 1): string
     {
         $url = sysConfig('website_url');
 
