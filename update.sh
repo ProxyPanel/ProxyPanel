@@ -1,30 +1,35 @@
 #!/bin/bash
 
-#检查composer是否安装
-check_composer() {
-  if [ ! -f "/usr/bin/composer" ]; then
-    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
-  else
-    if [[ $(composer -n --version --no-ansi | cut -d" " -f3) < 2.2.0 ]]; then
-      composer self-update
-    fi
-  fi
-}
+# 引入依赖脚本
+source ./scripts/lib.sh
 
-# 设置权限
-set_permissions() {
-  chown -R www:www ./
-  chmod -R 755 ./
-  chmod -R 777 storage/
-}
-
+# 更新代码
+echo -e "\e[34m========= Checking server environment... | 检查服务器环境... =========\e[0m"
 git fetch -f
 git reset -q --hard origin/master
-git pull -q
+git pull
+
+# 检查Composer
+echo -e "\e[34m========= Checking Composer... | 检查Composer... =========\e[0m"
 check_composer
+
+# 清理优化缓存
+echo -e "\e[34m========= Cleaning panel cache... | 清理面板缓存... =========\e[0m"
 php artisan optimize:clear
-composer update
+
+# 执行Composer更新
+echo -e "\e[34m========= Updating packages via Composer... | 通过Composer更新程序包... =========\e[0m"
+yes | composer update
+
+# 执行Panel更新
 php artisan panel:update
+
+# 设置权限
 set_permissions
-echo -e "\e[32mCheck For newest IP database files | 检测IP数据附件文件最新版本\e[0m"
+
+# 更新旧的队列设置
+update_old_queue
+
+# 检查最新的IP数据库文件
+echo -e "\e[34m========= Updating IP database files... | 更新本地IP数据库文件... =========\e[0m"
 cd scripts/ && bash download_dbs.sh && cd ../
