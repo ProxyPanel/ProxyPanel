@@ -36,7 +36,7 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
-    public function routeNotificationForMail($notification)
+    public function routeNotificationForMail($notification): string
     {
         return $this->username;
     }
@@ -51,17 +51,17 @@ class User extends Authenticatable
         return $this->d + $this->u;
     }
 
-    public function getExpirationDateAttribute()
+    public function getExpirationDateAttribute(): ?string
     {
         return $this->attributes['expired_at'];
     }
 
-    public function getResetDateAttribute()
+    public function getResetDateAttribute(): ?string
     {
         return $this->attributes['reset_time'];
     }
 
-    public function getTelegramUserIdAttribute()
+    public function getTelegramUserIdAttribute(): ?string
     {
         $telegram = $this->userAuths()->whereType('telegram')->first();
 

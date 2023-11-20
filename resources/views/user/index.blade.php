@@ -40,7 +40,7 @@
                                 <i class="wb-close red-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('common.status.expire')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.expired')}}</p>
-                            @elseif($unusedTraffic === '0B')
+                            @elseif($unusedTraffic === 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{trans('common.status.disabled')}}</span>
                                 <p class="font-weight-300 m-0 red-500">{{trans('user.account.reason.traffic_exhausted')}}</p>
@@ -65,10 +65,10 @@
                                 </button>
                                 <span class="font-weight-400">{{trans('user.account.remain')}}</span>
                                 <div class="text-center font-weight-100 font-size-40">
-                                    @if ($unusedTraffic === '0B')
+                                    @if ($unusedTraffic === 0)
                                         {{trans('common.status.run_out')}}
                                     @else
-                                        {{$unusedTraffic}}
+                                        {{ formatBytes($unusedTraffic) }}
                                     @endif
                                     <br/>
                                     <h4>{{trans('user.account.level')}}:

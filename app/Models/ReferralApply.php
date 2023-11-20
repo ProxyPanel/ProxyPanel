@@ -31,26 +31,22 @@ class ReferralApply extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function referral_logs(): ReferralLog|\Illuminate\Database\Query\Builder
+    public function referral_logs(): Builder
     {
         return ReferralLog::whereIn('id', $this->link_logs);
     }
 
     protected function amountTag(): Attribute
     {
-        return Attribute::make(
-            get: fn () => Helpers::getPriceTag($this->amount),
-        );
+        return Attribute::make(get: fn () => Helpers::getPriceTag($this->amount));
     }
 
     protected function statusLabel(): Attribute
     {
-        return Attribute::make(
-            get: fn () => match ($this->status) {
-                1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
-                2 => trans('common.status.withdrawn'),
-                default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
-            },
-        );
+        return Attribute::make(get: fn () => match ($this->status) {
+            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
+            2 => trans('common.status.withdrawn'),
+            default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
+        });
     }
 }

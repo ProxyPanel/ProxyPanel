@@ -29,7 +29,7 @@ class TicketController extends Controller
             });
         });
 
-        return view('admin.ticket.index', ['ticketList' => $query->latest()->paginate(10)->appends($request->except('page'))]);
+        return view('admin.ticket.index', ['ticketList' => $query->orderBy('status')->latest()->paginate(10)->appends($request->except('page'))]);
     }
 
     // 创建工单

@@ -79,7 +79,7 @@ class Node extends Model
         return $this->belongsTo(__CLASS__);
     }
 
-    public function childNodes(): hasMany
+    public function childNodes(): HasMany
     {
         return $this->hasMany(__CLASS__, 'relay_node_id', 'id');
     }
