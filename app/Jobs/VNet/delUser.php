@@ -58,12 +58,8 @@ class delUser implements ShouldQueue
             }
 
             $message = $response->json();
-            if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
-                if ($message['success'] === 'false') {
-                    Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
-                } else {
-                    Log::notice("【删除用户】推送成功（推送地址：{$host}，内容：".json_encode($this->userIds, true).'）');
-                }
+            if ($message && Arr::has($message, ['success', 'content']) && $message['success'] === 'false') {
+                Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
             }
         } catch (Exception $exception) {
             Log::alert('【删除用户】推送异常：'.$exception->getMessage());
