@@ -1,8 +1,8 @@
 <?php
 /*
  * 作者：BrettonYe
- * 功能：ProxyPanel 支付宝面对面 【收单线下交易预创建】 【收单交易查询】 接口实现库
- * 时间：2022/12/28
+ * 功能：ProxyPanel 支付宝面对面【收单线下交易预创建】【收单交易查询】接口实现库
+ * 更新时间：2023/10/29
  * 参考资料：https://opendocs.alipay.com/open/02ekfg?scene=19 riverslei/payment
  */
 
@@ -13,7 +13,7 @@ use RuntimeException;
 
 class AlipayF2F
 {
-    private static string $gatewayUrl = 'https://openapi.alipay.com/gateway.do';
+    private static string $gatewayUrl = 'https://openapi.alipay.com/gateway.do'; //https://openapi-sandbox.dl.alipaydev.com/gateway.do
 
     private array $config;
 
@@ -98,7 +98,7 @@ class AlipayF2F
             throw new RuntimeException('请求错误-看起来是请求失败');
         }
 
-        if (! $this->rsaVerify($response[$resKey], $response['sign'])) {
+        if (! $this->validate_response_sign($response[$resKey], $response['sign'])) {
             throw new RuntimeException('验签错误-'.$response[$resKey]['msg'].' | '.($response[$resKey]['sub_msg'] ?? var_export($response, true)));
         }
 
@@ -113,14 +113,14 @@ class AlipayF2F
     private function buildParams(): array
     {
         $params = [
-            'app_id' => $this->config['app_id'] ?? '',
-            'method' => $this->config['method'] ?? '',
+            'app_id' => $this->config['app_id'],
+            'method' => $this->config['method'],
             'charset' => 'utf-8',
             'sign_type' => 'RSA2',
             'timestamp' => date('Y-m-d H:m:s'),
-            'biz_content' => $this->config['biz_content'] ?? [],
+            'biz_content' => $this->config['biz_content'],
             'version' => '1.0',
-            'notify_url' => $this->config['notify_url'] ?? '',
+            'notify_url' => $this->config['notify_url'],
         ];
         $params = array_filter($params);
         $params['sign'] = $this->encrypt($this->buildQuery($params));
@@ -155,21 +155,39 @@ class AlipayF2F
     }
 
     /**
-     * RSA2验签.
+     * 同步返回验签.
      *
-     * @param  array  $data  待签名数据
+     * @param  array  $body  待签名数据
      *
      * @throws RuntimeException
      */
-    public function rsaVerify(array $data, string $sign): bool
+    public function validate_response_sign(array $body, string $sign): bool
     {
-        unset($data['sign'], $data['sign_type']);
+        unset($body['sign'], $body['sign_type']);
         $publicKey = openssl_pkey_get_public($this->config['public_key']);
         if (empty($publicKey)) {
             throw new RuntimeException('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
         }
 
-        return (bool) openssl_verify(json_encode($data), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
+        return (bool) openssl_verify(json_encode($body), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
+    }
+
+    /**
+     * 异步通知验签.
+     *
+     * @param  array  $body  待签名数据
+     *
+     * @throws RuntimeException
+     */
+    public function validate_notification_sign(array $body, string $sign): bool
+    {
+        unset($body['sign'], $body['sign_type']);
+        $publicKey = openssl_pkey_get_public($this->config['public_key']);
+        if (empty($publicKey)) {
+            throw new RuntimeException('支付宝RSA公钥错误。请检查公钥文件格式是否正确');
+        }
+
+        return (bool) openssl_verify($this->buildQuery($body), base64_decode($sign), $publicKey, OPENSSL_ALGO_SHA256);
     }
 
     public function qrCharge(array $content): array
