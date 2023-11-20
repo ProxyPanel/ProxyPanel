@@ -65,7 +65,7 @@ class UserController extends Controller
         return view('user.index', array_merge([
             'remainDays' => now()->diffInDays($user->expired_at, false),
             'resetDays' => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
-            'unusedTraffic' => formatBytes($unusedTraffic),
+            'unusedTraffic' => $unusedTraffic,
             'expireTime' => $user->expiration_date,
             'banedTime' => $user->ban_time,
             'unusedPercent' => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
