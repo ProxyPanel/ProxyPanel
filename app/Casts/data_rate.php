@@ -12,9 +12,9 @@ class data_rate implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): int|float
+    public function get(Model $model, string $key, mixed $value, array $attributes): float
     {
-        return $value / Mbps;
+        return round($value / Mbps, 2);
     }
 
     /**
@@ -24,6 +24,6 @@ class data_rate implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): int
     {
-        return $value * Mbps;
+        return (int) round($value * Mbps);
     }
 }
