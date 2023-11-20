@@ -15,7 +15,7 @@ class PaymentService
         $payment->trade_no = Str::random(8);
         $payment->user_id = $uid;
         $payment->order_id = $oid;
-        $payment->amount = round($amount, 2);
+        $payment->amount = $amount;
         $payment->save();
 
         return $payment;
@@ -31,7 +31,7 @@ class PaymentService
         $log = new PaymentCallback();
         $log->trade_no = $trade_no;
         $log->out_trade_no = $out_trade_no;
-        $log->amount = round($amount, 2);
+        $log->amount = $amount;
 
         return $log->save();
     }

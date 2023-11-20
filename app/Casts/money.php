@@ -12,9 +12,9 @@ class money implements CastsAttributes
      *
      * @param  array<string, mixed>  $attributes
      */
-    public function get(Model $model, string $key, mixed $value, array $attributes): int|float
+    public function get(Model $model, string $key, mixed $value, array $attributes): float
     {
-        return $value / 100;
+        return round($value / 100, 2);
     }
 
     /**
@@ -24,6 +24,6 @@ class money implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): int
     {
-        return $value * 100;
+        return (int) round($value * 100);
     }
 }
