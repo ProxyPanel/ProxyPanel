@@ -2,6 +2,6 @@
 
 return [
     'name' => 'ProxyPanel',
-    'number' => '3.0.a',
+    'number' => '3.0.0',
     'ads' => env('ADS', null),
 ];

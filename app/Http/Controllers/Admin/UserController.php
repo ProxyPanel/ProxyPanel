@@ -176,7 +176,7 @@ class UserController extends Controller
     {
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
-                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), 1024 * GiB, 365);
+                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), (int) sysConfig('default_traffic'), (int) sysConfig('default_days'));
                 Helpers::addUserTrafficModifyLog($user->id, 0, 1024 * GiB, trans('admin.user.massive.note'));
             }
 

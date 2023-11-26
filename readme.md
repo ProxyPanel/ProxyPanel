@@ -48,19 +48,6 @@ This project is base on Laravel 10 Framework This means anything Laravel 10 is r
   - SQL Server 2017+ [Version Policy](https://docs.microsoft.com/en-us/lifecycle/products/?products=sql-server)
 - Redis
 
-## ADS
-- 【EtoPay】国际支付，安全稳定
-    - 开户门槛：无
-    - 业务范围：机场、idc、发卡
-    - 结算周期：D+2
-    - 结算方式：USDT
-    - 结算门槛：100cny
-    - 结算手续费：1%
-    - 通道费率：
-        - 💰 WechatPay（微信支付）7%
-        - 💰 Alipay（支付宝支付）7%
-    - 开户联系: [@etopay888](https://t.me/etopay888)
-
 ## Nice VPS
 - [Kdatacenter](https://www.kdatacenter.com/myportal/?affid=470)
     - 韩国SK线路，19刀（优惠后16.91刀）  1TB流量/月 性价比不错
