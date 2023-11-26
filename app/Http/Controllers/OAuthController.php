@@ -109,7 +109,7 @@ class OAuthController extends Controller
 
         if ($OauthUser) {
             if (User::whereUsername($OauthUser->getEmail())->doesntExist() && UserOauth::whereIdentifier($OauthUser->getId())->doesntExist()) { // 排除重复用户注册
-                $user = Helpers::addUser($OauthUser->getEmail(), Str::random(), MiB * ((int) sysConfig('default_traffic')), null, $OauthUser->getNickname());
+                $user = Helpers::addUser($OauthUser->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $OauthUser->getNickname());
 
                 $user->userAuths()->create([
                     'type' => $type,
