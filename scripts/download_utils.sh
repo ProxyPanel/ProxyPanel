@@ -56,6 +56,16 @@ download_file() {
       return 1
     fi
 
+    # 验证文件完整性
+    local actual_size=$(du -b "$tmp_file" | awk '{print $1}')
+    local min_size=$((1048576)) # 1MB minimum file size
+
+    if [ "$actual_size" -lt "$min_size" ]; then
+      echo -e "\e[31m[取消]下载的文件大小小于1MB，文件可能不完整\e[0m"
+      rm -f "$tmp_file"
+      return 1
+    fi
+
     # 下载成功，重命名文件
     mv "$tmp_file" "$FILE_DIR/$name"
     echo -e "\e[32m成功更新 $name 到版本 $version\e[0m"

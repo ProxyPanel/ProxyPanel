@@ -20,7 +20,7 @@ class CurrencyExchange
      * @param  string|null  $base  Base Currency
      * @return float|null amount in target currency
      */
-    public static function convert(string $target, float|int $amount, string $base = null): ?float
+    public static function convert(string $target, float|int $amount, ?string $base = null): ?float
     {
         if ($base === null) {
             $base = (string) sysConfig('standard_currency');
@@ -297,7 +297,7 @@ class CurrencyExchange
         return null;
     }
 
-    public static function unionTest(string $target, string $base = null): void
+    public static function unionTest(string $target, ?string $base = null): void
     {
         self::setClient();
         foreach (self::$apis as $api) {

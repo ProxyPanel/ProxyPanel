@@ -100,7 +100,7 @@ class OrderService
         return false;
     }
 
-    public function resetTimeAndData(string $expired_at = null): array
+    public function resetTimeAndData(?string $expired_at = null): array
     { // 计算下次重置与账号过期时间
         if (! $expired_at) { // 账号有效期
             $expired_at = $this->getFinallyExpiredTime();

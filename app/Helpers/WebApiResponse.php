@@ -6,12 +6,12 @@ use Illuminate\Http\JsonResponse;
 
 trait WebApiResponse
 {
-    public function succeed(array $data = null, array $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse // 成功
+    public function succeed(?array $data = null, ?array $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse // 成功
     {
         return $this->jsonResponse('success', $codeResponse, $data, $addition);
     }
 
-    private function jsonResponse(string $status, array $codeResponse, array $data = null, array $addition = null): JsonResponse // 返回数据
+    private function jsonResponse(string $status, array $codeResponse, ?array $data = null, ?array $addition = null): JsonResponse // 返回数据
     {
         [$code, $message] = $codeResponse;
         if ($status === 'success') {
@@ -42,7 +42,7 @@ trait WebApiResponse
         return $etag;
     }
 
-    public function failed(array $codeResponse = ResponseEnum::HTTP_ERROR, array $data = null): JsonResponse // 失败
+    public function failed(array $codeResponse = ResponseEnum::HTTP_ERROR, ?array $data = null): JsonResponse // 失败
     {
         return $this->jsonResponse('fail', $codeResponse, $data);
     }

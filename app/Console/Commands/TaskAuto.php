@@ -45,91 +45,76 @@ class TaskAuto extends Command
 
     private function orderTimer(): void
     {
-        Order::recentUnPay()->chunk(config('tasks.chunk'), function ($orders) {
+        Order::where(function (Builder $query) {
+            $query->recentUnPay(); // 关闭超时未支付本地订单
+        })->orWhere(function (Builder $query) {
+            $query->whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.confirmation_orders').' hours'))); // 关闭未处理的人工支付订单
+        })->chunk(config('tasks.chunk'), function ($orders) {
             $orders->each->close();
-        }); // 关闭超时未支付本地订单
-
-        Order::whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.confirmation_orders').' hours')))->chunk(config('tasks.chunk'), function ($orders) {
-            $orders->each->close();
-        }); // 关闭未处理的人工支付订单
+        });
     }
 
     private function expireCode(): void
     { // 注册验证码自动置无效 & 优惠券无效化
-        // 注册验证码自动置无效
+        // 注册验证码过时 置无效
         VerifyCode::recentUnused()->update(['status' => 2]);
 
-        // 优惠券到期 / 用尽的 自动置无效
-        Coupon::withTrashed()
-            ->whereStatus(0)
-            ->where('end_time', '<=', time())
-            ->orWhereIn('type', [1, 2])
-            ->whereUsableTimes(0)
-            ->update(['status' => 2]);
+        // 优惠券过时 置无效
+        Coupon::withTrashed()->where('status', '<>', 2)->where('end_time', '<=', time())->update(['status' => 2]);
 
-        // 邀请码到期自动置无效
-        Invite::whereStatus(0)
-            ->where('dateline', '<=', date('Y-m-d H:i:s'))
-            ->update(['status' => 2]);
+        // 邀请码过时 置无效
+        Invite::whereStatus(0)->where('dateline', '<=', now())->update(['status' => 2]);
     }
 
     private function blockSubscribes(): void
-    { // 封禁访问异常的订阅链接
-        User::activeUser()
-            ->with(['subscribe', 'subscribeLogs'])
-            ->whereHas('subscribe', function (Builder $query) {
-                $query->whereStatus(1); // 获取有订阅且未被封禁用户
-            })
-            ->whereHas('subscribeLogs', function (Builder $query) {
-                $query->whereDate('request_time', '>=', now()->subDay()); //    ->distinct()->count('request_ip');
-            }, '>=', sysConfig('subscribe_ban_times'))
-            ->chunk(config('tasks.chunk'), function ($users) {
-                $trafficBanTime = sysConfig('traffic_ban_time');
-                $ban_time = strtotime($trafficBanTime.' minutes');
-                $dirtyWorks = ['status' => 0, 'ban_time' => $ban_time, 'ban_desc' => 'Subscription link receive abnormal access and banned by the system'];
-                $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
-                foreach ($users as $user) {
-                    $user->subscribe->update($dirtyWorks);
-                    $user->banedLogs()->create($banMsg); // 记录封禁日志
-                }
-            });
+    { // 封禁访问异常地订阅链接
+        $trafficBanTime = sysConfig('traffic_ban_time');
+        $ban_time = strtotime($trafficBanTime.' minutes');
+        $dirtyWorks = ['status' => 0, 'ban_time' => $ban_time, 'ban_desc' => 'Subscription link receive abnormal access and banned by the system'];
+        $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
+
+        User::activeUser()->with(['subscribe', 'subscribeLogs'])->whereHas('subscribe', function (Builder $query) {
+            $query->whereStatus(1); // 获取有订阅且未被封禁用户
+        })->whereHas('subscribeLogs', function (Builder $query) {
+            $query->whereDate('request_time', '>=', now()->subDay()); //    ->distinct()->count('request_ip');
+        }, '>=', sysConfig('subscribe_ban_times'))->chunk(config('tasks.chunk'), function ($users) use ($banMsg, $dirtyWorks) {
+            foreach ($users as $user) {
+                $user->subscribe->update($dirtyWorks);
+                $user->banedLogs()->create($banMsg); // 记录封禁日志
+            }
+        });
     }
 
     private function unblockSubscribes(): void
     {
         UserSubscribe::whereStatus(0)->where('ban_time', '<=', time())->chunk(config('tasks.chunk'), function ($subscribes) {
-            foreach ($subscribes as $subscribe) {
-                $subscribe->update(['status' => 1, 'ban_time' => null, 'ban_desc' => null]);
-            }
+            $subscribes->each->update(['status' => 1, 'ban_time' => null, 'ban_desc' => null]);
         });
     }
 
     private function blockUsers(): void
     { // 封禁账号
         // 禁用流量超限用户
-        User::activeUser()
-            ->whereRaw('u + d >= transfer_enable')
-            ->chunk(config('tasks.chunk'), function ($users) {
-                foreach ($users as $user) {
-                    $user->update(['enable' => 0]);
-                    $user->banedLogs()->create(['description' => __('[Auto Task] Blocked service: Run out of traffic')]); // 写入日志
-                }
+        User::activeUser()->whereRaw('u + d >= transfer_enable')->chunk(config('tasks.chunk'), function ($users) {
+            $users->each(function ($user) {
+                $user->update(['enable' => 0]);
+                $user->banedLogs()->create(['description' => __('[Auto Task] Blocked service: Run out of traffic')]);
             });
+        });
 
         // 封禁1小时内流量异常账号
         if (sysConfig('is_traffic_ban')) {
             $trafficBanTime = sysConfig('traffic_ban_time');
-            User::activeUser()
-                ->whereBanTime(null)
-                ->chunk(config('tasks.chunk'), function ($users) use ($trafficBanTime) {
-                    $ban_time = strtotime($trafficBanTime.' minutes');
-                    foreach ($users as $user) {
-                        // 多往前取5分钟，防止数据统计任务执行时间过长导致没有数据
+            $ban_time = strtotime($trafficBanTime.' minutes');
+
+            User::activeUser()->whereBanTime(null)->where('t', '>=', strtotime('-5 minutes')) // 只检测最近5分钟有流量使用的用户
+                ->chunk(config('tasks.chunk'), function ($users) use ($ban_time, $trafficBanTime) {
+                    $users->each(function ($user) use ($ban_time, $trafficBanTime) {
                         if ($user->isTrafficWarning()) {
                             $user->update(['enable' => 0, 'ban_time' => $ban_time]);
                             $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked service: Abnormal traffic within 1 hour')]); // 写入日志
                         }
-                    }
+                    });
                 });
         }
     }
@@ -137,25 +122,19 @@ class TaskAuto extends Command
     private function unblockUsers(): void
     { // 解封账号
         // 解封被临时封禁的账号
-        User::bannedUser()
-            ->where('ban_time', '<', time())
-            ->chunk(config('tasks.chunk'), function ($users) {
-                foreach ($users as $user) {
-                    $user->update(['enable' => 1, 'ban_time' => null]);
-                    $user->banedLogs()->create(['description' => '[自动任务]解封服务: 封禁到期']); // 写入操作日志
-                }
+        User::bannedUser()->where('ban_time', '<', time())->chunk(config('tasks.chunk'), function ($users) {
+            $users->each(function ($user) {
+                $user->update(['enable' => 1, 'ban_time' => null]);
+                $user->banedLogs()->create(['description' => __('[Auto Task] Unblocked Service: Account ban expired')]);
             });
+        });
 
         // 可用流量大于已用流量也解封（比如：邀请返利加了流量）
-        User::bannedUser()
-            ->whereBanTime(null)
-            ->where('expired_at', '>=', date('Y-m-d'))
-            ->whereRaw('u + d < transfer_enable')
-            ->chunk(config('tasks.chunk'), function ($users) {
-                foreach ($users as $user) {
-                    $user->update(['enable' => 1]);
-                    $user->banedLogs()->create(['description' => '[自动任务]解封服务: 出现可用流量']); // 写入操作日志
-                }
+        User::bannedUser()->whereBanTime(null)->where('expired_at', '>=', date('Y-m-d'))->whereRaw('u + d < transfer_enable')->chunk(config('tasks.chunk'), function ($users) {
+            $users->each(function ($user) {
+                $user->update(['enable' => 1]);
+                $user->banedLogs()->create(['description' => __('[Auto Task] Unblocked Service: Account has available data traffic')]);
             });
+        });
     }
 }

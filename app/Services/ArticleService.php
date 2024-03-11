@@ -38,30 +38,36 @@ class ArticleService
     private function formatAccessible(string &$body): void
     {
         $noAccess = ! (new UserService)->isActivePaying();
+        $mode1Start = '<!--access_mode_1 start-->';
+        $mode1End = '<!--access_mode_1 end-->';
+        $mode2Start = '<!--access_mode_2 start-->';
+        $mode2End = '<!--access_mode_2 end-->';
+        $mode2Else = '<!--access_mode_2 else-->';
 
         if ($noAccess) {
-            while ($this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->', true) !== '') {
-                $accessArea = $this->getInBetween($body, '<!--access_mode_1 start-->', '<!--access_mode_1 end-->');
-                if ($accessArea) {
-                    $body = strtr($body,
-                        [$accessArea => '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view the content in this area!').'</div>']);
-                }
+            while (($accessArea = $this->getInBetween($body, $mode1Start, $mode1End)) !== '') {
+                $replacement = '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view the content in this area!').'</div>';
+                $body = str_replace($mode1Start.$accessArea.$mode1End, $replacement, $body);
             }
         }
 
-        while ($this->getInBetween($body, '<!--access_mode_2 start-->', '<!--access_mode_2 end-->', true) !== '') {
-            $accessArea = $this->getInBetween($body, '<!--access_mode_2 start-->', '<!--access_mode_2 end-->');
-            $hasAccessArea = $this->getInBetween($accessArea, '<!--access_mode_2 start-->', '<!--access_mode_2 else-->', true);
-            $noAccessArea = $this->getInBetween($accessArea, '<!--access_mode_2 else-->', '<!--access_mode_2 end-->', true);
-            $body = strtr($body, [$accessArea => $accessArea && $noAccess ? $noAccessArea : $hasAccessArea]);
+        while (($accessArea = $this->getInBetween($body, $mode2Start, $mode2End)) !== '') {
+            $hasAccessArea = $this->getInBetween($accessArea, '', $mode2Else);
+            $noAccessArea = $this->getInBetween($accessArea, $mode2Else, '');
+            $body = strtr($body, [$mode2Start.$accessArea.$mode2End => $noAccess ? $noAccessArea : $hasAccessArea]);
         }
     }
 
-    private function getInBetween(string $input, string $start, string $end, bool $bodyOnly = false): string
+    private function getInBetween(string $input, string $start, string $end): string
     {
-        $substr = substr($input, strpos($input, $start) + strlen($start), strpos($input, $end) - strlen($input));
+        $startPos = stripos($input, $start);
+        $endPos = stripos($input, $end, $startPos !== false ? $startPos + strlen($start) : 0);
 
-        return $bodyOnly ? $substr : $start.$substr.$end;
+        if ($startPos === false || $endPos === false) {
+            return '';
+        }
+
+        return substr($input, $startPos + strlen($start), $endPos - ($startPos + strlen($start)));
     }
 
     private function formatValuables(string &$body): void

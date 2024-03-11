@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\TicketClosed;
 use App\Services\OrderService;
 use App\Utils\Helpers;
+use DB;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Log;
@@ -40,88 +41,77 @@ class TaskDaily extends Command
     private function expireUser(): void
     { // 过期用户处理
         $isBanStatus = sysConfig('is_ban_status');
-        User::activeUser()
-            ->where('expired_at', '<', date('Y-m-d')) // 过期
-            ->chunk(config('tasks.chunk'), function ($users) use ($isBanStatus) {
-                $dirtyWorks = [
-                    'u' => 0,
-                    'd' => 0,
-                    'transfer_enable' => 0,
-                    'enable' => 0,
-                    'level' => 0,
-                    'reset_time' => null,
-                    'ban_time' => null,
-                ]; // 停止服务
-                $banMsg = __('[Daily Task] Account Expiration: Stop Service');
-                if ($isBanStatus) {
-                    $dirtyWorks['status'] = -1; // 封禁账号
-                    $banMsg = __('[Daily Task] Account Expiration: Block Login & Clear Account');
-                }
-                foreach ($users as $user) {
+
+        $dirtyWorks = [
+            'u' => 0,
+            'd' => 0,
+            'transfer_enable' => 0,
+            'enable' => 0,
+            'level' => 0,
+            'reset_time' => null,
+            'ban_time' => null,
+        ]; // 清理账号 & 停止服务
+
+        $banMsg = __('[Daily Task] Account Expiration: Stop Service');
+        if ($isBanStatus) {
+            $dirtyWorks['status'] = -1; // 封禁账号
+            $banMsg = __('[Daily Task] Account Expiration: Block Login & Clear Account');
+        }
+
+        User::activeUser()->where('expired_at', '<', date('Y-m-d')) // 过期
+            ->chunk(config('tasks.chunk'), function ($users) use ($banMsg, $dirtyWorks) {
+                $users->each(function ($user) use ($banMsg, $dirtyWorks) {
                     $user->update($dirtyWorks);
                     Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, $banMsg);
                     $user->banedLogs()->create(['description' => $banMsg]);
-                    if ($isBanStatus) {
-                        $user->invites()->whereStatus(0)->update(['status' => 2]); // 废除其名下邀请码
-                    }
-                }
+                });
             });
     }
 
     private function closeTickets(): void
     { // 关闭用户超时未处理的工单
-        Ticket::whereStatus(1)->with('reply')
-            ->whereHas('reply', function ($q) {
-                $q->where('admin_id', '<>', null);
-            })
-            ->where('updated_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.close.tickets').' hours')))
-            ->chunk(config('tasks.chunk'), function ($tickets) {
-                foreach ($tickets as $ticket) {
-                    if ($ticket->close()) {
-                        $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title,
-                            route('replyTicket', ['id' => $ticket->id]),
-                            __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => config('tasks.close.tickets')])));
-                    }
+        $closeTicketsHours = config('tasks.close.tickets');
+
+        Ticket::whereStatus(1)->with('reply')->whereHas('reply', function ($query) {
+            $query->where('admin_id', '<>', null);
+        })->where('updated_at', '<=', now()->subHours($closeTicketsHours))->chunk(config('tasks.chunk'), function ($tickets) use ($closeTicketsHours) {
+            $tickets->each(function ($ticket) use ($closeTicketsHours) {
+                if ($ticket->close()) {
+                    $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]),
+                        __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => $closeTicketsHours])));
                 }
             });
+        });
     }
 
     private function resetUserTraffic(): void
     { // 重置用户流量
-        User::where('status', '<>', -1)
-            ->where('expired_at', '>', date('Y-m-d'))
-            ->where('reset_time', '<=', date('Y-m-d'))
-            ->with('orders')->has('orders')
-            ->chunk(config('tasks.chunk'), function ($users) {
-                foreach ($users as $user) {
-                    $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐
+        $today = date('Y-m-d');
+        User::where('status', '<>', -1)->where('expired_at', '>', $today)->where('reset_time', '<=', $today)->with([
+            'orders' => function ($query) {
+                $query->activePlan();
+            },
+        ])->has('orders')->chunk(config('tasks.chunk'), function ($users) {
+            $users->each(function ($user) {
+                $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
+                $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐
 
-                    if (! $order) {// 无套餐用户跳过
-                        Log::error('用户[ID：'.$user->id.'] 流量重置, 用户订单获取失败');
-
-                        continue;
-                    }
-
-                    $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
-
-                    $oldData = $user->transfer_enable;
-                    // 重置流量与重置日期
-                    if ($user->update((new OrderService($order))->resetTimeAndData($user->expired_at))) {
-                        Helpers::addUserTrafficModifyLog($order->user_id, $oldData, $user->transfer_enable, __('[Daily Task] Reset Account Traffic, Next Reset Date: :date', ['date' => $user->reset_date]), $order->id);
-                    } else {
-                        Log::error("[每日任务]用户ID: $user->id | 邮箱: $user->username 流量重置失败");
-                    }
+                $oldData = $user->transfer_enable;
+                // 重置流量与重置日期
+                if ($user->update((new OrderService($order))->resetTimeAndData($user->expired_at))) {
+                    Helpers::addUserTrafficModifyLog($order->user_id, $oldData, $user->transfer_enable, __('[Daily Task] Reset Account Traffic, Next Reset Date: :date', ['date' => $user->reset_date]), $order->id);
+                } else {
+                    Log::error("[每日任务]用户ID: $user->id | 邮箱: $user->username 流量重置失败");
                 }
             });
+        });
     }
 
     private function releaseAccountPort(): void
     { // 被封禁 / 过期N天 的账号自动释放端口
-        User::where('port', '<>', 0)
-            ->where(function ($query) {
-                $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')));
-            })
-            ->update(['port' => 0]);
+        User::where('port', '<>', 0)->where(function (Builder $query) {
+            $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')));
+        })->update(['port' => 0]);
     }
 
     private function userTrafficStatistics(): void
@@ -130,24 +120,36 @@ class TaskDaily extends Command
         $end = strtotime($created_at);
         $start = $end - 86399;
 
-        User::activeUser()->with('dataFlowLogs')->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
+        User::activeUser()->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
-        })->chunk(config('tasks.chunk'), function ($users) use ($start, $end, $created_at) {
+        })->with([
+            'dataFlowLogs' => function ($query) use ($start, $end) {
+                $query->whereBetween('log_time', [$start, $end]);
+            },
+        ])->chunk(config('tasks.chunk'), function ($users) use ($created_at) {
             foreach ($users as $user) {
-                $logs = $user->dataFlowLogs()
-                    ->whereBetween('log_time', [$start, $end])
-                    ->groupBy('node_id')
-                    ->selectRaw('node_id, sum(`u`) as u, sum(`d`) as d')
-                    ->get();
+                $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
-                $data = $logs->each(function ($log) use ($created_at) {
-                    $log->created_at = $created_at;
-                })->toArray();
+                $data = $dataFlowLogs->map(function ($logs, $nodeId) use ($created_at) {
+                    $totals = $logs->reduce(function ($carry, $log) {
+                        $carry['u'] += $log['u'];
+                        $carry['d'] += $log['d'];
+
+                        return $carry;
+                    }, ['u' => 0, 'd' => 0]);
+
+                    return [
+                        'node_id' => $nodeId,
+                        'u' => $totals['u'],
+                        'd' => $totals['d'],
+                        'created_at' => $created_at,
+                    ];
+                })->values()->all();
 
                 $data[] = [ // 每日节点流量合计
                     'node_id' => null,
-                    'u' => $logs->sum('u'),
-                    'd' => $logs->sum('d'),
+                    'u' => array_sum(array_column($data, 'u')),
+                    'd' => array_sum(array_column($data, 'd')),
                     'created_at' => $created_at,
                 ];
 
@@ -162,12 +164,23 @@ class TaskDaily extends Command
         $end = strtotime($created_at);
         $start = $end - 86399;
 
-        Node::with('userDataFlowLogs')->whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
+        Node::whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
-        })->chunk(config('tasks.chunk'), function ($nodes) use ($start, $end, $created_at) {
+        })->withCount([
+            'userDataFlowLogs as u_sum' => function ($query) use ($start, $end) {
+                $query->select(DB::raw('SUM(u)'))->whereBetween('log_time', [$start, $end]);
+            },
+        ])->withCount([
+            'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
+                $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
+            },
+        ])->chunk(config('tasks.chunk'), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
-                $log = $node->userDataFlowLogs()->whereBetween('log_time', [$start, $end])->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
-                $node->dailyDataFlows()->create(['u' => $log->u, 'd' => $log->d, 'created_at' => $created_at]);
+                $node->dailyDataFlows()->create([
+                    'u' => $node->u_sum,
+                    'd' => $node->d_sum,
+                    'created_at' => $created_at,
+                ]);
             }
         });
     }

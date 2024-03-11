@@ -20,9 +20,11 @@ class DailyNodeReport extends Command
         $jobTime = microtime(true);
 
         if (sysConfig('node_daily_notification')) {
-            $nodeDailyLogs = NodeDailyDataFlow::with('node:id,name')->has('node')->orderBy('node_id')->whereDate('created_at', date('Y-m-d', strtotime('yesterday')))->get();
+            $nodeDailyLogs = NodeDailyDataFlow::with('node:id,name')->has('node')->whereDate('created_at', date('Y-m-d', strtotime('yesterday')))->orderBy('node_id')->get();
 
             $data = [];
+            $sum_u = 0;
+            $sum_d = 0;
             foreach ($nodeDailyLogs as $log) {
                 $data[] = [
                     'name' => $log->node->name,
@@ -30,19 +32,22 @@ class DailyNodeReport extends Command
                     'download' => formatBytes($log->d),
                     'total' => formatBytes($log->u + $log->d),
                 ];
+                $sum_u += $log->u;
+                $sum_d += $log->d;
             }
 
             if ($data) {
-                $u = $nodeDailyLogs->sum('u');
-                $d = $nodeDailyLogs->sum('d');
                 $data[] = [
                     'name' => trans('notification.node.total'),
-                    'upload' => formatBytes($u),
-                    'download' => formatBytes($d),
-                    'total' => formatBytes($u + $d),
+                    'upload' => formatBytes($sum_u),
+                    'download' => formatBytes($sum_d),
+                    'total' => formatBytes($sum_u + $sum_d),
                 ];
 
-                Notification::send(User::role('Super Admin')->get(), new NodeDailyReport($data));
+                $superAdmins = User::role('Super Admin')->get();
+                if ($superAdmins->isNotEmpty()) {
+                    Notification::send($superAdmins, new NodeDailyReport($data));
+                }
             }
         }
 

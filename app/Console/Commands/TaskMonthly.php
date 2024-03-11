@@ -34,8 +34,9 @@ class TaskMonthly extends Command
 
     private function cleanAccounts(): void
     {
-        User::where('expired_at', '<', date('Y-m-d'))->where('transfer_enable', '==', 0)->whereEnable(0)
-            ->whereRaw('u + d > transfer_enable')->update(['u' => 0, 'd' => 0]);
+        User::where('expired_at', '<', date('Y-m-d'))->where('transfer_enable', '=', 0)->whereEnable(0)->where(function ($query) {
+            $query->where('u', '>', 0)->orWhere('d', '>', 0);
+        })->update(['u' => 0, 'd' => 0]);
     }
 
     private function clearLog(): void

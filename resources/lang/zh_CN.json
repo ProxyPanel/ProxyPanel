@@ -40,6 +40,8 @@
     "[Auto Task] Blocked service: Abnormal traffic within 1 hour": "[自动任务] 封禁服务：1小时内流量异常",
     "[Auto Task] Blocked service: Run out of traffic": "[自动任务] 封禁服务：流量耗尽",
     "[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours": "[自动任务] 封禁订阅：24小时内请求异常",
+    "[Auto Task] Unblocked Service: Account ban expired" : "[自动任务]解封服务: 封禁到期",
+    "[Auto Task] Unblocked Service: Account has available data traffic" : "[自动任务]解封服务: 出现可用流量",
     "[Daily Task] Account Expiration: Block Login & Clear Account": "[每日任务] 账号过期：禁止登录，清空账户",
     "[Daily Task] Account Expiration: Stop Service": "[每日任务] 账号过期：停止服务",
     "[Daily Task] Reset Account Traffic, Next Reset Date: :date": "[每日任务] 重置账号流量，下次重置日：:date",

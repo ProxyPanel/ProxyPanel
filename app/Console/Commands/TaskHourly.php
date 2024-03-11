@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Node;
 use App\Models\User;
 use App\Notifications\DataAnomaly;
+use DB;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Log;
@@ -34,32 +35,47 @@ class TaskHourly extends Command
         $start = $end - 3599;
         $data_anomaly_notification = sysConfig('data_anomaly_notification');
         $traffic_ban_value = (int) sysConfig('traffic_ban_value') * GiB;
-        User::activeUser()->with('dataFlowLogs')->WhereHas('dataFlowLogs')->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
+        User::activeUser()->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
-        })->chunk(config('tasks.chunk'), function ($users) use ($traffic_ban_value, $start, $end, $created_at, $data_anomaly_notification) {
+        })->with([
+            'dataFlowLogs' => function ($query) use ($start, $end) {
+                $query->whereBetween('log_time', [$start, $end]);
+            },
+        ])->chunk(config('tasks.chunk'), function ($users) use ($traffic_ban_value, $created_at, $data_anomaly_notification) {
             foreach ($users as $user) {
-                $logs = $user->dataFlowLogs()
-                    ->whereBetween('log_time', [$start, $end])
-                    ->groupBy('node_id')
-                    ->selectRaw('node_id, sum(`u`) as u, sum(`d`) as d')
-                    ->get();
+                $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
-                $data = $logs->each(function ($log) use ($created_at) {
-                    $log->created_at = $created_at;
-                })->toArray();
-                $overall = [ // 每小时节点流量合计
+                $data = $dataFlowLogs->map(function ($logs, $nodeId) use ($created_at) {
+                    $totals = $logs->reduce(function ($carry, $log) {
+                        $carry['u'] += $log['u'];
+                        $carry['d'] += $log['d'];
+
+                        return $carry;
+                    }, ['u' => 0, 'd' => 0]);
+
+                    return [
+                        'node_id' => $nodeId,
+                        'u' => $totals['u'],
+                        'd' => $totals['d'],
+                        'created_at' => $created_at,
+                    ];
+                })->values()->all();
+
+                $sum_u = array_sum(array_column($data, 'u'));
+                $sum_d = array_sum(array_column($data, 'd'));
+                $data[] = [ // 每小时节点流量合计
                     'node_id' => null,
-                    'u' => $logs->sum('u'),
-                    'd' => $logs->sum('d'),
+                    'u' => $sum_u,
+                    'd' => $sum_d,
                     'created_at' => $created_at,
                 ];
-                $data[] = $overall;
+
                 $user->hourlyDataFlows()->createMany($data);
-                $overall['total'] = $overall['u'] + $overall['d'];
+                $sum_all = $sum_u + $sum_d;
 
                 // 用户流量异常警告
-                if ($data_anomaly_notification && $overall['total'] >= $traffic_ban_value) {
-                    Notification::send(User::find(1), new DataAnomaly($user->id, formatBytes($overall['u']), formatBytes($overall['d']), formatBytes($overall['total'])));
+                if ($data_anomaly_notification && $sum_all >= $traffic_ban_value) {
+                    Notification::send(User::find(1), new DataAnomaly($user->id, formatBytes($sum_u), formatBytes($sum_d), formatBytes($sum_all)));
                 }
             }
         });
@@ -71,12 +87,19 @@ class TaskHourly extends Command
         $end = strtotime($created_at);
         $start = $end - 3599;
 
-        Node::orderBy('id')->with('userDataFlowLogs')->whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
+        Node::whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
-        })->chunk(config('tasks.chunk'), function ($nodes) use ($start, $end, $created_at) {
+        })->withCount([
+            'userDataFlowLogs as u_sum' => function ($query) use ($start, $end) {
+                $query->select(DB::raw('SUM(u)'))->whereBetween('log_time', [$start, $end]);
+            },
+        ])->withCount([
+            'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
+                $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
+            },
+        ])->chunk(config('tasks.chunk'), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
-                $traffic = $node->userDataFlowLogs()->whereBetween('log_time', [$start, $end])->selectRaw('sum(`u`) as u, sum(`d`) as d')->first();
-                $node->hourlyDataFlows()->create(['u' => $traffic->u, 'd' => $traffic->d, 'created_at' => $created_at]);
+                $node->hourlyDataFlows()->create(['u' => $node->u_sum, 'd' => $node->d_sum, 'created_at' => $created_at]);
             }
         });
     }

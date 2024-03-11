@@ -39,6 +39,10 @@ class CouponService
     private function check(Goods $goods, Coupon $coupon): JsonResponse|bool
     { // 检查券合规性
         $user = $this->user;
+        if ($coupon->status === 2) {
+            return $this->failedReturn(trans('common.sorry'), trans('user.coupon.error.expired'));
+        }
+
         if ($coupon->status === 1) {
             return $this->failedReturn(trans('common.sorry'), trans('user.coupon.error.used'));
         }
@@ -51,10 +55,6 @@ class CouponService
 
         if ($coupon->usable_times === 0) {
             return $this->failedReturn(trans('common.sorry'), trans('user.coupon.error.run_out'));
-        }
-
-        if ($coupon->status === 2) {
-            return $this->failedReturn(trans('common.sorry'), trans('user.coupon.error.expired'));
         }
 
         if (time() < $coupon->getRawOriginal('start_time')) {

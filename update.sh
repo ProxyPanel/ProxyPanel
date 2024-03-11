@@ -19,7 +19,7 @@ php artisan optimize:clear
 
 # 执行Composer更新
 echo -e "\e[34m========= Updating packages via Composer... | 通过Composer更新程序包... =========\e[0m"
-yes | composer update
+composer update --no-interaction --no-dev --optimize-autoloader
 
 # 执行Panel更新
 php artisan panel:update

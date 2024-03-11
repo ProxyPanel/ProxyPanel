@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\CarbonInterval;
+
 const MiB = 1048576;
 const GiB = 1073741824;
 
@@ -27,7 +29,7 @@ if (! function_exists('base64url_decode')) {
 
 // 根据流量值自动转换单位输出
 if (! function_exists('formatBytes')) {
-    function formatBytes(int $bytes, string $base = null, int $precision = 2): string
+    function formatBytes(int $bytes, ?string $base = null, int $precision = 2): string
     {
         $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
         $bytes = max($bytes, 0);
@@ -47,28 +49,15 @@ if (! function_exists('formatBytes')) {
 if (! function_exists('formatTime')) {
     function formatTime(int $seconds): string
     {
-        $timeString = '';
-        $units = [
-            trans('validation.attributes.day') => 86400,
-            trans('validation.attributes.hour') => 3600,
-            trans('validation.attributes.minute') => 60,
-            trans('validation.attributes.second') => 1,
-        ];
+        $interval = CarbonInterval::seconds($seconds);
 
-        foreach ($units as $unitName => $secondsInUnit) {
-            if ($seconds >= $secondsInUnit) {
-                $timeString .= floor($seconds / $secondsInUnit).' '.$unitName.' ';
-                $seconds %= $secondsInUnit;
-            }
-        }
-
-        return trim($timeString);
+        return $interval->cascade()->forHumans();
     }
 }
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig(string $key = null, string $default = null): array|string|null
+    function sysConfig(?string $key = null, ?string $default = null): array|string|null
     {
         return $key ? config("settings.$key", $default) : config('settings');
     }

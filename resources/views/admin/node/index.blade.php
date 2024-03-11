@@ -71,7 +71,7 @@
                             <td>
                                 @isset($node->profile['passwd'])
                                     {{-- 单端口 --}}
-                                    <span class="badge badge-lg badge-info"><i class="fa-solid fa-arrows-left-right-to-line" aria-hidden="true"></i></span>
+                                    <span class="badge badge-lg badge-info"><i class="fa-solid fa-1" aria-hidden="true"></i></span>
                                 @endisset
                                 @if($node->is_display === 0)
                                     {{-- 节点完全不可见 --}}
@@ -82,6 +82,12 @@
                                 @elseif($node->is_display === 2)
                                     {{-- 节点只可被订阅到 --}}
                                     <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
+                                @endif
+                                @if($node->ip)
+                                    <span class="badge badge-md badge-info"><i class="fa-solid fa-4" aria-hidden="true"></i></span>
+                                @endif
+                                @if($node->ipv6)
+                                    <span class="badge badge-md badge-info"><i class="fa-solid fa-6" aria-hidden="true"></i></span>
                                 @endif
                             </td>
                             <td>

@@ -73,7 +73,7 @@ class F2Fpay extends PaymentService implements Gateway
         exit('fail');
     }
 
-    public function capture(string $trade_no = null, string $ali_trade_no = null): bool
+    public function capture(?string $trade_no = null, ?string $ali_trade_no = null): bool
     {
         $result = self::$aliClient->tradeQuery(array_filter([
             'out_trade_no' => $trade_no,

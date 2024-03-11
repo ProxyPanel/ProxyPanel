@@ -28,10 +28,12 @@ class NodeStatusDetection extends Command
         }
 
         if (sysConfig('node_blocked_notification')) {// 监测节点网络状态
-            if (! Cache::has('LastCheckTime') || Cache::get('LastCheckTime') <= time()) {
+            $lastCheckTime = Cache::get('LastCheckTime');
+
+            if (! $lastCheckTime || $lastCheckTime <= time()) {
                 $this->checkNodeNetwork();
             } else {
-                Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', Cache::get('LastCheckTime')));
+                Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', $lastCheckTime));
             }
         }
 
@@ -42,22 +44,21 @@ class NodeStatusDetection extends Command
     private function checkNodeStatus(): void
     {
         $offlineCheckTimes = sysConfig('offline_check_times');
-        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
+        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id');
+
+        $data = [];
         foreach (Node::whereRelayNodeId(null)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
             // 近期无节点负载信息则认为是后端炸了
-            if ($offlineCheckTimes) {
-                // 已通知次数
+            if ($offlineCheckTimes > 0) {
                 $cacheKey = 'offline_check_times'.$node->id;
-                $times = 1;
-                if (Cache::has($cacheKey)) {
-                    $times = Cache::get($cacheKey);
+                if (! Cache::has($cacheKey)) { // 已通知次数
+                    Cache::put($cacheKey, 1, now()->addDay()); // 键将保留24小时
                 } else {
-                    Cache::put($cacheKey, 1, Day); // 键将保留24小时
+                    $times = Cache::increment($cacheKey);
+                    if ($times > $offlineCheckTimes) {
+                        continue;
+                    }
                 }
-                if ($times > $offlineCheckTimes) {
-                    continue;
-                }
-                Cache::increment($cacheKey);
             }
             $data[] = [
                 'name' => $node->name,
@@ -65,7 +66,7 @@ class NodeStatusDetection extends Command
             ];
         }
 
-        if (isset($data)) {
+        if (! empty($data)) {
             Notification::send(User::find(1), new NodeOffline($data));
         }
     }
@@ -76,6 +77,7 @@ class NodeStatusDetection extends Command
 
         foreach (Node::whereStatus(1)->where('detection_type', '<>', 0)->get() as $node) {
             $node_id = $node->id;
+            $data = [];
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
                 if ($node->detection_type) {
@@ -94,32 +96,29 @@ class NodeStatusDetection extends Command
             }
 
             // 节点检测次数
-            if (isset($data[$node_id]) && $detectionCheckTimes) {
+            if (! empty($data[$node_id]) && $detectionCheckTimes) {
                 // 已通知次数
                 $cacheKey = 'detection_check_times'.$node_id;
-                if (Cache::has($cacheKey)) {
-                    $times = Cache::get($cacheKey);
-                } else {
-                    // 键将保留12小时，多10分钟防意外
-                    Cache::put($cacheKey, 1, 43800);
-                    $times = 1;
-                }
 
-                if ($times < $detectionCheckTimes) {
-                    Cache::increment($cacheKey);
+                if (! Cache::has($cacheKey)) { // 已通知次数
+                    Cache::put($cacheKey, 1, now()->addHours(12)); // 键将保留12小时
+                    $times = 1;
                 } else {
+                    $times = Cache::increment($cacheKey);
+                }
+                if ($times > $detectionCheckTimes) {
                     Cache::forget($cacheKey);
                     $node->update(['status' => 0]);
                     $data[$node_id]['message'] = '自动进入维护状态';
                 }
             }
 
-            if (isset($data[$node_id])) {
+            if (! empty($data[$node_id])) {
                 $data[$node_id]['name'] = $node->name;
             }
         }
 
-        if (isset($data)) { //只有在出现阻断线路时，才会发出警报
+        if (! empty($data)) { //只有在出现阻断线路时，才会发出警报
             Notification::send(User::find(1), new NodeBlocked($data));
 
             Log::notice("节点状态日志: \r\n".var_export($data, true));
@@ -132,27 +131,24 @@ class NodeStatusDetection extends Command
 
     private function reliveNode(): void
     {
-        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
+        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id');
         foreach (Node::whereRelayNodeId(null)->whereStatus(0)->whereIn('id', $onlineNode)->where('detection_type', '<>', 0)->get() as $node) {
             $ips = $node->ips();
-            $result = count($ips);
+            $reachableIPs = 0;
+
             foreach ($ips as $ip) {
                 if ($node->detection_type) {
                     $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
 
-                    if ($node->detection_type === 1 && $status['tcp'] === 1) {
-                        $result--;
-                    } elseif ($node->detection_type === 2 && $status['icmp'] === 1) {
-                        $result--;
-                    } elseif ($status['tcp'] === 1 && $status['icmp'] === 1) {
-                        $result--;
+                    if (($node->detection_type === 1 && $status['tcp'] === 1) || ($node->detection_type === 2 && $status['icmp'] === 1) || ($status['tcp'] === 1 && $status['icmp'] === 1)) {
+                        $reachableIPs++;
                     }
 
                     sleep(1);
                 }
             }
 
-            if ($result === 0) {
+            if ($reachableIPs === count($ips)) {
                 $node->update(['status' => 1]);
             }
         }

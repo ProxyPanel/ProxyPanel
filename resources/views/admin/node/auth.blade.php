@@ -23,7 +23,6 @@
                         <th> {{ trans('model.common.type') }}</th>
                         <th> {{ trans('model.node.name') }}</th>
                         <th> {{ trans('model.node.domain') }}</th>
-                        <th> {{ trans('model.node.ipv4') }}</th>
                         <th> {!! trans('model.node_auth.key') !!}</th>
                         <th> {{ trans('model.node_auth.secret') }}</th>
                         <th> {{trans('common.action')}}</th>
@@ -35,8 +34,7 @@
                             <td> {{$auth->node_id}} </td>
                             <td> {{$auth->node->type_label}} </td>
                             <td> {{Str::limit($auth->node->name, 20)}} </td>
-                            <td> {{$auth->node->server}} </td>
-                            <td> {{$auth->node->ip}} </td>
+                            <td> {{$auth->node->server ?? $auth->node->ip ?? $auth->node->ipv6}} </td>
                             <td><span class="badge badge-lg badge-info"> {{$auth->key}} </span></td>
                             <td><span class="badge badge-lg badge-info"> {{$auth->secret}} </span></td>
                             <td>

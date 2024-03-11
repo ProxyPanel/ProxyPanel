@@ -70,7 +70,7 @@ clean_files() {
 # 检查软件是否安装
 check_available() {
   tools=$1
-  if command -v $tools >/dev/null 2>&1; then
+  if command -v "$tools" >/dev/null 2>&1; then
     echo -e "\e[32m$tools Installed! | $tools 已安装!\e[0m"
   else
     echo -e "\e[31m$tools did not installed! | $tools 未安装!\e[0m"

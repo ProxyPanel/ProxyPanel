@@ -27,7 +27,7 @@ check_composer
 
 # 执行Composer安装
 echo -e "\e[34m========= Installing packages via Composer... | 通过Composer安装程序包... =========\e[0m"
-yes | composer install
+composer install --no-interaction --no-dev --optimize-autoloader
 
 # 执行Panel安装
 php artisan panel:install

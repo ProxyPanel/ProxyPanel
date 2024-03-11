@@ -63,6 +63,10 @@ class UserObserver
                 }
             }
         }
+
+        if ($user->status === -1 && Arr::has($changes, ['status'])) {
+            $user->invites()->whereStatus(0)->update(['status' => 2]); // 废除其名下邀请码
+        }
     }
 
     public function deleted(User $user): void

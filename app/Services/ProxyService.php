@@ -17,12 +17,12 @@ class ProxyService
 
     private static array $servers;
 
-    public function __construct(User $user = null)
+    public function __construct(?User $user = null)
     {
         $this->setUser($user ?? auth()->user());
     }
 
-    public function setUser(User $user = null): void
+    public function setUser(?User $user = null): void
     {
         self::$user = $user;
     }
@@ -37,7 +37,7 @@ class ProxyService
         return self::$servers;
     }
 
-    public function getProxyText(string $target, int $type = null): string
+    public function getProxyText(string $target, ?int $type = null): string
     {
         $servers = $this->getNodeList($type);
         if (empty($servers)) {
@@ -58,7 +58,7 @@ class ProxyService
         return $this->clientConfig($target);
     }
 
-    public function getNodeList(int $type = null, bool $isConfig = true): array
+    public function getNodeList(?int $type = null, bool $isConfig = true): array
     {
         $query = self::$user->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
@@ -171,7 +171,7 @@ class ProxyService
         self::$servers = $servers;
     }
 
-    public function getProxyCode(string $target, int $type = null): ?string
+    public function getProxyCode(string $target, ?int $type = null): ?string
     {// 客户端用代理信息
         $servers = $this->getNodeList($type);
         if (empty($servers)) {

@@ -168,8 +168,8 @@ class ToolsController extends Controller
                     $obj->obfs = $user->obfs;
                     $obj->expired_at = '2099-01-01';
                     $obj->reg_ip = IP::getClientIp();
-                    $obj->created_at = date('Y-m-d H:i:s');
-                    $obj->updated_at = date('Y-m-d H:i:s');
+                    $obj->created_at = now();
+                    $obj->updated_at = now();
                     $obj->save();
                 }
 

@@ -84,7 +84,7 @@ class SubscribeController extends Controller
         $log = new UserSubscribeLog();
         $log->user_subscribe_id = $subscribeId;
         $log->request_ip = $ip;
-        $log->request_time = date('Y-m-d H:i:s');
+        $log->request_time = now();
         $log->request_header = $headers;
         $log->save();
     }
