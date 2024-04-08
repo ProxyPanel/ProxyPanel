@@ -13,118 +13,140 @@ use Str;
 
 class OAuthController extends Controller
 {
-    public function simple(string $type): RedirectResponse
-    {
-        $info = Socialite::driver($type)->stateless()->user();
-        if ($info) {
-            $user = Auth::user();
-
-            if ($user) {
-                return $this->binding($type, $user, $info);
-            }
-
-            return $this->logging($type, $info);
-        }
-
-        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
-    }
-
-    private function binding(string $type, User $user, \Laravel\Socialite\Contracts\User $OauthUser): RedirectResponse
-    {
-        $data = ['type' => $type, 'identifier' => $OauthUser->getId(), 'credential' => $OauthUser->token];
-        if ($user->userAuths()->whereType($type)->updateOrCreate($data)) {
-            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.bind_success'));
-        }
-
-        return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
-    }
-
-    private function logging(string $type, \Laravel\Socialite\Contracts\User $OauthUser): RedirectResponse
-    {
-        $user = User::whereUsername($OauthUser->getEmail())->first();
-        if (! isset($user)) {
-            $auth = UserOauth::whereType($type)->whereIdentifier($OauthUser->getId())->first();
-            if (isset($auth)) {
-                $user = $auth->user;
-            }
-        }
-
-        if (isset($user)) {
-            Auth::login($user);
-            Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
-
-            return redirect()->route('login');
-        }
-
-        return redirect()->route('login')->withErrors(trans('auth.error.not_found_user'));
-    }
-
-    public function login(string $type): RedirectResponse
-    {
-        $info = Socialite::driver($type)->stateless()->user();
-        if ($info) {
-            return $this->logging($type, $info);
-        }
-
-        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
-    }
-
-    public function unbind(string $type): RedirectResponse
+    public function unbind(string $provider): RedirectResponse
     {
         $user = Auth::user();
-        if ($user && $user->userAuths()->whereType($type)->delete()) {
+
+        if ($user && $user->userAuths()->whereType($provider)->delete()) {
             return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_success'));
         }
 
-        return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_failed'));
+        return redirect()->route('profile')->withErrors(trans('auth.oauth.unbind_failed'));
     }
 
-    public function bind(string $type): RedirectResponse
+    public function bind(string $provider): RedirectResponse
     {
-        $info = Socialite::driver($type)->stateless()->user();
+        config(["services.$provider.redirect" => route('oauth.bind', ['provider' => $provider])]);
+        $authInfo = Socialite::driver($provider)->stateless()->user();
 
-        if ($info) {
-            $user = Auth::user();
-            if ($user) {
-                return $this->binding($type, $user, $info);
-            }
+        if (! $authInfo) {
+            return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
+        }
 
+        $user = Auth::user();
+
+        if (! $user) {
             return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
         }
 
-        return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
+        return $this->bindLogic($provider, $user, $authInfo);
     }
 
-    public function register(string $type): RedirectResponse
+    private function bindLogic(string $provider, User $user, \Laravel\Socialite\Contracts\User $authInfo): RedirectResponse
     {
+        $data = [
+            'type' => $provider,
+            'identifier' => $authInfo->getId(),
+            'credential' => $authInfo->token,
+        ];
+
+        $auth = $user->userAuths()->whereType($provider)->first();
+
+        if ($auth) {
+            $user->userAuths()->whereType($provider)->update($data);
+            $message = trans('auth.oauth.rebind_success');
+        } else {
+            $user->userAuths()->create($data);
+            $message = trans('auth.oauth.bind_success');
+        }
+
+        return redirect()->route('profile')->with('successMsg', $message);
+    }
+
+    public function register(string $provider): RedirectResponse
+    {
+        config(["services.$provider.redirect" => route('oauth.register', ['provider' => $provider])]);
         if (! sysConfig('is_register')) {
             return redirect()->route('register')->withErrors(trans('auth.register.error.disable'));
         }
 
-        if ((int) sysConfig('is_invite_register') === 2) { // 必须使用邀请码
+        if ((int) sysConfig('is_invite_register') === 2) {
             return redirect()->route('register')->withErrors(trans('validation.required', ['attribute' => trans('auth.invite.attribute')]));
         }
 
-        $OauthUser = Socialite::driver($type)->stateless()->user();
+        $registerInfo = Socialite::driver($provider)->stateless()->user();
 
-        if ($OauthUser) {
-            if (User::whereUsername($OauthUser->getEmail())->doesntExist() && UserOauth::whereIdentifier($OauthUser->getId())->doesntExist()) { // 排除重复用户注册
-                $user = Helpers::addUser($OauthUser->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $OauthUser->getNickname());
+        if (! $registerInfo) {
+            return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
+        }
+
+        $user = User::whereUsername($registerInfo->getEmail())->first();
+
+        if (! $user) {  // 邮箱未被注册
+            $userAuth = UserOauth::whereType($provider)->whereIdentifier($registerInfo->getId())->first();
+
+            if (! $userAuth) { // 第三方账号未被绑定
+                $user = Helpers::addUser($registerInfo->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $registerInfo->getNickname());
 
                 $user->userAuths()->create([
-                    'type' => $type,
-                    'identifier' => $OauthUser->getId(),
-                    'credential' => $OauthUser->token,
+                    'type' => $provider,
+                    'identifier' => $registerInfo->getId(),
+                    'credential' => $registerInfo->token,
                 ]);
 
-                Auth::login($user);
+                return $this->handleLogin($user);
+            }
+        }
 
-                return redirect()->route('login');
+        return redirect()->route('login')->withErrors(trans('auth.oauth.registered'));
+    }
+
+    private function handleLogin(User $user): RedirectResponse
+    {
+        Auth::login($user);
+        Helpers::userLoginAction($user, IP::getClientIp());
+
+        return redirect()->route('login');
+    }
+
+    public function login(string $provider): RedirectResponse
+    {
+        config(["services.$provider.redirect" => route('oauth.login', ['provider' => $provider])]);
+        $authInfo = Socialite::driver($provider)->stateless()->user();
+
+        if ($authInfo) {
+            $auth = UserOauth::whereType($provider)->whereIdentifier($authInfo->getId())->first();
+
+            if ($auth && ($user = $auth->user)) { // 如果第三方登录有记录，直接登录用户
+                return $this->handleLogin($user);
             }
 
-            return redirect()->route('login')->withErrors(trans('auth.oauth.registered'));
+            $user = User::whereUsername($authInfo->getEmail())->first();
+
+            if ($user) { // 如果用户存在，执行绑定逻辑并登录用户
+                $this->bindLogic($provider, $user, $authInfo);
+
+                return $this->handleLogin($user);
+            }
+
+            // 如果用户不存在，则返回错误消息
+            return redirect()->route('login')->withErrors(trans('auth.error.not_found_user'));
         }
 
         return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
+    }
+
+    public function redirect(string $provider, string $operation = 'login'): RedirectResponse
+    {
+        $redirectRoutes = [
+            'bind' => 'oauth.bind',
+            'register' => 'oauth.register',
+            'login' => 'oauth.login',
+        ];
+
+        $key = "services.$provider.redirect";
+        config([$key => route($redirectRoutes[$operation], ['provider' => $provider])]);
+
+        return Socialite::driver($provider)->stateless()->redirect();
     }
 }

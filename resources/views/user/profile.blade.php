@@ -42,22 +42,22 @@
                             <span> {{trans('user.oauth.bind_title')}} </span>
                         </div>
                         <div class="user-socials list-group-gap list-group-full row m-0">
-                            @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                                <a class="list-group-item justify-content-center @if(in_array($item, $auth, true)) col-10 @else col-12 @endif"
-                                   @if($item !== 'telegram') href="{{route('oauth.bind', ['type' => $item])}}" @endif>
-                                    <i class="fa-brands {{ config('common.oauth.icon')[$item] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($item) }}
+                            @foreach (json_decode(sysConfig('oauth_path')) as $provider)
+                                <a class="list-group-item justify-content-center @if(in_array($provider, $auth, true)) col-10 @else col-12 @endif"
+                                   @if($provider !== 'telegram') href="{{route('oauth.route', ['provider' => $provider, 'operation' => 'bind'])}}" @endif>
+                                    <i class="fa-brands {{ config('common.oauth.icon')[$provider] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($provider) }}
                                     :
-                                    @if(in_array($item, $auth, true))
+                                    @if(in_array($provider, $auth, true))
                                         <span class="red-600">{{trans('user.oauth.rebind')}}</span>
                                     @else
                                         <span class="grey-500">{{trans('user.oauth.not_bind')}}</span>
                                     @endif
-                                    @if($item === 'telegram')
+                                    @if($provider === 'telegram')
                                         {!! Socialite::driver('telegram')->getButton() !!}
                                     @endif
                                 </a>
-                                @if(in_array($item, $auth, true))
-                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unbind', ['type' => $item])}}">{{trans('user.oauth.unbind')}}</a>
+                                @if(in_array($provider, $auth, true))
+                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unbind', ['provider' => $provider])}}">{{trans('user.oauth.unbind')}}</a>
                                 @endif
                             @endforeach
                         </div>

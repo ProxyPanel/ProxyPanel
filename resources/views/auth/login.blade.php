@@ -36,14 +36,14 @@
             <div class="line">
                 <span> {{ trans('auth.one-click_login') }} </span>
             </div>
-            @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                @if ($item === 'telegram')
+            @foreach (json_decode(sysConfig('oauth_path')) as $provider)
+                @if ($provider === 'telegram')
                     <div>
                         {!! Socialite::driver('telegram')->getButton() !!}
                     </div>
                 @else
-                    <a class="btn btn-icon btn-pure" href="{{route('oauth.login', ['type' => $item])}}">
-                        <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
+                    <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['provider' => $provider, 'operation' => 'login'])}}">
+                        <i class="fa-brands {{config('common.oauth.icon')[$provider]}} fa-lg" aria-hidden="true"></i>
                     </a>
                 @endif
             @endforeach

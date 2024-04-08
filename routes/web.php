@@ -22,11 +22,11 @@ Route::get('/message/{type}/{msg_id}/show', [MessageController::class, 'index'])
 
 Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function () { // 登录相关
     Route::prefix('oauth')->name('oauth.')->controller(OAuthController::class)->group(function () { // 用户第三方登录默认登录/转跳方式
-        Route::get('{type}/login', 'login')->name('login');
-        Route::get('{type}/register', 'register')->name('register');
-        Route::get('{type}/bind', 'bind')->name('bind');
-        Route::get('{type}/unbind', 'unbind')->name('unbind');
-        Route::get('{type}/redirect', 'simple')->name('simple');
+        Route::get('{provider}/redirect/{operation}', 'redirect')->whereIn('operation', ['bind', 'register', 'login'])->name('route'); // 转跳
+        Route::get('{provider}/unbind', 'unbind')->name('unbind'); // 解绑
+        Route::get('{provider}/login', 'login')->name('login'); // 登录 callback
+        Route::get('{provider}/register', 'register')->name('register'); // 注册 callback
+        Route::get('{provider}/bind', 'bind')->name('bind'); // 绑定 callback
     });
 
     Route::controller(AuthController::class)->group(function () {

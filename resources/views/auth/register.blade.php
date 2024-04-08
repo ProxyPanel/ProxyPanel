@@ -106,10 +106,10 @@
             <div class="line">
                 <span> {{trans('auth.oauth.register')}} </span>
             </div>
-            @foreach (json_decode(sysConfig('oauth_path')) as $item)
-                @if ($item !== 'telegram')
-                    <a class="btn btn-icon btn-pure" href="{{route('oauth.register', ['type' => $item])}}">
-                        <i class="fa-brands {{config('common.oauth.icon')[$item]}} fa-lg" aria-hidden="true"></i>
+            @foreach (json_decode(sysConfig('oauth_path')) as $provider)
+                @if ($provider !== 'telegram')
+                    <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['provider' => $provider, 'operation' => 'register'])}}">
+                        <i class="fa-brands {{config('common.oauth.icon')[$provider]}} fa-lg" aria-hidden="true"></i>
                     </a>
                 @endif
             @endforeach
