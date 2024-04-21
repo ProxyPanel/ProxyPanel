@@ -4,19 +4,21 @@ namespace App\Utils\DDNS;
 
 use App\Utils\Library\Templates\DNS;
 use Arr;
+use Cache;
 use Http;
 use Log;
+use RuntimeException;
 
 class AliYun implements DNS
 {
     //  开发依据: https://api.aliyun.com/document/Alidns/2015-01-09/overview
-    private const API_HOST = 'https://alidns.aliyuncs.com/';
+    private const API_ENDPOINT = 'https://alidns.aliyuncs.com/';
 
     private string $accessKeyID;
 
     private string $accessKeySecret;
 
-    public function __construct(private readonly string $subDomain)
+    public function __construct(private readonly string $subdomain)
     {
         $this->accessKeyID = sysConfig('ddns_key');
         $this->accessKeySecret = sysConfig('ddns_secret');
@@ -24,33 +26,44 @@ class AliYun implements DNS
 
     public function store(string $ip, string $type): bool
     {
-        $domainInfo = $this->analysisDomain();
-        if ($domainInfo) {
-            $ret = $this->send('AddDomainRecord', ['DomainName' => $domainInfo['host'], 'RR' => $domainInfo['rr'], 'Type' => $type, 'Value' => $ip]);
+        $domainInfo = $this->parseDomainInfo();
+
+        if (! $domainInfo) {
+            return false;
         }
 
-        return (bool) ($ret ?? false);
+        return (bool) $this->sendRequest('AddDomainRecord', [
+            'DomainName' => $domainInfo['domain'],
+            'RR' => $domainInfo['sub'],
+            'Type' => $type,
+            'Value' => $ip,
+        ]);
     }
 
-    private function analysisDomain(): array|false
+    private function parseDomainInfo(): array
     {
-        $domains = data_get($this->send('DescribeDomains'), 'Domains.Domain.*.DomainName');
+        $domains = Cache::remember('ddns_get_domains', now()->addHour(), function () {
+            return array_column($this->sendRequest('DescribeDomains')['Domains']['Domain'] ?? [], 'DomainName');
+        });
 
         if ($domains) {
-            foreach ($domains as $domain) {
-                if (str_contains($this->subDomain, $domain)) {
-                    return ['rr' => rtrim(substr($this->subDomain, 0, -strlen($domain)), '.'), 'host' => $domain];
-                }
-            }
-            Log::error('[AliYun - DescribeDomains] 错误域名 '.$this->subDomain.' 不在账号拥有域名里');
+            $matched = Arr::first($domains, fn ($domain) => str_contains($this->subdomain, $domain));
         }
 
-        return false;
+        if (empty($matched)) {
+            throw new RuntimeException("[AliYun – DescribeDomains] The subdomain {$this->subdomain} does not match any domain in your account.");
+        }
+
+        return [
+            'sub' => rtrim(substr($this->subdomain, 0, -strlen($matched)), '.'),
+            'domain' => $matched,
+        ];
     }
 
-    private function send(string $action, array $info = []): array
+    private function sendRequest(string $action, array $parameters = []): array
     {
-        $public = [
+        $parameters = array_merge([
+            'Action' => $action,
             'Format' => 'JSON',
             'Version' => '2015-01-09',
             'AccessKeyId' => $this->accessKeyID,
@@ -58,19 +71,18 @@ class AliYun implements DNS
             'Timestamp' => gmdate("Y-m-d\TH:i:s\Z"), //公共参数Timestamp GMT时间
             'SignatureVersion' => '1.0',
             'SignatureNonce' => str_replace('.', '', microtime(true)), //唯一数，用于防止网络重放攻击
-        ];
-        $parameters = array_merge(['Action' => $action], $public, $info);
-        $parameters['Signature'] = $this->computeSignature($parameters);
+        ], $parameters);
+        $parameters['Signature'] = $this->generateSignature($parameters);
 
-        $response = Http::asForm()->timeout(15)->post(self::API_HOST, $parameters);
+        $response = Http::asForm()->timeout(15)->post(self::API_ENDPOINT, $parameters);
         $data = $response->json();
 
         if ($data) {
-            if ($response->ok()) {
-                return Arr::except($data, ['TotalCount', 'PageSize', 'RequestId', 'PageNumber']);
+            if ($response->successful()) {
+                return $data;
             }
 
-            Log::error('[AliYun - '.$action.'] 返回错误信息：'.$data['Message']);
+            Log::error('[AliYun - '.$action.'] 返回错误信息：'.$data['Message'] ?? 'Unknown error');
         } else {
             Log::error('[AliYun - '.$action.'] 请求失败');
         }
@@ -78,7 +90,7 @@ class AliYun implements DNS
         exit(400);
     }
 
-    private function computeSignature(array $parameters): string
+    private function generateSignature(array $parameters): string
     { // 签名
         ksort($parameters, SORT_STRING);
 
@@ -89,49 +101,44 @@ class AliYun implements DNS
 
     public function update(string $latest_ip, string $original_ip, string $type): bool
     {
-        $records = $this->getRecordId($type, $original_ip);
-        $domainInfo = $this->analysisDomain();
-        if ($records && $domainInfo) {
-            $ret = $this->send('UpdateDomainRecord', ['RR' => $domainInfo['rr'], 'RecordId' => Arr::first($records), 'Type' => $type, 'Value' => $latest_ip]);
+        $recordIds = $this->getRecordIds($type, $original_ip);
+        $domainInfo = $this->parseDomainInfo();
+        if ($recordIds && $domainInfo) {
+            $ret = $this->sendRequest('UpdateDomainRecord', ['RR' => $domainInfo['sub'], 'RecordId' => Arr::first($recordIds), 'Type' => $type, 'Value' => $latest_ip]);
         }
 
         return (bool) ($ret ?? false);
     }
 
-    private function getRecordId(string $type, string $ip): array|false
+    private function getRecordIds(string $type, string $ip): array
     { // 域名信息
-        $parameters = ['SubDomain' => $this->subDomain];
+        $parameters = ['SubDomain' => $this->subdomain];
         if ($type) {
             $parameters['Type'] = $type;
         }
-        $records = $this->send('DescribeSubDomainRecords', $parameters);
 
-        if ($records) {
-            $filtered = data_get($records, 'DomainRecords.Record');
-            if ($ip) {
-                $filtered = Arr::where($filtered, static function (array $value) use ($ip) {
-                    return $value['Value'] === $ip;
-                });
-            }
+        $records = $this->sendRequest('DescribeSubDomainRecords', $parameters)['DomainRecords']['Record'] ?? [];
 
-            return data_get($filtered, '*.RecordId');
+        if ($ip) {
+            $records = array_filter($records, static function ($record) use ($ip) {
+                return $record['Value'] === $ip;
+            });
         }
 
-        return false;
+        return array_column($records, 'RecordId');
     }
 
-    public function destroy(string $type = '', string $ip = ''): int
+    public function destroy(string $type, string $ip): int
     {
-        $records = $this->getRecordId($type, $ip);
-        $count = 0;
-        if ($records) {
-            foreach ($records as $record) {
-                if ($this->send('DeleteDomainRecord', ['RecordId' => $record])) {
-                    $count++;
-                }
+        $recordIds = $this->getRecordIds($type, $ip);
+        $deletedCount = 0;
+
+        foreach ($recordIds as $recordId) {
+            if ($this->sendRequest('DeleteDomainRecord', ['RecordId' => $recordId])) {
+                $deletedCount++;
             }
         }
 
-        return $count;
+        return $deletedCount;
     }
 }

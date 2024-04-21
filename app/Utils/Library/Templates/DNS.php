@@ -8,5 +8,5 @@ interface DNS
 
     public function update(string $latest_ip, string $original_ip, string $type): bool;
 
-    public function destroy(string $type, string $ip): int;
+    public function destroy(string $type, string $ip): int|bool;
 }

@@ -781,6 +781,10 @@ return [
             'aliyun' => '阿里云(国际&国内)',
             'dnspod' => 'DNSPod',
             'cloudflare' => 'CloudFlare',
+            'godaddy' => 'GoDaddy',
+            'namecheap' => 'Namecheap',
+            'digitalocean' => 'DigitalOcean',
+            'baidu' => '百度智能云',
         ],
         'captcha' => [
             'standard' => '普通验证码',

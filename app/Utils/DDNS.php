@@ -3,10 +3,15 @@
 namespace App\Utils;
 
 use App\Utils\DDNS\AliYun;
+use App\Utils\DDNS\Baidu;
 use App\Utils\DDNS\CloudFlare;
+use App\Utils\DDNS\DigitalOcean;
 use App\Utils\DDNS\DNSPod;
+use App\Utils\DDNS\GoDaddy;
+use App\Utils\DDNS\Namecheap;
 use App\Utils\DDNS\Namesilo;
 use App\Utils\Library\Templates\DNS;
+use InvalidArgumentException;
 use Log;
 
 /**
@@ -23,6 +28,11 @@ class DDNS
             'namesilo' => new Namesilo($domain),
             'dnspod' => new DNSPod($domain),
             'cloudflare' => new CloudFlare($domain),
+            'godaddy' => new GoDaddy($domain),
+            'namecheap' => new Namecheap($domain),
+            'digitalocean' => new DigitalOcean($domain),
+            'baidu' => new Baidu($domain),
+            default => throw new InvalidArgumentException('Invalid DDNS mode configuration'),
         };
     }
 

@@ -4,43 +4,48 @@ namespace App\Utils\DDNS;
 
 use App\Utils\Library\Templates\DNS;
 use Arr;
+use Cache;
 use Http;
 use Log;
+use RuntimeException;
 
 class CloudFlare implements DNS
 {
     // 开发依据: https://developers.cloudflare.com/api/
-    private string $apiHost;
+    private string $apiEndpoint;
 
     private array $auth;
 
-    public function __construct(private readonly string $subDomain)
+    public function __construct(private readonly string $subdomain)
     {
-        $this->apiHost = 'https://api.cloudflare.com/client/v4/zones/';
+        $this->apiEndpoint = 'https://api.cloudflare.com/client/v4/zones/';
         $this->auth = ['X-Auth-Key' => sysConfig('ddns_secret'), 'X-Auth-Email' => sysConfig('ddns_key')];
-        $zoneIdentifier = $this->getZone();
+        $zoneIdentifier = $this->getZoneIdentifier();
         if ($zoneIdentifier) {
-            $this->apiHost .= $zoneIdentifier.'/dns_records/';
+            $this->apiEndpoint .= $zoneIdentifier.'/dns_records/';
         }
     }
 
-    private function getZone(): string
+    private function getZoneIdentifier(): string
     {
-        $zones = $this->send('list');
+        $zones = Cache::remember('ddns_get_domains', now()->addHour(), function () {
+            return $this->sendRequest('list');
+        });
+
         if ($zones) {
-            foreach ($zones as $zone) {
-                if (str_contains($this->subDomain, Arr::get($zone, 'name'))) {
-                    return $zone['id'];
-                }
-            }
+            $matched = Arr::first($zones, fn ($zone) => str_contains($this->subdomain, $zone['name']));
         }
 
-        exit(400);
+        if (empty($matched)) {
+            throw new RuntimeException("[CloudFlare – list] The subdomain {$this->subdomain} does not match any domain in your account.");
+        }
+
+        return $matched['id'];
     }
 
-    private function send(string $action, array $parameters = [], ?string $identifier = null): array
+    private function sendRequest(string $action, array $parameters = [], ?string $identifier = null): array
     {
-        $client = Http::timeout(10)->retry(3, 1000)->withHeaders($this->auth)->baseUrl($this->apiHost)->asJson();
+        $client = Http::timeout(10)->retry(3, 1000)->withHeaders($this->auth)->baseUrl($this->apiEndpoint)->asJson();
 
         $response = match ($action) {
             'list' => $client->get(''),
@@ -52,10 +57,10 @@ class CloudFlare implements DNS
 
         $data = $response->json();
         if ($data) {
-            if ($response->ok() && Arr::get($data, 'success')) {
-                return Arr::get($data, 'result');
+            if ($data['success'] && $response->ok()) {
+                return $data['result'] ?? [];
             }
-            Log::error('[CloudFlare - '.$action.'] 返回错误信息：'.Arr::get($data, 'errors.error_chain.message', Arr::get($data, 'errors.0.message')));
+            Log::error('[CloudFlare - '.$action.'] 返回错误信息：'.$data['errors'][0]['message'] ?? 'Unknown error');
         } else {
             Log::error('[CloudFlare - '.$action.'] 请求失败');
         }
@@ -65,28 +70,28 @@ class CloudFlare implements DNS
 
     public function store(string $ip, string $type): bool
     {
-        $ret = $this->send('create', ['content' => $ip, 'name' => $this->subDomain, 'type' => $type]);
+        $result = $this->sendRequest('create', ['content' => $ip, 'name' => $this->subdomain, 'type' => $type]);
 
-        return (bool) $ret;
+        return ! empty($result);
     }
 
     public function update(string $latest_ip, string $original_ip, string $type): bool
     {
-        $recordId = Arr::first($this->getRecordId($type, $original_ip));
+        $recordIds = $this->getRecordIds($type, $original_ip);
 
-        if ($recordId) {
-            $ret = $this->send('update', ['content' => $latest_ip, 'name' => $this->subDomain, 'type' => $type], $recordId);
+        if ($recordIds) {
+            $ret = $this->sendRequest('update', ['content' => $latest_ip, 'name' => $this->subdomain, 'type' => $type], $recordIds[0]);
         }
 
         return (bool) ($ret ?? false);
     }
 
-    private function getRecordId(string $type, string $ip): array|false
+    private function getRecordIds(string $type, string $ip): array|false
     {
-        $records = $this->send('get', ['content' => $ip, 'name' => $this->subDomain, 'type' => $type]);
+        $records = $this->sendRequest('get', ['content' => $ip, 'name' => $this->subdomain, 'type' => $type]);
 
         if ($records) {
-            return data_get($records, '*.id');
+            return array_column($records, 'id');
         }
 
         return false;
@@ -94,17 +99,15 @@ class CloudFlare implements DNS
 
     public function destroy(string $type, string $ip): int
     {
-        $records = $this->getRecordId($type, $ip);
-        $count = 0;
-        if ($records) {
-            foreach ($records as $record) {
-                $ret = $this->send('delete', [], $record);
-                if ($ret) {
-                    $count++;
-                }
+        $recordIds = $this->getRecordIds($type, $ip);
+        $deletedCount = 0;
+
+        foreach ($recordIds as $recordId) {
+            if ($this->sendRequest('delete', [], $recordId)) {
+                $deletedCount++;
             }
         }
 
-        return $count;
+        return $deletedCount;
     }
 }
