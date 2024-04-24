@@ -39,7 +39,7 @@
             @foreach (json_decode(sysConfig('oauth_path')) as $provider)
                 @if ($provider === 'telegram')
                     <div>
-                        {!! Socialite::driver('telegram')->getButton() !!}
+                        <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="{{config('services.telegram.bot')}}" data-size="medium" data-auth-url="{{route('oauth.login', ['provider' => $provider])}}" data-request-access="write"></script>
                     </div>
                 @else
                     <a class="btn btn-icon btn-pure" href="{{route('oauth.route', ['provider' => $provider, 'operation' => 'login'])}}">

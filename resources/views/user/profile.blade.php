@@ -42,22 +42,25 @@
                             <span> {{trans('user.oauth.bind_title')}} </span>
                         </div>
                         <div class="user-socials list-group-gap list-group-full row m-0">
-                            @foreach (json_decode(sysConfig('oauth_path')) as $provider)
-                                <a class="list-group-item justify-content-center @if(in_array($provider, $auth, true)) col-10 @else col-12 @endif"
+                            @foreach (json_decode(sysConfig('oauth_path'), false) as $provider)
+                                <a class="list-group-item offset-lg-1 col-lg-8 col-10 d-flex justify-content-around align-items-center"
                                    @if($provider !== 'telegram') href="{{route('oauth.route', ['provider' => $provider, 'operation' => 'bind'])}}" @endif>
-                                    <i class="fa-brands {{ config('common.oauth.icon')[$provider] }} fa-lg mr-10" aria-hidden="true"></i> {{ ucfirst($provider) }}
-                                    :
-                                    @if(in_array($provider, $auth, true))
-                                        <span class="red-600">{{trans('user.oauth.rebind')}}</span>
-                                    @else
-                                        <span class="grey-500">{{trans('user.oauth.not_bind')}}</span>
-                                    @endif
-                                    @if($provider === 'telegram')
-                                        {!! Socialite::driver('telegram')->getButton() !!}
-                                    @endif
+                                    <span>
+                                        <i class="fa-brands {{ config('common.oauth.icon')[$provider] }} fa-lg mr-2" aria-hidden="true"></i> {{ config('common.oauth.labels')[$provider] }}:
+                                    </span>
+                                    <span>
+                                        @if(in_array($provider, $auth, true))
+                                            <span class="text-danger">{{trans('user.oauth.rebind')}}</span>
+                                        @else
+                                            <span class="text-muted">{{trans('user.oauth.not_bind')}}</span>
+                                        @endif
+                                        @if($provider === 'telegram')
+                                            <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="{{config('services.telegram.bot')}}" data-size="medium" data-userpic="false" data-auth-url="{{route('oauth.bind', ['provider' => $provider])}}" data-request-access="write"></script>
+                                        @endif
+                                    </span>
                                 </a>
                                 @if(in_array($provider, $auth, true))
-                                    <a class="col-2 btn btn-block btn-danger my-auto" href="{{route('oauth.unbind', ['provider' => $provider])}}">{{trans('user.oauth.unbind')}}</a>
+                                    <a class="col-2 btn btn-danger btn-block my-auto" href="{{route('oauth.unbind', ['provider' => $provider])}}">{{trans('user.oauth.unbind')}}</a>
                                 @endif
                             @endforeach
                         </div>
