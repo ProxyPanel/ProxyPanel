@@ -16,6 +16,7 @@ use App\Models\ReferralLog;
 use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
+use Cache;
 use DB;
 use Illuminate\Http\JsonResponse;
 use Log;
@@ -30,34 +31,50 @@ class AdminController extends Controller
     public function index()
     {
         $past = strtotime('-'.sysConfig('expire_days').' days');
-        $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', date('Y-m-d'))->sum(DB::raw('u + d'));
+        $today = today();
+
+        $stats = Cache::remember('user_stats', now()->addMinutes(5), function () use ($today, $past) {
+            $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', $today)->sum(DB::raw('u + d'));
+
+            return [
+                'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数
+                'inactiveUserCount' => User::whereEnable(1)->where('t', '<', $past)->count(), // 不活跃用户数
+                'expireWarningUserCount' => User::whereBetween('expired_at', [$today, today()->addDays(sysConfig('expire_days'))])->count(), // 临近过期用户数
+                'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
+                'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
+                'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', now()->month)->sum(DB::raw('u + d'))),
+                'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
+                'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(DB::raw('u + d'))),
+            ];
+        });
 
         return view('admin.index', [
             'totalUserCount' => User::count(), // 总用户数
-            'todayRegister' => User::whereDate('created_at', date('Y-m-d'))->count(), // 今日注册用户
+            'todayRegister' => User::whereDate('created_at', $today)->count(), // 今日注册用户
             'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
-            'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数,
-            'payingUserCount' => Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique()->count(), // 付费用户数
-            'inactiveUserCount' => User::whereEnable(1)->whereBetween('t', [1, $past])->count(), // 不活跃用户数
-            'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
-            'expireWarningUserCount' => User::whereBetween('expired_at', [date('Y-m-d'), date('Y-m-d', strtotime(sysConfig('expire_days').' days'))])->count(), // 临近过期用户数
-            'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
-            'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
+            'activeUserCount' => $stats['activeUserCount'],
+            'payingUserCount' => User::has('paidOrders')->count(), // 付费用户数
+            'payingNewUserCount' => User::whereDate('created_at', $today)->has('paidOrders')->count(), // 不活跃用户数
+            'inactiveUserCount' => $stats['inactiveUserCount'],
+            'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数,
+            'expireWarningUserCount' => $stats['expireWarningUserCount'],
+            'largeTrafficUserCount' => $stats['largeTrafficUserCount'],
+            'flowAbnormalUserCount' => $stats['flowAbnormalUserCount'],
             'nodeCount' => Node::count(),
             'abnormalNodeCount' => Node::whereStatus(0)->count(),
-            'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', date('n'))->sum(DB::raw('u + d'))),
-            'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
-            'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(DB::raw('u + d'))),
+            'monthlyTrafficUsage' => $stats['monthlyTrafficUsage'],
+            'dailyTrafficUsage' => $stats['dailyTrafficUsage'],
+            'totalTrafficUsage' => $stats['totalTrafficUsage'],
             'totalCredit' => User::where('credit', '<>', 0)->sum('credit') / 100,
             'totalWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->sum('commission') / 100,
-            'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', date('Y-m-d'))->sum('commission') / 100,
+            'todayWaitRefAmount' => ReferralLog::whereIn('status', [0, 1])->whereDate('created_at', $today)->sum('commission') / 100,
             'totalRefAmount' => ReferralApply::whereStatus(2)->sum('amount') / 100,
             'totalOrder' => Order::count(),
-            'todayOrder' => Order::whereDate('created_at', date('Y-m-d'))->count(),
+            'todayOrder' => Order::whereDate('created_at', $today)->count(),
             'totalOnlinePayOrder' => Order::where('pay_type', '<>', 0)->count(),
-            'todayOnlinePayOrder' => Order::where('pay_type', '<>', 0)->whereDate('created_at', date('Y-m-d'))->count(),
+            'todayOnlinePayOrder' => Order::where('pay_type', '<>', 0)->whereDate('created_at', $today)->count(),
             'totalSuccessOrder' => Order::whereIn('status', [2, 3])->count(),
-            'todaySuccessOrder' => Order::whereIn('status', [2, 3])->whereDate('created_at', date('Y-m-d'))->count(),
+            'todaySuccessOrder' => Order::whereIn('status', [2, 3])->whereDate('created_at', $today)->count(),
         ]);
     }
 
@@ -89,11 +106,7 @@ class AdminController extends Controller
         $filename = '邀请码'.date('Ymd').'.xlsx';
 
         $spreadsheet = new Spreadsheet();
-        $spreadsheet->getProperties()
-            ->setCreator('ProxyPanel')
-            ->setLastModifiedBy('ProxyPanel')
-            ->setTitle('邀请码')
-            ->setSubject('邀请码');
+        $spreadsheet->getProperties()->setCreator('ProxyPanel')->setLastModifiedBy('ProxyPanel')->setTitle('邀请码')->setSubject('邀请码');
 
         try {
             $spreadsheet->setActiveSheetIndex(0);

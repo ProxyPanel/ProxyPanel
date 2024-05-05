@@ -776,16 +776,6 @@ return [
             'before' => '注册前激活',
             'after' => '注册后激活',
         ],
-        'ddns' => [
-            'namesilo' => 'Namesilo',
-            'aliyun' => '阿里云(国际&国内)',
-            'dnspod' => 'DNSPod',
-            'cloudflare' => 'CloudFlare',
-            'godaddy' => 'GoDaddy',
-            'namecheap' => 'Namecheap',
-            'digitalocean' => 'DigitalOcean',
-            'baidu' => '百度智能云',
-        ],
         'captcha' => [
             'standard' => '普通验证码',
             'geetest' => '极 验',

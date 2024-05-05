@@ -14,6 +14,10 @@ class Baidu implements DNS
     // 开发依据: https://cloud.baidu.com/doc/DNS/index.html
     private const API_ENDPOINT = 'https://dns.baidubce.com';
 
+    public const KEY = 'baidu';
+
+    public const LABEL = 'Baidu AI Cloud | 百度智能云';
+
     private string $secretId;
 
     private string $secretKey;

@@ -13,6 +13,10 @@ class Namesilo implements DNS
     // 开发依据: https://www.namesilo.com/api-reference
     private const API_ENDPOINT = 'https://www.namesilo.com/api/';
 
+    public const KEY = 'namesilo';
+
+    public const LABEL = 'Namesilo';
+
     private string $apiKey;
 
     private array $domainInfo;

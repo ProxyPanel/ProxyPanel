@@ -14,6 +14,10 @@ class GoDaddy implements DNS
     //  开发依据: https://developer.godaddy.com/doc/endpoint/domains
     private const API_ENDPOINT = 'https://api.godaddy.com/v1/domains/';
 
+    public const KEY = 'godaddy';
+
+    public const LABEL = 'GoDaddy';
+
     private string $accessKeyID;
 
     private string $accessKeySecret;

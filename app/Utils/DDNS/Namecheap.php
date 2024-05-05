@@ -15,6 +15,10 @@ class Namecheap implements DNS
     //  开发依据: https://www.namecheap.com/support/api/methods/
     private const API_ENDPOINT = 'https://api.namecheap.com/xml.response';
 
+    public const KEY = 'namecheap';
+
+    public const LABEL = 'Namecheap';
+
     private string $accessKeyID;
 
     private string $accessKeySecret;

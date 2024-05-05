@@ -130,7 +130,7 @@
                             <x-system.input code="v2ray_tls_provider" :value="$v2ray_tls_provider"/>
                         </x-system.tab-pane>
                         <x-system.tab-pane id="extend">
-                            <x-system.select code="ddns_mode" :list="[trans('common.status.closed') => '', trans('admin.system.ddns.namesilo') => 'namesilo', trans('admin.system.ddns.aliyun') => 'aliyun', trans('admin.system.ddns.dnspod') =>  'dnspod', trans('admin.system.ddns.cloudflare') => 'cloudflare', trans('admin.system.ddns.godaddy') => 'godaddy', trans('admin.system.ddns.namecheap') => 'namecheap', trans('admin.system.ddns.digitalocean') => 'digitalocean', trans('admin.system.ddns.baidu') => 'baidu']"/>
+                            <x-system.select code="ddns_mode" :list="$ddns_labels"/>
                             <x-system.input code="ddns_key" :value="$ddns_key"/>
                             <x-system.input code="ddns_secret" :value="$ddns_secret"/>
                             <hr class="col-lg-12">

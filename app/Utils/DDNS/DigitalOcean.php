@@ -14,6 +14,10 @@ class DigitalOcean implements DNS
     //  开发依据:https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/
     private const API_ENDPOINT = 'https://api.digitalocean.com/v2/domains';
 
+    public const KEY = 'digitalocean';
+
+    public const LABEL = 'DigitalOcean';
+
     private string $accessKeySecret;
 
     private array $domainInfo;

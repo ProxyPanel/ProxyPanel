@@ -14,6 +14,10 @@ class DNSPod implements DNS
     // 开发依据: https://docs.dnspod.cn/api/
     private const API_ENDPOINT = 'https://dnspod.tencentcloudapi.com';
 
+    public const KEY = 'dnspod';
+
+    public const LABEL = 'Tencent Cloud | DNSPod | 腾讯云';
+
     private string $secretId;
 
     private string $secretKey;

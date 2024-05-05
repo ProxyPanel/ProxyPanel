@@ -2,17 +2,10 @@
 
 namespace App\Utils;
 
-use App\Utils\DDNS\AliYun;
-use App\Utils\DDNS\Baidu;
-use App\Utils\DDNS\CloudFlare;
-use App\Utils\DDNS\DigitalOcean;
-use App\Utils\DDNS\DNSPod;
-use App\Utils\DDNS\GoDaddy;
-use App\Utils\DDNS\Namecheap;
-use App\Utils\DDNS\Namesilo;
 use App\Utils\Library\Templates\DNS;
-use InvalidArgumentException;
+use Cache;
 use Log;
+use ReflectionClass;
 
 /**
  * Class DDNS 域名解析.
@@ -21,19 +14,19 @@ class DDNS
 {
     private DNS $dns;
 
-    public function __construct(private readonly string $domain)
+    public function __construct(private readonly ?string $domain = null)
     {
-        $this->dns = match (sysConfig('ddns_mode')) {
-            'aliyun' => new AliYun($domain),
-            'namesilo' => new Namesilo($domain),
-            'dnspod' => new DNSPod($domain),
-            'cloudflare' => new CloudFlare($domain),
-            'godaddy' => new GoDaddy($domain),
-            'namecheap' => new Namecheap($domain),
-            'digitalocean' => new DigitalOcean($domain),
-            'baidu' => new Baidu($domain),
-            default => throw new InvalidArgumentException('Invalid DDNS mode configuration'),
-        };
+        if ($domain) {
+            foreach (glob(app_path('Utils/DDNS').'/*.php') as $file) {
+                $class = 'App\\Utils\\DDNS\\'.basename($file, '.php');
+                $reflectionClass = new ReflectionClass($class);
+
+                if (sysConfig('ddns_mode') === $reflectionClass->getConstant('KEY')) {
+                    $this->dns = new $class($domain);
+                    break;
+                }
+            }
+        }
     }
 
     public function destroy(string $type = '', string $ip = ''): void
@@ -61,5 +54,19 @@ class DDNS
         } else {
             Log::warning("【DDNS】添加：$ip => $this->domain 类型：$type 失败，请手动设置！");
         }
+    }
+
+    public function getLabels(): array
+    {
+        return Cache::rememberForever('ddns_get_Labels_'.app()->getLocale(), static function () {
+            $labels[trans('common.status.closed')] = '';
+            foreach (glob(app_path('Utils/DDNS').'/*.php') as $file) {
+                $class = 'App\\Utils\\DDNS\\'.basename($file, '.php');
+                $reflectionClass = new ReflectionClass($class);
+                $labels[$reflectionClass->getConstant('LABEL')] = $reflectionClass->getConstant('KEY');
+            }
+
+            return $labels;
+        });
     }
 }

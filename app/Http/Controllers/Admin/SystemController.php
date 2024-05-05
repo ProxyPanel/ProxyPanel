@@ -15,6 +15,7 @@ use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
 use App\Notifications\Custom;
 use App\Services\TelegramService;
+use App\Utils\DDNS;
 use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -28,7 +29,11 @@ class SystemController extends Controller
     // 系统设置
     public function index()
     {
-        return view('admin.config.system', array_merge(['payments' => $this->getPayment(), 'captcha' => $this->getCaptcha()], Config::pluck('value', 'name')->toArray()));
+        return view('admin.config.system', array_merge([
+            'payments' => $this->getPayment(),
+            'captcha' => $this->getCaptcha(),
+            'ddns_labels' => (new DDNS())->getLabels(),
+        ], Config::pluck('value', 'name')->toArray()));
     }
 
     private function getPayment(): array

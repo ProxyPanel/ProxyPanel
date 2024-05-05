@@ -776,12 +776,6 @@ return [
             'before' => 'Pre-registration activation',
             'after' => 'Activate after registration',
         ],
-        'ddns' => [
-            'namesilo' => 'Namesilo',
-            'aliyun' => 'AliCloud/Aliyun',
-            'dnspod' => 'DNSPod',
-            'cloudflare' => 'CloudFlare',
-        ],
         'captcha' => [
             'standard' => 'Standard',
             'geetest' => 'Geetest',

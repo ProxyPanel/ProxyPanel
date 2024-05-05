@@ -14,6 +14,10 @@ class CloudFlare implements DNS
     // 开发依据: https://developers.cloudflare.com/api/
     private string $apiEndpoint;
 
+    public const KEY = 'cloudflare';
+
+    public const LABEL = 'CloudFlare';
+
     private array $auth;
 
     public function __construct(private readonly string $subdomain)
