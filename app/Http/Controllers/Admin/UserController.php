@@ -67,7 +67,7 @@ class UserController extends Controller
 
         // 不活跃用户
         $request->whenFilled('paying', function () use ($query) {
-            $payingUser = Order::whereStatus(2)->where('goods_id', '<>', null)->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
+            $payingUser = Order::whereStatus(2)->whereNotNull('goods_id')->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
             $query->whereIn('id', $payingUser);
         });
 

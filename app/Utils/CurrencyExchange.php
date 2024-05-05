@@ -12,7 +12,7 @@ class CurrencyExchange
 {
     private static PendingRequest $basicRequest;
 
-    private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'wsj', 'valutafx', 'baidu', 'unionpay', 'exchangerate', 'jsdelivrFile', 'it120', 'k780'];
+    private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'wsj', 'xRates', 'valutafx', 'baidu', 'unionpay', 'jsdelivrFile', 'it120', 'k780'];
 
     /**
      * @param  string  $target  target Currency
@@ -22,9 +22,7 @@ class CurrencyExchange
      */
     public static function convert(string $target, float|int $amount, ?string $base = null): ?float
     {
-        if ($base === null) {
-            $base = (string) sysConfig('standard_currency');
-        }
+        $base = $base ?? (string) sysConfig('standard_currency');
         $cacheKey = "Currency_{$base}_{$target}_ExRate";
 
         if (Cache::has($cacheKey)) {
@@ -34,7 +32,7 @@ class CurrencyExchange
 
         foreach (self::$apis as $api) {
             try {
-                $rate = self::callApis($api, $base, $target);
+                $rate = self::$api($base, $target);
                 if ($rate !== null) {
                     Cache::put($cacheKey, $rate, Day);
 
@@ -42,8 +40,6 @@ class CurrencyExchange
                 }
             } catch (Exception $e) {
                 Log::error("[$api] 币种汇率信息获取报错: ".$e->getMessage());
-
-                continue;
             }
         }
 
@@ -55,24 +51,20 @@ class CurrencyExchange
         self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
     }
 
-    private static function callApis(string $api, string $base, string $target): ?float
+    public static function unionTest(string $target, ?string $base = null): void
     {
-        return match ($api) {
-            'exchangerateApi' => self::exchangerateApi($base, $target),
-            'k780' => self::k780($base, $target),
-            'it120' => self::it120($base, $target),
-            'exchangerate' => self::exchangerate($base, $target),
-            'fixer' => self::fixer($base, $target),
-            'currencyData' => self::currencyData($base, $target),
-            'exchangeRatesData' => self::exchangeRatesData($base, $target),
-            'jsdelivrFile' => self::jsdelivrFile($base, $target),
-            'duckduckgo' => self::duckduckgo($base, $target),
-            'wise' => self::wise($base, $target),
-            'wsj' => self::wsj($base, $target),
-            'valutafx' => self::valutafx($base, $target),
-            'unionpay' => self::unionpay($base, $target),
-            'baidu' => self::baidu($base, $target),
-        };
+        $base = $base ?? (string) sysConfig('standard_currency');
+        self::setClient();
+        foreach (self::$apis as $api) {
+            try {
+                echo $api.': '.self::$api($base, $target).PHP_EOL;
+            } catch (Exception $e) {
+                echo $api.': error'.PHP_EOL;
+                Log::error("[$api] 币种汇率信息获取报错: ".$e->getMessage());
+
+                continue;
+            }
+        }
     }
 
     private static function exchangerateApi(string $base, string $target): ?float
@@ -87,7 +79,7 @@ class CurrencyExchange
             if ($data['result'] === 'success') {
                 return $key ? $data['conversion_rate'] : $data['rates'][$target];
             }
-            Log::emergency('[CurrencyExchange]exchangerateApi exchange failed with following message: '.$data['error-type']);
+            Log::emergency('[CurrencyExchange]exchangerateApi exchange failed with following message: '.$data['error-type'] ?? '');
         } else {
             Log::emergency('[CurrencyExchange]exchangerateApi request failed '.var_export($response, true));
         }
@@ -114,33 +106,20 @@ class CurrencyExchange
 
     private static function it120(string $base, string $target): ?float
     { // Reference: https://www.it120.cc/help/fnun8g.html
-        $response = self::$basicRequest->get("https://api.it120.cc/gooking/forex/rate?fromCode=$target&toCode=$base");
-        if ($response->ok()) {
-            $data = $response->json();
+        $key = config('services.currency.it120_key');
+        if ($key) {
+            $response = self::$basicRequest->get("https://api.it120.cc/$key/forex/rate?fromCode=$target&toCode=$base");
+            if ($response->ok()) {
+                $data = $response->json();
 
-            if ($data['code'] === 0) {
-                return $data['data']['rate'];
+                if ($data['code'] === 0) {
+                    return $data['data']['rate'];
+                }
+                Log::emergency('[CurrencyExchange]it120 exchange failed with following message: '.$data['msg']);
+            } else {
+                Log::emergency('[CurrencyExchange]it120 request failed'.var_export($response, true));
             }
-            Log::emergency('[CurrencyExchange]it120 exchange failed with following message: '.$data['msg']);
-        } else {
-            Log::emergency('[CurrencyExchange]it120 request failed'.var_export($response, true));
         }
-
-        return null;
-    }
-
-    private static function exchangerate(string $base, string $target): ?float
-    { // Reference: https://exchangerate.host/#/
-        $response = self::$basicRequest->get("https://api.exchangerate.host/latest?base=$base&symbols=$target");
-        if ($response->ok()) {
-            $data = $response->json();
-
-            if ($data['success'] && $data['base'] === $base) {
-                return $data['rates'][$target];
-            }
-            Log::emergency('[CurrencyExchange]exchangerate exchange failed with following message: '.$data['error-type']);
-        }
-        Log::emergency('[CurrencyExchange]exchangerate request failed');
 
         return null;
     }
@@ -149,7 +128,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/fixer-api RATE LIMIT: 100 Requests / Monthly!!!!
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/fixer/latest?symbols=$target&base=$base");
+            $response = self::$basicRequest->withHeader('apikey', $key)->get("https://api.apilayer.com/fixer/latest?symbols=$target&base=$base");
             if ($response->ok()) {
                 $data = $response->json();
 
@@ -170,7 +149,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/currency_data-api RATE LIMIT: 100 Requests / Monthly
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/currency_data/live?source=$base&currencies=$target");
+            $response = self::$basicRequest->withHeader('apikey', $key)->get("https://api.apilayer.com/currency_data/live?source=$base&currencies=$target");
             if ($response->ok()) {
                 $data = $response->json();
 
@@ -209,11 +188,11 @@ class CurrencyExchange
 
     private static function jsdelivrFile(string $base, string $target): ?float
     { // Reference: https://github.com/fawazahmed0/currency-api
-        $response = self::$basicRequest->get('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/'.strtolower($base).'/'.strtolower($target).'.min.json');
+        $response = self::$basicRequest->get('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/'.strtolower($base).'.min.json');
         if ($response->ok()) {
             $data = $response->json();
 
-            return $data[strtolower($target)];
+            return $data[strtolower($base)][strtolower($target)];
         }
 
         return null;
@@ -225,7 +204,7 @@ class CurrencyExchange
         if ($response->ok()) {
             $data = $response->json();
 
-            return $data['conversion']['converted-amount'];
+            return $data['to'][0]['mid'];
         }
 
         return null;
@@ -233,7 +212,7 @@ class CurrencyExchange
 
     private static function wise(string $base, string $target): ?float
     { // Reference: https://wise.com/zh-cn/currency-converter/
-        $response = self::$basicRequest->withHeaders(['Authorization' => 'Basic OGNhN2FlMjUtOTNjNS00MmFlLThhYjQtMzlkZTFlOTQzZDEwOjliN2UzNmZkLWRjYjgtNDEwZS1hYzc3LTQ5NGRmYmEyZGJjZA=='])->get("https://api.wise.com/v1/rates?source=$base&target=$target");
+        $response = self::$basicRequest->withHeader('Authorization', 'Basic OGNhN2FlMjUtOTNjNS00MmFlLThhYjQtMzlkZTFlOTQzZDEwOjliN2UzNmZkLWRjYjgtNDEwZS1hYzc3LTQ5NGRmYmEyZGJjZA==')->get("https://api.wise.com/v1/rates?source=$base&target=$target");
         if ($response->ok()) {
             $data = $response->json();
 
@@ -256,13 +235,28 @@ class CurrencyExchange
         return null;
     }
 
+    private static function xRates(string $base, string $target): ?float
+    { // Reference: https://www.x-rates.com/
+        $response = self::$basicRequest->get("https://www.x-rates.com/calculator/?from=$base&to=$target&amount=1");
+        if ($response->ok()) {
+            $data = $response->body();
+            preg_match('/<span class="ccOutputRslt">([\d.]+)/', $data, $matches);
+
+            return $matches[1];
+        }
+
+        return null;
+    }
+
     private static function valutafx(string $base, string $target): ?float
     { // Reference: https://www.valutafx.com/convert/
         $response = self::$basicRequest->get("https://www.valutafx.com/api/v2/rates/lookup?isoTo=$target&isoFrom=$base&amount=1");
         if ($response->ok()) {
             $data = $response->json();
 
-            return $data['Rate'];
+            if (! $data['ErrorMessage']) {
+                return $data['Rate'];
+            }
         }
 
         return null;
@@ -285,29 +279,17 @@ class CurrencyExchange
     }
 
     private static function baidu(string $base, string $target): ?float
-    { // Reference: https://www.unionpayintl.com/cn/rate/
-        $response = self::$basicRequest->get("https://finance.pae.baidu.com/vapi/async?from_money=$base&to_money=$target&srcid=5293");
+    {
+        $response = self::$basicRequest->get("https://finance.pae.baidu.com/vapi/async/v1?from_money=$base&to_money=$target&srcid=5293");
 
         if ($response->ok()) {
             $data = $response->json();
 
-            return $data['Result'][0]['DisplayData']['resultData']['tplData']['money2_num'];
+            if ($data['ResultCode'] !== -1) {
+                return $data['Result'][0]['DisplayData']['resultData']['tplData']['money2_num'];
+            }
         }
 
         return null;
-    }
-
-    public static function unionTest(string $target, ?string $base = null): void
-    {
-        self::setClient();
-        foreach (self::$apis as $api) {
-            try {
-                echo $api.': '.self::callApis($api, $base, $target).PHP_EOL;
-            } catch (Exception $e) {
-                Log::error("[$api] 币种汇率信息获取报错: ".$e->getMessage());
-
-                continue;
-            }
-        }
     }
 }

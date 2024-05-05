@@ -12,6 +12,7 @@ use App\Models\UserDataModifyLog;
 use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
 use Log;
+use RuntimeException;
 use Str;
 
 class Helpers
@@ -75,27 +76,30 @@ class Helpers
 
     public static function getPort(): int
     { // 获取一个有效端口
-        if (sysConfig('is_rand_port')) {
-            $port = self::getRandPort();
-        } else {
-            $port = (int) sysConfig('min_port');
-            $exists_port = array_merge(User::where('port', '>=', $port)->pluck('port')->toArray(), self::$denyPorts);
+        $minPort = (int) sysConfig('min_port');
+        $maxPort = (int) sysConfig('max_port');
+        $isRandPort = sysConfig('is_rand_port');
+        $occupiedPorts = array_merge(User::where('port', '!=', 0)->pluck('port')->toArray(), self::$denyPorts);
 
-            while (in_array($port, $exists_port, true)) {
-                $port++;
-            }
+        $totalPorts = $maxPort - $minPort + 1;
+        $availablePortsCount = $totalPorts - count($occupiedPorts);
+
+        if ($availablePortsCount === 0) {
+            throw new RuntimeException('No available port found.');
         }
 
-        return $port;
-    }
-
-    private static function getRandPort(): int
-    {  // 获取一个随机端口
-        $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
-        $exists_port = array_merge(User::where('port', '<>', 0)->pluck('port')->toArray(), self::$denyPorts);
-
-        while (in_array($port, $exists_port, true)) {
-            $port = random_int(sysConfig('min_port'), sysConfig('max_port'));
+        if ($isRandPort) {
+            do {
+                $port = random_int($minPort, $maxPort);
+            } while (in_array($port, $occupiedPorts, true));
+        } else {
+            $port = $minPort;
+            while (in_array($port, $occupiedPorts, true)) {
+                $port++;
+                if ($port > $maxPort) {
+                    throw new RuntimeException('No available port found.');
+                }
+            }
         }
 
         return $port;

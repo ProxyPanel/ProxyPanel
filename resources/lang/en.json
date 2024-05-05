@@ -40,6 +40,8 @@
     "[Auto Task] Blocked service: Abnormal traffic within 1 hour": "[Auto Task] Blocked service: Abnormal traffic within 1 hour",
     "[Auto Task] Blocked service: Run out of traffic": "[Auto Task] Blocked service: Run out of traffic",
     "[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours": "[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours",
+    "[Auto Task] Unblocked Service: Account ban expired": "[Auto Task] Unblocked service: Account ban expired",
+    "[Auto Task] Unblocked Service: Account has available data traffic": "[Auto Task] Unblocked service: Account has available data traffic",
     "[Daily Task] Account Expiration: Block Login & Clear Account": "[Daily Task] Account Expiration: Block Login & Clear Account",
     "[Daily Task] Account Expiration: Stop Service": "[Daily Task] Account Expiration: Stop Service",
     "[Daily Task] Reset Account Traffic, Next Reset Date: :date": "[Daily Task] Reset Account Traffic, Next Reset Date: :date",

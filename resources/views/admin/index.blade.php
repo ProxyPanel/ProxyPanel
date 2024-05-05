@@ -46,6 +46,11 @@
                             <span class="ml-15 font-weight-400">{{ trans('admin.dashboard.paid_users') }}</span>
                             <div class="content-text text-center mb-0">
                                 <span class="font-size-40 font-weight-100">{{$payingUserCount}}</span>
+                                @if ($payingNewUserCount)
+                                    <span class="badge badge-success badge-round up font-size-20 m-0" style="top:-20px">
+                                        <i class="icon wb-triangle-up" aria-hidden="true"></i> {{$payingNewUserCount}}
+                                    </span>
+                                @endif
                             </div>
                         </div>
                     </a>

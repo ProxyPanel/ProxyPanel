@@ -308,6 +308,14 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function paidOrders()
+    {
+        return $this->hasMany(Order::class)->where('status', 2)
+            ->whereNotNull('goods_id')
+            ->where('is_expire', 0)
+            ->where('amount', '>', 0);
+    }
+
     public function routeNotificationForTelegram()
     {
         return $this->telegram_user_id;

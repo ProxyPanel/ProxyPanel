@@ -98,6 +98,7 @@ return [
     'currency' => [
         'exchangerate-api_key' => env('EXCAHNGERATE_API_KEY'),
         'apiLayer_key' => env('API_LAYER_API_KEY'),
+        'it120_key' => env('IT120_KEY'),
     ],
 
 ];
