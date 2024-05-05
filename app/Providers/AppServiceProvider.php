@@ -2,16 +2,6 @@
 
 namespace App\Providers;
 
-use App\Models\Config;
-use App\Models\Node;
-use App\Models\Order;
-use App\Models\User;
-use App\Models\UserGroup;
-use App\Observers\ConfigObserver;
-use App\Observers\NodeObserver;
-use App\Observers\OrderObserver;
-use App\Observers\UserGroupObserver;
-use App\Observers\UserObserver;
 use DB;
 use File;
 use Illuminate\Pagination\Paginator;
@@ -47,11 +37,5 @@ class AppServiceProvider extends ServiceProvider
         if (config('session.secure')) {
             URL::forceScheme('https');
         }
-
-        Config::observe(ConfigObserver::class);
-        Node::observe(NodeObserver::class);
-        Order::observe(OrderObserver::class);
-        UserGroup::observe(UserGroupObserver::class);
-        User::observe(UserObserver::class);
     }
 }

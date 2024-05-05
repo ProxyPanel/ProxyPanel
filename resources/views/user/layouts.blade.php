@@ -55,6 +55,7 @@
                                 </a>
                             @endforeach
                         </div>
+                    </li>
                     <li class="nav-item dropdown">
                         <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown" data-animation="scale-up"
                            aria-expanded="false" role="button">
@@ -68,7 +69,6 @@
                                 </a>
                             @endforeach
                         </div>
-                    </li>
                     </li>
                     <li class="nav-item dropdown">
                         <a href="#" aria-expanded="false" class="nav-link navbar-avatar" data-animation="scale-up"

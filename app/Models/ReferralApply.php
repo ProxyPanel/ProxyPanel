@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Casts\money;
+use App\Observers\ReferralApplyObserver;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * 返利申请.
  */
+#[ObservedBy([ReferralApplyObserver::class])]
 class ReferralApply extends Model
 {
     protected $table = 'referral_apply';

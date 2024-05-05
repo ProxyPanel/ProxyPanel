@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Casts\data_rate;
+use App\Observers\NodeObserver;
 use App\Utils\IP;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +18,7 @@ use Log;
 /**
  * 节点配置信息.
  */
+#[ObservedBy([NodeObserver::class])]
 class Node extends Model
 {
     protected $table = 'node';

@@ -162,11 +162,13 @@
                             <span class="site-menu-title">{{ trans('admin.menu.customer_service.attribute') }}</span>
                             @can('admin.ticket.index')
                                 @php
-                                    $openTicket = App\Models\Ticket::whereStatus(0)->count()
+                                    $openTicket = Cache::rememberForever('open_ticket_count', static function (){
+                                        return App\Models\Ticket::whereStatus(0)->count();
+                                    })
                                 @endphp
-                                @if($openTicket > 0)
+                                @if($openTicket)
                                     <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success">{{$openTicket}}</span>
+                                        <span class="badge badge-pill badge-success">{{ $openTicket }}</span>
                                     </div>
                                 @endif
                             @endcan
@@ -178,7 +180,7 @@
                                         <span class="site-menu-title">{{ trans('admin.menu.customer_service.ticket') }}</span>
                                         @if($openTicket > 0)
                                             <div class="site-menu-label">
-                                                <span class="badge badge-danger badge-round mr-25">{{$openTicket}}</span>
+                                                <span class="badge badge-danger badge-round mr-25">{{ $openTicket }}</span>
                                             </div>
                                         @endif
                                     </a>
@@ -308,11 +310,13 @@
                             <span class="site-menu-title">{{ trans('admin.menu.promotion.attribute') }}</span>
                             @can('admin.aff.index')
                                 @php
-                                    $openApply = App\Models\ReferralApply::whereStatus(0)->count()
+                                    $openApply = Cache::rememberForever('open_referral_apply_count', static function (){
+                                        return App\Models\ReferralApply::whereStatus(0)->count();
+                                    })
                                 @endphp
-                                @if($openApply > 0)
+                                @if($openApply)
                                     <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success">{{$openApply}}</span>
+                                        <span class="badge badge-pill badge-success">{{ $openApply }}</span>
                                     </div>
                                 @endif
                             @endcan

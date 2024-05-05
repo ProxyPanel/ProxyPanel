@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Casts\money;
+use App\Observers\OrderObserver;
 use App\Utils\Helpers;
 use Auth;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,6 +16,7 @@ use Kyslik\ColumnSortable\Sortable;
 /**
  * 订单.
  */
+#[ObservedBy([OrderObserver::class])]
 class Order extends Model
 {
     use Sortable;

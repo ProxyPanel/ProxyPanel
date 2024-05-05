@@ -4,10 +4,12 @@ namespace App\Models;
 
 use App\Casts\data_rate;
 use App\Casts\money;
+use App\Observers\UserObserver;
 use App\Utils\Helpers;
 use App\Utils\QQInfo;
 use DB;
 use Hash;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,6 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * 用户信息.
  */
+#[ObservedBy([UserObserver::class])]
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, HasRoles, Notifiable, Sortable;

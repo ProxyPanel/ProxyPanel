@@ -5,9 +5,7 @@ source ./scripts/lib.sh
 
 # 更新代码
 echo -e "\e[34m========= Checking server environment... | 检查服务器环境... =========\e[0m"
-git fetch -f
-git reset -q --hard origin/master
-git pull
+git fetch -f && git reset -q --hard origin/master && git pull
 
 # 检查Composer
 echo -e "\e[34m========= Checking Composer... | 检查Composer... =========\e[0m"

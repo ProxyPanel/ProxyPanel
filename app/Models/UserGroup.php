@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Observers\UserGroupObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * 用户分组控制.
  */
+#[ObservedBy([UserGroupObserver::class])]
 class UserGroup extends Model
 {
     public $timestamps = false;

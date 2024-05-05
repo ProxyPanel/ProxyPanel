@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\ConfigObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * 系统配置.
  */
+#[ObservedBy([ConfigObserver::class])]
 class Config extends Model
 {
     public $timestamps = false;
