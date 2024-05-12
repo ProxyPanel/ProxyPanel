@@ -47,27 +47,29 @@ class ArticleService
         if ($noAccess) {
             while (($accessArea = $this->getInBetween($body, $mode1Start, $mode1End)) !== '') {
                 $replacement = '<div class="user-no-access"><i class="icon wb-lock" aria-hidden="true"></i>'.__('You must have a valid subscription to view the content in this area!').'</div>';
-                $body = str_replace($mode1Start.$accessArea.$mode1End, $replacement, $body);
+                $body = strtr($body, [$accessArea => $replacement]);
             }
         }
 
         while (($accessArea = $this->getInBetween($body, $mode2Start, $mode2End)) !== '') {
-            $hasAccessArea = $this->getInBetween($accessArea, '', $mode2Else);
-            $noAccessArea = $this->getInBetween($accessArea, $mode2Else, '');
-            $body = strtr($body, [$mode2Start.$accessArea.$mode2End => $noAccess ? $noAccessArea : $hasAccessArea]);
+            $hasAccessArea = $this->getInBetween($accessArea, $mode2Start, $mode2Else, true);
+            $noAccessArea = $this->getInBetween($accessArea, $mode2Else, $mode2End, true);
+            $body = strtr($body, [$accessArea => $noAccess ? $noAccessArea : $hasAccessArea]);
         }
     }
 
-    private function getInBetween(string $input, string $start, string $end): string
+    private function getInBetween(string $input, string $start, string $end, bool $bodyOnly = false): string
     {
         $startPos = stripos($input, $start);
-        $endPos = stripos($input, $end, $startPos !== false ? $startPos + strlen($start) : 0);
+        $endPos = stripos($input, $end, $startPos ?: 0);
 
         if ($startPos === false || $endPos === false) {
             return '';
         }
 
-        return substr($input, $startPos + strlen($start), $endPos - ($startPos + strlen($start)));
+        $substr = substr($input, $startPos + strlen($start), $endPos - strlen($input));
+
+        return $bodyOnly ? $substr : $start.$substr.$end;
     }
 
     private function formatValuables(string &$body): void
