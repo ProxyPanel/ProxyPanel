@@ -9,22 +9,25 @@ use Http;
 use Log;
 use RuntimeException;
 
-class DigitalOcean implements DNS
+class Vercel implements DNS
 {
-    // 开发依据: https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/
-    private const API_ENDPOINT = 'https://api.digitalocean.com/v2/domains';
+    // 开发依据: https://vercel.com/docs/rest-api
+    private const API_ENDPOINT = 'https://api.vercel.com/';
 
-    public const KEY = 'digitalocean';
+    public const KEY = 'vercel';
 
-    public const LABEL = 'DigitalOcean';
+    public const LABEL = 'Vercel';
 
-    private string $accessToken;
+    private string $teamID;
+
+    private string $token;
 
     private array $domainInfo;
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->accessToken = sysConfig('ddns_secret');
+        $this->teamID = sysConfig('ddns_key');
+        $this->token = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
     }
 
@@ -48,25 +51,25 @@ class DigitalOcean implements DNS
         ];
     }
 
-    private function sendRequest(string $action, array $parameters = [], string $recordId = ''): array|bool
+    private function sendRequest(string $action, array $parameters = [], string $recordId = ''): array
     {
-        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "Bearer $this->accessToken")->baseUrl(self::API_ENDPOINT)->asJson();
+        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "Bearer $this->token")->baseUrl(self::API_ENDPOINT)->withQueryParameters(['teamId' => $this->teamID])->asJson();
 
         $response = match ($action) {
-            'DescribeDomains' => $client->get(''),
-            'DescribeSubDomainRecords' => $client->get("/{$this->domainInfo['domain']}/records"),
-            'CreateDomainRecord' => $client->post("/{$this->domainInfo['domain']}/records", $parameters),
-            'UpdateDomainRecord' => $client->patch("/{$this->domainInfo['domain']}/records/$recordId", $parameters),
-            'DeleteDomainRecord' => $client->delete("/{$this->domainInfo['domain']}/records/$recordId"),
+            'DescribeDomains' => $client->get('v5/domains'),
+            'DescribeSubDomainRecords' => $client->get("v4/domains/{$this->domainInfo['domain']}/records"),
+            'AddDomainRecord' => $client->post("v2/domains/{$this->domainInfo['domain']}/records", $parameters),
+            'UpdateDomainRecord' => $client->patch("v1/domains/records/$recordId", $parameters),
+            'DeleteDomainRecord' => $client->delete("v2/domains/{$this->domainInfo['domain']}/records/$recordId"),
         };
 
         $data = $response->json();
         if ($response->successful()) {
-            return $data ?: true;
+            return $data;
         }
 
         if ($data) {
-            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['error']['message'] ?? 'Unknown error');
         } else {
             Log::error('['.self::LABEL." — $action] 请求失败");
         }
@@ -76,16 +79,14 @@ class DigitalOcean implements DNS
 
     public function store(string $ip, string $type): bool
     {
-        return (bool) $this->sendRequest('CreateDomainRecord', ['name' => $this->domainInfo['sub'], 'type' => $type, 'data' => $ip]);
+        return (bool) $this->sendRequest('AddDomainRecord', ['name' => $this->domainInfo['sub'], 'type' => $type, 'value' => $ip]);
     }
 
     public function update(string $latest_ip, string $original_ip, string $type): bool
     {
         $recordIds = $this->getRecordIds($type, $original_ip);
         if ($recordIds) {
-            foreach ($recordIds as $recordId) {
-                $this->sendRequest('UpdateDomainRecord', ['type' => $type, 'data' => $latest_ip], $recordId);
-            }
+            $this->sendRequest('UpdateDomainRecord', ['value' => $latest_ip], $recordIds[0]);
 
             return true;
         }
@@ -97,12 +98,12 @@ class DigitalOcean implements DNS
     {
         $response = $this->sendRequest('DescribeSubDomainRecords');
 
-        if (isset($response['domain_records'])) {
-            $records = $response['domain_records'];
+        if (isset($response['records'])) {
+            $records = $response['records'];
 
             if ($ip) {
                 $records = array_filter($records, function ($record) use ($ip) {
-                    return $record['data'] === $ip && $record['name'] === $this->domainInfo['sub'];
+                    return $record['value'] === $ip && $record['name'] === $this->domainInfo['sub'];
                 });
             } elseif ($type) {
                 $records = array_filter($records, function ($record) use ($type) {
@@ -120,13 +121,13 @@ class DigitalOcean implements DNS
         return [];
     }
 
-    public function destroy(string $type, string $ip): int
+    public function destroy(string $type, string $ip): bool|int
     {
         $recordIds = $this->getRecordIds($type, $ip);
         $deletedCount = 0;
 
         foreach ($recordIds as $recordId) {
-            if ($this->sendRequest('DeleteDomainRecord', [], $recordId)) {
+            if ($this->sendRequest('DeleteDomainRecord', $recordId) === []) {
                 $deletedCount++;
             }
         }

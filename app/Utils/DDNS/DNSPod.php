@@ -11,14 +11,14 @@ use RuntimeException;
 
 class DNSPod implements DNS
 {
-    // 开发依据: https://docs.dnspod.cn/api/
+    // 开发依据: https://cloud.tencent.com/document/api/1427/56193
     private const API_ENDPOINT = 'https://dnspod.tencentcloudapi.com';
 
     public const KEY = 'dnspod';
 
     public const LABEL = 'Tencent Cloud | DNSPod | 腾讯云';
 
-    private string $secretId;
+    private string $secretID;
 
     private string $secretKey;
 
@@ -26,7 +26,7 @@ class DNSPod implements DNS
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->secretId = sysConfig('ddns_key');
+        $this->secretID = sysConfig('ddns_key');
         $this->secretKey = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
     }
@@ -42,7 +42,7 @@ class DNSPod implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[DNSPod – DescribeDomainList] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — DescribeDomainList] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         return [
@@ -69,9 +69,9 @@ class DNSPod implements DNS
                 return $data;
             }
 
-            Log::error('[DNSPod – '.$action.'] 返回错误信息：'.$data['Error']['Message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['Error']['Message'] ?? 'Unknown error');
         } else {
-            Log::error('[DNSPod – '.$action.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         exit(400);
@@ -90,7 +90,7 @@ class DNSPod implements DNS
         $secretSigning = hash_hmac('SHA256', 'tc3_request', $secretService, true);
         $signature = hash_hmac('SHA256', $stringToSign, $secretSigning);
 
-        return 'TC3-HMAC-SHA256 Credential='.$this->secretId.'/'.$credentialScope.', SignedHeaders=content-type;host, Signature='.$signature;
+        return 'TC3-HMAC-SHA256 Credential='.$this->secretID.'/'.$credentialScope.', SignedHeaders=content-type;host, Signature='.$signature;
     }
 
     public function store(string $ip, string $type): bool

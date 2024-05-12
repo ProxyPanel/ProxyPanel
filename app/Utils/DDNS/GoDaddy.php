@@ -11,23 +11,23 @@ use RuntimeException;
 
 class GoDaddy implements DNS
 {
-    //  开发依据: https://developer.godaddy.com/doc/endpoint/domains
+    // 开发依据: https://developer.godaddy.com/doc/endpoint/domains
     private const API_ENDPOINT = 'https://api.godaddy.com/v1/domains/';
 
     public const KEY = 'godaddy';
 
     public const LABEL = 'GoDaddy';
 
-    private string $accessKeyID;
+    private string $key;
 
-    private string $accessKeySecret;
+    private string $secret;
 
     private array $domainInfo;
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->accessKeyID = sysConfig('ddns_key');
-        $this->accessKeySecret = sysConfig('ddns_secret');
+        $this->key = sysConfig('ddns_key');
+        $this->secret = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
     }
 
@@ -42,7 +42,7 @@ class GoDaddy implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[GoDaddy – DescribeDomains] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — DescribeDomains] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         return [
@@ -53,7 +53,7 @@ class GoDaddy implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array|bool
     {
-        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "sso-key $this->accessKeyID:$this->accessKeySecret")->baseUrl(self::API_ENDPOINT)->asJson();
+        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "sso-key $this->key:$this->secret")->baseUrl(self::API_ENDPOINT)->asJson();
 
         $response = match ($action) {
             'DescribeDomains' => $client->get('', ['statuses' => 'ACTIVE']),
@@ -69,9 +69,9 @@ class GoDaddy implements DNS
         }
 
         if ($data) {
-            Log::error('[GoDaddy - '.$action.'] 返回错误信息：'.$data['message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['message'] ?? 'Unknown error');
         } else {
-            Log::error('[GoDaddy - '.$action.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         return false;

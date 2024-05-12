@@ -18,7 +18,7 @@ class Baidu implements DNS
 
     public const LABEL = 'Baidu AI Cloud | 百度智能云';
 
-    private string $secretId;
+    private string $accessKey;
 
     private string $secretKey;
 
@@ -26,7 +26,7 @@ class Baidu implements DNS
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->secretId = sysConfig('ddns_key');
+        $this->accessKey = sysConfig('ddns_key');
         $this->secretKey = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
     }
@@ -42,7 +42,7 @@ class Baidu implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[Baidu – DescribeDomains] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — DescribeDomains] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         return [
@@ -84,9 +84,9 @@ class Baidu implements DNS
         }
 
         if ($data) {
-            Log::error('[Baidu – '.$action.'] 返回错误信息：'.$data['message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['message'] ?? 'Unknown error');
         } else {
-            Log::error('[Baidu – '.$action.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         exit(400);
@@ -94,7 +94,7 @@ class Baidu implements DNS
 
     private function generateSignature(array $parameters, string $httpMethod, string $path, string $date): string
     { // 签名
-        $authStringPrefix = "bce-auth-v1/$this->secretId/$date/1800";
+        $authStringPrefix = "bce-auth-v1/$this->accessKey/$date/1800";
         $signingKey = hash_hmac('sha256', $authStringPrefix, $this->secretKey);
         $canonicalRequest = "$httpMethod\n$path\n".http_build_query($parameters)."\nhost:dns.baidubce.com\nx-bce-date:".rawurlencode($date);
         $signature = hash_hmac('sha256', $canonicalRequest, $signingKey);

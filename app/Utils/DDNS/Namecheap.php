@@ -19,9 +19,9 @@ class Namecheap implements DNS
 
     public const LABEL = 'Namecheap';
 
-    private string $accessKeyID;
+    private string $username;
 
-    private string $accessKeySecret;
+    private string $apiKey;
 
     private array $domainInfo;
 
@@ -29,8 +29,8 @@ class Namecheap implements DNS
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->accessKeyID = sysConfig('ddns_key');
-        $this->accessKeySecret = sysConfig('ddns_secret');
+        $this->username = sysConfig('ddns_key');
+        $this->apiKey = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
         $this->domainRecords = $this->fetchDomainRecords();
     }
@@ -48,7 +48,7 @@ class Namecheap implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[Namecheap – domains.getList] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — domains.getList] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         $domainParts = explode('.', $matched);
@@ -60,14 +60,14 @@ class Namecheap implements DNS
         ];
     }
 
-    private function sendRequest(string $command, array $parameters = []): array
+    private function sendRequest(string $action, array $parameters = []): array
     {
         $parameters = array_merge([
-            'ApiUser' => $this->accessKeyID,
-            'ApiKey' => $this->accessKeySecret,
-            'UserName' => $this->accessKeyID,
+            'ApiUser' => $this->username,
+            'ApiKey' => $this->apiKey,
+            'UserName' => $this->username,
             'ClientIp' => IP::getClientIP(),
-            'Command' => $command,
+            'Command' => $action,
         ], $parameters);
 
         $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT, $parameters);
@@ -77,9 +77,10 @@ class Namecheap implements DNS
             if ($response->successful() && $data['@attributes']['Status'] === 'OK') {
                 return $data['CommandResponse'];
             }
-            Log::error('[Namecheap - '.$command.'] 返回错误信息：'.$data['Errors']['Error'] ?? 'Unknown error');
+
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['Errors']['Error'] ?? 'Unknown error');
         } else {
-            Log::error('[Namecheap - '.$command.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         exit(400);

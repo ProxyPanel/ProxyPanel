@@ -55,7 +55,7 @@ class AliYun implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[AliYun – DescribeDomains] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — DescribeDomains] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         return [
@@ -86,9 +86,9 @@ class AliYun implements DNS
                 return $data;
             }
 
-            Log::error('[AliYun - '.$action.'] 返回错误信息：'.$data['Message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['Message'] ?? 'Unknown error');
         } else {
-            Log::error('[AliYun - '.$action.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         exit(400);

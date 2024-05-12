@@ -23,7 +23,7 @@ class Namesilo implements DNS
 
     public function __construct(private readonly string $subdomain)
     {
-        $this->apiKey = sysConfig('ddns_key');
+        $this->apiKey = sysConfig('ddns_secret');
         $this->domainInfo = $this->parseDomainInfo();
     }
 
@@ -38,7 +38,7 @@ class Namesilo implements DNS
         }
 
         if (empty($matched)) {
-            throw new RuntimeException("[Namesilo – listDomains] The subdomain {$this->subdomain} does not match any domain in your account.");
+            throw new RuntimeException('['.self::LABEL." — listDomains] The subdomain $this->subdomain does not match any domain in your account.");
         }
 
         return [
@@ -47,9 +47,9 @@ class Namesilo implements DNS
         ];
     }
 
-    private function sendRequest(string $operation, array $parameters = []): array
+    private function sendRequest(string $action, array $parameters = []): array
     {
-        $request = simplexml_load_string(file_get_contents(self::API_ENDPOINT.$operation.'?'.Arr::query(array_merge(['version' => 1, 'type' => 'xml', 'key' => $this->apiKey], $parameters))));
+        $request = simplexml_load_string(file_get_contents(self::API_ENDPOINT.$action.'?'.Arr::query(array_merge(['version' => 1, 'type' => 'xml', 'key' => $this->apiKey], $parameters))));
 
         if ($request) {
             $data = json_decode(json_encode($request), true);
@@ -57,9 +57,9 @@ class Namesilo implements DNS
                 return $data['reply'];
             }
 
-            Log::error('[Namesilo – '.$operation.'] 返回错误信息：'.$data['reply']['detail'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['reply']['detail'] ?? 'Unknown error');
         } else {
-            Log::error('[Namesilo – '.$operation.'] 请求失败');
+            Log::error('['.self::LABEL." — $action] 请求失败");
         }
 
         exit(400);
