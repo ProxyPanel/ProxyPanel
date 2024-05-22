@@ -11,7 +11,7 @@ use RuntimeException;
 
 class AliYun implements DNS
 {
-    //  开发依据: https://api.aliyun.com/document/Alidns/2015-01-09/overview
+    // 开发依据: https://api.aliyun.com/document/Alidns/2015-01-09/overview
     private const API_ENDPOINT = 'https://alidns.aliyuncs.com/';
 
     public const KEY = 'aliyun';

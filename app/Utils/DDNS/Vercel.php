@@ -53,7 +53,7 @@ class Vercel implements DNS
 
     private function sendRequest(string $action, array $parameters = [], string $recordId = ''): array
     {
-        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "Bearer $this->token")->baseUrl(self::API_ENDPOINT)->withQueryParameters(['teamId' => $this->teamID])->asJson();
+        $client = Http::timeout(15)->retry(3, 1000)->withToken($this->token)->baseUrl(self::API_ENDPOINT)->withQueryParameters(['teamId' => $this->teamID])->asJson();
 
         $response = match ($action) {
             'DescribeDomains' => $client->get('v5/domains'),

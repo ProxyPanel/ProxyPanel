@@ -51,7 +51,7 @@ class Porkbun implements DNS
         ];
     }
 
-    private function sendRequest(string $uri, array $parameters = []): bool|array
+    private function sendRequest(string $uri, array $parameters = []): array|bool
     {
         $parameters = array_merge($parameters, ['apikey' => $this->apiKey, 'secretapikey' => $this->secretKey]);
         $response = Http::timeout(15)->retry(3, 1000)->baseUrl(self::API_ENDPOINT)->asJson()->post($uri, $parameters);

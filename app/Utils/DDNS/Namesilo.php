@@ -5,6 +5,7 @@ namespace App\Utils\DDNS;
 use App\Utils\Library\Templates\DNS;
 use Arr;
 use Cache;
+use Http;
 use Log;
 use RuntimeException;
 
@@ -30,7 +31,7 @@ class Namesilo implements DNS
     private function parseDomainInfo(): array
     {
         $domains = Cache::remember('ddns_get_domains', now()->addHour(), function () {
-            return $this->sendRequest('listDomains')['domains']['domain'];
+            return array_column($this->sendRequest('listDomains')['domains'] ?? [], 'domain');
         });
 
         if ($domains) {
@@ -49,11 +50,11 @@ class Namesilo implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $request = simplexml_load_string(file_get_contents(self::API_ENDPOINT.$action.'?'.Arr::query(array_merge(['version' => 1, 'type' => 'xml', 'key' => $this->apiKey], $parameters))));
+        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT.$action, array_merge(['version' => 1, 'type' => 'xml', 'key' => $this->apiKey], $parameters));
 
-        if ($request) {
-            $data = json_decode(json_encode($request), true);
-            if ($data && $data['reply']['code'] === '300') {
+        if ($response->ok()) {
+            $data = $response->json();
+            if ($data && isset($data['reply']['code']) && $data['reply']['code'] === '300') {
                 return $data['reply'];
             }
 

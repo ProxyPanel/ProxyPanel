@@ -46,8 +46,6 @@ class Handler extends ExceptionHandler
     {
         if (config('app.debug')) { // 调试模式下记录错误详情
             Log::debug('来源：'.url()->full().PHP_EOL.'访问者IP：'.IP::getClientIP().PHP_EOL.$exception);
-        } else {
-            Log::error('来源：'.url()->full().PHP_EOL.'访问者IP：'.IP::getClientIP().get_class($exception)); // 记录异常来源
         }
 
         parent::report($exception);

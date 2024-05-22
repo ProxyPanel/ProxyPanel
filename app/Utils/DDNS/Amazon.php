@@ -77,96 +77,92 @@ class Amazon implements DNS
     }
 
     private function generateSignature(string $method, string $uri, string $payload, int $timestamp): string
-    { // 签名
+    {
         $dateTime = gmdate("Ymd\THis\Z", $timestamp);
         $date = gmdate('Ymd', $timestamp);
         $canonicalRequest = "$method\n$uri\n\naccept:application/json\nhost:route53.amazonaws.com\nx-amz-date:$dateTime\n\naccept;host;x-amz-date\n".hash('sha256', $payload);
         $credentialScope = "$date/us-east-1/route53/aws4_request";
         $stringToSign = "AWS4-HMAC-SHA256\n$dateTime\n$credentialScope\n".hash('sha256', $canonicalRequest);
-        $dateKey = hash_hmac('SHA256', $date, 'AWS4'.$this->secretAccessKey, true);
+
+        $dateKey = hash_hmac('SHA256', $date, "AWS4$this->secretAccessKey", true);
         $regionKey = hash_hmac('SHA256', 'us-east-1', $dateKey, true);
         $serviceKey = hash_hmac('SHA256', 'route53', $regionKey, true);
-        $SigningKey = hash_hmac('SHA256', 'aws4_request', $serviceKey, true);
-        $signature = hash_hmac('SHA256', $stringToSign, $SigningKey);
+        $signingKey = hash_hmac('SHA256', 'aws4_request', $serviceKey, true);
+        $signature = hash_hmac('SHA256', $stringToSign, $signingKey);
 
         return "AWS4-HMAC-SHA256 Credential=$this->accessKeyID/$credentialScope, SignedHeaders=accept;host;x-amz-date, Signature=$signature";
     }
 
     public function update(string $latest_ip, string $original_ip, string $type): bool
     {
-        $record = $this->getRecords($type, $original_ip);
+        $records = $this->getRecords($type);
 
-        if ($record) {
-            array_walk_recursive($record, static function (&$value) use ($latest_ip, $original_ip) {
-                if ($value === $original_ip) {
-                    $value = $latest_ip;
-                }
-            });
+        if ($records) {
+            $recordCount = count($records[$type]);
+            $records[$type] = array_filter($records[$type], static fn ($ip) => $ip !== $original_ip);
+            $requiredAction = count($records[$type]) !== $recordCount;
+        }
 
-            $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateChangeResourceRecordSetsXml('UPSERT', $record));
+        if (! in_array($latest_ip, $records[$type] ?? [], true)) {
+            $records[$type][] = $latest_ip;
+            $requiredAction = true;
+        }
+
+        if ($requiredAction ?? false) {
+            $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateXml('UPSERT', $records));
 
             return isset($response['ChangeInfo']['Status']) && $response['ChangeInfo']['Status'] === 'PENDING';
         }
 
-        return $this->store($latest_ip, $type);
+        return true;
     }
 
-    private function getRecords(string $type, string $ip): array
+    private function getRecords(string $type): array
     {
         $response = $this->sendRequest('ListResourceRecordSets');
 
-        if (isset($response['ResourceRecordSets'])) {
-            $records = $response['ResourceRecordSets'];
-
-            $filterCondition = function ($record) use ($type, $ip) {
-                if ($type && $record['Type'] !== $type) {
-                    return false;
-                }
-
-                if ($ip && ! in_array($ip, Arr::pluck($record['ResourceRecords'], 'Value'), true)) {
-                    return false;
-                }
-
-                return $record['Name'] === "$this->subdomain.";
-            };
-
-            $filteredRecords = array_filter($records, $filterCondition);
-
-            return array_map(static function ($record) {
-                $resourceValues = Arr::pluck($record['ResourceRecords'], 'Value');
-
-                return [
-                    'Name' => $record['Name'],
-                    'Type' => $record['Type'],
-                    'TTL' => $record['TTL'],
-                    'ResourceRecords' => $resourceValues,
-                ];
-            }, $filteredRecords);
+        if (! isset($response['ResourceRecordSets'])) {
+            return [];
         }
 
-        return [];
+        $records = $response['ResourceRecordSets'];
+
+        if ($type) {
+            $records = array_filter($records, function ($record) use ($type) {
+                return $record['Type'] === $type && $record['Name'] === "$this->subdomain.";
+            });
+        } else {
+            $records = array_filter($records, function ($record) {
+                return $record['Name'] === "$this->subdomain.";
+            });
+        }
+
+        return array_reduce($records, static function ($carry, $record) {
+            $carry[$record['Type']] = Arr::pluck($record['ResourceRecords'], 'Value');
+
+            return $carry;
+        }, []);
     }
 
-    private function generateChangeResourceRecordSetsXml(string $action, array $records): string
+    private function generateXml(string $action, array $records): string
     {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><ChangeResourceRecordSetsRequest xmlns="https://route53.amazonaws.com/doc/2013-04-01/"></ChangeResourceRecordSetsRequest>');
-
         $changeBatch = $xml->addChild('ChangeBatch');
         $changes = $changeBatch->addChild('Changes');
 
-        foreach ($records as $record) {
+        foreach ($records as $type => $ips) {
             $change = $changes->addChild('Change');
             $change->addChild('Action', $action);
 
             $resourceRecordSet = $change->addChild('ResourceRecordSet');
-            $resourceRecordSet->addChild('Name', htmlspecialchars($record['Name'])); // Escape special characters in Name
-            $resourceRecordSet->addChild('Type', $record['Type']);
-            $resourceRecordSet->addChild('TTL', $record['TTL']);
+            $resourceRecordSet->addChild('Name', "$this->subdomain.");
+            $resourceRecordSet->addChild('Type', $type);
+            $resourceRecordSet->addChild('TTL', 300);
 
             $resourceRecords = $resourceRecordSet->addChild('ResourceRecords');
-            foreach ($record['ResourceRecords'] as $value) {
+            foreach ($ips as $ip) {
                 $resourceRecord = $resourceRecords->addChild('ResourceRecord');
-                $resourceRecord->addChild('Value', $value);
+                $resourceRecord->addChild('Value', $ip);
             }
         }
 
@@ -178,21 +174,40 @@ class Amazon implements DNS
 
     public function store(string $ip, string $type): bool
     {
-        $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateChangeResourceRecordSetsXml('UPSERT', [['Name' => $this->subdomain, 'Type' => $type, 'TTL' => 300, 'ResourceRecords' => [$ip]]]));
+        $records = $this->getRecords($type);
 
-        return isset($response['ChangeInfo']['Status']) && $response['ChangeInfo']['Status'] === 'PENDING';
-    }
-
-    public function destroy(string $type, string $ip): bool
-    {
-        $records = $this->getRecords($type, $ip);
-
-        if ($records) {
-            $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateChangeResourceRecordSetsXml('DELETE', $records));
+        if (! in_array($ip, $records[$type] ?? [], true)) {
+            $records[$type][] = $ip;
+            $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateXml('UPSERT', $records));
 
             return isset($response['ChangeInfo']['Status']) && $response['ChangeInfo']['Status'] === 'PENDING';
         }
 
         return true;
+    }
+
+    public function destroy(string $type, string $ip): bool
+    {
+        $records = $this->getRecords($type);
+
+        if (! $records) {
+            return true; // 无记录可操作，直接返回
+        }
+
+        if ($type && $ip) {
+            $filteredRecords = array_filter($records[$type], static fn ($hasIp) => $hasIp !== $ip);
+            if (count($records[$type]) !== count($filteredRecords)) {
+                if (count($filteredRecords) !== 0) {
+                    $action = 'UPSERT';
+                    $records[$type] = $filteredRecords;
+                }
+            } else {
+                return true;
+            }
+        }
+
+        $response = $this->sendRequest('ChangeResourceRecordSets', $this->generateXml($action ?? 'DELETE', $records));
+
+        return isset($response['ChangeInfo']['Status']) && $response['ChangeInfo']['Status'] === 'PENDING';
     }
 }

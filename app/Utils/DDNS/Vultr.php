@@ -48,9 +48,9 @@ class Vultr implements DNS
         ];
     }
 
-    private function sendRequest(string $action, array $parameters = [], string $recordId = ''): bool|array
+    private function sendRequest(string $action, array $parameters = [], string $recordId = ''): array|bool
     {
-        $client = Http::timeout(15)->retry(3, 1000)->withHeader('Authorization', "Bearer $this->apiKey")->baseUrl(self::API_ENDPOINT)->asJson();
+        $client = Http::timeout(15)->retry(3, 1000)->withToken($this->apiKey)->baseUrl(self::API_ENDPOINT)->asJson();
 
         $response = match ($action) {
             'ListDNSDomains' => $client->get('/domains'),

@@ -12,7 +12,7 @@ use RuntimeException;
 
 class Namecheap implements DNS
 {
-    //  开发依据: https://www.namecheap.com/support/api/methods/
+    // 开发依据: https://www.namecheap.com/support/api/methods/
     private const API_ENDPOINT = 'https://api.namecheap.com/xml.response';
 
     public const KEY = 'namecheap';
