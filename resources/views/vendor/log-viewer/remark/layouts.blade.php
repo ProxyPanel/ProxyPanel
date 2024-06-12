@@ -157,7 +157,7 @@
     <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega {{config('theme.navbar.inverse')}} {{config('theme.navbar.skin')}}" role="navigation">
         <div class="navbar-header">
             <div class="navbar-brand navbar-brand-center">
-                <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo64.png'}}" class="navbar-brand-logo" alt="logo"/>
+                <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo.png'}}" class="navbar-brand-logo" alt="logo"/>
                 <span class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
             </div>
         </div>

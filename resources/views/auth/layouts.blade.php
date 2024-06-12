@@ -76,7 +76,7 @@
                     <div class="panel-heading">
                         <div class="panel-title">
                             <div class="brand">
-                                <img src="{{sysConfig('website_home_logo')? asset(sysConfig('website_home_logo')) :'/assets/images/logo64.png'}}" class="brand-img" alt="logo"/>
+                                <img src="{{sysConfig('website_home_logo')? asset(sysConfig('website_home_logo')) :'/assets/images/logo.png'}}" class="brand-img" alt="logo"/>
                                 <h3 class="brand-text">{{sysConfig('website_name')}}</h3>
                             </div>
                         </div>
