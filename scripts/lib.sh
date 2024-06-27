@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# 定义输出函数
+function print_message() {
+    echo -e "\e[34m========= $1 | $2 =========\e[0m"
+}
+
 # 安装依赖
 install_dependencies() {
   # 判断系统
