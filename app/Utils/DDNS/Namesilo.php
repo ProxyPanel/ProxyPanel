@@ -50,11 +50,11 @@ class Namesilo implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT.$action, array_merge(['version' => 1, 'type' => 'xml', 'key' => $this->apiKey], $parameters));
+        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT.$action, array_merge(['version' => 1, 'type' => 'json', 'key' => $this->apiKey], $parameters));
 
         if ($response->ok()) {
             $data = $response->json();
-            if ($data && isset($data['reply']['code']) && $data['reply']['code'] === '300') {
+            if ($data && isset($data['reply']['code']) && $data['reply']['code'] === 300) {
                 return $data['reply'];
             }
 
@@ -68,29 +68,29 @@ class Namesilo implements DNS
 
     public function store(string $ip, string $type): bool
     {
-        return (bool) $this->sendRequest('dnsAddRecord', [
+        return $this->sendRequest('dnsAddRecord', [
             'domain' => $this->domainInfo['domain'],
             'rrtype' => $type,
             'rrhost' => $this->domainInfo['sub'],
             'rrvalue' => $ip,
             'rrttl' => 3600,
-        ]);
+        ])['detail'] === 'success';
     }
 
     public function update(string $latest_ip, string $original_ip, string $type): bool
     {
         $record = Arr::first($this->getRecordIds($type, $original_ip));
         if ($record) {
-            $ret = $this->sendRequest('dnsUpdateRecord', [
+            return $this->sendRequest('dnsUpdateRecord', [
                 'domain' => $this->domainInfo['domain'],
                 'rrid' => $record,
                 'rrhost' => $this->domainInfo['sub'],
                 'rrvalue' => $latest_ip,
                 'rrttl' => 3600,
-            ]);
+            ])['detail'] === 'success';
         }
 
-        return (bool) ($ret ?? false);
+        return false;
     }
 
     private function getRecordIds(string $type, string $ip): array|false
