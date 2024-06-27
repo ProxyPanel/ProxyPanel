@@ -59,7 +59,7 @@ class IP
                 $ret = self::IPLookup(['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TenAPI', 'vore', 'ip2Region']);
             }
         } else {
-            $ret = self::IPLookup(['ipApi', 'IPSB', 'ipinfo', 'ip234', 'ipGeoLocation', 'dbIP', 'IP2Online', 'ipdata', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom']);
+            $ret = self::IPLookup(['ipApi', 'IPSB', 'ipinfo', 'ip234', 'ipGeoLocation', 'dbIP', 'IP2Online', 'ipdata', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom', 'akile']);
         }
 
         if ($ret !== null) {
@@ -74,9 +74,11 @@ class IP
     {
         foreach ($checkers as $checker) {
             try {
-                $result = self::callApi($checker);
-                if (is_array($result) && ! empty(array_filter($result))) {
-                    return $result;
+                if (method_exists(self::class, $checker)) {
+                    $result = self::$checker(self::$ip);
+                    if (is_array($result) && ! empty(array_filter($result))) {
+                        return $result;
+                    }
                 }
             } catch (Exception $e) {
                 Log::error("[$checker] IP信息获取报错: ".$e->getMessage());
@@ -88,38 +90,17 @@ class IP
         return null;
     }
 
-    private static function callApi(string $checker): ?array
+    public static function getIPGeo(string $ip): array|false
     {
-        $ip = self::$ip;
+        self::$ip = $ip;
+        self::$basicRequest = Http::timeout(10)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
 
-        return match ($checker) {
-            'ipApi' => self::ipApi($ip),
-            'Baidu' => self::Baidu($ip),
-            'baiduBce' => self::baiduBce($ip),
-            'ipGeoLocation' => self::ipGeoLocation($ip),
-            'TaoBao' => self::TaoBao($ip),
-            'speedtest' => self::speedtest($ip),
-            'TenAPI' => self::TenAPI($ip),
-            'fkcoder' => self::fkcoder($ip),
-            'juHe' => self::juHe($ip),
-            'ip2Region' => self::ip2Region($ip),
-            'IPDB' => self::IPDB($ip),
-            'ipjiance' => self::ipjiance($ip),
-            'IPSB' => self::IPSB($ip),
-            'ipinfo' => self::ipinfo($ip),
-            'ip234' => self::ip234($ip),
-            'dbIP' => self::dbIP($ip),
-            'IP2Online' => self::IP2Online($ip),
-            'ipdata' => self::ipdata($ip),
-            'ipApiCo' => self::ipApiCo($ip),
-            'ip2Location' => self::ip2Location($ip),
-            'GeoIP2' => self::GeoIP2($ip),
-            'ipApiCom' => self::ipApiCom($ip),
-            'vore' => self::vore($ip),
-            'vvan' => self::vvhan($ip),
-            'ipw' => self::ipw($ip),
-            'bjjii' => self::bjjii($ip),
-        };
+        $ret = self::IPLookup(['IPSB', 'ipApi', 'baiduBce', 'ipw', 'ipinfo', 'IP2Online', 'speedtest', 'bjjii', 'Baidu', 'ip234', 'ipdata', 'ipGeoLocation', 'ipjiance', 'ipApiCo', 'ipApiCom', 'ip2Location', 'akile']);
+        if (is_array($ret)) {
+            return Arr::only($ret, ['latitude', 'longitude']);
+        }
+
+        return false;
     }
 
     private static function ipApi(string $ip): ?array
@@ -219,8 +200,7 @@ class IP
 
     private static function ipGeoLocation(string $ip): ?array
     { // 开发依据: https://ipgeolocation.io/documentation.html
-        $response = self::$basicRequest->withHeaders(['Origin' => 'https://ipgeolocation.io'])
-            ->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=".config('common.language.'.app()->getLocale().'.1'));
+        $response = self::$basicRequest->withHeaders(['Origin' => 'https://ipgeolocation.io'])->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=".config('common.language.'.app()->getLocale().'.1'));
         if ($response->ok()) {
             $data = $response->json();
 
@@ -572,8 +552,7 @@ class IP
     { // 通过ip2Location查询IP地址的详细信息
         $filePath = database_path('IP2LOCATION-LITE-DB11.IPV6.BIN'); // 来源: https://lite.ip2location.com/database-download
         try {
-            $location = (new Database($filePath, Database::FILE_IO))
-                ->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME, Database::LATITUDE, Database::LONGITUDE]);
+            $location = (new Database($filePath, Database::FILE_IO))->lookup($ip, [Database::CITY_NAME, Database::REGION_NAME, Database::COUNTRY_NAME, Database::LATITUDE, Database::LONGITUDE]);
 
             return [
                 'country' => $location['countryName'],
@@ -673,31 +652,6 @@ class IP
         return null;
     }
 
-    private static function cz88(string $ip): ?array
-    {
-        $response = self::$basicRequest->get("https://www.cz88.net/api/cz88/ip/base?ip=$ip");
-        if ($response->ok()) {
-            $data = $response->json();
-
-            if ($data['success'] && $data['data']['ip'] === $ip) {
-                $data = $data['data'];
-                $location = $data['locations'] ? $data['locations'][0] : null;
-
-                return [
-                    'country' => $data['country'],
-                    'region' => $data['province'],
-                    'city' => $data['city'],
-                    'isp' => $data['isp'],
-                    'area' => $data['districts'],
-                    'latitude' => $location ? $location['latitude'] : null,
-                    'longitude' => $location ? $location['longitude'] : null,
-                ];
-            }
-        }
-
-        return null;
-    }
-
     private static function ipw(string $ip): ?array
     { // 开发依据: https://api.vore.top/
         if (self::$is_ipv4) {
@@ -768,17 +722,57 @@ class IP
         return null;
     }
 
-    public static function getIPGeo(string $ip): array|false
+    private static function akile(string $ip): ?array
     {
-        self::$ip = $ip;
-        self::$basicRequest = Http::timeout(10)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+        $response = self::$basicRequest->get("https://tools.akile.io/api/location/$ip");
+        $data = $response->json();
+        if ($response->ok()) {
+            $data = $data['data'];
+            if ($data['ip'] === $ip) {
+                $location = explode(',', $data['loc']);
 
-        $ret = self::IPLookup(['IPSB', 'ipApi', 'baiduBce', 'ipw', 'ipinfo', 'IP2Online', 'speedtest', 'bjjii', 'Baidu', 'ip234', 'ipdata', 'ipGeoLocation', 'ipjiance', 'ipApiCo', 'ipApiCom', 'ip2Location']);
-        if (is_array($ret)) {
-            return Arr::only($ret, ['latitude', 'longitude']);
+                return [
+                    'country' => $data['country'],
+                    'region' => $data['region'],
+                    'city' => $data['city'],
+                    'isp' => $data['org'],
+                    'area' => null,
+                    'latitude' => $location[0] ?? null,
+                    'longitude' => $location[1] ?? null,
+                ];
+            }
+
+            Log::error('【akile】IP查询失败：'.$data['msg'] ?? '');
+        } else {
+            Log::error('【akile】查询无效：'.$ip.var_export($data, true));
         }
 
-        return false;
+        return null;
+    }
+
+    private static function cz88(string $ip): ?array
+    {
+        $response = self::$basicRequest->get("https://www.cz88.net/api/cz88/ip/base?ip=$ip");
+        if ($response->ok()) {
+            $data = $response->json();
+
+            if ($data['success'] && $data['data']['ip'] === $ip) {
+                $data = $data['data'];
+                $location = $data['locations'] ? $data['locations'][0] : null;
+
+                return [
+                    'country' => $data['country'],
+                    'region' => $data['province'],
+                    'city' => $data['city'],
+                    'isp' => $data['isp'],
+                    'area' => $data['districts'],
+                    'latitude' => $location ? $location['latitude'] : null,
+                    'longitude' => $location ? $location['longitude'] : null,
+                ];
+            }
+        }
+
+        return null;
     }
 
     private static function userAgentInfo(string $ip): ?array

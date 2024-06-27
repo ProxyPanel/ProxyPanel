@@ -32,11 +32,13 @@ class CurrencyExchange
 
         foreach (self::$apis as $api) {
             try {
-                $rate = self::$api($base, $target);
-                if ($rate !== null) {
-                    Cache::put($cacheKey, $rate, Day);
+                if (method_exists(self::class, $api)) {
+                    $rate = self::$api($base, $target);
+                    if ($rate !== null) {
+                        Cache::put($cacheKey, $rate, Day);
 
-                    return round($amount * $rate, 2);
+                        return round($amount * $rate, 2);
+                    }
                 }
             } catch (Exception $e) {
                 Log::error("[$api] 币种汇率信息获取报错: ".$e->getMessage());

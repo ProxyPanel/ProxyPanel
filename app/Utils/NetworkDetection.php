@@ -18,9 +18,11 @@ class NetworkDetection
 
         foreach ($testers as $tester) {
             try {
-                $result = $this->callLatencyTester($tester, $ip);
-                if ($result !== null) {
-                    return $result;
+                if (method_exists(self::class, $tester)) {
+                    $result = $this->$tester($ip);
+                    if ($result !== null) {
+                        return $result;
+                    }
                 }
             } catch (Exception $e) {
                 Log::error("[$tester] 网络延迟测试报错: ".$e->getMessage());
@@ -32,13 +34,54 @@ class NetworkDetection
         return null;
     }
 
-    private function callLatencyTester(string $tester, string $ip): ?array
+    public function networkStatus(string $ip, int $port): ?array
     {
-        return match ($tester) {
-            'oiowebPing' => $this->oiowebPing($ip),
-            'xiaoapiPing' => $this->xiaoapiPing($ip),
-            'yum6Ping' => $this->yum6Ping($ip),
-        };
+        $status = $this->networkCheck($ip, $port);
+        if ($status) {
+            $ret = [];
+            foreach (['icmp', 'tcp'] as $protocol) {
+                if ($status['in'][$protocol] && $status['out'][$protocol]) {
+                    $check = 1; // 正常
+                }
+
+                if ($status['in'][$protocol] && ! $status['out'][$protocol]) {
+                    $check = 2; // 国外访问异常
+                }
+
+                if (! $status['in'][$protocol] && $status['out'][$protocol]) {
+                    $check = 3; // 被墙
+                }
+
+                $ret[$protocol] = $check ?? 4; // 服务器宕机
+            }
+
+            return $ret;
+        }
+
+        return null;
+    }
+
+    private function networkCheck(string $ip, int $port): ?array
+    { // 通过众多API进行节点阻断检测.
+        $checkers = ['toolsdaquan', 'vps234', 'flyzy2005', 'idcoffer', 'ip112', 'upx8', 'rss', 'gd', 'vps1352', 'akile'];
+        self::$basicRequest = Http::timeout(15)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+
+        foreach ($checkers as $checker) {
+            try {
+                if (method_exists(self::class, $checker)) {
+                    $result = $this->$checker($ip, $port);
+                    if ($result !== null) {
+                        return $result;
+                    }
+                }
+            } catch (Exception $e) {
+                Log::error("[$checker] 网络阻断测试报错: ".$e->getMessage());
+
+                continue;
+            }
+        }
+
+        return null;
     }
 
     private function oiowebPing(string $ip)
@@ -97,69 +140,6 @@ class NetworkDetection
         return false; // 发送错误
     }
 
-    public function networkStatus(string $ip, int $port): ?array
-    {
-        $status = $this->networkCheck($ip, $port);
-        if ($status) {
-            $ret = [];
-            foreach (['icmp', 'tcp'] as $protocol) {
-                if ($status['in'][$protocol] && $status['out'][$protocol]) {
-                    $check = 1; // 正常
-                }
-
-                if ($status['in'][$protocol] && ! $status['out'][$protocol]) {
-                    $check = 2; // 国外访问异常
-                }
-
-                if (! $status['in'][$protocol] && $status['out'][$protocol]) {
-                    $check = 3; // 被墙
-                }
-
-                $ret[$protocol] = $check ?? 4; // 服务器宕机
-            }
-
-            return $ret;
-        }
-
-        return null;
-    }
-
-    private function networkCheck(string $ip, int $port): ?array
-    { // 通过众多API进行节点阻断检测.
-        $checkers = ['toolsdaquan', 'flyzy2005', 'idcoffer', 'ip112', 'upx8', 'vps234', 'rss', 'gd', 'vps1352'];
-        self::$basicRequest = Http::timeout(15)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-
-        foreach ($checkers as $checker) {
-            try {
-                $result = $this->callChecker($checker, $ip, $port);
-                if ($result !== null) {
-                    return $result;
-                }
-            } catch (Exception $e) {
-                Log::error("[$checker] 网络阻断测试报错: ".$e->getMessage());
-
-                continue;
-            }
-        }
-
-        return null;
-    }
-
-    private function callChecker(string $checker, string $ip, int $port): ?array
-    {
-        return match ($checker) {
-            'toolsdaquan' => $this->toolsdaquan($ip, $port),
-            'gd' => $this->gd($ip, $port),
-            'vps234' => $this->vps234($ip),
-            'flyzy2005' => $this->flyzy2005($ip, $port),
-            'idcoffer' => $this->idcoffer($ip, $port),
-            'ip112' => $this->ip112($ip, $port),
-            'upx8' => $this->upx8($ip, $port),
-            'vps1352' => $this->vps1352($ip, $port),
-            'rss' => $this->rss($ip, $port),
-        };
-    }
-
     private function toolsdaquan(string $ip, int $port): ?array
     { // 开发依据: https://www.toolsdaquan.com/ipcheck/
         $response_inner = self::$basicRequest->withHeaders(['Referer' => 'https://www.toolsdaquan.com/ipcheck/'])->get("https://www.toolsdaquan.com/toolapi/public/ipchecking/$ip/$port");
@@ -190,6 +170,30 @@ class NetworkDetection
                 'tcp' => $outer['outside_tcp'] === 'success',
             ],
         ];
+    }
+
+    private function akile(string $ip, int $port): ?array
+    { // 开发依据: https://tools.akile.io/
+        $response = self::$basicRequest->get("https://tools.akile.io/gping?address=$ip&port=$port");
+
+        if ($response->ok()) {
+            $data = $response->json();
+            if ($data) {
+                return [
+                    'in' => [
+                        'icmp' => $data['cn_icmp'],
+                        'tcp' => $data['cn_tcp'],
+                    ],
+                    'out' => [
+                        'icmp' => $data['global_icmp'],
+                        'tcp' => $data['global_tcp'],
+                    ],
+                ];
+            }
+        }
+        Log::warning("【阻断检测】检测{$ip}时，[akile]接口返回异常");
+
+        return null;
     }
 
     private function gd(string $ip, int $port): ?array
