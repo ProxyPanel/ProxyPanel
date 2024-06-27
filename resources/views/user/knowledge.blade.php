@@ -22,7 +22,7 @@
                 <div class="col-xxl-2 col-lg-4 col-md-12">
                     <div class="panel">
                         <div class="panel-body">
-                            <div class="list-group faq-list" role="tablist">
+                            <div class="list-group" role="tablist">
                                 @foreach($knowledges as $category => $articles)
                                     @php $str = string_urlsafe($category) @endphp
                                     <a class="list-group-item list-group-item-action @if($loop->first) active @endif" data-toggle="tab"

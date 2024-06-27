@@ -77,7 +77,7 @@
                         <div class="panel-title">
                             <div class="brand">
                                 <img src="{{sysConfig('website_home_logo')? asset(sysConfig('website_home_logo')) :'/assets/images/logo.png'}}" class="brand-img" alt="logo"/>
-                                <h3 class="brand-text">{{sysConfig('website_name')}}</h3>
+                                <h1 class="brand-text">{{sysConfig('website_name')}}</h1>
                             </div>
                         </div>
                         <div class="ribbon ribbon-reverse ribbon-info ribbon-clip">

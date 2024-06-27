@@ -48,3 +48,7 @@ Route::prefix('pay')->group(function () {
     Route::post('/manual/{payment}/inform', [Manual::class, 'inform'])->name('manual.inform'); // 人工支付通知
     Route::get('/stripe/{session_id}', [Stripe::class, 'redirectPage'])->name('stripe.checkout'); // Stripe Checkout page
 });
+
+Route::get('create/string', [Str::class, 'random'])->name('createStr'); // 生成随机密码
+Route::get('create/uuid', [Str::class, 'uuid'])->name('createUUID'); // 生成UUID
+Route::get('getPort', [Helpers::class, 'getPort'])->name('getPort'); // 获取端口

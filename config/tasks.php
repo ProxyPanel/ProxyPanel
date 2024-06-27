@@ -3,7 +3,7 @@
 return [
     'chunk' => env('TASKS_CHUNK', 1000), // 大数据量修改，分段处理，减少内存使用
     'clean' => [
-        'node_daily_logs' => env('TASKS_NODE_DAILY_LOGS', '-2 month'), // 清除节点每天流量数据日志
+        'node_daily_logs' => env('TASKS_NODE_DAILY_LOGS', '-25 month'), // 清除节点每天流量数据日志
         'node_hourly_logs' => env('TASKS_NODE_HOURLY_LOGS', '-3 days'), // 清除节点每小时流量数据日志
         'notification_logs' => env('TASKS_NOTIFICATION_LOGS', '-1 month'), // 清理通知日志
         'node_heartbeats' => env('TASKS_NODE_HEARTBEATS', '-30 minutes'), // 清除节点负载信息日志

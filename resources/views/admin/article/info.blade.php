@@ -133,11 +133,21 @@
           link_default_target: '_blank',
           quickbars_insert_toolbar: 'quicktable image media',
           quickbars_selection_toolbar: 'bold italic underline | blocks | bullist numlist | blockquote quicklink',
-          extended_valid_elements: 'i[class|aria-hidden]',
+          extended_valid_elements: 'button[onclick|class],i[class|aria-hidden]', // Allow more attributes for <a>
           language: '{{app()->getLocale()}}',
           content_css: '/assets/bundle/app.min.css',
           min_height: 500,
           max_height: 800,
+          setup: function (editor) {
+            editor.on('PreProcess', function (e) {
+              // Allow href attribute to contain 'javascript:' protocol
+              tinymce.each(e.node.getElementsByTagName('a'), function (a) {
+                if (a.href && a.href.startsWith('javascript:')) {
+                  a.setAttribute('href', a.href);
+                }
+              });
+            });
+          }
         });
 
         $('input:radio[name=\'type\']').on('change', function() {

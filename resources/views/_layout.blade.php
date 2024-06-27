@@ -19,13 +19,15 @@
     <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
     <link href="/assets/bundle/app.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.staticfile.org/flag-icons/6.6.6/css/flag-icons.min.css"/>
+    <link rel="stylesheet" href="//cdn.staticfile.net/flag-icons/7.1.0/css/flag-icons.min.css" />
     @yield('layout_css')
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">
-    <link href="/assets/css/font.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.loli.net">
+    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
+    <link href="https://fonts.loli.net/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <!--[if lt IE 9]>
-    <script src="//cdn.staticfile.org/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="//cdn.staticfile.net/html5shiv/3.7.3/html5shiv.min.js"></script>
     <![endif]-->
     <!--[if lt IE 10]>
     <script src="/assets/global/vendor/media-match/media.match.min.js"></script>
