@@ -4,15 +4,31 @@ namespace App\Utils;
 
 use Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
-class QQInfo
+class Avatar
 {
     private static PendingRequest $basicRequest;
+
+    public static function getAvatar(Request $request): JsonResponse
+    {
+        $username = $request->input('username');
+        $qq = $request->input('qq');
+        if ($qq) {
+            $url = self::getQQAvatar($qq);
+        } elseif ($username && stripos(strtolower($request->input('username')), '@qq.com') !== false) {
+            $url = self::getQQAvatar($username);
+        } else {
+            $url = self::getRandomAvatar($username);
+        }
+
+        return response()->json($url);
+    }
 
     public static function getQQAvatar(string $qq): ?string
     {
         self::$basicRequest = Http::timeout(15)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36')->replaceHeaders(['Referer' => null]);
-
         $ret = null;
         $source = 1;
 
@@ -27,6 +43,16 @@ class QQInfo
         }
 
         return $ret;
+    }
+
+    private static function qLogo(string $url): ?string
+    {
+        $response = self::$basicRequest->get($url);
+        if ($response->ok()) {
+            return $url;
+        }
+
+        return null;
     }
 
     private static function qZonePortrait(string $url, string $qq): ?string
@@ -44,16 +70,6 @@ class QQInfo
         return null;
     }
 
-    private static function qLogo(string $url): ?string
-    {
-        $response = self::$basicRequest->get($url);
-        if ($response->ok()) {
-            return $url;
-        }
-
-        return null;
-    }
-
     private static function qqLogin(string $qq): ?string
     {
         $response = self::$basicRequest->get("https://ptlogin.qq.com/getface?imgtype=3&uin=$qq");
@@ -65,5 +81,21 @@ class QQInfo
         }
 
         return null;
+    }
+
+    public static function getRandomAvatar(string $username): string
+    {
+        // 'https://api.sretna.cn/kind/ar.php','https://api.qjqq.cn/api/MiYouShe',
+        // 'https://api.uomg.com/api/rand.avatar?sort=%E5%8A%A8%E6%BC%AB%E5%A5%B3&format=images','https://api.uomg.com/api/rand.avatar?sort=%E5%8A%A8%E6%BC%AB%E7%94%B7&format=images',
+        // 'https://zt.sanzhixiongnet.cn/api.php','https://api.vvhan.com/api/avatar/dm',
+        $apiUrls = [
+            'https://www.loliapi.com/acg/pp/',
+            'https://api.dicebear.com/9.x/thumbs/svg?seed='.$username.'&radius=50',
+            'https://www.cuteapi.com/api/acg/head-portrait/',
+            'https://api.lolimi.cn/API/dmtx/',
+            'https://t.alcy.cc/tx/',
+        ];
+
+        return $apiUrls[array_rand($apiUrls)];
     }
 }

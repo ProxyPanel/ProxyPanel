@@ -70,7 +70,8 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link navbar-avatar" data-animation="scale-up" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
                             <span class="avatar avatar-online">
-                            <img src="{{Auth::getUser()->avatar}}" alt="{{trans('common.avatar')}}"/><i></i>
+                                <img data-uid="{{ Auth::getUser()->id }}" data-qq="{{ Auth::getUser()->qq }}" data-username="{{ Auth::getUser()->username }}"
+                                     src="" alt="{{ trans('common.avatar') }}" loading="lazy" />
                             </span>
                         </a>
                         <div class="dropdown-menu" role="menu">

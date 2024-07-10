@@ -33,47 +33,117 @@
 </head>
 
 <body class="animsition @yield('body_class')">
-@yield('layout_content')
-<!-- 核心/Core -->
-<script src="/assets/global/vendor/babel-external-helpers/babel-external-helpers.js"></script>
-<script src="/assets/global/vendor/jquery/jquery.min.js"></script>
-<script src="/assets/global/vendor/popper-js/umd/popper.min.js"></script>
-<script src="/assets/global/vendor/bootstrap/bootstrap.min.js"></script>
-<script src="/assets/global/vendor/animsition/animsition.min.js"></script>
-<script src="/assets/global/vendor/mousewheel/jquery.mousewheel.min.js"></script>
-<script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js"></script>
-<script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js"></script>
-<script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js"></script>
-<!-- 插件/Plugins -->
-<script src="/assets/global/vendor/screenfull/screenfull.min.js"></script>
-<script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js"></script>
-<!-- 脚本/Scripts -->
-<script src="/assets/global/js/Component.js"></script>
-<script src="/assets/global/js/Plugin.js"></script>
-<script src="/assets/global/js/Base.js"></script>
-<script src="/assets/global/js/Config.js"></script>
-<script src="/assets/js/Section/Menubar.js"></script>
-<script src="/assets/js/Section/Sidebar.js"></script>
-<script src="/assets/js/Section/PageAside.js"></script>
-<script src="/assets/js/Plugin/menu.js"></script>
-<!-- 设置/Config -->
-<script src="/assets/global/js/config/colors.js"></script>
-<script>
-  Config.set('assets', '/assets');
-</script>
-<!-- 页面/Page -->
-<script src="/assets/js/Site.js"></script>
-<script src="/assets/global/js/Plugin/asscrollable.js"></script>
-<script src="/assets/global/js/Plugin/slidepanel.js"></script>
-<script>
-  (function(document, window, $) {
-    'use strict';
-    const Site = window.Site;
-    $(document).ready(function() {
-      Site.run();
-    });
-  })(document, window, jQuery);
-</script>
-@yield('layout_javascript')
+    @yield('layout_content')
+    <!-- 核心/Core -->
+    <script src="/assets/global/vendor/babel-external-helpers/babel-external-helpers.js"></script>
+    <script src="/assets/global/vendor/jquery/jquery.min.js"></script>
+    <script src="/assets/global/vendor/popper-js/umd/popper.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap/bootstrap.min.js"></script>
+    <script src="/assets/global/vendor/animsition/animsition.min.js"></script>
+    <script src="/assets/global/vendor/mousewheel/jquery.mousewheel.min.js"></script>
+    <script src="/assets/global/vendor/asscrollbar/jquery-asScrollbar.min.js"></script>
+    <script src="/assets/global/vendor/asscrollable/jquery-asScrollable.min.js"></script>
+    <script src="/assets/global/vendor/ashoverscroll/jquery-asHoverScroll.min.js"></script>
+    <!-- 插件/Plugins -->
+    <script src="/assets/global/vendor/screenfull/screenfull.min.js"></script>
+    <script src="/assets/global/vendor/slidepanel/jquery-slidePanel.min.js"></script>
+    <!-- 脚本/Scripts -->
+    <script src="/assets/global/js/Component.js"></script>
+    <script src="/assets/global/js/Plugin.js"></script>
+    <script src="/assets/global/js/Base.js"></script>
+    <script src="/assets/global/js/Config.js"></script>
+    <script src="/assets/js/Section/Menubar.js"></script>
+    <script src="/assets/js/Section/Sidebar.js"></script>
+    <script src="/assets/js/Section/PageAside.js"></script>
+    <script src="/assets/js/Plugin/menu.js"></script>
+    <!-- 设置/Config -->
+    <script src="/assets/global/js/config/colors.js"></script>
+    <script>
+        Config.set("assets", "/assets");
+    </script>
+    <!-- 页面/Page -->
+    <script src="/assets/js/Site.js"></script>
+    <script src="/assets/global/js/Plugin/asscrollable.js"></script>
+    <script src="/assets/global/js/Plugin/slidepanel.js"></script>
+    <script>
+        (function(document, window, $) {
+            "use strict";
+            const Site = window.Site;
+            $(document).ready(function() {
+                Site.run();
+            });
+        })(document, window, jQuery);
+        @auth
+        document.addEventListener("DOMContentLoaded", async function() {
+            const avatarElements = Array.from(document.querySelectorAll("img[data-uid]"));
+            let avatarData = JSON.parse(localStorage.getItem("avatarData")) || {};
+            const fetchPromises = {};
+
+            // Group img elements by uid
+            const uidToElementsMap = groupElementsByUid(avatarElements);
+
+            for (const [uid, elements] of Object.entries(uidToElementsMap)) {
+                if (avatarData[uid]) {
+                    updateElementsSrc(elements, avatarData[uid]);
+                } else if (!fetchPromises[uid]) {
+                    const {
+                        username,
+                        qq
+                    } = elements[0].dataset;
+                    fetchPromises[uid] = fetchAndCacheAvatar(uid, username, qq).then(imgUrl => {
+                        avatarData[uid] = imgUrl;
+                        localStorage.setItem("avatarData", JSON.stringify(avatarData));
+                        updateElementsSrc(elements, imgUrl);
+                    }).catch(error => {
+                        console.error(`Error fetching avatar for uid ${uid}:`, error);
+                        updateElementsSrc(elements, ""); // Or set to a default URL
+                    });
+                }
+            }
+        });
+
+        function groupElementsByUid(elements) {
+            return elements.reduce((acc, el) => {
+                const uid = el.dataset.uid;
+                if (!acc[uid]) acc[uid] = [];
+                acc[uid].push(el);
+                return acc;
+            }, {});
+        }
+
+        function updateElementsSrc(elements, src) {
+            elements.forEach(el => el.src = src);
+        }
+
+        async function fetchAndCacheAvatar(uid, username, qq) {
+            const response = await fetch(`{{ route('getAvatar') }}?username=${username}&qq=${qq}`);
+            const url = await response.json();
+            if (/@qq\.com/.test(username) || qq) {
+                return url;
+            }
+            const imgResponse = await fetch(url);
+
+            if (url === imgResponse.url) {
+                const type = imgResponse.headers.get("Content-Type");
+                const imgBlob = await imgResponse.blob();
+                const base64String = await blobToBase64(imgBlob);
+                return `data:${type};base64,${base64String}`;
+            } else {
+                return imgResponse.url;
+            }
+        }
+
+        async function blobToBase64(blob) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(",")[1]);
+                reader.onerror = () => reject("Error converting blob to base64");
+                reader.readAsDataURL(blob);
+            });
+        }
+        @endauth
+    </script>
+    @yield('layout_javascript')
 </body>
+
 </html>

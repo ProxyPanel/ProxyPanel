@@ -3,6 +3,7 @@
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\User\AffiliateController;
 use App\Http\Controllers\UserController;
+use App\Utils\Avatar;
 use App\Utils\Payments\Manual;
 use App\Utils\Payments\Stripe;
 
@@ -49,6 +50,7 @@ Route::prefix('pay')->group(function () {
     Route::get('/stripe/{session_id}', [Stripe::class, 'redirectPage'])->name('stripe.checkout'); // Stripe Checkout page
 });
 
+Route::get('avatar', [Avatar::class, 'getAvatar'])->name('getAvatar'); // 获取随机头像
 Route::get('create/string', [Str::class, 'random'])->name('createStr'); // 生成随机密码
 Route::get('create/uuid', [Str::class, 'uuid'])->name('createUUID'); // 生成UUID
 Route::get('getPort', [Helpers::class, 'getPort'])->name('getPort'); // 获取端口

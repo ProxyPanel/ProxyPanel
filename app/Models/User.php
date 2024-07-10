@@ -5,8 +5,8 @@ namespace App\Models;
 use App\Casts\data_rate;
 use App\Casts\money;
 use App\Observers\UserObserver;
+use App\Utils\Avatar;
 use App\Utils\Helpers;
-use App\Utils\QQInfo;
 use DB;
 use Hash;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -203,18 +203,20 @@ class User extends Authenticatable
 
     public function getAvatarAttribute(): string
     {
-        if ($this->qq) {
-            $url = QQInfo::getQQAvatar($this->qq);
-        } elseif (stripos(strtolower($this->username), '@qq.com') !== false) {
-            $url = QQInfo::getQQAvatar($this->username);
-        } else {
-            // $url = 'https://gravatar.loli.net/avatar/'.md5(strtolower(trim($this->username)))."?&d=identicon";
-            // $url = 'https://robohash.org/'.md5(strtolower(trim($this->username))).'?set=set4&bgset=bg2&size=400x400';
-            // $url = 'https://api.dicebear.com/6.x/thumbs/svg?seed='.$this->username.'&radius=50';
-            $url = 'https://api.btstu.cn/sjtx/api.php?lx=c1&format=images&method=zsy';
+        $img = session('avatar_url_'.$this->id);
+        if ($img) {
+            return $img;
         }
+        if ($this->qq) {
+            $img = Avatar::getQQAvatar($this->qq);
+        } elseif (stripos(strtolower($this->username), '@qq.com') !== false) {
+            $img = Avatar::getQQAvatar($this->username);
+        } else {
+            $img = Avatar::getRandomAvatar($this->username);
+        }
+        session(['avatar_url_'.$this->id => $img]);
 
-        return $url;
+        return $img;
     }
 
     public function scopeActiveUser(Builder $query): Builder
@@ -310,10 +312,7 @@ class User extends Authenticatable
 
     public function paidOrders()
     {
-        return $this->hasMany(Order::class)->where('status', 2)
-            ->whereNotNull('goods_id')
-            ->where('is_expire', 0)
-            ->where('amount', '>', 0);
+        return $this->hasMany(Order::class)->where('status', 2)->whereNotNull('goods_id')->where('is_expire', 0)->where('amount', '>', 0);
     }
 
     public function routeNotificationForTelegram()
