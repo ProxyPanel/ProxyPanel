@@ -1,45 +1,34 @@
 <!DOCTYPE html>
-<!--[if IE 8]>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="ie8 no-js css-menubar"> <![endif]-->
-<!--[if IE 9]>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="ie9 no-js css-menubar"> <![endif]-->
-<!--[if !IE]><!-->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<!--<![endif]-->
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-          content="An account management Panel based on Laravel7 framework. Include multiple payment, account management, system caching, admin notification, products models, and more.">
-    <meta name="keywords" content="ProxyPanel Laravel Shadowsocks ShadowsocksR V2Ray Trojan VNET VPN">
-    <meta name="author" content="ZBrettonYe">
-    <meta name="copyright" content="2017-2024©ProxyPanel">
+          content="御宅云加速器，采用开源加速引擎,顶级IDC集群，全线高端刀片服务器！为网游用户解决延迟、掉线、卡机等问题，让你游戏更爽快！告别高延迟！外服加速72小时免费试用。海外直连专线，外服游戏加速效果业界顶尖！支持加速绝地求生、H1Z1、GTA5、CS:GO，以及LOL英雄联盟、DNF地下城与勇士、CF穿越火线、CSGO等上百款热门中外网游。">
+    <meta name="keywords" content="御宅云 绅士世界 加速器 网游加速器 外服加速器 超快感 远征军 海外游戏加速 steam加速 免费加速器 游戏加速 H1Z1加速器 绝地求生加速器 大逃杀加速 绝地加速 GTA加速 CSGO加速">
+    <meta name="author" content="绅士世界御宅云">
+    <meta name="copyright" content="御宅云">
     <title>@yield('title')</title>
-    <link href="{{asset('favicon.ico')}}" rel="shortcut icon apple-touch-icon">
+    <link href="{{ asset('favicon.ico') }}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
     <link href="/assets/bundle/app.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="//cdn.staticfile.net/flag-icons/7.1.0/css/flag-icons.min.css" />
+    <link href="https://cdn.staticfile.net/flag-icons/7.1.0/css/flag-icons.min.css" rel="stylesheet">
     @yield('layout_css')
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.loli.net">
-    <link rel="preconnect" href="https://gstatic.loli.net" crossorigin>
-    <link href="https://fonts.loli.net/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
-    <!--[if lt IE 9]>
-    <script src="//cdn.staticfile.net/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <![endif]-->
-    <!--[if lt IE 10]>
-    <script src="/assets/global/vendor/media-match/media.match.min.js"></script>
-    <script src="/assets/global/vendor/respond/respond.min.js"></script>
-    <![endif]-->
+    <link href="https://fonts.loli.net" rel="preconnect">
+    <link href="https://gstatic.loli.net" rel="preconnect" crossorigin>
+    <link href="https://fonts.loli.net/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
     <!-- Scripts -->
     <script src="/assets/global/vendor/breakpoints/breakpoints.min.js"></script>
     <script>
-      Breakpoints();
+        Breakpoints();
     </script>
     @if (config('theme.skin'))
-        <link id="skinStyle" href="/assets/css/skins/{{config('theme.skin')}}.min.css" rel="stylesheet" type="text/css">
+        <link id="skinStyle" href="/assets/css/skins/{{ config('theme.skin') }}.min.css" rel="stylesheet">
     @endif
 </head>
 
