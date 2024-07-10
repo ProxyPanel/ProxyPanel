@@ -14,7 +14,7 @@ class ArticleRequest extends FormRequest
             'language' => 'required|string',
             'category' => 'nullable|string',
             'sort' => 'nullable|numeric',
-            'logo' => 'nullable|exclude_if:type,4|image',
+            'logo' => 'nullable|'.($this->hasFile('logo') ? 'image' : 'url'),
             'content' => 'required',
         ];
     }

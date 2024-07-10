@@ -17,31 +17,34 @@ use Str;
 class ArticleController extends Controller
 {
     public function index(Request $request)
-    { // 文章列表
+    {
+        // 文章列表
         $categories = Article::whereNotNull('category')->distinct()->get('category');
         $articles = Article::query();
+
         foreach (['id', 'category', 'language', 'type'] as $field) {
             $request->whenFilled($field, function ($value) use ($articles, $field) {
                 $articles->where($field, $value);
             });
         }
+
         $articles = $articles->latest()->orderByDesc('sort')->paginate()->appends($request->except('page'));
 
         return view('admin.article.index', compact('articles', 'categories'));
     }
 
-    public function store(ArticleRequest $request)
-    { // 添加文章
+    public function store(ArticleRequest $request): RedirectResponse
+    {
+        // 添加文章
         $data = $request->validated();
-        // LOGO
+
         try {
             if ($data['type'] !== '4' && $request->hasFile('logo')) {
                 $path = $this->fileUpload($request->file('logo'));
-                if (is_string($path)) {
-                    $data['logo'] = $path;
-                } else {
-                    return $path;
+                if ($path === false) {
+                    return redirect()->back()->withInput()->withErrors('Logo存储失败');
                 }
+                $data['logo'] = $path;
             }
 
             if ($article = Article::create($data)) {
@@ -56,50 +59,50 @@ class ArticleController extends Controller
         return redirect()->back()->withInput()->withErrors('添加失败');
     }
 
-    public function fileUpload(UploadedFile $file)
-    { // 图片上传
+    public function fileUpload(UploadedFile $file): string|bool
+    {
         $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
 
-        if (! $file->storeAs('public', $fileName)) {
-            return redirect()->back()->withInput()->withErrors('Logo存储失败');
-        }
-
-        return 'upload/'.$fileName;
+        return $file->storeAs('public', $fileName) ? 'upload/'.$fileName : false;
     }
 
     public function create()
-    { // 添加文章页面
+    {
+        // 添加文章页面
         $categories = Article::whereNotNull('category')->distinct()->get('category');
 
         return view('admin.article.info', compact('categories'));
     }
 
     public function show(Article $article)
-    { // 文章页面
+    {
+        // 文章页面
         $article->content = (new ArticleService($article))->getContent();
 
         return view('admin.article.show', compact('article'));
     }
 
     public function edit(Article $article)
-    { // 编辑文章页面
+    {
+        // 编辑文章页面
         $categories = Article::whereNotNull('category')->distinct()->get('category');
 
         return view('admin.article.info', compact('article', 'categories'));
     }
 
     public function update(ArticleRequest $request, Article $article): RedirectResponse
-    { // 编辑文章
+    {
+        // 编辑文章
         $data = $request->validated();
-        $data['logo'] = $data['logo'] ?? null;
-        // LOGO
+
         if ($data['type'] !== '4' && $request->hasFile('logo')) {
             $path = $this->fileUpload($request->file('logo'));
-            if (is_string($path)) {
-                $data['logo'] = $path;
-            } else {
-                return $path;
+            if ($path === false) {
+                return redirect()->back()->withInput()->withErrors('Logo存储失败');
             }
+            $data['logo'] = $path;
+        } elseif (! $request->has('logo')) {
+            $data['logo'] = $article->logo;
         }
 
         if ($article->update($data)) {
@@ -110,7 +113,8 @@ class ArticleController extends Controller
     }
 
     public function destroy(Article $article): JsonResponse
-    { // 删除文章
+    {
+        // 删除文章
         try {
             $article->delete();
         } catch (Exception $e) {
