@@ -87,14 +87,14 @@ class TaskDaily extends Command
     private function resetUserTraffic(): void
     { // 重置用户流量
         $today = date('Y-m-d');
-        User::where('status', '<>', -1)->where('expired_at', '>', $today)->where('reset_time', '<=', $today)->with([
-            'orders' => function ($query) {
-                $query->activePlan();
-            },
-        ])->has('orders')->chunk(config('tasks.chunk'), function ($users) {
+        User::where('status', '<>', -1)->where('expired_at', '>', $today)->where('reset_time', '<=', $today)->whereHas('orders', function ($query) {
+            $query->activePlan();
+        })->with(['orders' => function ($query) {
+            $query->activePlan();
+        }])->chunk(config('tasks.chunk'), function ($users) {
             $users->each(function ($user) {
                 $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
-                $order = $user->orders()->activePlan()->first(); // 取出用户正在使用的套餐
+                $order = $user->orders->first(); // 取出用户正在使用的套餐
 
                 $oldData = $user->transfer_enable;
                 // 重置流量与重置日期

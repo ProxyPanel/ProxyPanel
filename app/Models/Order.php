@@ -49,9 +49,9 @@ class Order extends Model
         return $this->hasOne(Payment::class);
     }
 
-    public function scopeUid(Builder $query, int $uid = 0): Builder
+    public function scopeUid(Builder $query, ?int $uid = null): Builder
     {
-        return $query->whereUserId($uid ?: Auth::id());
+        return $query->whereUserId($uid ?? Auth::id());
     }
 
     public function scopeRecentUnPay(Builder $query, int $minutes = 0): Builder
@@ -63,7 +63,7 @@ class Order extends Model
         return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-$minutes minutes")));
     }
 
-    public function scopeUserPrepay(Builder $query, int $uid = 0): Builder
+    public function scopeUserPrepay(Builder $query, ?int $uid = null): Builder
     {
         return $query->uid($uid)->whereStatus(3)->oldest();
     }
@@ -92,12 +92,12 @@ class Order extends Model
         });
     }
 
-    public function scopeUserActivePlan(Builder $query, int $uid = 0): Builder
+    public function scopeUserActivePlan(Builder $query, ?int $uid = null): Builder
     {
         return $query->uid($uid)->activePlan();
     }
 
-    public function scopeUserActivePackage(Builder $query, int $uid = 0): Builder
+    public function scopeUserActivePackage(Builder $query, ?int $uid = null): Builder
     {
         return $query->uid($uid)->activePackage();
     }
@@ -136,7 +136,7 @@ class Order extends Model
     {
         switch ($status) {
             case -1:
-                $label = trans('common.order.status.cancel');
+                $label = trans('common.order.status.canceled');
                 break;
             case 0:
                 $tag = 1;
@@ -148,7 +148,7 @@ class Order extends Model
                 break;
             case 2:
                 if ($this->goods_id === null) {
-                    $label = trans('common.order.status.complete');
+                    $label = trans('common.order.status.completed');
                 } elseif ($expire) {
                     $label = trans('common.status.expire');
                 } else {
