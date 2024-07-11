@@ -42,9 +42,9 @@ class AdminController extends Controller
                 'expireWarningUserCount' => User::whereBetween('expired_at', [$today, today()->addDays(sysConfig('expire_days'))])->count(), // 临近过期用户数
                 'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
                 'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
-                'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereMonth('created_at', now()->month)->sum(DB::raw('u + d'))),
+                'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereNull('node_id')->whereMonth('created_at', now()->month)->sum(DB::raw('u + d'))),
                 'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
-                'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::sum(DB::raw('u + d'))),
+                'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::whereNull('node_id')->where('created_at', '>=', now()->subDays(30))->sum(DB::raw('u + d'))),
             ];
         });
 

@@ -39,7 +39,7 @@ class AutoClearLogs extends Command
     private function clearLog(): void
     {
         try {
-            NodeDailyDataFlow::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.node_daily_logs'))))->delete(); // 清除节点每天流量数据日志
+            NodeDailyDataFlow::whereNotNull('node_id')->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.node_daily_logs'))))->delete(); // 清除节点每天流量数据日志
 
             NodeHourlyDataFlow::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.node_hourly_logs'))))->delete(); // 清除节点每小时流量数据日志
 

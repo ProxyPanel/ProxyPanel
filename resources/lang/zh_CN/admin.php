@@ -81,9 +81,10 @@ return [
             'rebate_flow' => '返利流水',
         ],
         'analysis' => [
-            'attribute' => '分析报告',
-            'accounting' => '流水账簿',
-            'user_flow' => '用户分析',
+            'attribute' => '数据分析',
+            'accounting' => '流水账',
+            'user_flow' => '用户流量',
+            'site_flow' => '本站流量',
         ],
         'log' => [
             'attribute' => '日志系统',
@@ -361,9 +362,12 @@ return [
         'counts' => '共 <code>:num</code> 个权限角色',
     ],
     'report' => [
-        'monthly_accounting' => '月流水账簿',
-        'annually_accounting' => '年流水账簿',
-        'historic_accounting' => '历史流水账簿',
+        'daily_accounting' => '日流水',
+        'monthly_accounting' => '月流水',
+        'annually_accounting' => '年流水',
+        'daily_site_flow' => '日流量',
+        'monthly_site_flow' => '月流量',
+        'annually_site_flow' => '年流量',
         'current_month' => '本 月',
         'last_month' => '上 月',
         'current_year' => '今 年',
@@ -371,6 +375,8 @@ return [
         'hourly_traffic' => '每时流量',
         'daily_traffic' => '每天流量',
         'today' => '本 日',
+        'avg_traffic_30d' => '30天日均流量',
+        'sum_traffic_30d' => '30天占总流量比',
     ],
     'permission' => [
         'title' => '权限行为列表',

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
+use App\Models\NodeDailyDataFlow;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketClosed;
@@ -183,5 +184,14 @@ class TaskDaily extends Command
                 ]);
             }
         });
+
+        $dailyTotal = NodeDailyDataFlow::whereNotNull('node_id')->whereCreatedAt($created_at)->selectRaw('SUM(u) as total_u, SUM(d) as total_d')->first();
+        if ($dailyTotal) {
+            NodeDailyDataFlow::create([
+                'u' => $dailyTotal->total_u,
+                'd' => $dailyTotal->total_d,
+                'created_at' => $created_at,
+            ]);
+        }
     }
 }

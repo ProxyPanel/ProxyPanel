@@ -4,6 +4,7 @@ use Carbon\CarbonInterval;
 
 const MiB = 1048576;
 const GiB = 1073741824;
+const TiB = 1099511627776;
 
 const Minute = 60;
 const Hour = 3600;

@@ -355,7 +355,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['admin.report.accounting', 'admin.report.userAnalysis'])
+                @canany(['admin.report.accounting', 'admin.report.userAnalysis', 'admin.report.siteAnalysis'])
                     <li class="site-menu-item has-sub {{ request()->routeIs('admin.report.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon wb-stats-bars" aria-hidden="true"></i>
@@ -373,6 +373,13 @@
                                 <li class="site-menu-item {{ request()->routeIs('admin.report.userAnalysis') ? 'active open' : '' }}">
                                     <a href="{{ route('admin.report.userAnalysis') }}">
                                         <span class="site-menu-title">{{ trans('admin.menu.analysis.user_flow') }}</span>
+                                    </a>
+                                </li>
+                            @endcan
+                            @can('admin.report.siteAnalysis')
+                                <li class="site-menu-item {{ request()->routeIs('admin.report.siteAnalysis') ? 'active open' : '' }}">
+                                    <a href="{{ route('admin.report.siteAnalysis') }}">
+                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.site_flow') }}</span>
                                     </a>
                                 </li>
                             @endcan
