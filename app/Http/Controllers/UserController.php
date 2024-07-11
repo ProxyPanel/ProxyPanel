@@ -235,7 +235,7 @@ class UserController extends Controller
         $order = Order::userActivePlan()->firstOrFail();
         $renewCost = $order->goods->renew;
         if ($user->credit < $renewCost) {
-            return Response::json(['status' => 'fail', 'message' => trans('user.reset_data.lack')]);
+            return Response::json(['status' => 'fail', 'message' => trans('user.reset_data.insufficient')]);
         }
 
         $user->update(['u' => 0, 'd' => 0]);
@@ -487,13 +487,13 @@ class UserController extends Controller
 
             DB::commit();
 
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.replace')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.change')])]);
         } catch (Exception $e) {
             DB::rollBack();
 
             Log::error(trans('user.subscribe.error').'：'.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.replace')]).$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.change')]).$e->getMessage()]);
         }
     }
 

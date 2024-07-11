@@ -86,10 +86,10 @@ return [
     ],
 
     'currency' => [
-        'ca' => ['name' => 'Canadian dollar', 'code' => 'CAD', 'symbol' => 'C$'],
+        'ca' => ['name' => 'Canadian Dollar', 'code' => 'CAD', 'symbol' => 'C$'],
         'eu' => ['name' => 'Euro', 'code' => 'EUR', 'symbol' => '€'],
-        'gb' => ['name' => 'Pound sterling', 'code' => 'GBP', 'symbol' => '£'],
-        'sg' => ['name' => 'Singapore dollar', 'code' => 'SGD', 'symbol' => 'S$'],
+        'gb' => ['name' => 'Pound Sterling', 'code' => 'GBP', 'symbol' => '£'],
+        'sg' => ['name' => 'Singapore Dollar', 'code' => 'SGD', 'symbol' => 'S$'],
         'us' => ['name' => 'US Dollar', 'code' => 'USD', 'symbol' => '$'],
         'cn' => ['name' => '人民币', 'code' => 'CNY', 'symbol' => '¥'],
         'tw' => ['name' => '新臺幣', 'code' => 'TWD', 'symbol' => 'NT$'],

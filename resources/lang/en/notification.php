@@ -28,7 +28,7 @@ return [
     'verification' => 'Your verification code:',
     'verification_limit' => 'Please verify within :minutes minutes',
     'data_anomaly' => 'Data anomaly user warning',
-    'data_anomaly_content' => 'User :id: [Upload: :upload | Download: :download | Total: :total] in last 1 hour',
+    'data_anomaly_content' => 'User :id: [Upload: :upload | Download: :download | Total: :total] in the last hour',
     'node' => [
         'upload' => 'Upload',
         'download' => 'Download',

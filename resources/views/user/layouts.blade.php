@@ -120,7 +120,7 @@
                 <li class="site-menu-item {{ request()->routeIs('knowledge') ? 'active open' : '' }}">
                     <a href="{{ route('knowledge') }}">
                         <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{trans('user.menu.helps')}}</span>
+                        <span class="site-menu-title">{{ trans('user.menu.help') }}</span>
                     </a>
                 </li>
                 <li class="site-menu-item {{ request()->routeIs('profile') ? 'active open' : '' }}">
@@ -162,7 +162,7 @@
                         <li class="site-menu-item {{ request()->routeIs('commission') ? 'active open' : '' }}">
                             <a href="{{ route('commission') }}">
                                 <i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
-                                <span class="site-menu-title">{{trans('user.menu.referrals')}}</span>
+                                <span class="site-menu-title">{{ trans('user.menu.promotion') }}</span>
                             </a>
                         </li>
                     @endif

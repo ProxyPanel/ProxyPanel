@@ -57,12 +57,14 @@
                         </select>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">
-                        <select data-plugin="selectpicker" class="form-control show-tick" name="status[]" id="status" data-style="btn-outline btn-primary" title="{{ trans('model.order.status') }}"
-                                multiple>
-                            <option value="-1">{{ trans('common.order.status.cancel') }}</option>
+                        <select class="form-control show-tick" id="status" name="status[]" data-plugin="selectpicker" data-style="btn-outline btn-primary"
+                                title="{{ trans('model.order.status') }}" multiple>
+                            <option value="-1">{{ trans('common.order.status.canceled') }}</option>
                             <option value="0">{{ trans('common.payment.status.wait') }}</option>
                             <option value="1">{{ trans('common.order.status.review') }}</option>
-                            <option value="2">{{ trans('common.order.status.complete').'/'.trans('common.status.expire').'/'.trans('common.order.status.ongoing') }}</option>
+                            <option value="2">
+                                {{ trans('common.order.status.completed') . '/' . trans('common.status.expire') . '/' . trans('common.order.status.ongoing') }}
+                            </option>
                             <option value="3">{{ trans('common.order.status.prepaid') }}</option>
                         </select>
                     </div>

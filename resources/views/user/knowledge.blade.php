@@ -79,7 +79,7 @@
                                                                         @endif
                                                                         <button class="btn btn-outline-info" onclick="exchangeSubscribe();">
                                                                             <i class="icon wb-refresh" aria-hidden="true"></i>
-                                                                            {{trans('common.replace')}}</button>
+                                                                            {{ trans('common.change') }}</button>
                                                                         <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy"
                                                                                 data-clipboard-target="#sub_link">
                                                                             <i class="icon wb-copy" aria-hidden="true"></i>

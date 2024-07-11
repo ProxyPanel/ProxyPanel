@@ -37,7 +37,7 @@ class SubscribeController extends Controller
         }
 
         if ($subscribe->status !== 1) {
-            return $this->failed(trans('errors.subscribe.sub_baned'));
+            return $this->failed(trans('errors.subscribe.sub_banned'));
         }
 
         // 检查用户是否有效
@@ -48,12 +48,12 @@ class SubscribeController extends Controller
         }
 
         if ($user->status === -1) {
-            return $this->failed(trans('errors.subscribe.user_disable'));
+            return $this->failed(trans('errors.subscribe.user_disabled'));
         }
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed(trans('errors.subscribe.baned_until', ['time' => $user->ban_time]));
+                return $this->failed(trans('errors.subscribe.banned_until', ['time' => $user->ban_time]));
             }
 
             $unusedTraffic = $user->transfer_enable - $user->used_traffic;

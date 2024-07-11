@@ -8,7 +8,7 @@ return [
     'empty' => '您当前没有新消息',
     'payment_received' => '您的订单支付成功，金额为:amount，请点击查看订单详情',
     'account_expired' => '账号过期提醒',
-    'account_expired_content' => '您的账号将在:days天后过期，为避免影响正常使用，请及时续费',
+    'account_expired_content' => '您的账号将在:days天后过期，请及时续费以避免影响正常使用',
     'account_expired_blade' => '您的账号将于:days天后过期，请及时续费',
     'active_email' => '请在30分钟内完成验证',
     'close_ticket' => '工单编号:id，标题:title已被关闭',
