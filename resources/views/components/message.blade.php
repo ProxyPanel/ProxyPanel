@@ -1,6 +1,6 @@
 @extends('_layout')
 @section('title', sysConfig('website_name'))
-@section('body_class','page-login-v3 layout-full')
+@section('body_class', 'page-login-v3 layout-full')
 @section('layout_css')
     <style>
         .layout-full {

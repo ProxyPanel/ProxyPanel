@@ -6,8 +6,10 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@shufo/prettier-plugin-blade": "^1.14.1",
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.7.5",
+        "prettier": "^3.3.2",
         "vite": "^4.0.0"
     }
 }

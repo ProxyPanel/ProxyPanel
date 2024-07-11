@@ -1,16 +1,16 @@
-<div {{ $attributes->merge(['class' => 'alert  alert-dismissible alert-'.$type]) }} role="alert">
+<div role="alert" {{ $attributes->merge(['class' => 'alert  alert-dismissible alert-' . $type]) }}>
     <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
-        <span aria-hidden="true">&times;</span><span class="sr-only">{{trans('common.close')}}</span>
+        <span aria-hidden="true">&times;</span><span class="sr-only">{{ trans('common.close') }}</span>
     </button>
-    @if(is_array($message))
-        @if(count($message) > 1)
+    @if (is_array($message))
+        @if (count($message) > 1)
             <ul>
-                @foreach($message as $data)
+                @foreach ($message as $data)
                     <li>{!! $data !!}</li>
                 @endforeach
             </ul>
         @else
-            {!! $message[0]!!}
+            {!! $message[0] !!}
         @endif
     @else
         {!! $message !!}

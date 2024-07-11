@@ -1,10 +1,9 @@
 @component('mail::message')
-    # {{$title}}
+    # {{ $title }}
 
     {!! $content !!}
 
     @component('mail::button', ['url' => $url])
-        {{trans('notification.view_web')}}
+        {{ trans('notification.view_web') }}
     @endcomponent
 @endcomponent
-

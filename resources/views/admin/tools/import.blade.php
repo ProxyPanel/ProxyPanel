@@ -9,16 +9,16 @@
                 <h2 class="panel-title">{{ trans('admin.menu.tools.import') }}</h2>
             </div>
             @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::pull('successMsg')"/>
+                <x-alert type="success" :message="Session::pull('successMsg')" />
             @endif
-            @if($errors->any())
-                <x-alert type="danger" :message="$errors->all()"/>
+            @if ($errors->any())
+                <x-alert type="danger" :message="$errors->all()" />
             @endif
             <div class="panel-body">
-                <form action="{{route('admin.tools.import')}}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <form class="upload-form" action="{{ route('admin.tools.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="file" id="inputUpload" name="uploadFile" data-plugin="dropify" data-default-file="" required/>
-                    <button type="submit" class="btn btn-success float-right mt-10"> {{ trans('common.import') }}</button>
+                    <input id="inputUpload" name="uploadFile" data-plugin="dropify" data-default-file="" type="file" required />
+                    <button class="btn btn-success float-right mt-10" type="submit"> {{ trans('common.import') }}</button>
                 </form>
             </div>
         </div>

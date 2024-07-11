@@ -18,44 +18,44 @@
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
-                    <tr>
-                        <th> {{ trans('model.node.id') }}</th>
-                        <th> {{ trans('model.common.type') }}</th>
-                        <th> {{ trans('model.node.name') }}</th>
-                        <th> {{ trans('model.node.domain') }}</th>
-                        <th> {!! trans('model.node_auth.key') !!}</th>
-                        <th> {{ trans('model.node_auth.secret') }}</th>
-                        <th> {{trans('common.action')}}</th>
-                    </tr>
+                        <tr>
+                            <th> {{ trans('model.node.id') }}</th>
+                            <th> {{ trans('model.common.type') }}</th>
+                            <th> {{ trans('model.node.name') }}</th>
+                            <th> {{ trans('model.node.domain') }}</th>
+                            <th> {!! trans('model.node_auth.key') !!}</th>
+                            <th> {{ trans('model.node_auth.secret') }}</th>
+                            <th> {{ trans('common.action') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach ($authorizations as $auth)
-                        <tr>
-                            <td> {{$auth->node_id}} </td>
-                            <td> {{$auth->node->type_label}} </td>
-                            <td> {{Str::limit($auth->node->name, 20)}} </td>
-                            <td> {{$auth->node->server ?? $auth->node->ip ?? $auth->node->ipv6}} </td>
-                            <td><span class="badge badge-lg badge-info"> {{$auth->key}} </span></td>
-                            <td><span class="badge badge-lg badge-info"> {{$auth->secret}} </span></td>
-                            <td>
-                                <div class="btn-group">
-                                    <button data-target="#install_{{$auth->node->type}}_{{$auth->id}}" data-toggle="modal" class="btn btn-primary">
-                                        <i class="icon wb-code" aria-hidden="true"></i> {{ trans('admin.node.auth.deploy.attribute') }}
-                                    </button>
-                                    @can('admin.node.auth.update')
-                                        <button onclick="refreshAuth('{{$auth->id}}')" class="btn btn-danger">
-                                            <i class="icon wb-reload" aria-hidden="true"></i> {{ trans('admin.node.auth.reset_auth') }}
+                        @foreach ($authorizations as $auth)
+                            <tr>
+                                <td> {{ $auth->node_id }} </td>
+                                <td> {{ $auth->node->type_label }} </td>
+                                <td> {{ Str::limit($auth->node->name, 20) }} </td>
+                                <td> {{ $auth->node->server ?? ($auth->node->ip ?? $auth->node->ipv6) }} </td>
+                                <td><span class="badge badge-lg badge-info"> {{ $auth->key }} </span></td>
+                                <td><span class="badge badge-lg badge-info"> {{ $auth->secret }} </span></td>
+                                <td>
+                                    <div class="btn-group">
+                                        <button class="btn btn-primary" data-target="#install_{{ $auth->node->type }}_{{ $auth->id }}" data-toggle="modal">
+                                            <i class="icon wb-code" aria-hidden="true"></i> {{ trans('admin.node.auth.deploy.attribute') }}
                                         </button>
-                                    @endcan
-                                    @can('admin.node.auth.destroy')
-                                        <button onclick="deleteAuth('{{$auth->id}}')" class="btn btn-primary">
-                                            <i class="icon wb-trash" aria-hidden="true"></i> {{ trans('common.delete') }}
-                                        </button>
-                                    @endcan
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
+                                        @can('admin.node.auth.update')
+                                            <button class="btn btn-danger" onclick="refreshAuth('{{ $auth->id }}')">
+                                                <i class="icon wb-reload" aria-hidden="true"></i> {{ trans('admin.node.auth.reset_auth') }}
+                                            </button>
+                                        @endcan
+                                        @can('admin.node.auth.destroy')
+                                            <button class="btn btn-primary" onclick="deleteAuth('{{ $auth->id }}')">
+                                                <i class="icon wb-trash" aria-hidden="true"></i> {{ trans('common.delete') }}
+                                            </button>
+                                        @endcan
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -74,12 +74,12 @@
         </div>
     </div>
 
-    @foreach($authorizations as $auth)
-        <div id="install_{{$auth->node->type}}_{{$auth->id}}" class="modal fade" tabindex="-1" data-focus-on="input:first" data-keyboard="false">
+    @foreach ($authorizations as $auth)
+        <div class="modal fade" id="install_{{ $auth->node->type }}_{{ $auth->id }}" data-focus-on="input:first" data-keyboard="false" tabindex="-1">
             <div class="modal-dialog modal-simple modal-center modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="{{ trans('common.close') }}">
+                        <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
                             <span aria-hidden="true">×</span>
                         </button>
                         <h4 class="modal-title">
@@ -87,14 +87,15 @@
                         </h4>
                     </div>
                     <div class="modal-body">
-                        @if($auth->node->type === 2)
+                        @if ($auth->node->type === 2)
                             <div class="alert alert-info text-break">
                                 <div class="text-center red-700 mb-5">VNET-V2Ray</div>
-                                (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
+                                (yum install curl 2> /dev/null || apt install curl 2> /dev/null)
+                                \<br>
                                 && curl -L -s https://bit.ly/3oO3HZy \<br>
-                                | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$auth->node->id}} \<br>
-                                NODE_KEY={{$auth->key}} \<br>
+                                | WEB_API="{{ sysConfig('web_api_url') ?: sysConfig('website_url') }}" \<br>
+                                NODE_ID={{ $auth->node->id }} \<br>
+                                NODE_KEY={{ $auth->key }} \<br>
                                 bash
                                 <br>
                                 <br>
@@ -119,9 +120,9 @@
                                 <div class="text-center red-700 mb-5">V2Ray-Poseidon</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                 && curl -L -s https://bit.ly/2HswWko \<br>
-                                | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$auth->node->id}} \<br>
-                                NODE_KEY={{$auth->key}} \<br>
+                                | WEB_API="{{ sysConfig('web_api_url') ?: sysConfig('website_url') }}" \<br>
+                                NODE_ID={{ $auth->node->id }} \<br>
+                                NODE_KEY={{ $auth->key }} \<br>
                                 bash
                                 <br>
                                 <br>
@@ -142,7 +143,7 @@
                                 {{ trans('admin.node.auth.deploy.real_time_logs') }}: journalctl -u v2ray -f
                             </div>
                         @elseif($auth->node->type === 3)
-                            @if(!$auth->node->server)
+                            @if (!$auth->node->server)
                                 <h3>
                                     {!! trans('admin.node.auth.deploy.trojan_hint', ['url' => route('admin.node.edit', $auth->node)]) !!}
                                 </h3>
@@ -151,10 +152,10 @@
                                     <div class="text-center red-700 mb-5">Trojan-Poseidon</div>
                                     (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                     && curl -L -s https://mrw.so/6cMfGy \<br>
-                                    | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                    NODE_ID={{$auth->node->id}} \<br>
-                                    NODE_KEY={{$auth->key}} \<br>
-                                    NODE_HOST={{$auth->node->server}} \<br>
+                                    | WEB_API="{{ sysConfig('web_api_url') ?: sysConfig('website_url') }}" \<br>
+                                    NODE_ID={{ $auth->node->id }} \<br>
+                                    NODE_KEY={{ $auth->key }} \<br>
+                                    NODE_HOST={{ $auth->node->server }} \<br>
                                     bash
                                     <br>
                                     <br>
@@ -182,9 +183,9 @@
                                 <div class="text-center red-700 mb-5">VNET</div>
                                 (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \<br>
                                 && curl -L -s https://bit.ly/3828OP1 \<br>
-                                | WEB_API="{{sysConfig('web_api_url') ?: sysConfig('website_url')}}" \<br>
-                                NODE_ID={{$auth->node->id}} \<br>
-                                NODE_KEY={{$auth->key}} \<br>
+                                | WEB_API="{{ sysConfig('web_api_url') ?: sysConfig('website_url') }}" \<br>
+                                NODE_ID={{ $auth->node->id }} \<br>
+                                NODE_KEY={{ $auth->key }} \<br>
                                 bash
                                 <br>
                                 <br>
@@ -219,104 +220,119 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-      // 生成授权KEY
-      @can('admin.node.auth.store')
-      function addAuth() {
-        swal.fire({
-          title: '{{ trans('admin.hint') }}',
-          text: '{{ trans('admin.node.auth.generating_all') }}',
-          icon: 'info',
-          showCancelButton: true,
-          cancelButtonText: '{{ trans('common.close') }}',
-          confirmButtonText: '{{ trans('common.confirm') }}',
-        }).then((result) => {
-          if (result.value) {
-            $.post('{{route('admin.node.auth.store')}}', {_token: '{{csrf_token()}}'}, function(ret) {
-              if (ret.status === 'success') {
+        // 生成授权KEY
+        @can('admin.node.auth.store')
+            function addAuth() {
                 swal.fire({
-                  title: ret.message,
-                  icon: 'success',
-                  timer: 1000,
-                  showConfirmButton: false,
-                }).then(() => window.location.reload());
-              } else {
-                swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-              }
-            });
-          }
-        });
-      }
-      @endcan
+                    title: '{{ trans('admin.hint') }}',
+                    text: '{{ trans('admin.node.auth.generating_all') }}',
+                    icon: 'info',
+                    showCancelButton: true,
+                    cancelButtonText: '{{ trans('common.close') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}',
+                }).then((result) => {
+                    if (result.value) {
+                        $.post('{{ route('admin.node.auth.store') }}', {
+                            _token: '{{ csrf_token() }}'
+                        }, function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false,
+                                }).then(() => window.location.reload());
+                            } else {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'error'
+                                }).then(() => window.location.reload());
+                            }
+                        });
+                    }
+                });
+            }
+        @endcan
 
-      @can('admin.node.auth.destroy')
-      // 删除授权
-      function deleteAuth(id) {
-        swal.fire({
-          title: '{{ trans('admin.hint') }}',
-          text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node_auth.attribute')]) }}' + id +
-              '{{ trans('admin.confirm.delete.1') }}',
-          icon: 'info',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'DELETE',
-              url: '{{route('admin.node.auth.destroy', '')}}/' + id,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({
-                    title: ret.message,
-                    icon: 'success',
-                    timer: 1000,
-                    showConfirmButton: false,
-                  }).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
-          }
-        });
-      }
-      @endcan
+        @can('admin.node.auth.destroy')
+            // 删除授权
+            function deleteAuth(id) {
+                swal.fire({
+                    title: '{{ trans('admin.hint') }}',
+                    text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node_auth.attribute')]) }}' + id +
+                        '{{ trans('admin.confirm.delete.1') }}',
+                    icon: 'info',
+                    showCancelButton: true,
+                    cancelButtonText: '{{ trans('common.close') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            method: 'DELETE',
+                            url: '{{ route('admin.node.auth.destroy', '') }}/' + id,
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.status === 'success') {
+                                    swal.fire({
+                                        title: ret.message,
+                                        icon: 'success',
+                                        timer: 1000,
+                                        showConfirmButton: false,
+                                    }).then(() => window.location.reload());
+                                } else {
+                                    swal.fire({
+                                        title: ret.message,
+                                        icon: 'error'
+                                    }).then(() => window.location.reload());
+                                }
+                            },
+                        });
+                    }
+                });
+            }
+        @endcan
 
-      @can('admin.node.auth.update')
-      // 重置授权认证KEY
-      function refreshAuth(id) {
-        swal.fire({
-          title: '{{ trans('admin.hint') }}',
-          text: '{{ trans('admin.confirm.continues') }}',
-          icon: 'info',
-          showCancelButton: true,
-          cancelButtonText: '{{trans('common.close')}}',
-          confirmButtonText: '{{trans('common.confirm')}}',
-        }).then((result) => {
-          if (result.value) {
-            $.ajax({
-              method: 'PUT',
-              url: '{{route('admin.node.auth.update', '')}}/' + id,
-              data: {_token: '{{csrf_token()}}'},
-              dataType: 'json',
-              success: function(ret) {
-                if (ret.status === 'success') {
-                  swal.fire({
-                    title: ret.message,
-                    icon: 'success',
-                    timer: 1000,
-                    showConfirmButton: false,
-                  }).then(() => window.location.reload());
-                } else {
-                  swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
-                }
-              },
-            });
-          }
-        });
-      }
+        @can('admin.node.auth.update')
+            // 重置授权认证KEY
+            function refreshAuth(id) {
+                swal.fire({
+                    title: '{{ trans('admin.hint') }}',
+                    text: '{{ trans('admin.confirm.continues') }}',
+                    icon: 'info',
+                    showCancelButton: true,
+                    cancelButtonText: '{{ trans('common.close') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}',
+                }).then((result) => {
+                    if (result.value) {
+                        $.ajax({
+                            method: 'PUT',
+                            url: '{{ route('admin.node.auth.update', '') }}/' + id,
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            dataType: 'json',
+                            success: function(ret) {
+                                if (ret.status === 'success') {
+                                    swal.fire({
+                                        title: ret.message,
+                                        icon: 'success',
+                                        timer: 1000,
+                                        showConfirmButton: false,
+                                    }).then(() => window.location.reload());
+                                } else {
+                                    swal.fire({
+                                        title: ret.message,
+                                        icon: 'error'
+                                    }).then(() => window.location.reload());
+                                }
+                            },
+                        });
+                    }
+                });
+            }
         @endcan
     </script>
 @endsection

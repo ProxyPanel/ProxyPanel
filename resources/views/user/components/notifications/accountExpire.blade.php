@@ -5,9 +5,9 @@
         </div>
         <div class="media-body">
             <h6 class="media-heading text-break">
-                {{trans('notification.account_expired_blade', ['days' => $notification->data['days']])}}
+                {{ trans('notification.account_expired_blade', ['days' => $notification->data['days']]) }}
             </h6>
-            <time class="media-meta" datetime="{{$notification->created_at}}">{{$notification->created_at->diffForHumans()}}</time>
+            <time class="media-meta" datetime="{{ $notification->created_at }}">{{ $notification->created_at->diffForHumans() }}</time>
         </div>
     </div>
 </a>

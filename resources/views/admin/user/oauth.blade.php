@@ -11,25 +11,25 @@
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                     <thead class="thead-default">
-                    <tr>
-                        <th> #</th>
-                        <th> {{ trans('model.user.attribute') }}</th>
-                        <th> {{ trans('model.oauth.type') }}</th>
-                        <th> {{ trans('model.oauth.identifier') }}</th>
-                        <th> {{trans('common.action')}}</th>
-                    </tr>
+                        <tr>
+                            <th> #</th>
+                            <th> {{ trans('model.user.attribute') }}</th>
+                            <th> {{ trans('model.oauth.type') }}</th>
+                            <th> {{ trans('model.oauth.identifier') }}</th>
+                            <th> {{ trans('common.action') }}</th>
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach ($list as $item)
-                        <tr>
-                            <td> {{$item->id}} </td>
-                            <td> {{$item->user->username ?? $item->user->id}} </td>
-                            <td> {{$item->type}} </td>
-                            <td> {{$item->identifier}} </td>
-                            <td>
-                            </td>
-                        </tr>
-                    @endforeach
+                        @foreach ($list as $item)
+                            <tr>
+                                <td> {{ $item->id }} </td>
+                                <td> {{ $item->user->username ?? $item->user->id }} </td>
+                                <td> {{ $item->type }} </td>
+                                <td> {{ $item->identifier }} </td>
+                                <td>
+                                </td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$list->links()}}
+                            {{ $list->links() }}
                         </nav>
                     </div>
                 </div>

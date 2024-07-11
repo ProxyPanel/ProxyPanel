@@ -8,10 +8,6 @@
             margin-bottom: 20px;
         }
 
-        /*
-         * Boxes
-         */
-
         .box {
             display: block;
             padding: 0;
@@ -22,14 +18,14 @@
             border-radius: 1.25rem;
         }
 
-        .box > .box-icon > i,
+        .box>.box-icon>i,
         .box .box-content .box-text,
         .box .box-content .box-number {
             color: #FFF;
             text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
         }
 
-        .box > .box-icon {
+        .box>.box-icon {
             border-radius: 1.25rem 0 0 1.25rem;
             display: block;
             float: left;
@@ -68,20 +64,12 @@
             background-color: #FFF;
         }
 
-        /*
-         * Log Entry
-         */
-
         .stack-content {
             color: #AE0E0E;
             font-family: consolas, Menlo, Courier, monospace;
             white-space: pre-line;
             font-size: .8rem;
         }
-
-        /*
-         * Colors: Badge & Infobox
-         */
 
         .badge.badge-env,
         .badge.badge-level-all,
@@ -154,11 +142,12 @@
     @yield('css')
 @endsection
 @section('layout_content')
-    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega {{config('theme.navbar.inverse')}} {{config('theme.navbar.skin')}}" role="navigation">
+    <nav class="site-navbar navbar navbar-default navbar-fixed-top navbar-mega {{ config('theme.navbar.inverse') }} {{ config('theme.navbar.skin') }}"
+         role="navigation">
         <div class="navbar-header">
             <div class="navbar-brand navbar-brand-center">
-                <img src="{{sysConfig('website_logo')? asset(sysConfig('website_logo')) :'/assets/images/logo.png'}}" class="navbar-brand-logo" alt="logo"/>
-                <span class="navbar-brand-text hidden-xs-down"> {{sysConfig('website_name')}}</span>
+                <img class="navbar-brand-logo" src="{{ sysConfig('website_logo') ? asset(sysConfig('website_logo')) : '/assets/images/logo.png' }}" alt="logo" />
+                <span class="navbar-brand-text hidden-xs-down"> {{ sysConfig('website_name') }}</span>
             </div>
         </div>
         <div class="navbar-container container-fluid">
@@ -184,15 +173,13 @@
         </div>
     </nav>
     <div class="page ml-0">
-        <!--[if lt IE 8]><p class="browserupgrade">{{trans('common.update_browser.0')}}<strong>{{trans('common.update_browser.1')}}</strong>
-{{trans('common.update_browser.2')}}<a href="https://browsehappy.com/" target="_blank">{{trans('common.update_browser.3')}}</a>{{trans('common.update_browser.4')}}</p><![endif]-->
         <div class="container-fluid">
             @yield('content')
         </div>
     </div>
     <footer class="site-footer ml-0">
         <div class="site-footer-legal">© 2017 -
-            2023<a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{config('version.name')}} </a> {{__('All rights reserved.')}}
+            2024<a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{ config('version.name') }} </a> {{ __('All rights reserved.') }}
         </div>
         <div class="site-footer-right">
             Base on <a href="https://github.com/ARCANEDEV/LogViewer" target="_blank">LogViewer</a> 🚀
@@ -202,6 +189,33 @@
     @yield('modals')
 @endsection
 @section('layout_javascript')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js" integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"
+            integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ==" crossorigin="anonymous"
+            referrerpolicy="no-referrer"></script>
+    <script>
+        const $buoop = {
+            required: {
+                e: 11,
+                f: -6,
+                o: -6,
+                s: -6,
+                c: -6
+            },
+            insecure: true,
+            unsupported: true,
+            api: 2024.07,
+        }
+
+        function $buo_f() {
+            const e = document.createElement('script')
+            e.src = "//browser-update.org/update.min.js";
+            document.body.appendChild(e);
+        }
+        try {
+            document.addEventListener("DOMContentLoaded", $buo_f, false)
+        } catch (e) {
+            window.attachEvent("onload", $buo_f)
+        }
+    </script>
     @yield('javascript')
 @endsection

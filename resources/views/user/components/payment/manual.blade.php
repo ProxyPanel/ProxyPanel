@@ -53,7 +53,7 @@
             max-width: 300px;
         }
 
-        #ad > button {
+        #ad>button {
             position: absolute;
             right: 0;
             top: 0;
@@ -64,13 +64,13 @@
 @section('content')
     <div id="ad">
         <button class="btn btn-pure btn-outline-light icon wb-close" type="button" onclick="document.getElementById('ad').style.display = 'none'"></button>
-        <img src="{{asset('assets/images/help/作者要饭求放过.PNG')}}" alt="{{ trans('user.manual.red_packet') }}">
+        <img src="{{ asset('assets/images/help/作者要饭求放过.PNG') }}" alt="{{ trans('user.manual.red_packet') }}">
     </div>
     <div class="page-content container">
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title cyan-600">
-                    <i class="icon wb-payment"></i>{{sysConfig('website_name').' '.trans('common.payment.manual')}}
+                    <i class="icon wb-payment"></i>{{ sysConfig('website_name') . ' ' . trans('common.payment.manual') }}
                 </h1>
             </div>
             <div class="panel-body">
@@ -101,13 +101,13 @@
                     </div>
                 </div>
 
-                <div id="payment-group" class="w-p100 text-center mb-20">
+                <div class="w-p100 text-center mb-20" id="payment-group">
                     <div class="w-md-p50 w-p100 mx-auto btn-group">
-                        @if(sysConfig('wechat_qrcode'))
-                            <button id="btn-wechat" class="btn btn-lg btn-block" onclick="show(0)">{{trans('common.payment.wechat')}}</button>
+                        @if (sysConfig('wechat_qrcode'))
+                            <button class="btn btn-lg btn-block" id="btn-wechat" onclick="show(0)">{{ trans('common.payment.wechat') }}</button>
                         @endif
-                        @if(sysConfig('alipay_qrcode'))
-                            <button id="btn-alipay" class="btn mt-0 btn-lg btn-block" onclick="show(1)">{{trans('common.payment.alipay')}}</button>
+                        @if (sysConfig('alipay_qrcode'))
+                            <button class="btn mt-0 btn-lg btn-block" id="btn-alipay" onclick="show(1)">{{ trans('common.payment.alipay') }}</button>
                         @endif
                     </div>
                 </div>
@@ -115,17 +115,17 @@
                     <div class="wechat hide">
                         <div class="mx-auto text-center">
                             <h4>{{ trans('user.manual.remark') }}</h4>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat1.png')}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_wechat1.png') }}" alt="" />
                             <h4>{{ trans('user.manual.remark_content') }}</h4>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_wechat2.png')}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_wechat2.png') }}" alt="" />
                         </div>
                     </div>
                     <div class="alipay hide">
                         <div class="mx-auto text-center">
                             <h4>{{ trans('user.manual.remark') }}</h4>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay1.png')}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_alipay1.png') }}" alt="" />
                             <h4>{{ trans('user.manual.remark_content') }}</h4>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset('assets/images/help/manual_alipay2.png')}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_alipay2.png') }}" alt="" />
                         </div>
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                             <div class="alert alert-info">
                                 {!! trans('user.payment.qrcode_tips', ['software' => trans('common.payment.wechat')]) !!}
                             </div>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset(sysConfig('wechat_qrcode'))}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset(sysConfig('wechat_qrcode')) }}" alt="" />
                         </div>
                     </div>
                     <div class="alipay hide">
@@ -144,7 +144,7 @@
                             <div class="alert alert-info">
                                 {!! trans('user.payment.qrcode_tips', ['software' => trans('common.payment.alipay')]) !!}
                             </div>
-                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{asset(sysConfig('alipay_qrcode'))}}" alt=""/>
+                            <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset(sysConfig('alipay_qrcode')) }}" alt="" />
                         </div>
                     </div>
                     <div class="alert alert-danger text-center">
@@ -158,18 +158,18 @@
                     </div>
                     <div class="mx-auto w-md-p50 w-lg-p25">
                         <ul class="list-group list-group-dividered">
-                            <li class="list-group-item">{{trans('user.shop.service').': '.$name}}</li>
-                            <li class="list-group-item">{{trans('user.shop.price').': '.$payment->amount_tag}}</li>
-                            @if($days !== 0)
-                                <li class="list-group-item">{{trans('common.available_date').': '.$days.trans_choice('common.days.attribute', 1)}}</li>
+                            <li class="list-group-item">{{ trans('user.shop.service') . ': ' . $name }}</li>
+                            <li class="list-group-item">{{ trans('user.shop.price') . ': ' . $payment->amount_tag }}</li>
+                            @if ($days !== 0)
+                                <li class="list-group-item">{{ trans('common.available_date') . ': ' . $days . trans_choice('common.days.attribute', 1) }}</li>
                             @endif
                         </ul>
                     </div>
                 </div>
 
                 <div class="clearfix">
-                    <button type="button" class="btn btn-lg btn-default float-left" id="prevBtn" onclick="nextPrev(-1)">{{ trans('user.manual.pre') }}</button>
-                    <button type="button" class="btn btn-lg btn-primary float-right" id="nextBtn" onclick="nextPrev(1)">{{ trans('user.manual.next') }}</button>
+                    <button class="btn btn-lg btn-default float-left" id="prevBtn" type="button" onclick="nextPrev(-1)">{{ trans('user.manual.pre') }}</button>
+                    <button class="btn btn-lg btn-primary float-right" id="nextBtn" type="button" onclick="nextPrev(1)">{{ trans('user.manual.next') }}</button>
                 </div>
             </div>
         </div>
@@ -178,104 +178,109 @@
 
 @section('javascript')
     <script>
-      let currentTab = 0; // Current tab is set to be the first tab (0)
-      showTab(currentTab); // Display the current tab
-      show({{sysConfig('wechat_qrcode')? 0 : 1}});
+        let currentTab = 0; // Current tab is set to be the first tab (0)
+        showTab(currentTab); // Display the current tab
+        show({{ sysConfig('wechat_qrcode') ? 0 : 1 }});
 
-      function showTab(n) {
-        // This function will display the specified tab of the form ...
-        const x = document.getElementsByClassName('tab');
-        x[n].style.display = 'block';
-        // ... and fix the Previous/Next buttons:
-        if (n === 0) {
-          document.getElementById('prevBtn').style.display = 'none';
-        } else {
-          document.getElementById('prevBtn').style.display = 'inline';
-        }
-
-        if (n === x.length - 1) {
-          document.getElementById('payment-group').style.display = 'none';
-          document.getElementById('nextBtn').classList.remove('btn-primary');
-          document.getElementById('nextBtn').classList.add('btn-success');
-          document.getElementById('nextBtn').innerHTML = '{{trans('common.submit')}}';
-        } else {
-          document.getElementById('payment-group').style.display = 'inline-flex';
-          document.getElementById('nextBtn').innerHTML = '下一步';
-          document.getElementById('nextBtn').classList.remove('btn-success');
-          document.getElementById('nextBtn').classList.add('btn-primary');
-          document.getElementById('nextBtn').style.display = 'inline';
-        }
-
-        fixStepIndicator(n);
-      }
-
-      function nextPrev(n) {
-        // This function will figure out which tab to display
-        const x = document.getElementsByClassName('tab');
-        // if you have reached the end of the form... :
-        if (currentTab === x.length - 1 && n === 1) {
-          //...the form gets submitted:
-          $.post('{{route('manual.inform', ['payment' => $payment->trade_no])}}', {_token: '{{csrf_token()}}'}, function(ret) {
-            if (ret.status === 'success') {
-              swal.fire({
-                title: '已受理',
-                text: ret.message,
-                icon: 'success',
-              }).then(() => window.location.href = '{{route('invoice')}}');
+        function showTab(n) {
+            // This function will display the specified tab of the form ...
+            const x = document.getElementsByClassName('tab');
+            x[n].style.display = 'block';
+            // ... and fix the Previous/Next buttons:
+            if (n === 0) {
+                document.getElementById('prevBtn').style.display = 'none';
             } else {
-              swal.fire({title: ret.message, icon: 'error'}).then(() => window.location.reload());
+                document.getElementById('prevBtn').style.display = 'inline';
             }
-          });
-          return false;
-        } else {
-          x[currentTab].style.display = 'none';// Hide the current tab:
-          currentTab += n;// Increase or decrease the current tab by 1:
+
+            if (n === x.length - 1) {
+                document.getElementById('payment-group').style.display = 'none';
+                document.getElementById('nextBtn').classList.remove('btn-primary');
+                document.getElementById('nextBtn').classList.add('btn-success');
+                document.getElementById('nextBtn').innerHTML = '{{ trans('common.submit') }}';
+            } else {
+                document.getElementById('payment-group').style.display = 'inline-flex';
+                document.getElementById('nextBtn').innerHTML = '下一步';
+                document.getElementById('nextBtn').classList.remove('btn-success');
+                document.getElementById('nextBtn').classList.add('btn-primary');
+                document.getElementById('nextBtn').style.display = 'inline';
+            }
+
+            fixStepIndicator(n);
         }
 
-        showTab(currentTab);
-      }
+        function nextPrev(n) {
+            // This function will figure out which tab to display
+            const x = document.getElementsByClassName('tab');
+            // if you have reached the end of the form... :
+            if (currentTab === x.length - 1 && n === 1) {
+                //...the form gets submitted:
+                $.post('{{ route('manual.inform', ['payment' => $payment->trade_no]) }}', {
+                    _token: '{{ csrf_token() }}'
+                }, function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({
+                            title: '已受理',
+                            text: ret.message,
+                            icon: 'success',
+                        }).then(() => window.location.href = '{{ route('invoice') }}');
+                    } else {
+                        swal.fire({
+                            title: ret.message,
+                            icon: 'error'
+                        }).then(() => window.location.reload());
+                    }
+                });
+                return false;
+            } else {
+                x[currentTab].style.display = 'none'; // Hide the current tab:
+                currentTab += n; // Increase or decrease the current tab by 1:
+            }
 
-      function fixStepIndicator(n) {
-        // This function removes the "current" class of all steps...
-        let i, x = document.getElementsByClassName('step');
-        for (i = 0; i < x.length; i++) {
-          x[i].className = x[i].className.replace(' current', ' ');
+            showTab(currentTab);
         }
-        //... and adds the "active" class to the current step:
-        x[n].className += ' current';
-      }
 
-      function show(check) {
-          @if(sysConfig('wechat_qrcode'))
-        const $wechat = document.getElementsByClassName('wechat');
-        const $btn_wechat = document.getElementById('btn-wechat');
-        if (check) {
-          for (let i = 0; i < $wechat.length; i++) {
-            $wechat[i].style.display = 'none';
-          }
-          $btn_wechat.classList.remove('btn-success');
-        } else {
-          for (let i = 0; i < $wechat.length; i++) {
-            $wechat[i].style.display = 'inline';
-          }
-          $btn_wechat.classList.add('btn-success');
+        function fixStepIndicator(n) {
+            // This function removes the "current" class of all steps...
+            let i, x = document.getElementsByClassName('step');
+            for (i = 0; i < x.length; i++) {
+                x[i].className = x[i].className.replace(' current', ' ');
+            }
+            //... and adds the "active" class to the current step:
+            x[n].className += ' current';
         }
-          @endif
-          @if(sysConfig('alipay_qrcode'))
-        const $alipay = document.getElementsByClassName('alipay');
-        const $btn_alipay = document.getElementById('btn-alipay');
-        if (check) {
-          for (let i = 0; i < $alipay.length; i++) {
-            $alipay[i].style.display = 'inline';
-          }
-          $btn_alipay.classList.add('btn-primary');
-        } else {
-          for (let i = 0; i < $alipay.length; i++) {
-            $alipay[i].style.display = 'none';
-          }
-          $btn_alipay.classList.remove('btn-primary');
+
+        function show(check) {
+            @if (sysConfig('wechat_qrcode'))
+                const $wechat = document.getElementsByClassName('wechat');
+                const $btn_wechat = document.getElementById('btn-wechat');
+                if (check) {
+                    for (let i = 0; i < $wechat.length; i++) {
+                        $wechat[i].style.display = 'none';
+                    }
+                    $btn_wechat.classList.remove('btn-success');
+                } else {
+                    for (let i = 0; i < $wechat.length; i++) {
+                        $wechat[i].style.display = 'inline';
+                    }
+                    $btn_wechat.classList.add('btn-success');
+                }
+            @endif
+            @if (sysConfig('alipay_qrcode'))
+                const $alipay = document.getElementsByClassName('alipay');
+                const $btn_alipay = document.getElementById('btn-alipay');
+                if (check) {
+                    for (let i = 0; i < $alipay.length; i++) {
+                        $alipay[i].style.display = 'inline';
+                    }
+                    $btn_alipay.classList.add('btn-primary');
+                } else {
+                    for (let i = 0; i < $alipay.length; i++) {
+                        $alipay[i].style.display = 'none';
+                    }
+                    $btn_alipay.classList.remove('btn-primary');
+                }
+            @endif
         }
-          @endif
-      }
     </script>
 @endsection

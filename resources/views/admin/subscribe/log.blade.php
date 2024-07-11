@@ -12,10 +12,10 @@
             <div class="panel-body row">
                 <form class="form-row col-12">
                     <div class="form-group col-xxl-1 col-lg-2 col-md-3">
-                        <input type="number" class="form-control" name="id" value="{{Request::query('id')}}" placeholder="ID"/>
+                        <input class="form-control" name="id" type="number" value="{{ Request::query('id') }}" placeholder="ID" />
                     </div>
                     <div class="form-group col-xxl-2 col-lg-3 col-md-6">
-                        <input type="text" class="form-control" name="ip" value="{{Request::query('ip')}}" placeholder="IP"/>
+                        <input class="form-control" name="ip" type="text" value="{{ Request::query('ip') }}" placeholder="IP" />
                     </div>
                     <div class="form-group col-xxl-3 col-lg-5">
                         <div class="input-group input-daterange" data-plugin="datepicker">
@@ -24,27 +24,31 @@
                                     <i class="icon wb-calendar" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            <input type="text" class="form-control" name="start" value="{{Request::query('start')}}" placeholder="{{ trans('admin.start_time') }}" autocomplete="off"/>
+                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}"
+                                   placeholder="{{ trans('admin.start_time') }}" autocomplete="off" />
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
-                            <input type="text" class="form-control" name="end" value="{{Request::query('end')}}" placeholder="{{ trans('admin.end_time') }}" autocomplete="off"/>
+                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}"
+                                   placeholder="{{ trans('admin.end_time') }}" autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 btn-group">
-                        <button type="submit" class="btn btn-primary">{{ trans('common.search') }}</button>
-                        <a href="{{route('admin.subscribe.log', $subscribe->user->id)}}" class="btn btn-danger">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
+                        <a class="btn btn-danger" href="{{ route('admin.subscribe.log', $subscribe->user->id) }}">{{ trans('common.reset') }}</a>
                     </div>
                 </form>
                 <div class="col-sm-12 col-xl-2">
                     <ul class="list-group list-group-gap">
                         <li class="list-group-item bg-blue-grey-100">
                             <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('model.user.nickname') }}:
-                            <span class="float-right">{{ $subscribe->user->nickname ?? trans('common.deleted_item', ['attribute' => trans('common.account')])}}</span>
+                            <span
+                                  class="float-right">{{ $subscribe->user->nickname ?? trans('common.deleted_item', ['attribute' => trans('common.account')]) }}</span>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
                             <i class="icon wb-envelope" aria-hidden="true"></i> {{ trans('model.user.username') }}:
-                            <span class="float-right">{{ $subscribe->user->username ?? trans('common.deleted_item', ['attribute' => trans('model.user.attribute')])}}</span>
+                            <span
+                                  class="float-right">{{ $subscribe->user->username ?? trans('common.deleted_item', ['attribute' => trans('model.user.attribute')]) }}</span>
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
                             <i class="icon wb-heart" aria-hidden="true"></i> {{ trans('common.status.attribute') }}:
@@ -58,10 +62,10 @@
                             <i class="icon wb-time" aria-hidden="true"></i> {{ trans('model.subscribe.updated_at') }}:
                             <span class="float-right">{{ $subscribe->updated_at }}</span>
                         </li>
-                        @if($subscribe->ban_time)
+                        @if ($subscribe->ban_time)
                             <li class="list-group-item bg-blue-grey-100">
                                 <i class="icon wb-power" aria-hidden="true"></i> {{ trans('model.subscribe.ban_time') }}
-                                : <span class="float-right">{{ date('Y-m-d H:i', $subscribe->ban_time ) }}</span>
+                                : <span class="float-right">{{ date('Y-m-d H:i', $subscribe->ban_time) }}</span>
                             </li>
                             <li class="list-group-item bg-blue-grey-100">
                                 <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}:
@@ -69,8 +73,9 @@
                             </li>
                         @endif
                         @can('admin.subscribe.set')
-                            <button class="list-group-item btn btn-block @if($subscribe->status) btn-danger @else btn-success @endif" onclick="setSubscribeStatus('{{route('admin.subscribe.set', $subscribe)}}')">
-                                @if($subscribe->status === 0)
+                            <button class="list-group-item btn btn-block @if ($subscribe->status) btn-danger @else btn-success @endif"
+                                    onclick="setSubscribeStatus('{{ route('admin.subscribe.set', $subscribe) }}')">
+                                @if ($subscribe->status === 0)
                                     <i class="icon wb-unlock" aria-hidden="true"></i> {{ trans('common.status.enabled') }}
                                 @else
                                     <i class="icon wb-unlock" aria-hidden="true"></i> {{ trans('common.status.disabled') }}
@@ -82,28 +87,28 @@
                 <div class="col-sm-12 col-xl-10">
                     <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
                         <thead class="thead-default">
-                        <tr>
-                            <th> #</th>
-                            <th> {{ trans('model.subscribe.req_ip') }}</th>
-                            <th> {{ trans('model.ip.info') }}</th>
-                            <th> {{ trans('model.subscribe.req_times') }}</th>
-                            <th> {{ trans('model.subscribe.req_header') }}</th>
-                        </tr>
+                            <tr>
+                                <th> #</th>
+                                <th> {{ trans('model.subscribe.req_ip') }}</th>
+                                <th> {{ trans('model.ip.info') }}</th>
+                                <th> {{ trans('model.subscribe.req_times') }}</th>
+                                <th> {{ trans('model.subscribe.req_header') }}</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach($subscribeLog as $subscribe)
-                            <tr>
-                                <td>{{$subscribe->id}}</td>
-                                <td>
-                                    @if ($subscribe->request_ip)
-                                        <a href="https://db-ip.com/{{$subscribe->request_ip}}" target="_blank">{{$subscribe->request_ip}}</a>
-                                    @endif
-                                </td>
-                                <td>{{$subscribe->ipInfo}}</td>
-                                <td>{{$subscribe->request_time}}</td>
-                                <td>{{trim($subscribe->request_header)}}</td>
-                            </tr>
-                        @endforeach
+                            @foreach ($subscribeLog as $subscribe)
+                                <tr>
+                                    <td>{{ $subscribe->id }}</td>
+                                    <td>
+                                        @if ($subscribe->request_ip)
+                                            <a href="https://db-ip.com/{{ $subscribe->request_ip }}" target="_blank">{{ $subscribe->request_ip }}</a>
+                                        @endif
+                                    </td>
+                                    <td>{{ $subscribe->ipInfo }}</td>
+                                    <td>{{ $subscribe->request_time }}</td>
+                                    <td>{{ trim($subscribe->request_header) }}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -115,7 +120,7 @@
                     </div>
                     <div class="col-sm-8">
                         <nav class="Page navigation float-right">
-                            {{$subscribeLog->links()}}
+                            {{ $subscribeLog->links() }}
                         </nav>
                     </div>
                 </div>
@@ -129,25 +134,37 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-      $('.input-daterange').datepicker({
-        format: 'yyyy-mm-dd',
-      });
-
-      @can('admin.subscribe.set')
-      // 启用禁用用户的订阅
-      function setSubscribeStatus(url) {
-        $.post(url, {_token: '{{csrf_token()}}'}, function(ret) {
-          if (ret.status === 'success') {
-            swal.fire({title: ret.message, icon: 'success', timer: 1000, showConfirmButton: false}).then(() => {
-              window.location.reload();
-            });
-          } else {
-            swal.fire({title: ret.message, icon: 'error', timer: 1000, showConfirmButton: false}).then(() => {
-              window.location.reload();
-            });
-          }
+        $('.input-daterange').datepicker({
+            format: 'yyyy-mm-dd',
         });
-      }
+
+        @can('admin.subscribe.set')
+            // 启用禁用用户的订阅
+            function setSubscribeStatus(url) {
+                $.post(url, {
+                    _token: '{{ csrf_token() }}'
+                }, function(ret) {
+                    if (ret.status === 'success') {
+                        swal.fire({
+                            title: ret.message,
+                            icon: 'success',
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        swal.fire({
+                            title: ret.message,
+                            icon: 'error',
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                });
+            }
         @endcan
     </script>
 @endsection

@@ -1,7 +1,7 @@
 @props(['active' => false, 'id', 'slot'])
 
-<div class="tab-pane {{$active ? 'active' : ''}}" id="{{$id}}" role="tabpanel">
+<div class="tab-pane {{ $active ? 'active' : '' }}" id="{{ $id }}" role="tabpanel">
     <div class="form-row">
-        {{$slot}}
+        {{ $slot }}
     </div>
 </div>

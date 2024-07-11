@@ -1,6 +1,6 @@
 @extends('_layout')
 @section('title', sysConfig('website_name'))
-@section('body_class','page-login-v3 layout-full')
+@section('body_class', 'page-login-v3 layout-full')
 @section('layout_css')
     <style>
         .layout-full {
@@ -26,11 +26,10 @@
         <div class="page-content container vertical-align-middle">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="panel panel-line @if( $order->status === 2 ) panel-success @else panel-danger @endif">
+                    <div class="panel panel-line @if ($order->status === 2) panel-success @else panel-danger @endif">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <i class="icon wb-shopping-cart"
-                                   aria-hidden="true"></i> {{trans('user.invoice.detail')}}
+                                <i class="icon wb-shopping-cart" aria-hidden="true"></i> {{ trans('user.invoice.detail') }}
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -48,7 +47,7 @@
                                 <li class="list-group-item">
                                     {{ trans('user.bought_at') }}: {{ $order->created_at }}
                                 </li>
-                                @if($order->expired_at)
+                                @if ($order->expired_at)
                                     <li class="list-group-item">
                                         {{ trans('common.expired_at') }}: {{ $order->expired_at }}
                                     </li>
@@ -64,8 +63,7 @@
                     <div class="panel panel-line panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <i class="icon wb-user-circle"
-                                   aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
+                                <i class="icon wb-user-circle" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
                             </h3>
                         </div>
                         <div class="panel-body">
