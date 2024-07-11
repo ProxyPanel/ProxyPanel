@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Utils\Clients;
+namespace App\Utils\Clients\Protocols;
 
-use App\Utils\Library\Templates\Client;
+use App\Utils\Library\Templates\Protocol;
 
-class Text implements Client
+class Text implements Protocol
 {
     public static function buildShadowsocks(array $server): string
     {

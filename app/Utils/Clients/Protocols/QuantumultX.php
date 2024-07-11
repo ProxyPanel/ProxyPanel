@@ -1,17 +1,25 @@
 <?php
 
-namespace App\Utils\Clients;
+namespace App\Utils\Clients\Protocols;
 
-/*
- * 本文件依据
- * https://github.com/crossutility/Quantumult-X/blob/master/server-complete.snippet
- *
- */
+use App\Utils\Library\Templates\Protocol;
 
-use App\Utils\Library\Templates\Client;
-
-class QuantumultX implements Client
+class QuantumultX implements Protocol
 {
+    public static function build(array $servers, bool $isEncode = false): string
+    {
+        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+        $url = '';
+
+        foreach ($servers as $server) {
+            if (in_array($server['type'], $validTypes, true)) {
+                $url .= call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
+            }
+        }
+
+        return $isEncode ? base64_encode($url) : $url;
+    }
+
     public static function buildShadowsocks(array $server): string
     {
         $config = array_filter([

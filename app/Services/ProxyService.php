@@ -2,17 +2,15 @@
 
 namespace App\Services;
 
-use App\Helpers\ClientConfig;
 use App\Models\Node;
 use App\Models\User;
-use App\Utils\Clients\Text;
-use App\Utils\Clients\URLSchemes;
+use App\Utils\Clients\Protocols\Text;
+use App\Utils\Clients\Protocols\URLSchemes;
 use Arr;
+use ReflectionClass;
 
 class ProxyService
 {
-    use ClientConfig;
-
     private static ?User $user;
 
     private static array $servers;
@@ -55,7 +53,7 @@ class ProxyService
 
         $this->setServers($servers);
 
-        return $this->clientConfig($target);
+        return $this->getClientConfig($target);
     }
 
     public function getNodeList(?int $type = null, bool $isConfig = true): array
@@ -118,7 +116,7 @@ class ProxyService
                     break;
                 case 2:
                     $config = array_merge($config, [
-                        'type' => 'v2ray',
+                        'type' => 'vmess',
                         'port' => $node->port,
                         'uuid' => $user->vmess_id,
                     ], $node->profile);
@@ -180,7 +178,7 @@ class ProxyService
 
         $this->setServers($servers);
 
-        return $this->clientConfig($target);
+        return $this->getClientConfig($target);
     }
 
     public function getUserProxyConfig(array $server, bool $is_url): string
@@ -190,8 +188,24 @@ class ProxyService
         return match ($server['type']) {
             'shadowsocks' => $type->buildShadowsocks($server),
             'shadowsocksr' => $type->buildShadowsocksr($server),
-            'v2ray' => $type->buildVmess($server),
+            'vmess' => $type->buildVmess($server),
             'trojan' => $type->buildTrojan($server),
         };
+    }
+
+    private function getClientConfig(string $target): string
+    {
+        foreach (glob(app_path('Utils/Clients').'/*.php') as $file) {
+            $class = 'App\\Utils\\Clients\\'.basename($file, '.php');
+            $reflectionClass = new ReflectionClass($class);
+
+            foreach ($reflectionClass->getConstant('AGENT') as $agent) {
+                if (str_contains($target, $agent)) {
+                    return (new $class())->getConfig($this->getServers(), $this->getUser(), $target);
+                }
+            }
+        }
+
+        return URLSchemes::build($this->getServers()); // Origin
     }
 }

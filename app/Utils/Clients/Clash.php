@@ -1,98 +1,57 @@
 <?php
+/*
+ * Developed based on
+ * https://clash.wiki/configuration/configuration-reference.html
+ * https://docs.gtk.pw/contents/urlscheme.html#%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AE
+ * https://opensource.clash.wiki/Dreamacro/clash/
+ * https://stash.wiki/get-started
+ */
 
 namespace App\Utils\Clients;
 
-/*
- * 本文件依据
- * https://github.com/Dreamacro/clash/tree/master/adapter/outbound
- * https://github.com/Dreamacro/clash/wiki/Configuration#all-configuration-options
- * https://lancellc.gitbook.io/clash/clash-config-file/proxies/config-a-shadowsocks-proxy
- *
- */
-
+use App\Models\User;
 use App\Utils\Library\Templates\Client;
+use File;
+use Symfony\Component\Yaml\Yaml;
 
 class Clash implements Client
 {
-    public static function buildShadowsocks(array $server): array
-    {
-        return [
-            'name' => $server['name'],
-            'type' => 'ss',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'password' => $server['passwd'],
-            'cipher' => $server['method'],
-            'udp' => $server['udp'],
-        ];
-    }
+    public const AGENT = ['clash', 'stash', 'bob_vpn'];
 
-    public static function buildShadowsocksr(array $server): array
+    public function getConfig(array $servers, User $user, string $target): array|string
     {
-        return [
-            'name' => $server['name'],
-            'type' => 'ssr',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'password' => $server['passwd'],
-            'cipher' => $server['method'],
-            'obfs' => $server['obfs'],
-            'obfs-param' => $server['obfs_param'],
-            'protocol' => $server['protocol'],
-            'protocol-param' => $server['protocol_param'],
-            'udp' => $server['udp'],
-        ];
-    }
-
-    public static function buildVmess(array $server): array
-    {
-        $array = [
-            'name' => $server['name'],
-            'type' => 'vmess',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'uuid' => $server['uuid'],
-            'alterId' => $server['v2_alter_id'],
-            'cipher' => $server['method'],
-            'udp' => $server['udp'],
-        ];
-
-        if ($server['v2_tls']) {
-            $array['tls'] = true;
-            $array['servername'] = $server['v2_host'];
+        $custom_path = '/resources/rules/custom.clash.yaml';
+        if (str_contains($target, 'bob_vpn')) {
+            $file_path = '/resources/rules/bob.clash.yaml';
+        } elseif (File::exists(base_path().$custom_path)) {
+            $file_path = $custom_path;
+        } else {
+            $file_path = '/resources/rules/default.clash.yaml';
         }
-        $array['network'] = $server['v2_net'];
 
-        if ($server['v2_net'] === 'ws') {
-            $array['ws-opts'] = [];
-            $array['ws-opts']['path'] = $server['v2_path'];
-            if ($server['v2_host']) {
-                $array['ws-opts']['headers'] = ['Host' => $server['v2_host']];
+        $appName = sysConfig('website_name');
+        header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($appName).'.yaml');
+        header('profile-update-interval: 24');
+        header('profile-web-page-url:'.sysConfig('website_url'));
+        if (sysConfig('is_custom_subscribe')) {
+            // display remaining traffic and expire date
+            header("subscription-userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
+        }
+
+        $config = Yaml::parseFile(base_path().$file_path);
+
+        $proxyProfiles = Protocols\Clash::build($servers);
+
+        $config['proxies'] = array_merge($config['proxies'] ?: [], $proxyProfiles['proxies']);
+        foreach ($config['proxy-groups'] as $k => $v) {
+            if (! is_array($config['proxy-groups'][$k]['proxies'])) {
+                continue;
             }
-            $array['ws-path'] = $server['v2_path'];
-            if ($server['v2_host']) {
-                $array['ws-headers'] = ['Host' => $server['v2_host']];
-            }
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxyProfiles['name']);
         }
 
-        return $array;
-    }
+        array_unshift($config['rules'], 'DOMAIN,'.$_SERVER['HTTP_HOST'].',DIRECT'); // Set current sub-domain to be direct
 
-    public static function buildTrojan(array $server): array
-    {
-        $array = [
-            'name' => $server['name'],
-            'type' => 'trojan',
-            'server' => $server['host'],
-            'port' => $server['port'],
-            'password' => $server['passwd'],
-            'udp' => $server['udp'],
-        ];
-
-        if (! empty($server['sni'])) {
-            $array['sni'] = $server['sni'];
-        }
-
-        return $array;
+        return str_replace('$app_name', $appName, Yaml::dump($config, 2, 4, Yaml::DUMP_EMPTY_ARRAY_AS_SEQUENCE));
     }
 }

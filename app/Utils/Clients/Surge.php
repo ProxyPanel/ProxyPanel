@@ -1,66 +1,63 @@
 <?php
+/*
+ * Developed based on
+ * https://wiki.surge.community/modules
+ * https://getsurfboard.com/docs/profile-format/overview/
+ */
 
 namespace App\Utils\Clients;
 
+use App\Models\User;
 use App\Utils\Library\Templates\Client;
+use File;
 
 class Surge implements Client
 {
-    public static function buildShadowsocks(array $server): string
+    public const AGENT = ['surge', 'surfboard'];
+
+    public function getConfig(array $servers, User $user, string $target): string
     {
-        $config = array_filter([
-            "{$server['name']}=ss",
-            $server['host'],
-            $server['port'],
-            "encrypt-method={$server['method']}",
-            "password={$server['passwd']}",
-            'tfo=true',
-            "udp-relay={$server['udp']}",
-        ]);
+        if (str_contains($target, 'surge')) {
+            $customConfig = base_path().'/resources/rules/custom.surge.conf';
 
-        return implode(',', $config).PHP_EOL;
-    }
+            if (File::exists($customConfig)) {
+                $config = file_get_contents($customConfig);
+            } else {
+                $config = file_get_contents(base_path().'/resources/rules/default.surge.conf');
+            }
+        } else {
+            $customConfig = base_path().'/resources/rules/custom.surfboard.conf';
 
-    public static function buildVmess(array $server): string
-    {
-        $config = [
-            "{$server['name']}=vmess",
-            $server['host'],
-            $server['port'],
-            "username={$server['uuid']}",
-            'vmess-aead=true',
-            'tfo=true',
-            "udp-relay={$server['udp']}",
-        ];
-
-        if ($server['v2_tls']) {
-            array_push($config, 'tls=true', "sni={$server['v2_host']}");
-        }
-        if ($server['v2_net'] === 'ws') {
-            array_push($config, 'ws=true', "ws-path={$server['v2_path']}", "ws-headers=Host:{$server['v2_host']}");
+            if (File::exists($customConfig)) {
+                $config = file_get_contents($customConfig);
+            } else {
+                $config = file_get_contents(base_path().'/resources/rules/default.surfboard.conf');
+            }
         }
 
-        return implode(',', $config).PHP_EOL;
-    }
+        $webName = sysConfig('website_name');
+        header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($webName).'.conf');
+        $proxyProfiles = Protocols\Surge::build($servers);
 
-    public static function buildTrojan(array $server): string
-    {
-        $config = array_filter([
-            "{$server['name']}=trojan",
-            $server['host'],
-            $server['port'],
-            "password={$server['passwd']}",
-            $server['sni'] ? "sni={$server['sni']}" : '',
-            'tfo=true',
-            "udp-relay={$server['udp']}",
-            // "skip-cert-verify={$server['allow_insecure']}"
-        ]);
+        if (sysConfig('is_custom_subscribe')) {
+            $upload = formatBytes($user->u);
+            $download = formatBytes($user->d);
+            $totalTraffic = formatBytes($user->transfer_enable);
+            $style = 'info';
+            $remainTraffic = $user->transfer_enable - $user->d - $user->u;
+            $remainDates = now()->diffInDays($user->expired_at, false);
+            if ($remainTraffic <= 0 || $remainDates <= 0) {
+                $style = 'error';
+            } elseif (($user->transfer_enable - $user->d - $user->u) / $user->transfer_enable <= 0.05 || $remainDates <= 7) {
+                $style = 'alert';
+            }
 
-        return implode(',', $config).PHP_EOL;
-    }
+            $subscribeInfo = "title=$webName".trans('user.subscribe.info.title').', content='.trans('user.subscribe.info.upload').": $upload\n".trans('user.subscribe.info.download').": $download\n".trans('user.subscribe.info.total').": $totalTraffic\n".trans('model.user.expired_date').": $user->expired_at, style=$style";
+        } else {
+            $subscribeInfo = "title=$webName, content=";
+        }
 
-    public static function buildShadowsocksr(array $server): array|string
-    {
-        return '';
+        return str_replace(['$subscribe_info', '$subs_link', '$subs_domain', '$proxies', '$proxy_group'], [$subscribeInfo, route('sub', $user->subscribe->code), $_SERVER['HTTP_HOST'], $proxyProfiles['proxies'], $proxyProfiles['names']],
+            $config);
     }
 }

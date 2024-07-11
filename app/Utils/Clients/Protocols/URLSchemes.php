@@ -1,13 +1,27 @@
 <?php
 
-namespace App\Utils\Clients;
+namespace App\Utils\Clients\Protocols;
 
-use App\Utils\Library\Templates\Client;
+use App\Utils\Library\Templates\Protocol;
 
-class URLSchemes implements Client
+class URLSchemes implements Protocol
 {
-    public static function buildShadowsocks(array $server): string
+    public static function build(array $servers, bool $isEncode = true): string
     {
+        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+        $url = '';
+
+        foreach ($servers as $server) {
+            if (in_array($server['type'], $validTypes, true)) {
+                $url .= call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
+            }
+        }
+
+        return $isEncode ? base64_encode($url) : $url;
+    }
+
+    public static function buildShadowsocks(array $server): string
+    { // https://shadowsocks.org/doc/sip002.html
         $name = rawurlencode($server['name']);
         $str = base64url_encode("{$server['method']}:{$server['passwd']}");
 
