@@ -255,26 +255,4 @@ class NodeController extends Controller
     { // 节点流量监控
         return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
     }
-
-    public function pingNode(Node $node): JsonResponse
-    { // Ping节点延迟
-        if ($node->is_ddns) {
-            if ($result = (new NetworkDetection)->ping($node->server)) {
-                return Response::json(['status' => 'success', 'message' => $result]);
-            }
-        } else {
-            $msg = null;
-            foreach ($node->ips() as $ip) {
-                $ret = (new NetworkDetection)->ping($ip);
-                if ($ret !== false) {
-                    $msg .= $ret.' <hr>';
-                }
-            }
-            if (isset($msg)) {
-                return Response::json(['status' => 'success', 'message' => $msg]);
-            }
-        }
-
-        return Response::json(['status' => 'fail', 'message' => 'Ping访问失败']);
-    }
 }

@@ -11,29 +11,6 @@ class NetworkDetection
 {
     private static PendingRequest $basicRequest;
 
-    public function ping(string $ip): ?string
-    { // 用外部API进行Ping检测. TODO: 无权威外部API，功能缺失
-        $testers = ['oiowebPing', 'xiaoapiPing', 'yum6Ping'];
-        self::$basicRequest = Http::timeout(20)->withOptions(['http_errors' => false])->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
-
-        foreach ($testers as $tester) {
-            try {
-                if (method_exists(self::class, $tester)) {
-                    $result = $this->$tester($ip);
-                    if ($result !== null) {
-                        return $result;
-                    }
-                }
-            } catch (Exception $e) {
-                Log::error("[$tester] 网络延迟测试报错: ".$e->getMessage());
-
-                continue;
-            }
-        }
-
-        return null;
-    }
-
     public function networkStatus(string $ip, int $port): ?array
     {
         $status = $this->networkCheck($ip, $port);
@@ -84,66 +61,10 @@ class NetworkDetection
         return null;
     }
 
-    private function oiowebPing(string $ip)
-    {
-        $msg = null;
-        foreach ([1, 6, 14] as $line) {
-            $response = self::$basicRequest->get("https://api.oioweb.cn/api/hostping.php?host=$ip&node=$line"); // https://api.iiwl.cc/api/ping.php?host=
-
-            // 发送成功
-            if ($response->ok()) {
-                $message = $response->json();
-                if ($message && $message['code']) {
-                    $msg .= "{$message['node']}：{$message['data']['Time']}<br>";
-                }
-            } else {
-                return false;
-            }
-        }
-
-        if ($msg) {
-            return $msg;
-        }
-        Log::warning('【PING】检测'.$ip.'时，api.oioweb.cn无结果');
-
-        // 发送错误
-        return false;
-    }
-
-    private function xiaoapiPing(string $ip)
-    { // 开发依据 https://xiaoapi.cn/?action=doc&id=3
-        $response = self::$basicRequest->get("https://xiaoapi.cn/API/sping.php?url=$ip");
-
-        // 发送成功
-        if ($response->ok()) {
-            return $response->body();
-        }
-        Log::warning("【PING】检测{$ip}时，xiaoapi.cn无结果");
-
-        // 发送错误
-        return false;
-    }
-
-    private function yum6Ping(string $ip)
-    { // 来源 https://api.yum6.cn/ping.php?host=api.yum6.cn
-        $response = self::$basicRequest->get("https://api.yum6.cn/ping.php?host=$ip");
-
-        // 发送成功
-        if ($response->ok()) {
-            $msg = $response->json();
-            if ($msg && $msg['state'] === '1000') {
-                return "<h4>{$msg['ip']}</h4>线路【{$msg['node']}】<br> 最小值：{$msg['ping_time_min']}<br> 平均值：{$msg['ping_time_avg']}<br> 最大值：{$msg['ping_time_max']}";
-            }
-        }
-        Log::warning('【PING】检测'.$ip.'时，api.yum6.cn无结果');
-
-        return false; // 发送错误
-    }
-
     private function toolsdaquan(string $ip, int $port): ?array
     { // 开发依据: https://www.toolsdaquan.com/ipcheck/
-        $response_inner = self::$basicRequest->withHeaders(['Referer' => 'https://www.toolsdaquan.com/ipcheck/'])->get("https://www.toolsdaquan.com/toolapi/public/ipchecking/$ip/$port");
-        $response_outer = self::$basicRequest->withHeaders(['Referer' => 'https://www.toolsdaquan.com/ipcheck/'])->get("https://www.toolsdaquan.com/toolapi/public/ipchecking2/$ip/$port");
+        $response_inner = self::$basicRequest->withHeader('Referer', 'https://www.toolsdaquan.com/ipcheck/')->get("https://www.toolsdaquan.com/toolapi/public/ipchecking/$ip/$port");
+        $response_outer = self::$basicRequest->withHeader('Referer', 'https://www.toolsdaquan.com/ipcheck/')->get("https://www.toolsdaquan.com/toolapi/public/ipchecking2/$ip/$port");
 
         if ($response_inner->ok() && $response_outer->ok()) {
             return $this->common_detection($response_inner->json(), $response_outer->json(), $ip);
@@ -343,7 +264,7 @@ class NetworkDetection
 
     private function vps1352(string $ip, int $port): ?array
     { // 开发依据: https://www.51vps.info/ipcheck.html https://www.vps1352.com/ipcheck.html 有缺陷api,查不了海外做判断 备用
-        $response = self::$basicRequest->asForm()->withHeaders(['Referer' => 'https://www.51vps.info'])->post('https://www.vps1352.com/check.php', ['ip' => $ip, 'port' => $port]);
+        $response = self::$basicRequest->asForm()->withHeader('Referer', 'https://www.51vps.info')->post('https://www.vps1352.com/check.php', ['ip' => $ip, 'port' => $port]);
 
         if ($response->ok()) {
             $data = $response->json();
@@ -367,7 +288,7 @@ class NetworkDetection
 
     private function rss(string $ip, int $port): ?array
     { // https://ip.rss.ink/index/check
-        $client = self::$basicRequest->withHeaders(['X-Token' => '5AXfB1xVfuq5hxv4']);
+        $client = self::$basicRequest->withHeader('X-Token', '5AXfB1xVfuq5hxv4');
 
         foreach (['in', 'out'] as $type) {
             foreach (['icmp', 'tcp'] as $protocol) {

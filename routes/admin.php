@@ -75,7 +75,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('clone/{node}', 'clone')->name('clone'); // 节点流量监控
         Route::get('monitor/{node}', 'nodeMonitor')->name('monitor'); // 节点流量监控
         Route::post('check/{node}', 'checkNode')->name('check'); // 节点阻断检测
-        Route::post('ping/{node}', 'pingNode')->name('ping'); // 节点ping测速
         Route::get('refreshGeo/{id}', 'refreshGeo')->name('geo'); // 更新节点
         Route::post('reload/{id}', 'reload')->name('reload'); // 更新节点
         Route::resource('auth', NodeAuthController::class)->except(['create', 'show', 'edit']); // 节点授权相关

@@ -56,7 +56,6 @@ class RBACSeeder extends Seeder
         'admin.node.geo' => '【线路系统】更新地理',
         'admin.node.index' => '【线路系统】线路列表',
         'admin.node.monitor' => '【线路系统】流量监控',
-        'admin.node.ping' => '【线路系统】测速',
         'admin.node.reload' => '【线路系统】重载',
         'admin.order' => '【商品系统】订单列表',
         'admin.payment.callback' => '【日志系统】回调列表',
