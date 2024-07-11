@@ -57,7 +57,7 @@ class reloadNode implements ShouldQueue
     public function send(string $host, string $secret, array $data): bool
     {
         try {
-            $response = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret])->post('api/v2/node/reload', $data);
+            $response = Http::baseUrl($host)->timeout(15)->withHeader('secret', $secret)->post('api/v2/node/reload', $data);
             $message = $response->json();
             if ($message && Arr::has($message, ['success', 'content']) && $response->ok()) {
                 if ($message['success'] === 'false') {

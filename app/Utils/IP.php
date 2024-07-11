@@ -107,7 +107,7 @@ class IP
     { // 开发依据: https://ip-api.com/docs/api:json
         $key = config('services.ip.ip-api_key');
         if ($key) {
-            $response = self::$basicRequest->withHeaders(['Origin' => 'https://members.ip-api.com'])->acceptJson()->get("https://pro.ip-api.com/json/$ip?fields=49881&key=$key&lang=".str_replace('_', '-', app()->getLocale()));
+            $response = self::$basicRequest->withHeader('Origin', 'https://members.ip-api.com')->acceptJson()->get("https://pro.ip-api.com/json/$ip?fields=49881&key=$key&lang=".str_replace('_', '-', app()->getLocale()));
             if (! $response->ok()) {
                 $response = self::$basicRequest->acceptJson()->get("http://ip-api.com/json/$ip?fields=49881&lang=".str_replace('_', '-', app()->getLocale()));
             }
@@ -200,7 +200,7 @@ class IP
 
     private static function ipGeoLocation(string $ip): ?array
     { // 开发依据: https://ipgeolocation.io/documentation.html
-        $response = self::$basicRequest->withHeaders(['Origin' => 'https://ipgeolocation.io'])->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=".config('common.language.'.app()->getLocale().'.1'));
+        $response = self::$basicRequest->withHeader('Origin', 'https://ipgeolocation.io')->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=".config('common.language.'.app()->getLocale().'.1'));
         if ($response->ok()) {
             $data = $response->json();
 
@@ -417,7 +417,7 @@ class IP
         if ($key) {
             $response = self::$basicRequest->acceptJson()->get("https://ipinfo.io/$ip?token=$key");
         } else {
-            $response = self::$basicRequest->acceptJson()->withHeaders(['Referer' => 'https://ipinfo.io/'])->get("https://ipinfo.io/widget/demo/$ip");
+            $response = self::$basicRequest->acceptJson()->withHeader('Referer', 'https://ipinfo.io/')->get("https://ipinfo.io/widget/demo/$ip");
         }
 
         if ($response->ok()) {
@@ -655,10 +655,10 @@ class IP
     private static function ipw(string $ip): ?array
     { // 开发依据: https://api.vore.top/
         if (self::$is_ipv4) {
-            $response = self::$basicRequest->asForm()->withHeaders(['Referer' => 'https://ipw.cn/'])->post('https://rest.ipw.cn/api/ip/queryThird',
+            $response = self::$basicRequest->asForm()->withHeader('Referer', 'https://ipw.cn/')->post('https://rest.ipw.cn/api/ip/queryThird',
                 ['ip' => $ip, 'param1' => '33546680dcec944422ee9fea64ced0fb6', 'param2' => '5ac8d31b5b3434350048af37a497a9']);
         } else {
-            $response = self::$basicRequest->asForm()->withHeaders(['Referer' => 'https://ipw.cn/'])->get("https://rest.ipw.cn/api/aw/v1/ipv6?ip=$ip&warning=1");
+            $response = self::$basicRequest->asForm()->withHeader('Referer', 'https://ipw.cn/')->get("https://rest.ipw.cn/api/aw/v1/ipv6?ip=$ip&warning=1");
         }
 
         if ($response->ok()) {

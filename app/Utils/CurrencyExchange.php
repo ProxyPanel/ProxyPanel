@@ -172,7 +172,7 @@ class CurrencyExchange
     { // Reference: https://apilayer.com/marketplace/exchangerates_data-api RATE LIMIT: 250 Requests / Monthly
         $key = config('services.currency.apiLayer_key');
         if ($key) {
-            $response = self::$basicRequest->withHeaders(['apikey' => $key])->get("https://api.apilayer.com/exchangerates_data/latest?symbols=$target&base=$base");
+            $response = self::$basicRequest->withHeader('apikey', $key)->get("https://api.apilayer.com/exchangerates_data/latest?symbols=$target&base=$base");
             if ($response->ok()) {
                 $data = $response->json();
 

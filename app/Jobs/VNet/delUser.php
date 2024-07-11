@@ -49,7 +49,7 @@ class delUser implements ShouldQueue
     private function send(string $host, string $secret): void
     {
         try {
-            $request = Http::baseUrl($host)->timeout(15)->withHeaders(['secret' => $secret]);
+            $request = Http::baseUrl($host)->timeout(15)->withHeader('secret', $secret);
 
             if (is_array($this->userIds)) {
                 $response = $request->post('api/v2/user/del/list', $this->userIds);
