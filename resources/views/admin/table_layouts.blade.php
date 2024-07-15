@@ -10,9 +10,17 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script>
+        $('form').on('submit', function() {
+            $(this).find('input, select').each(function() {
+                if (!$(this).val()) {
+                    $(this).remove();
+                }
+            });
+        });
+
         $('select').on('change', function() {
-            this.form.submit()
-        })
+            $(this).closest('form').trigger('submit');
+        });
     </script>
     @stack('javascript')
 @endsection

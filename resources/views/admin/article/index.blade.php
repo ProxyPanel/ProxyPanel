@@ -76,7 +76,7 @@
                                     {{ Str::limit($article->category, 30) }}
                                 </td>
                                 <td class="text-left">
-                                    @if (! empty($article->logo))
+                                    @if ($article->logo)
                                         <img class="mr-5" src="{{ asset($article->logo) }}" alt="logo" style="height: 32px" loading="lazy" />
                                     @endif
                                     {{ Str::limit($article->title, 50) }}

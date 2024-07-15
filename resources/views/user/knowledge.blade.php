@@ -99,10 +99,10 @@
                                                         <a class="panel-title collapsed" data-toggle="collapse" href="#article_A{{ $article->id }}"
                                                            role="tab" aria-controls="article_A{{ $article->id }}" aria-expanded="false"
                                                            style="display: flex;" onclick="getArticle('{{ $article->id }}')">
-                                                            @isset($article->logo)
+                                                            @if ($article->logo)
                                                                 <img class="mr-5" src="{{ asset($article->logo) }}" alt=""
                                                                      style="height: 36px; align-self: center" loading="lazy" />
-                                                            @endisset
+                                                            @endif
                                                             <h4 style="margin-top: 11px">{{ $article->title }}</h4>
                                                         </a>
                                                         <div class="panel-collapse collapse" id="article_A{{ $article->id }}" role="tabpanel"

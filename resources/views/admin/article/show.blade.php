@@ -11,8 +11,13 @@
                 <div class="panel">
                     <div class="panel-heading">
                         <h3 class="panel-title">
-                            <img class="mr-10" src="{{ asset($article->logo) }}" alt="logo" style="height: 32px" />{{ $article->title }}
-                            {!! $article->category ? '<sub class="ml-20">' . $article->category . '</sub>' : '' !!}
+                            @if ($article->logo)
+                                <img class="mr-10" src="{{ asset($article->logo) }}" alt="logo" style="height: 32px" />
+                            @endif
+                            {{ $article->title }}
+                            @if ($article->category)
+                                <sub class="ml-20">{{ $article->category }}</sub>
+                            @endif
                         </h3>
                         <div class="panel-actions"><code>{{ $article->created_at }}</code></div>
                     </div>
