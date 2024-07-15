@@ -86,7 +86,7 @@ class OAuthController extends Controller
             $userAuth = UserOauth::whereType($provider)->whereIdentifier($registerInfo->getId())->first();
 
             if (! $userAuth) { // 第三方账号未被绑定
-                $user = Helpers::addUser($registerInfo->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $registerInfo->getNickname());
+                $user = Helpers::addUser($registerInfo->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $registerInfo->getNickname(), 1);
 
                 $user->userAuths()->create([
                     'type' => $provider,
