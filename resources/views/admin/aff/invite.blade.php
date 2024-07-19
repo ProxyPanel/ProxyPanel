@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container-fluid">
         <div class="row">
@@ -85,10 +82,8 @@
         </div>
     </div>
 @endsection
-@section('javascript')
+@push('javascript')
     <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
         @can('admin.invite.create')
             // 生成邀请码
@@ -157,4 +152,4 @@
             });
         });
     </script>
-@endsection
+@endpush

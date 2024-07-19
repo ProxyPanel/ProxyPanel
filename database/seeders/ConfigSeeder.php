@@ -182,6 +182,7 @@ class ConfigSeeder extends Seeder
             'user_invite_days' => 7,
             'admin_invite_days' => 7,
             'standard_currency' => 'CNY',
+            'redirect_url' => 'https://www.baidu.com',
         ];
 
         foreach ($presetDates as $key => $value) {

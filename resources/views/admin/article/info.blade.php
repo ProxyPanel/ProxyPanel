@@ -194,7 +194,7 @@
                 }).data('dropify').init()
             }
 
-            function handleFormSubmit(event) {
+            function handleFormSubmit() {
                 const logoUrl = $logoUrl.val()
                 if (logoUrl || (logoCleared && !$logo.val())) {
                     $logo.attr('type', 'text').val(logoUrl || null)

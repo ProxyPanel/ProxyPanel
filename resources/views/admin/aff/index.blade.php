@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group col-lg-1 col-sm-4 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
-                        <a class="btn btn-danger" href="{{ route('admin.aff.index') }}">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

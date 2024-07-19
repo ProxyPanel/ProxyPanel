@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
@@ -32,7 +29,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
-                        <a class="btn btn-danger" href="{{ route('admin.log.ip') }}">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
@@ -114,8 +111,4 @@
             </div>
         </div>
     </div>
-@endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
 @endsection

@@ -7,7 +7,6 @@ use Artisan;
 use Exception;
 use File;
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -89,9 +88,6 @@ BANNER;
         }
     }
 
-    /**
-     * @throws FileNotFoundException
-     */
     private function setDatabaseInfo(): void
     {
         $this->line(' Setting up database information | 设置数据库信息');
@@ -107,9 +103,6 @@ BANNER;
         $this->saveToEnv($databaseInfo);
     }
 
-    /**
-     * @throws FileNotFoundException
-     */
     private function saveToEnv(array $data = []): void
     {
         $envPath = app()->environmentFilePath();

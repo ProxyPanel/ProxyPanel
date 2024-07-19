@@ -8,6 +8,7 @@ return [
         'bots' => 'Phát hiện truy cập từ robot, từ chối truy cập',
         'china' => 'Phát hiện truy cập từ IP hoặc proxy Trung Quốc, từ chối truy cập',
         'oversea' => 'Phát hiện truy cập từ IP hoặc proxy nước ngoài, từ chối truy cập',
+        'unknown' => 'Chế độ truy cập bị cấm không xác định! Vui lòng sửa đổi [Chế độ cấm truy cập] trong cài đặt hệ thống!',
     ],
     'log' => 'Nhật ký',
     'refresh' => 'Làm mới',

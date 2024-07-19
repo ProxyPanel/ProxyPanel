@@ -26,7 +26,7 @@
                     </div>
                     <div class="form-group col-lg-2 col-sm-6 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
-                        <a class="btn btn-danger" href="{{ route('admin.marketing.push') }}">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
                 </form>
                 {{--                <div class="alert alert-info alert-dismissible" role="alert"> --}}

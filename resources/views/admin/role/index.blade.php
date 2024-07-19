@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container">
         <div class="panel">
@@ -74,9 +71,7 @@
         </div>
     </div>
 @endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+@push('javascript')
     @can('admin.role.destroy')
         <script>
             function delRole(url, name) {
@@ -118,4 +113,4 @@
             }
         </script>
     @endcan
-@endsection
+@endpush

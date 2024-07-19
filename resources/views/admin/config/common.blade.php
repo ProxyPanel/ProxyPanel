@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container">
         <div class="panel">
@@ -445,10 +442,8 @@
         </div>
     </div>
 @endsection
-@section('javascript')
+@push('javascript')
     <script src="/assets/custom/jump-tab.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
         function addLevel() { // 添加等级
             @can('admin.config.level.store')
@@ -1158,4 +1153,4 @@
             @endcannot
         }
     </script>
-@endsection
+@endpush

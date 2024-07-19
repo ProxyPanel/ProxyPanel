@@ -1,6 +1,5 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+@extends('admin.table_layouts')
+@push('css')
     <style>
         #swal2-content {
             display: grid !important;
@@ -10,7 +9,7 @@
             text-decoration: none;
         }
     </style>
-@endsection
+@endpush
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
@@ -253,9 +252,7 @@
         </div>
     </div>
 @endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+@push('javascript')
     <script>
         @can('admin.node.check')
             // 节点连通性测试
@@ -415,4 +412,4 @@
             }
         @endcan
     </script>
-@endsection
+@endpush

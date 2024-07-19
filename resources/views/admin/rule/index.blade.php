@@ -24,7 +24,7 @@
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
-                        <a class="btn btn-danger" href="{{ route('admin.rule.index') }}">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
                 </form>
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

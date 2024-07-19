@@ -8,6 +8,7 @@ return [
         'bots' => 'Bot-Zugriff erkannt, Zugriff verweigert',
         'china' => 'China-IP oder Proxy-Zugriff erkannt, Zugriff verweigert',
         'oversea' => 'Übersee-IP oder Proxy-Zugriff erkannt, Zugriff verweigert',
+        'unknown' => 'Unbekannter verbotener Zugriffsmodus! Bitte ändern Sie den [Zugriffsbeschränkung] in den Systemeinstellungen!',
     ],
     'log' => 'Protokoll',
     'refresh' => 'Aktualisieren',

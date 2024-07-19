@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
@@ -84,9 +81,7 @@
         </div>
     </div>
 @endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+@push('javascript')
     <script src="/assets/custom/easy.qrcode.min.js" type="text/javascript"></script>
     @can('admin.user.exportProxy')
         <script>
@@ -155,4 +150,4 @@
             }
         </script>
     @endcan
-@endsection
+@endpush

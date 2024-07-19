@@ -10,6 +10,10 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script>
+        function resetSearchForm() {
+            window.location.href = window.location.href.split('?')[0];
+        }
+
         $('form').on('submit', function() {
             $(this).find('input, select').each(function() {
                 if (!$(this).val()) {

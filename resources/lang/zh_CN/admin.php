@@ -680,7 +680,7 @@ return [
             'register_ip_limit' => '24小时内同IP允许注册数量，为0/留空不限制',
             'reset_password_times' => '24小时内可以通过邮件重置密码次数',
             'reset_traffic' => '用户会按其购买套餐的日期自动重置可用流量',
-            'server_chan_key' => '启用ServerChan，请务必填入本值（<a href=https://sc.ftqq.com target=_blank>申请 SCKEY</a>）',
+            'server_chan_key' => '启用ServerChan，请务必填入本值（<a href="https://sct.ftqq.com/r/2626" target="_blank">申请 SCKEY</a>）',
             'standard_currency' => '网站中涉及金钱部分的默认货币',
             'subject_name' => '用于在支付渠道的商品标题显示',
             'subscribe_ban_times' => '24小时内订阅链接请求次数限制',

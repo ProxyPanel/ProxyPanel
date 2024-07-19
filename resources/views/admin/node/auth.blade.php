@@ -1,7 +1,4 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-@endsection
+@extends('admin.table_layouts')
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
@@ -214,11 +211,8 @@
             </div>
         </div>
     @endforeach
-
 @endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+@push('javascript')
     <script>
         // 生成授权KEY
         @can('admin.node.auth.store')
@@ -335,4 +329,4 @@
             }
         @endcan
     </script>
-@endsection
+@endpush

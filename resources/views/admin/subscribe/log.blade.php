@@ -1,8 +1,7 @@
-@extends('admin.layouts')
-@section('css')
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+@extends('admin.table_layouts')
+@push('css')
     <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
-@endsection
+@endpush
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
@@ -35,7 +34,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
-                        <a class="btn btn-danger" href="{{ route('admin.subscribe.log', $subscribe->user->id) }}">{{ trans('common.reset') }}</a>
+                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
                 </form>
                 <div class="col-sm-12 col-xl-2">
@@ -128,9 +127,7 @@
         </div>
     </div>
 @endsection
-@section('javascript')
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
+@push('javascript')
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
@@ -167,4 +164,4 @@
             }
         @endcan
     </script>
-@endsection
+@endpush

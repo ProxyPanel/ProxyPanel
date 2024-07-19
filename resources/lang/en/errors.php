@@ -8,6 +8,7 @@ return [
         'bots' => 'Detected bot access, access denied',
         'china' => 'Detected China IP or proxy access, access denied',
         'oversea' => 'Detected overseas IP or proxy access, access denied',
+        'unknown' => 'Unknown forbidden access mode! Please modify the [Access Restriction] in the system settings!',
     ],
     'log' => 'Log',
     'refresh' => 'Refresh',
