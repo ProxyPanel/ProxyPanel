@@ -28,7 +28,7 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     });
 
     Route::controller(AuthController::class)->group(function () {
-        Route::get('lang/{locale}', 'switchLang')->name('lang'); // 语言切换
+        Route::get('lang/{locale}', 'switchLang')->name('lang')->withoutMiddleware('isMaintenance'); // 语言切换
         Route::get('login', 'showLoginForm')->middleware('isSecurity')->name('login'); // 登录页面
         Route::post('login', 'login')->middleware('isSecurity'); // 登录
         Route::get('logout', 'logout')->name('logout'); // 退出

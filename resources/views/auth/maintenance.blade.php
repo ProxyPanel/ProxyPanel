@@ -9,6 +9,13 @@
             {!! $message !!}
             <footer class="page-copyright">
                 <p id="countdown"></p>
+                <div class="social">
+                    @foreach (config('common.language') as $key => $value)
+                        <a class="btn btn-icon btn-pure" href="{{ route('lang', ['locale' => $key]) }}">
+                            <i class="font-size-30 icon fi fi-{{ $value[1] }}" aria-hidden="true"></i>
+                        </a>
+                    @endforeach
+                </div>
             </footer>
         </div>
     </div>
@@ -17,21 +24,29 @@
     <script>
         // 每秒更新计时器
         const countDownDate = new Date("{{ $time }}").getTime();
-        const x = setInterval(function() {
+        const countdownElement = document.getElementById('countdown');
+        const daysLabel = '{{ trans_choice('common.days.attribute', 1) }}';
+        const hoursLabel = '{{ trans_choice('common.hour', 1) }}';
+        const minutesLabel = '{{ trans('validation.attributes.minute') }}';
+        const secondsLabel = '{{ trans('validation.attributes.second') }}';
+
+        const updateCountdown = () => {
             const distance = countDownDate - new Date().getTime();
+            if (distance <= 0) {
+                clearInterval(interval);
+                countdownElement.remove();
+                return;
+            }
+
             const days = Math.floor(distance / 86400000);
             const hours = Math.floor(distance % 86400000 / 3600000);
             const minutes = Math.floor(distance % 3600000 / 60000);
             const seconds = Math.floor(distance % 60000 / 1000);
-            document.getElementById('countdown').innerHTML = '<h2>' + days + ' <span> ' +
-                @json(trans_choice('common.days.attribute', 1)) + ' </span>: ' +
-                hours + ' <span>' + @json(trans_choice('common.hour', 1)) + '</span>: ' + minutes +
-                ' <span>{{ trans('validation.attributes.minute') }} </span>: ' +
-                seconds + '<span> {{ trans('validation.attributes.second') }}</span> </h2>';
-            if (distance <= 0) {
-                clearInterval(x);
-                document.getElementById('countdown').remove();
-            }
-        }, 1000);
+
+            countdownElement.innerHTML =
+                `<h3>${days} <span> ${daysLabel} </span>: ${hours} <span>${hoursLabel}</span>: ${minutes} <span>${minutesLabel}</span>: ${seconds}<span> ${secondsLabel}</span></h3>`;
+        };
+
+        const interval = setInterval(updateCountdown, 1000);
     </script>
 @endsection

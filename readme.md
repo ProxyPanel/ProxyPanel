@@ -1,14 +1,14 @@
 # **ProxyPanel** [![Crowdin](https://badges.crowdin.net/proxypanel/localized.svg)](https://crowdin.com/project/proxypanel) <img src="https://avatars.githubusercontent.com/u/70075860?s=128" alt="logo" align="right" style="margin-top: -50px;"/>
 
-Support but not limited to: Shadowsocks, ShadowsocksR, ShadowsocksRR, V2Ray, Trojan, VNET
+`We are looking for translators to help us translate this project into other languages 😊`
 
-We are looking for translators who help us to translate this project into other languages :)
+Support but not limited to: Shadowsocks, ShadowsocksR, ShadowsocksRR, V2Ray, Trojan, VNET
 
 ---
 
 ## Project
 
-- [**Demo**](https://proxypanel.ddo.jp) will always be on dev/latest code, rather than the stable version. For showcase purposes.
+- [**Demo**](https://proxypanel.ddo.jp) (dev/latest code for showcase purposes)
     - **Account:** test@test.com
     - **Password:** 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/) [简体中文](https://proxypanel.gitbook.io/wiki/)
@@ -26,7 +26,7 @@ We are looking for translators who help us to translate this project into other 
 
 ### Laravel 10
 
-This project is based on Laravel 10 Framework. This means anything Laravel 10 requires to install will also be required by this project.
+This project is based on Laravel 10 Framework. Therefore, it requires all Laravel 10 dependencies.
 
 - **PHP 8.1+**
   - Ctype PHP Extension
@@ -57,7 +57,7 @@ This project is based on Laravel 10 Framework. This means anything Laravel 10 re
 
 ---
 
-## Nice VPS
+## Recommended VPS
 
 - [**Kdatacenter**](https://www.kdatacenter.com/myportal/?affid=470)
     - 韩国SK线路，19刀（优惠后16.91刀）1TB流量/月，性价比不错
