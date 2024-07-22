@@ -84,6 +84,7 @@ return [
             'attribute' => '데이터 분석',
             'accounting' => '회계',
             'user_flow' => '사용자 트래픽',
+            'node_flow' => '노드 트래픽 분석',
             'site_flow' => '사이트 트래픽',
         ],
         'log' => [
@@ -373,9 +374,11 @@ return [
         'last_year' => '작년',
         'hourly_traffic' => '시간별 트래픽',
         'daily_traffic' => '일일 트래픽',
+        'daily_distribution' => '일일 분포',
         'today' => '오늘',
         'avg_traffic_30d' => '30일 평균 일일 트래픽',
         'sum_traffic_30d' => '30일 총 트래픽 비율',
+        'select_hourly_date' => '시간별 날짜 선택',
     ],
     'permission' => [
         'title' => '권한 행동 목록',
@@ -680,7 +683,7 @@ return [
             'register_ip_limit' => '24시간 내 동일 IP에서 허용되는 등록 수, 0 또는 비워두면 무제한',
             'reset_password_times' => '24시간 내 이메일을 통해 비밀번호 재설정 가능한 횟수',
             'reset_traffic' => '사용자가 구매한 패키지의 날짜에 따라 자동으로 데이터 재설정',
-            'server_chan_key' => 'ServerChan을 활성화하려면 반드시 이 값을 입력하세요(<a href="https://sc.ftqq.com" target="_blank">SCKEY 신청</a>)',
+            'server_chan_key' => 'ServerChan을 활성화하려면 반드시 이 값을 입력하세요(<a href="https://sct.ftqq.com/r/2626" target="_blank">SCKEY 신청</a>)',
             'standard_currency' => '웹사이트에서 사용되는 기본 통화',
             'subject_name' => '결제 채널에서 표시되는 상품 제목',
             'subscribe_ban_times' => '24시간 내 구독 링크 요청 횟수 제한',

@@ -106,6 +106,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::prefix('report')->name('report.')->controller(ReportController::class)->group(function () {
         Route::get('accounting', 'accounting')->name('accounting'); // 流水账簿
         Route::get('user/analysis', 'userAnalysis')->name('userAnalysis'); // 用户流量分析
+        Route::get('node/analysis', 'nodeAnalysis')->name('nodeAnalysis'); // 节点流量分析
         Route::get('site/analysis', 'siteAnalysis')->name('siteAnalysis'); // 网站流量分析
     });
 

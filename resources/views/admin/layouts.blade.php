@@ -376,6 +376,13 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('admin.report.nodeAnalysis')
+                                <li class="site-menu-item {{ request()->routeIs('admin.report.nodeAnalysis') ? 'active open' : '' }}">
+                                    <a href="{{ route('admin.report.nodeAnalysis') }}">
+                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.node_flow') }}</span>
+                                    </a>
+                                </li>
+                            @endcan
                             @can('admin.report.siteAnalysis')
                                 <li class="site-menu-item {{ request()->routeIs('admin.report.siteAnalysis') ? 'active open' : '' }}">
                                     <a href="{{ route('admin.report.siteAnalysis') }}">

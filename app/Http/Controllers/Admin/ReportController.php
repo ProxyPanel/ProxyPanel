@@ -8,6 +8,7 @@ use App\Models\NodeDailyDataFlow;
 use App\Models\NodeHourlyDataFlow;
 use App\Models\Order;
 use App\Models\User;
+use App\Models\UserDataFlowLog;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Contracts\View\View;
@@ -67,31 +68,26 @@ class ReportController extends Controller
                 'total' => round($item->total / MiB, 2),
             ]);
 
-            $hoursFlow = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item
-            ) => [
+            $hoursFlow = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
                 'id' => $item->node_id,
                 'name' => $item->node->name,
                 'time' => (int) $item->hour,
                 'total' => round($item->total / MiB, 2),
             ]); // 用户今天各小时在各线路消耗流量
 
-            $daysFlow = $user->dailyDataFlows()->whereNotNull('node_id')->whereMonth('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, DAY(created_at) as day, u + d as total')->get()->map(fn ($item
-            ) => [
+            $daysFlow = $user->dailyDataFlows()->whereNotNull('node_id')->whereMonth('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, DAY(created_at) as day, u + d as total')->get()->map(fn ($item) => [
                 'id' => $item->node_id,
                 'name' => $item->node->name,
                 'time' => (int) $item->day,
                 'total' => round($item->total / MiB, 2),
             ]);
 
-            $currentDayFlow = collect($currentHourFlow)
-                ->merge($hoursFlow)
-                ->groupBy('id')
-                ->map(fn ($items) => [
-                    'id' => $items->first()['id'],
-                    'name' => $items->first()['name'],
-                    'time' => $currentDay,
-                    'total' => round($items->sum('total'), 2),
-                ])->values();
+            $currentDayFlow = collect($currentHourFlow)->merge($hoursFlow)->groupBy('id')->map(fn ($items) => [
+                'id' => $items->first()['id'],
+                'name' => $items->first()['name'],
+                'time' => $currentDay,
+                'total' => round($items->sum('total'), 2),
+            ])->values();
 
             $data = [
                 'hours' => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
@@ -103,6 +99,106 @@ class ReportController extends Controller
         }
 
         return view('admin.report.userDataAnalysis', compact('data'));
+    }
+
+    public function nodeAnalysis(Request $request)
+    {
+        $currentTime = now();
+        $currentDate = $currentTime->format('m-d');
+        $currentHour = $currentTime->hour;
+        $nodeId = $request->input('nodes');
+        $startDate = $request->input('start') ?? $currentTime->format('Y-m-01');
+        $endDate = $request->input('end') ?? $currentTime->format('Y-m-d');
+        $hour_date = $request->input('hour_date') ?? $currentTime; // 默认是今天
+
+        $nodes = Node::orderBy('name')->pluck('name', 'id'); // 用于前端节点显示
+
+        $currentHourQuery = UserDataFlowLog::query();
+        $hourlyQuery = NodeHourlyDataFlow::query();
+        $dailyQuery = NodeDailyDataFlow::query();
+
+        if ($nodeId) { // 节点过滤
+            $currentHourQuery->whereIn('node_id', $nodeId);
+            $hourlyQuery->whereIn('node_id', $nodeId);
+            $dailyQuery->whereIn('node_id', $nodeId);
+        }
+
+        $data = [
+            'hours' => [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23],
+            'start_date' => Carbon::parse(NodeDailyDataFlow::orderBy('created_at')->value('created_at'))->format('Y-m-d'), // 数据库里最早的日期
+        ];
+
+        $hoursFlow = $hourlyQuery->whereDate('created_at', $hour_date)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
+            'id' => $item->node_id,
+            'name' => $nodes[$item->node_id],
+            'time' => (int) $item->hour,
+            'total' => round($item->total / GiB, 2),
+        ])->toArray(); // 各线路小时消耗流量
+
+        $daysFlow = $dailyQuery->whereNotNull('node_id')->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->selectRaw('node_id, DATE_FORMAT(created_at, "%m-%d") as date, u + d as total')->get()->map(fn ($item) => [
+            'id' => $item->node_id,
+            'name' => $nodes[$item->node_id],
+            'time' => $item->date,
+            'total' => round($item->total / GiB, 2),
+        ])->toArray();
+
+        if (Carbon::parse($hour_date)->isToday()) { // 如果日期是今天，本小时流量需要另外计算
+            $currentHourFlow = $currentHourQuery->where('log_time', '>=', $currentTime->startOfHour()->timestamp)->groupBy('node_id')->selectRaw('node_id, sum(u + d) as total')->get()->map(fn ($item) => [
+                'id' => $item->node_id,
+                'name' => $nodes[$item->node_id],
+                'time' => $currentHour,
+                'total' => round($item->total / GiB, 2),
+            ])->toArray();
+
+            $hoursFlow = array_merge($hoursFlow, $currentHourFlow);
+
+            if (Carbon::parse($endDate)->isToday()) {
+                $currentDayFlow = collect($hoursFlow)->groupBy('id')->map(fn ($items) => [
+                    'id' => $items->first()['id'],
+                    'name' => $items->first()['name'],
+                    'time' => $currentDate,
+                    'total' => round($items->sum('total'), 2),
+                ])->values()->toArray();
+
+                $daysFlow = array_merge($daysFlow, $currentDayFlow);
+            }
+        } elseif (Carbon::parse($endDate)->isToday()) { // 如果结束日期是今天，本日流量需要另外计算
+            $todayHourlyQuery = NodeHourlyDataFlow::query();
+
+            if ($nodeId) { // 节点过滤
+                $todayHourlyQuery->whereIn('node_id', $nodeId);
+            }
+
+            $hoursFlowToday = $todayHourlyQuery->whereDate('created_at', $currentTime)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
+                'id' => $item->node_id,
+                'name' => $nodes[$item->node_id],
+                'time' => (int) $item->hour,
+                'total' => $item->total / GiB,
+            ])->toArray();
+
+            $currentHourFlow = $currentHourQuery->where('log_time', '>=', $currentTime->startOfHour()->timestamp)->groupBy('node_id')->selectRaw('node_id, sum(u + d) as total')->get()->map(fn ($item) => [
+                'id' => $item->node_id,
+                'name' => $nodes[$item->node_id],
+                'time' => $currentHour,
+                'total' => $item->total / GiB,
+            ])->toArray();
+
+            $currentDayFlow = collect($currentHourFlow)->merge($hoursFlowToday)->groupBy('id')->map(fn ($items) => [
+                'id' => $items->first()['id'],
+                'name' => $items->first()['name'],
+                'time' => $currentDate,
+                'total' => round($items->sum('total'), 2),
+            ])->values()->toArray();
+
+            $daysFlow = array_merge($daysFlow, $currentDayFlow);
+        }
+
+        $data['hourlyFlows'] = $hoursFlow;
+        $data['dailyFlows'] = $daysFlow;
+        $data['nodes'] = collect($daysFlow)->pluck('name', 'id')->unique()->toArray();
+        $hour_dates = NodeHourlyDataFlow::selectRaw('DISTINCT DATE_FORMAT(created_at, "%Y-%m-%d") as formatted_date')->orderByDesc('formatted_date')->pluck('formatted_date')->toArray();
+
+        return view('admin.report.nodeDataAnalysis', compact('data', 'nodes', 'hour_dates'));
     }
 
     public function siteAnalysis(Request $request): View
@@ -131,6 +227,7 @@ class ReportController extends Controller
 
         $daysWithData = max($trafficData->dataCounts ?? 0, 1);
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
         $data = [
             'days' => range(1, max($currentDays, $lastDays)),
             'months' => array_map(static fn ($month) => Carbon::create(null, $month)->translatedFormat('F'), $months),

@@ -15,11 +15,13 @@
         }
 
         $('form').on('submit', function() {
-            $(this).find('input, select').each(function() {
-                if (!$(this).val()) {
-                    $(this).remove();
-                }
-            });
+            $(this).find('input:not([type="submit"]), select').filter(function() {
+                return this.value === "";
+            }).prop('disabled', true);
+
+            setTimeout(function() {
+                $(this).find(':disabled').prop('disabled', false);
+            }, 0);
         });
 
         $('select').on('change', function() {
