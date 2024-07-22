@@ -9,6 +9,7 @@ return [
         'china' => 'China-IP oder Proxy-Zugriff erkannt, Zugriff verweigert',
         'oversea' => 'Übersee-IP oder Proxy-Zugriff erkannt, Zugriff verweigert',
         'unknown' => 'Unbekannter verbotener Zugriffsmodus! Bitte ändern Sie den [Zugriffsbeschränkung] in den Systemeinstellungen!',
+        'redirect' => '(:ip :url) wurde beim Zugriff über einen Abonnement-Link erkannt, erzwungene Weiterleitung.',
     ],
     'log' => 'Protokoll',
     'refresh' => 'Aktualisieren',

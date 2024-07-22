@@ -9,6 +9,7 @@ return [
         'china' => 'Phát hiện truy cập từ IP hoặc proxy Trung Quốc, từ chối truy cập',
         'oversea' => 'Phát hiện truy cập từ IP hoặc proxy nước ngoài, từ chối truy cập',
         'unknown' => 'Chế độ truy cập bị cấm không xác định! Vui lòng sửa đổi [Chế độ cấm truy cập] trong cài đặt hệ thống!',
+        'redirect' => 'Phát hiện (:ip :url) truy cập thông qua liên kết đăng ký, buộc chuyển hướng.',
     ],
     'log' => 'Nhật ký',
     'refresh' => 'Làm mới',

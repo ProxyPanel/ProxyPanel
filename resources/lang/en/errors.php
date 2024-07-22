@@ -9,6 +9,7 @@ return [
         'china' => 'Detected China IP or proxy access, access denied',
         'oversea' => 'Detected overseas IP or proxy access, access denied',
         'unknown' => 'Unknown forbidden access mode! Please modify the [Access Restriction] in the system settings!',
+        'redirect' => 'Detected (:ip :url) accessing through a subscription link, forcing a redirect.',
     ],
     'log' => 'Log',
     'refresh' => 'Refresh',
