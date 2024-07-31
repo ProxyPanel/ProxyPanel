@@ -65,9 +65,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('ticket', TicketController::class)->except('create', 'show');
     Route::resource('article', ArticleController::class);
     Route::prefix('marketing')->name('marketing.')->controller(MarketingController::class)->group(function () {
-        Route::get('email', 'emailList')->name('email'); // 邮件消息列表
-        Route::get('push', 'pushList')->name('push'); // 推送消息列表
-        Route::post('add', 'addPushMarketing')->name('add'); // 推送消息
+        Route::get('/', 'index')->name('index'); // 营销消息列表
+        Route::match(['get', 'post'], '{type}/create', 'create')->name('create'); // 推送消息
     });
 
     Route::resource('node', NodeController::class)->except('show');

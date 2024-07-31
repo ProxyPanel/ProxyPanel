@@ -37,7 +37,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="title"> {{ trans('validation.attributes.title') }} </label>
+                        <label class="col-form-label col-md-2" for="title"> {{ ucfirst(trans('validation.attributes.title')) }} </label>
                         <div class="col-md-4">
                             <input class="form-control" id="title" name="title" type="text" autofocus required />
                         </div>
@@ -88,7 +88,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-form-label col-md-2" for="content"> {{ trans('validation.attributes.content') }} </label>
+                        <label class="col-form-label col-md-2" for="content"> {{ ucfirst(trans('validation.attributes.content')) }} </label>
                         <div class="col-md-10">
                             <textarea class="form-control" name="content">
                                 @isset($article)
@@ -134,7 +134,7 @@
                 quickbars_insert_toolbar: 'quicktable image media',
                 quickbars_selection_toolbar: 'bold italic underline | blocks | bullist numlist | blockquote quicklink',
                 extended_valid_elements: 'button[onclick|class],i[class|aria-hidden]', // Allow more attributes for <a>
-                language: '{{ app()->getLocale() }}',
+                language: '{{ app()->getLocale() !== 'ko' ? app()->getLocale() : 'ko_KR' }}',
                 content_css: [
                     '/assets/bundle/app.min.css',
                     '/assets/global/fonts/font-awesome/css/all.min.css',

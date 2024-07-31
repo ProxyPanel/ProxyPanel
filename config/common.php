@@ -76,13 +76,13 @@ return [
     ],
 
     'language' => [
-        'de' => ['Deutsch', 'de'],
-        'en' => ['English', 'us'],
-        'fa' => ['فارسی', 'ir'],
-        'ja' => ['日本語', 'jp'],
-        'ko' => ['한국어', 'kr'],
-        'vi' => ['Tiếng Việt', 'vn'],
-        'zh_CN' => ['简体中文', 'cn'],
+        'de' => ['Deutsch', 'de', 'de-DE'],
+        'en' => ['English', 'us', 'en-US'],
+        'fa' => ['فارسی', 'ir', 'fa-IR'],
+        'ja' => ['日本語', 'jp', 'ja-JP'],
+        'ko' => ['한국어', 'kr', 'ko-KR'],
+        'vi' => ['Tiếng Việt', 'vn', 'vi-VN'],
+        'zh_CN' => ['简体中文', 'cn', 'zh-CN'],
     ],
 
     'currency' => [

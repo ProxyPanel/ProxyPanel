@@ -159,7 +159,7 @@
                         </ul>
                     </li>
                 @endcanany
-                @canany(['admin.ticket.index', 'admin.article.index', 'admin.marketing.push', 'admin.marketing.email'])
+                @canany(['admin.ticket.index', 'admin.article.index', 'admin.marketing.index'])
                     <li class="site-menu-item has-sub {{ request()->routeIs('admin.ticket.*', 'admin.article.*', 'admin.marketing.*') ? 'active open' : '' }}">
                         <a href="javascript:void(0)">
                             <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
@@ -197,17 +197,10 @@
                                     </a>
                                 </li>
                             @endcan
-                            @can('admin.marketing.push')
-                                <li class="site-menu-item {{ request()->routeIs('admin.marketing.push') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.marketing.push') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.push') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.marketing.email')
-                                <li class="site-menu-item {{ request()->routeIs('admin.marketing.email') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.marketing.email') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.mail') }}</span>
+                            @can('admin.marketing.index')
+                                <li class="site-menu-item {{ request()->routeIs('admin.marketing.index') ? 'active open' : '' }}">
+                                    <a href="{{ route('admin.marketing.index') }}">
+                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.marketing') }}</span>
                                     </a>
                                 </li>
                             @endcan

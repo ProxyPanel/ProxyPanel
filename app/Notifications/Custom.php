@@ -18,20 +18,32 @@ class Custom extends Notification implements ShouldQueue
 
     private string $content;
 
-    public function __construct(string $title, string $content)
+    private array $channels;
+
+    public function __construct(string $title, string $content, array $channels = ['mail', BarkChannel::class, TelegramChannel::class])
     {
         $this->title = $title;
         $this->content = $content;
+        $this->channels = $channels;
     }
 
     public function via($notifiable): array
     {
-        return $notifiable ?? ['mail', BarkChannel::class, TelegramChannel::class];
+        return $this->channels;
     }
 
     public function toMail($notifiable): MailMessage
     {
+        $emailAddress = config('mail.from.address');
+        $atSignPosition = strpos($emailAddress, '@');
+
+        if ($atSignPosition !== false) {
+            $domain = substr($emailAddress, $atSignPosition + 1);
+            $emailAddress = 'no-reply@'.$domain;
+        }
+
         return (new MailMessage)
+            ->from($emailAddress)
             ->subject($this->title)
             ->markdown('mail.custom', ['content' => $this->content]);
     }
