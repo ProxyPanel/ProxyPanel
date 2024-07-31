@@ -85,7 +85,7 @@
                         <ul class="nav nav-tabs nav-tabs-line" role="tablist">
                             <li class="nav-item" role="presentation">
                                 <a class="active nav-link" data-toggle="tab" href="#account" role="tab"
-                                   aria-controls="account">{{ trans('validation.attributes.password') }}</a>
+                                   aria-controls="account">{{ ucfirst(trans('validation.attributes.password')) }}</a>
                             </li>
                             <li class="nav-item" role="presentation">
                                 <a class="nav-link" data-toggle="tab" href="#contact" role="tab" aria-controls="contact">{{ trans('user.contact') }}</a>

@@ -306,7 +306,7 @@ class UserController extends Controller
 
         if (empty($title) || empty($content)) {
             return Response::json([
-                'status' => 'fail', 'message' => trans('validation.required', ['attribute' => trans('validation.attributes.title').'&'.trans('validation.attributes.content')]),
+                'status' => 'fail', 'message' => trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.title')).'&'.ucfirst(trans('validation.attributes.content'))]),
             ]);
         }
 
@@ -332,7 +332,7 @@ class UserController extends Controller
 
             if (empty($content)) {
                 return Response::json([
-                    'status' => 'fail', 'message' => trans('validation.required', ['attribute' => trans('validation.attributes.title').'&'.trans('validation.attributes.content')]),
+                    'status' => 'fail', 'message' => trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.title')).'&'.ucfirst(trans('validation.attributes.content'))]),
                 ]);
             }
 

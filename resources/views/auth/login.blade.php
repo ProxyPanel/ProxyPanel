@@ -12,12 +12,12 @@
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input class="form-control" name="username" type="text" value="{{ old('username') }}" required />
             <label class="floating-label" for="username">
-                {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('model.user.username') }}
+                {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username') }}
             </label>
         </div>
         <div class="form-group form-material floating" data-plugin="formMaterial">
             <input class="form-control" name="password" type="password" value="{{ old('password') }}" autocomplete required />
-            <label class="floating-label" for="password">{{ trans('validation.attributes.password') }}</label>
+            <label class="floating-label" for="password">{{ ucfirst(trans('validation.attributes.password')) }}</label>
         </div>
         @yield('captcha', view('auth.captcha'))
         <div class="form-group clearfix">

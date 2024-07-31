@@ -21,7 +21,7 @@
                 @if ($emailList)
                     <div class="input-group">
                         <input class="form-control" id="emailHead" name="emailHead" type="text" value="{{ old('emailHead') }}" required />
-                        <label class="floating-label" for="emailHead">{{ trans('validation.attributes.email') }}</label>
+                        <label class="floating-label" for="emailHead">{{ ucfirst(trans('validation.attributes.email')) }}</label>
                         <div class="input-group-prepend">
                             <span class="input-group-text bg-indigo-600 text-white">@</span>
                         </div>
@@ -35,7 +35,7 @@
                 @else
                     <input class="form-control" id="username" name="username" type="text" value="{{ old('username') }}" required />
                     <label class="floating-label" for="username">
-                        {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? trans('validation.attributes.email') : trans('model.user.username') }}
+                        {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username') }}
                     </label>
                 @endif
             </div>
@@ -54,11 +54,11 @@
             @endif
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input class="form-control" name="password" type="password" required />
-                <label class="floating-label" for="password">{{ trans('validation.attributes.password') }}</label>
+                <label class="floating-label" for="password">{{ ucfirst(trans('validation.attributes.password')) }}</label>
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input class="form-control" name="password_confirmation" type="password" required />
-                <label class="floating-label" for="password_confirmation">{{ trans('validation.attributes.password_confirmation') }}</label>
+                <label class="floating-label" for="password_confirmation">{{ ucfirst(trans('validation.attributes.password_confirmation')) }}</label>
             </div>
             @if (sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
@@ -169,7 +169,7 @@
                 const emailTail = $('#emailTail').val();
                 if (email === '') {
                     swal.fire({
-                        title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.email')]) }}',
+                        title: '{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.email'))]) }}',
                         icon: 'warning',
                         timer: 1500,
                     });
@@ -191,7 +191,7 @@
 
             if (email === '') {
                 swal.fire({
-                    title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.email')]) }}',
+                    title: '{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.email'))]) }}',
                     icon: 'warning',
                     timer: 1500,
                 });

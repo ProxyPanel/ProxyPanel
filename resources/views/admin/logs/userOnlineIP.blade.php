@@ -73,7 +73,7 @@
                                                     <th> {{ trans('model.node.attribute') }}</th>
                                                     <th> {{ trans('model.ip.network_type') }}</th>
                                                     <th> IP</th>
-                                                    <th> {{ trans('validation.attributes.time') }}</th>
+                                                    <th> {{ ucfirst(trans('validation.attributes.time')) }}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

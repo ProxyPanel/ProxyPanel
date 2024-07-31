@@ -327,7 +327,7 @@
                                                 <div class="form-group row ssr-setting">
                                                     <label class="col-md-3 col-form-label" for="passwd">{{ trans('model.node.single_passwd') }}</label>
                                                     <input class="form-control col-md-4" id="passwd" name="passwd" type="text"
-                                                           placeholder="{{ trans('validation.attributes.password') }}">
+                                                           placeholder="{{ ucfirst(trans('validation.attributes.password')) }}">
                                                 </div>
                                             </div>
                                         </div>

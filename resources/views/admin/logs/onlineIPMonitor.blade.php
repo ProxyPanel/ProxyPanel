@@ -45,7 +45,7 @@
                             <th> {{ trans('common.account') }}</th>
                             <th> IP</th>
                             <th> {{ trans('model.ip.info') }}</th>
-                            <th> {{ trans('validation.attributes.time') }}</th>
+                            <th> {{ ucfirst(trans('validation.attributes.time')) }}</th>
                         </tr>
                     </thead>
                     <tbody>

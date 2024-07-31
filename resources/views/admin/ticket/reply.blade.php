@@ -206,7 +206,7 @@
 
                     if (content.trim() === '') {
                         swal.fire({
-                            title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.content')]) }}!',
+                            title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}!',
                             icon: 'warning',
                             timer: 1500,
                         });

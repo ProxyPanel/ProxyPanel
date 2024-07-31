@@ -30,7 +30,7 @@
                         <tr>
                             <th> #</th>
                             <th> {{ trans('model.user.username') }}</th>
-                            <th> {{ trans('validation.attributes.title') }}</th>
+                            <th> {{ ucfirst(trans('validation.attributes.title')) }}</th>
                             <th> {{ trans('common.status.attribute') }}</th>
                             <th> {{ trans('common.action') }}</th>
                         </tr>
@@ -112,10 +112,10 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <input class="form-control" id="title" name="title" type="text" placeholder="{{ trans('validation.attributes.title') }}">
+                            <input class="form-control" id="title" name="title" type="text" placeholder="{{ ucfirst(trans('validation.attributes.title')) }}">
                         </div>
                         <div class="form-group">
-                            <textarea class="form-control" id="content" name="content" type="text" rows="5" placeholder="{{ trans('validation.attributes.content') }}"></textarea>
+                            <textarea class="form-control" id="content" name="content" type="text" rows="5" placeholder="{{ ucfirst(trans('validation.attributes.content')) }}"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -147,7 +147,7 @@
 
                 if (title.trim() === '') {
                     swal.fire({
-                        title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.title')]) }}',
+                        title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.title')])) }}',
                         icon: 'warning',
                     });
                     return false;
@@ -155,7 +155,7 @@
 
                 if (content.trim() === '') {
                     swal.fire({
-                        title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.content')]) }}',
+                        title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}',
                         icon: 'warning',
                     });
                     return false;

@@ -26,7 +26,7 @@
                         <div class="content-text text-center mb-0">
                             @if (!$paying_user)
                                 <p class="ml-15 mt-15 text-left">{{ trans('common.more') }}
-                                    <code>{{ trans('validation.attributes.time') }}</code>
+                                    <code>{{ ucfirst(trans('validation.attributes.time')) }}</code>
                                 </p>
                                 <p class="text-center">{{ trans('common.more') }}
                                     <code>{{ trans('user.attribute.data') }}</code>
@@ -283,7 +283,7 @@
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" data-toggle="tab" href="#monthly" role="tab" aria-controls="monthly"
-                                               aria-selected="true">{{ trans('validation.attributes.month') }}</a>
+                                               aria-selected="true">{{ ucfirst(trans('validation.attributes.month')) }}</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -487,10 +487,10 @@
                 string += hour + ' ' + @json(trans_choice('common.hour', 1));
             }
             if (minute) {
-                string += ' ' + minute + ' ' + @json(trans('validation.attributes.minute'));
+                string += ' ' + minute + ' ' + @json(ucfirst(trans('validation.attributes.minute')));
             }
             if (seconds) {
-                string += ' ' + Math.floor((distance % 60000) / 1000) + ' ' + @json(trans('validation.attributes.second'));
+                string += ' ' + Math.floor((distance % 60000) / 1000) + ' ' + @json(ucfirst(trans('validation.attributes.second')));
             }
             document.getElementById(id).innerHTML = string;
 

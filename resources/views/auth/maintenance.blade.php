@@ -27,8 +27,8 @@
         const countdownElement = document.getElementById('countdown');
         const daysLabel = '{{ trans_choice('common.days.attribute', 1) }}';
         const hoursLabel = '{{ trans_choice('common.hour', 1) }}';
-        const minutesLabel = '{{ trans('validation.attributes.minute') }}';
-        const secondsLabel = '{{ trans('validation.attributes.second') }}';
+        const minutesLabel = '{{ ucfirst(trans('validation.attributes.minute')) }}';
+        const secondsLabel = '{{ ucfirst(trans('validation.attributes.second')) }}';
 
         const updateCountdown = () => {
             const distance = countDownDate - new Date().getTime();

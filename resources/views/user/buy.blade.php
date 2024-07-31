@@ -102,7 +102,6 @@
                                 discount.toFixed(2);
                             total_price = goods_price - discount;
                         } else {
-                            console.log(ret.data.value);
                             total_price = goods_price - ret.data.value.match(/(.*?[^0-9])(\d+\.?.*)/)[2];
                             total_price = total_price > 0 ? total_price : 0;
                             if (ret.data.type === 1) {

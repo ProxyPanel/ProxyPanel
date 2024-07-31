@@ -73,7 +73,7 @@
                                         <ul class="pricing-features">
                                             <li>
                                                 <strong>{{ $goods->traffic_label }}</strong>{{ trans('user.attribute.data') }}
-                                                {!! $goods->type === 1 ? ' <code>' . $dataPlusDays . '</code> ' . trans_choice('common.days.attribute', 1) : '/' . trans('validation.attributes.month') !!}
+                                                {!! $goods->type === 1 ? "<code> $dataPlusDays </code>" . trans_choice('common.days.attribute', 1) : '/' . ucfirst(trans('validation.attributes.month')) !!}
                                             </li>
                                             <li>
                                                 {!! trans('user.service.node_count', ['num' => $goods->node_count]) !!}

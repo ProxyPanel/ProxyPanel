@@ -18,7 +18,7 @@
             </div>
             <div class="form-group form-material floating" data-plugin="formMaterial">
                 <input class="form-control" name="password_confirmation" type="password" autocomplete="off" required />
-                <label class="floating-label" for="password_confirmation">{{ trans('validation.attributes.password_confirmation') }}</label>
+                <label class="floating-label" for="password_confirmation">{{ ucfirst(trans('validation.attributes.password_confirmation')) }}</label>
             </div>
         @endif
         <a class="btn btn-danger btn-lg {{ $verify->status === 0 ? 'float-left' : 'btn-block' }}" href="{{ route('login') }}">{{ trans('common.back') }}</a>

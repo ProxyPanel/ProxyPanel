@@ -40,7 +40,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
                                 </thead>
@@ -74,7 +74,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
                                 </thead>
@@ -108,7 +108,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
                                 </thead>
@@ -143,7 +143,7 @@
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ trans('model.common.level') }}</th>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
                                 </thead>
@@ -179,7 +179,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('model.common.sort') }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
@@ -256,7 +256,7 @@
                             <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
-                                        <th> {{ trans('validation.attributes.name') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
                                         <th> {{ trans('admin.setting.common.connect_nodes') }}</th>
                                         <th> {{ trans('model.common.sort') }}</th>
                                         <th> {{ trans('common.action') }}</th>
@@ -314,7 +314,8 @@
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <input class="form-control" id="name" name="name" type="text" placeholder="{{ trans('validation.attributes.name') }}">
+                            <input class="form-control" id="name" name="name" type="text"
+                                   placeholder="{{ ucfirst(trans('validation.attributes.name')) }}">
                         </div>
                     </div>
                 </form>
@@ -343,7 +344,7 @@
                         </div>
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_level_name" name="level_name" type="text"
-                                   placeholder="{{ trans('validation.attributes.name') }}">
+                                   placeholder="{{ ucfirst(trans('validation.attributes.name')) }}">
                         </div>
                     </div>
                 </form>
@@ -369,7 +370,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_category_name" name="name" type="text"
-                                   placeholder="{{ trans('validation.attributes.name') }}">
+                                   placeholder="{{ ucfirst(trans('validation.attributes.name')) }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_category_sort" name="sort" type="text" placeholder="{{ trans('model.common.sort') }}">
@@ -427,7 +428,8 @@
                     <div class="alert alert-danger" id="lable_msg" style="display: none;"></div>
                     <div class="row">
                         <div class="col-md-6 form-group">
-                            <input class="form-control" id="add_label" name="label" type="text" placeholder="{{ trans('validation.attributes.name') }}">
+                            <input class="form-control" id="add_label" name="label" type="text"
+                                   placeholder="{{ ucfirst(trans('validation.attributes.name')) }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_label_sort" name="label_sort" type="text" placeholder="{{ trans('model.common.sort') }}">
@@ -457,7 +459,7 @@
                 }
 
                 if (level_name.trim() === '') {
-                    $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
+                    $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
                     $('#level_name').focus();
                     return false;
                 }
@@ -595,7 +597,7 @@
                 const sort = $('#add_category_sort').val();
 
                 if (name.trim() === '') {
-                    $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
+                    $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
                     $('#category_name').focus();
                     return false;
                 }
@@ -882,7 +884,7 @@
                 const type = $('#type').val();
 
                 if (name.trim() === '') {
-                    $('#msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
+                    $('#msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
                     $('#name').focus();
                     return false;
                 }
@@ -1019,7 +1021,7 @@
                 const sort = $('#add_label_sort').val();
 
                 if (name.trim() === '') {
-                    $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => trans('validation.attributes.name')]) }}');
+                    $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
                     return false;
                 }
 

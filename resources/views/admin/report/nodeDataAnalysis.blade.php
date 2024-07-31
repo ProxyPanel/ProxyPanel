@@ -44,34 +44,24 @@
             </div>
         </div>
         @isset($data)
-            <div class="row">
+            <div class="row mx-0">
                 <div class="col-md-12 col-xxl-7 card card-shadow">
-                    <div class="card-block p-30">
-                        <div class="row pb-20">
-                            <div class="col-md-8 col-sm-6">
-                                <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.hourly_traffic') }}</div>
-                            </div>
-                        </div>
+                    <div class="card-block p-md-30">
+                        <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.hourly_traffic') }}</div>
                         <canvas id="hourlyBar"></canvas>
                     </div>
                 </div>
                 <div class="col-md-12 col-xxl-5 card card-shadow">
-                    <div class="card-block p-30">
-                        <div class="row pb-20">
-                            <div class="col-md-8 col-sm-6">
-                                <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_distribution') }}</div>
-                            </div>
+                    <div class="card-block p-md-30">
+                        <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_distribution') }}</div>
+                        <div class="d-flex justify-content-around">
+                            <canvas id="dailyPie"></canvas>
                         </div>
-                        <canvas id="dailyPie"></canvas>
                     </div>
                 </div>
                 <div class="col-12 offset-xxl-2 col-xxl-8 card card-shadow">
-                    <div class="card-block p-30">
-                        <div class="row pb-20">
-                            <div class="col-md-8 col-sm-6">
-                                <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_traffic') }}</div>
-                            </div>
-                        </div>
+                    <div class="card-block p-md-30">
+                        <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_traffic') }}</div>
                         <canvas id="dailyBar"></canvas>
                     </div>
                 </div>
@@ -94,13 +84,15 @@
             window.location.href = window.location.href.split('?')[0];
         }
 
-        function initDatepicker() {
-            $('.input-daterange').datepicker({
-                format: 'yyyy-mm-dd',
-                startDate: nodeData.start_date,
-                endDate: new Date(),
-            });
-        }
+        $('.input-daterange').datepicker({
+            format: 'yyyy-mm-dd',
+            startDate: nodeData.start_date,
+            endDate: new Date(),
+        });
+
+        $('form').on('submit', function() {
+            cleanSubmit(this);
+        });
 
         function cleanSubmit(form) {
             $(form).find('input:not([type="submit"]), select').filter(function() {
@@ -110,18 +102,6 @@
             setTimeout(function() {
                 $(form).find(':disabled').prop('disabled', false);
             }, 0);
-        }
-
-        function handleFormSubmit() {
-            $('form').on('submit', function() {
-                cleanSubmit(this);
-            });
-        }
-
-        function initSelectors() {
-            $('#nodes').selectpicker('val', @json(Request::query('nodes')));
-            $('#hour_date').selectpicker('val', @json(Request::query('hour_date')));
-            $('.input-daterange').datepicker('update', @json(Request::query('start')), @json(Request::query('end')));
         }
 
         function optimizeDatasets(datasets) {
@@ -281,7 +261,7 @@
                         top,
                         left
                     } = chartArea;
-                    const text = `${date}\n\n${total.toFixed(2)} GiB`;
+                    const text = `${date}\n${total.toFixed(2)} GiB`;
                     ctx.save();
                     ctx.font = 'bold 32px Roboto';
                     ctx.fillStyle = 'black';
@@ -326,7 +306,7 @@
                                 const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
                                 const percentage = (value / total * 100).toFixed(1);
                                 const label = context.chart.data.labels[context.dataIndex];
-                                return percentage > 1 ? `${label} ${value.toFixed(2)}G ${percentage}%` : '';
+                                return percentage > 1 ? `${label} ${percentage}%` : '';
                             },
                             anchor: "center",
                             rotation: function(ctx) {
@@ -370,9 +350,9 @@
         }
 
         $(document).ready(function() {
-            initDatepicker();
-            handleFormSubmit();
-            initSelectors();
+            $('#nodes').selectpicker('val', @json(Request::query('nodes')));
+            $('#hour_date').selectpicker('val', @json(Request::query('hour_date')));
+            $('.input-daterange').datepicker('update', @json(Request::query('start')), @json(Request::query('end')));
             initCharts();
         });
     </script>

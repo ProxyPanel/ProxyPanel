@@ -30,8 +30,8 @@
                             <th> #</th>
                             <th> {{ trans('model.common.type') }}</th>
                             <th> {{ trans('model.notification.address') }}</th>
-                            <th> {{ trans('validation.attributes.title') }}</th>
-                            <th> {{ trans('validation.attributes.content') }}</th>
+                            <th> {{ ucfirst(trans('validation.attributes.title')) }}</th>
+                            <th> {{ ucfirst(trans('validation.attributes.content')) }}</th>
                             <th> {{ trans('model.notification.created_at') }}</th>
                             <th> {{ trans('model.notification.status') }}</th>
                         </tr>

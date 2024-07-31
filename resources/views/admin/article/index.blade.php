@@ -54,7 +54,7 @@
                             <th> #</th>
                             <th> {{ trans('model.common.type') }}</th>
                             <th> {{ trans('model.article.category') }}</th>
-                            <th> {{ trans('validation.attributes.title') }}</th>
+                            <th> {{ ucfirst(trans('validation.attributes.title')) }}</th>
                             <th> {{ trans('model.article.language') }}</th>
                             <th> {{ trans('model.common.sort') }}</th>
                             <th> {{ trans('model.article.created_at') }}</th>

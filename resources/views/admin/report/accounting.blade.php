@@ -156,7 +156,7 @@
                 },
                 plugins: {
                     legend: false,
-                    tooltip: label_callbacks(' {{ trans('validation.attributes.year') }}')
+                    tooltip: label_callbacks(' {{ ucfirst(trans('validation.attributes.year')) }}')
                 },
             },
         });

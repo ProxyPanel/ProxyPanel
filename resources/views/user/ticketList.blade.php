@@ -25,7 +25,7 @@
                                 <thead class="thead-default">
                                     <tr>
                                         <th data-cell-style="cellStyle"> #</th>
-                                        <th> {{ trans('validation.attributes.title') }} </th>
+                                        <th> {{ ucfirst(trans('validation.attributes.title')) }} </th>
                                         <th> {{ trans('common.status.attribute') }} </th>
                                         <th></th>
                                     </tr>
@@ -139,7 +139,7 @@
 
             if (title.trim() === '') {
                 swal.fire({
-                    title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.title')]) }}!',
+                    title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.title')])) }}!',
                     icon: 'warning',
                 });
                 return false;
@@ -147,7 +147,7 @@
 
             if (content.trim() === '') {
                 swal.fire({
-                    title: '{{ trans('validation.required', ['attribute' => trans('validation.attributes.content')]) }}!',
+                    title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}!',
                     icon: 'warning',
                 });
                 return false;

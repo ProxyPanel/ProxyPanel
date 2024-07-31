@@ -52,7 +52,7 @@
                                         <br />
                                         @if ($order->goods->type === 2)
                                             <code>{{ $order->goods->traffic_label }}</code>
-                                            {{ trans('user.attribute.data') }}/{{ trans('validation.attributes.month') }}
+                                            {{ trans('user.attribute.data') }}/{{ ucfirst(trans('validation.attributes.month')) }}
                                         @else
                                             <code>{{ $order->goods->traffic_label }}</code>
                                             {{ trans('user.attribute.data') }}/

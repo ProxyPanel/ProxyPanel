@@ -185,7 +185,7 @@
         ], common_options());
 
         create_chart('years', 'line', yearlyFlowsLabels, [
-            create_area_dataset('{{ trans('validation.attributes.year') }}', yearlyFlowsData, 'rgba(184, 215, 255)'),
+            create_area_dataset('{{ ucfirst(trans('validation.attributes.year')) }}', yearlyFlowsData, 'rgba(184, 215, 255)'),
         ], {
             responsive: true,
             scales: {
@@ -203,7 +203,7 @@
             },
             plugins: {
                 legend: false,
-                tooltip: label_callbacks(' {{ trans('validation.attributes.year') }}', ' TiB'),
+                tooltip: label_callbacks(' {{ ucfirst(trans('validation.attributes.year')) }}', ' TiB'),
             },
         });
 
