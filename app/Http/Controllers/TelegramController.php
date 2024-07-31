@@ -30,7 +30,7 @@ class TelegramController extends Controller
                     break;
             }
         } catch (Exception $e) {
-            $telegramService = new TelegramService();
+            $telegramService = new TelegramService;
             $telegramService->sendMessage($this->msg->chat_id, $e->getMessage());
         }
     }
@@ -40,7 +40,7 @@ class TelegramController extends Controller
         if (! isset($data['message'])) {
             return false;
         }
-        $obj = new StdClass();
+        $obj = new StdClass;
         $obj->is_private = $data['message']['chat']['type'] === 'private';
         if (! isset($data['message']['text'])) {
             return false;
@@ -99,7 +99,7 @@ class TelegramController extends Controller
         if (! $user->userAuths()->create(['type' => 'telegram', 'identifier' => $msg->chat_id])) {
             abort(500, '设置失败');
         }
-        $telegramService = new TelegramService();
+        $telegramService = new TelegramService;
         $telegramService->sendMessage($msg->chat_id, '绑定成功');
     }
 
@@ -109,7 +109,7 @@ class TelegramController extends Controller
         if (! $msg->is_private) {
             return;
         }
-        $telegramService = new TelegramService();
+        $telegramService = new TelegramService;
         if (! $oauth = UserOauth::query()->where([
             'type' => 'telegram',
             'identifier' => $msg->chat_id,

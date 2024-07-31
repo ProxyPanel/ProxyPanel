@@ -45,7 +45,7 @@ class UserController extends Controller
             });
         }
 
-        // 流量超过100G的
+        // 流量使用超过90%的用户
         $request->whenFilled('largeTraffic', function () use ($query) {
             $query->whereIn('status', [0, 1])->whereRaw('(u + d)/transfer_enable >= 0.9');
         });
@@ -65,7 +65,7 @@ class UserController extends Controller
             $query->whereBetween('t', [1, strtotime('-'.sysConfig('expire_days').' days')])->whereEnable(1);
         });
 
-        // 不活跃用户
+        // 付费服务中的用户
         $request->whenFilled('paying', function () use ($query) {
             $payingUser = Order::whereStatus(2)->whereNotNull('goods_id')->whereIsExpire(0)->where('amount', '>', 0)->pluck('user_id')->unique();
             $query->whereIn('id', $payingUser);
@@ -176,8 +176,8 @@ class UserController extends Controller
     {
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
-                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), (int) sysConfig('default_traffic'), (int) sysConfig('default_days'));
-                Helpers::addUserTrafficModifyLog($user->id, 0, TiB, trans('admin.user.massive.note'));
+                $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'));
+                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, trans('admin.user.massive.note'));
             }
 
             return Response::json(['status' => 'success', 'message' => trans('admin.user.massive.succeed')]);
@@ -305,7 +305,7 @@ class UserController extends Controller
     public function VNetInfo(User $user): JsonResponse
     {
         $nodes = $user->nodes()->whereType(4)->get(['node.id', 'node.name']);
-        $nodeList = (new getUser())->existsinVNet($user);
+        $nodeList = (new getUser)->existsinVNet($user);
 
         foreach ($nodes as $node) {
             $node->avaliable = in_array($node->id, $nodeList, true) ? '✔️' : '❌';

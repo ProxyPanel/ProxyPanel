@@ -183,7 +183,7 @@ class ProxyService
 
     public function getUserProxyConfig(array $server, bool $is_url): string
     { // 用户显示用代理信息
-        $type = $is_url ? new URLSchemes() : new Text();
+        $type = $is_url ? new URLSchemes : new Text;
 
         return match ($server['type']) {
             'shadowsocks' => $type->buildShadowsocks($server),
@@ -201,7 +201,7 @@ class ProxyService
 
             foreach ($reflectionClass->getConstant('AGENT') as $agent) {
                 if (str_contains($target, $agent)) {
-                    return (new $class())->getConfig($this->getServers(), $this->getUser(), $target);
+                    return (new $class)->getConfig($this->getServers(), $this->getUser(), $target);
                 }
             }
         }

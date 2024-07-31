@@ -42,25 +42,25 @@ class PaymentController extends Controller
     {
         switch (self::$method) {
             case 'credit':
-                return new Local();
+                return new Local;
             case 'f2fpay':
-                return new F2Fpay();
+                return new F2Fpay;
             case 'codepay':
-                return new Codepay();
+                return new Codepay;
             case 'payjs':
-                return new PayJs();
+                return new PayJs;
             case 'paypal':
-                return new PayPal();
+                return new PayPal;
             case 'epay':
-                return new EPay();
+                return new EPay;
             case 'stripe':
-                return new Stripe();
+                return new Stripe;
             case 'paybeaver':
-                return new PayBeaver();
+                return new PayBeaver;
             case 'theadpay':
-                return new THeadPay();
+                return new THeadPay;
             case 'manual':
-                return new Manual();
+                return new Manual;
             default:
                 Log::emergency('未知支付：'.self::$method);
                 exit(404);

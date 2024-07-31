@@ -133,7 +133,7 @@ class CouponController extends Controller
 
         try {
             $filename = '卡券_Coupon_'.date('Ymd').'.xlsx';
-            $spreadsheet = new Spreadsheet();
+            $spreadsheet = new Spreadsheet;
             $spreadsheet->getProperties()
                 ->setCreator('ProxyPanel')
                 ->setLastModifiedBy('ProxyPanel')

@@ -56,7 +56,7 @@ class AffiliateController extends Controller
             ]);
         }
 
-        $ref = new ReferralApply();
+        $ref = new ReferralApply;
         $ref->user_id = Auth::id();
         $ref->before = $commission;
         $ref->amount = $commission;

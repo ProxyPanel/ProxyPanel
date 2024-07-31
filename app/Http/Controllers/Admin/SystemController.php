@@ -32,7 +32,7 @@ class SystemController extends Controller
         return view('admin.config.system', array_merge([
             'payments' => $this->getPayment(),
             'captcha' => $this->getCaptcha(),
-            'ddns_labels' => (new DDNS())->getLabels(),
+            'ddns_labels' => (new DDNS)->getLabels(),
         ], Config::pluck('value', 'name')->toArray()));
     }
 

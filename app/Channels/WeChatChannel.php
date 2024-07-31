@@ -111,7 +111,7 @@ class WeChatChannel
 
     public function verify(Request $request): void
     {
-        $errCode = (new WeChat())->verifySignature($request->input('msg_signature'), $request->input('timestamp'), $request->input('nonce'), $request->input('echostr'), $sEchoStr);
+        $errCode = (new WeChat)->verifySignature($request->input('msg_signature'), $request->input('timestamp'), $request->input('nonce'), $request->input('echostr'), $sEchoStr);
         if ($errCode === 0) {
             exit($sEchoStr);
         }

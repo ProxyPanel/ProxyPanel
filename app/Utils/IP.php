@@ -328,7 +328,7 @@ class IP
     private static function ip2Region(string $ip): ?array
     { // 通过ip2Region查询IP地址的详细信息 数据库不经常更新
         try {
-            $data = (new XdbSearcher())->search($ip);
+            $data = (new XdbSearcher)->search($ip);
         } catch (Exception $e) {
             Log::error('【ip2Region】错误信息：'.$e->getMessage());
         }

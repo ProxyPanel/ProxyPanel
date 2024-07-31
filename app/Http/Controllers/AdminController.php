@@ -90,7 +90,7 @@ class AdminController extends Controller
     public function makeInvite(): JsonResponse
     {
         for ($i = 0; $i < 10; $i++) {
-            $obj = new Invite();
+            $obj = new Invite;
             $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
             $obj->dateline = date('Y-m-d H:i:s', strtotime(sysConfig('admin_invite_days').' days'));
             $obj->save();
@@ -105,7 +105,7 @@ class AdminController extends Controller
         $inviteList = Invite::whereStatus(0)->orderBy('id')->get();
         $filename = '邀请码'.date('Ymd').'.xlsx';
 
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
         $spreadsheet->getProperties()->setCreator('ProxyPanel')->setLastModifiedBy('ProxyPanel')->setTitle('邀请码')->setSubject('邀请码');
 
         try {

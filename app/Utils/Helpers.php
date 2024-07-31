@@ -141,7 +141,7 @@ class Helpers
      */
     public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, ?string $error = null, ?string $msgId = null, string $address = 'admin'): int
     {
-        $log = new NotificationLog();
+        $log = new NotificationLog;
         $log->type = $type;
         $log->msg_id = $msgId;
         $log->address = $address;
@@ -164,7 +164,7 @@ class Helpers
      */
     public static function addCouponLog(string $description, int $couponId, ?int $goodsId = null, ?int $orderId = null): bool
     {
-        $log = new CouponLog();
+        $log = new CouponLog;
         $log->coupon_id = $couponId;
         $log->goods_id = $goodsId;
         $log->order_id = $orderId;
@@ -185,7 +185,7 @@ class Helpers
      */
     public static function addUserCreditLog(int $userId, ?int $orderId, float|int $before, float|int $after, float|int $amount, ?string $description = null): bool
     {
-        $log = new UserCreditLog();
+        $log = new UserCreditLog;
         $log->user_id = $userId;
         $log->order_id = $orderId;
         $log->before = $before;
@@ -208,7 +208,7 @@ class Helpers
      */
     public static function addUserTrafficModifyLog(int $userId, int $before, int $after, ?string $description = null, ?int $orderId = null): bool
     {
-        $log = new UserDataModifyLog();
+        $log = new UserDataModifyLog;
         $log->user_id = $userId;
         $log->order_id = $orderId;
         $log->before = $before;
@@ -230,7 +230,7 @@ class Helpers
      */
     public static function addMarketing(string $receiver, int $type, string $title, string $content, int $status = 1, ?string $error = null): bool
     {
-        $marketing = new Marketing();
+        $marketing = new Marketing;
         $marketing->type = $type;
         $marketing->receiver = $receiver;
         $marketing->title = $title;
@@ -255,7 +255,7 @@ class Helpers
             Log::warning(trans('errors.get_ip').'：'.$ip);
         }
 
-        $log = new UserLoginLog();
+        $log = new UserLoginLog;
         $log->user_id = $user->id;
         $log->ip = $ip;
         $log->country = $ipLocation['country'] ?? '';

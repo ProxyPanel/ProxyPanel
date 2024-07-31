@@ -31,7 +31,7 @@ class SubscribeController extends Controller
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
-        $this->proxyServer = new ProxyService();
+        $this->proxyServer = new ProxyService;
         if (! $subscribe) {
             return $this->failed(trans('errors.subscribe.unknown'));
         }
@@ -81,7 +81,7 @@ class SubscribeController extends Controller
 
     private function subscribeLog(int $subscribeId, ?string $ip, string $headers): void
     { // 写入订阅访问日志
-        $log = new UserSubscribeLog();
+        $log = new UserSubscribeLog;
         $log->user_subscribe_id = $subscribeId;
         $log->request_ip = $ip;
         $log->request_time = now();

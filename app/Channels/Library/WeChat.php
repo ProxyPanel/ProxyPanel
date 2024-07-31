@@ -96,7 +96,7 @@ XML;
     public function extract(string $xmlText): array
     {
         try {
-            $xml = new DOMDocument();
+            $xml = new DOMDocument;
             $xml->loadXML($xmlText);
             $encrypt = $xml->getElementsByTagName('Encrypt')->item(0)->nodeValue;
 

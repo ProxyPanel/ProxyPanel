@@ -11,7 +11,7 @@ class PaymentService
 {
     final public function createPayment(int $uid, int $oid, float|int $amount): Payment
     {
-        $payment = new Payment();
+        $payment = new Payment;
         $payment->trade_no = Str::random(8);
         $payment->user_id = $uid;
         $payment->order_id = $oid;
@@ -28,7 +28,7 @@ class PaymentService
      */
     final protected function createPaymentCallback(string $trade_no, string $out_trade_no, float|int $amount): int
     {
-        $log = new PaymentCallback();
+        $log = new PaymentCallback;
         $log->trade_no = $trade_no;
         $log->out_trade_no = $out_trade_no;
         $log->amount = $amount;

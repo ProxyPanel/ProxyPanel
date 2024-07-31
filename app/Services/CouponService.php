@@ -94,7 +94,7 @@ class CouponService
                 return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.users'));
             }
 
-            if (isset($coupon->limit['users']['newbie']['order']) && $user->orders()->exists()) { // 第一个套餐订单
+            if (isset($coupon->limit['users']['newbie']['order']) && $user->orders()->whereIn('status', [2, 3])->exists()) { // 第一个支付过的订单
                 return $this->failedReturn(trans('user.coupon.error.unmet'), trans('user.coupon.error.users'));
             }
 

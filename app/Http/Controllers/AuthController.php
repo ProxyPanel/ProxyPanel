@@ -127,7 +127,7 @@ class AuthController extends Controller
                 }
                 break;
             case 5: // Turnstile
-                $validator = Validator::make($request->all(), ['cf-turnstile-response' => ['required', 'string', new TurnstileCaptcha()]]);
+                $validator = Validator::make($request->all(), ['cf-turnstile-response' => ['required', 'string', new TurnstileCaptcha]]);
 
                 if ($validator->fails()) {
                     return Redirect::back()->withInput()->withErrors($validator->errors());
@@ -368,7 +368,7 @@ class AuthController extends Controller
     private function addVerifyUrl($uid, $email): string
     { // 生成申请的请求地址
         $token = md5(sysConfig('website_name').$email.microtime());
-        $verify = new Verify();
+        $verify = new Verify;
         $verify->user_id = $uid;
         $verify->token = $token;
         $verify->save();
