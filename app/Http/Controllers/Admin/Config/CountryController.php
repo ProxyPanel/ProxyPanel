@@ -26,10 +26,10 @@ class CountryController extends Controller
         }
 
         if (Country::create($validator->validated())) {
-            return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '生成失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     // 编辑国家/地区
@@ -43,15 +43,15 @@ class CountryController extends Controller
 
         try {
             if ($country->update($validator->validated())) {
-                return Response::json(['status' => 'success', 'message' => '编辑成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
             }
         } catch (Exception $e) {
-            Log::error('编辑国家/地区时失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.country')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     // 删除国家/地区
@@ -59,19 +59,19 @@ class CountryController extends Controller
     {
         // 校验该国家/地区下是否存在关联节点
         if ($country->nodes()->exists()) {
-            return Response::json(['status' => 'fail', 'message' => '该国家/地区下存在关联节点，请先取消关联']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.exists_error', ['attribute' => trans('model.node.country')])]);
         }
 
         try {
             if ($country->delete()) {
-                return Response::json(['status' => 'success', 'message' => '操作成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除国家/地区失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.country')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

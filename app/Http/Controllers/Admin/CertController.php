@@ -32,10 +32,10 @@ class CertController extends Controller
     public function store(CertRequest $request)
     {
         if ($cert = NodeCertificate::create($request->validated())) {
-            return redirect(route('admin.node.cert.edit', $cert))->with('successMsg', trans('common.generate_item', ['attribute' => trans('common.success')]));
+            return redirect(route('admin.node.cert.edit', $cert))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('生成失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function create()
@@ -51,24 +51,24 @@ class CertController extends Controller
     public function update(CertRequest $request, NodeCertificate $cert): RedirectResponse
     {
         if ($cert->update($request->validated())) {
-            return redirect()->back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
         }
 
-        return redirect()->back()->withInput()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(NodeCertificate $cert): JsonResponse
     {
         try {
             if ($cert->delete()) {
-                return response()->json(['status' => 'success', 'message' => '删除成功']);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除域名证书失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node_cert.attribute')]).': '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => '删除错误：'.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'fail', 'message' => '删除失败']);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

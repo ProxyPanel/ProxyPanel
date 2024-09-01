@@ -33,12 +33,12 @@ class ServerChanChannel
                 $response = Http::timeout(15)
                     ->post('https://sctapi.ftqq.com/'.sysConfig('server_chan_key').'.send?title='.urlencode($message['title']).'&desp='.urlencode($message['content']));
             } else {
-                Log::critical('[ServerChan] 消息推送异常：分钟频率过高，请优化通知场景！');
+                Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.serverchan'), 'reason' => trans('notification.serverChan_limit')]));
 
                 return false;
             }
         } else {
-            Log::critical('[ServerChan] 消息推送异常：今日限额已耗尽！');
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.serverchan'), 'reason' => trans('notification.serverChan_exhausted')]));
 
             return false;
         }
@@ -52,12 +52,12 @@ class ServerChanChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 2, -1, $ret ? $ret['errmsg'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 2, -1, $ret ? $ret['errmsg'] : trans('common.status.unknown'));
 
             return false;
         }
         // 发送错误
-        Log::critical('[ServerChan] 消息推送异常：'.var_export($response, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.serverchan'), 'reason' => var_export($response, true)]));
 
         return false;
     }

@@ -49,22 +49,22 @@ class Stripe extends PaymentService implements Gateway
                     Log::warning('创建订单错误：未知错误');
                     $payment->failed();
 
-                    return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
+                    return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
                 }
                 $payment->update(['qr_code' => 1, 'url' => $source['wechat']['qr_code_url']]);
 
-                return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
+                return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
             }
 
             if (! $source['redirect']['url']) {
                 Log::warning('创建订单错误：未知错误');
                 $payment->failed();
 
-                return response()->json(['code' => 0, 'msg' => '创建订单失败：未知错误']);
+                return response()->json(['code' => 0, 'msg' => trans('user.payment.order_creation.failed')]);
             }
             $payment->update(['url' => $source['redirect']['url']]);
 
-            return Response::json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => '创建订单成功!']);
+            return Response::json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => trans('user.payment.order_creation.success')]);
         }
 
         $data = $this->getCheckoutSessionData($payment->trade_no, $payment->amount, $type);
@@ -75,7 +75,7 @@ class Stripe extends PaymentService implements Gateway
             $url = route('stripe.checkout', ['session_id' => $session->id]);
             $payment->update(['url' => $url]);
 
-            return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
+            return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
         } catch (Exception $e) {
             Log::error('【Stripe】错误: '.$e->getMessage());
             exit;

@@ -207,6 +207,6 @@ class Order extends Model
     // 支付方式
     public function getPayWayLabelAttribute(): string
     {
-        return config('common.payment.labels')[$this->pay_way] ?? '未知';
+        return config('common.payment.labels')[$this->pay_way] ?? trans('common.status.unknown');
     }
 }

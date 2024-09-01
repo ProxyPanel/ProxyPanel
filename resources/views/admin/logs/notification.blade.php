@@ -51,7 +51,7 @@
                                     @elseif($log->status > 0)
                                         <labe class="badge badge-success">{{ trans('common.success') }}</labe>
                                     @else
-                                        <span class="badge badge-default"> {{ trans('common.status.waiting_tobe_send') }} </span>
+                                        <span class="badge badge-default"> {{ trans('common.status.pending_dispatch') }} </span>
                                     @endif
                                 </td>
                             </tr>

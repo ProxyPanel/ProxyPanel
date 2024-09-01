@@ -33,7 +33,7 @@ class NodeStatusDetection extends Command
             if (! $lastCheckTime || $lastCheckTime <= time()) {
                 $this->checkNodeNetwork();
             } else {
-                Log::info('下次节点阻断检测时间：'.date('Y-m-d H:i:s', $lastCheckTime));
+                Log::info(trans('notification.next_check_time', ['time' => date('Y-m-d H:i:s', $lastCheckTime)]));
             }
         }
 
@@ -110,7 +110,7 @@ class NodeStatusDetection extends Command
                 if ($times > $detectionCheckTimes) {
                     Cache::forget($cacheKey);
                     $node->update(['status' => 0]);
-                    $data[$node_id]['message'] = '自动进入维护状态';
+                    $data[$node_id]['message'] = trans('notification.into_maintenance');
                 }
             }
 
@@ -122,7 +122,7 @@ class NodeStatusDetection extends Command
         if (! empty($data)) { //只有在出现阻断线路时，才会发出警报
             Notification::send(User::find(1), new NodeBlocked($data));
 
-            Log::notice("节点状态日志: \r\n".var_export($data, true));
+            Log::notice(trans('notification.node_block').": \r\n".var_export($data, true));
         }
 
         Cache::put('LastCheckTime', time() + random_int(3000, Hour), 3700); // 随机生成下次检测时间

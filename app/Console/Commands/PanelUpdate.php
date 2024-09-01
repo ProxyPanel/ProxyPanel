@@ -17,14 +17,13 @@ class PanelUpdate extends Command
         $bar->minSecondsBetweenRedraws(0);
         $this->displayBanner();
         $bar->start();
-
         $this->updateDatabase();
+
         $bar->advance();
-
         $this->updateCache();
-        $bar->finish();
 
-        $this->info(' 更新完毕! ');
+        $bar->finish();
+        $this->info(trans('setup.update_complete'));
     }
 
     private function displayBanner(): void
@@ -44,17 +43,17 @@ BANNER;
 
     private function updateDatabase(): void
     {
-        $this->line('更新数据库...');
+        $this->line(trans('setup.update_db'));
         Artisan::call('migrate --force');
 
-        if (config('app.env') === 'demo' && $this->confirm('检测到您在DEMO模式, 是否重置数据库?')) {
+        if (config('app.env') === 'demo' && $this->confirm(trans('setup.demo_reset'))) {
             Artisan::call('migrate:fresh --seed --force');
         }
     }
 
     private function updateCache(): void
     {
-        $this->line('更新缓存...');
+        $this->line(trans('setup.update_cache'));
         Artisan::call('optimize');
     }
 }

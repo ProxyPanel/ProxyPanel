@@ -33,7 +33,7 @@ class EPay extends PaymentService implements Gateway
         $url = sysConfig('epay_url').'submit.php?'.http_build_query($data);
         $payment->update(['url' => $url]);
 
-        return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
+        return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void

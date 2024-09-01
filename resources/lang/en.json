@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
   "You have not responded this ticket in :num hours, System has closed your ticket.": "You have not responded this ticket in :num hours, System has closed your ticket.",
   "You must have a valid subscription to view the content in this area!": "You must have a valid subscription to view the content in this area!",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "Your subscription has been disabled by the administrator, please contact the administrator to restore it."
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "Your subscription has been disabled by the administrator, please contact the administrator to restore it.",
+  "Manually add in dashboard.": "Manually add in dashboard.",
+  "Manually edit in dashboard.": "Manually edit in dashboard.",
+  "Batch generate user accounts in dashboard.": "Batch generate user accounts in dashboard.",
+  "Coupon used in order.": "Coupon used in order.",
+  "Order canceled, coupon reinstated.": "Order canceled, coupon reinstated.",
+  "Used for credit recharge.": "Used for credit recharge.",
+  "The user manually reset the data.": "The user manually reset the data.",
+  "Recharge using a recharge voucher.": "Recharge using a recharge voucher.",
+  "The user topped up the balance.": "The user topped up the balance.",
+  "Purchased an item.": "Purchased an item.",
+  "[:payment] plus the user’s purchased data plan.": "[:payment] plus the user’s purchased data plan."
 }

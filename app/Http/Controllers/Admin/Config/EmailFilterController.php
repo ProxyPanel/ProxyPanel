@@ -33,15 +33,15 @@ class EmailFilterController extends Controller
 
         try {
             if (EmailFilter::create($validator->validated())) {
-                return Response::json(['status' => 'success', 'message' => '添加成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
             }
         } catch (Exception $e) {
-            Log::error('添加邮箱后缀时失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('admin.setting.email.tail')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '添加失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '添加失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     // 删除邮箱后缀
@@ -49,14 +49,14 @@ class EmailFilterController extends Controller
     {
         try {
             if ($filter->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除邮箱后缀失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('admin.setting.email.tail')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

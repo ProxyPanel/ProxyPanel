@@ -61,71 +61,20 @@ class TelegramController extends Controller
 
     private function fromSend(): void
     {
-        switch ($this->msg->command) {
-            case '/bind':
-                $this->bind();
-                break;
-            case '/traffic':
-                $this->traffic();
-                break;
-            case '/getLatestUrl':
-                $this->getLatestUrl();
-                break;
-            case '/unbind':
-                $this->unbind();
-                break;
-            default:
-                $this->help();
-        }
-    }
+        $commands = [
+            '/bind' => 'bind',
+            '/traffic' => 'traffic',
+            '/url' => 'getUrl',
+            '/unbind' => 'unbind',
+        ];
 
-    private function bind(): void
-    {
-        $msg = $this->msg;
-        if (! $msg->is_private) {
-            return;
-        }
-        if (! isset($msg->args[0])) {
-            abort(500, '参数有误，请携带邮箱地址发送');
-        }
-        $user = User::whereUsername($msg->args[0])->first();
-        if (! $user) {
-            abort(500, '用户不存在');
-        }
-        if ($user->telegram_user_id) {
-            abort(500, '该账号已经绑定了Telegram账号');
-        }
+        $command = $this->msg->command;
 
-        if (! $user->userAuths()->create(['type' => 'telegram', 'identifier' => $msg->chat_id])) {
-            abort(500, '设置失败');
-        }
-        $telegramService = new TelegramService;
-        $telegramService->sendMessage($msg->chat_id, '绑定成功');
-    }
-
-    private function traffic(): void
-    {
-        $msg = $this->msg;
-        if (! $msg->is_private) {
-            return;
-        }
-        $telegramService = new TelegramService;
-        if (! $oauth = UserOauth::query()->where([
-            'type' => 'telegram',
-            'identifier' => $msg->chat_id,
-        ])->first()) {
+        if (isset($commands[$command])) {
+            $this->{$commands[$command]}();
+        } else {
             $this->help();
-            $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
-
-            return;
         }
-        $user = $oauth->user;
-        $transferEnable = formatBytes($user->transfer_enable);
-        $up = formatBytes($user->u);
-        $down = formatBytes($user->d);
-        $remaining = formatBytes($user->transfer_enable - ($user->u + $user->d));
-        $text = "🚥流量查询\n———————————————\n计划流量：`$transferEnable`\n已用上行：`$up`\n已用下行：`$down`\n剩余流量：`$remaining`";
-        $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 
     private function help(): void
@@ -134,52 +83,12 @@ class TelegramController extends Controller
         if (! $msg->is_private) {
             return;
         }
+
+        $webName = sysConfig('website_name');
+        $accountType = sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username');
         $telegramService = new TelegramService;
-        $commands = [
-            '/bind 订阅地址 - 绑定你的'.sysConfig('website_name').'账号',
-            '/traffic - 查询流量信息',
-            '/getLatestUrl - 获取最新的'.sysConfig('website_name').'网址',
-            '/unbind - 解除绑定',
-        ];
-        $text = implode(PHP_EOL, $commands);
-        $telegramService->sendMessage($msg->chat_id, "你可以使用以下命令进行操作：\n\n$text", 'markdown');
-    }
-
-    private function getLatestUrl(): void
-    {
-        $msg = $this->msg;
-        $telegramService = new TelegramService;
-        $text = sprintf(
-            '%s的最新网址是：%s',
-            sysConfig('website_name'),
-            sysConfig('website_url')
-        );
-        $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
-    }
-
-    private function unbind(): void
-    {
-        $msg = $this->msg;
-        if (! $msg->is_private) {
-            return;
-        }
-        $user = User::with([
-            'userAuths' => function ($query) use ($msg) {
-                $query->whereType('telegram')->whereIdentifier($msg->chat_id);
-            },
-        ])->first();
-
-        $telegramService = new TelegramService;
-        if (! $user) {
-            $this->help();
-            $telegramService->sendMessage($msg->chat_id, '没有查询到您的用户信息，请先绑定账号', 'markdown');
-
-            return;
-        }
-        if (! $user->userAuths()->whereType('telegram')->whereIdentifier($msg->chat_id)->delete()) {
-            abort(500, '解绑失败');
-        }
-        $telegramService->sendMessage($msg->chat_id, '解绑成功', 'markdown');
+        $commands = trans('user.telegram.command.intro').": \n\n/bind `$accountType` -[".trans('user.telegram.command.bind', ['web_name' => $webName])."]\n/traffic -[".trans('user.telegram.command.traffic')."]\n/url -[".trans('user.telegram.command.web_url', ['web_name' => $webName])."]\n/unbind -[".trans('user.telegram.command.unbind').']';
+        $telegramService->sendMessage($msg->chat_id, $commands, 'markdown');
     }
 
     private function fromReply(): void
@@ -203,19 +112,98 @@ class TelegramController extends Controller
         ])->first();
 
         if (! $user) {
-            abort(500, '用户不存在');
+            abort(500, trans('user.telegram.params_missing'));
         }
         $admin = User::role('Super Admin')->whereId($user->id)->first();
         if ($admin) {
             $ticket = Ticket::whereId($ticketId)->first();
             if (! $ticket) {
-                abort(500, '工单不存在');
+                abort(500, trans('user.telegram.ticket_missing'));
             }
-            if ($ticket->status) {
-                abort(500, '工单已关闭，无法回复');
-            }
+
             $ticket->reply()->create(['admin_id' => $admin->id, 'content' => $msg->text]);
+            if ($ticket->status !== 1) {
+                $ticket->update(['status' => 1]);
+            }
         }
-        (new TelegramService)->sendMessage($msg->chat_id, "#`$ticketId` 的工单已回复成功", 'markdown');
+        (new TelegramService)->sendMessage($msg->chat_id, trans('user.telegram.ticket_reply', ['id' => $ticketId]), 'markdown');
+    }
+
+    private function bind(): void
+    {
+        $msg = $this->msg;
+        if (! $msg->is_private) {
+            return;
+        }
+        if (! isset($msg->args[0])) {
+            abort(500, trans('user.telegram.params_missing'));
+        }
+        $user = User::whereUsername($msg->args[0])->first();
+        if (! $user) {
+            abort(500, trans('user.telegram.user_missing'));
+        }
+        if ($user->telegram_user_id) {
+            abort(500, trans('user.telegram.bind_exists'));
+        }
+
+        if (! $user->userAuths()->create(['type' => 'telegram', 'identifier' => $msg->chat_id])) {
+            abort(500, trans('common.failed_item', ['attribute' => trans('user.oauth.bind')]));
+        }
+        $telegramService = new TelegramService;
+        $telegramService->sendMessage($msg->chat_id, trans('common.success_item', ['attribute' => trans('user.oauth.bind')]));
+    }
+
+    private function traffic(): void
+    {
+        $msg = $this->msg;
+        if (! $msg->is_private) {
+            return;
+        }
+        $telegramService = new TelegramService;
+        if (! $oauth = UserOauth::query()->where(['type' => 'telegram', 'identifier' => $msg->chat_id])->first()) {
+            $this->help();
+            $telegramService->sendMessage($msg->chat_id, trans('user.telegram.bind_missing'), 'markdown');
+
+            return;
+        }
+        $user = $oauth->user;
+        $transferEnable = formatBytes($user->transfer_enable);
+        $up = formatBytes($user->u);
+        $down = formatBytes($user->d);
+        $remaining = formatBytes($user->transfer_enable - ($user->u + $user->d));
+        $text = '🚥'.trans('user.subscribe.info.title')."\n———————————————\n".trans('user.subscribe.info.total').": `$transferEnable`\n".trans('user.subscribe.info.upload').": `$up`\n".trans('user.subscribe.info.download').": `$down`\n".trans('user.account.remain').": `$remaining`";
+        $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
+    }
+
+    private function getUrl(): void
+    {
+        $msg = $this->msg;
+        $telegramService = new TelegramService;
+        $telegramService->sendMessage($msg->chat_id, trans('user.telegram.get_url', ['get_url' => sysConfig('website_name')]).': '.sysConfig('website_url'), 'markdown');
+    }
+
+    private function unbind(): void
+    {
+        $msg = $this->msg;
+        if (! $msg->is_private) {
+            return;
+        }
+        $user = User::with([
+            'userAuths' => function ($query) use ($msg) {
+                $query->whereType('telegram')->whereIdentifier($msg->chat_id);
+            },
+        ])->first();
+
+        $telegramService = new TelegramService;
+        if (! $user) {
+            $this->help();
+            $telegramService->sendMessage($msg->chat_id, trans('user.telegram.bind_missing'), 'markdown');
+
+            return;
+        }
+        if (! $user->userAuths()->whereType('telegram')->whereIdentifier($msg->chat_id)->delete()) {
+            abort(500, trans('common.failed_item', ['attribute' => trans('user.oauth.unbind')]));
+        }
+        $telegramService->sendMessage($msg->chat_id, trans('common.success_item', ['attribute' => trans('user.oauth.unbind')]), 'markdown');
     }
 }

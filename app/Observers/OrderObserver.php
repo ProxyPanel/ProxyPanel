@@ -27,7 +27,7 @@ class OrderObserver
                 'level' => 0,
                 'enable' => 0,
             ]);
-            Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, __('[Service Timer] Service Expiration'), $order->id);
+            Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, trans('[Service Timer] Service Expiration'), $order->id);
 
             Order::userActivePackage($order->user_id)->update(['is_expire' => 1]); // 过期生效中的加油包
             $this->activatePrepaidPlan($order->user_id); // 激活预支付套餐
@@ -73,7 +73,7 @@ class OrderObserver
     private function returnCoupon(Order $order, Coupon $coupon): void
     { // 退回优惠券
         if ($coupon->type !== 3 && ! $coupon->isExpired()) {
-            Helpers::addCouponLog('订单取消, 自动退回', $order->coupon_id, $order->goods_id, $order->id);
+            Helpers::addCouponLog('Order canceled, coupon reinstated.', $order->coupon_id, $order->goods_id, $order->id);
             $coupon->update(['usable_times' => $coupon->usable_times + 1, 'status' => 0]);
         }
     }

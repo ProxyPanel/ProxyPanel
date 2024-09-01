@@ -39,16 +39,16 @@ class TicketController extends Controller
         $user = User::find($data['uid']) ?: User::whereUsername($data['username'])->first();
 
         if ($user === Auth::user()) {
-            return Response::json(['status' => 'fail', 'message' => '不能对自己发起工单']);
+            return Response::json(['status' => 'fail', 'message' => trans('admin.ticket.self_send')]);
         }
 
         if ($ticket = Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content'])])) {
             $user->notify(new TicketCreated($ticket, route('replyTicket', ['id' => $ticket->id])));
 
-            return Response::json(['status' => 'success', 'message' => '工单创建成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.create')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '工单创建失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.create')])]);
     }
 
     // 回复
@@ -69,30 +69,32 @@ class TicketController extends Controller
         $reply = $ticket->reply()->create(['admin_id' => Auth::id(), 'content' => $content]);
         if ($reply) {
             // 将工单置为已回复
-            $ticket->update(['status' => 1]);
+            if ($ticket->status !== 1) {
+                $ticket->update(['status' => 1]);
+            }
 
             // 通知用户
             if (sysConfig('ticket_replied_notification')) {
                 $ticket->user->notify(new TicketReplied($reply, route('replyTicket', ['id' => $ticket->id]), true));
             }
 
-            return Response::json(['status' => 'success', 'message' => '回复成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '回复失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.ticket.reply')])]);
     }
 
     // 关闭工单
     public function destroy(Ticket $ticket): JsonResponse
     {
         if (! $ticket->close()) {
-            return Response::json(['status' => 'fail', 'message' => '关闭失败']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
         }
         // 通知用户
         if (sysConfig('ticket_closed_notification')) {
             $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]), \request('reason'), true));
         }
 
-        return Response::json(['status' => 'success', 'message' => '关闭成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.close')])]);
     }
 }

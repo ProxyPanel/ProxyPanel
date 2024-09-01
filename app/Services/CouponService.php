@@ -123,15 +123,15 @@ class CouponService
         $coupon = Coupon::whereSn($this->code)->whereType(3)->first();
         if ($coupon && $coupon->status === 0) {
             try {
-                Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value,
-                    trans('user.recharge').' - ['.trans('admin.coupon.type.charge').'：'.$coupon->sn.']'); // 写入用户余额变动日志
                 $user->updateCredit($coupon->value); // 余额充值
+                Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value, 'Recharge using a recharge voucher.'); // 写入用户余额变动日志
+
                 $coupon->used(); // 更改卡券状态
-                Helpers::addCouponLog(trans('user.recharge_credit'), $coupon->id); // 写入卡券使用日志
+                Helpers::addCouponLog('Used for credit recharge.', $coupon->id); // 写入卡券使用日志
 
                 return true;
             } catch (Exception $exception) {
-                Log::emergency('[重置券处理出现错误] '.$exception->getMessage());
+                Log::emergency(trans('common.error_action_item', ['action' => trans('common.apply'), 'attribute' => trans('model.coupon.attribute')]).': '.$exception->getMessage());
             }
         }
 

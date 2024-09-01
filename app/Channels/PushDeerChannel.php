@@ -26,12 +26,12 @@ class PushDeerChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 9, -1, $ret ? $ret['error'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 9, -1, $ret ? $ret['error'] : trans('common.status.unknown'));
 
             return false;
         }
         // 发送错误
-        Log::critical('[PushDeer] 消息推送异常：'.var_export($response, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.pushdeer'), 'reason' => var_export($response, true)]));
 
         return false;
     }

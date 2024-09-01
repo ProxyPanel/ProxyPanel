@@ -26,18 +26,20 @@ class SsConfigController extends Controller
         }
 
         if (SsConfig::create($validator->validated())) {
-            return Response::json(['status' => 'success', 'message' => '添加成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '添加失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     // 设置SS默认配置
     public function update(SsConfig $ss): JsonResponse
     {
-        $ss->setDefault();
+        if ($ss->setDefault()) {
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+        }
 
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     // 删除SS配置
@@ -45,14 +47,14 @@ class SsConfigController extends Controller
     {
         try {
             if ($ss->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除SS配置时失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('user.node.info')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

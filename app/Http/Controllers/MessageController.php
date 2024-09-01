@@ -13,8 +13,10 @@ class MessageController extends Controller
             $log = NotificationLog::whereMsgId($msgId)->latest()->firstOrFail();
             $title = $log->title;
             $content = Markdown::parse($log->content)->toHtml();
+
+            return view('components.message', compact('title', 'content'));
         }
 
-        return view('components.message', compact('title', 'content'));
+        return false;
     }
 }

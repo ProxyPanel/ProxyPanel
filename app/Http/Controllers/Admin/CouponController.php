@@ -58,7 +58,7 @@ class CouponController extends Controller
             $file = $request->file('logo');
             $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
             if (! $file->storeAs('public', $fileName)) {
-                return Redirect::back()->withInput()->withErrors('LOGO不合法');
+                return Redirect::back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.coupon.logo')]));
             }
             $logo = 'upload/'.$fileName;
         }
@@ -95,11 +95,11 @@ class CouponController extends Controller
                 Coupon::create($data);
             }
 
-            return Redirect::route('admin.coupon.index')->with('successMsg', trans('common.generate_item', ['attribute' => trans('common.success')]));
+            return Redirect::route('admin.coupon.index')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.generate')]));
         } catch (Exception $e) {
-            Log::error('生成优惠券失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.generate'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withInput()->withInput()->withErrors('生成优惠券失败：'.$e->getMessage());
+            return Redirect::back()->withInput()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage());
         }
     }
 
@@ -117,15 +117,15 @@ class CouponController extends Controller
     {
         try {
             if ($coupon->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除优惠券失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'success', 'message' => '删除优惠券失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
     // 导出卡券
@@ -133,37 +133,36 @@ class CouponController extends Controller
     {
         $couponList = Coupon::whereStatus(0)->get();
 
-        try {
-            $filename = '卡券_Coupon_'.date('Ymd').'.xlsx';
-            $spreadsheet = new Spreadsheet;
-            $spreadsheet->getProperties()
-                ->setCreator('ProxyPanel')
-                ->setLastModifiedBy('ProxyPanel')
-                ->setTitle('卡券')
-                ->setSubject('卡券');
+        $filename = trans('model.coupon.attribute').'_'.date('Ymd').'.xlsx';
+        $spreadsheet = new Spreadsheet;
+        $spreadsheet->getProperties()
+            ->setCreator('ProxyPanel')
+            ->setLastModifiedBy('ProxyPanel')
+            ->setTitle(trans('model.coupon.attribute'))
+            ->setSubject(trans('model.coupon.attribute'));
 
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('卡券');
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(trans('model.coupon.attribute'));
+        $sheet->fromArray([
+            trans('model.common.type'), trans('model.coupon.name'), trans('model.coupon.usable_times'), trans('common.available_date'), trans('common.expired_at'), trans('model.coupon.sn'), trans('admin.coupon.discount'),
+            trans('model.coupon.priority'), trans('model.rule.attribute'),
+        ]);
+
+        foreach ($couponList as $index => $coupon) {
             $sheet->fromArray([
-                trans('model.common.type'), trans('model.coupon.name'), trans('model.coupon.usable_times'), trans('common.available_date'), trans('common.expired_at'), trans('model.coupon.sn'), trans('admin.coupon.discount'),
-                trans('model.coupon.priority'), trans('model.rule.attribute'),
-            ]);
-
-            foreach ($couponList as $index => $coupon) {
-                $sheet->fromArray([
-                    [trans('common.status.unknown'), trans('admin.coupon.type.voucher'), trans('admin.coupon.type.discount'), trans('admin.coupon.type.charge')][$coupon->type], $coupon->name,
-                    $coupon->type === 3 ? trans('admin.coupon.single_use') : ($coupon->usable_times ?? trans('common.unlimited')), $coupon->start_time, $coupon->end_time, $coupon->sn,
-                    $coupon->type === 2 ? $coupon->value : Helpers::getPriceTag($coupon->value), $coupon->priority, json_encode($coupon->limit),
-                ], null, 'A'.($index + 2));
-            }
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="'.$filename.'"');
-            header('Cache-Control: max-age=0');
+                [trans('common.status.unknown'), trans('admin.coupon.type.voucher'), trans('admin.coupon.type.discount'), trans('admin.coupon.type.charge')][$coupon->type], $coupon->name,
+                $coupon->type === 3 ? trans('admin.coupon.single_use') : ($coupon->usable_times ?? trans('common.unlimited')), $coupon->start_time, $coupon->end_time, $coupon->sn,
+                $coupon->type === 2 ? $coupon->value : Helpers::getPriceTag($coupon->value), $coupon->priority, json_encode($coupon->limit),
+            ], null, 'A'.($index + 2));
+        }
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        try {
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $writer->save('php://output');
         } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
-            Log::error('导出优惠券时报错：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('admin.massive_export'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
         }
     }
 }

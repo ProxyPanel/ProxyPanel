@@ -41,6 +41,34 @@ class WeChat
         return 0;
     }
 
+    public function prpcrypt_encrypt(string $data): array
+    {
+        try {
+            //拼接
+            $data = Str::random().pack('N', strlen($data)).$data.sysConfig('wechat_cid');
+            //添加PKCS#7填充
+            $data = $this->pkcs7_encode($data);
+            //加密
+            $encrypted = openssl_encrypt($data, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
+
+            return [0, $encrypted];
+        } catch (Exception $e) {
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($e->getMessage(), true)]));
+
+            return [-40006, null]; // EncryptAESError
+        }
+    }
+
+    public function pkcs7_encode(string $data): string
+    {// 对需要加密的明文进行填充补位
+        //计算需要填充的位数
+        $padding = 32 - (strlen($data) % 32);
+        $padding = ($padding === 0) ? 32 : $padding;
+        $pattern = chr($padding);
+
+        return $data.str_repeat($pattern, $padding); // 获得补位所用的字符
+    }
+
     public function getSHA1(string $timestamp, string $nonce, string $encryptMsg): array
     {
         $data = [$encryptMsg, sysConfig('wechat_token'), $timestamp, $nonce];
@@ -102,7 +130,7 @@ XML;
 
             return [0, $encrypt];
         } catch (Exception $e) {
-            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($e->getMessage(), true)]));
 
             return [-40002, null]; // ParseXmlError
         }
@@ -128,40 +156,12 @@ XML;
         $signature = $array[1];
 
         if ($sMsgSignature !== $signature) {
-            Log::critical('企业微信消息推送异常：安全签名验证失败');
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => trans('notification.sign_failed')]));
 
             return -40004; // ValidateSignatureError
         }
 
         $sMsg = $encrypt;
-    }
-
-    public function prpcrypt_encrypt(string $data): array
-    {
-        try {
-            //拼接
-            $data = Str::random().pack('N', strlen($data)).$data.sysConfig('wechat_cid');
-            //添加PKCS#7填充
-            $data = $this->pkcs7_encode($data);
-            //加密
-            $encrypted = openssl_encrypt($data, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
-
-            return [0, $encrypted];
-        } catch (Exception $e) {
-            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
-
-            return [-40006, null]; // EncryptAESError
-        }
-    }
-
-    public function pkcs7_encode(string $data): string
-    {// 对需要加密的明文进行填充补位
-        //计算需要填充的位数
-        $padding = 32 - (strlen($data) % 32);
-        $padding = ($padding === 0) ? 32 : $padding;
-        $pattern = chr($padding);
-
-        return $data.str_repeat($pattern, $padding); // 获得补位所用的字符
     }
 
     public function prpcrypt_decrypt(string $encrypted): array
@@ -170,7 +170,7 @@ XML;
             //解密
             $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
         } catch (Exception $e) {
-            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($e->getMessage(), true)]));
 
             return [-40007, null]; // DecryptAESError
         }
@@ -188,7 +188,7 @@ XML;
             $from_receiveId = substr($content, $xml_len + 4);
         } catch (Exception $e) {
             // 发送错误
-            Log::critical('企业微信消息推送异常：'.var_export($e->getMessage(), true));
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($e->getMessage(), true)]));
 
             return [-40008, null]; // IllegalBuffer
         }

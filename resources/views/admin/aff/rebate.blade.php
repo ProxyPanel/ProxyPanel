@@ -18,7 +18,7 @@
                     <div class="form-group col-lg-2 col-sm-6">
                         <select class="form-control" id="status" name="status" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                 title="{{ trans('common.status.attribute') }}">
-                            <option value="0">{{ trans('common.status.unwithdrawn') }}</option>
+                            <option value="0">{{ trans('common.status.withdrawal_pending') }}</option>
                             <option value="1">{{ trans('common.status.applying') }}</option>
                             <option value="2">{{ trans('common.status.withdrawn') }}</option>
                         </select>
@@ -67,15 +67,7 @@
                                 <td> {{ $referralLog->commission }} </td>
                                 <td> {{ $referralLog->created_at }} </td>
                                 <td> {{ $referralLog->updated_at }} </td>
-                                <td>
-                                    @if ($referralLog->status === 1)
-                                        <span class="badge badge-danger">{{ trans('common.status.applying') }}</span>
-                                    @elseif($referralLog->status === 2)
-                                        <span class="badge badge-default">{{ trans('common.status.withdrawn') }}</span>
-                                    @else
-                                        <span class="badge badge-info">{{ trans('common.status.unwithdrawn') }}</span>
-                                    @endif
-                                </td>
+                                <td> {!! $referralLog->status_label !!} </td>
                             </tr>
                         @endforeach
                     </tbody>

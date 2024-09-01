@@ -68,7 +68,7 @@ class Custom extends Notification implements ShouldQueue
         return [
             'title' => $this->title,
             'content' => $this->content,
-            'group' => '自定义信息',
+            'group' => trans('common.bark.custom'),
             'icon' => asset('assets/images/notification/custom.png'),
             'sound' => 'newmail',
             'url_type' => 'markdown',

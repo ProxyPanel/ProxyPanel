@@ -42,21 +42,21 @@ class ArticleController extends Controller
             if ($data['type'] !== '4' && $request->hasFile('logo')) {
                 $path = $this->fileUpload($request->file('logo'));
                 if ($path === false) {
-                    return redirect()->back()->withInput()->withErrors('Logo存储失败');
+                    return redirect()->back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.article.logo')]));
                 }
                 $data['logo'] = $path;
             }
 
             if ($article = Article::create($data)) {
-                return redirect(route('admin.article.edit', $article))->with('successMsg', '添加成功');
+                return redirect(route('admin.article.edit', $article))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
         } catch (Exception $e) {
-            Log::error('添加文章错误：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.article.attribute')]).': '.$e->getMessage());
 
             return redirect()->back()->withInput()->withErrors($e->getMessage());
         }
 
-        return redirect()->back()->withInput()->withErrors('添加失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function fileUpload(UploadedFile $file): string|bool
@@ -98,7 +98,7 @@ class ArticleController extends Controller
         if ($data['type'] !== '4' && $request->hasFile('logo')) {
             $path = $this->fileUpload($request->file('logo'));
             if ($path === false) {
-                return redirect()->back()->withInput()->withErrors('Logo存储失败');
+                return redirect()->back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.article.logo')]));
             }
             $data['logo'] = $path;
         } elseif (! $request->has('logo')) {
@@ -106,10 +106,10 @@ class ArticleController extends Controller
         }
 
         if ($article->update($data)) {
-            return redirect()->back()->with('successMsg', '编辑成功');
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('编辑失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(Article $article): JsonResponse
@@ -118,11 +118,11 @@ class ArticleController extends Controller
         try {
             $article->delete();
         } catch (Exception $e) {
-            Log::error('删除文章失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.article.attribute')]).', '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'success', 'message' => '删除成功']);
+        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
     }
 }

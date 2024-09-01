@@ -62,22 +62,22 @@ class ShopController extends Controller
         }
         try {
             if ($good = Goods::create($data)) {
-                return Redirect::route('admin.goods.edit', $good)->with('successMsg', '添加成功');
+                return Redirect::route('admin.goods.edit', $good)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
         } catch (Exception $e) {
-            Log::error('添加商品信息异常：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withInput()->withErrors('添加商品信息失败：'.$e->getMessage());
+            return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
         }
 
-        return Redirect::back()->withInput()->withErrors('添加商品信息失败');
+        return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function fileUpload(UploadedFile $file)
     { // 图片上传
         $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
         if (! $file->storeAs('public', $fileName)) {
-            return Redirect::back()->withInput()->withErrors('Logo存储失败');
+            return Redirect::back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.goods.logo')]));
         }
 
         return 'upload/'.$fileName;
@@ -115,29 +115,29 @@ class ShopController extends Controller
             $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
             $data['status'] = array_key_exists('status', $data) ? 1 : 0;
             if ($good->update($data)) {
-                return Redirect::back()->with('successMsg', '编辑成功');
+                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
             }
         } catch (Exception $e) {
-            Log::error('编辑商品信息失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withErrors('编辑商品信息失败：'.$e->getMessage());
+            return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
         }
 
-        return Redirect::back()->withInput()->withErrors('编辑失败');
+        return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(Goods $good): JsonResponse
     {
         try {
             if ($good->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('编辑商品失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '编辑商品失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

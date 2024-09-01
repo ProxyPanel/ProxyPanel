@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Log;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
@@ -28,10 +29,10 @@ class PermissionController extends Controller
     public function store(PermissionRequest $request): RedirectResponse
     {
         if ($permission = Permission::create($request->validated())) {
-            return redirect()->route('admin.permission.edit', $permission)->with('successMsg', '操作成功');
+            return redirect()->route('admin.permission.edit', $permission)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function create()
@@ -47,20 +48,24 @@ class PermissionController extends Controller
     public function update(PermissionRequest $request, Permission $permission): RedirectResponse
     {
         if ($permission->update($request->validated())) {
-            return redirect()->back()->with('successMsg', '操作成功');
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
     }
 
     public function destroy(Permission $permission): JsonResponse
     {
         try {
-            $permission->delete();
+            if ($permission->delete()) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+            }
         } catch (Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('admin.logs.rule.title')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'success', 'message' => '清理成功']);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

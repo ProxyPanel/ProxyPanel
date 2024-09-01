@@ -58,7 +58,7 @@ class TicketReplied extends Notification implements ShouldQueue
 
     private function markdownMessage(TicketReply $reply): string
     {
-        return "📮工单回复提醒 #{$reply->ticket->id}\n———————————————\n主题：\n`{$reply->ticket->title}`\n内容：\n`$reply->content`";
+        return '📮'.trans('admin.system.ticket_replied_notification')." #{$reply->ticket->id}\n———————————————\n".trans('validation.attributes.title').": \n`{$reply->ticket->title}`\n".trans('validation.attributes.content').": \n`$reply->content`";
     }
 
     public function toBark($notifiable): array
@@ -66,7 +66,7 @@ class TicketReplied extends Notification implements ShouldQueue
         return [
             'title' => trans('notification.reply_ticket', ['title' => $this->reply->ticket->title]),
             'content' => trans('notification.ticket_content').strip_tags($this->reply->content),
-            'group' => '工单',
+            'group' => trans('user.ticket.attribute'),
             'icon' => asset('assets/images/notification/ticket.png'),
             'url' => $this->url,
         ];

@@ -38,7 +38,7 @@ class PayJs extends PaymentService implements Gateway
         $payment->update(['qr_code' => 1, 'url' => $result]);
 
         //$this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
-        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
+        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void

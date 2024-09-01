@@ -12,8 +12,7 @@ class ArticleService
     {
         $siteName = sysConfig('website_name');
         $siteUrl = sysConfig('website_url');
-        $subscribe = auth()->user()->subscribe;
-        $subUrl = route('sub', $subscribe->code);
+        $subUrl = auth()->user()?->subUrl();
 
         self::$valuables = [
             '{{siteName}}' => $siteName,

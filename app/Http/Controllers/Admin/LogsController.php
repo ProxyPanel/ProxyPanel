@@ -72,14 +72,14 @@ class LogsController extends Controller
         $status = (int) $request->input('status');
 
         if ($order->status === 3 && $status === 2 && $order->goods->type === 2 && Order::userActivePlan($order->user_id)->exists()) {
-            return Response::json(['status' => 'fail', 'message' => '更新失败, 订单冲突']); // 防止预支付订单假激活
+            return Response::json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]); // 防止预支付订单假激活
         }
 
         if ($order->update(['is_expire' => 0, 'expired_at' => null, 'status' => $status])) {
-            return Response::json(['status' => 'success', 'message' => '更新成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '更新失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
     // 流量日志
@@ -254,7 +254,6 @@ class LogsController extends Controller
 
         $nodeOnlineIPs = NodeOnlineIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct()->get();
         foreach ($userList as $user) {
-            //Todo node_online_ip表 api可以用user_id
             // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
             $user->onlineIPList = $nodeOnlineIPs->where('port', $user->port)->take(5);
         }

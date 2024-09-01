@@ -18,7 +18,7 @@ class AffiliateController extends Controller
     public function referral()
     {
         if (ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()) {
-            return Response::view('auth.error', ['message' => trans('user.purchase_required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
+            return Response::view('auth.error', ['message' => trans('user.purchase.required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
         return view('user.referral', [
@@ -39,12 +39,12 @@ class AffiliateController extends Controller
     {
         // 判断账户是否过期
         if (Auth::getUser()->expiration_date < date('Y-m-d')) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.account')]);
+            return Response::json(['status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.account')]);
         }
 
         // 判断是否已存在申请
         if (ReferralApply::uid()->whereIn('status', [0, 1])->first()) {
-            return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.applied')]);
+            return Response::json(['status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.applied')]);
         }
 
         // 校验可以提现金额是否超过系统设置的阀值
@@ -52,7 +52,7 @@ class AffiliateController extends Controller
         $commission /= 100;
         if ($commission < sysConfig('referral_money')) {
             return Response::json([
-                'status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => Helpers::getPriceTag(sysConfig('referral_money'))]),
+                'status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => Helpers::getPriceTag(sysConfig('referral_money'))]),
             ]);
         }
 
@@ -62,9 +62,9 @@ class AffiliateController extends Controller
         $ref->amount = $commission;
         $ref->link_logs = ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray();
         if ($ref->save()) {
-            return Response::json(['status' => 'success', 'title' => trans('user.referral.success'), 'message' => trans('user.referral.msg.wait')]);
+            return Response::json(['status' => 'success', 'title' => trans('common.success_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.wait')]);
         }
 
-        return Response::json(['status' => 'fail', 'title' => trans('user.referral.failed'), 'message' => trans('user.referral.msg.error')]);
+        return Response::json(['status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.error')]);
     }
 }

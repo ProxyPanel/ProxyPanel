@@ -42,7 +42,7 @@ class BarkChannel
             return false;
         }
         // 发送错误
-        Log::critical('[Bark] 消息推送异常：'.var_export($response, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.bark'), 'reason' => var_export($response, true)]));
 
         return false;
     }

@@ -96,36 +96,35 @@ class AdminController extends Controller
             $obj->save();
         }
 
-        return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
     }
 
     // 导出邀请码
     public function exportInvite(): void
     {
         $inviteList = Invite::whereStatus(0)->orderBy('id')->get();
-        $filename = '邀请码'.date('Ymd').'.xlsx';
+        $filename = trans('user.invite.attribute').'_'.date('Ymd').'.xlsx';
 
         $spreadsheet = new Spreadsheet;
-        $spreadsheet->getProperties()->setCreator('ProxyPanel')->setLastModifiedBy('ProxyPanel')->setTitle('邀请码')->setSubject('邀请码');
+        $spreadsheet->getProperties()->setCreator('ProxyPanel')->setLastModifiedBy('ProxyPanel')->setTitle(trans('user.invite.attribute'))->setSubject(trans('user.invite.attribute'));
+        $spreadsheet->setActiveSheetIndex(0);
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle(trans('user.invite.attribute'));
+        $sheet->fromArray([trans('user.invite.attribute'), trans('common.available_date')]);
 
+        foreach ($inviteList as $k => $vo) {
+            $sheet->fromArray([$vo->code, $vo->dateline], null, 'A'.($k + 2));
+        }
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
+        //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
         try {
-            $spreadsheet->setActiveSheetIndex(0);
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('邀请码');
-            $sheet->fromArray(['邀请码', '有效期']);
-
-            foreach ($inviteList as $k => $vo) {
-                $sheet->fromArray([$vo->code, $vo->dateline], null, 'A'.($k + 2));
-            }
-
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
-            //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
-            header('Content-Disposition: attachment;filename="'.$filename.'"');
-            header('Cache-Control: max-age=0');
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
         } catch (Exception $e) {
-            Log::error('导出邀请码时报错：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.export'), 'attribute' => trans('user.invite.attribute')]).': '.$e->getMessage());
         }
     }
 

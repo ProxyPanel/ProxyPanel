@@ -56,11 +56,7 @@
         <div class="m-0 p-0 w-full h-full text-white" style="z-index: 10; position: absolute;">
             <div class="font-size-16 h-p33 pl-20 pt-20"
                  style="line-height: 1.8; background: url(//gw.alicdn.com/tfs/TB1eSZaNFXXXXb.XXXXXXXXXXXX-750-234.png) center top/contain no-repeat">
-                <p>{{ trans('common.to_safari.0') }}
-                    <i class="icon wb-more-horizontal" aria-hidden="true"></i>{{ trans('common.to_safari.1') }}
-                    <img class="w-30 h-30 vertical-align-middle m-3" src="https://gw.alicdn.com/tfs/TB1xwiUNpXXXXaIXXXXXXXXXXXX-55-55.png" alt="Safari" />
-                    {{ trans('common.to_safari.2') }}<br>{{ trans('common.to_safari.3') }}
-                </p>
+                <p>{!! trans('common.to_safari') !!}</p>
             </div>
         </div>
     @endif

@@ -54,9 +54,9 @@ class WeChatChannel
                 'msgtype' => 'textcard',
                 'textcard' => [
                     'title' => $message['title'],
-                    'description' => '请点击下方按钮【查看详情】',
+                    'description' => trans('notification.details_btn'),
                     'url' => route('message.show', ['type' => $message['url_type'], $msgId]),
-                    'btntxt' => '查看详情',
+                    'btntxt' => trans('notification.details'),
                 ],
             ];
         } else { // 文本消息
@@ -82,9 +82,9 @@ class WeChatChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'] ?? var_export($message['body'], true), 5, -1, $ret ? $ret['errmsg'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'] ?? var_export($message['body'], true), 5, -1, $ret ? $ret['errmsg'] : trans('common.status.unknown'));
         } else {
-            Log::critical('[企业微信] 消息推送异常：'.var_export($response, true)); // 发送错误
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($response, true)]));
         }
 
         return false;
@@ -101,7 +101,7 @@ class WeChatChannel
                 $access_token = $response->json()['access_token'];
                 Cache::put('wechat_access_token', $access_token, 7189); // 2小时
             } else {
-                Log::critical('[企业微信] 消息推送异常：获取access_token失败！'.PHP_EOL.'携带访问参数：'.$response->body());
+                Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => trans('notification.get_access_token_failed', ['body' => $response->body()])]));
                 abort(400);
             }
         }
@@ -116,6 +116,6 @@ class WeChatChannel
             exit($sEchoStr);
         }
 
-        Log::critical('[企业微信] 互动消息推送异常：'.var_export($errCode, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => trans('notification.sign_failed')]).var_export($errCode, true));
     }
 }

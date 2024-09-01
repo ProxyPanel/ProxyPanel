@@ -54,7 +54,7 @@
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="user_group_id" name="user_group_id" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                title="{{ trans('model.user.group') }}">
+                                title="{{ trans('model.user_group.attribute') }}">
                             @foreach ($userGroups as $key => $group)
                                 <option value="{{ $key }}">{{ $group }}</option>
                             @endforeach
@@ -235,7 +235,7 @@
             // 批量生成账号
             function batchAddUsers() {
                 swal.fire({
-                    title: '{{ trans('admin.user.massive.text') }}',
+                    title: '{{ trans('admin.user.bulk_account_quantity') }}',
                     input: 'range',
                     inputAttributes: {
                         min: 1,

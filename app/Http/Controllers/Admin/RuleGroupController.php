@@ -9,6 +9,7 @@ use App\Models\RuleGroup;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Log;
 
 class RuleGroupController extends Controller
 {
@@ -22,10 +23,10 @@ class RuleGroupController extends Controller
         if ($group = RuleGroup::create($request->only('name', 'type'))) {
             $group->rules()->attach($request->input('rules'));
 
-            return redirect(route('admin.rule.group.edit', $group))->with('successMsg', '操作成功');
+            return redirect(route('admin.rule.group.edit', $group))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function create()
@@ -46,20 +47,24 @@ class RuleGroupController extends Controller
         if ($group->update($request->only(['name', 'type']))) {
             $group->rules()->sync($request->input('rules'));
 
-            return redirect()->back()->with('successMsg', '操作成功');
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(RuleGroup $group): JsonResponse
     {
         try {
-            $group->delete();
+            if ($group->delete()) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+            }
         } catch (Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'success', 'message' => '清理成功']);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

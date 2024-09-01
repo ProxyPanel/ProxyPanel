@@ -42,17 +42,17 @@ class AffiliateController extends Controller
         $status = (int) $request->input('status');
 
         if ($aff->update(['status' => $status])) {
-            // 审核申请的时候将关联的
+            // 将关联的返现单更新状态
             if ($status === 1 || $status === 2) {
                 if ($aff->referral_logs()->update(['status' => $status])) {
-                    return response()->json(['status' => 'success', 'message' => '操作成功']);
+                    return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.action')])]);
                 }
             }
 
-            return response()->json(['status' => 'success', 'message' => '操作成功']);
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.action')])]);
         }
 
-        return response()->json(['status' => 'fail', 'message' => '操作失败']);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.action')])]);
     }
 
     // 用户返利流水记录

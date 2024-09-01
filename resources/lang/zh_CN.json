@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "您收到此电子邮件是因为我们收到了您帐户的密码重设请求。",
   "You have not responded this ticket in :num hours, System has closed your ticket.": ":num 小时内未回复该工单，系统已自动关闭此工单。",
   "You must have a valid subscription to view the content in this area!": "您必须拥有有效订阅才能查看此区域的内容！",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "您的订阅已被管理员禁用，请联系管理员恢复订阅。"
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "您的订阅已被管理员禁用，请联系管理员恢复订阅。",
+  "Manually add in dashboard.": "后台手动添加",
+  "Manually edit in dashboard.": "后台手动编辑",
+  "Batch generate user accounts in dashboard.": "后台批量生成用户账号",
+  "Coupon used in order.": "订单中使用了优惠券",
+  "Order canceled, coupon reinstated.": "订单取消，优惠券恢复",
+  "Used for credit recharge.": "用于余额充值",
+  "The user manually reset the data.": "用户自行重置流量",
+  "Recharge using a recharge voucher.":"使用充值券充值",
+  "The user topped up the balance.":"用户充值了余额",
+  "Purchased an item.":"购买了商品",
+  "[:payment] plus the user’s purchased data plan." : "【:payment】加上用户购买的套餐流量"
 }

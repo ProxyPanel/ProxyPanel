@@ -32,7 +32,8 @@ class PaymentConfirm extends Notification
     {
         $order = $this->order;
         $goods = $this->order->goods;
-        $message = sprintf("🛒 人工支付\n———————————————\n\t\tℹ️ 账号：%s\n\t\t💰 金额：%1.2f\n\t\t📦 商品：%s\n\t\t", $order->user->username, $order->amount, $goods->name ?? '余额充值');
+        $message = sprintf('🛒 '.trans('common.payment.manual')."\n———————————————\n\t\tℹ️ ".trans('common.account').": %s\n\t\t💰 ".trans('user.shop.price')."：%1.2f\n\t\t📦 ".trans('model.goods.attribute').": %s\n\t\t", $order->user->username,
+            $order->amount, $goods->name ?? trans('user.recharge_credit'));
         foreach (User::role('Super Admin')->get() as $admin) {
             if (! $admin->telegram_user_id) {
                 continue;
@@ -55,22 +56,22 @@ class PaymentConfirm extends Notification
         $goods = $this->order->goods;
 
         return [
-            'title' => '🛒 人工支付',
+            'title' => '🛒 '.trans('common.payment.manual'),
             'body' => [
                 [
-                    'keyname' => 'ℹ️ 账号',
+                    'keyname' => 'ℹ️ '.trans('common.account'),
                     'value' => $order->user->username,
                 ],
                 [
-                    'keyname' => '💰 金额',
+                    'keyname' => '💰 '.trans('user.shop.price'),
                     'value' => sprintf('%1.2f', $order->amount),
                 ],
                 [
-                    'keyname' => '📦 商品',
-                    'value' => $goods->name ?? '余额充值',
+                    'keyname' => '📦 '.trans('model.goods.attribute'),
+                    'value' => $goods->name ?? trans('user.recharge_credit'),
                 ],
             ],
-            'markdown' => '- ℹ️ 账号: '.$order->user->username.PHP_EOL.'- 💰 金额: '.sprintf('%1.2f', $order->amount).PHP_EOL.'- 📦 商品: '.($goods->name ?? '余额充值'),
+            'markdown' => '- ℹ️ '.trans('common.account').': '.$order->user->username.PHP_EOL.'- 💰 '.trans('user.shop.price').': '.sprintf('%1.2f', $order->amount).PHP_EOL.'- 📦 '.trans('user.shop.price').': '.($goods->name ?? trans('user.recharge_credit')),
             'button' => [
                 route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 0]),
                 route('payment.notify', ['method' => 'manual', 'sign' => $this->sign, 'status' => 1]),

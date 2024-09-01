@@ -57,7 +57,7 @@ class Surge implements Client
             $subscribeInfo = "title=$webName, content=";
         }
 
-        return str_replace(['$subscribe_info', '$subs_link', '$subs_domain', '$proxies', '$proxy_group'], [$subscribeInfo, route('sub', $user->subscribe->code), $_SERVER['HTTP_HOST'], $proxyProfiles['proxies'], $proxyProfiles['names']],
+        return str_replace(['$subscribe_info', '$subs_link', '$subs_domain', '$proxies', '$proxy_group'], [$subscribeInfo, $user->subUrl(), $_SERVER['HTTP_HOST'], $proxyProfiles['proxies'], $proxyProfiles['names']],
             $config);
     }
 }

@@ -21,7 +21,7 @@ class ToolsController extends Controller
             $content = $request->input('content');
 
             if (empty($content)) {
-                return Response::json(['status' => 'fail', 'message' => '请在左侧填入要反解析的SS(R)链接']);
+                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.decompile.content_placeholder')]);
             }
 
             // 反解析处理
@@ -43,7 +43,7 @@ class ToolsController extends Controller
             // 生成转换好的JSON文件
             //file_put_contents(public_path('downloads/decompile.json'), $txt);
 
-            return Response::json(['status' => 'success', 'data' => $txt, 'message' => '反解析成功']);
+            return Response::json(['status' => 'success', 'data' => $txt, 'message' => trans('common.success_item', ['attribute' => trans('admin.tools.decompile.attribute')])]);
         }
 
         return view('admin.tools.decompile');
@@ -62,13 +62,13 @@ class ToolsController extends Controller
             $content = $request->input('content');
 
             if (empty($content)) {
-                return Response::json(['status' => 'fail', 'message' => '请在左侧填入要转换的内容']);
+                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.convert.content_placeholder')]);
             }
 
             // 校验格式
             $content = json_decode($content, true);
             if (empty($content->port_password)) {
-                return Response::json(['status' => 'fail', 'message' => '转换失败：配置信息里缺少【port_password】字段，或者该字段为空']);
+                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.convert.missing_error')]);
             }
 
             // 转换成SSR格式JSON
@@ -95,7 +95,7 @@ class ToolsController extends Controller
             // 生成转换好的JSON文件
             file_put_contents(public_path('downloads/convert.json'), $json);
 
-            return Response::json(['status' => 'success', 'data' => $json, 'message' => '转换成功']);
+            return Response::json(['status' => 'success', 'data' => $json, 'message' => trans('common.success_item', ['attribute' => trans('common.convert')])]);
         }
 
         return view('admin.tools.convert');
@@ -104,19 +104,19 @@ class ToolsController extends Controller
     // 下载转换好的JSON文件
     public function download(Request $request)
     {
-        $type = $request->input('type');
+        $type = (int) $request->input('type');
         if (empty($type)) {
-            exit('参数异常');
+            exit(trans('admin.tools.convert.params_unknown'));
         }
 
-        if ($type == '1') {
+        if ($type === 1) {
             $filePath = public_path('downloads/convert.json');
         } else {
             $filePath = public_path('downloads/decompile.json');
         }
 
         if (! file_exists($filePath)) {
-            exit('文件不存在，请检查目录权限');
+            exit(trans('admin.tools.convert.file_missing'));
         }
 
         return Response::download($filePath);
@@ -127,18 +127,18 @@ class ToolsController extends Controller
     {
         if ($request->isMethod('POST')) {
             if (! $request->hasFile('uploadFile')) {
-                return Redirect::back()->withErrors('请选择要上传的文件');
+                return Redirect::back()->withErrors(trans('admin.tools.import.file_required'));
             }
 
             $file = $request->file('uploadFile');
 
             // 只能上传JSON文件
             if ($file->getClientMimeType() !== 'application/json' || $file->getClientOriginalExtension() !== 'json') {
-                return Redirect::back()->withErrors('只允许上传JSON文件');
+                return Redirect::back()->withErrors(trans('admin.tools.import.file_type_error', ['type' => 'JSON']));
             }
 
             if (! $file->isValid()) {
-                return Redirect::back()->withErrors('产生未知错误，请重新上传');
+                return Redirect::back()->withErrors(trans('admin.tools.import.file_error'));
             }
 
             $save_path = realpath(storage_path('uploads'));
@@ -149,7 +149,7 @@ class ToolsController extends Controller
             $data = file_get_contents($save_path.'/'.$new_name);
             $data = json_decode($data, true);
             if (! $data) {
-                return Redirect::back()->withErrors('内容格式解析异常，请上传符合SSR(R)配置规范的JSON文件');
+                return Redirect::back()->withErrors(trans('admin.tools.import.format_error', ['type' => 'JSON']));
             }
 
             try {
@@ -176,11 +176,12 @@ class ToolsController extends Controller
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollBack();
+                Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
 
-                return Redirect::back()->withErrors('出错了，可能是导入的配置中有端口已经存在了');
+                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]).', '.$e->getMessage());
             }
 
-            return Redirect::back()->with('successMsg', '导入成功');
+            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.import')]));
         }
 
         return view('admin.tools.import');
@@ -191,7 +192,7 @@ class ToolsController extends Controller
     {
         $file = storage_path('app/ssserver.log');
         if (! file_exists($file)) {
-            Session::flash('analysisErrorMsg', $file.' 不存在，请先创建文件');
+            Session::flash('analysisErrorMsg', trans('admin.tools.analysis.file_missing', ['file_name' => $file]));
 
             return view('admin.tools.analysis');
         }

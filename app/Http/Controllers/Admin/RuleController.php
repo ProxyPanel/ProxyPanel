@@ -10,6 +10,7 @@ use App\Models\RuleLog;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Log;
 use Response;
 
 class RuleController extends Controller
@@ -30,32 +31,36 @@ class RuleController extends Controller
     public function store(RuleRequest $request): JsonResponse
     {
         if (Rule::create($request->validated())) {
-            return Response::json(['status' => 'success', 'message' => '提交成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '操作失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     // 编辑审计规则
     public function update(RuleRequest $request, Rule $rule): JsonResponse
     {
         if ($rule->update($request->validated())) {
-            return Response::json(['status' => 'success', 'message' => '操作成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '操作失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     // 删除审计规则
     public function destroy(Rule $rule): JsonResponse
     {
         try {
-            $rule->delete();
+            if ($rule->delete()) {
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+            }
         } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '操作失败, '.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.rule.attribute')]).': '.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
     // 用户触发审计规则日志
@@ -88,13 +93,15 @@ class RuleController extends Controller
         try {
             $ret = RuleLog::query()->delete();
         } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => '清理失败, '.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('admin.logs.rule.title')]).': '.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
         if ($ret || RuleLog::doesntExist()) {
-            return Response::json(['status' => 'success', 'message' => '清理成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '清理失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

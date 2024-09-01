@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "パスワード再設定のリクエストを受け付けました。",
   "You have not responded this ticket in :num hours, System has closed your ticket.": ":num 時間以内にこのチケットに返信しなかったため、システムがチケットを閉じました。",
   "You must have a valid subscription to view the content in this area!": "このエリアのコンテンツを表示するには、有効なサブスクリプションが必要です！",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "お客様のサブスクリプションは管理者によって無効にされました。復元するには管理者に連絡してください。"
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "お客様のサブスクリプションは管理者によって無効にされました。復元するには管理者に連絡してください。",
+  "Manually add in dashboard.": "ダッシュボードで手動で追加",
+  "Manually edit in dashboard.": "ダッシュボードで手動で編集",
+  "Batch generate user accounts in dashboard.": "バックグラウンドでユーザーアカウントを一括生成",
+  "Coupon used in order.": "注文でクーポンが使用されました",
+  "Order canceled, coupon reinstated.": "注文がキャンセルされ、クーポンが復元されました",
+  "Used for credit recharge.": "残高のチャージに使用される",
+  "The user manually reset the data.": "ユーザーデータリセット記録",
+  "Recharge using a recharge voucher.": "チャージ券を使ってチャージする",
+  "The user topped up the balance.": "ユーザーが残高をチャージしました",
+  "Purchased an item.": "商品を購入しました",
+  "[:payment] plus the user’s purchased data plan.": "[:payment] にユーザーが購入したデータプランを追加"
 }

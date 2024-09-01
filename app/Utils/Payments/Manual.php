@@ -21,7 +21,7 @@ class Manual extends PaymentService implements Gateway
         $url = route('manual.checkout', ['payment' => $payment->trade_no]);
         $payment->update(['url' => $url]);
 
-        return Response::json(['status' => 'success', 'url' => $url, 'message' => '创建订单成功!']);
+        return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function redirectPage(string $trade_no): View
@@ -43,7 +43,7 @@ class Manual extends PaymentService implements Gateway
         $payment = Payment::uid()->with(['order'])->whereTradeNo($trade_no)->firstOrFail();
         $payment->order->update(['status' => 1]);
 
-        return Response::json(['status' => 'success', 'message' => '我们将在【24小时】内对购买/充值的款项进行开通！请耐心等待']);
+        return Response::json(['status' => 'success', 'message' => trans('user.payment.order_creation.info')]);
     }
 
     public function notify(Request $request)

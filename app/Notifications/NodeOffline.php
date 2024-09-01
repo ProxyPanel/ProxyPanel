@@ -35,7 +35,7 @@ class NodeOffline extends Notification implements ShouldQueue
     {
         $content = '';
         foreach ($this->data as $node) {
-            $content .= "- {$node['name']} {$node['host']}\r\n";
+            $content .= "- {$node['name']} {$node['host']}".PHP_EOL;
         }
 
         return $content;
@@ -55,7 +55,7 @@ class NodeOffline extends Notification implements ShouldQueue
         return [
             'title' => trans('notification.node_offline'),
             'content' => $this->stringMessage(),
-            'group' => '节点状态',
+            'group' => trans('common.bark.node_status'),
             'icon' => asset('assets/images/notification/offline.png'),
         ];
     }

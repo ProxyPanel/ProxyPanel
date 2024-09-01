@@ -185,7 +185,7 @@
                             @if ($userGroups)
                                 <div class="form-group col-lg-3 col-md-4 col-6">
                                     <select class="form-control show-tick" name="user_group_id[]" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                            title="{{ trans('model.user.group') }}" multiple>
+                                            title="{{ trans('model.user_group.attribute') }}" multiple>
                                         @foreach ($userGroups as $key => $group)
                                             <option value="{{ $key }}">{{ $group }}</option>
                                         @endforeach

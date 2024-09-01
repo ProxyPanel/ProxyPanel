@@ -51,20 +51,19 @@ class NodeController extends Controller
     { // 添加节点
         try {
             if ($node = Node::create($this->nodeStore($request->validated()))) {
-                // 生成节点标签
-                if ($request->has('labels')) {
+                if ($request->has('labels')) { // 生成节点标签
                     $node->labels()->attach($request->input('labels'));
                 }
 
-                return Response::json(['status' => 'success', 'message' => '添加成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
             }
         } catch (Exception $e) {
-            Log::error('添加节点信息异常：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '添加线路失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '添加线路失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     public function create()
@@ -188,30 +187,30 @@ class NodeController extends Controller
                 // 更新节点标签
                 $node->labels()->sync($request->input('labels'));
 
-                return Response::json(['status' => 'success', 'message' => '编辑成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
             }
         } catch (Exception $e) {
-            Log::error('编辑节点信息异常：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '编辑失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     public function destroy(Node $node): JsonResponse
     { // 删除节点
         try {
             if ($node->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除线路失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除线路失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除线路失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
     public function checkNode(Node $node): JsonResponse
@@ -221,7 +220,7 @@ class NodeController extends Controller
             $data[$ip] = [config('common.network_status')[$status['icmp']], config('common.network_status')[$status['tcp']]];
         }
 
-        return Response::json(['status' => 'success', 'title' => '['.$node->name.']阻断信息', 'message' => $data ?? []]);
+        return Response::json(['status' => 'success', 'title' => '['.$node->name.'] '.trans('admin.node.connection_test'), 'message' => $data ?? []]);
     }
 
     public function refreshGeo($id): JsonResponse
@@ -239,10 +238,10 @@ class NodeController extends Controller
         }
 
         if ($ret) {
-            return Response::json(['status' => 'success', 'message' => '获取地理位置更新成功！']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '【存在】获取地理位置更新失败！']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
     public function reload($id): JsonResponse
@@ -261,10 +260,10 @@ class NodeController extends Controller
         }
 
         if ($ret) {
-            return Response::json(['status' => 'success', 'message' => '重载成功！']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.node.reload')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '【存在】重载失败！']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('admin.node.reload')])]);
     }
 
     public function nodeMonitor(Node $node)

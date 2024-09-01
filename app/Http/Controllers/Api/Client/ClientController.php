@@ -63,7 +63,7 @@ class ClientController extends Controller
             'user' => $userInfo,
             'ssrSubToken' => $user->subscribe->code,
             'user_expire' => $user_expire,
-            'subUrl' => route('sub', $user->subscribe->code),
+            'subUrl' => $user->subUrl(),
             'baseUrl' => sysConfig('subscribe_domain') ?? sysConfig('website_url'),
             'ann' => $ann,
             'avatar' => $user->avatar,
@@ -86,7 +86,7 @@ class ClientController extends Controller
             $data[] = [
                 'id' => $order->id,
                 'total_amount' => $order->amount * 100,
-                'plan' => ['name' => $order->goods()->value('name') ?? '余额充值'],
+                'plan' => ['name' => $order->goods()->value('name') ?? trans('user.recharge_credit')],
                 'status' => [-1 => 2, 0 => 0, 1 => 1, 2 => 3, 3 => 4][$order->status],
                 'created_at' => strtotime($order->created_at),
             ];

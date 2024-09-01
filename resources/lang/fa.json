@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "شما این ایمیل را به دلیل درخواست رمزعبور جدید دریافت کرده‌اید.",
   "You have not responded this ticket in :num hours, System has closed your ticket.": "شما در :num ساعت به این تیکت پاسخ نداده‌اید، سیستم تیکت شما را بسته است.",
   "You must have a valid subscription to view the content in this area!": "برای مشاهده محتوای این منطقه باید اشتراک معتبر داشته باشید!",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "اشتراک شما توسط مدیر غیرفعال شده است، لطفاً برای بازیابی آن با مدیر تماس بگیرید."
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "اشتراک شما توسط مدیر غیرفعال شده است، لطفاً برای بازیابی آن با مدیر تماس بگیرید.",
+  "Manually add in dashboard.": "به صورت دستی در داشبورد اضافه کنید",
+  "Manually edit in dashboard.": "به صورت دستی در داشبورد ویرایش کنید",
+  "Batch generate user accounts in dashboard.": "ایجاد حساب‌های کاربری به صورت گروهی در پس‌زمینه",
+  "Coupon used in order.": "کوپن در سفارش استفاده شده است",
+  "Order canceled, coupon reinstated.": "سفارش لغو شد و کوپن بازگردانی شد",
+  "Used for credit recharge.": "برای شارژ اعتبار استفاده می‌شود",
+  "The user manually reset the data.": "کاربر داده را بازنشانی کرد",
+  "Recharge using a recharge voucher.": "با استفاده از کوپن شارژ، اعتبار را شارژ کنید",
+  "The user topped up the balance.": "کاربر اعتبار را شارژ کرد",
+  "Purchased an item.": "کالایی خریداری شد",
+  "[:payment] plus the user’s purchased data plan.": "[:payment] به همراه بسته داده‌ای که کاربر خریداری کرده است"
 }

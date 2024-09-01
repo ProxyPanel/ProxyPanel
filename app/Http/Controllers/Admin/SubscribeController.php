@@ -74,6 +74,6 @@ class SubscribeController extends Controller
             $subscribe->update(['status' => 1, 'ban_time' => null, 'ban_desc' => null]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '操作成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
     }
 }

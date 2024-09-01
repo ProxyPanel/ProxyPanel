@@ -61,7 +61,7 @@ class ReferralLog extends Model
             get: fn () => match ($this->status) {
                 1 => '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>',
                 2 => '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>',
-                default => '<span class="badge badge-sm badge-success">'.trans('common.status.unwithdrawn').'</span>',
+                default => '<span class="badge badge-sm badge-success">'.trans('common.status.withdrawal_pending').'</span>',
             },
         );
     }

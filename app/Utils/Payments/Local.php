@@ -22,12 +22,12 @@ class Local extends PaymentService implements Gateway
         if ($user && $goods) {
             $user->update(['credit' => $user->credit - $order->amount]);
             // 记录余额操作日志
-            Helpers::addUserCreditLog($user->id, $order->id, $user->credit + $order->amount, $user->credit, -1 * $order->amount, '购买商品'.$goods->name);
+            Helpers::addUserCreditLog($user->id, $order->id, $user->credit + $order->amount, $user->credit, -1 * $order->amount, 'Purchased an item.');
         }
 
         $order->complete();
 
-        return Response::json(['status' => 'success', 'message' => '购买完成!']);
+        return Response::json(['status' => 'success', 'message' => trans('user.purchase.completed')]);
     }
 
     public function notify(Request $request): void

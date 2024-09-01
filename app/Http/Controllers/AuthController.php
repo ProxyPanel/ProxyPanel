@@ -16,7 +16,6 @@ use App\Utils\Helpers;
 use App\Utils\IP;
 use Auth;
 use Cache;
-use Captcha;
 use Cookie;
 use Hash;
 use Hashids\Hashids;
@@ -98,43 +97,26 @@ class AuthController extends Controller
     }
 
     private function check_captcha(Request $request): RedirectResponse|bool
-    { // 校验验证码
-        switch (sysConfig('is_captcha')) {
-            case 1: // 默认图形验证码
-                if (! Captcha::check($request->input('captcha'))) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 2: // Geetest
-                $validator = Validator::make($request->all(), ['geetest_challenge' => 'required|geetest']);
+    {
+        // Define the rules based on the captcha type
+        $rules = [
+            1 => ['captcha' => 'required|captcha'], // Mews\Captcha
+            2 => ['geetest_challenge' => 'required|geetest'], // Geetest
+            3 => ['g-recaptcha-response' => 'required|NoCaptcha'], // Google reCAPTCHA
+            4 => ['h-captcha-response' => 'required|HCaptcha'], // hCaptcha
+            5 => ['cf-turnstile-response' => ['required', 'string', new TurnstileCaptcha]], // Turnstile
+        ];
 
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 3: // Google reCAPTCHA
-                $validator = Validator::make($request->all(), ['g-recaptcha-response' => 'required|NoCaptcha']);
+        // Get the current captcha setting
+        $captchaType = sysConfig('is_captcha');
 
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 4: // hCaptcha
-                $validator = Validator::make($request->all(), ['h-captcha-response' => 'required|HCaptcha']);
+        // Check if the captcha is enabled and has a defined rule
+        if (isset($rules[$captchaType])) {
+            $validator = Validator::make($request->all(), $rules[$captchaType]);
 
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
-                }
-                break;
-            case 5: // Turnstile
-                $validator = Validator::make($request->all(), ['cf-turnstile-response' => ['required', 'string', new TurnstileCaptcha]]);
-
-                if ($validator->fails()) {
-                    return Redirect::back()->withInput()->withErrors($validator->errors());
-                }
-                break;
-            default: // 不启用验证码
-                break;
+            if ($validator->fails()) {
+                return Redirect::back()->withInput()->withErrors(trans('auth.captcha.error.failed'));
+            }
         }
 
         return true;
@@ -189,10 +171,10 @@ class AuthController extends Controller
             // 校验邀请码合法性
             if ($invite_code) {
                 if (Invite::whereCode($invite_code)->whereStatus(0)->doesntExist()) {
-                    return Redirect::back()->withInput($request->except('code'))->withErrors(trans('auth.invite.error.unavailable'));
+                    return Redirect::back()->withInput($request->except('code'))->withErrors(trans('auth.invite.unavailable'));
                 }
             } elseif ((int) sysConfig('is_invite_register') === 2) { // 必须使用邀请码
-                return Redirect::back()->withInput()->withErrors(trans('validation.required', ['attribute' => trans('auth.invite.attribute')]));
+                return Redirect::back()->withInput()->withErrors(trans('validation.required', ['attribute' => trans('user.invite.attribute')]));
             }
         }
 
@@ -283,7 +265,7 @@ class AuthController extends Controller
                 $user->update(['status' => 1]);
             }
 
-            Session::flash('successMsg', trans('auth.register.success'));
+            Session::flash('successMsg', trans('common.success_item', ['attribute' => trans('auth.register.attribute')]));
         }
 
         return Redirect::route('login')->withInput();
@@ -457,7 +439,7 @@ class AuthController extends Controller
 
             // 更新密码
             if (! $user->update(['password' => $password])) {
-                return Redirect::back()->withErrors(trans('auth.password.reset.error.failed'));
+                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('auth.password.reset.attribute')]));
             }
 
             // 置为已使用

@@ -53,7 +53,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="group">{{ trans('model.user.group') }}</label>
+                                <label class="col-md-2 col-sm-3 col-form-label" for="group">{{ trans('model.user_group.attribute') }}</label>
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" id="group" name="group" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                             title="{{ trans('common.none') }}">

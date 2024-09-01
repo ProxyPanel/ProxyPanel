@@ -62,13 +62,13 @@ class PayPal extends PaymentService implements Gateway
         if (isset($response['id']) && $response['id'] != null) {
             Log::error('【Paypal】处理错误：'.var_export($response, true));
 
-            return Response::json(['status' => 'fail', 'message' => '创建订单失败，请使用其他方式或通知管理员！']);
+            return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
         }
         $payment->update(['url' => $response['paypal_link']]);
 
         foreach ($response['links'] as $links) {
             if ($links['rel'] === 'approve') {
-                return Response::json(['status' => 'success', 'url' => $links['href'], 'message' => '创建订单成功!']);
+                return Response::json(['status' => 'success', 'url' => $links['href'], 'message' => trans('user.payment.order_creation.success')]);
             }
         }
 

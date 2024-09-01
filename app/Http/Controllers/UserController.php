@@ -76,7 +76,7 @@ class UserController extends Controller
             'subscribe_status' => $user->subscribe->status,
             'subMsg' => $user->subscribe->ban_desc,
             'subType' => $subType,
-            'subUrl' => route('sub', $user->subscribe->code),
+            'subUrl' => $user->subUrl(),
         ], $this->dataFlowChart($user->id)));
     }
 
@@ -163,20 +163,20 @@ class UserController extends Controller
                 }
 
                 if (! $user->update(['password' => $data['new_password']])) {
-                    return Redirect::back()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
+                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
                 }
 
-                return Redirect::back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
+                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 // 修改代理密码
             }
 
             if ($request->has('passwd')) {
                 $passwd = $request->input('passwd');
                 if (! $user->update(['passwd' => $passwd])) {
-                    return Redirect::back()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
+                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
                 }
 
-                return Redirect::back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
+                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
             }
 
             // 修改联系方式
@@ -187,11 +187,11 @@ class UserController extends Controller
                 }
 
                 if (! $user->update($data)) {
-                    return Redirect::back()->withErrors(trans('common.update_action', ['action' => trans('common.failed')]));
+                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
                 }
             }
 
-            return Redirect::back()->with('successMsg', trans('common.update_action', ['action' => trans('common.success')]));
+            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
         }
         $auth = $user->userAuths()->pluck('type')->toArray();
 
@@ -235,18 +235,18 @@ class UserController extends Controller
         $order = Order::userActivePlan()->firstOrFail();
         $renewCost = $order->goods->renew;
         if ($user->credit < $renewCost) {
-            return Response::json(['status' => 'fail', 'message' => trans('user.reset_data.insufficient')]);
+            return Response::json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
         }
 
         $user->update(['u' => 0, 'd' => 0]);
 
         // 记录余额操作日志
-        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, trans('user.reset_data.logs'));
+        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, 'The user manually reset the data.');
 
         // 扣余额
         $user->updateCredit(-$renewCost);
 
-        return Response::json(['status' => 'success', 'message' => trans('user.reset_data.success')]);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
     }
 
     // 工单
@@ -288,7 +288,7 @@ class UserController extends Controller
             }
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.close_item', ['attribute' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
     }
 
     // 订单明细
@@ -313,11 +313,9 @@ class UserController extends Controller
         if ($ticket = $user->tickets()->create(compact('title', 'content'))) {
             // 通知相关管理员
             Notification::send(User::find(1), new TicketCreated($ticket, route('admin.ticket.edit', $ticket)));
-
-            return Response::json(['status' => 'success', 'message' => trans('common.submit_item', ['attribute' => trans('common.success')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.submit_item', ['attribute' => trans('common.failed')])]);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.submit')])]);
     }
 
     // 回复工单
@@ -336,14 +334,12 @@ class UserController extends Controller
                 ]);
             }
 
-            if ($ticket->status === 2) {
-                return Response::json(['status' => 'fail', 'message' => trans('user.ticket.failed_closed')]);
-            }
             $reply = $ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content]);
             if ($reply) {
                 // 重新打开工单
-                $ticket->status = 0;
-                $ticket->save();
+                if ($ticket->status === 2) {
+                    $ticket->update(['status' => 0]);
+                }
 
                 // 通知相关管理员
                 Notification::send(User::find(1), new TicketReplied($reply, route('admin.ticket.edit', $ticket)));
@@ -366,17 +362,17 @@ class UserController extends Controller
         $id = $request->input('id');
 
         if (Ticket::uid()->whereId($id)->firstOrFail()->close()) {
-            return Response::json(['status' => 'success', 'message' => trans('common.close_item', ['attribute' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.close')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.close_item', ['attribute' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
     }
 
     // 邀请码
     public function invite()
     {
         if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
-            return Response::view('auth.error', ['message' => trans('user.purchase_required').' <a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
+            return Response::view('auth.error', ['message' => trans('user.purchase.required').' <a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
         return view('user.invite', [
@@ -401,10 +397,10 @@ class UserController extends Controller
         if ($invite) {
             $user->decrement('invite_num');
 
-            return Response::json(['status' => 'success', 'message' => trans('common.generate_item', ['attribute' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.generate_item', ['attribute' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')])]);
     }
 
     // 使用优惠券
@@ -506,10 +502,10 @@ class UserController extends Controller
         // 管理员信息重新写入user
         $user = auth()->loginUsingId(Session::pull('admin'));
         if ($user) {
-            return Response::json(['status' => 'success', 'message' => trans('common.toggle_action', ['action' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.toggle')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.toggle_action', ['action' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.toggle')])]);
     }
 
     public function charge(Request $request): ?JsonResponse

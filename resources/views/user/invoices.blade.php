@@ -21,7 +21,7 @@
                             <th> #</th>
                             <th> {{ trans('model.order.id') }} </th>
                             <th> {{ trans('user.shop.service') }} </th>
-                            <th> {{ trans('user.payment_method') }} </th>
+                            <th> {{ trans('user.payment.method') }} </th>
                             <th> {{ trans('user.invoice.amount') }} </th>
                             <th> {{ trans('user.bought_at') }} </th>
                             <th> {{ trans('common.expired_at') }} </th>

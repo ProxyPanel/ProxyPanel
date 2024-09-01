@@ -100,9 +100,9 @@ class TaskDaily extends Command
                 $oldData = $user->transfer_enable;
                 // 重置流量与重置日期
                 if ($user->update((new OrderService($order))->resetTimeAndData($user->expired_at))) {
-                    Helpers::addUserTrafficModifyLog($order->user_id, $oldData, $user->transfer_enable, __('[Daily Task] Reset Account Traffic, Next Reset Date: :date', ['date' => $user->reset_date]), $order->id);
+                    Helpers::addUserTrafficModifyLog($order->user_id, $oldData, $user->transfer_enable, trans('[Daily Task] Reset Account Traffic, Next Reset Date: :date', ['date' => $user->reset_date]), $order->id);
                 } else {
-                    Log::error("[每日任务]用户ID: $user->id | 邮箱: $user->username 流量重置失败");
+                    Log::error(trans('notification.reset_failed', ['uid' => $user->id, 'username' => $user->username]));
                 }
             });
         });

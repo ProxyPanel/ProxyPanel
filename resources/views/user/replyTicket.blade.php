@@ -50,7 +50,7 @@
         // 关闭工单
         function closeTicket() {
             swal.fire({
-                title: '{{ trans('user.ticket.close') }}',
+                title: '{{ trans('common.close_item', ['attribute' => trans('user.ticket.attribute')]) }}',
                 text: '{{ trans('user.ticket.close_tips') }}',
                 icon: 'question',
                 showCancelButton: true,

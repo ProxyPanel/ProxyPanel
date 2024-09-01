@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "귀하의 계정에 대한 비밀번호 재설정이 요청되어 이 메일이 발송되었습니다.",
   "You have not responded this ticket in :num hours, System has closed your ticket.": ":num 시간 내에 이 티켓에 응답하지 않아 시스템이 티켓을 닫았습니다.",
   "You must have a valid subscription to view the content in this area!": "이 영역의 내용을 보려면 유효한 구독이 있어야 합니다!",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "관리자에 의해 구독이 비활성화되었습니다. 복원하려면 관리자에게 문의하세요."
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "관리자에 의해 구독이 비활성화되었습니다. 복원하려면 관리자에게 문의하세요.",
+  "Manually add in dashboard.": "대시보드에서 수동으로 추가",
+  "Manually edit in dashboard.": "대시보드에서 수동으로 편집",
+  "Batch generate user accounts in dashboard.": "백그라운드에서 대량 사용자 계정 생성",
+  "Coupon used in order.": "주문에서 쿠폰이 사용되었습니다",
+  "Order canceled, coupon reinstated.": "주문이 취소되었으며, 쿠폰이 복원되었습니다",
+  "Used for credit recharge.": "잔액 충전에 사용됨",
+  "The user manually reset the data.": "사용자 데이터 초기화",
+  "Recharge using a recharge voucher.": "충전권을 사용하여 충전하다",
+  "The user topped up the balance.": "사용자가 잔액을 충전했습니다",
+  "Purchased an item.": "상품을 구매했습니다",
+  "[:payment] plus the user’s purchased data plan.": "[:payment] 에 사용자가 구매한 데이터 플랜을 추가"
 }

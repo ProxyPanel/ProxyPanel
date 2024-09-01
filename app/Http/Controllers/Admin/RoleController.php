@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\RoleRequest;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Log;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -22,10 +23,10 @@ class RoleController extends Controller
         if ($role = Role::create($request->only(['name', 'description']))) {
             $role->givePermissionTo($request->input('permissions') ?? []);
 
-            return redirect()->route('admin.role.edit', $role)->with('successMsg', '操作成功');
+            return redirect()->route('admin.role.edit', $role)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function create()
@@ -44,29 +45,31 @@ class RoleController extends Controller
     public function update(RoleRequest $request, Role $role): RedirectResponse
     {
         if ($role->name === 'Super Admin') {
-            return redirect()->back()->withInput()->withErrors('请勿修改超级管理员');
+            return redirect()->back()->withInput()->withErrors(trans('admin.role.modify_admin_error'));
         }
 
         if ($role->update($request->only(['name', 'description']))) {
             $role->syncPermissions($request->input('permissions') ?: []);
 
-            return redirect()->back()->with('successMsg', '操作成功');
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
         }
 
-        return redirect()->back()->withInput()->withErrors('操作失败');
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(Role $role): JsonResponse
     {
         try {
             if ($role->name === 'Super Admin') {
-                return response()->json(['status' => 'fail', 'message' => '请勿删除超级管理员']);
+                return response()->json(['status' => 'fail', 'message' => trans('admin.role.modify_admin_error')]);
             }
             $role->delete();
         } catch (Exception $e) {
-            return response()->json(['status' => 'fail', 'message' => '删除失败，'.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return response()->json(['status' => 'success', 'message' => '清理成功']);
+        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
     }
 }

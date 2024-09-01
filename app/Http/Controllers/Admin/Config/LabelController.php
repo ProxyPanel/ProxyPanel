@@ -26,10 +26,10 @@ class LabelController extends Controller
         }
 
         if (Label::create($validator->validated())) {
-            return Response::json(['status' => 'success', 'message' => '添加成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '添加失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     // 编辑标签
@@ -45,10 +45,10 @@ class LabelController extends Controller
         }
 
         if ($label->update($validator->validated())) {
-            return Response::json(['status' => 'success', 'message' => '编辑成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     // 删除标签
@@ -57,11 +57,11 @@ class LabelController extends Controller
         try {
             $label->delete();
 
-            return Response::json(['status' => 'success', 'message' => '删除成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
         } catch (Exception $e) {
-            Log::error('删除标签失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.label')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
     }
 }

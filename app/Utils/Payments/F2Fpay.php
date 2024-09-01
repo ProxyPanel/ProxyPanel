@@ -46,7 +46,7 @@ class F2Fpay extends PaymentService implements Gateway
             exit;
         }
 
-        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => '创建订单成功!']);
+        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void

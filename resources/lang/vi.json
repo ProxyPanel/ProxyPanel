@@ -126,5 +126,16 @@
   "You are receiving this email because we received a password reset request for your account.": "Bạn nhận được email này vì chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.",
   "You have not responded this ticket in :num hours, System has closed your ticket.": "Bạn đã không trả lời phiếu hỗ trợ này trong :num giờ, hệ thống đã tự động đóng phiếu hỗ trợ của bạn.",
   "You must have a valid subscription to view the content in this area!": "Bạn phải có đăng ký hợp lệ để xem nội dung trong khu vực này!",
-  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "Đăng ký của bạn đã bị quản trị viên vô hiệu hóa, vui lòng liên hệ với quản trị viên để khôi phục."
+  "Your subscription has been disabled by the administrator, please contact the administrator to restore it": "Đăng ký của bạn đã bị quản trị viên vô hiệu hóa, vui lòng liên hệ với quản trị viên để khôi phục.",
+  "Manually add in dashboard.": "Thêm thủ công trong bảng điều khiển",
+  "Manually edit in dashboard.": "Chỉnh sửa thủ công trong bảng điều khiển",
+  "Batch generate user accounts in dashboard.": "Tạo tài khoản người dùng hàng loạt trong nền",
+  "Coupon used in order.": "Phiếu giảm giá đã được sử dụng trong đơn hàng",
+  "Order canceled, coupon reinstated.": "Đơn hàng bị hủy, phiếu giảm giá đã được khôi phục",
+  "Used for credit recharge.": "Được sử dụng để nạp tiền vào số dư",
+  "The user manually reset the data.": "Người dùng đặt lại dữ liệu",
+  "Recharge using a recharge voucher.": "Nạp tiền bằng phiếu nạp",
+  "The user topped up the balance.": "Người dùng đã nạp tiền vào số dư",
+  "Purchased an item.": "Đã mua một mặt hàng",
+  "[:payment] plus the user’s purchased data plan.": "[:payment] cộng với gói dữ liệu mà người dùng đã mua"
 }

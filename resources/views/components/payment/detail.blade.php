@@ -41,7 +41,7 @@
                                     {{ trans('model.order.price') }}: {{ $order->origin_amount_tag }}
                                 </li>
                                 <li class="list-group-item">
-                                    {{ trans('user.payment_method') }}:
+                                    {{ trans('user.payment.method') }}:
                                     {{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}
                                 </li>
                                 <li class="list-group-item">

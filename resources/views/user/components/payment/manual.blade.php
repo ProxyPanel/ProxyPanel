@@ -64,7 +64,7 @@
 @section('content')
     <div id="ad">
         <button class="btn btn-pure btn-outline-light icon wb-close" type="button" onclick="document.getElementById('ad').style.display = 'none'"></button>
-        <img src="{{ asset('assets/images/help/作者要饭求放过.PNG') }}" alt="{{ trans('user.manual.red_packet') }}">
+        <img src="{{ asset('assets/images/help/作者要饭求放过.PNG') }}" alt="{{ trans('user.payment.manual.red_packet') }}">
     </div>
     <div class="page-content container">
         <div class="panel panel-bordered">
@@ -75,28 +75,28 @@
             </div>
             <div class="panel-body">
                 <div class="alert alert-info text-center">
-                    <p>{{ trans('user.manual.hint') }}</p>
+                    <p>{{ trans('user.payment.manual.hint') }}</p>
                 </div>
                 <div class="steps row w-p100">
                     <div class="step col-lg-4 current">
                         <span class="step-number">1</span>
                         <div class="step-desc">
-                            <span class="step-title">{{ trans('user.manual.step_1') }}</span>
-                            <p>{{ trans('user.manual.step_1_title') }}</p>
+                            <span class="step-title">{{ trans('user.payment.manual.steps.notice.title') }}</span>
+                            <p>{{ trans('user.payment.manual.steps.notice.description') }}</p>
                         </div>
                     </div>
                     <div class="step col-lg-4">
                         <span class="step-number">2</span>
                         <div class="step-desc">
-                            <span class="step-title">{{ trans('user.manual.step_2') }}</span>
-                            <p>{{ trans('user.manual.step_2_title') }}</p>
+                            <span class="step-title">{{ trans('user.payment.manual.steps.payment.title') }}</span>
+                            <p>{{ trans('user.payment.manual.steps.payment.description') }}</p>
                         </div>
                     </div>
                     <div class="step col-lg-4">
                         <span class="step-number">3</span>
                         <div class="step-desc">
-                            <span class="step-title">{{ trans('user.manual.step_3') }}</span>
-                            <p>{{ trans('user.manual.step_3_title') }}</p>
+                            <span class="step-title">{{ trans('user.payment.manual.steps.complete.title') }}</span>
+                            <p>{{ trans('user.payment.manual.steps.complete.description') }}</p>
                         </div>
                     </div>
                 </div>
@@ -114,17 +114,17 @@
                 <div class="tab">
                     <div class="wechat hide">
                         <div class="mx-auto text-center">
-                            <h4>{{ trans('user.manual.remark') }}</h4>
+                            <h4>{{ trans('user.payment.manual.steps.remark.title') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_wechat1.png') }}" alt="" />
-                            <h4>{{ trans('user.manual.remark_content') }}</h4>
+                            <h4>{{ trans('user.payment.manual.steps.remark.description') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_wechat2.png') }}" alt="" />
                         </div>
                     </div>
                     <div class="alipay hide">
                         <div class="mx-auto text-center">
-                            <h4>{{ trans('user.manual.remark') }}</h4>
+                            <h4>{{ trans('user.payment.manual.steps.remark.title') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_alipay1.png') }}" alt="" />
-                            <h4>{{ trans('user.manual.remark_content') }}</h4>
+                            <h4>{{ trans('user.payment.manual.steps.remark.description') }}</h4>
                             <img class="w-lg-350 w-md-p50 w-p100 mb-10" src="{{ asset('assets/images/help/manual_alipay2.png') }}" alt="" />
                         </div>
                     </div>
@@ -154,7 +154,7 @@
 
                 <div class="tab">
                     <div class="alert alert-danger text-center">
-                        {{ trans('user.manual.payment_hint') }}
+                        {{ trans('user.payment.manual.payment_tips') }}
                     </div>
                     <div class="mx-auto w-md-p50 w-lg-p25">
                         <ul class="list-group list-group-dividered">
@@ -168,8 +168,10 @@
                 </div>
 
                 <div class="clearfix">
-                    <button class="btn btn-lg btn-default float-left" id="prevBtn" type="button" onclick="nextPrev(-1)">{{ trans('user.manual.pre') }}</button>
-                    <button class="btn btn-lg btn-primary float-right" id="nextBtn" type="button" onclick="nextPrev(1)">{{ trans('user.manual.next') }}</button>
+                    <button class="btn btn-lg btn-default float-left" id="prevBtn" type="button"
+                            onclick="nextPrev(-1)">{{ trans('user.payment.manual.pre') }}</button>
+                    <button class="btn btn-lg btn-primary float-right" id="nextBtn" type="button"
+                            onclick="nextPrev(1)">{{ trans('user.payment.manual.next') }}</button>
                 </div>
             </div>
         </div>
@@ -200,7 +202,7 @@
                 document.getElementById('nextBtn').innerHTML = '{{ trans('common.submit') }}';
             } else {
                 document.getElementById('payment-group').style.display = 'inline-flex';
-                document.getElementById('nextBtn').innerHTML = '下一步';
+                document.getElementById('nextBtn').innerHTML = '{{ trans('user.payment.manual.next') }}';
                 document.getElementById('nextBtn').classList.remove('btn-success');
                 document.getElementById('nextBtn').classList.add('btn-primary');
                 document.getElementById('nextBtn').style.display = 'inline';
@@ -220,7 +222,6 @@
                 }, function(ret) {
                     if (ret.status === 'success') {
                         swal.fire({
-                            title: '已受理',
                             text: ret.message,
                             icon: 'success',
                         }).then(() => window.location.href = '{{ route('invoice') }}');

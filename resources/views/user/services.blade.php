@@ -131,7 +131,7 @@
                             <label class="offset-md-2 col-md-2 col-form-label" for="charge_coupon"> {{ trans('admin.coupon.type.charge') }} </label>
                             <div class="col-md-6">
                                 <input class="form-control round" id="charge_coupon" name="charge_coupon" type="text"
-                                       placeholder="{{ trans('user.input_coupon') }}">
+                                       placeholder="{{ trans('user.coupon.input') }}">
                             </div>
                         </div>
                     </form>

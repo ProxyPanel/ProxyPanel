@@ -81,7 +81,7 @@
                             </dd>
                             <dt class="col-sm-3">{{ trans('model.common.level') }}</dt>
                             <dd class="col-sm-9">{{ $user->level }}</dd>
-                            <dt class="col-sm-3">{{ trans('model.user.group') }}</dt>
+                            <dt class="col-sm-3">{{ trans('model.user_group.attribute') }}</dt>
                             <dd class="col-sm-9">{{ $user->userGroup->name ?? trans('common.none') }}</dd>
                             <dt class="col-sm-3">{{ trans('model.user.credit') }}</dt>
                             <dd class="col-sm-9">{{ $user->credit }}</dd>

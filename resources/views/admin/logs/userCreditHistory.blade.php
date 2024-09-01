@@ -44,7 +44,7 @@
                                 <td> {{ $log->before }} </td>
                                 <td> {{ $log->amount }} </td>
                                 <td> {{ $log->after }} </td>
-                                <td> {{ $log->description }} </td>
+                                <td> {{ __($log->description) }} </td>
                                 <td> {{ $log->created_at }} </td>
                             </tr>
                         @endforeach

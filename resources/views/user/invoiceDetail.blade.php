@@ -19,7 +19,7 @@
                         <p>{{ trans('model.order.id') }}
                             :<a class="font-size-20" href="javascript:void(0)">{{ $order->sn }}</a>
                         </p>
-                        <p>{{ trans('user.payment_method') }}
+                        <p>{{ trans('user.payment.method') }}
                             : {{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</p>
                         <p>{{ trans('user.bought_at') }}: {{ $order->created_at }}</p>
                         @if ($order->expired_at)

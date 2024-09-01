@@ -62,7 +62,7 @@ class OrderService
         $ret = self::$user->updateCredit($this->order->origin_amount);
         // 余额变动记录日志
         if ($ret) {
-            Helpers::addUserCreditLog($this->order->user_id, $this->order->id, $credit, self::$user->credit, $this->order->amount, '用户通过'.$this->order->pay_way.'充值余额');
+            Helpers::addUserCreditLog($this->order->user_id, $this->order->id, $credit, self::$user->credit, $this->order->amount, 'The user topped up the balance.');
         }
 
         return $ret;
@@ -71,7 +71,7 @@ class OrderService
     private function activatePackage(): bool
     { // 激活流量包
         if (self::$user->incrementData(self::$goods->traffic * MiB)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, '['.$this->order->pay_way.']加上用户购买的套餐流量', $this->order->id);
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, trans('[:payment] plus the user’s purchased data plan.', ['payment' => $this->order->pay_way]));
         }
 
         return false;
@@ -94,7 +94,7 @@ class OrderService
         }
 
         if (self::$user->update(array_merge($this->resetTimeAndData(), $updateData))) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, '【'.$this->order->pay_way.'】加上用户购买的套餐流量', $this->order->id);
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, trans('[:payment] plus the user’s purchased data plan.', ['payment' => $this->order->pay_way]), $this->order->id);
         }
 
         return false;

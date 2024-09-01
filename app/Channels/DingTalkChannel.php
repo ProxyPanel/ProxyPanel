@@ -22,7 +22,7 @@ class DingTalkChannel
         }
 
         if (Cache::get($cacheKey) > 20) { // 每个机器人每分钟最多发送20条消息到群里，如果超过20条，会限流10分钟。
-            Log::critical('[钉钉] 消息推送异常：每个机器人每分钟最多发送20条消息到群里，如果超过20条，会限流10分钟。');
+            Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.dingtalk'), 'reason' => trans('notification.ding_bot_limit')]));
 
             return false;
         }
@@ -65,7 +65,7 @@ class DingTalkChannel
                 'msgtype' => 'link',
                 'link' => [
                     'title' => $message['title'],
-                    'text' => '请点击下方按钮【查看详情】',
+                    'text' => trans('notification.details_btn'),
                     'messageUrl' => route('message.show', ['type' => $message['url_type'], $msgId]),
                 ],
             ];
@@ -89,12 +89,12 @@ class DingTalkChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'] ?? var_export($message['body'], true), 10, -1, $ret ? $ret['errmsg'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'] ?? var_export($message['body'], true), 10, -1, $ret ? $ret['errmsg'] : trans('common.status.unknown'));
 
             return false;
         }
         // 发送错误
-        Log::critical('[钉钉] 消息推送异常：'.var_export($response, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.dingtalk'), 'reason' => var_export($response, true)]));
 
         return false;
     }

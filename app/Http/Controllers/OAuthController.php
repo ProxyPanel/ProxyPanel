@@ -18,10 +18,10 @@ class OAuthController extends Controller
         $user = Auth::user();
 
         if ($user && $user->userAuths()->whereType($provider)->delete()) {
-            return redirect()->route('profile')->with('successMsg', trans('auth.oauth.unbind_success'));
+            return redirect()->route('profile')->with('successMsg', trans('common.success_item', ['attribute' => trans('user.oauth.unbind')]));
         }
 
-        return redirect()->route('profile')->withErrors(trans('auth.oauth.unbind_failed'));
+        return redirect()->route('profile')->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.unbind')]));
     }
 
     public function bind(string $provider): RedirectResponse
@@ -36,7 +36,7 @@ class OAuthController extends Controller
         $user = Auth::user();
 
         if (! $user) {
-            return redirect()->route('profile')->withErrors(trans('auth.oauth.bind_failed'));
+            return redirect()->route('profile')->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.bind')]));
         }
 
         return $this->bindLogic($provider, $user, $authInfo);
@@ -54,10 +54,10 @@ class OAuthController extends Controller
 
         if ($auth) {
             $user->userAuths()->whereType($provider)->update($data);
-            $message = trans('auth.oauth.rebind_success');
+            $message = trans('common.success_item', ['attribute' => trans('user.oauth.rebind')]);
         } else {
             $user->userAuths()->create($data);
-            $message = trans('auth.oauth.bind_success');
+            $message = trans('common.success_item', ['attribute' => trans('user.oauth.bind')]);
         }
 
         return redirect()->route('profile')->with('successMsg', $message);
@@ -71,7 +71,7 @@ class OAuthController extends Controller
         }
 
         if ((int) sysConfig('is_invite_register') === 2) {
-            return redirect()->route('register')->withErrors(trans('validation.required', ['attribute' => trans('auth.invite.attribute')]));
+            return redirect()->route('register')->withErrors(trans('validation.required', ['attribute' => trans('user.invite.attribute')]));
         }
 
         $registerInfo = Socialite::driver($provider)->stateless()->user();

@@ -34,7 +34,7 @@
                                 <p class="mb-15 mr-15 text-right">{{ trans('common.more') }}
                                     <code>{{ trans('user.attribute.node') }}</code>
                                 </p>
-                                <a class="btn btn-block btn-danger" href="{{ route('shop') }}">{{ trans('user.purchase_promotion') }}</a>
+                                <a class="btn btn-block btn-danger" href="{{ route('shop') }}">{{ trans('user.purchase.promotion') }}</a>
                             @elseif(Auth::user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.normal') }}</span>
@@ -232,7 +232,7 @@
                                         </div>
                                     @else
                                         <p class="card-link btn btn-sm btn-primary">
-                                            <i class="wb-lock mr-5"></i>{{ trans('user.purchase_to_unlock') }}
+                                            <i class="wb-lock mr-5"></i>{{ trans('user.purchase.to_unlock') }}
                                         </p>
                                     @endif
                                 </div>

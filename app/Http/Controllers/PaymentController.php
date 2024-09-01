@@ -33,38 +33,36 @@ class PaymentController extends Controller
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
-        Log::notice('[{method}] 回调接口：{body}', ['method' => self::$method, 'body' => var_export($request->all(), true)]);
+        Log::notice('[{method}] '.trans('admin.menu.log.payment_callback').': {body}', ['method' => self::$method, 'body' => var_export($request->all(), true)]);
 
         return self::getClient()->notify($request);
     }
 
     public static function getClient(): Gateway
     {
-        switch (self::$method) {
-            case 'credit':
-                return new Local;
-            case 'f2fpay':
-                return new F2Fpay;
-            case 'codepay':
-                return new Codepay;
-            case 'payjs':
-                return new PayJs;
-            case 'paypal':
-                return new PayPal;
-            case 'epay':
-                return new EPay;
-            case 'stripe':
-                return new Stripe;
-            case 'paybeaver':
-                return new PayBeaver;
-            case 'theadpay':
-                return new THeadPay;
-            case 'manual':
-                return new Manual;
-            default:
-                Log::emergency('未知支付：'.self::$method);
-                exit(404);
+        // Mapping of payment methods to their respective classes
+        $paymentMethods = [
+            'credit' => Local::class,
+            'f2fpay' => F2Fpay::class,
+            'codepay' => CodePay::class,
+            'payjs' => PayJs::class,
+            'paypal' => PayPal::class,
+            'epay' => EPay::class,
+            'stripe' => Stripe::class,
+            'paybeaver' => PayBeaver::class,
+            'theadpay' => THeadPay::class,
+            'manual' => Manual::class,
+        ];
+
+        // Check if the method exists in the mapping
+        if (isset($paymentMethods[self::$method])) {
+            // Instantiate and return the corresponding class
+            return new $paymentMethods[self::$method];
         }
+
+        // Log an emergency message and exit if the method is unknown
+        Log::emergency(trans('user.payment.order_creation.unknown_payment').': '.self::$method);
+        exit(404);
     }
 
     public static function getStatus(Request $request): JsonResponse
@@ -72,17 +70,17 @@ class PaymentController extends Controller
         $payment = Payment::whereTradeNo($request->input('trade_no'))->first();
         if ($payment) {
             if ($payment->status === 1) {
-                return Response::json(['status' => 'success', 'message' => '支付成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.pay')])]);
             }
 
             if ($payment->status === -1) {
-                return Response::json(['status' => 'error', 'message' => '订单超时未支付，已自动关闭']);
+                return Response::json(['status' => 'error', 'message' => trans('user.payment.order_creation.order_timeout')]);
             }
 
-            return Response::json(['status' => 'fail', 'message' => '等待支付']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.payment.status.wait')]);
         }
 
-        return Response::json(['status' => 'error', 'message' => '未知订单']);
+        return Response::json(['status' => 'error', 'message' => trans('user.payment.order_creation.unknown_order')]);
     }
 
     public function purchase(Request $request) // 创建支付订单
@@ -104,7 +102,7 @@ class PaymentController extends Controller
         } elseif ($goods_id && self::$method) { // 购买服务
             $goods = Goods::find($goods_id);
             if (! $goods || ! $goods->status) {
-                return Response::json(['status' => 'fail', 'message' => '订单创建失败：商品已下架']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.product_unavailable')]);
             }
             $amount = $goods->price;
 
@@ -113,14 +111,14 @@ class PaymentController extends Controller
 
             //　无生效套餐，禁止购买加油包
             if ($goods->type === 1 && $activePlan) {
-                return Response::json(['status' => 'fail', 'message' => '购买加油包前，请先购买套餐']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.plan_required')]);
             }
 
             // 单个商品限购
             if ($goods->limit_num) {
                 $count = Order::uid()->where('status', '>=', 0)->whereGoodsId($goods_id)->count();
                 if ($count >= $goods->limit_num) {
-                    return Response::json(['status' => 'fail', 'message' => '此商品限购'.$goods->limit_num.'次，您已购买'.$count.'次']);
+                    return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.order_limit', ['limit_num' => $goods->limit_num, 'count' => $count])]);
                 }
             }
 
@@ -141,24 +139,24 @@ class PaymentController extends Controller
             if (self::$method !== 'credit') {
                 // 判断是否开启在线支付
                 if (! sysConfig('is_onlinePay') && ! sysConfig('wechat_qrcode') && ! sysConfig('alipay_qrcode')) {
-                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：系统并未开启在线支付功能']);
+                    return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.payment_disabled')]);
                 }
 
                 // 判断是否存在同个商品的未支付订单
                 if (Order::uid()->whereStatus(0)->exists()) {
-                    return Response::json(['status' => 'fail', 'message' => '订单创建失败：尚有未支付的订单，请先去支付']);
+                    return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.pending_order')]);
                 }
             } elseif (auth()->user()->credit < $amount) { // 验证账号余额是否充足
-                return Response::json(['status' => 'fail', 'message' => '您的余额不足，请先充值']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
             }
 
             // 价格异常判断
             if ($amount < 0) {
-                return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价异常']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.price_issue')]);
             }
 
             if ($amount === 0 && self::$method !== 'credit') {
-                return Response::json(['status' => 'fail', 'message' => '订单创建失败：订单总价为0，无需使用在线支付']);
+                return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.price_zero')]);
             }
         }
 
@@ -181,7 +179,7 @@ class PaymentController extends Controller
                     $coupon->decrement('usable_times');
                 }
 
-                Helpers::addCouponLog('订单支付使用', $coupon->id, $goods_id, $newOrder->id);
+                Helpers::addCouponLog('Coupon used in order.', $coupon->id, $goods_id, $newOrder->id);
             }
 
             $request->merge(['id' => $newOrder->id, 'type' => $pay_type, 'amount' => $amount]);
@@ -189,19 +187,19 @@ class PaymentController extends Controller
             // 生成支付单
             return self::getClient()->purchase($request);
         } catch (Exception $e) {
-            Log::emergency('订单生成错误：'.$e->getMessage());
+            Log::emergency(trans('common.failed_action_item', ['action' => trans('common.create'), 'attribute' => trans('model.order.attribute')]).': '.$e->getMessage());
         }
 
-        return Response::json(['status' => 'fail', 'message' => '订单创建失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_action_item', ['action' => trans('common.create'), 'attribute' => trans('model.order.attribute')])]);
     }
 
     public function close(Order $order): JsonResponse
     {
         if (! $order->close()) {
-            return Response::json(['status' => 'fail', 'message' => '关闭订单失败']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_action_item', ['action' => trans('common.close'), 'attribute' => trans('model.order.attribute')])]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '关闭订单成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_action_item', ['action' => trans('common.close'), 'attribute' => trans('model.order.attribute')])]);
     }
 
     public function detail($trade_no) // 支付单详情

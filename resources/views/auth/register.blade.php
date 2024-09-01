@@ -65,7 +65,7 @@
                     <input class="form-control" name="code" type="text" value="{{ old('code') ?: Request::query('code') }}"
                            @if (sysConfig('is_invite_register') == 2) required @endif />
                     <label class="floating-label" for="code">
-                        {{ trans('auth.invite.attribute') }}@if (sysConfig('is_invite_register') == 1)
+                        {{ trans('user.invite.attribute') }}@if (sysConfig('is_invite_register') == 1)
                             ({{ trans('auth.optional') }})
                         @endif
                     </label>

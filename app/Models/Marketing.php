@@ -18,10 +18,10 @@ class Marketing extends Model
     {
         return Attribute::make(
             get: fn () => match ($this->status) {
-                -1 => '失败',
-                0 => '待推送',
-                1 => '成功',
-                default => '',
+                -1 => trans('common.failed'),
+                0 => trans('common.status.pending_dispatch'),
+                1 => trans('common.success'),
+                default => trans('common.status.unknown'),
             },
         );
     }

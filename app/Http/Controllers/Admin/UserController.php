@@ -103,23 +103,22 @@ class UserController extends Controller
         try {
             $adminUser = Auth::getUser();
             if ($roles && ($adminUser->can('give roles') || (in_array('Super Admin', $roles, true) && $adminUser->hasRole('Super Admin')))) {
-                // 编辑用户权限
-                // 只有超级管理员才有赋予超级管理的权限
+                // 编辑用户权限, 只有超级管理员才有赋予超级管理的权限
                 $user->assignRole($roles);
             }
 
             if ($user) {
-                Helpers::addUserTrafficModifyLog($user->id, 0, $data['transfer_enable'], '后台手动添加用户');
+                Helpers::addUserTrafficModifyLog($user->id, 0, $data['transfer_enable'], trans('Manually add in dashboard.'));
 
-                return Response::json(['status' => 'success', 'message' => '添加成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
             }
         } catch (Exception $e) {
-            Log::error('添加用户错误：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => $e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '添加失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
     public function create()
@@ -156,20 +155,20 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         if ($user->id === 1) {
-            return Response::json(['status' => 'fail', 'message' => '系统管理员不可删除']);
+            return Response::json(['status' => 'fail', 'message' => trans('admin.user.admin_deletion')]);
         }
 
         try {
             if ($user->delete()) {
-                return Response::json(['status' => 'success', 'message' => '删除成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error('删除用户信息异常：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '删除失败'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '删除失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
     public function batchAddUsers(): ?JsonResponse
@@ -177,12 +176,14 @@ class UserController extends Controller
         try {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
                 $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'));
-                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, trans('admin.user.massive.note'));
+                Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, trans('Batch generate user accounts in dashboard.'));
             }
 
-            return Response::json(['status' => 'success', 'message' => trans('admin.user.massive.succeed')]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
         } catch (Exception $e) {
-            return Response::json(['status' => 'fail', 'message' => trans('admin.user.massive.failed').'：'.$e->getMessage()]);
+            Log::error(trans('common.error_action_item', ['action' => trans('common.generate'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
+
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage()]);
         }
     }
 
@@ -192,20 +193,22 @@ class UserController extends Controller
         Session::put('admin', Auth::id());
         Session::put('user', $user->id);
 
-        return Response::json(['status' => 'success', 'message' => '身份切换成功']);
+        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.user.info.switch')])]);
     }
 
     public function resetTraffic(User $user): JsonResponse
     {
         try {
-            $user->update(['u' => 0, 'd' => 0]);
+            if ($user->update(['u' => 0, 'd' => 0])) {
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
+            }
         } catch (Exception $e) {
-            Log::error('流量重置失败：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.reset'), 'attribute' => trans('model.user.usable_traffic')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '流量重置失败']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.reset').', '.$e->getMessage()])]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '流量重置成功']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.reset')])]);
     }
 
     public function update(UserUpdateRequest $request, User $user): JsonResponse
@@ -246,19 +249,19 @@ class UserController extends Controller
             }
 
             if ($user->transfer_enable !== $data['transfer_enable']) {
-                Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $data['transfer_enable'], '后台手动编辑用户');
+                Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $data['transfer_enable'], trans('Manually edit in dashboard.'));
             }
 
             if ($user->update($data)) {
-                return Response::json(['status' => 'success', 'message' => '编辑成功']);
+                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
             }
         } catch (Exception $e) {
-            Log::error('编辑用户信息异常：'.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => '编辑用户信息错误：'.$e->getMessage()]);
+            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit').', '.$e->getMessage()])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '编辑失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     public function handleUserCredit(Request $request, User $user): JsonResponse
@@ -266,17 +269,17 @@ class UserController extends Controller
         $amount = $request->input('amount');
 
         if (empty($amount)) {
-            return Response::json(['status' => 'fail', 'message' => '充值异常']);
+            return Response::json(['status' => 'fail', 'message' => trans('common.error_item', ['attribute' => trans('user.recharge')])]);
         }
 
         // 加减余额
         if ($user->updateCredit($amount)) {
-            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, $request->input('description') ?? '后台手动充值');  // 写入余额变动日志
+            Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, $request->input('description') ?? 'Manually edit in dashboard.');  // 写入余额变动日志
 
-            return Response::json(['status' => 'success', 'message' => '充值成功']);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.recharge')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '充值失败']);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
     }
 
     public function export(User $user)

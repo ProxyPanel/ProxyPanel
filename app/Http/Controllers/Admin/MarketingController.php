@@ -9,7 +9,6 @@ use App\Models\User;
 use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
 use App\Notifications\Custom;
-use Carbon;
 use Helpers;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -101,7 +100,7 @@ class MarketingController extends Controller
 
         // 最近N分钟活跃过
         $request->whenFilled('lastAlive', function ($value) use ($users) {
-            $users->where('t', '>=', Carbon::now()->subMinutes($value)->timestamp);
+            $users->where('t', '>=', now()->subMinutes($value)->timestamp);
         });
 
         $paidOrderCondition = function ($query) {

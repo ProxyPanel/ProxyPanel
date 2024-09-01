@@ -45,21 +45,21 @@ class PayBeaver extends PaymentService implements Gateway
         if (! isset($result['message']) && isset($result['data']['pay_url'])) {
             $payment->update(['url' => $result['data']['pay_url']]);
 
-            return Response::json(['status' => 'success', 'url' => $result['data']['pay_url'], 'message' => '创建订单成功!']);
+            return Response::json(['status' => 'success', 'url' => $result['data']['pay_url'], 'message' => trans('user.payment.order_creation.success')]);
         }
 
         $payment->failed();
         if (isset($result['message'])) {
             Log::alert('【海狸支付】创建订单错误：'.$result['message']);
 
-            return Response::json(['status' => 'fail', 'message' => '创建订单失败：'.$result['message']]);
+            return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
         }
 
         if (! isset($result['data']['pay_url'])) {
             Log::alert('【海狸支付】创建订单错误：未获取到支付链接'.var_export($result, true));
         }
 
-        return Response::json(['status' => 'fail', 'message' => '创建订单失败：未知错误']);
+        return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
     }
 
     private function createOrder(array $params): array

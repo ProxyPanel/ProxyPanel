@@ -50,7 +50,7 @@ class TicketClosed extends Notification implements ShouldQueue
         return [
             'title' => trans('notification.close_ticket', ['id' => $this->ticketId, 'title' => $this->title]),
             'content' => $this->reason,
-            'group' => '工单',
+            'group' => trans('user.ticket.attribute'),
             'icon' => asset('assets/images/notification/ticket.png'),
             'url' => $this->url,
         ];

@@ -24,12 +24,12 @@ class TgChatChannel
                 return $ret;
             }
             // 发送失败
-            Helpers::addNotificationLog($message['title'], $message['content'], 6, -1, $ret ? $ret['message'] : '未知');
+            Helpers::addNotificationLog($message['title'], $message['content'], 6, -1, $ret ? $ret['message'] : trans('common.status.unknown'));
 
             return false;
         }
         // 发送错误
-        Log::critical('[TG酱] 消息推送异常：'.var_export($response, true));
+        Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.tg_chat'), 'reason' => var_export($response, true)]));
 
         return false;
     }
