@@ -33,6 +33,7 @@ class SettingServiceProvider extends ServiceProvider
             'node_blocked_notification',
             'node_daily_notification',
             'node_offline_notification',
+            'node_renewal_notification',
             'password_reset_notification',
             'payment_confirm_notification',
             'payment_received_notification',

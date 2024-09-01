@@ -151,15 +151,10 @@
     <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
     <script>
         function itemControl(value) {
-            if (value === 1) {
-                $('.charge_credit').show();
-                $('#change_btn').hide();
-                $('#charge_coupon_code').hide();
-            } else {
-                $('.charge_credit').hide();
-                $('#charge_coupon_code').show();
-                $('#change_btn').show();
-            }
+            const control = value === 1;
+            $('.charge_credit').toggle(control);
+            $('#change_btn').toggle(!control);
+            $('#charge_coupon_code').toggle(!control);
         }
 
         $(document).ready(function() {

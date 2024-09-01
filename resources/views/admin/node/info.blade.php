@@ -1,6 +1,7 @@
 @extends('admin.layouts')
 @section('css')
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/switchery/switchery.min.css" rel="stylesheet">
     <style>
         .hidden {
@@ -24,7 +25,8 @@
                 {!! trans('admin.node.info.hint') !!}
             </div>
             <div class="panel-body">
-                <form class="form-horizontal" onsubmit="return Submit()">
+                <form class="form-horizontal" id="nodeForm">
+                    @csrf
                     <div class="row">
                         <div class="col-lg-6">
                             <div class="example-wrap">
@@ -83,9 +85,10 @@
                                         <div class="text-help offset-md-3"> {{ trans('admin.node.info.level_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="ruleGroup">{{ trans('model.node.rule_group') }}</label>
-                                        <select class="col-md-5 form-control show-tick" id="ruleGroup" name="ruleGroup" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary" title="{{ trans('common.none') }}">
+                                        <label class="col-md-3 col-form-label" for="rule_group_id">{{ trans('model.rule_group.attribute') }}</label>
+                                        <select class="col-md-5 form-control show-tick" id="rule_group_id" name="rule_group_id" data-plugin="selectpicker"
+                                                data-style="btn-outline btn-primary">
+                                            <option value="">{{ trans('common.none') }}</option>
                                             @foreach ($ruleGroups as $ruleGroup)
                                                 <option value="{{ $ruleGroup->id }}">{{ $ruleGroup->name }}</option>
                                             @endforeach
@@ -101,6 +104,12 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="client_limit">{{ trans('model.node.client_limit') }}</label>
                                         <input class="form-control col-md-4" id="client_limit" name="client_limit" type="number" value="1000" required>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="sort">{{ trans('model.common.sort') }}</label>
+                                        <input class="form-control col-md-4" id="sort" name="sort" type="text" value="1" required />
+                                        <span class="col-md-5"></span>
+                                        <div class="text-help offset-md-3"> {{ trans('admin.sort_asc') }}</div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="labels">{{ trans('model.node.label') }}</label>
@@ -120,26 +129,40 @@
                                             @endforeach
                                         </select>
                                     </div>
+                                    <!-- 节点 细则部分 -->
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="next_renewal_date">{{ trans('model.node.next_renewal_date') }}</label>
+                                        <input class="form-control col-md-4" id="next_renewal_date" name="next_renewal_date" data-plugin="datepicker"
+                                               type="text" autocomplete="off" />
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="subscription_term_value">
+                                            {{ trans('model.node.subscription_term') }}
+                                        </label>
+                                        <div class="col-md-4 input-group p-0">
+                                            <input class="form-control" id="subscription_term_value" type="number" min="1" />
+                                            <select class="form-control" id="subscription_term_unit" data-plugin="selectpicker"
+                                                    data-style="btn-outline btn-primary">
+                                                <option value="days" selected>{{ ucfirst(trans('validation.attributes.day')) }}</option>
+                                                <option value="months">{{ ucfirst(trans('validation.attributes.month')) }}</option>
+                                                <option value="years">{{ ucfirst(trans('validation.attributes.year')) }}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="renewal_cost">{{ trans('model.node.renewal_cost') }}</label>
+                                        <div class="col-md-4 input-group p-0">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">
+                                                    {{ array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')] }}
+                                                </span>
+                                            </div>
+                                            <input class="form-control" id="renewal_cost" name="renewal_cost" type="number" step="0.01" />
+                                        </div>
+                                    </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="description"> {{ trans('model.common.description') }} </label>
                                         <input class="form-control col-md-6" id="description" name="description" type="text">
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="sort">{{ trans('model.common.sort') }}</label>
-                                        <input class="form-control col-md-4" id="sort" name="sort" type="text" value="1" required />
-                                        <div class="text-help offset-md-3"> {{ trans('admin.sort_asc') }}</div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="is_udp">{{ trans('model.node.udp') }}</label>
-                                        <div class="col-md-9">
-                                            <input id="is_udp" name="is_udp" data-plugin="switchery" type="checkbox">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="status">{{ trans('common.status.attribute') }}</label>
-                                        <div class="col-md-9">
-                                            <input id="status" name="status" data-plugin="switchery" type="checkbox">
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -153,7 +176,7 @@
                                         <ul class="col-md-9 list-unstyled list-inline">
                                             <li class="list-inline-item">
                                                 <div class="radio-custom radio-primary">
-                                                    <input id="invisible" name="is_display" type="radio" value="0" checked />
+                                                    <input id="invisible" name="is_display" type="radio" value="0" />
                                                     <label for="invisible">{{ trans('admin.node.info.display.invisible') }}</label>
                                                 </div>
                                             </li>
@@ -212,7 +235,8 @@
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="relay_node_id">{{ trans('model.node.transfer') }}</label>
                                         <select class="col-md-5 form-control show-tick" id="relay_node_id" name="relay_node_id" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary" title="{{ trans('common.none') }}">
+                                                data-style="btn-outline btn-primary">
+                                            <option value="">{{ trans('common.none') }}</option>
                                             @foreach ($nodes as $name => $id)
                                                 <option value="{{ $id }}">{{ $id }} - {{ $name }}</option>
                                             @endforeach
@@ -343,7 +367,7 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="v2_method">{{ trans('model.node.method') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_method" data-plugin="selectpicker"
+                                                <select class="col-md-5 form-control" id="v2_method" name="v2_method" data-plugin="selectpicker"
                                                         data-style="btn-outline btn-primary">
                                                     <option value="none">none</option>
                                                     <option value="auto">auto</option>
@@ -355,7 +379,7 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="v2_net">{{ trans('model.node.v2_net') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_net" data-plugin="selectpicker"
+                                                <select class="col-md-5 form-control" id="v2_net" name="v2_net" data-plugin="selectpicker"
                                                         data-style="btn-outline btn-primary">
                                                     <option value="tcp">TCP</option>
                                                     <option value="http">HTTP/2</option>
@@ -368,7 +392,7 @@
                                             </div>
                                             <div class="form-group row v2_type">
                                                 <label class="col-md-3 col-form-label" for="v2_type">{{ trans('model.node.v2_cover') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_type" data-plugin="selectpicker"
+                                                <select class="col-md-5 form-control" id="v2_type" name="v2_type" data-plugin="selectpicker"
                                                         data-style="btn-outline btn-primary">
                                                     <option value="none">{{ trans('admin.node.info.v2_cover.none') }}</option>
                                                     <option value="http">{{ trans('admin.node.info.v2_cover.http') }}</option>
@@ -384,7 +408,7 @@
                                             <div class="form-group row v2_host">
                                                 <label class="col-md-3 col-form-label" for="v2_host">{{ trans('model.node.v2_host') }}</label>
                                                 <div class="col-md-4 pl-0">
-                                                    <input class="form-control" id="v2_host" name="v2_other" type="text">
+                                                    <input class="form-control" id="v2_host" name="v2_host" type="text">
                                                 </div>
                                                 <div class="text-help offset-md-3">
                                                     {{ trans('admin.node.info.v2_host_hint') }}
@@ -430,6 +454,18 @@
                                             <input class="form-control col-md-4" id="relay_port" name="port" type="number" value="443" hidden />
                                         </div>
                                     </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="is_udp">{{ trans('model.node.udp') }}</label>
+                                        <div class="col-md-9">
+                                            <input id="is_udp" name="is_udp" data-plugin="switchery" type="checkbox">
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-md-3 col-form-label" for="status">{{ trans('common.status.attribute') }}</label>
+                                        <div class="col-md-9">
+                                            <input id="status" name="status" data-plugin="switchery" type="checkbox">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-actions">
@@ -447,148 +483,137 @@
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
+    <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/js/Plugin/switchery.js"></script>
     <script>
+        $('[name="next_renewal_date"]').datepicker({
+            format: 'yyyy-mm-dd',
+        });
+
         const string = "{{ strtolower(Str::random()) }}";
+
         $(document).ready(function() {
-            $('.relay-config').hide();
-            let v2_path = $('#v2_path');
+            $('.single-setting').hide();
+            $('input:radio[name="type"]').on('change', updateServiceType);
+            $('#obfs').on('changed.bs.select', toggleObfsParam);
+            $('#relay_node_id').on('changed.bs.select', toggleRelayConfig);
+            $('#v2_net').on('changed.bs.select', updateV2RaySettings);
+
+            $('#nodeForm').on('submit', function(event) {
+                event.preventDefault();
+                formSubmit(event);
+            });
+
+            $('[name="next_renewal_date"]').datepicker({
+                format: 'yyyy-mm-dd'
+            });
+
+            toggleObfsParam();
+            toggleRelayConfig();
+
             @isset($node)
-                @if ($node->is_ddns)
-                    $('#is_ddns').click();
-                @endif
-                @if ($node->is_udp)
-                    $('#is_udp').click();
-                @endif
-                @if ($node->status)
-                    $('#status').click();
-                @endif
-                $("input[name='is_display'][value='{{ $node->is_display }}']").click();
-                $("input[name='detection_type'][value='{{ $node->detection_type }}']").click();
-                $("input[name='type'][value='{{ $node->type }}']").click();
-                $('#name').val('{{ $node->name }}');
-                $('#server').val('{{ $node->server }}');
-                $('#ip').val('{{ $node->ip }}');
-                $('#ipv6').val('{{ $node->ipv6 }}');
-                $('#push_port').val('{{ $node->push_port }}');
-                $('#traffic_rate').val('{{ $node->traffic_rate }}');
-                $('#level').selectpicker('val', '{{ $node->level }}');
-                $('#ruleGroup').selectpicker('val', '{{ $node->rule_group_id }}');
-                $('#speed_limit').val('{{ $node->speed_limit }}');
-                $('#client_limit').val('{{ $node->client_limit }}');
-                $('#labels').selectpicker('val', {{ $node->labels->pluck('id') }});
-                $('#country_code').selectpicker('val', '{{ $node->country_code }}');
-                $('#relay_node_id').selectpicker('val', '{{ $node->relay_node_id }}');
-                $('#description').val('{{ $node->description }}');
-                $('#sort').val('{{ $node->sort }}');
+                const nodeData = @json($node);
+                const {
+                    type,
+                    labels,
+                    relay_node_id,
+                    port,
+                    profile,
+                    tls_provider,
+                    details
+                } = nodeData;
 
-                @if (isset($node->relay_node_id))
-                    $('#relay_port').val('{{ $node->port }}');
-                @else
-                    @switch($node->type)
-                        @case(1)
-                        @case(4)
-                        $('#protocol').selectpicker('val', '{{ $node->profile['protocol'] ?? null }}');
-                        $('#protocol_param').val('{{ $node->profile['protocol_param'] ?? null }}');
-                        $('#obfs').selectpicker('val', '{{ $node->profile['obfs'] ?? null }}');
-                        $('#obfs_param').val('{{ $node->profile['obfs_param'] ?? null }}');
-                        @if (!empty($node->profile['passwd']) && $node->port)
-                            $('#single').click();
-                            $('#passwd').val('{{ $node->profile['passwd'] }}');
-                        @endif
-                        @case(0)
-                        $('#method').selectpicker('val', '{{ $node->profile['method'] ?? null }}');
-                        @break
+                ['is_ddns', 'is_udp', 'status'].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
+                ['is_display', 'detection_type', 'type'].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
 
-                        @case(2)
-                        //V2Ray
-                        $('#v2_alter_id').val('{{ $node->profile['v2_alter_id'] ?? null }}');
-                        $('#v2_method').selectpicker('val', '{{ $node->profile['method'] ?? null }}');
-                        $('#v2_net').selectpicker('val', '{{ $node->profile['v2_net'] ?? null }}');
-                        $('#v2_type').selectpicker('val', '{{ $node->profile['v2_type'] ?? null }}');
-                        $('#v2_host').val('{{ $node->profile['v2_host'] ?? null }}');
-                        $('#v2_port').val('{{ $node->port }}');
-                        $('#v2_sni').val('{{ $node->profile['v2_sni'] ?? null }}');
-                        v2_path.val('{{ $node->profile['v2_path'] ?? null }}');
-                        @if ($node->profile['v2_tls'] ?? false)
-                            $('#v2_tls').click();
-                        @endif
-                        $('#tls_provider').val('{!! $node->tls_provider !!}');
-                        @break
+                ['name', 'server', 'ip', 'ipv6', 'push_port', 'traffic_rate', 'speed_limit', 'client_limit', 'description', 'sort']
+                .forEach(prop => $(`#${prop}`).val(nodeData[prop]));
 
-                        @case(3)
-                        $('#trojan_port').val('{{ $node->port }}');
-                        @break
+                ['level', 'rule_group_id', 'country_code', 'relay_node_id'].forEach(prop => $(`#${prop}`).selectpicker('val', nodeData[prop]));
 
-                        @default
-                    @endswitch
-                    $('input[name = port]').val('{{ $node->port }}');
-                @endif
+                $('#labels').selectpicker('val', labels.map(label => label.id));
+                $('#next_renewal_date').datepicker('update', details.next_renewal_date ?? null);
+                if (details.subscription_term) {
+                    setSubscriptionTerm(details.subscription_term)
+                }
+                $('#renewal_cost').val(details.renewal_cost ?? null);
+
+                if (relay_node_id) {
+                    $('#relay_port').val(port);
+                } else {
+                    const typeHandlers = {
+                        0: () => $('#method').selectpicker('val', profile.method ?? null),
+                        1: setSSRValues,
+                        2: setV2RayValues,
+                        3: () => $('#trojan_port').val(port),
+                        4: setSSRValues
+                    };
+
+                    typeHandlers[type] && typeHandlers[type]();
+                    $('input[name="port"]').val(port);
+                }
+
+                function setSSRValues() {
+                    ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] ?? null));
+                    ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] ?? null));
+                    if (profile.passwd && port) {
+                        $('#single').click();
+                        $('#passwd').val(profile.passwd);
+                    }
+                }
+
+                function setV2RayValues() {
+                    ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] ?? null));
+                    ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] ?? null));
+                    $('#v2_method').selectpicker('val', profile['method'] ?? null);
+
+                    $('#v2_port').val(port);
+                    profile.v2_tls && $('#v2_tls').click();
+                    $('#tls_provider').val(tls_provider);
+                }
             @else
                 switchSetting('single');
                 switchSetting('is_ddns');
-                $('input[name=\'type\'][value=\'0\']').click();
-                $('#status').click();
-                $('#is_udp').click();
-                v2_path.val('/' + string);
+                $('input[name="type"][value="0"]').click();
+                $('#status, #is_udp').click();
+                $('#v2_path').val('/' + string);
             @endisset
-            if ($('#obfs').val() === 'plain') {
-                $('.obfs_param').hide();
+
+            function setSubscriptionTerm(term) {
+                const [value, unit] = term.split(' ');
+
+                $('#subscription_term_value').val(value || '');
+                $('#subscription_term_unit').selectpicker('val', unit || 'day'); // 默认选择 day
             }
         });
 
-        function Submit() { // ajax同步提交
+        function formSubmit(event) {
+            const $form = $(event.target); // 获取触发事件的表单
+            const data = Object.fromEntries($form.serializeArray().map(item => [item.name, item.value]));
+
+            // 拼接 subscription_term
+            const termValue = $('#subscription_term_value').val();
+            const termUnit = $('#subscription_term_unit').val();
+            data['subscription_term'] = termValue ? `${termValue} ${termUnit}` : null;
+
+            // 将序列化的表单数据转换为 JSON 对象
+            $form.find('input[type="checkbox"]').each(function() {
+                data[this.name] = this.checked ? 1 : 0;
+            });
+
+            // 处理多选 select
+            $form.find('select[multiple]').each(function() {
+                data[this.name] = $(this).val();
+            });
+
             $.ajax({
-                method: @isset($node)
-                    'PUT'
-                @else
-                    'POST'
-                @endisset ,
                 url: '{{ isset($node) ? route('admin.node.update', $node) : route('admin.node.store') }}',
-                dataType: 'json',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    is_ddns: document.getElementById('is_ddns').checked ? 1 : 0,
-                    name: $('#name').val(),
-                    server: $('#server').val(),
-                    ip: $('#ip').val(),
-                    ipv6: $('#ipv6').val(),
-                    push_port: $('#push_port').val(),
-                    traffic_rate: $('#traffic_rate').val(),
-                    level: $('#level').val(),
-                    rule_group_id: $('#ruleGroup').val(),
-                    speed_limit: $('#speed_limit').val(),
-                    client_limit: $('#client_limit').val(),
-                    labels: $('#labels').val(),
-                    country_code: $('#country_code option:selected').val(),
-                    description: $('#description').val(),
-                    sort: $('#sort').val(),
-                    is_udp: document.getElementById('is_udp').checked ? 1 : 0,
-                    status: document.getElementById('status').checked ? 1 : 0,
-                    type: $('input[name=\'type\']:checked').val(),
-                    method: $('#method').val(),
-                    protocol: $('#protocol').val(),
-                    protocol_param: $('#protocol_param').val(),
-                    obfs: $('#obfs').val(),
-                    obfs_param: $('#obfs_param').val(),
-                    is_display: $('input[name=\'is_display\']:checked').val(),
-                    detection_type: $('input[name=\'detection_type\']:checked').val(),
-                    single: document.getElementById('single').checked ? 1 : 0,
-                    port: $('input[name="port"]:not([hidden])').val(),
-                    passwd: $('#passwd').val(),
-                    v2_alter_id: $('#v2_alter_id').val(),
-                    v2_method: $('#v2_method').val(),
-                    v2_net: $('#v2_net').val(),
-                    v2_type: $('#v2_type').val(),
-                    v2_host: $('#v2_host').val(),
-                    v2_path: $('#v2_path').val(),
-                    v2_sni: $('#v2_sni').val(),
-                    v2_tls: document.getElementById('v2_tls').checked ? 1 : 0,
-                    tls_provider: $('#tls_provider').val(),
-                    relay_node_id: $('#relay_node_id option:selected').val(),
-                },
+                method: '{{ isset($node) ? 'PUT' : 'POST' }}',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
                 success: function(ret) {
                     if (ret.status === 'success') {
                         swal.fire({
@@ -600,194 +625,159 @@
                             '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}');
                     } else {
                         swal.fire({
-                            title: '[错误 | Error]',
+                            title: '{{ trans('common.error') }}',
                             text: ret.message,
                             icon: 'error'
                         });
                     }
                 },
                 error: function(data) {
-                    let str = '';
-                    const errors = data.responseJSON;
-                    if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function(index, value) {
-                            str += '<li>' + value + '</li>';
-                        });
+                    const errors = data.responseJSON?.errors;
+                    if (errors) {
+                        const errorList = Object.values(errors).map(error => `<li>${error}</li>`).join('');
                         swal.fire({
                             title: '{{ trans('admin.hint') }}',
-                            html: str,
+                            html: `<ul>${errorList}</ul>`,
                             icon: 'error',
                             confirmButtonText: '{{ trans('common.confirm') }}',
                         });
                     }
                 },
             });
-
-            return false;
         }
 
         function switchSetting(id) {
-            let check = document.getElementById(id).checked ? 1 : 0;
-            switch (id) {
-                case 'single': // 设置单端口多用户
-                    if (check) {
-                        $('.single-setting').show();
-                        $('#single_port').removeAttr('hidden').attr('required', true);
-                    } else {
-                        $('#single_port').removeAttr('required').attr('hidden', true);
-                        $('#passwd').val('');
-                        $('.single-setting').hide();
-                    }
-                    break;
-
-                case 'is_ddns': // 设置是否使用DDNS
-                    if (check) {
-                        $('#ip').val('').attr('readonly', true);
-                        $('#ipv6').val('').attr('readonly', true);
-                        $('#server').attr('required', true);
-                    } else {
-                        $('#ip').removeAttr('readonly');
-                        $('#ipv6').removeAttr('readonly');
-                        $('#server').removeAttr('required');
-                    }
-                    break;
-                default:
-                    break;
+            const check = document.getElementById(id).checked;
+            if (id === 'single') {
+                $('.single-setting').toggle(check);
+                $('#single_port').attr({
+                    'hidden': !check,
+                    'required': check
+                });
+                if (!check) $('#passwd').val('');
+            } else if (id === 'is_ddns') {
+                $('#ip, #ipv6').attr('readonly', check).val('');
+                $('#server').attr('required', check);
             }
         }
 
         // 设置服务类型
-        $('input:radio[name=\'type\']').on('change', function() {
+        function updateServiceType() {
             const type = parseInt($(this).val());
-            const $ss_setting = $('.ss-setting');
-            const $ssr_setting = $('.ssr-setting');
-            const $v2ray_setting = $('.v2ray-setting');
-            const $trojan_setting = $('.trojan-setting');
-            $ssr_setting.hide();
-            $ss_setting.hide();
-            $v2ray_setting.hide();
-            $trojan_setting.hide();
+            $('.ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting').hide();
             $('#v2_port').removeAttr('required').attr('hidden', true);
             $('#trojan_port').removeAttr('required');
             switch (type) {
                 case 0:
-                    $ss_setting.show();
+                    $('.ss-setting').show();
                     break;
                 case 2:
-                    $v2ray_setting.show();
-                    $('#v2_port').removeAttr('hidden').attr('required', true);
+                    $('.v2ray-setting').show();
+                    $('#v2_port').removeAttr('hidden').prop('required', true);
                     $('#v2_net').selectpicker('val', 'tcp');
                     break;
                 case 3:
-                    $trojan_setting.show();
-                    $('#trojan_port').removeAttr('hidden').attr('required', true);
+                    $('.trojan-setting').show();
+                    $('#trojan_port').removeAttr('hidden').prop('required', true);
                     break;
                 case 1:
                 case 4:
-                    $ss_setting.show();
-                    $ssr_setting.show();
-                    break;
-                default:
-            }
-        });
-
-        $('#obfs').on('changed.bs.select', function() {
-            const obfs_param = $('.obfs_param');
-            if ($('#obfs').val() === 'plain') {
-                $('#obfs_param').val('');
-                obfs_param.hide();
-            } else {
-                obfs_param.show();
-            }
-        });
-
-        $('#relay_node_id').on('changed.bs.select', function() {
-            const relay = $('.relay-config');
-            const config = $('.proxy-config');
-            if ($('#relay_node_id').val() === '') {
-                relay.hide();
-                $('#relay_port').removeAttr('required').attr('hidden', true);
-                config.show();
-            } else {
-                relay.show();
-                config.hide();
-                $('#relay_port').removeAttr('hidden').attr('required', true);
-            }
-        });
-
-        // 设置V2Ray详细设置
-        $('#v2_net').on('changed.bs.select', function() {
-            const type = $('.v2_type');
-            const type_option = $('#type_option');
-            const host = $('.v2_host');
-            const path = $('#v2_path');
-            const v2_other = $('[name="v2_other"]');
-            type.show();
-            host.show();
-            v2_other.show();
-            path.val('/' + string);
-            switch ($(this).val()) {
-                case 'kcp':
-                    type_option.attr('disabled', false);
-                    break;
-                case 'ws':
-                    type.hide();
-                    break;
-                case 'http':
-                    type.hide();
-                    break;
-                case 'domainsocket':
-                    type.hide();
-                    host.hide();
-                    break;
-                case 'quic':
-                    type_option.attr('disabled', false);
-                    path.val(string);
-                    break;
-                case 'tcp':
-                default:
-                    type_option.attr('disabled', true);
+                    $('.ss-setting, .ssr-setting').show();
                     break;
             }
-            $('#v2_type').selectpicker('refresh');
-        });
+        }
 
-        // 服务条款
-        function showTnc() {
-            const content =
-                '<ol>' +
-                '<li>请勿直接复制黏贴以下配置，SSR(R)会报错的</li>' +
-                '<li>确保服务器时间为CST</li>' +
-                '</ol>' +
-                '&emsp;&emsp;"additional_ports" : {<br />' +
-                '&emsp;&emsp;&emsp;"443": {<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"passwd": "ProxyPanel",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"method": "none",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"protocol": "auth_chain_a",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"protocol_param": "#",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"obfs": "plain",<br />' +
-                '&emsp;&emsp;&emsp;&emsp;"obfs_param": "fe2.update.microsoft.com"<br />' +
-                '&emsp;&emsp;&emsp;}<br />' +
-                '&emsp;&emsp;},';
+        function toggleObfsParam() {
+            const $obfsParam = $('.obfs_param');
+            const isPlain = $('#obfs').val() === 'plain';
+            $obfsParam.toggle(!isPlain);
+            if (isPlain) $('#obfs_param').val('');
+        }
 
-            swal.fire({
-                title: '[节点 user-config.json 配置示例]',
-                html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
-                    content + '</div>',
-                icon: 'info',
+        function toggleRelayConfig() {
+            const hasRelay = $('#relay_node_id').val() !== '';
+            $('.relay-config').toggle(hasRelay);
+            $('.proxy-config').toggle(!hasRelay);
+            $('#relay_port').attr({
+                'hidden': !hasRelay,
+                'required': hasRelay
             });
         }
 
-        // 模式提示
-        function showPortsOnlyConfig() {
-            const content = '严格模式："additional_ports_only": "true"' +
-                '<br><br>' +
-                '兼容模式："additional_ports_only": "false"';
+        // 设置V2Ray详细设置
+        function updateV2RaySettings() {
+            const net = $(this).val();
+            const $type = $('.v2_type');
+            const $typeOption = $('#type_option');
+            const $host = $('.v2_host');
+            const $path = $('#v2_path');
+            $type.show();
+            $host.show();
+            $path.val('/' + string);
+            switch (net) {
+                case 'ws':
+                case 'http':
+                    $type.hide();
+                    break;
+                case 'domainsocket':
+                    $type.hide();
+                    $host.hide();
+                    break;
+                case 'quic':
+                    $typeOption.attr('disabled', false);
+                    $path.val(string);
+                    break;
+                case 'kcp':
+                case 'tcp':
+                default:
+                    $typeOption.attr('disabled', true);
+                    break;
+            }
+            $('#v2_type').selectpicker('refresh');
+        }
+
+        // 服务条款
+        window.showTnc = function() {
+            const jsonConfig = {
+                "additional_ports": {
+                    "443": {
+                        "passwd": "ProxyPanel",
+                        "method": "none",
+                        "protocol": "auth_chain_a",
+                        "protocol_param": "#",
+                        "obfs": "plain",
+                        "obfs_param": "fe2.update.microsoft.com"
+                    }
+                }
+            };
 
             swal.fire({
                 title: '[节点 user-config.json 配置示例]',
-                html: '<div class="p-10 bg-grey-900 text-white font-weight-300 text-left" style="line-height: 22px;">' +
-                    content + '</div>',
+                width: '36em',
+                html: `
+                    <div class="text-left">
+                        <ol>
+                            <li>请勿直接复制黏贴以下配置，SSR(R)会报错的</li>
+                            <li>确保服务器时间为CST</li>
+                        </ol>
+                        <pre class="bg-grey-800 text-white">${JSON.stringify(jsonConfig, null, 2)}</pre>
+                    </div>
+                `,
+                icon: 'info',
+            })
+        };
+
+        // 模式提示
+        window.showPortsOnlyConfig = function() {
+            swal.fire({
+                title: '[节点 user-config.json 配置示例]',
+                width: '36em',
+                html: `
+                  <ul class="bg-grey-800 text-white text-left">
+                      <li>严格模式："additional_ports_only": "true"</li>
+                      <li>兼容模式："additional_ports_only": "false"</li>
+                  </ul>
+                `,
                 icon: 'info',
             });
         }

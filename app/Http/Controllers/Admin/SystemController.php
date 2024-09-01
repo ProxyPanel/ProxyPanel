@@ -30,48 +30,76 @@ class SystemController extends Controller
     public function index()
     {
         return view('admin.config.system', array_merge([
-            'payments' => $this->getPayment(),
+            'payments' => $this->getPayments(),
             'captcha' => $this->getCaptcha(),
+            'channels' => $this->getNotifyChannels(),
             'ddns_labels' => (new DDNS)->getLabels(),
         ], Config::pluck('value', 'name')->toArray()));
     }
 
-    private function getPayment(): array
-    { // 获取已经完成配置的支付渠道
-        if (sysConfig('f2fpay_app_id') && sysConfig('f2fpay_private_key') && sysConfig('f2fpay_public_key')) {
-            $payment[] = 'f2fpay';
-        }
-        if (sysConfig('codepay_url') && sysConfig('codepay_id') && sysConfig('codepay_key')) {
-            $payment[] = 'codepay';
-        }
-        if (sysConfig('epay_url') && sysConfig('epay_mch_id') && sysConfig('epay_key')) {
-            $payment[] = 'epay';
-        }
-        if (sysConfig('payjs_mch_id') && sysConfig('payjs_key')) {
-            $payment[] = 'payjs';
-        }
-        if (sysConfig('bitpay_secret')) {
-            $payment[] = 'bitpayx';
-        }
-        if (sysConfig('paypal_client_id') && sysConfig('paypal_client_secret') && sysConfig('paypal_app_id')) {
-            $payment[] = 'paypal';
-        }
-        if (sysConfig('stripe_public_key') && sysConfig('stripe_secret_key')) {
-            $payment[] = 'stripe';
-        }
-        if (sysConfig('paybeaver_app_id') && sysConfig('paybeaver_app_secret')) {
-            $payment[] = 'paybeaver';
-        }
-        if (sysConfig('theadpay_mchid') && sysConfig('theadpay_key')) {
-            $payment[] = 'theadpay';
+    private function getPayments(): array
+    {
+        $paymentConfigs = [ // 支付渠道及其所需配置项映射
+            'f2fpay' => ['f2fpay_app_id', 'f2fpay_private_key', 'f2fpay_public_key'],
+            'codepay' => ['codepay_url', 'codepay_id', 'codepay_key'],
+            'epay' => ['epay_url', 'epay_mch_id', 'epay_key'],
+            'payjs' => ['payjs_mch_id', 'payjs_key'],
+            'bitpayx' => ['bitpay_secret'],
+            'paypal' => ['paypal_client_id', 'paypal_client_secret', 'paypal_app_id'],
+            'stripe' => ['stripe_public_key', 'stripe_secret_key'],
+            'paybeaver' => ['paybeaver_app_id', 'paybeaver_app_secret'],
+            'theadpay' => ['theadpay_mchid', 'theadpay_key'],
+        ];
+
+        $payment = [];
+
+        // 遍历映射，检查配置项是否存在
+        foreach ($paymentConfigs as $paymentName => $configKeys) {
+            $allConfigsExist = array_reduce($configKeys, function ($carry, $configKey) {
+                return $carry && sysConfig($configKey);
+            }, true);
+
+            if ($allConfigsExist) {
+                $payment[] = $paymentName;
+            }
         }
 
-        return $payment ?? [];
+        return $payment;
     }
 
     private function getCaptcha(): bool
     {
         return sysConfig('captcha_secret') && sysConfig('captcha_key');
+    }
+
+    private function getNotifyChannels(): array
+    {
+        $configs = [ // 支付渠道及其所需配置项映射
+            'bark' => ['bark_key'],
+            'dingTalk' => ['dingTalk_access_token'],
+            'iYuu' => ['iYuu_token'],
+            'pushDear' => ['pushDeer_key'],
+            'pushPlus' => ['pushplus_token'],
+            'serverChan' => ['server_chan_key'],
+            'telegram' => ['telegram_token'],
+            'tgChat' => ['tg_chat_token'],
+            'weChat' => ['wechat_cid', 'wechat_aid', 'wechat_secret', 'wechat_token', 'wechat_encodingAESKey'],
+        ];
+
+        $channels = ['database', 'mail'];
+
+        // 遍历映射，检查配置项是否存在
+        foreach ($configs as $channel => $configKeys) {
+            $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) {
+                return $carry && sysConfig($configKey);
+            }, true);
+
+            if ($allConfigsExist) {
+                $channels[] = $channel;
+            }
+        }
+
+        return $channels;
     }
 
     public function setExtend(Request $request): RedirectResponse  // 设置涉及到上传的设置
@@ -85,8 +113,8 @@ class SystemController extends Controller
                 }
                 $file = $request->file('website_home_logo');
                 $file->move('uploads/logo', $file->getClientOriginalName());
-                if (Config::find('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+                if (Config::findOrNew('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#other')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
             if ($request->hasFile('website_logo')) { // 站内LOGO
@@ -97,12 +125,12 @@ class SystemController extends Controller
                 }
                 $file = $request->file('website_logo');
                 $file->move('uploads/logo', $file->getClientOriginalName());
-                if (Config::findOrFail('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#other')->with('successMsg', '更新成功');
+                if (Config::findOrNew('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+                    return redirect()->route('admin.system.index', '#other')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
 
-            return redirect()->route('admin.system.index', '#other')->withErrors('更新失败');
+            return redirect()->route('admin.system.index', '#other')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
         }
 
         if ($request->hasAny(['alipay_qrcode', 'wechat_qrcode'])) {
@@ -115,7 +143,7 @@ class SystemController extends Controller
                 $file = $request->file('alipay_qrcode');
                 $file->move('uploads/images', $file->getClientOriginalName());
                 if (Config::find('alipay_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', '更新成功');
+                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
 
@@ -128,11 +156,11 @@ class SystemController extends Controller
                 $file = $request->file('wechat_qrcode');
                 $file->move('uploads/images', $file->getClientOriginalName());
                 if (Config::findOrFail('wechat_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', '更新成功');
+                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
 
-            return redirect()->route('admin.system.index', '#payment')->withErrors('更新失败');
+            return redirect()->route('admin.system.index', '#payment')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
         }
 
         return redirect()->route('admin.system.index');
@@ -148,12 +176,12 @@ class SystemController extends Controller
         }
 
         // 支付设置判断
-        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayment(), true)) {
-            return Response::json(['status' => 'fail', 'message' => '请先完善该支付渠道的必要参数！']);
+        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayments(), true)) {
+            return Response::json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('admin.system.payment.attribute')])]);
         }
 
         if ($value > 1 && $name === 'is_captcha' && ! $this->getCaptcha()) {
-            return Response::json(['status' => 'fail', 'message' => '请先完善验证码的必要参数！']);
+            return Response::json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('auth.captcha.attribute')])]);
         }
 
         // 演示环境禁止修改特定配置项
@@ -170,7 +198,7 @@ class SystemController extends Controller
             ];
 
             if (in_array($name, $denyConfig, true)) {
-                return Response::json(['status' => 'fail', 'message' => '演示环境禁止修改该配置']);
+                return Response::json(['status' => 'fail', 'message' => trans('admin.system.demo_restriction')]);
             }
         }
 
@@ -188,47 +216,34 @@ class SystemController extends Controller
 
         // 更新配置
         if (Config::findOrFail($name)->update(['value' => $value])) {
-            return Response::json(['status' => 'success', 'message' => trans('common.update_action', ['action' => trans('common.success')])]);
+            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.update_action', ['action' => trans('common.failed')])]);
+        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
     public function sendTestNotification(): JsonResponse  // 推送通知测试
     {
-        $data = ['这是测试的标题', 'ProxyPanel测试内容'];
-        switch (request('channel')) {
-            case 'serverChan':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [ServerChanChannel::class]);
-                break;
-            case 'bark':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [BarkChannel::class]);
-                break;
-            case 'telegram':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TelegramChannel::class]);
-                break;
-            case 'weChat':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [WeChatChannel::class]);
-                break;
-            case 'tgChat':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [TgChatChannel::class]);
-                break;
-            case 'pushPlus':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushPlusChannel::class]);
-                break;
-            case 'iYuu':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [iYuuChannel::class]);
-                break;
-            case 'pushDeer':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [PushDeerChannel::class]);
-                break;
-            case 'dingTalk':
-                Notification::sendNow(Auth::getUser(), new Custom($data[0], $data[1]), [DingTalkChannel::class]);
-                break;
-            default:
-                return Response::json(['status' => 'fail', 'message' => '未知渠道']);
+        $channels = [
+            'serverChan' => ServerChanChannel::class,
+            'bark' => BarkChannel::class,
+            'telegram' => TelegramChannel::class,
+            'weChat' => WeChatChannel::class,
+            'tgChat' => TgChatChannel::class,
+            'pushPlus' => PushPlusChannel::class,
+            'iYuu' => iYuuChannel::class,
+            'pushDeer' => PushDeerChannel::class,
+            'dingTalk' => DingTalkChannel::class,
+        ];
+
+        $selectedChannel = request('channel');
+
+        if (! array_key_exists($selectedChannel, $channels)) {
+            return Response::json(['status' => 'fail', 'message' => trans('admin.system.notification.test.unknown_channel')]);
         }
 
-        return Response::json(['status' => 'success', 'message' => '发送成功，请查看手机是否收到推送消息']);
+        Notification::sendNow(Auth::getUser(), new Custom(trans('admin.system.notification.test.title'), sysConfig('website_name').' '.trans('admin.system.notification.test.content')), [$channels[$selectedChannel]]);
+
+        return Response::json(['status' => 'success', 'message' => trans('admin.system.notification.test.success')]);
     }
 }

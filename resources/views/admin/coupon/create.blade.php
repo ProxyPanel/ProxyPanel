@@ -264,23 +264,15 @@
             format: 'yyyy-mm-dd',
         });
 
-        $('input[name=\'type\']').change(function() {
-            if ($(this).val() === '2') {
-                $('.discount').show();
-                $('.usage').show();
-                $('#amount').hide();
-                $('#value').attr('max', 99);
-            } else if ($(this).val() === '3') {
-                $('.discount').hide();
-                $('.usage').hide();
-                $('#amount').show();
-                $('#value').removeAttr('max');
-            } else {
-                $('.discount').hide();
-                $('.usage').show();
-                $('#amount').show();
-                $('#value').removeAttr('max');
-            }
+        $('input[name="type"]').change(function() {
+            const type = $(this).val();
+            const isType2 = type === '2';
+            const isType3 = type === '3';
+
+            $('.discount').toggle(isType2);
+            $('.usage').toggle(!isType3);
+            $('#amount').toggle(!isType2);
+            $('#value').attr('max', isType2 ? 99 : null);
         });
     </script>
 @endsection

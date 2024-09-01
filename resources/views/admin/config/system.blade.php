@@ -241,6 +241,19 @@
                                 trans('admin.system.notification.channel.tg_chat') => 'tgChat',
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                             ]" />
+                            <x-system.select code="node_renewal_notification" multiple="1" :list="[
+                                trans('admin.system.notification.channel.email') => 'mail',
+                                trans('admin.system.notification.channel.bark') => 'bark',
+                                trans('admin.system.notification.channel.serverchan') => 'serverChan',
+                                trans('admin.system.notification.channel.pushdeer') => 'pushDear',
+                                trans('admin.system.notification.channel.iyuu') => 'iYuu',
+                                trans('admin.system.notification.channel.telegram') => 'telegram',
+                                trans('admin.system.notification.channel.dingtalk') => 'dingTalk',
+                                trans('admin.system.notification.channel.wechat') => 'weChat',
+                                trans('admin.system.notification.channel.tg_chat') => 'tgChat',
+                                trans('admin.system.notification.channel.pushplus') => 'pushPlus',
+                                trans('admin.system.notification.channel.site') => 'database',
+                            ]" />
                             <x-system.input-limit code="offline_check_times" :value="$offline_check_times" unit="{{ trans('admin.times') }}" />
                             <x-system.select code="node_blocked_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
@@ -571,6 +584,7 @@
     </div>
 @endsection
 @section('javascript')
+    <script src="/assets/global/vendor/lodash/lodash.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
@@ -582,60 +596,81 @@
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>
         $(document).ready(function() {
-            $('#forbid_mode').selectpicker('val', '{{ $forbid_mode }}');
-            $('#username_type').selectpicker('val', '{{ $username_type ?? 'email' }}');
-            $('#is_invite_register').selectpicker('val', '{{ $is_invite_register }}');
-            $('#is_activate_account').selectpicker('val', '{{ $is_activate_account }}');
-            $('#ddns_mode').selectpicker('val', '{{ $ddns_mode }}');
-            $('#is_captcha').selectpicker('val', '{{ $is_captcha }}');
-            $('#referral_type').selectpicker('val', '{{ $referral_type }}');
-            $('#is_email_filtering').selectpicker('val', '{{ $is_email_filtering }}');
-            $('#is_AliPay').selectpicker('val', '{{ $is_AliPay }}');
-            $('#is_QQPay').selectpicker('val', '{{ $is_QQPay }}');
-            $('#is_WeChatPay').selectpicker('val', '{{ $is_WeChatPay }}');
-            $('#standard_currency').selectpicker('val', '{{ $standard_currency }}');
-            $('#is_otherPay').selectpicker('val', {!! $is_otherPay !!});
-            $('#oauth_path').selectpicker('val', {!! $oauth_path !!});
-            $('#account_expire_notification').selectpicker('val', {!! $account_expire_notification !!});
-            $('#data_anomaly_notification').selectpicker('val', {!! $data_anomaly_notification !!});
-            $('#data_exhaust_notification').selectpicker('val', {!! $data_exhaust_notification !!});
-            $('#node_blocked_notification').selectpicker('val', {!! $node_blocked_notification !!});
-            $('#node_daily_notification').selectpicker('val', {!! $node_daily_notification !!});
-            $('#node_offline_notification').selectpicker('val', {!! $node_offline_notification !!});
-            $('#password_reset_notification').selectpicker('val', '{{ $password_reset_notification }}');
-            $('#payment_confirm_notification').selectpicker('val', '{{ $payment_confirm_notification }}');
-            $('#payment_received_notification').selectpicker('val', {!! $payment_received_notification !!});
-            $('#ticket_closed_notification').selectpicker('val', {!! $ticket_closed_notification !!});
-            $('#ticket_created_notification').selectpicker('val', {!! $ticket_created_notification !!});
-            $('#ticket_replied_notification').selectpicker('val', {!! $ticket_replied_notification !!});
+            const selectorValues = {
+                forbid_mode: '{{ $forbid_mode }}',
+                username_type: '{{ $username_type ?: 'email' }}',
+                is_invite_register: '{{ $is_invite_register }}',
+                is_activate_account: '{{ $is_activate_account }}',
+                ddns_mode: '{{ $ddns_mode }}',
+                is_captcha: '{{ $is_captcha }}',
+                referral_type: '{{ $referral_type }}',
+                is_email_filtering: '{{ $is_email_filtering }}',
+                is_AliPay: '{{ $is_AliPay }}',
+                is_QQPay: '{{ $is_QQPay }}',
+                is_WeChatPay: '{{ $is_WeChatPay }}',
+                is_otherPay: {!! $is_otherPay ?: 'null' !!},
+                standard_currency: '{{ $standard_currency }}',
+                oauth_path: {!! $oauth_path ?: 'null' !!},
+                account_expire_notification: {!! $account_expire_notification ?: 'null' !!},
+                data_anomaly_notification: {!! $data_anomaly_notification ?: 'null' !!},
+                data_exhaust_notification: {!! $data_exhaust_notification ?: 'null' !!},
+                node_blocked_notification: {!! $node_blocked_notification ?: 'null' !!},
+                node_daily_notification: {!! $node_daily_notification ?: 'null' !!},
+                node_offline_notification: {!! $node_offline_notification ?: 'null' !!},
+                node_renewal_notification: {!! $node_renewal_notification ?: 'null' !!},
+                password_reset_notification: {!! $password_reset_notification ?: 'null' !!},
+                payment_confirm_notification: {!! $payment_confirm_notification ?: 'null' !!},
+                payment_received_notification: {!! $payment_received_notification ?: 'null' !!},
+                ticket_closed_notification: {!! $ticket_closed_notification ?: 'null' !!},
+                ticket_created_notification: {!! $ticket_created_notification ?: 'null' !!},
+                ticket_replied_notification: {!! $ticket_replied_notification ?: 'null' !!},
+            };
 
-            // Get all options within select
-            disablePayment(document.getElementById('is_AliPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_QQPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_WeChatPay').getElementsByTagName('option'));
-            disablePayment(document.getElementById('is_otherPay').getElementsByTagName('option'));
+            Object.entries(selectorValues).forEach(([selector, value]) => {
+                $(`#${selector}`).selectpicker('val', value);
+            });
+
+            const disablePayment = (selectId) => {
+                const payments = @json($payments);
+                const parentId = $(`#${selectId}`);
+
+                parentId.find('option').each(function(index) {
+                    if (selectId === 'is_otherPay' || index > 0) {
+                        $(this).prop('disabled', !payments.includes($(this).val()));
+                    }
+                });
+
+                parentId.selectpicker('refresh');
+            };
+            ['is_AliPay', 'is_QQPay', 'is_WeChatPay', 'is_otherPay'].forEach(disablePayment);
+
+            const disableChannel = (selectId) => {
+                const channels = @json($channels);
+                const parentId = $(`#${selectId}`);
+
+                parentId.find('option').each(function() {
+                    $(this).prop('disabled', !channels.includes($(this).val()));
+                });
+
+                parentId.selectpicker('refresh');
+            };
+            ['account_expire_notification', 'data_anomaly_notification', 'data_exhaust_notification', 'node_blocked_notification',
+                'node_daily_notification', 'node_offline_notification', 'node_renewal_notification', 'password_reset_notification',
+                'payment_confirm_notification', 'payment_received_notification', 'ticket_closed_notification', 'ticket_created_notification',
+                'ticket_replied_notification'
+            ].forEach(disableChannel);
 
             @if (!$captcha)
-                disableCaptcha(document.getElementById('is_captcha').getElementsByTagName('option'));
+                $('#is_captcha').find('option').each(function(index) {
+                    if (index > 1) $(this).prop('disabled', true);
+                });
+                $('#is_captcha').selectpicker('refresh');
             @endif
 
         });
 
-        function disablePayment(op) {
-            for (let i = 1; i < op.length; i++) {
-                @json($payments).
-                includes(op[i].value) ? op[i].disabled = false : op[i].disabled = true;
-            }
-        }
-
-        function disableCaptcha(op) {
-            for (let i = 2; i < op.length; i++) {
-                op[i].disabled = true;
-            }
-        }
-
         // 系统设置更新
-        function systemUpdate(systemItem, value) {
+        const systemUpdate = _.debounce(function(systemItem, value) {
             @can('admin.system.update')
                 $.post('{{ route('admin.system.update') }}', {
                     _token: '{{ csrf_token() }}',
@@ -664,26 +699,25 @@
                     showConfirmButton: false,
                 });
             @endcan
-        }
+        }, 100);
 
         // 正常input更新
-        function update(systemItem) {
-            systemUpdate(systemItem, $('#' + systemItem).val());
-        }
+        const update = systemItem => systemUpdate(systemItem, $(`#${systemItem}`).val());
 
         // 需要检查限制的更新
-        function updateFromInput(systemItem, lowerBound = false, upperBound = false) {
-            let value = parseInt($('#' + systemItem).val());
-            if (lowerBound !== false && value < lowerBound) {
-                swal.fire({
-                    title: '不能小于' + lowerBound,
-                    icon: 'warning',
-                    timer: 1500,
-                    showConfirmButton: false
-                });
-            } else if (upperBound !== false && value > upperBound) {
-                swal.fire({
-                    title: '不能大于' + upperBound,
+        const updateFromInput = (systemItem, lowerBound = null, upperBound = null) => {
+            const value = parseInt($(`#${systemItem}`).val());
+            let errorMessage = null;
+
+            if (lowerBound !== null && value < lowerBound) {
+                errorMessage = `值不能小于 ${lowerBound}`;
+            } else if (upperBound !== null && value > upperBound) {
+                errorMessage = `值不能大于 ${upperBound}`;
+            }
+
+            if (errorMessage) {
+                Swal.fire({
+                    title: errorMessage,
                     icon: 'warning',
                     timer: 1500,
                     showConfirmButton: false
@@ -691,29 +725,29 @@
             } else {
                 systemUpdate(systemItem, value);
             }
-        }
+        };
 
         // 其他项更新选择
-        function updateFromOther(inputType, systemItem) {
-            let input = $('#' + systemItem);
-            switch (inputType) {
-                case 'select':
-                    input.on('changed.bs.select', function() {
-                        systemUpdate(systemItem, $(this).val());
-                    });
-                    break;
-                case 'multiSelect':
-                    input.on('changed.bs.select', function() {
-                        systemUpdate(systemItem, $(this).val().join(','));
-                    });
-                    break;
-                case 'switch':
-                    systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0);
-                    break;
-                default:
-                    break;
+        const updateFromOther = (inputType, systemItem) => {
+            const input = $(`#${systemItem}`);
+            let pendingValue = null; // 用于存储待更新的值
+
+            const updateActions = {
+                select: () => input.on('changed.bs.select', () => systemUpdate(systemItem, input.val())),
+                multiSelect: () => input.on('changed.bs.select', () => {
+                    // 存储当前选择的值
+                    pendingValue = input.val();
+                }).on('hidden.bs.select', () => {
+                    // 当 selectpicker 隐藏时进行更新
+                    if (pendingValue !== null) {
+                        systemUpdate(systemItem, pendingValue);
+                        pendingValue = null; // 清除待更新的值
+                    }
+                }),
+                switch: () => systemUpdate(systemItem, document.getElementById(systemItem).checked ? 1 : 0)
             }
-        }
+            updateActions[inputType] && updateActions[inputType]();
+        };
 
         // 使用通知渠道 发送测试消息
         @can('admin.test.notify')
@@ -741,9 +775,10 @@
 
         // 生成网站安全码
         function makeWebsiteSecurityCode() {
-            $.get('{{ route('createStr') }}', function(ret) {
-                $('#website_security_code').val(ret);
-            });
+            $.get('{{ route('createStr') }}')
+                .done(function(securityCode) {
+                    $('#website_security_code').val(securityCode);
+                });
         }
 
         @can('admin.test.epay')

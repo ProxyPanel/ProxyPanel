@@ -115,6 +115,14 @@ class NodeController extends Controller
                 break;
         }
 
+        $details = [
+            'next_renewal_date' => $info['next_renewal_date'],
+            'subscription_term' => $info['subscription_term'],
+            'renewal_cost' => $info['renewal_cost'],
+        ];
+
+        array_clean($details);
+
         return [
             'type' => $info['type'],
             'name' => $info['name'],
@@ -126,6 +134,7 @@ class NodeController extends Controller
             'rule_group_id' => $info['rule_group_id'],
             'speed_limit' => $info['speed_limit'],
             'client_limit' => $info['client_limit'],
+            'details' => $details,
             'description' => $info['description'],
             'profile' => $profile ?? [],
             'traffic_rate' => $info['traffic_rate'],
@@ -143,10 +152,17 @@ class NodeController extends Controller
 
     public function clone(Node $node): RedirectResponse
     { // 克隆节点
-        $new = $node->replicate()->fill([
-            'name' => $node->name.'_克隆',
+        $clone = [
+            'name' => $node->name.'_'.trans('admin.clone'),
             'server' => null,
-        ]);
+        ];
+
+        if ($node->is_ddns) {
+            $clone['ip'] = '1.1.1.1';
+            $clone['is_ddns'] = 0;
+        }
+
+        $new = $node->replicate()->fill($clone);
         $new->save();
 
         return redirect()->route('admin.node.edit', $new);
@@ -155,7 +171,7 @@ class NodeController extends Controller
     public function edit(Node $node)
     { // 编辑节点页面
         return view('admin.node.info', [
-            'node' => $node,
+            'node' => $node->load('labels'),
             'nodes' => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
             'countries' => Country::orderBy('code')->get(),
             'levels' => Level::orderBy('level')->get(),

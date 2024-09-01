@@ -15,19 +15,19 @@ use Notification;
 
 class NodeStatusDetection extends Command
 {
-    protected $signature = 'nodeStatusDetection';
+    protected $signature = 'node:detection';
 
-    protected $description = '节点状态检测';
+    protected $description = '检测节点状态，包括节点心跳和网络状态';
 
     public function handle(): void
     {
         $jobTime = microtime(true);
 
-        if (sysConfig('node_offline_notification')) {// 检测节点心跳是否异常
+        if (sysConfig('node_offline_notification')) {// 通知节点心跳异常
             $this->checkNodeStatus();
         }
 
-        if (sysConfig('node_blocked_notification')) {// 监测节点网络状态
+        if (sysConfig('node_blocked_notification')) {// 通知节点网络状态异常
             $lastCheckTime = Cache::get('LastCheckTime');
 
             if (! $lastCheckTime || $lastCheckTime <= time()) {
@@ -50,14 +50,9 @@ class NodeStatusDetection extends Command
         foreach (Node::whereRelayNodeId(null)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
             // 近期无节点负载信息则认为是后端炸了
             if ($offlineCheckTimes > 0) {
-                $cacheKey = 'offline_check_times'.$node->id;
-                if (! Cache::has($cacheKey)) { // 已通知次数
-                    Cache::put($cacheKey, 1, now()->addDay()); // 键将保留24小时
-                } else {
-                    $times = Cache::increment($cacheKey);
-                    if ($times > $offlineCheckTimes) {
-                        continue;
-                    }
+                $times = $this->updateCache('offline_check_times'.$node->id, 24);
+                if ($times > $offlineCheckTimes) {
+                    continue;
                 }
             }
             $data[] = [
@@ -69,6 +64,17 @@ class NodeStatusDetection extends Command
         if (! empty($data)) {
             Notification::send(User::find(1), new NodeOffline($data));
         }
+    }
+
+    private function updateCache(string $key, int $durationInHour): int
+    {
+        if (! Cache::has($key)) {
+            Cache::put($key, 1, now()->addHours($durationInHour));
+
+            return 1;
+        }
+
+        return Cache::increment($key);
     }
 
     private function checkNodeNetwork(): void
@@ -100,12 +106,7 @@ class NodeStatusDetection extends Command
                 // 已通知次数
                 $cacheKey = 'detection_check_times'.$node_id;
 
-                if (! Cache::has($cacheKey)) { // 已通知次数
-                    Cache::put($cacheKey, 1, now()->addHours(12)); // 键将保留12小时
-                    $times = 1;
-                } else {
-                    $times = Cache::increment($cacheKey);
-                }
+                $times = $this->updateCache($cacheKey, 12);
                 if ($times > $detectionCheckTimes) {
                     Cache::forget($cacheKey);
                     $node->update(['status' => 0]);

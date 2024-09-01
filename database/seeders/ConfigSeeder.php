@@ -72,6 +72,7 @@ class ConfigSeeder extends Seeder
         'node_blocked_notification',
         'node_daily_notification',
         'node_offline_notification',
+        'node_renewal_notification',
         'oauth_path',
         'offline_check_times',
         'password_reset_notification',

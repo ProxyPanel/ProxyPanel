@@ -25,7 +25,7 @@ class Node extends Model
 
     protected $guarded = [];
 
-    protected $casts = ['speed_limit' => data_rate::class, 'profile' => 'array'];
+    protected $casts = ['speed_limit' => data_rate::class, 'profile' => 'array', 'details' => 'array'];
 
     public function labels(): BelongsToMany
     {

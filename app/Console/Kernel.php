@@ -13,11 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('serviceTimer')->everyFiveMinutes();
-        $schedule->command('nodeStatusDetection')->everyTenMinutes();
+        $schedule->command('node:detection')->everyTenMinutes();
         $schedule->command('autoClearLogs')->everyThirtyMinutes();
         $schedule->command('task:hourly')->hourly();
         $schedule->command('task:daily')->dailyAt('00:05');
-        $schedule->command('dailyNodeReport')->dailyAt('09:30');
+        $schedule->command('node:maintenance')->dailyAt('09:30');
         $schedule->command('userTrafficWarning')->dailyAt('10:30');
         $schedule->command('userExpireWarning')->dailyAt('20:30');
         $schedule->command('task:auto')->everyMinute();

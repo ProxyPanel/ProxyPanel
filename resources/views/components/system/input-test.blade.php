@@ -14,7 +14,7 @@
                         <a href="javascript:sendTestNotification('{{ $test }}');">[{{ trans('admin.system.notification.send_test') }}]</a>
                     @endcan
                 </span>
-            @endisset
+            @endif
         </div>
     </div>
 </div>
