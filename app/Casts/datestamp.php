@@ -14,7 +14,7 @@ class datestamp implements CastsAttributes
      */
     public function get(Model $model, string $key, mixed $value, array $attributes): string
     {
-        return date('Y-m-d', $value);
+        return date('Y-m-d H:i:s', $value);
     }
 
     /**

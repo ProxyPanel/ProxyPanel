@@ -64,6 +64,8 @@ class CouponController extends Controller
         }
         $num = (int) $request->input('num');
         $data = $request->only(['name', 'type', 'priority', 'usable_times', 'value', 'start_time', 'end_time']);
+        $data['end_time'] .= ' 23:59:59';
+
         $data['limit'] = [
             'minimum' => $request->input('minimum'),
             'used' => $request->input('used'),
