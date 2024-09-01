@@ -104,7 +104,7 @@
                 new Chart(document.getElementById(elementId), {
                     type: 'bar',
                     data: {
-                        labels: optimizedDatasets[0].data.map(d => d.time),
+                        labels: optimizedDatasets[0]?.data.map(d => d.time),
                         datasets: optimizedDatasets
                     },
                     plugins: [ChartDataLabels],
