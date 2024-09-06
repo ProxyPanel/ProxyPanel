@@ -535,17 +535,21 @@
                 ['level', 'rule_group_id', 'country_code', 'relay_node_id'].forEach(prop => $(`#${prop}`).selectpicker('val', nodeData[prop]));
 
                 $('#labels').selectpicker('val', labels.map(label => label.id));
-                $('#next_renewal_date').datepicker('update', details.next_renewal_date ?? null);
-                if (details.subscription_term) {
+                if (details?.next_renewal_date) {
+                    $('#next_renewal_date').datepicker('update', details.next_renewal_date);
+                }
+                if (details?.subscription_term) {
                     setSubscriptionTerm(details.subscription_term)
                 }
-                $('#renewal_cost').val(details.renewal_cost ?? null);
+                if (details?.renewal_cost) {
+                    $('#renewal_cost').val(details.renewal_cost);
+                }
 
                 if (relay_node_id) {
                     $('#relay_port').val(port);
                 } else {
                     const typeHandlers = {
-                        0: () => $('#method').selectpicker('val', profile.method ?? null),
+                        0: () => $('#method').selectpicker('val', profile?.method || null),
                         1: setSSRValues,
                         2: setV2RayValues,
                         3: () => $('#trojan_port').val(port),
@@ -557,8 +561,8 @@
                 }
 
                 function setSSRValues() {
-                    ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] ?? null));
-                    ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] ?? null));
+                    ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
+                    ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
                     if (profile.passwd && port) {
                         $('#single').click();
                         $('#passwd').val(profile.passwd);
@@ -566,9 +570,9 @@
                 }
 
                 function setV2RayValues() {
-                    ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] ?? null));
-                    ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] ?? null));
-                    $('#v2_method').selectpicker('val', profile['method'] ?? null);
+                    ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
+                    ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
+                    $('#v2_method').selectpicker('val', profile['method'] || null);
 
                     $('#v2_port').val(port);
                     profile.v2_tls && $('#v2_tls').click();
@@ -591,8 +595,15 @@
         });
 
         function formSubmit(event) {
+            event.preventDefault(); // 阻止表单的默认提交行为
             const $form = $(event.target); // 获取触发事件的表单
-            const data = Object.fromEntries($form.serializeArray().map(item => [item.name, item.value]));
+
+            // 获取所有非 hidden 的表单数据
+            const data = Object.fromEntries(
+                $form.find('input:not([hidden]), select, textarea')
+                .serializeArray()
+                .map(item => [item.name, item.value])
+            );
 
             // 拼接 subscription_term
             const termValue = $('#subscription_term_value').val();
@@ -713,7 +724,9 @@
             const $path = $('#v2_path');
             $type.show();
             $host.show();
-            $path.val('/' + string);
+            if (!$path.val()) {
+                $path.val('/' + string);
+            }
             switch (net) {
                 case 'ws':
                 case 'http':
@@ -725,7 +738,9 @@
                     break;
                 case 'quic':
                     $typeOption.attr('disabled', false);
-                    $path.val(string);
+                    if (!$path.val()) {
+                        $path.val(string);
+                    }
                     break;
                 case 'kcp':
                 case 'tcp':

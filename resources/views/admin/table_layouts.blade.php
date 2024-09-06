@@ -14,7 +14,7 @@
             window.location.href = window.location.href.split('?')[0];
         }
 
-        $('form').on('submit', function() {
+        $('form:not(.modal-body form)').on('submit', function() {
             $(this).find('input:not([type="submit"]), select').filter(function() {
                 return this.value === "";
             }).prop('disabled', true);
@@ -24,7 +24,7 @@
             }, 0);
         });
 
-        $('select').on('change', function() {
+        $('select').not('.modal-body select').on('change', function() {
             $(this).closest('form').trigger('submit');
         });
     </script>

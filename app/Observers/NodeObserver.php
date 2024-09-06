@@ -22,7 +22,7 @@ class NodeObserver
             Log::error('节点生成-自动生成授权时出现错误，请稍后自行生成授权！');
         }
 
-        if ($node->is_ddns === '0' && $node->server && sysConfig('ddns_mode')) {
+        if (! $node->is_ddns && $node->server && sysConfig('ddns_mode')) {
             $newDNS = new DDNS($node->server);
             if ($node->ip) {
                 foreach ($node->ips() as $ip) {
@@ -39,7 +39,7 @@ class NodeObserver
 
     public function updated(Node $node): void
     {
-        if ($node->is_ddns === '0' && sysConfig('ddns_mode')) {
+        if (! $node->is_ddns && sysConfig('ddns_mode')) {
             $changes = $node->getChanges();
             if (Arr::hasAny($changes, ['ip', 'ipv6', 'server'])) {
                 $newDNS = new DDNS($node->server);
@@ -78,7 +78,7 @@ class NodeObserver
             }
         }
 
-        if ($node->type === '4') {
+        if ((int) $node->type === 4) {
             reloadNode::dispatch($node);
         }
     }
