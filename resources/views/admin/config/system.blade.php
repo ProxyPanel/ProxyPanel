@@ -618,8 +618,8 @@
                 node_daily_notification: {!! $node_daily_notification ?: 'null' !!},
                 node_offline_notification: {!! $node_offline_notification ?: 'null' !!},
                 node_renewal_notification: {!! $node_renewal_notification ?: 'null' !!},
-                password_reset_notification: {!! $password_reset_notification ?: 'null' !!},
-                payment_confirm_notification: {!! $payment_confirm_notification ?: 'null' !!},
+                password_reset_notification: '{{ $password_reset_notification }}',
+                payment_confirm_notification: '{{ $payment_confirm_notification }}',
                 payment_received_notification: {!! $payment_received_notification ?: 'null' !!},
                 ticket_closed_notification: {!! $ticket_closed_notification ?: 'null' !!},
                 ticket_created_notification: {!! $ticket_created_notification ?: 'null' !!},
@@ -655,9 +655,8 @@
                 parentId.selectpicker('refresh');
             };
             ['account_expire_notification', 'data_anomaly_notification', 'data_exhaust_notification', 'node_blocked_notification',
-                'node_daily_notification', 'node_offline_notification', 'node_renewal_notification', 'password_reset_notification',
-                'payment_confirm_notification', 'payment_received_notification', 'ticket_closed_notification', 'ticket_created_notification',
-                'ticket_replied_notification'
+                'node_daily_notification', 'node_offline_notification', 'node_renewal_notification', 'payment_received_notification',
+                'ticket_closed_notification', 'ticket_created_notification', 'ticket_replied_notification'
             ].forEach(disableChannel);
 
             @if (!$captcha)

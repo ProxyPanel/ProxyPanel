@@ -73,8 +73,7 @@ This project is based on Laravel 10 Framework. Therefore, it requires all Larave
 ## Funding
 
 Buy me a Coffee ☕?
-- **PayPal:** [paypal.me/brettonye](https://www.paypal.com/paypalme/brettonye)
-- **USDT-TRC20:** TFMxq91oPCnoxDXBiEgRzab5N6GFnAbTT5
+- **USDT-TRC20:** TJbd8dyryPJ5aPJkArG1Lwr28g9g2FLd29
 
 ---
 
