@@ -25,35 +25,32 @@ class ProxyService
         self::$user = $user;
     }
 
-    public function getUser(): ?User
-    {
-        return self::$user;
-    }
-
-    public function getServers(): array
-    {
-        return self::$servers;
-    }
-
     public function getProxyText(string $target, ?int $type = null): string
     {
-        $servers = $this->getNodeList($type);
-        if (empty($servers)) {
-            return $this->failedProxyReturn(trans('errors.subscribe.none'), $type);
-        }
+        if (empty($this->getServers())) {
+            $servers = $this->getNodeList($type);
+            if (empty($servers)) {
+                $this->failedProxyReturn(trans('errors.subscribe.none'), $type);
+            } else {
+                if (sysConfig('rand_subscribe')) {// 打乱数组
+                    $servers = Arr::shuffle($servers);
+                }
 
-        if (sysConfig('rand_subscribe')) {// 打乱数组
-            $servers = Arr::shuffle($servers);
-        }
+                $max = (int) sysConfig('subscribe_max');
+                if ($max && count($servers) > $max) { // 订阅数量限制
+                    $servers = Arr::random($servers, $max);
+                }
 
-        $max = (int) sysConfig('subscribe_max');
-        if ($max && count($servers) > $max) { // 订阅数量限制
-            $servers = Arr::random($servers, $max);
+                $this->setServers($servers);
+            }
         }
-
-        $this->setServers($servers);
 
         return $this->getClientConfig($target);
+    }
+
+    public function getServers(): ?array
+    {
+        return self::$servers ?? null;
     }
 
     public function getNodeList(?int $type = null, bool $isConfig = true): array
@@ -153,20 +150,51 @@ class ProxyService
         return $config;
     }
 
-    public function failedProxyReturn(string $text, ?int $type = 1): string
+    public function failedProxyReturn(string $text, ?int $type = 1): void
     {
         $url = sysConfig('website_url');
 
-        return match ($type) {
-            1 => 'vmess://'.base64url_encode(json_encode(['v' => '2', 'ps' => $text, 'add' => $url, 'port' => 0, 'id' => 0, 'aid' => 0, 'net' => 'tcp', 'type' => 'none', 'host' => $url, 'path' => '/', 'tls' => 'tls'], JSON_PRETTY_PRINT)),
-            2 => 'trojan://0@0.0.0.0:0?peer=0.0.0.0#'.rawurlencode($text),
-            default => 'ssr://'.base64url_encode('0.0.0.0:0:origin:none:plain:MDAwMA/?obfsparam=&protoparam=&remarks='.base64url_encode($text).'&group='.base64url_encode(sysConfig('website_name')).'&udpport=0&uot=0'),
-        }.PHP_EOL;
+        $data = [
+            'name' => $text,
+            'type' => [1 => 'shadowsocks', 2 => 'vmess', 3 => 'trojan'][$type],
+            'host' => $url,
+            'port' => 0,
+            'udp' => 0,
+        ];
+
+        $addition = match ($type) {
+            1 => ['method' => 'none', 'passwd' => 'error'],
+            2 => ['uuid' => '0', 'v2_alter_id' => 0, 'method' => 'auto'],
+            3 => ['passwd' => 'error']
+        };
+
+        $this->setServers([array_merge($data, $addition)]);
     }
 
     private function setServers(array $servers): void
     {
         self::$servers = $servers;
+    }
+
+    private function getClientConfig(string $target): string
+    {
+        foreach (glob(app_path('Utils/Clients').'/*.php') as $file) {
+            $class = 'App\\Utils\\Clients\\'.basename($file, '.php');
+            $reflectionClass = new ReflectionClass($class);
+
+            foreach ($reflectionClass->getConstant('AGENT') as $agent) {
+                if (str_contains($target, $agent)) {
+                    return (new $class)->getConfig($this->getServers(), $this->getUser(), $target);
+                }
+            }
+        }
+
+        return URLSchemes::build($this->getServers()); // Origin
+    }
+
+    public function getUser(): ?User
+    {
+        return self::$user;
     }
 
     public function getProxyCode(string $target, ?int $type = null): ?string
@@ -191,21 +219,5 @@ class ProxyService
             'vmess' => $type->buildVmess($server),
             'trojan' => $type->buildTrojan($server),
         };
-    }
-
-    private function getClientConfig(string $target): string
-    {
-        foreach (glob(app_path('Utils/Clients').'/*.php') as $file) {
-            $class = 'App\\Utils\\Clients\\'.basename($file, '.php');
-            $reflectionClass = new ReflectionClass($class);
-
-            foreach ($reflectionClass->getConstant('AGENT') as $agent) {
-                if (str_contains($target, $agent)) {
-                    return (new $class)->getConfig($this->getServers(), $this->getUser(), $target);
-                }
-            }
-        }
-
-        return URLSchemes::build($this->getServers()); // Origin
     }
 }
