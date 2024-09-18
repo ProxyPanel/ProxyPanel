@@ -178,8 +178,9 @@
         </div>
     </div>
     <footer class="site-footer ml-0">
-        <div class="site-footer-legal">© 2017 -
-            2024<a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{ config('version.name') }} </a> {{ __('All rights reserved.') }}
+        <div class="site-footer-legal">
+            © 2017 - {{ now()->year }}<a href="https://github.com/ProxyPanel/ProxyPanel" target="_blank">{{ config('version.name') }}</a>
+            {{ __('All rights reserved.') }}
         </div>
         <div class="site-footer-right">
             Base on <a href="https://github.com/ARCANEDEV/LogViewer" target="_blank">LogViewer</a> 🚀
