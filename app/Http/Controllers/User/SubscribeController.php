@@ -10,7 +10,6 @@ use App\Utils\IP;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Redirect;
-use Response;
 
 class SubscribeController extends Controller
 {
@@ -19,7 +18,7 @@ class SubscribeController extends Controller
     private ProxyService $proxyServer;
 
     // 通过订阅码获取订阅信息
-    public function getSubscribeByCode(Request $request, string $code): RedirectResponse|Response|string
+    public function getSubscribeByCode(Request $request, string $code): RedirectResponse|string
     {
         preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
 
@@ -33,39 +32,39 @@ class SubscribeController extends Controller
         $subscribe = UserSubscribe::whereCode($code)->first();
         $this->proxyServer = new ProxyService;
         if (! $subscribe) {
-            return $this->failed(trans('errors.subscribe.unknown'));
+            $this->failed(trans('errors.subscribe.unknown'));
         }
 
         if ($subscribe->status !== 1) {
-            return $this->failed(trans('errors.subscribe.sub_banned'));
+            $this->failed(trans('errors.subscribe.sub_banned'));
         }
 
         // 检查用户是否有效
         $user = $subscribe->user;
         $this->proxyServer->setUser($user);
         if (! $user) {
-            return $this->failed(trans('errors.subscribe.user'));
+            $this->failed(trans('errors.subscribe.user'));
         }
 
         if ($user->status === -1) {
-            return $this->failed(trans('errors.subscribe.user_disabled'));
+            $this->failed(trans('errors.subscribe.user_disabled'));
         }
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed(trans('errors.subscribe.banned_until', ['time' => $user->ban_time]));
+                $this->failed(trans('errors.subscribe.banned_until', ['time' => $user->ban_time]));
             }
 
             $unusedTraffic = $user->transfer_enable - $user->used_traffic;
             if ($unusedTraffic <= 0) {
-                return $this->failed(trans('errors.subscribe.out'));
+                $this->failed(trans('errors.subscribe.out'));
             }
 
             if ($user->expiration_date < date('Y-m-d')) {
-                return $this->failed(trans('errors.subscribe.expired'));
+                $this->failed(trans('errors.subscribe.expired'));
             }
 
-            return $this->failed(trans('errors.subscribe.question'));
+            $this->failed(trans('errors.subscribe.question'));
         }
 
         $subscribe->increment('times'); // 更新访问次数
@@ -74,9 +73,9 @@ class SubscribeController extends Controller
         return $this->proxyServer->getProxyText(strtolower($request->input('target') ?? ($request->userAgent() ?? '')), self::$subType);
     }
 
-    private function failed(string $text): \Illuminate\Http\Response
+    private function failed(string $text): void
     { // 抛出错误的节点信息，用于兼容防止客户端订阅失败
-        return Response::make(base64url_encode($this->proxyServer->failedProxyReturn($text, self::$subType ?? 1)));
+        $this->proxyServer->failedProxyReturn($text, self::$subType ?? 1);
     }
 
     private function subscribeLog(int $subscribeId, ?string $ip, string $headers): void
