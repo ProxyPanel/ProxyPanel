@@ -66,6 +66,17 @@
     <script src="/assets/global/js/Plugin/asscrollable.js"></script>
     <script src="/assets/global/js/Plugin/slidepanel.js"></script>
     <script>
+        // Create and append link element to load the font CSS asynchronously
+        const link = document.createElement("link");
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.loli.net/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap';
+        document.head.appendChild(link);
+
+        // Apply font to body after font has loaded
+        link.onload = function() {
+            document.body.style.fontFamily = 'Roboto, system-ui, sans-serif';
+        };
+
         (function(document, window, $) {
             "use strict";
             const Site = window.Site;

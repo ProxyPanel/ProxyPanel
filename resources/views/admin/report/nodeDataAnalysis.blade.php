@@ -9,32 +9,12 @@
             <div class="card-block p-30">
                 <form class="form-row">
                     <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <select class="form-control show-tick" id="hour_date" name="hour_date" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                title="{{ trans('admin.report.select_hourly_date') }}" onchange="cleanSubmit(this.form);this.form.submit()">
-                            @foreach ($hour_dates as $date)
-                                <option value="{{ $date }}">{{ $date }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
                         <select class="form-control show-tick" id="nodes" name="nodes[]" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                 title="{{ trans('admin.logs.user_traffic.choose_node') }}" multiple>
                             @foreach ($nodes as $id => $name)
                                 <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>
-                    </div>
-                    <div class="form-group col-lg-6 col-sm-12">
-                        <div class="input-group input-daterange" data-plugin="datepicker">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
-                            </div>
-                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}" autocomplete="off" />
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">{{ trans('common.to') }}</span>
-                            </div>
-                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}" autocomplete="off" />
-                        </div>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
@@ -47,7 +27,23 @@
             <div class="row mx-0">
                 <div class="col-md-12 col-xxl-7 card card-shadow">
                     <div class="card-block p-md-30">
-                        <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.hourly_traffic') }}</div>
+                        <div class="row pb-20">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.hourly_traffic') }}</div>
+                            </div>
+                            <div class="col-md-8 col-sm-6">
+                                <form class="form-row float-right">
+                                    <div class="form-group">
+                                        <select class="form-control show-tick" id="hour_date" name="hour_date" data-plugin="selectpicker"
+                                                data-style="btn-outline btn-primary" title="{{ trans('admin.report.select_hourly_date') }}">
+                                            @foreach ($hour_dates as $date)
+                                                <option value="{{ $date }}">{{ $date }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <canvas id="hourlyBar"></canvas>
                     </div>
                 </div>
@@ -59,9 +55,34 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 offset-xxl-2 col-xxl-8 card card-shadow">
+                <div class="col-12 offset-xxl-1 col-xxl-10 card card-shadow">
                     <div class="card-block p-md-30">
-                        <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_traffic') }}</div>
+                        <div class="row pb-20">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_traffic') }}</div>
+                            </div>
+                            <div class="col-md-8 col-sm-6">
+                                <form class="form-row float-right" onsubmit="handleFormSubmit(event, this);">
+                                    <div class="form-group">
+                                        <div class="input-group input-daterange" data-plugin="datepicker">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
+                                            </div>
+                                            <input class="form-control" name="start" type="text"
+                                                   value="{{ Request::query('start', now()->startOfMonth()->format('Y-m-d')) }}" autocomplete="off" />
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">{{ trans('common.to') }}</span>
+                                            </div>
+                                            <input class="form-control" name="end" type="text" value="{{ Request::query('end', now()->format('Y-m-d')) }}"
+                                                   autocomplete="off" />
+                                            <div class="input-group-addon">
+                                                <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                         <canvas id="dailyBar"></canvas>
                     </div>
                 </div>
@@ -78,33 +99,19 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script type="text/javascript">
         const nodeData = @json($data);
-        const nodeColorMap = generateNodeColorMap(nodeData.nodes);
 
-        function resetSearchForm() {
-            window.location.href = window.location.href.split('?')[0];
-        }
+        const getRandomColor = (name) => {
+            const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+            const hue = (hash % 360 + Math.random() * 50) % 360;
+            const saturation = 50 + (hash % 30);
+            const lightness = 40 + (hash % 20);
+            return `hsla(${hue}, ${saturation}%, ${lightness}%, 0.55)`;
+        };
 
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
-            startDate: nodeData.start_date,
-            endDate: new Date(),
-        });
+        const generateNodeColorMap = (nodeNames) =>
+            Object.fromEntries(Object.entries(nodeNames).map(([id, name]) => [id, getRandomColor(name)]));
 
-        $('form').on('submit', function() {
-            cleanSubmit(this);
-        });
-
-        function cleanSubmit(form) {
-            $(form).find('input:not([type="submit"]), select').filter(function() {
-                return this.value === "";
-            }).prop('disabled', true);
-
-            setTimeout(function() {
-                $(form).find(':disabled').prop('disabled', false);
-            }, 0);
-        }
-
-        function optimizeDatasets(datasets) {
+        const optimizeDatasets = (datasets) => {
             const dataByDate = datasets.reduce((acc, dataset) => {
                 dataset.data.forEach(item => {
                     acc[item.time] = acc[item.time] || [];
@@ -117,18 +124,11 @@
             }, {});
 
             const allNodeIds = datasets.map(d => d.label);
-            const optimizedData = Object.entries(dataByDate).map(([date, dayData]) => {
-                const total = dayData.reduce((sum, item) => sum + item.total, 0);
-                const filledData = allNodeIds.map(id => {
-                    const nodeData = dayData.find(item => item.id === id);
-                    return nodeData ? nodeData.total : 0;
-                });
-                return {
-                    time: date,
-                    data: filledData,
-                    total
-                };
-            });
+            const optimizedData = Object.entries(dataByDate).map(([date, dayData]) => ({
+                time: date,
+                data: allNodeIds.map(id => dayData.find(item => item.id === id)?.total || 0),
+                total: dayData.reduce((sum, item) => sum + item.total, 0)
+            }));
 
             return datasets.map((dataset, index) => ({
                 ...dataset,
@@ -137,14 +137,31 @@
                     total: day.data[index]
                 }))
             }));
-        }
+        };
 
-        function createBarChart(elementId, labels, datasets, labelTail, unit = 'MiB') {
+        const generateDatasets = (flows, nodeColorMap) =>
+            Object.entries(flows.reduce((acc, flow) => {
+                acc[flow.id] = acc[flow.id] || [];
+                acc[flow.id].push({
+                    time: flow.time,
+                    total: parseFloat(flow.total),
+                    name: flow.name
+                });
+                return acc;
+            }, {})).map(([nodeId, data]) => ({
+                label: data[0].name,
+                backgroundColor: nodeColorMap[nodeId],
+                borderColor: nodeColorMap[nodeId],
+                data,
+                fill: true,
+            }));
+
+        const createBarChart = (elementId, labels, datasets, labelTail, unit = 'GiB') => {
             const optimizedDatasets = optimizeDatasets(datasets);
             new Chart(document.getElementById(elementId), {
                 type: 'bar',
                 data: {
-                    labels: optimizedDatasets[0]?.data.map(d => d.time),
+                    labels: labels || optimizedDatasets[0]?.data.map(d => d.time),
                     datasets: optimizedDatasets
                 },
                 plugins: [ChartDataLabels],
@@ -173,14 +190,26 @@
                                 }
                             },
                         },
-                        tooltip: label_callbacks(labelTail, unit),
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                title: context => `${context[0].label} ${labelTail}`,
+                                label: context => {
+                                    const dataset = context.dataset;
+                                    const value = dataset.data[context.dataIndex]?.total || context.parsed.y;
+                                    return `${dataset.label || ''}: ${value.toFixed(2)} ${unit}`;
+                                }
+                            }
+                        },
                         datalabels: {
                             display: true,
                             align: 'end',
                             anchor: 'end',
                             formatter: (value, context) => {
                                 if (context.datasetIndex === context.chart.data.datasets.length - 1) {
-                                    let total = context.chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[context.dataIndex].total, 0);
+                                    let total = context.chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[context.dataIndex].total,
+                                        0);
                                     return total.toFixed(2) + unit;
                                 }
                                 return null;
@@ -189,59 +218,9 @@
                     },
                 },
             });
-        }
+        };
 
-        function label_callbacks(tail, unit) {
-            return {
-                mode: 'index',
-                intersect: false,
-                callbacks: {
-                    title: context => `${context[0].label} ${tail}`,
-                    label: context => {
-                        const dataset = context.dataset;
-                        const value = dataset.data[context.dataIndex]?.total || context.parsed.y;
-                        return `${dataset.label || ''}: ${value.toFixed(2)} ${unit}`;
-                    }
-                }
-            };
-        }
-
-        function generateNodeColorMap(nodeNames) {
-            return Object.fromEntries(Object.entries(nodeNames).map(([id, name]) => [id, getRandomColor(name)]));
-        }
-
-        function getRandomColor(name) {
-            let hash = 0;
-            for (let i = 0; i < name.length; i++) {
-                hash = name.charCodeAt(i) + ((hash << 5) - hash);
-            }
-            const hue = (hash % 360 + Math.random() * 50) % 360;
-            const saturation = 50 + (hash % 30);
-            const lightness = 40 + (hash % 20);
-            return `hsla(${hue}, ${saturation}%, ${lightness}%, 0.55)`;
-        }
-
-        function generateDatasets(flows) {
-            const dataByNode = flows.reduce((acc, flow) => {
-                acc[flow.id] = acc[flow.id] || [];
-                acc[flow.id].push({
-                    time: flow.time,
-                    total: parseFloat(flow.total),
-                    name: flow.name
-                });
-                return acc;
-            }, {});
-
-            return Object.entries(dataByNode).map(([nodeId, data]) => ({
-                label: data[0].name,
-                backgroundColor: nodeColorMap[nodeId],
-                borderColor: nodeColorMap[nodeId],
-                data,
-                fill: true,
-            }));
-        }
-
-        function createDoughnutChart(elementId, labels, data, colors, date) {
+        const createDoughnutChart = (elementId, labels, data, colors, date) => {
             Chart.register({
                 id: 'totalLabel',
                 beforeDraw(chart) {
@@ -327,7 +306,7 @@
             });
         }
 
-        function generatePieData(flows) {
+        const generatePieData = (flows, nodeColorMap) => {
             return {
                 labels: flows.map(flow => flow.name),
                 data: flows.map(flow => flow.total),
@@ -335,25 +314,55 @@
             };
         }
 
-        function initCharts() {
-            createBarChart('hourlyBar', nodeData.hours, generateDatasets(nodeData.hourlyFlows), @json(trans_choice('common.hour', 2)), ' GiB');
-            createBarChart('dailyBar', '', generateDatasets(nodeData.dailyFlows), '', ' GiB');
+        const initCharts = () => {
+            if (nodeData) {
+                const nodeColorMap = generateNodeColorMap(nodeData.nodes);
+                createBarChart('hourlyBar', nodeData.hours.map(String), generateDatasets(nodeData.hourlyFlows, nodeColorMap), @json(trans_choice('common.hour', 2)),
+                    'GiB');
+                createBarChart('dailyBar', '', generateDatasets(nodeData.dailyFlows, nodeColorMap), '', 'GiB');
 
-            const lastDate = nodeData.dailyFlows[nodeData.dailyFlows.length - 1].time;
-            const lastDayData = nodeData.dailyFlows.filter(flow => flow.time === lastDate);
-            const {
-                labels,
-                data,
-                colors
-            } = generatePieData(lastDayData);
-            createDoughnutChart('dailyPie', labels, data, colors, lastDate);
-        }
+                const lastDate = nodeData.dailyFlows[nodeData.dailyFlows.length - 1].time;
+                const lastDayData = nodeData.dailyFlows.filter(flow => flow.time === lastDate);
+                const {
+                    labels,
+                    data,
+                    colors
+                } = generatePieData(lastDayData, nodeColorMap);
+                createDoughnutChart('dailyPie', labels, data, colors, lastDate);
+            }
+        };
 
-        $(document).ready(function() {
-            $('#nodes').selectpicker('val', @json(Request::query('nodes')));
-            $('#hour_date').selectpicker('val', @json(Request::query('hour_date')));
-            $('.input-daterange').datepicker('update', @json(Request::query('start')), @json(Request::query('end')));
+        const handleFormSubmit = (event, form) => {
+            event.preventDefault();
+            let urlParams = new URLSearchParams(window.location.search);
+            let formData = new FormData(form);
+
+            for (let [key, value] of formData.entries()) {
+                value ? urlParams.set(key, value) : urlParams.delete(key);
+            }
+
+            window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
+        };
+
+        const resetSearchForm = () => {
+            window.location.href = window.location.href.split('?')[0];
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
             initCharts();
+            $('#nodes').selectpicker('val', @json(Request::query('nodes')));
+
+            const hourDateSelect = document.getElementById('hour_date');
+            if (hourDateSelect) {
+                hourDateSelect.addEventListener('change', (event) => handleFormSubmit(event, event.target.form));
+                $(hourDateSelect).selectpicker('val', new URLSearchParams(window.location.search).get('hour_date') || @json(now()->format('Y-m-d')));
+            }
+
+            $('.input-daterange').datepicker({
+                format: 'yyyy-mm-dd',
+                startDate: nodeData.start_date,
+                endDate: new Date(),
+            });
         });
     </script>
 @endsection
