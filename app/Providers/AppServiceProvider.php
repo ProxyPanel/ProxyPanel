@@ -9,6 +9,8 @@ use Illuminate\Support\ServiceProvider;
 use Schema;
 use URL;
 
+use function config;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,10 +18,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->isLocal() && \config('app.debug')) {
+        if ($this->app->isLocal() && config('app.debug')) {
             $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
             $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
+            $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
         }
         if (File::exists(base_path().'/.env') && Schema::hasTable('config') && DB::table('config')->exists()) {
             $this->app->register(SettingServiceProvider::class);
