@@ -159,7 +159,7 @@ class OrderService
     { // 刷新账号有效时间
         $data = ['expired_at' => $this->getFinallyExpiredTime()];
 
-        if ($data['expired_at'] === now()->format('Y-m-d')) {
+        if ($data['expired_at'] < now()->format('Y-m-d')) {
             $data = array_merge([
                 'u' => 0,
                 'd' => 0,
