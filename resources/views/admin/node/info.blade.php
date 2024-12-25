@@ -7,6 +7,10 @@
         .hidden {
             display: none
         }
+
+        .bootstrap-select .dropdown-menu {
+            max-height: 50vh !important;
+        }
     </style>
 @endsection
 @section('content')
@@ -132,8 +136,11 @@
                                     <!-- 节点 细则部分 -->
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="next_renewal_date">{{ trans('model.node.next_renewal_date') }}</label>
-                                        <input class="form-control col-md-4" id="next_renewal_date" name="next_renewal_date" data-plugin="datepicker"
-                                               type="text" autocomplete="off" />
+                                        <div class="col-md-6 input-group p-0">
+                                            <input class="form-control" id="next_renewal_date" name="next_renewal_date" data-plugin="datepicker" type="text"
+                                                   autocomplete="off" />
+                                            <input class="form-control" id="next_next_renewal_date" type="text" readonly />
+                                        </div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="subscription_term_value">
@@ -489,102 +496,109 @@
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/js/Plugin/switchery.js"></script>
     <script>
-        $('[name="next_renewal_date"]').datepicker({
-            format: 'yyyy-mm-dd',
-        });
-
         const string = "{{ strtolower(Str::random()) }}";
 
+        $('[name="next_renewal_date"]').datepicker({
+            format: 'yyyy-mm-dd'
+        });
+
+        function calculateNextNextRenewalDate() {
+            const nextRenewalDate = $('#next_renewal_date').val();
+            const termValue = parseInt($('#subscription_term_value').val() || 0);
+            const termUnit = $('#subscription_term_unit').val();
+
+            if (!nextRenewalDate || termValue <= 0) {
+                $('#next_next_renewal_date').val('');
+                return;
+            }
+
+            const currentDate = new Date(nextRenewalDate);
+            const originalDay = currentDate.getDate();
+
+            if (termUnit === 'months') {
+                // 获取当前月份和年份
+                let targetMonth = currentDate.getMonth() + termValue;
+                let targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
+                targetMonth = targetMonth % 12;
+
+                // 先将日期设置为目标月的同一天
+                currentDate.setFullYear(targetYear, targetMonth, originalDay);
+
+                // 检查是否因月份天数不同而被自动调整
+                if (currentDate.getMonth() !== targetMonth) {
+                    // 如果被调整，说明目标月份的天数比原始日期少
+                    // 将日期设置为目标月份的最后一天
+                    currentDate.setFullYear(targetYear, targetMonth + 1, 0);
+                }
+            } else {
+                // 处理天数和年份的情况
+                const adjustments = {
+                    days: 'Date',
+                    years: 'FullYear'
+                };
+                currentDate[`set${adjustments[termUnit]}`](
+                    currentDate[`get${adjustments[termUnit]}`]() + termValue
+                );
+            }
+
+            $('#next_next_renewal_date').val(currentDate.toISOString().split('T')[0]);
+        }
+
         $(document).ready(function() {
+            initializeUI(); // 初始化
+            bindEvents(); // 事件绑定
+
+            @isset($node)
+                setupNodeData(@json($node));
+            @else
+                setupDefaultValues();
+            @endisset
+
+        });
+
+        function initializeUI() {
             $('.single-setting').hide();
+            $('#v2_path').val('/' + string);
+        }
+
+        function bindEvents() {
             $('input:radio[name="type"]').on('change', updateServiceType);
             $('#obfs').on('changed.bs.select', toggleObfsParam);
             $('#relay_node_id').on('changed.bs.select', toggleRelayConfig);
             $('#v2_net').on('changed.bs.select', updateV2RaySettings);
+            $('#nodeForm').on('submit', formSubmit);
+            $(document).on('change', '#next_renewal_date, #subscription_term_value, #subscription_term_unit', calculateNextNextRenewalDate);
+        }
 
-            $('#nodeForm').on('submit', function(event) {
-                event.preventDefault();
-                formSubmit(event);
-            });
+        function setupNodeData(nodeData) {
+            const {
+                type,
+                labels,
+                relay_node_id,
+                port,
+                profile,
+                tls_provider,
+                details
+            } = nodeData;
 
-            $('[name="next_renewal_date"]').datepicker({
-                format: 'yyyy-mm-dd'
-            });
+            // 设置选项和输入值
+            ['is_ddns', 'is_udp', 'status'].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
+            ['is_display', 'detection_type', 'type'].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
+            ['name', 'server', 'ip', 'ipv6', 'push_port', 'traffic_rate', 'speed_limit', 'client_limit', 'description', 'sort']
+            .forEach(prop => $(`#${prop}`).val(nodeData[prop]));
+            ['level', 'rule_group_id', 'country_code', 'relay_node_id'].forEach(prop => $(`#${prop}`).selectpicker('val', nodeData[prop]));
+            $('#labels').selectpicker('val', labels.map(label => label.id));
 
-            toggleObfsParam();
-            toggleRelayConfig();
+            if (details?.next_renewal_date) $('#next_renewal_date').datepicker('update', details.next_renewal_date);
+            if (details?.subscription_term) setSubscriptionTerm(details.subscription_term);
+            if (details?.renewal_cost) $('#renewal_cost').val(details.renewal_cost);
+            calculateNextNextRenewalDate(); // 手动触发计算下下次续费日期
 
-            @isset($node)
-                const nodeData = @json($node);
-                const {
-                    type,
-                    labels,
-                    relay_node_id,
-                    port,
-                    profile,
-                    tls_provider,
-                    details
-                } = nodeData;
-
-                ['is_ddns', 'is_udp', 'status'].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
-                ['is_display', 'detection_type', 'type'].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
-
-                ['name', 'server', 'ip', 'ipv6', 'push_port', 'traffic_rate', 'speed_limit', 'client_limit', 'description', 'sort']
-                .forEach(prop => $(`#${prop}`).val(nodeData[prop]));
-
-                ['level', 'rule_group_id', 'country_code', 'relay_node_id'].forEach(prop => $(`#${prop}`).selectpicker('val', nodeData[prop]));
-
-                $('#labels').selectpicker('val', labels.map(label => label.id));
-                if (details?.next_renewal_date) {
-                    $('#next_renewal_date').datepicker('update', details.next_renewal_date);
-                }
-                if (details?.subscription_term) {
-                    setSubscriptionTerm(details.subscription_term)
-                }
-                if (details?.renewal_cost) {
-                    $('#renewal_cost').val(details.renewal_cost);
-                }
-
-                if (relay_node_id) {
-                    $('#relay_port').val(port);
-                } else {
-                    const typeHandlers = {
-                        0: () => $('#method').selectpicker('val', profile?.method || null),
-                        1: setSSRValues,
-                        2: setV2RayValues,
-                        3: () => $('#trojan_port').val(port),
-                        4: setSSRValues
-                    };
-
-                    typeHandlers[type] && typeHandlers[type]();
-                    $('input[name="port"]').val(port);
-                }
-
-                function setSSRValues() {
-                    ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
-                    ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
-                    if (profile.passwd && port) {
-                        $('#single').click();
-                        $('#passwd').val(profile.passwd);
-                    }
-                }
-
-                function setV2RayValues() {
-                    ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
-                    ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
-                    $('#v2_method').selectpicker('val', profile['method'] || null);
-
-                    $('#v2_port').val(port);
-                    profile.v2_tls && $('#v2_tls').click();
-                    $('#tls_provider').val(tls_provider);
-                }
-            @else
-                switchSetting('single');
-                switchSetting('is_ddns');
-                $('input[name="type"][value="0"]').click();
-                $('#status, #is_udp').click();
-                $('#v2_path').val('/' + string);
-            @endisset
+            if (relay_node_id) {
+                $('#relay_port').val(port);
+            } else {
+                setupNodeTypeHandlers(type, profile, port, tls_provider);
+            }
 
             function setSubscriptionTerm(term) {
                 const [value, unit] = term.split(' ');
@@ -592,7 +606,46 @@
                 $('#subscription_term_value').val(value || '');
                 $('#subscription_term_unit').selectpicker('val', unit || 'day'); // 默认选择 day
             }
-        });
+        }
+
+        function setupDefaultValues() {
+            switchSetting('single');
+            switchSetting('is_ddns');
+            $('input[name="type"][value="0"]').click();
+            $('#status, #is_udp').click();
+        }
+
+        function setupNodeTypeHandlers(type, profile, port, tls_provider) {
+            const typeHandlers = {
+                0: () => $('#method').selectpicker('val', profile?.method || null),
+                1: setSSRValues,
+                2: setV2RayValues,
+                3: () => $('#trojan_port').val(port),
+                4: setSSRValues
+            };
+
+            typeHandlers[type] && typeHandlers[type]();
+            $('input[name="port"]').val(port);
+
+            function setSSRValues() {
+                ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
+                ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
+                if (profile.passwd && port) {
+                    $('#single').click();
+                    $('#passwd').val(profile.passwd);
+                }
+            }
+
+            function setV2RayValues() {
+                ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
+                ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
+                $('#v2_method').selectpicker('val', profile['method'] || null);
+
+                $('#v2_port').val(port);
+                profile.v2_tls && $('#v2_tls').click();
+                $('#tls_provider').val(tls_provider);
+            }
+        }
 
         function formSubmit(event) {
             event.preventDefault(); // 阻止表单的默认提交行为
@@ -675,34 +728,23 @@
         // 设置服务类型
         function updateServiceType() {
             const type = parseInt($(this).val());
+            const settingsMap = {
+                0: ['.ss-setting'],
+                1: ['.ss-setting', '.ssr-setting'],
+                2: ['.v2ray-setting', '#v2_port'],
+                3: ['.trojan-setting', '#trojan_port'],
+                4: ['.ss-setting', '.ssr-setting'],
+            };
+
             $('.ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting').hide();
-            $('#v2_port').removeAttr('required').attr('hidden', true);
-            $('#trojan_port').removeAttr('required');
-            switch (type) {
-                case 0:
-                    $('.ss-setting').show();
-                    break;
-                case 2:
-                    $('.v2ray-setting').show();
-                    $('#v2_port').removeAttr('hidden').prop('required', true);
-                    $('#v2_net').selectpicker('val', 'tcp');
-                    break;
-                case 3:
-                    $('.trojan-setting').show();
-                    $('#trojan_port').removeAttr('hidden').prop('required', true);
-                    break;
-                case 1:
-                case 4:
-                    $('.ss-setting, .ssr-setting').show();
-                    break;
-            }
+            Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(',')).hide());
+            (settingsMap[type] || []).forEach(selector => $(selector).show());
         }
 
         function toggleObfsParam() {
             const $obfsParam = $('.obfs_param');
-            const isPlain = $('#obfs').val() === 'plain';
-            $obfsParam.toggle(!isPlain);
-            if (isPlain) $('#obfs_param').val('');
+            $obfsParam.toggle($('#obfs').val() !== 'plain');
+            if ($('#obfs').val() === 'plain') $('#obfs_param').val('');
         }
 
         function toggleRelayConfig() {
@@ -710,8 +752,8 @@
             $('.relay-config').toggle(hasRelay);
             $('.proxy-config').toggle(!hasRelay);
             $('#relay_port').attr({
-                'hidden': !hasRelay,
-                'required': hasRelay
+                hidden: !hasRelay,
+                required: hasRelay
             });
         }
 

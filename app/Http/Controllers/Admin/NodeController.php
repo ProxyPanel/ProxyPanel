@@ -133,7 +133,7 @@ class NodeController extends Controller
             'rule_group_id' => $info['rule_group_id'],
             'speed_limit' => $info['speed_limit'],
             'client_limit' => $info['client_limit'],
-            'details' => $details,
+            'details' => ! empty($details) ? $details : null,
             'description' => $info['description'],
             'profile' => $profile ?? [],
             'traffic_rate' => $info['traffic_rate'],

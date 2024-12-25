@@ -82,7 +82,9 @@ class NodeDailyMaintenance extends Command
 
         $nodes = Node::whereNotNull('details')->whereIn('details->next_renewal_date', $notificationDates)->pluck('name', 'id')->toArray();
 
-        Notification::send(User::find(1), new NodeRenewal($nodes));
+        if (! empty($nodes)) {
+            Notification::send(User::find(1), new NodeRenewal($nodes));
+        }
     }
 
     private function updateNodeRenewal(): void
