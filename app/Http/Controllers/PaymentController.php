@@ -9,17 +9,8 @@ use App\Models\Payment;
 use App\Services\CouponService;
 use App\Utils\Helpers;
 use App\Utils\Library\Templates\Gateway;
-use App\Utils\Payments\CodePay;
-use App\Utils\Payments\EPay;
-use App\Utils\Payments\F2Fpay;
-use App\Utils\Payments\Local;
-use App\Utils\Payments\Manual;
-use App\Utils\Payments\PayBeaver;
-use App\Utils\Payments\PayJs;
-use App\Utils\Payments\PayPal;
-use App\Utils\Payments\Stripe;
-use App\Utils\Payments\THeadPay;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,29 +31,37 @@ class PaymentController extends Controller
 
     public static function getClient(): Gateway
     {
-        // Mapping of payment methods to their respective classes
-        $paymentMethods = [
-            'credit' => Local::class,
-            'f2fpay' => F2Fpay::class,
-            'codepay' => CodePay::class,
-            'payjs' => PayJs::class,
-            'paypal' => PayPal::class,
-            'epay' => EPay::class,
-            'stripe' => Stripe::class,
-            'paybeaver' => PayBeaver::class,
-            'theadpay' => THeadPay::class,
-            'manual' => Manual::class,
-        ];
+        $method = self::$method;
+        $paymentClasses = self::getPaymentClasses();
 
-        // Check if the method exists in the mapping
-        if (isset($paymentMethods[self::$method])) {
-            // Instantiate and return the corresponding class
-            return new $paymentMethods[self::$method];
+        if (isset($paymentClasses[$method])) {
+            try {
+                return Container::getInstance()->make($paymentClasses[$method]);
+            } catch (Exception $e) {
+                Log::emergency('Failed to instantiate payment class: '.$e->getMessage());
+                abort(500);
+            }
         }
 
-        // Log an emergency message and exit if the method is unknown
-        Log::emergency(trans('user.payment.order_creation.unknown_payment').': '.self::$method);
-        exit(404);
+        Log::emergency(trans('user.payment.order_creation.unknown_payment').': '.$method);
+        abort(404);
+    }
+
+    private static function getPaymentClasses(): array
+    {
+        return cache()->rememberForever('payment_classes', function () {
+            foreach (glob(app_path('Utils/Payments/*.php')) as $file) {
+                $className = 'App\\Utils\\Payments\\'.basename($file, '.php');
+                if (class_exists($className)) {
+                    $methodDetails = $className::$methodDetails ?? null;
+                    if ($methodDetails) {
+                        $classes[$methodDetails['key']] = $className;
+                    }
+                }
+            }
+
+            return $classes ?? [];
+        });
     }
 
     public static function getStatus(Request $request): JsonResponse

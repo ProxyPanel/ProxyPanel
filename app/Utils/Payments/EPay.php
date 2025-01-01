@@ -2,21 +2,23 @@
 
 namespace App\Utils\Payments;
 
-use App\Services\PaymentService;
 use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
-class EPay extends PaymentService implements Gateway
+class EPay implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'epay',
+        'settings' => ['epay_url', 'epay_mch_id', 'epay_key'],
+    ];
+
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $data = [
             'pid' => sysConfig('epay_mch_id'),
@@ -33,14 +35,14 @@ class EPay extends PaymentService implements Gateway
         $url = sysConfig('epay_url').'submit.php?'.http_build_query($data);
         $payment->update(['url' => $url]);
 
-        return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
+        return response()->json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void
     {
         if ($request->input('trade_status') === 'TRADE_SUCCESS' && $request->has('out_trade_no')
             && PaymentHelper::verify($request->except('method'), sysConfig('epay_key'), $request->input('sign'))) {
-            if ($this->paymentReceived($request->input('out_trade_no'))) {
+            if (PaymentHelper::paymentReceived($request->input('out_trade_no'))) {
                 exit('SUCCESS');
             }
 
@@ -61,9 +63,9 @@ class EPay extends PaymentService implements Gateway
         ]);
 
         if ($response->ok()) {
-            return Response::json(['status' => 'success', 'data' => $response->json()]);
+            return response()->json(['status' => 'success', 'data' => $response->json()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);
+        return response()->json(['status' => 'fail', 'message' => '获取失败！请检查配置信息']);
     }
 }

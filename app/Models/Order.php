@@ -140,7 +140,7 @@ class Order extends Model
                 break;
             case 0:
                 $tag = 1;
-                $label = trans('common.payment.status.wait');
+                $label = trans('common.status.payment_pending');
                 break;
             case 1:
                 $tag = 2;

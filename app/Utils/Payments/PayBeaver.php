@@ -7,18 +7,22 @@
 
 namespace App\Utils\Payments;
 
-use App\Services\PaymentService;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
 use Response;
 
-class PayBeaver extends PaymentService implements Gateway
+class PayBeaver implements Gateway
 {
     private const API_URL = 'https://api.paybeaver.com/api/v1/developer';
+
+    public static array $methodDetails = [
+        'key' => 'paybeaver',
+        'settings' => ['paybeaver_app_id', 'paybeaver_app_secret'],
+    ];
 
     private string $appId;
 
@@ -32,7 +36,7 @@ class PayBeaver extends PaymentService implements Gateway
 
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $result = $this->createOrder([
             'app_id' => $this->appId,
@@ -93,7 +97,7 @@ class PayBeaver extends PaymentService implements Gateway
             exit(json_encode(['status' => 400]));
         }
 
-        if ($request->has(['merchant_order_id']) && $this->paymentReceived($request->input(['merchant_order_id']))) {
+        if ($request->has(['merchant_order_id']) && PaymentHelper::paymentReceived($request->input(['merchant_order_id']))) {
             exit(json_encode(['status' => 200]));
         }
 

@@ -3,25 +3,27 @@
 namespace App\Utils\Payments;
 
 use App\Models\Payment;
-use App\Services\PaymentService;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Hashids\Hashids;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
 
-class Manual extends PaymentService implements Gateway
+class Manual implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'manual',
+    ];
+
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $url = route('manual.checkout', ['payment' => $payment->trade_no]);
         $payment->update(['url' => $url]);
 
-        return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
+        return response()->json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function redirectPage(string $trade_no): View
@@ -43,10 +45,10 @@ class Manual extends PaymentService implements Gateway
         $payment = Payment::uid()->with(['order'])->whereTradeNo($trade_no)->firstOrFail();
         $payment->order->update(['status' => 1]);
 
-        return Response::json(['status' => 'success', 'message' => trans('user.payment.order_creation.info')]);
+        return response()->json(['status' => 'success', 'message' => trans('user.payment.order_creation.info')]);
     }
 
-    public function notify(Request $request)
+    public function notify(Request $request): View
     {
         $code = $request->input('sign');
         $status = $request->input('status');
@@ -56,7 +58,7 @@ class Manual extends PaymentService implements Gateway
                 $payment = Payment::findOrFail($payment_info[0]);
                 if ($payment && $payment->order && $payment->order->status === 1) {
                     if ($status) {
-                        $this->paymentReceived($payment->trade_no);
+                        PaymentHelper::paymentReceived($payment->trade_no);
                     } else {
                         $payment->order->close();
                     }

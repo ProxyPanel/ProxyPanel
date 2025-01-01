@@ -42,19 +42,19 @@ class SystemController extends Controller
 
     private function getPayments(): array
     {
-        $paymentConfigs = [ // 支付渠道及其所需配置项映射
-            'f2fpay' => ['f2fpay_app_id', 'f2fpay_private_key', 'f2fpay_public_key'],
-            'codepay' => ['codepay_url', 'codepay_id', 'codepay_key'],
-            'epay' => ['epay_url', 'epay_mch_id', 'epay_key'],
-            'payjs' => ['payjs_mch_id', 'payjs_key'],
-            'bitpayx' => ['bitpay_secret'],
-            'paypal' => ['paypal_client_id', 'paypal_client_secret', 'paypal_app_id'],
-            'stripe' => ['stripe_public_key', 'stripe_secret_key'],
-            'paybeaver' => ['paybeaver_app_id', 'paybeaver_app_secret'],
-            'theadpay' => ['theadpay_mchid', 'theadpay_key'],
-        ];
+        $paymentConfigs = cache()->rememberForever('payment_configs', function () { // 支付渠道及其所需配置项映射
+            foreach (glob(app_path('Utils/Payments/*.php')) as $file) {
+                $className = 'App\\Utils\\Payments\\'.basename($file, '.php');
+                if (class_exists($className)) {
+                    $methodDetails = $className::$methodDetails ?? null;
+                    if ($methodDetails && ! empty($methodDetails['settings'])) {
+                        $configs[$methodDetails['key']] = $methodDetails['settings'];
+                    }
+                }
+            }
 
-        $payment = [];
+            return $configs ?? [];
+        });
 
         // 遍历映射，检查配置项是否存在
         foreach ($paymentConfigs as $paymentName => $configKeys) {

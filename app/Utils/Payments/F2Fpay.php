@@ -3,18 +3,21 @@
 namespace App\Utils\Payments;
 
 use App\Models\Payment;
-use App\Services\PaymentService;
 use App\Utils\Library\AlipayF2F;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
-class F2Fpay extends PaymentService implements Gateway
+class F2FPay implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'f2fpay',
+        'settings' => ['f2fpay_app_id', 'f2fpay_private_key', 'f2fpay_public_key'],
+    ];
+
     private static AlipayF2F $aliClient;
 
     public function __construct()
@@ -29,7 +32,7 @@ class F2Fpay extends PaymentService implements Gateway
 
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $data = [
             'subject' => sysConfig('subject_name') ?: sysConfig('website_name'),
@@ -46,7 +49,7 @@ class F2Fpay extends PaymentService implements Gateway
             exit;
         }
 
-        return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
+        return response()->json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void
@@ -54,7 +57,7 @@ class F2Fpay extends PaymentService implements Gateway
         try {
             if (sysConfig('f2fpay_app_id') === $request->input('app_id') && self::$aliClient->validate_notification_sign($request->except('method'), $request->input('sign'))) {
                 $payment = Payment::whereTradeNo($request->input('out_trade_no'))->with('order')->first();
-                if ($payment && abs($payment->amount - $request->input('total_amount')) < 0.01 && in_array($request->input('trade_status'), ['TRADE_FINISHED', 'TRADE_SUCCESS']) && $this->paymentReceived($request->input('out_trade_no'))) {
+                if ($payment && abs($payment->amount - $request->input('total_amount')) < 0.01 && in_array($request->input('trade_status'), ['TRADE_FINISHED', 'TRADE_SUCCESS']) && PaymentHelper::paymentReceived($request->input('out_trade_no'))) {
                     exit('success');
                 }
             }
@@ -82,7 +85,7 @@ class F2Fpay extends PaymentService implements Gateway
 
         if ($result['code'] === '10000' && $result['msg'] === 'Success') {
             if ($result['out_trade_no'] && in_array($result['trade_status'], ['TRADE_FINISHED', 'TRADE_SUCCESS'])) {
-                if ($this->paymentReceived($result['out_trade_no'])) {
+                if (PaymentHelper::paymentReceived($result['out_trade_no'])) {
                     return true;
                 }
                 Log::error('【支付宝当面付】收单交易订单结算失败：'.var_export($result, true));

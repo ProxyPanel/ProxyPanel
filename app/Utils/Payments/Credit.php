@@ -4,15 +4,17 @@ namespace App\Utils\Payments;
 
 use App\Models\Goods;
 use App\Models\Order;
-use App\Services\PaymentService;
 use App\Utils\Helpers;
 use App\Utils\Library\Templates\Gateway;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
 
-class Local extends PaymentService implements Gateway
+class Credit implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'credit',
+    ];
+
     public function purchase(Request $request): JsonResponse
     {
         $order = Order::find($request->input('id'));
@@ -27,7 +29,7 @@ class Local extends PaymentService implements Gateway
 
         $order->complete();
 
-        return Response::json(['status' => 'success', 'message' => trans('user.purchase.completed')]);
+        return response()->json(['status' => 'success', 'message' => trans('user.purchase.completed')]);
     }
 
     public function notify(Request $request): void

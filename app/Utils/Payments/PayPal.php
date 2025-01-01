@@ -2,17 +2,20 @@
 
 namespace App\Utils\Payments;
 
-use App\Services\PaymentService;
 use App\Utils\CurrencyExchange;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
-class PayPal extends PaymentService implements Gateway
+class PayPal implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'paypal',
+        'settings' => ['paypal_client_id', 'paypal_client_secret', 'paypal_app_id'],
+    ];
+
     protected static \Srmklive\PayPal\Services\PayPal $provider;
 
     public function __construct()
@@ -38,9 +41,9 @@ class PayPal extends PaymentService implements Gateway
         self::$provider->getAccessToken();
     }
 
-    public function purchase($request): JsonResponse
+    public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 
@@ -62,13 +65,13 @@ class PayPal extends PaymentService implements Gateway
         if (isset($response['id']) && $response['id'] != null) {
             Log::error('【Paypal】处理错误：'.var_export($response, true));
 
-            return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
+            return response()->json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
         }
         $payment->update(['url' => $response['paypal_link']]);
 
         foreach ($response['links'] as $links) {
             if ($links['rel'] === 'approve') {
-                return Response::json(['status' => 'success', 'url' => $links['href'], 'message' => trans('user.payment.order_creation.success')]);
+                return response()->json(['status' => 'success', 'url' => $links['href'], 'message' => trans('user.payment.order_creation.success')]);
             }
         }
 
@@ -108,7 +111,7 @@ class PayPal extends PaymentService implements Gateway
         $response = self::$provider->capturePaymentOrder($request['token']);
 
         if (isset($response['status']) && $response['status'] === 'COMPLETED') {
-            if ($this->paymentReceived($request['invoice'])) {
+            if (PaymentHelper::paymentReceived($request['invoice'])) {
                 exit('success');
             }
         } else {

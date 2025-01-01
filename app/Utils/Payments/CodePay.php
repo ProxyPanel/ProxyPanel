@@ -2,20 +2,22 @@
 
 namespace App\Utils\Payments;
 
-use App\Services\PaymentService;
 use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
-class CodePay extends PaymentService implements Gateway
+class CodePay implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'codepay',
+        'settings' => ['codepay_url', 'codepay_id', 'codepay_key'],
+    ];
+
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $data = [
             'id' => sysConfig('codepay_id'),
@@ -32,7 +34,7 @@ class CodePay extends PaymentService implements Gateway
         $url = sysConfig('codepay_url').http_build_query($data);
         $payment->update(['url' => $url]);
 
-        return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
+        return response()->json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
     }
 
     public function notify(Request $request): void
@@ -40,7 +42,7 @@ class CodePay extends PaymentService implements Gateway
         $tradeNo = $request->input('pay_id');
         if ($tradeNo && $request->input('pay_no')
             && PaymentHelper::verify($request->except('method'), sysConfig('codepay_key'), $request->input('sign'), false)) {
-            if ($this->paymentReceived($tradeNo)) {
+            if (PaymentHelper::paymentReceived($tradeNo)) {
                 exit('success');
             }
 

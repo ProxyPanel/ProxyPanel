@@ -2,20 +2,23 @@
 
 namespace App\Utils\Payments;
 
-use App\Services\PaymentService;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Http;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
-class THeadPay extends PaymentService implements Gateway
+class THeadPay implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'theadpay',
+        'settings' => ['theadpay_mchid', 'theadpay_key'],
+    ];
+
     public function purchase(Request $request): JsonResponse
     {
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         $data = [
             'mchid' => sysConfig('theadpay_mchid'),
@@ -31,7 +34,7 @@ class THeadPay extends PaymentService implements Gateway
             if ($result['status'] === 'success') {
                 $payment->update(['qr_code' => 1, 'url' => $result['code_url']]);
 
-                return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
+                return response()->json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
             }
             $payment->failed();
             Log::error('【平头哥支付】 返回错误信息：'.$result['message']);
@@ -39,7 +42,7 @@ class THeadPay extends PaymentService implements Gateway
 
         Log::alert('【平头哥支付】 支付渠道建立订单出现问题!');
 
-        return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
+        return response()->json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
     }
 
     private function sign(array $params): string
@@ -56,7 +59,7 @@ class THeadPay extends PaymentService implements Gateway
         if ($this->verify_notify($request->post())) {
             $tradeNo = $request->input('out_trade_no');
             if ($tradeNo) {
-                if ($this->paymentReceived($tradeNo)) {
+                if (PaymentHelper::paymentReceived($tradeNo)) {
                     exit(200);
                 }
             } else {

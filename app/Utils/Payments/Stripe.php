@@ -3,22 +3,25 @@
 namespace App\Utils\Payments;
 
 use App\Models\Payment;
-use App\Services\PaymentService;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 use Stripe\Checkout\Session;
 use Stripe\Exception\SignatureVerificationException;
 use Stripe\Source;
 use Stripe\Webhook;
 use UnexpectedValueException;
 
-class Stripe extends PaymentService implements Gateway
+class Stripe implements Gateway
 {
+    public static array $methodDetails = [
+        'key' => 'stripe',
+        'settings' => ['stripe_public_key', 'stripe_secret_key'],
+    ];
+
     public function __construct()
     {
         \Stripe\Stripe::setApiKey(sysConfig('stripe_secret_key'));
@@ -27,7 +30,7 @@ class Stripe extends PaymentService implements Gateway
     public function purchase(Request $request): JsonResponse
     {
         $type = (int) $request->input('type');
-        $payment = $this->createPayment(Auth::id(), $request->input('id'), $request->input('amount'));
+        $payment = PaymentHelper::createPayment(auth()->id(), $request->input('id'), $request->input('amount'));
 
         if ($type === 1 || $type === 3) {
             $source = Source::create([
@@ -49,11 +52,11 @@ class Stripe extends PaymentService implements Gateway
                     Log::warning('创建订单错误：未知错误');
                     $payment->failed();
 
-                    return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
+                    return response()->json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
                 }
                 $payment->update(['qr_code' => 1, 'url' => $source['wechat']['qr_code_url']]);
 
-                return Response::json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
+                return response()->json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
             }
 
             if (! $source['redirect']['url']) {
@@ -64,7 +67,7 @@ class Stripe extends PaymentService implements Gateway
             }
             $payment->update(['url' => $source['redirect']['url']]);
 
-            return Response::json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => trans('user.payment.order_creation.success')]);
+            return response()->json(['status' => 'success', 'url' => $source['redirect']['url'], 'message' => trans('user.payment.order_creation.success')]);
         }
 
         $data = $this->getCheckoutSessionData($payment->trade_no, $payment->amount, $type);
@@ -75,7 +78,7 @@ class Stripe extends PaymentService implements Gateway
             $url = route('stripe.checkout', ['session_id' => $session->id]);
             $payment->update(['url' => $url]);
 
-            return Response::json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
+            return response()->json(['status' => 'success', 'url' => $url, 'message' => trans('user.payment.order_creation.success')]);
         } catch (Exception $e) {
             Log::error('【Stripe】错误: '.$e->getMessage());
             exit;
@@ -102,7 +105,7 @@ class Stripe extends PaymentService implements Gateway
             'success_url' => route('invoice.index'),
             'cancel_url' => route('invoice.index'),
             'client_reference_id' => $tradeNo,
-            'customer_email' => Auth::getUser()->email,
+            'customer_email' => auth()->user()->email,
         ];
     }
 
@@ -143,13 +146,13 @@ class Stripe extends PaymentService implements Gateway
                 // account.
                 if ($session->payment_status === 'paid') {
                     // Fulfill the purchase
-                    $this->paymentReceived($session->client_reference_id);
+                    PaymentHelper::paymentReceived($session->client_reference_id);
                 }
                 break;
             case 'checkout.session.async_payment_succeeded':
                 $session = $event->data->object;
                 // Fulfill the purchase
-                $this->paymentReceived($session->client_reference_id);
+                PaymentHelper::paymentReceived($session->client_reference_id);
                 break;
             case 'checkout.session.async_payment_failed':
                 $session = $event->data->object;

@@ -64,7 +64,7 @@ class Payment extends Model
             get: fn () => match ($this->status) {
                 -1 => trans('common.failed_item', ['attribute' => trans('user.pay')]),
                 1 => trans('common.success_item', ['attribute' => trans('user.pay')]),
-                default => trans('common.payment.status.wait'),
+                default => trans('common.status.payment_pending'),
             },
         );
     }
