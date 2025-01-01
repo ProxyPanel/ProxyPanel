@@ -7,8 +7,6 @@ use App\Http\Requests\Admin\TicketRequest;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketClosed;
-use App\Notifications\TicketCreated;
-use App\Notifications\TicketReplied;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,9 +37,7 @@ class TicketController extends Controller
             return response()->json(['status' => 'fail', 'message' => trans('admin.ticket.self_send')]);
         }
 
-        if ($ticket = Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content'])])) {
-            $user->notify(new TicketCreated($ticket, route('ticket.edit', $ticket)));
-
+        if (Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content']), 'status' => 1])) {
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.create')])]);
         }
 
@@ -61,18 +57,7 @@ class TicketController extends Controller
     { // 回复工单
         $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
-        $reply = $ticket->reply()->create(['admin_id' => Auth::id(), 'content' => $content]);
-        if ($reply) {
-            // 将工单置为已回复
-            if ($ticket->status !== 1) {
-                $ticket->update(['status' => 1]);
-            }
-
-            // 通知用户
-            if (sysConfig('ticket_replied_notification')) {
-                $ticket->user->notify(new TicketReplied($reply, route('ticket.edit', $ticket), true));
-            }
-
+        if ($ticket->reply()->create(['admin_id' => auth()->id(), 'content' => $content])) {
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
         }
 

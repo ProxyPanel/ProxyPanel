@@ -36,7 +36,7 @@ class TicketCreated extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject(trans('notification.new_ticket', ['title' => $this->ticket->title]))
             ->line(trans('notification.ticket_content'))
-            ->line($this->ticket->content)
+            ->line(strip_tags($this->ticket->content))
             ->action(trans('notification.view_ticket'), $this->url);
     }
 

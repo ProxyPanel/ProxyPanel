@@ -79,7 +79,7 @@ class TaskDaily extends Command
             $tickets->each(function ($ticket) use ($closeTicketsHours) {
                 if ($ticket->close()) {
                     $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('ticket.edit', $ticket),
-                        __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => $closeTicketsHours])));
+                        __('You have not responded this ticket in :num hours, System has closed your ticket.', ['num' => $closeTicketsHours]), true));
                 }
             });
         });

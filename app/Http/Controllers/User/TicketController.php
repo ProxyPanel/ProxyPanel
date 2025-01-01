@@ -4,13 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ticket;
-use App\Models\User;
-use App\Notifications\TicketCreated;
-use App\Notifications\TicketReplied;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Notification;
 
 class TicketController extends Controller
 {
@@ -32,12 +28,12 @@ class TicketController extends Controller
             ]);
         }
 
-        if ($ticket = auth()->user()->tickets()->create(compact('title', 'content'))) {
+        if (auth()->user()->tickets()->create(compact('title', 'content'))) {
             // 通知相关管理员
-            Notification::send(User::find(1), new TicketCreated($ticket, route('admin.ticket.edit', $ticket)));
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.submit')])]);
         }
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.submit')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.create')])]);
     }
 
     public function edit(Ticket $ticket): View
@@ -58,16 +54,7 @@ class TicketController extends Controller
             ]);
         }
 
-        $reply = $ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content]);
-        if ($reply) {
-            // 重新打开工单
-            if (in_array($ticket->status, [1, 2], true)) {
-                $ticket->update(['status' => 0]);
-            }
-
-            // 通知相关管理员
-            Notification::send(User::find(1), new TicketReplied($reply, route('admin.ticket.edit', $ticket)));
-
+        if ($ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content])) {
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
         }
 

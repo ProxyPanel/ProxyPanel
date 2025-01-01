@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\TicketReplyObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * 工单回复.
  */
+#[ObservedBy([TicketReplyObserver::class])]
 class TicketReply extends Model
 {
     protected $table = 'ticket_reply';
