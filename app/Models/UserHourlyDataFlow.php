@@ -28,12 +28,16 @@ class UserHourlyDataFlow extends Model
     }
 
     // 用户每时使用总流量
-    public function scopeUserHourly(Builder $query, int $uid): Builder
+    public function scopeUserHourly(Builder $query, ?int $uid): Builder
     {
+        if (! $uid) {
+            $uid = auth()->id();
+        }
+
         return $query->whereUserId($uid)->whereNodeId(null);
     }
 
-    public function scopeUserRecentUsed(Builder $query, int $uid): Builder
+    public function scopeUserRecentUsed(Builder $query, ?int $uid = null): Builder
     {
         return $query->userHourly($uid)->where('created_at', '>=', date('Y-m-d H:i:s', time() - 3900));
     }

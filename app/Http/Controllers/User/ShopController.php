@@ -34,8 +34,8 @@ class ShopController extends Controller
             $nodes = Node::all();
         }
         foreach ($goodsList as $goods) {
-            $goods->node_count = $nodes->where('level', '<=', $goods->level)->count();
-            $goods->node_countries = $nodes->where('level', '<=', $goods->level)->pluck('country_code')->unique();
+            $goods->node_count = $nodes->where('level', '<=', $goods->level)->where('status', 1)->count();
+            $goods->node_countries = $nodes->where('level', '<=', $goods->level)->where('status', 1)->pluck('country_code')->unique();
         }
 
         return view('user.services', [

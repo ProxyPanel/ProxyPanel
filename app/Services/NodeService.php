@@ -9,24 +9,10 @@ class NodeService
 {
     public function getActiveNodeTypes(?Builder $nodes = null): array
     {
-        if (! $nodes) {
-            $nodes = Node::whereStatus(1);
-        }
-        $types = $nodes->pluck('type')->unique();
+        $types = ($nodes ?? Node::whereStatus(1))->pluck('type');
 
-        if ($types->contains(0)) {
-            $data[] = 'ss';
-        }
-        if ($types->contains(1) || $types->contains(4)) {
-            $data[] = 'ssr';
-        }
-        if ($types->contains(2)) {
-            $data[] = 'v2';
-        }
-        if ($types->contains(3)) {
-            $data[] = 'trojan';
-        }
+        $map = [0 => 'ss', 1 => 'ssr', 2 => 'v2', 3 => 'trojan', 4 => 'ssr'];
 
-        return $data ?? [];
+        return $types->intersect(array_keys($map))->map(fn ($type) => $map[$type])->unique()->values()->all();
     }
 }

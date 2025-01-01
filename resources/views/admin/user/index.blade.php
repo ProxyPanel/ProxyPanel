@@ -106,7 +106,7 @@
                     </thead>
                     <tbody>
                         @foreach ($userList as $user)
-                            <tr class="{{ $user->isTrafficWarning() ? 'table-danger' : '' }}">
+                            <tr class="{{ $user->ban_time ? 'table-danger' : '' }}">
                                 <td> {{ $user->id }} </td>
                                 <td> {{ $user->username }} </td>
                                 <td> {{ $user->credit }} </td>
@@ -114,14 +114,14 @@
                                     {!! $user->port ?: '<span class="badge badge-lg badge-danger"> ' . trans('common.none') . ' </span>' !!}
                                 </td>
                                 <td>
-                                    <a class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{ $user->subUrl() }}"
+                                    <a class="copySubscribeLink" data-clipboard-action="copy" data-clipboard-text="{{ $user->sub_url }}"
                                        href="javascript:">{{ $user->subscribe->code }}</a>
                                 </td>
                                 <td> {{ formatBytes($user->used_traffic) }} / {{ $user->transfer_enable_formatted }} </td>
                                 <td> {{ $user->t ? date('Y-m-d H:i', $user->t) : trans('common.status.unused') }} </td>
                                 <td>
-                                    @if ($user->expiration_status() !== 3)
-                                        <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status()] }}">
+                                    @if ($user->expiration_status !== 3)
+                                        <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status] }}">
                                             {{ $user->expiration_date }} </span>
                                     @else
                                         {{ $user->expiration_date }}

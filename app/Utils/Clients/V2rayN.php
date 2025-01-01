@@ -19,7 +19,7 @@ class V2rayN implements Client
                 if ($user->transfer_enable === 0) {
                     $text .= trans('user.account.remain').': 0';
                 } else {
-                    $text .= trans('user.account.remain').': '.formatBytes($user->transfer_enable);
+                    $text .= trans('user.account.remain').': '.$user->transfer_enable_formatted;
                 }
                 $text .= ', '.trans('model.user.expired_date').": $user->expiration_date";
             } else {

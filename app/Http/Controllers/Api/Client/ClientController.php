@@ -49,8 +49,7 @@ class ClientController extends Controller
         $userInfo['plan']['name'] = $user->orders()->activePlan()->latest()->first()->goods->name ?? '无';
         $ann = Article::type(2)->latest()->first();
         $user_expire = now()->diffInDays($user->expired_at, false) < 0;
-        $total = $user->u + $user->d;
-        $transfer_enable = $user->transfer_enable;
+        $used = $user->used_traffic;
         $expired_days = now()->diffInDays($user->expired_at, false);
         $userInfo['class_expire_notice'] = '';
         if ($expired_days < 0) {
@@ -63,13 +62,13 @@ class ClientController extends Controller
             'user' => $userInfo,
             'ssrSubToken' => $user->subscribe->code,
             'user_expire' => $user_expire,
-            'subUrl' => $user->subUrl(),
+            'subUrl' => $user->sub_url,
             'baseUrl' => sysConfig('subscribe_domain') ?? sysConfig('website_url'),
             'ann' => $ann,
             'avatar' => $user->avatar,
-            'usedTraffic' => formatBytes($total),
-            'enableTraffic' => formatBytes($transfer_enable),
-            'unUsedTraffic' => formatBytes($transfer_enable - $total),
+            'usedTraffic' => formatBytes($used),
+            'enableTraffic' => $user->transfer_enable_formatted,
+            'unUsedTraffic' => formatBytes($user->unused_traffic),
             'reset_time' => now()->diffInDays($user->reset_time, false),
             'android_index_button' => config('client.android_index_button'),
         ];
@@ -102,7 +101,7 @@ class ClientController extends Controller
             'arr' => [
                 'todayUsedTraffic' => formatBytes($user->d),
                 'lastUsedTraffic' => formatBytes($user->u),
-                'unUsedTraffic' => formatBytes($user->transfer_enable - $user->d - $user->u),
+                'unUsedTraffic' => formatBytes($user->unused_traffic),
             ],
         ]);
     }
@@ -124,8 +123,6 @@ class ClientController extends Controller
     public function getInvite(): JsonResponse
     {
         $user = auth()->user();
-        $userService = new UserService;
-
         $referral_traffic = formatBytes(sysConfig('referral_traffic'), 'MiB');
         $referral_percent = sysConfig('referral_percent');
         // 邀请码
@@ -136,8 +133,8 @@ class ClientController extends Controller
             'referral_percent' => $referral_percent * 100,
         ]);
 
-        $data['invite_code'] = $code ?? $userService->inviteURI(true);
-        $data['invite_url'] = $userService->inviteURI();
+        $data['invite_code'] = $code ?? $user->invite_code;
+        $data['invite_url'] = $user->invite_url;
         $data['invite_text'] = $data['invite_url'].'&(复制整段文字到浏览器打开即可访问),找梯子最重要的就是稳定,这个已经上线三年了,一直稳定没有被封过,赶紧下载备用吧!'.($code ? '安装后打开填写我的邀请码【'.$code.'】,你还能多得3天会员.' : '');
         // 累计数据
         $data['back_sum'] = ReferralLog::uid()->sum('commission') / 100;
@@ -179,11 +176,11 @@ class ClientController extends Controller
         return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
 
-    public function proxyCheck(Request $request): JsonResponse
+    public function proxyCheck(Request $request, ProxyService $proxyService): JsonResponse
     {
         $md5 = $request->get('md5', '');
 
-        $proxy = (new ProxyService)->getProxyCode('clash');
+        $proxy = $proxyService->getProxyCode('clash');
         if (strtolower(md5(json_encode($proxy))) === strtolower($md5)) {
             return $this->succeed(false);
         }
@@ -191,16 +188,15 @@ class ClientController extends Controller
         return $this->succeed(true, ['md5' => strtolower(md5(json_encode($proxy)))]);
     }
 
-    public function downloadProxies(Request $request)
+    public function downloadProxies(Request $request, ProxyService $proxyService)
     {
         $flag = strtolower($request->input('flag') ?? ($request->userAgent() ?? ''));
 
-        return (new ProxyService)->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
+        return $proxyService->getProxyText($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
     }
 
-    public function getProxyList(): JsonResponse
+    public function getProxyList(ProxyService $proxyService): JsonResponse
     {
-        $proxyService = new ProxyService;
         $servers = [];
         foreach ($proxyService->getNodeList(null, false) as $node) {
             $server = $proxyService->getProxyConfig($node);

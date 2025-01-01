@@ -96,8 +96,8 @@
                             </dd>
                             <dt class="col-sm-3">{{ trans('model.user.expired_date') }}</dt>
                             <dd class="col-sm-9">
-                                @if ($user->expiration_status() !== 3)
-                                    <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status()] }}">
+                                @if ($user->expiration_status !== 3)
+                                    <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status] }}">
                                         {{ $user->expiration_date }} </span>
                                 @else
                                     {{ $user->expiration_date }}

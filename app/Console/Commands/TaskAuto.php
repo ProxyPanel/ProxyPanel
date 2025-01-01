@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\VerifyCode;
+use App\Services\UserService;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Log;
@@ -106,11 +107,13 @@ class TaskAuto extends Command
         if (sysConfig('is_traffic_ban')) {
             $trafficBanTime = sysConfig('traffic_ban_time');
             $ban_time = strtotime($trafficBanTime.' minutes');
+            $userService = new UserService;
 
             User::activeUser()->whereBanTime(null)->where('t', '>=', strtotime('-5 minutes')) // 只检测最近5分钟有流量使用的用户
-                ->chunk(config('tasks.chunk'), function ($users) use ($ban_time, $trafficBanTime) {
-                    $users->each(function ($user) use ($ban_time, $trafficBanTime) {
-                        if ($user->isTrafficWarning()) {
+                ->chunk(config('tasks.chunk'), function ($users) use ($userService, $ban_time, $trafficBanTime) {
+                    $users->each(function ($user) use ($userService, $ban_time, $trafficBanTime) {
+                        $userService->setUser($user);
+                        if ($userService->isTrafficWarning()) {
                             $user->update(['enable' => 0, 'ban_time' => $ban_time]);
                             $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked service: Abnormal traffic within 1 hour')]); // 写入日志
                         }

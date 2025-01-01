@@ -7,8 +7,8 @@ use App\Casts\money;
 use App\Observers\UserObserver;
 use App\Utils\Avatar;
 use App\Utils\Helpers;
-use DB;
 use Hash;
+use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -42,38 +42,6 @@ class User extends Authenticatable
     public function routeNotificationForMail($notification): string
     {
         return $this->username;
-    }
-
-    public function usedTrafficPercentage(): float
-    {
-        return round($this->used_traffic / $this->transfer_enable, 2);
-    }
-
-    public function getUsedTrafficAttribute(): int
-    {
-        return $this->d + $this->u;
-    }
-
-    public function getExpirationDateAttribute(): ?string
-    {
-        return $this->attributes['expired_at'];
-    }
-
-    public function getResetDateAttribute(): ?string
-    {
-        return $this->attributes['reset_time'];
-    }
-
-    public function getTelegramUserIdAttribute(): ?string
-    {
-        $telegram = $this->userAuths()->whereType('telegram')->first();
-
-        return $telegram->identifier ?? null;
-    }
-
-    public function userAuths(): HasMany
-    {
-        return $this->hasMany(UserOauth::class);
     }
 
     public function onlineIpLogs(): HasMany
@@ -151,11 +119,6 @@ class User extends Authenticatable
         return $this->hasOne(UserSubscribe::class);
     }
 
-    public function subUrl(): string
-    {
-        return route('sub', $this->subscribe->code);
-    }
-
     public function subscribeLogs(): HasManyThrough
     {
         return $this->hasManyThrough(UserSubscribeLog::class, UserSubscribe::class);
@@ -181,42 +144,19 @@ class User extends Authenticatable
         return $this->hasMany(__CLASS__, 'inviter_id');
     }
 
-    public function getLevelNameAttribute(): string
+    public function userGroup(): BelongsTo
     {
-        return Level::whereLevel($this->level)->first()->name;
+        return $this->belongsTo(UserGroup::class);
     }
 
-    public function getCreditTagAttribute(): string
+    public function orders(): HasMany
     {
-        return Helpers::getPriceTag($this->credit);
+        return $this->hasMany(Order::class);
     }
 
-    public function getTransferEnableFormattedAttribute(): string
+    public function paidOrders(): hasMany
     {
-        return formatBytes($this->attributes['transfer_enable']);
-    }
-
-    public function setPasswordAttribute(string $password): string
-    {
-        return $this->attributes['password'] = Hash::make($password);
-    }
-
-    public function getAvatarAttribute(): string
-    {
-        $img = session('avatar_url_'.$this->id);
-        if ($img) {
-            return $img;
-        }
-        if ($this->qq) {
-            $img = Avatar::getQQAvatar($this->qq);
-        } elseif (stripos(strtolower($this->username), '@qq.com') !== false) {
-            $img = Avatar::getQQAvatar($this->username);
-        } else {
-            $img = Avatar::getRandomAvatar($this->username);
-        }
-        session(['avatar_url_'.$this->id => $img]);
-
-        return $img;
+        return $this->hasMany(Order::class)->where('status', 2)->whereNotNull('goods_id')->where('is_expire', 0)->where('amount', '>', 0);
     }
 
     public function scopeActiveUser(Builder $query): Builder
@@ -229,57 +169,39 @@ class User extends Authenticatable
         return $query->where('status', '<>', -1)->whereEnable(0);
     }
 
-    public function nodes(?int $userLevel = null, ?int $userGroupId = null): Node|Builder|BelongsToMany
+    public function getExpirationDateAttribute(): ?string
     {
-        if ($userGroupId === null && $this->user_group_id) { // 使用默认的用户分组
-            $query = $this->userGroup->nodes();
-        } elseif ($userGroupId) { // 使用给的用户分组
-            $query = UserGroup::findOrFail($userGroupId)->nodes();
-        } else { // 无用户分组
-            $query = Node::query();
-        }
-
-        return $query->whereStatus(1)->where('level', '<=', $userLevel ?? $this->level ?? 0);
+        return $this->attributes['expired_at'];
     }
 
-    public function userGroup(): BelongsTo
+    public function getResetDateAttribute(): ?string
     {
-        return $this->belongsTo(UserGroup::class);
+        return $this->attributes['reset_time'];
     }
 
-    public function getIsAvailableAttribute(): bool
+    public function getTelegramUserIdAttribute(): ?string
     {
-        return ! $this->ban_time && $this->transfer_enable && $this->expired_at > time();
+        $telegram = $this->userAuths()->whereType('telegram')->first();
+
+        return $telegram->identifier ?? null;
     }
 
-    public function updateCredit(float $credit): bool
+    public function userAuths(): HasMany
     {
-        $this->credit += $credit;
-
-        return $this->credit >= 0 && $this->save();
+        return $this->hasMany(UserOauth::class);
     }
 
-    public function incrementData(int $data): bool
-    { // 添加用户流量
-        $this->transfer_enable += $data;
-
-        return $this->save();
-    }
-
-    public function isNotCompleteOrderByUserId(int $userId): bool
+    public function getCreditTagAttribute(): string
     {
-        return Order::uid($userId)->whereIn('status', [0, 1])->exists();
+        return Helpers::getPriceTag($this->credit);
     }
 
-    public function trafficFetch(int $u, int $d): bool
+    public function getTransferEnableFormattedAttribute(): string
     {
-        $this->u += $u;
-        $this->d += $d;
-
-        return $this->save();
+        return formatBytes($this->attributes['transfer_enable']);
     }
 
-    public function expiration_status(): int
+    public function getExpirationStatusAttribute(): int
     {
         $today = date('Y-m-d');
         $nextMonth = date('Y-m-d', strtotime('next month'));
@@ -295,24 +217,84 @@ class User extends Authenticatable
         return $status ?? 3;
     }
 
-    public function isTrafficWarning(): bool
-    { // 流量异常警告
-        return ((int) sysConfig('traffic_ban_value') * GiB) <= $this->recentTrafficUsed();
+    public function getSubUrlAttribute(): string
+    {
+        return route('sub', $this->subscribe->code);
     }
 
-    public function recentTrafficUsed()
+    public function getInviteCodeAttribute(): string
     {
-        return UserHourlyDataFlow::userRecentUsed($this->id)->sum(DB::raw('u + d'));
+        $uid = $this->id;
+        $affSalt = sysConfig('aff_salt');
+
+        return empty($affSalt) ? $uid : (new Hashids($affSalt, 8))->encode($uid);
     }
 
-    public function orders(): HasMany
+    public function getInviteUrlAttribute(): string
     {
-        return $this->hasMany(Order::class);
+        return sysConfig('website_url').route('register', ['aff' => $this->invite_code], false);
     }
 
-    public function paidOrders()
+    public function getUsedTrafficAttribute(): int
     {
-        return $this->hasMany(Order::class)->where('status', 2)->whereNotNull('goods_id')->where('is_expire', 0)->where('amount', '>', 0);
+        return $this->d + $this->u;
+    }
+
+    public function getUnusedTrafficAttribute(): int
+    {
+        return max($this->transfer_enable - $this->d - $this->u, 0);
+    }
+
+    public function getAvatarAttribute(): string
+    {
+        return session()->remember('avatar_url_'.$this->id, function () {
+            if ($this->qq) {
+                return Avatar::getQQAvatar($this->qq);
+            }
+
+            if (str(str($this->username)->lower())->endsWith('@qq.com')) {
+                return Avatar::getQQAvatar($this->username);
+            }
+
+            return Avatar::getRandomAvatar($this->username);
+        });
+    }
+
+    public function getLevelNameAttribute(): string
+    {
+        return Level::where('level', $this->level)->value('name');
+    }
+
+    public function setPasswordAttribute(string $password): string
+    {
+        return $this->attributes['password'] = Hash::make($password);
+    }
+
+    public function nodes(?int $userLevel = null, ?int $userGroupId = null): Node|Builder|BelongsToMany
+    {
+        if ($userGroupId === null && $this->user_group_id) { // 使用默认的用户分组
+            $query = $this->userGroup->nodes();
+        } elseif ($userGroupId) { // 使用给的用户分组
+            $query = UserGroup::findOrFail($userGroupId)->nodes();
+        } else { // 无用户分组
+            $query = Node::query();
+        }
+
+        return $query->whereStatus(1)->where('level', '<=', $userLevel ?? $this->level ?? 0);
+    }
+
+    public function updateCredit(float $credit): bool
+    {
+        $this->credit += $credit;
+
+        return $this->credit >= 0 && $this->save();
+    }
+
+    public function incrementData(int $data): bool
+    { // 添加用户流量
+        $this->transfer_enable += $data;
+
+        return $this->save();
     }
 
     public function routeNotificationForTelegram()

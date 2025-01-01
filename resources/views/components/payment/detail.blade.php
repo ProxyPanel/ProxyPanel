@@ -76,7 +76,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('model.user.traffic_used') }}: {{ formatBytes($user->used_traffic) }}
-                                    / {{ formatBytes($user->transfer_enable) }}
+                                    / {{ $user->transfer_enable_formatted }}
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('model.user.credit') }}: {{ $user->credit }}

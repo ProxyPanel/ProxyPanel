@@ -7,22 +7,19 @@ use App\Models\User;
 use App\Utils\Clients\Protocols\Text;
 use App\Utils\Clients\Protocols\URLSchemes;
 use Arr;
+use Exception;
 use ReflectionClass;
+use RuntimeException;
 
 class ProxyService
 {
-    private static ?User $user;
-
     private static array $servers;
+
+    private ?User $user;
 
     public function __construct(?User $user = null)
     {
-        $this->setUser($user ?? auth()->user());
-    }
-
-    public function setUser(?User $user = null): void
-    {
-        self::$user = $user;
+        $this->user = $user ?? auth()->user();
     }
 
     public function getProxyText(string $target, ?int $type = null): string
@@ -55,7 +52,7 @@ class ProxyService
 
     public function getNodeList(?int $type = null, bool $isConfig = true): array
     {
-        $query = self::$user->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
+        $query = $this->getUser()->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
         if ($type) {
             if ($type === 1) {
@@ -79,9 +76,27 @@ class ProxyService
         return $nodes;
     }
 
+    private function getUser(): User
+    {
+        if (! $this->user || ! $this->user->exists) {
+            $user = auth()->user();
+            if (! $user) {
+                throw new RuntimeException('User not authenticated');
+            }
+            $this->setUser($user);
+        }
+
+        return $this->user;
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
     public function getProxyConfig(Node $node): array
     { // 提取节点信息
-        $user = self::$user;
+        $user = $this->getUser();
         $config = [
             'id' => $node->id,
             'name' => $node->name,
@@ -193,11 +208,6 @@ class ProxyService
         return URLSchemes::build($this->getServers()); // Origin
     }
 
-    public function getUser(): ?User
-    {
-        return self::$user;
-    }
-
     public function getProxyCode(string $target, ?int $type = null): ?string
     {// 客户端用代理信息
         $servers = $this->getNodeList($type);
@@ -219,6 +229,7 @@ class ProxyService
             'shadowsocksr' => $type->buildShadowsocksr($server),
             'vmess' => $type->buildVmess($server),
             'trojan' => $type->buildTrojan($server),
+            default => throw new Exception('Unsupported proxy type: '.$server['type']),
         };
     }
 }

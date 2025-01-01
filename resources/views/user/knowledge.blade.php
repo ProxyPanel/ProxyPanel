@@ -46,7 +46,7 @@
                                                     </div>
                                                     <div class="panel-collapse collapse show" id="answer_1" role="tabpanel" aria-labelledby="question_1">
                                                         <div class="panel-body">
-                                                            @if ($subStatus)
+                                                            @if ($subscribe['status'])
                                                                 <x-alert type="warning" :message="trans('user.subscribe.tips')" />
                                                                 <div class="input-group">
                                                                     <input class="form-control" id="sub_link" type="text" value="{{ $subUrl }}" />
@@ -87,7 +87,7 @@
                                                                     </div>
                                                                 </div>
                                                             @else
-                                                                <x-alert type="danger" :message="__($subMsg)" />
+                                                                <x-alert type="danger" :message="__($subscribe['ban_desc'])" />
                                                             @endif
                                                         </div>
                                                     </div>

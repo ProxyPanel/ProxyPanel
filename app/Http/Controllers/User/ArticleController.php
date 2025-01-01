@@ -13,13 +13,12 @@ class ArticleController extends Controller
 {
     public function index(NodeService $nodeService): View
     { // 帮助中心
-        $subscribe = auth()->user()->subscribe;
+        $user = auth()->user();
 
         return view('user.knowledge', [
             'subType' => $nodeService->getActiveNodeTypes(),
-            'subUrl' => route('sub', $subscribe->code),
-            'subStatus' => $subscribe->status,
-            'subMsg' => $subscribe->ban_desc,
+            'subUrl' => $user->sub_url,
+            'subscribe' => $user->subscribe->only(['status', 'ban_desc']),
             'knowledge' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
         ]);
     }

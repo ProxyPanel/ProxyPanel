@@ -41,6 +41,7 @@ class AuthController extends Controller
         // 创建新用户
         if ($user = Helpers::addUser($data['username'], $data['password'], MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), null, $data['nickname'])) {
             auth()->login($user, true);
+            $userService->setUser($user);
 
             return $this->succeed([
                 'token' => $user->createToken('client')->plainTextToken,

@@ -3,20 +3,21 @@
 namespace App\Services;
 
 use App\Models\User;
-use Hashids\Hashids;
+use DB;
+use RuntimeException;
 
 class UserService
 {
-    private static User $user;
+    private ?User $user;
 
     public function __construct(?User $user = null)
     {
-        self::$user = $user ?? auth()->user();
+        $this->user = $user ?? auth()->user();
     }
 
     public function getProfile(): array
     {
-        $user = self::$user;
+        $user = $this->getUser();
 
         return [
             'id' => $user->id,
@@ -40,21 +41,58 @@ class UserService
             'reset_time' => $user->reset_date,
             'invite_num' => $user->invite_num,
             'status' => $user->status,
-            'invite_url' => $this->inviteURI(),
+            'invite_url' => $user->invite_url,
         ];
     }
 
-    public function inviteURI(bool $isCode = false): string
+    private function getUser(): User
     {
-        $uid = self::$user->id;
-        $affSalt = sysConfig('aff_salt');
-        $aff = empty($affSalt) ? $uid : (new Hashids($affSalt, 8))->encode($uid);
+        if (! $this->user || ! $this->user->exists) {
+            $user = auth()->user();
+            if (! $user) {
+                throw new RuntimeException('User not authenticated');
+            }
+            $this->setUser($user);
+        }
 
-        return $isCode ? $aff : sysConfig('website_url').route('register', ['aff' => $aff], false);
+        return $this->user;
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
+    }
+
+    public function getRemainingDays(): int
+    {
+        return now()->diffInDays($this->getUser()->expired_at, false);
+    }
+
+    public function getResetDays(): ?int
+    {
+        return $this->getUser()->reset_time ? now()->diffInDays($this->getUser()->reset_time, false) : null;
+    }
+
+    public function getUnusedTrafficPercent(): float
+    {
+        $totalTransfer = $this->getUser()->transfer_enable;
+
+        return $totalTransfer > 0 ? round($this->getUser()->unused_traffic * 100 / $totalTransfer, 2) : 0;
+    }
+
+    public function isTrafficWarning(): bool
+    { // 流量异常警告
+        return ((int) sysConfig('traffic_ban_value') * GiB) <= $this->recentTrafficUsed();
+    }
+
+    public function recentTrafficUsed(): int
+    {
+        return $this->getUser()->hourlyDataFlows()->userRecentUsed()
+            ->sum(DB::raw('u + d')); // 假设 traffic_used 是记录流量消耗的字段
     }
 
     public function isActivePaying(): bool
     {
-        return self::$user->orders()->active()->where('origin_amount', '>', 0)->exists();
+        return $this->getUser()->orders()->active()->where('origin_amount', '>', 0)->exists();
     }
 }

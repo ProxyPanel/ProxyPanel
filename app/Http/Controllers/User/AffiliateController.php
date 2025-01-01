@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
-use App\Services\UserService;
 use App\Utils\Helpers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -26,7 +25,7 @@ class AffiliateController extends Controller
             'referral_money' => Helpers::getPriceTag(sysConfig('referral_money')),
             'totalAmount' => ReferralLog::uid()->sum('commission') / 100,
             'canAmount' => Helpers::getPriceTag(ReferralLog::uid()->whereStatus(0)->sum('commission') / 100),
-            'aff_link' => (new UserService)->inviteURI(),
+            'aff_link' => auth()->user()->invite_url,
             'referralLogList' => ReferralLog::uid()->with('invitee:id,username')->latest()->paginate(10, ['*'], 'log_page'),
             'referralApplyList' => ReferralApply::uid()->latest()->paginate(10, ['*'], 'apply_page'),
             'referralUserList' => auth()->user()->invitees()->select(['username', 'created_at'])->latest()->paginate(10, ['*'], 'user_page'),

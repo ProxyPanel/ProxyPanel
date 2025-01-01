@@ -21,6 +21,7 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Log;
 use Spatie\Permission\Models\Role;
 use Str;
@@ -75,9 +76,9 @@ class UserController extends Controller
         });
 
         return view('admin.user.index', [
-            'userList' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
-            'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels' => Level::all()->pluck('name', 'level')->toArray(),
+            'userList' => $query->with('subscribe:user_id,code')->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
+            'userGroups' => UserGroup::pluck('name', 'id'),
+            'levels' => Level::orderBy('level')->pluck('name', 'level'),
         ]);
     }
 
@@ -99,8 +100,8 @@ class UserController extends Controller
 
         $roles = $request->input('roles');
         try {
-            $adminUser = auth()->user();
-            if ($roles && ($adminUser->can('give roles') || (in_array('Super Admin', $roles, true) && $adminUser->hasRole('Super Admin')))) {
+            $editor = auth()->user();
+            if ($roles && ($editor->can('give roles') || (in_array('Super Admin', $roles, true) && $editor->hasRole('Super Admin')))) {
                 // 编辑用户权限, 只有超级管理员才有赋予超级管理的权限
                 $user->assignRole($roles);
             }
@@ -121,32 +122,34 @@ class UserController extends Controller
 
     public function create(): View
     {
-        if (auth()->user()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
-            $roles = Role::all()->pluck('description', 'name');
-        } elseif (auth()->user()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
-            $roles = auth()->user()->roles()->pluck('description', 'name');
+        return view('admin.user.info', [
+            'levels' => Level::orderBy('level')->pluck('name', 'level'),
+            'userGroups' => UserGroup::orderBy('id')->pluck('name', 'id'),
+            'roles' => $this->getAvailableRoles(),
+        ]);
+    }
+
+    private function getAvailableRoles(): ?Collection
+    {
+        $editor = auth()->user();
+        if ($editor->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
+            return Role::pluck('description', 'name');
         }
 
-        return view('admin.user.info', [
-            'levels' => Level::orderBy('level')->get(),
-            'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles ?? null,
-        ]);
+        if ($editor->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
+            return $editor->roles()->pluck('description', 'name');
+        }
+
+        return null;
     }
 
     public function edit(User $user): View
     {
-        if (auth()->user()->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
-            $roles = Role::all()->pluck('description', 'name');
-        } elseif (auth()->user()->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
-            $roles = auth()->user()->roles()->pluck('description', 'name');
-        }
-
         return view('admin.user.info', [
             'user' => $user->load('inviter:id,username'),
-            'levels' => Level::orderBy('level')->get(),
-            'userGroups' => UserGroup::orderBy('id')->get(),
-            'roles' => $roles ?? null,
+            'levels' => Level::orderBy('level')->pluck('name', 'level'),
+            'userGroups' => UserGroup::orderBy('id')->pluck('name', 'id'),
+            'roles' => $this->getAvailableRoles(),
         ]);
     }
 
@@ -224,8 +227,8 @@ class UserController extends Controller
         $roles = $request->input('roles');
         try {
             if (isset($roles)) {
-                $adminUser = auth()->user();
-                if ($adminUser->can('give roles') || $adminUser->hasRole('Super Admin')
+                $editor = auth()->user();
+                if ($editor->can('give roles') || $editor->hasRole('Super Admin')
                     || (in_array('Super Admin', $roles, true) && auth()->user()->hasRole('Super Admin'))) {
                     $user->syncRoles($roles);
                 }
@@ -288,12 +291,12 @@ class UserController extends Controller
         ]);
     }
 
-    public function exportProxyConfig(Request $request, User $user): JsonResponse
+    public function exportProxyConfig(Request $request, User $user, ProxyService $proxyService): JsonResponse
     {
-        $proxyServer = new ProxyService($user);
-        $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
+        $proxyService->setUser($user);
+        $server = $proxyService->getProxyConfig(Node::findOrFail($request->input('id')));
 
-        return response()->json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
+        return response()->json(['status' => 'success', 'data' => $proxyService->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
     }
 
     public function oauth(): View

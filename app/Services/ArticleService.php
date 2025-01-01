@@ -12,7 +12,7 @@ class ArticleService
     {
         $siteName = sysConfig('website_name');
         $siteUrl = sysConfig('website_url');
-        $subUrl = auth()->user()?->subUrl();
+        $subUrl = auth()->user()?->sub_url;
 
         self::$valuables = [
             '{{siteName}}' => $siteName,

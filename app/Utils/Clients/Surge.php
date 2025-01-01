@@ -42,13 +42,13 @@ class Surge implements Client
         if (sysConfig('is_custom_subscribe')) {
             $upload = formatBytes($user->u);
             $download = formatBytes($user->d);
-            $totalTraffic = formatBytes($user->transfer_enable);
+            $totalTraffic = $user->transfer_enable_formatted;
             $style = 'info';
-            $remainTraffic = $user->transfer_enable - $user->d - $user->u;
+            $remainTraffic = $user->unused_traffic;
             $remainDates = now()->diffInDays($user->expired_at, false);
             if ($remainTraffic <= 0 || $remainDates <= 0) {
                 $style = 'error';
-            } elseif (($user->transfer_enable - $user->d - $user->u) / $user->transfer_enable <= 0.05 || $remainDates <= 7) {
+            } elseif ($remainTraffic / $user->transfer_enable <= 0.05 || $remainDates <= 7) {
                 $style = 'alert';
             }
 
@@ -57,7 +57,7 @@ class Surge implements Client
             $subscribeInfo = "title=$webName, content=";
         }
 
-        return str_replace(['$subscribe_info', '$subs_link', '$subs_domain', '$proxies', '$proxy_group'], [$subscribeInfo, $user->subUrl(), $_SERVER['HTTP_HOST'], $proxyProfiles['proxies'], $proxyProfiles['names']],
+        return str_replace(['$subscribe_info', '$subs_link', '$subs_domain', '$proxies', '$proxy_group'], [$subscribeInfo, $user->sub_url, $_SERVER['HTTP_HOST'], $proxyProfiles['proxies'], $proxyProfiles['name']],
             $config);
     }
 }

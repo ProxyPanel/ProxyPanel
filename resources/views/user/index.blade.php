@@ -35,7 +35,7 @@
                                     <code>{{ trans('user.attribute.node') }}</code>
                                 </p>
                                 <a class="btn btn-block btn-danger" href="{{ route('shop.index') }}">{{ trans('user.purchase.promotion') }}</a>
-                            @elseif(Auth::user()->enable)
+                            @elseif(auth()->user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.normal') }}</span>
                                 <p class="font-weight-300 m-0 green-500">{{ trans('user.account.reason.normal') }}</p>
@@ -43,11 +43,11 @@
                                 <i class="wb-close red-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.expire') }}</span>
                                 <p class="font-weight-300 m-0 red-500">{{ trans('user.account.reason.expired') }}</p>
-                            @elseif($unusedTraffic === 0)
+                            @elseif($user['unused_traffic'] === 0)
                                 <i class="wb-close red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.disabled') }}</span>
                                 <p class="font-weight-300 m-0 red-500">{{ trans('user.account.reason.traffic_exhausted') }}</p>
-                            @elseif($banedTime || Auth::user()->isTrafficWarning())
+                            @elseif($user['ban_time'])
                                 <i class="wb-alert orange-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.limited') }}</span>
                                 <p class="font-weight-300 m-0 orange-500">{!! trans('user.account.reason.overused', ['data' => sysConfig('traffic_ban_value')]) !!}</p>
@@ -68,10 +68,10 @@
                                 </button>
                                 <span class="font-weight-400">{{ trans('user.account.remain') }}</span>
                                 <div class="text-center font-weight-100 font-size-40">
-                                    @if ($unusedTraffic === 0)
+                                    @if ($user['unused_traffic'] === 0)
                                         {{ trans('common.status.run_out') }}
                                     @else
-                                        {{ formatBytes($unusedTraffic) }}
+                                        {{ formatBytes($user['unused_traffic']) }}
                                     @endif
                                     <br />
                                     <h4>{{ trans('user.account.level') }}:
@@ -102,7 +102,7 @@
                         <div class="content-text text-center mb-0">
                             @if ($remainDays >= 0)
                                 <span class="font-size-40 font-weight-100">{{ $remainDays . ' ' . trans_choice('common.days.attribute', 1) }}</span>
-                                <p class="blue-grey-500 font-weight-300 m-0">{{ $expireTime }}</p>
+                                <p class="blue-grey-500 font-weight-300 m-0">{{ $user['expiration_date'] }}</p>
                             @else
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.expire') }}</span>
                                 <br />
@@ -146,7 +146,7 @@
                                 <h3 class="card-header-transparent">
                                     <i class="icon wb-link-intact"></i>{{ trans('user.subscribe.link') }}
                                 </h3>
-                                @if ($subscribe_status)
+                                @if ($subscribe['status'])
                                     <div class="card-body">
                                         @if (count($subType) > 1)
                                             <div class="form-group row">
@@ -196,7 +196,7 @@
                                             {{ trans('common.copy.attribute') }}</button>
                                     </div>
                                 @else
-                                    <x-alert type="danger" :message="__($subMsg)" />
+                                    <x-alert type="danger" :message="__($subscribe['ban_desc'])" />
                                 @endif
                             </div>
                         </div>
@@ -352,7 +352,7 @@
 
         const clipboard = new ClipboardJS('.mt-clipboard', {
             text: function(trigger) {
-                let base = @json($subUrl);
+                let base = @json($user['sub_url']);
                 const client = $('#client').val();
                 const subType = $('#subType').val();
                 if (subType && client) {
@@ -465,8 +465,8 @@
             options: common_options(@json(trans_choice('common.days.attribute', 2))),
         });
 
-        @if ($banedTime) // 封禁倒计时
-            const banedTime = new Date("{{ $banedTime }}").getTime();
+        @if ($user['ban_time']) // 封禁倒计时
+            const banedTime = new Date("{{ $user['ban_time'] }}").getTime();
             countDown(banedTime, 'banedTime', true);
             setInterval(function() {
                 countDown(banedTime, 'banedTime', true);

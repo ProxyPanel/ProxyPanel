@@ -16,7 +16,7 @@ class Shadowrocket implements Client
         //display remaining traffic and expire date
         if (sysConfig('is_custom_subscribe')) {
             $usedTraffic = formatBytes($user->used_traffic);
-            $remainTraffic = formatBytes($user->transfer_enable - $user->used_traffic);
+            $remainTraffic = formatBytes($user->unused_traffic);
             $uri = "STATUS=📊:{$usedTraffic}💾:{$remainTraffic}📅:$user->expiration_date\r\n";
         }
 

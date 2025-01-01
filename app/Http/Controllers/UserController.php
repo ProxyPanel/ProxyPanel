@@ -21,32 +21,30 @@ class UserController extends Controller
 {
     use DataChart;
 
-    public function index(NodeService $nodeService): View
+    public function index(NodeService $nodeService, UserService $userService): View
     {
-        // 用户转换
-        if (session()->has('user')) {
+        if (session()->has('user')) { // 用户转换
             auth()->loginUsingId(session()->pull('user'));
         }
         $user = auth()->user();
-        $totalTransfer = $user->transfer_enable;
-        $usedTransfer = $user->used_traffic;
-        $unusedTraffic = max($totalTransfer - $usedTransfer, 0);
+
+        $user->load(['subscribe', 'loginLogs' => function ($query) {
+            $query->latest()->first();
+        }]);
 
         return view('user.index', array_merge([
-            'remainDays' => now()->diffInDays($user->expired_at, false),
-            'resetDays' => $user->reset_time ? now()->diffInDays($user->reset_time, false) : null,
-            'unusedTraffic' => $unusedTraffic,
-            'expireTime' => $user->expiration_date,
-            'banedTime' => $user->ban_time,
-            'unusedPercent' => $totalTransfer > 0 ? round($unusedTraffic / $totalTransfer, 2) * 100 : 0,
-            'announcements' => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
-            'isTrafficWarning' => $user->isTrafficWarning(), // 流量异常判断
-            'paying_user' => (new UserService)->isActivePaying(), // 付费用户判断
-            'userLoginLog' => $user->loginLogs()->latest()->first(), // 近期登录日志
-            'subscribe_status' => $user->subscribe->status,
-            'subMsg' => $user->subscribe->ban_desc,
+            'remainDays' => $userService->getRemainingDays(),
+            'resetDays' => $userService->getResetDays(),
+            'unusedPercent' => $userService->getUnusedTrafficPercent(),
+            'announcements' => cache()->remember('announcements_'.app()->getLocale(), 300, function () {
+                return Article::type(2)->lang()->latest()->simplePaginate(1); // 公告缓存 5 分钟
+            }), // 公告
+            'isTrafficWarning' => $userService->isTrafficWarning(), // 流量异常判断
+            'paying_user' => $userService->isActivePaying(), // 付费用户判断
+            'user' => $user->only(['sub_url', 'unused_traffic', 'expiration_date', 'ban_time']),
+            'userLoginLog' => $user->loginLogs->first(), // 近期登录日志
             'subType' => $nodeService->getActiveNodeTypes($user->nodes()),
-            'subUrl' => $user->subUrl(),
+            'subscribe' => $user->subscribe->only(['status', 'ban_desc']),
         ], $this->dataFlowChart($user->id)));
     }
 

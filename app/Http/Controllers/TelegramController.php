@@ -12,14 +12,15 @@ use StdClass;
 
 class TelegramController extends Controller
 {
-    protected $msg;
+    protected StdClass $msg;
 
     public function webhook(Request $request): void
     {
-        $this->msg = $this->getMessage($request->input());
-        if (! $this->msg) {
+        $msg = $this->getMessage($request->input());
+        if (! $msg) {
             return;
         }
+        $this->msg = $msg;
         try {
             switch ($this->msg->message_type) {
                 case 'send':
@@ -35,7 +36,7 @@ class TelegramController extends Controller
         }
     }
 
-    private function getMessage(array $data)
+    private function getMessage(array $data): false|StdClass
     {
         if (! isset($data['message'])) {
             return false;
@@ -99,7 +100,7 @@ class TelegramController extends Controller
         }
     }
 
-    private function replayTicket($ticketId): void
+    private function replayTicket(int $ticketId): void
     {
         $msg = $this->msg;
         if (! $msg->is_private) {
@@ -122,9 +123,6 @@ class TelegramController extends Controller
             }
 
             $ticket->reply()->create(['admin_id' => $admin->id, 'content' => $msg->text]);
-            if ($ticket->status !== 1) {
-                $ticket->update(['status' => 1]);
-            }
         }
         (new TelegramService)->sendMessage($msg->chat_id, trans('user.telegram.ticket_reply', ['id' => $ticketId]), 'markdown');
     }
@@ -167,11 +165,10 @@ class TelegramController extends Controller
             return;
         }
         $user = $oauth->user;
-        $transferEnable = formatBytes($user->transfer_enable);
         $up = formatBytes($user->u);
         $down = formatBytes($user->d);
-        $remaining = formatBytes($user->transfer_enable - ($user->u + $user->d));
-        $text = '🚥'.trans('user.subscribe.info.title')."\n———————————————\n".trans('user.subscribe.info.total').": `$transferEnable`\n".trans('user.subscribe.info.upload').": `$up`\n".trans('user.subscribe.info.download').": `$down`\n".trans('user.account.remain').": `$remaining`";
+        $remaining = formatBytes($user->unused_traffic);
+        $text = '🚥'.trans('user.subscribe.info.title')."\n———————————————\n".trans('user.subscribe.info.total').": `$user->transfer_enable_formatted`\n".trans('user.subscribe.info.upload').": `$up`\n".trans('user.subscribe.info.download').": `$down`\n".trans('user.account.remain').": `$remaining`";
         $telegramService->sendMessage($msg->chat_id, $text, 'markdown');
     }
 
