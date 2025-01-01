@@ -9,12 +9,12 @@
         <h1 class="page-title">{{ __('user.knowledge.title') }}</h1>
     </div>
     <div class="page-content container-fluid">
-        @if ($knowledges->isNotEmpty())
+        @if ($knowledge->isNotEmpty())
             <div class="row">
                 <div class="offset-xxl-1 col-xxl-2 col-xl-3 offset-lg-0 col-lg-4 offset-sm-2 col-sm-8">
                     <div class="panel">
                         <div class="list-group" role="tablist">
-                            @foreach ($knowledges as $category => $articles)
+                            @foreach ($knowledge as $category => $articles)
                                 @php $str = string_urlsafe($category) @endphp
                                 <a class="list-group-item @if ($loop->first) list-group-item-action active @endif" data-toggle="tab"
                                    href="#{{ $str }}" role="tab" aria-controls="{{ $str }}">{{ $category }}</a>
@@ -32,7 +32,7 @@
                         </div>
                         <div class="panel-body pt-30">
                             <div class="tab-content">
-                                @foreach ($knowledges as $category => $articles)
+                                @foreach ($knowledge as $category => $articles)
                                     <div class="tab-pane animation-fade @if ($loop->first) active @endif" id="{{ string_urlsafe($category) }}"
                                          role="tabpanel">
                                         <div class="panel-group panel-group-simple panel-group-continuous" role="tablist" aria-multiselectable="true">

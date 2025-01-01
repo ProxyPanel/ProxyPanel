@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RoleRequest;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Log;
@@ -13,7 +14,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.role.index', ['roles' => Role::with('permissions')->paginate(15)]);
     }
@@ -29,12 +30,12 @@ class RoleController extends Controller
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.role.info', ['permissions' => Permission::all()->pluck('description', 'name')]);
     }
 
-    public function edit(Role $role)
+    public function edit(Role $role): View
     {
         return view('admin.role.info', [
             'role' => $role->load('permissions'),

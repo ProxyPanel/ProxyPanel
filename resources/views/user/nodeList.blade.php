@@ -31,20 +31,20 @@
                                 <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.level') }}</div>
                                 <div class="counter-number-group">
                                     <span class="counter-icon"><i class="icon wb-user-circle" aria-hidden="true"></i></span>
-                                    <span class="counter-number ml-10">{{ Auth::getUser()->level }}</span>
+                                    <span class="counter-number ml-10">{{ auth()->user()->level }}</span>
                                 </div>
-                                <div class="counter-label text-uppercase font-size-16">{{ Auth::getUser()->level_name }}</div>
+                                <div class="counter-label text-uppercase font-size-16">{{ auth()->user()->level_name }}</div>
                             </div>
                         </div>
                     </div>
-                    @if (Auth::getUser()->user_group_id)
+                    @if (auth()->user()->user_group_id)
                         <div class="col-md-12">
                             <div class="card card-block p-20 bg-indigo-500">
                                 <div class="counter counter-lg counter-inverse">
                                     <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.group') }}</div>
                                     <div class="counter-number-group">
                                         <span class="counter-icon"><i class="icon wb-globe" aria-hidden="true"></i></span>
-                                        <span class="counter-number ml-10">{{ Auth::getUser()->userGroup->name }}</span>
+                                        <span class="counter-number ml-10">{{ auth()->user()->userGroup->name }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                 <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.speed_limit') }}</div>
                                 <div class="counter-number-group">
                                     <span class="counter-icon"><i class="icon wb-signal" aria-hidden="true"></i></span>
-                                    <span class="counter-number ml-10">{{ Auth::getUser()->speed_limit ?: trans('common.unlimited') }}</span>
+                                    <span class="counter-number ml-10">{{ auth()->user()->speed_limit ?: trans('common.unlimited') }}</span>
                                 </div>
                                 <div class="counter-label font-size-16">Mbps</div>
                             </div>

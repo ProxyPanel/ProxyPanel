@@ -70,7 +70,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link navbar-avatar" data-animation="scale-up" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
                             <span class="avatar avatar-online">
-                                <img data-uid="{{ Auth::getUser()->id }}" data-qq="{{ Auth::getUser()->qq }}" data-username="{{ Auth::getUser()->username }}"
+                                <img data-uid="{{ auth()->user()->id }}" data-qq="{{ auth()->user()->qq }}" data-username="{{ auth()->user()->username }}"
                                      src="" alt="{{ trans('common.avatar') }}" loading="lazy" />
                             </span>
                         </a>
@@ -201,7 +201,7 @@
     @if (Session::has('admin'))
         <div class="panel panel-bordered w-300 bg-grey-200" style="position:fixed;right:20px;bottom:0;">
             <div class="panel-body text-right">
-                <h5>{{ trans('user.current_role') }}：{{ Auth::getUser()->username }}</h5>
+                <h5>{{ trans('user.current_role') }}：{{ auth()->user()->username }}</h5>
                 <button class="btn btn-danger btn-block mt-20" id="return_to_admin" type="button">
                     {{ trans('common.back_to', ['page' => trans('user.menu.admin_dashboard')]) }}
                 </button>

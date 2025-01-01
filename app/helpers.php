@@ -58,7 +58,7 @@ if (! function_exists('formatTime')) {
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig(?string $key = null, ?string $default = null): array|string|null
+    function sysConfig(?string $key = null, ?string $default = null): array|null|string
     {
         return $key ? config("settings.$key", $default) : config('settings');
     }
@@ -83,7 +83,7 @@ if (! function_exists('array_clean')) {
 
 // string url safe sanitize
 if (! function_exists('string_urlsafe')) {
-    function string_urlsafe($string, $force_lowercase = true, $anal = false): string
+    function string_urlsafe(string $string, bool $force_lowercase = true, bool $anal = false): string
     {
         $clean = preg_replace('/[~`!@#$%^&*()_=+\[\]{}\\|;:"\'<>,.?\/]/', '_', strip_tags($string));
         $clean = preg_replace('/\s+/', '-', $clean);

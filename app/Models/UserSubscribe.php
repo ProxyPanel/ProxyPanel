@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Auth;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +23,7 @@ class UserSubscribe extends Model
 
     public function scopeUid(Builder $query): Builder
     {
-        return $query->whereUserId(Auth::id());
+        return $query->whereUserId(auth()->id());
     }
 
     public function user(): BelongsTo

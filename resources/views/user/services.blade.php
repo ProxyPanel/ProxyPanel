@@ -13,7 +13,7 @@
                         </button>
                         <span class="font-weight-400">{{ trans('user.account.credit') }}</span>
                         <div class="content-text text-center mb-0">
-                            <span class="font-size-40 font-weight-100">{{ Auth::getUser()->credit_tag }}</span>
+                            <span class="font-size-40 font-weight-100">{{ auth()->user()->credit_tag }}</span>
                             <br />
                             <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{ trans('user.recharge') }}</button>
                         </div>

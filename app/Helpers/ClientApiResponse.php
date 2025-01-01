@@ -21,12 +21,12 @@ trait ClientApiResponse
         self::$client = $client;
     }
 
-    public function succeed(?array $data = null, ?array $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
+    public function succeed(array|bool|null $data = null, ?array $addition = null, array $codeResponse = ResponseEnum::HTTP_OK): JsonResponse
     {
         return $this->jsonResponse(1, $codeResponse, $data, $addition);
     }
 
-    private function jsonResponse(int $status, array $codeResponse, array|string|null $data = null, ?array $addition = null): JsonResponse
+    private function jsonResponse(int $status, array $codeResponse, array|bool|null $data = null, ?array $addition = null): JsonResponse
     {
         [$code, $message] = $codeResponse;
         $code = $code > 1000 ? (int) ($code / 1000) : $code;

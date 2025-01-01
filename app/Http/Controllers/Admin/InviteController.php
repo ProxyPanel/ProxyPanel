@@ -4,24 +4,24 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Log;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Response;
 use Str;
 
 class InviteController extends Controller
 {
-    public function index(): \Illuminate\Http\Response
+    public function index(): View
     { // 邀请码列表
-        return Response::view('admin.aff.invite', [
+        return view('admin.aff.invite', [
             'inviteList' => Invite::with(['invitee:id,username', 'inviter:id,username'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page')),
         ]);
     }
 
-    public function create(): JsonResponse
+    public function generate(): JsonResponse
     { // 生成邀请码
         for ($i = 0; $i < 10; $i++) {
             $obj = new Invite;
@@ -30,7 +30,7 @@ class InviteController extends Controller
             $obj->save();
         }
 
-        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
+        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
     }
 
     public function export(): void

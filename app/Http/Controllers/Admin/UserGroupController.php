@@ -7,18 +7,19 @@ use App\Http\Requests\Admin\UserGroupRequest;
 use App\Models\Node;
 use App\Models\UserGroup;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Log;
 
 class UserGroupController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.user.group.index', ['groups' => UserGroup::paginate(15)->appends(request('page'))]);
     }
 
-    public function store(UserGroupRequest $request)
+    public function store(UserGroupRequest $request): RedirectResponse
     {
         if ($userGroup = UserGroup::create($request->only(['name']))) {
             $userGroup->nodes()->attach($request->input('nodes'));
@@ -29,12 +30,12 @@ class UserGroupController extends Controller
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.user.group.info', ['nodes' => Node::whereStatus(1)->pluck('name', 'id')]);
     }
 
-    public function edit(UserGroup $group)
+    public function edit(UserGroup $group): View
     {
         return view('admin.user.group.info', [
             'group' => $group,

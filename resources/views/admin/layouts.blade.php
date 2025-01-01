@@ -57,7 +57,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link navbar-avatar" data-toggle="dropdown" data-animation="scale-up" href="#" role="button" aria-expanded="false">
                             <span class="avatar avatar-online">
-                                <img data-uid="{{ Auth::getUser()->id }}" data-qq="{{ Auth::getUser()->qq }}" data-username="{{ Auth::getUser()->username }}"
+                                <img data-uid="{{ auth()->user()->id }}" data-qq="{{ auth()->user()->qq }}" data-username="{{ auth()->user()->username }}"
                                      src="" alt="{{ trans('common.avatar') }}" loading="lazy" />
                                 <i></i>
                             </span>

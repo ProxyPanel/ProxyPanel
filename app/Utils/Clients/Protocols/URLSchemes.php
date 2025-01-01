@@ -33,11 +33,11 @@ class URLSchemes implements Protocol
         $setting = "{$server['host']}:{$server['port']}:{$server['protocol']}:{$server['method']}:{$server['obfs']}:";
 
         return 'ssr://'.base64url_encode($setting.base64url_encode($server['passwd']).'/?'.http_build_query([
-            'obfsparam' => $server['obfs_param'] ? base64url_encode($server['obfs_param']) : '',
-            'protoparam' => $server['protocol_param'] ? base64url_encode($server['protocol_param']) : '',
-            'remarks' => $server['name'] ? base64url_encode($server['name']) : '',
-            'group' => $server['group'] ? base64url_encode($server['group']) : '',
-            'udpport' => $server['udp'],
+            'obfsparam' => base64url_encode($server['obfs_param'] ?? ''),
+            'protoparam' => base64url_encode($server['protocol_param'] ?? ''),
+            'remarks' => base64url_encode($server['name']),
+            'group' => base64url_encode($server['group'] ?? ''),
+            'udpport' => $server['udp'] ?? 0,
             'uot' => 0,
         ])).PHP_EOL;
     }
@@ -51,12 +51,12 @@ class URLSchemes implements Protocol
             'port' => $server['port'],
             'id' => $server['uuid'],
             'aid' => $server['v2_alter_id'],
-            'net' => $server['v2_net'],
-            'type' => $server['v2_type'],
-            'host' => $server['v2_host'],
-            'path' => $server['v2_path'],
-            'tls' => $server['v2_tls'],
-            'sni' => $server['v2_sni'],
+            'net' => $server['v2_net'] ?? '',
+            'type' => $server['v2_type'] ?? '',
+            'host' => $server['v2_host'] ?? '',
+            'path' => $server['v2_path'] ?? '',
+            'tls' => $server['v2_tls'] ?? '',
+            'sni' => $server['v2_sni'] ?? '',
             'remark' => $server['name'],
         ];
 

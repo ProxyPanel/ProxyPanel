@@ -14,37 +14,51 @@ use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
 use App\Utils\NetworkDetection;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
-use Response;
 
 class NodeController extends Controller
 {
     use DataChart;
 
-    public function index(Request $request) // 节点列表
-    {
-        $status = $request->input('status');
+    public function index(Request $request): View
+    { // 节点列表
+        $query = Node::whereNull('relay_node_id')
+            ->with([
+                'dailyDataFlows:node_id,u,d',
+                'onlineLogs' => function ($query) {
+                    $query->where('log_time', '>=', strtotime('-5 minutes'))->orderBy('log_time', 'desc');
+                },
+                'heartbeats' => function ($query) {
+                    $query->where('log_time', '>=', strtotime(config('tasks.recently_heartbeat')))->orderBy('log_time', 'desc');
+                },
+                'childNodes',
+            ])
+            ->withCount('onlineLogs'); // 提前统计在线人数
 
-        $query = Node::whereNull('relay_node_id')->with(['onlineLogs', 'dailyDataFlows:node_id,u,d', 'heartbeats', 'childNodes']);
-
-        if (isset($status)) {
-            $query->whereStatus($status);
-        }
+        $request->whenFilled('status', function ($value) use ($query) {
+            $query->where('status', $value);
+        });
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
-        foreach ($nodeList as $node) {
-            $node->online_users = $node->onlineLogs->where('log_time', '>=', strtotime('-5 minutes'))->sortBy('log_time')->first()?->online_user; // 在线人数
+
+        // 预处理每个节点的数据
+        $nodeList->transform(function ($node) {
+            $node->online_users = $node->onlineLogs->first()?->online_user; // 在线人数
             $node->transfer = formatBytes($node->dailyDataFlows->sum('u') + $node->dailyDataFlows->sum('d')); // 已产生流量
-            $node_info = $node->heartbeats->where('log_time', '>=', strtotime(config('tasks.recently_heartbeat')))->sortBy('log_time')->first(); // 近期负载
+
+            $node_info = $node->heartbeats->first(); // 近期负载
             $node->isOnline = $node_info !== null && ! empty($node_info->load);
             $node->load = $node_info->load ?? false;
             $node->uptime = $node_info === null ? 0 : formatTime($node_info->uptime);
-        }
 
-        return view('admin.node.index', ['nodeList' => $nodeList]);
+            return $node;
+        });
+
+        return view('admin.node.index', compact('nodeList'));
     }
 
     public function store(NodeRequest $request): JsonResponse
@@ -55,18 +69,18 @@ class NodeController extends Controller
                     $node->labels()->attach($request->input('labels'));
                 }
 
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.node.info', [
             'nodes' => Node::orderBy('id')->pluck('id', 'name'),
@@ -164,10 +178,10 @@ class NodeController extends Controller
         $new = $node->replicate()->fill($clone);
         $new->save();
 
-        return redirect()->route('admin.node.edit', $new);
+        return redirect(route('admin.node.edit', $new));
     }
 
-    public function edit(Node $node)
+    public function edit(Node $node): View
     { // 编辑节点页面
         return view('admin.node.info', [
             'node' => $node->load('labels'),
@@ -187,30 +201,30 @@ class NodeController extends Controller
                 // 更新节点标签
                 $node->labels()->sync($request->input('labels'));
 
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     public function destroy(Node $node): JsonResponse
     { // 删除节点
         try {
             if ($node->delete()) {
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
     public function checkNode(Node $node): JsonResponse
@@ -220,10 +234,10 @@ class NodeController extends Controller
             $data[$ip] = [config('common.network_status')[$status['icmp']], config('common.network_status')[$status['tcp']]];
         }
 
-        return Response::json(['status' => 'success', 'title' => '['.$node->name.'] '.trans('admin.node.connection_test'), 'message' => $data ?? []]);
+        return response()->json(['status' => 'success', 'title' => '['.$node->name.'] '.trans('admin.node.connection_test'), 'message' => $data ?? []]);
     }
 
-    public function refreshGeo($id): JsonResponse
+    public function refreshGeo(?int $id = null): JsonResponse
     { // 刷新节点地理位置
         $ret = false;
         if ($id) {
@@ -238,13 +252,13 @@ class NodeController extends Controller
         }
 
         if ($ret) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
-    public function reload($id): JsonResponse
+    public function reload(?int $id = null): JsonResponse
     { // 重载节点
         $ret = false;
         if ($id) {
@@ -260,13 +274,13 @@ class NodeController extends Controller
         }
 
         if ($ret) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.node.reload')])]);
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.node.reload')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('admin.node.reload')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('admin.node.reload')])]);
     }
 
-    public function nodeMonitor(Node $node)
+    public function nodeMonitor(Node $node): View
     { // 节点流量监控
         return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
     }

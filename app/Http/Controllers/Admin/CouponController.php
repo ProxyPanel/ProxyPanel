@@ -9,21 +9,19 @@ use App\Models\Level;
 use App\Models\UserGroup;
 use App\Utils\Helpers;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use Redirect;
-use Response;
 use Str;
 
 class CouponController extends Controller
 {
-    // 优惠券列表
-    public function index(Request $request)
-    {
+    public function index(Request $request): View
+    { // 优惠券列表
         $query = Coupon::query();
 
         $request->whenFilled('sn', function ($sn) use ($query) {
@@ -39,9 +37,8 @@ class CouponController extends Controller
         return view('admin.coupon.index', ['couponList' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 优惠券列表
-    public function show(Coupon $coupon)
-    {
+    public function show(Coupon $coupon): View
+    { // 优惠券列表
         return view('admin.coupon.show', [
             'coupon' => $coupon,
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
@@ -49,16 +46,14 @@ class CouponController extends Controller
         ]);
     }
 
-    // 添加优惠券
-    public function store(CouponRequest $request): ?RedirectResponse
-    {
-        // 优惠卷LOGO
+    public function store(CouponRequest $request): RedirectResponse
+    { // 添加优惠券
         $logo = null;
-        if ($request->hasFile('logo')) {
+        if ($request->hasFile('logo')) { // 优惠卷LOGO
             $file = $request->file('logo');
             $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
             if (! $file->storeAs('public', $fileName)) {
-                return Redirect::back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.coupon.logo')]));
+                return redirect()->back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.coupon.logo')]));
             }
             $logo = 'upload/'.$fileName;
         }
@@ -95,42 +90,39 @@ class CouponController extends Controller
                 Coupon::create($data);
             }
 
-            return Redirect::route('admin.coupon.index')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.generate')]));
+            return redirect(route('admin.coupon.index'))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.generate')]));
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.generate'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withInput()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage());
+            return redirect()->back()->withInput()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage());
         }
     }
 
-    // 添加优惠券页面
-    public function create()
-    {
+    public function create(): View
+    { // 添加优惠券页面
         return view('admin.coupon.create', [
             'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
             'levels' => Level::all()->pluck('name', 'level')->toArray(),
         ]);
     }
 
-    // 删除优惠券
     public function destroy(Coupon $coupon): JsonResponse
-    {
+    { // 删除优惠券
         try {
             if ($coupon->delete()) {
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
-    // 导出卡券
     public function exportCoupon(): void
-    {
+    { // 导出卡券
         $couponList = Coupon::whereStatus(0)->get();
 
         $filename = trans('model.coupon.attribute').'_'.date('Ymd').'.xlsx';

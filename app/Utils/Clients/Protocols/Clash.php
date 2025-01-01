@@ -46,9 +46,9 @@ class Clash implements Protocol
             'password' => $server['passwd'],
             'cipher' => $server['method'],
             'obfs' => $server['obfs'],
-            'obfs-param' => $server['obfs_param'],
+            'obfs-param' => $server['obfs_param'] ?? '',
             'protocol' => $server['protocol'],
-            'protocol-param' => $server['protocol_param'],
+            'protocol-param' => $server['protocol_param'] ?? '',
             'udp' => $server['udp'],
         ];
     }
@@ -66,13 +66,13 @@ class Clash implements Protocol
             'udp' => $server['udp'],
         ];
 
-        if ($server['v2_tls']) {
+        if (isset($server['v2_tls']) && $server['v2_tls']) {
             $array['tls'] = true;
             $array['servername'] = $server['v2_host'];
         }
         $array['network'] = $server['v2_net'];
 
-        if ($server['v2_net'] === 'ws') {
+        if (isset($server['v2_net']) && $server['v2_net'] === 'ws') {
             $array['ws-opts'] = [];
             $array['ws-opts']['path'] = $server['v2_path'];
             if ($server['v2_host']) {
@@ -98,7 +98,7 @@ class Clash implements Protocol
             'udp' => $server['udp'],
         ];
 
-        if (! empty($server['sni'])) {
+        if (isset($server['sni'])) {
             $array['sni'] = $server['sni'];
         }
 

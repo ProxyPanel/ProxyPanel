@@ -10,17 +10,17 @@ use App\Models\UserGroup;
 use App\Models\UserHourlyDataFlow;
 use App\Notifications\Custom;
 use Helpers;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Notification;
-use Response;
 use Validator;
 
 class MarketingController extends Controller
 {
-    // 群发消息列表
-    public function index(Request $request)
-    {
+    public function index(Request $request): View
+    { // 群发消息列表
         $query = Marketing::query();
 
         $request->whenFilled('status', function ($value) use ($query) {
@@ -34,17 +34,16 @@ class MarketingController extends Controller
         ]);
     }
 
-    // 推送消息
     public function create(string $type, Request $request): JsonResponse
-    {
+    { // 推送消息
         if ($request->isMethod('GET')) {
-            return Response::json(['status' => 'success', 'count' => $this->userStat($request)]);
+            return response()->json(['status' => 'success', 'count' => $this->userStat($request)]);
         }
 
         $validator = Validator::make($request->all(), ['title' => 'required|string', 'content' => 'required|string']);
 
         if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
+            return response()->json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
         }
 
         $title = $request->input('title');
@@ -52,12 +51,12 @@ class MarketingController extends Controller
 
         if ($type === 'push') {
             //            if (! sysConfig('is_push_bear')) {
-            //                return Response::json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
+            //                return response()->json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
             //            }
             //
             //            Notification::send(PushBearChannel::class, new Custom($title, $content));
-            //            return Response::json(['status' => 'success', 'message' => '发送完成']);
-            return Response::json(['status' => 'fail', 'message' => trans('common.developing')]);
+            //            return response()->json(['status' => 'success', 'message' => '发送完成']);
+            return response()->json(['status' => 'fail', 'message' => trans('common.developing')]);
         }
 
         if ($type === 'email') {
@@ -66,16 +65,16 @@ class MarketingController extends Controller
                 Notification::send($users, new Custom($title, $content, ['mail']));
                 Helpers::addMarketing($users->pluck('id')->toJson(), '1', $title, $content);
 
-                return Response::json(['status' => 'success', 'message' => trans('admin.marketing.processed')]);
+                return response()->json(['status' => 'success', 'message' => trans('admin.marketing.processed')]);
             }
 
-            return Response::json(['status' => 'fail', 'message' => trans('admin.marketing.targeted_users_not_found')]);
+            return response()->json(['status' => 'fail', 'message' => trans('admin.marketing.targeted_users_not_found')]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('admin.marketing.unknown_sending_type')]);
+        return response()->json(['status' => 'fail', 'message' => trans('admin.marketing.unknown_sending_type')]);
     }
 
-    private function userStat(Request $request)
+    private function userStat(Request $request): Collection|int
     {
         $users = User::query();
 

@@ -41,9 +41,9 @@ class QuantumultX implements Protocol
             "method={$server['method']}",
             "password={$server['passwd']}",
             "ssr-protocol={$server['protocol']}",
-            "ssr-protocol-param={$server['protocol_param']}",
+            'ssr-protocol-param='.($server['protocol_param'] ?? ''),
             "obfs={$server['obfs']}",
-            "obfs-host={$server['obfs_param']}",
+            'obfs-host='.($server['obfs_param'] ?? ''),
             'fast-open=true',
             "udp-relay={$server['udp']}",
             "tag={$server['name']}",
@@ -63,24 +63,24 @@ class QuantumultX implements Protocol
             "tag={$server['name']}",
         ];
 
-        if ($server['v2_tls']) {
+        if (isset($server['v2_tls']) && $server['v2_tls']) {
             if ($server['v2_net'] === 'tcp') {
                 $config[] = 'obfs=over-tls';
             } else {
                 $config[] = 'obfs=wss';
             }
-        } elseif ($server['v2_net'] === 'ws') {
+        } elseif (isset($server['v2_net']) && $server['v2_net'] === 'ws') {
             $config[] = 'obfs=ws';
         }
 
-        if ($server['v2_tls']) {
+        if (isset($server['v2_tls']) && $server['v2_tls']) {
             $config[] = 'tls-verification=true';
             if (! empty($server['v2_host'])) {
                 $config[] = "tls-host={$server['v2_host']}";
             }
         }
 
-        if ($server['v2_type'] === 'ws' && ! empty($server['v2_path'])) {
+        if (isset($server['v2_type']) && $server['v2_type'] === 'ws' && ! empty($server['v2_path'])) {
             $config[] = "obfs-uri={$server['v2_path']}";
             $config[] = "obfs-host={$server['v2_host']}";
         }

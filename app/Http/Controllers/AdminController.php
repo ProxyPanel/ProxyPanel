@@ -10,18 +10,17 @@ use App\Models\ReferralApply;
 use App\Models\ReferralLog;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
-use Cache;
 use DB;
-use Response;
+use Illuminate\Contracts\View\View;
 
 class AdminController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $past = strtotime('-'.sysConfig('expire_days').' days');
         $today = today();
 
-        $stats = Cache::remember('user_stats', now()->addMinutes(5), function () use ($today, $past) {
+        $stats = cache()->remember('user_stats', now()->addMinutes(5), function () use ($today, $past) {
             $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', $today)->sum(DB::raw('u + d'));
 
             return [

@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\UserOauth;
 use App\Utils\Helpers;
 use App\Utils\IP;
-use Auth;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
@@ -15,7 +14,7 @@ class OAuthController extends Controller
 {
     public function unbind(string $provider): RedirectResponse
     {
-        $user = Auth::user();
+        $user = auth()->user();
 
         if ($user && $user->userAuths()->whereType($provider)->delete()) {
             return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('user.oauth.unbind')]));
@@ -33,7 +32,7 @@ class OAuthController extends Controller
             return redirect()->route('login')->withErrors(trans('auth.oauth.login_failed'));
         }
 
-        $user = Auth::user();
+        $user = auth()->user();
 
         if (! $user) {
             return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.bind')]));
@@ -103,7 +102,7 @@ class OAuthController extends Controller
 
     private function handleLogin(User $user): RedirectResponse
     {
-        Auth::login($user);
+        auth()->login($user);
         Helpers::userLoginAction($user, IP::getClientIp());
 
         return redirect()->route('login');

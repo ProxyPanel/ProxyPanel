@@ -7,18 +7,19 @@ use App\Http\Requests\Admin\RuleGroupRequest;
 use App\Models\Rule;
 use App\Models\RuleGroup;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Log;
 
 class RuleGroupController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         return view('admin.rule.group.index', ['ruleGroups' => RuleGroup::paginate(15)->appends(request('page'))]);
     }
 
-    public function store(RuleGroupRequest $request)
+    public function store(RuleGroupRequest $request): RedirectResponse
     {
         if ($group = RuleGroup::create($request->only('name', 'type'))) {
             $group->rules()->attach($request->input('rules'));
@@ -29,12 +30,12 @@ class RuleGroupController extends Controller
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.rule.group.info', ['rules' => Rule::all()]);
     }
 
-    public function edit(RuleGroup $group)
+    public function edit(RuleGroup $group): View
     {
         return view('admin.rule.group.info', [
             'ruleGroup' => $group,

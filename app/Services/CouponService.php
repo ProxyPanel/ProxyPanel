@@ -6,7 +6,6 @@ use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\User;
 use App\Utils\Helpers;
-use Auth;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +17,7 @@ class CouponService
 
     public function __construct(private readonly string $code)
     {
-        $this->user = Auth::getUser();
+        $this->user = auth()->user();
     }
 
     public function search(Goods $goods): JsonResponse|Coupon

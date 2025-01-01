@@ -112,7 +112,7 @@ class ReportController extends Controller
             }
 
             // 处理小时数据
-            if ($hourlyDate->isToday() && $todayData) {
+            if ($todayData && $hourlyDate->isToday()) {
                 $hourlyFlows = $todayData->flatMap(fn ($item) => $item['hourly'])->values();
             } else {
                 $hourlyFlows = $user->hourlyDataFlows()
@@ -133,7 +133,7 @@ class ReportController extends Controller
                 ->get()
                 ->map(fn ($item) => $mapFlow($item, 'date'));
 
-            if ($endDate->isToday() && $todayData) {
+            if ($todayData && $endDate->isToday()) {
                 $dailyFlows = $dailyFlows->concat($todayData->map(fn ($item) => $item['daily']));
             }
 
@@ -153,7 +153,7 @@ class ReportController extends Controller
         return view('admin.report.userDataAnalysis', compact('data'));
     }
 
-    public function nodeAnalysis(Request $request)
+    public function nodeAnalysis(Request $request): View
     {
         $currentTime = now();
         $currentDate = $currentTime->format('m-d');

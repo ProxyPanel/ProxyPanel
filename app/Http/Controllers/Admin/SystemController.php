@@ -21,19 +21,17 @@ use App\Models\SsConfig;
 use App\Notifications\Custom;
 use App\Services\TelegramService;
 use App\Utils\DDNS;
-use Auth;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Notification;
 use NotificationChannels\Telegram\TelegramChannel;
-use Response;
 
 class SystemController extends Controller
 {
-    // 系统设置
-    public function index()
-    {
+    public function index(): View
+    { // 系统设置
         return view('admin.config.system', array_merge([
             'payments' => $this->getPayments(),
             'captcha' => $this->getCaptcha(),
@@ -60,7 +58,7 @@ class SystemController extends Controller
 
         // 遍历映射，检查配置项是否存在
         foreach ($paymentConfigs as $paymentName => $configKeys) {
-            $allConfigsExist = array_reduce($configKeys, function ($carry, $configKey) {
+            $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) {
                 return $carry && sysConfig($configKey);
             }, true);
 
@@ -69,7 +67,7 @@ class SystemController extends Controller
             }
         }
 
-        return $payment;
+        return $payment ?? [];
     }
 
     private function getCaptcha(): bool
@@ -147,7 +145,7 @@ class SystemController extends Controller
                 }
                 $file = $request->file('alipay_qrcode');
                 $file->move('uploads/images', $file->getClientOriginalName());
-                if (Config::find('alipay_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
+                if (Config::findOrNew('alipay_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
                     return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
@@ -160,7 +158,7 @@ class SystemController extends Controller
                 }
                 $file = $request->file('wechat_qrcode');
                 $file->move('uploads/images', $file->getClientOriginalName());
-                if (Config::findOrFail('wechat_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
+                if (Config::findOrNew('wechat_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
                     return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
             }
@@ -182,11 +180,11 @@ class SystemController extends Controller
 
         // 支付设置判断
         if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayments(), true)) {
-            return Response::json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('admin.system.payment.attribute')])]);
+            return response()->json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('admin.system.payment.attribute')])]);
         }
 
         if ($value > 1 && $name === 'is_captcha' && ! $this->getCaptcha()) {
-            return Response::json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('auth.captcha.attribute')])]);
+            return response()->json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('auth.captcha.attribute')])]);
         }
 
         // 演示环境禁止修改特定配置项
@@ -203,7 +201,7 @@ class SystemController extends Controller
             ];
 
             if (in_array($name, $denyConfig, true)) {
-                return Response::json(['status' => 'fail', 'message' => trans('admin.system.demo_restriction')]);
+                return response()->json(['status' => 'fail', 'message' => trans('admin.system.demo_restriction')]);
             }
         }
 
@@ -221,10 +219,10 @@ class SystemController extends Controller
 
         // 更新配置
         if (Config::findOrFail($name)->update(['value' => $value])) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
     public function sendTestNotification(): JsonResponse  // 推送通知测试
@@ -244,12 +242,12 @@ class SystemController extends Controller
         $selectedChannel = request('channel');
 
         if (! array_key_exists($selectedChannel, $channels)) {
-            return Response::json(['status' => 'fail', 'message' => trans('admin.system.notification.test.unknown_channel')]);
+            return response()->json(['status' => 'fail', 'message' => trans('admin.system.notification.test.unknown_channel')]);
         }
 
-        Notification::sendNow(Auth::getUser(), new Custom(trans('admin.system.notification.test.title'), sysConfig('website_name').' '.trans('admin.system.notification.test.content')), [$channels[$selectedChannel]]);
+        Notification::sendNow(auth()->user(), new Custom(trans('admin.system.notification.test.title'), sysConfig('website_name').' '.trans('admin.system.notification.test.content')), [$channels[$selectedChannel]]);
 
-        return Response::json(['status' => 'success', 'message' => trans('admin.system.notification.test.success')]);
+        return response()->json(['status' => 'success', 'message' => trans('admin.system.notification.test.success')]);
     }
 
     public function common(): View

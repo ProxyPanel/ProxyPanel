@@ -15,16 +15,16 @@ use App\Models\UserCreditLog;
 use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use App\Utils\IP;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Response;
 
 class LogsController extends Controller
 {
     use DataChart;
 
-    public function orderList(Request $request) // 订单列表
-    {
+    public function orderList(Request $request): View
+    { // 订单列表
         $query = Order::with(['user:id,username', 'goods:id,name', 'coupon:id,name,sn']);
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -72,19 +72,18 @@ class LogsController extends Controller
         $status = (int) $request->input('status');
 
         if ($order->status === 3 && $status === 2 && $order->goods->type === 2 && Order::userActivePlan($order->user_id)->exists()) {
-            return Response::json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]); // 防止预支付订单假激活
+            return response()->json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]); // 防止预支付订单假激活
         }
 
         if ($order->update(['is_expire' => 0, 'expired_at' => null, 'status' => $status])) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
+            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
     }
 
-    // 流量日志
-    public function trafficLog(Request $request)
-    {
+    public function trafficLog(Request $request): View
+    { // 流量日志
         $query = UserDataFlowLog::with(['user', 'node']);
 
         $request->whenFilled('port', function ($value) use ($query) {
@@ -125,9 +124,8 @@ class LogsController extends Controller
         return view('admin.logs.traffic', compact(['totalTraffic', 'dataFlowLogs', 'nodes']));
     }
 
-    // 邮件发送日志列表
-    public function notificationLog(Request $request)
-    {
+    public function notificationLog(Request $request): View
+    { // 邮件发送日志列表
         $query = NotificationLog::query();
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -141,9 +139,8 @@ class LogsController extends Controller
         return view('admin.logs.notification', ['notificationLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 在线IP监控（实时）
-    public function onlineIPMonitor(Request $request, ?int $id = null)
-    {
+    public function onlineIPMonitor(Request $request, ?int $id = null): View
+    { // 在线IP监控（实时）
         $query = NodeOnlineIp::with(['node:id,name', 'user:id,username'])->where('created_at', '>=', strtotime('-2 minutes'));
 
         if ($id !== null) {
@@ -191,9 +188,8 @@ class LogsController extends Controller
         ]);
     }
 
-    // 用户余额变动记录
-    public function userCreditLogList(Request $request)
-    {
+    public function userCreditLogList(Request $request): View
+    { // 用户余额变动记录
         $query = UserCreditLog::with('user:id,username')->latest();
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -205,9 +201,8 @@ class LogsController extends Controller
         return view('admin.logs.userCreditHistory', ['userCreditLogs' => $query->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 用户封禁记录
-    public function userBanLogList(Request $request)
-    {
+    public function userBanLogList(Request $request): View
+    { // 用户封禁记录
         $query = UserBanedLog::with('user:id,username,t');
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -219,9 +214,8 @@ class LogsController extends Controller
         return view('admin.logs.userBanHistory', ['userBanLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 用户流量变动记录
-    public function userTrafficLogList(Request $request)
-    {
+    public function userTrafficLogList(Request $request): View
+    { // 用户流量变动记录
         $query = UserDataModifyLog::with(['user:id,username', 'order.goods:id,name']);
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -233,9 +227,8 @@ class LogsController extends Controller
         return view('admin.logs.userTraffic', ['userTrafficLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
     }
 
-    // 用户在线IP记录
-    public function userOnlineIPList(Request $request)
-    {
+    public function userOnlineIPList(Request $request): View
+    { // 用户在线IP记录
         $query = User::activeUser();
 
         foreach (['username', 'wechat', 'qq'] as $field) {
@@ -261,15 +254,13 @@ class LogsController extends Controller
         return view('admin.logs.userOnlineIP', ['userList' => $userList]);
     }
 
-    // 用户流量监控
-    public function userTrafficMonitor(User $user)
-    {
+    public function userTrafficMonitor(User $user): View
+    { // 用户流量监控
         return view('admin.logs.userMonitor', array_merge(['username' => $user->username], $this->dataFlowChart($user->id)));
     }
 
-    // 回调日志
-    public function callbackList(Request $request)
-    {
+    public function callbackList(Request $request): View
+    { // 回调日志
         $query = PaymentCallback::query();
 
         foreach (['trade_no', 'out_trade_no', 'status'] as $field) {

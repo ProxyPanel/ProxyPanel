@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\ArticleRequest;
 use App\Models\Article;
 use App\Services\ArticleService;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,9 +17,8 @@ use Str;
 
 class ArticleController extends Controller
 {
-    public function index(Request $request)
-    {
-        // 文章列表
+    public function index(Request $request): View
+    { // 文章列表
         $categories = Article::whereNotNull('category')->distinct()->get('category');
         $articles = Article::query();
 
@@ -34,8 +34,7 @@ class ArticleController extends Controller
     }
 
     public function store(ArticleRequest $request): RedirectResponse
-    {
-        // 添加文章
+    { // 添加文章
         $data = $request->validated();
 
         try {
@@ -66,33 +65,29 @@ class ArticleController extends Controller
         return $file->storeAs('public', $fileName) ? 'upload/'.$fileName : false;
     }
 
-    public function create()
-    {
-        // 添加文章页面
+    public function create(): View
+    { // 添加文章页面
         $categories = Article::whereNotNull('category')->distinct()->get('category');
 
         return view('admin.article.info', compact('categories'));
     }
 
-    public function show(Article $article)
-    {
-        // 文章页面
+    public function show(Article $article): View
+    { // 文章页面
         $article->content = (new ArticleService($article))->getContent();
 
         return view('admin.article.show', compact('article'));
     }
 
-    public function edit(Article $article)
-    {
-        // 编辑文章页面
+    public function edit(Article $article): View
+    { // 编辑文章页面
         $categories = Article::whereNotNull('category')->distinct()->get('category');
 
         return view('admin.article.info', compact('article', 'categories'));
     }
 
     public function update(ArticleRequest $request, Article $article): RedirectResponse
-    {
-        // 编辑文章
+    { // 编辑文章
         $data = $request->validated();
 
         if ($data['type'] !== '4' && $request->hasFile('logo')) {
@@ -113,8 +108,7 @@ class ArticleController extends Controller
     }
 
     public function destroy(Article $article): JsonResponse
-    {
-        // 删除文章
+    { // 删除文章
         try {
             $article->delete();
         } catch (Exception $e) {

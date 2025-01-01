@@ -7,21 +7,22 @@ use App\Models\User;
 use App\Utils\IP;
 use DB;
 use Exception;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Redirect;
-use Response;
-use Session;
+use Log;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ToolsController extends Controller
 {
-    // SS(R)链接反解析
-    public function decompile(Request $request)
-    {
+    public function decompile(Request $request): JsonResponse|View
+    { // SS(R)链接反解析
         if ($request->isMethod('POST')) {
             $content = $request->input('content');
 
             if (empty($content)) {
-                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.decompile.content_placeholder')]);
+                return response()->json(['status' => 'fail', 'message' => trans('admin.tools.decompile.content_placeholder')]);
             }
 
             // 反解析处理
@@ -43,15 +44,14 @@ class ToolsController extends Controller
             // 生成转换好的JSON文件
             //file_put_contents(public_path('downloads/decompile.json'), $txt);
 
-            return Response::json(['status' => 'success', 'data' => $txt, 'message' => trans('common.success_item', ['attribute' => trans('admin.tools.decompile.attribute')])]);
+            return response()->json(['status' => 'success', 'data' => $txt, 'message' => trans('common.success_item', ['attribute' => trans('admin.tools.decompile.attribute')])]);
         }
 
         return view('admin.tools.decompile');
     }
 
-    // 格式转换(SS转SSR)
-    public function convert(Request $request)
-    {
+    public function convert(Request $request): JsonResponse|View
+    { // 格式转换(SS转SSR)
         if ($request->isMethod('POST')) {
             $method = $request->input('method');
             $transfer_enable = $request->input('transfer_enable');
@@ -62,13 +62,13 @@ class ToolsController extends Controller
             $content = $request->input('content');
 
             if (empty($content)) {
-                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.convert.content_placeholder')]);
+                return response()->json(['status' => 'fail', 'message' => trans('admin.tools.convert.content_placeholder')]);
             }
 
             // 校验格式
             $content = json_decode($content, true);
             if (empty($content->port_password)) {
-                return Response::json(['status' => 'fail', 'message' => trans('admin.tools.convert.missing_error')]);
+                return response()->json(['status' => 'fail', 'message' => trans('admin.tools.convert.missing_error')]);
             }
 
             // 转换成SSR格式JSON
@@ -95,18 +95,17 @@ class ToolsController extends Controller
             // 生成转换好的JSON文件
             file_put_contents(public_path('downloads/convert.json'), $json);
 
-            return Response::json(['status' => 'success', 'data' => $json, 'message' => trans('common.success_item', ['attribute' => trans('common.convert')])]);
+            return response()->json(['status' => 'success', 'data' => $json, 'message' => trans('common.success_item', ['attribute' => trans('common.convert')])]);
         }
 
         return view('admin.tools.convert');
     }
 
-    // 下载转换好的JSON文件
-    public function download(Request $request)
-    {
+    public function download(Request $request): BinaryFileResponse
+    { // 下载转换好的JSON文件
         $type = (int) $request->input('type');
         if (empty($type)) {
-            exit(trans('admin.tools.convert.params_unknown'));
+            abort(trans('admin.tools.convert.params_unknown'));
         }
 
         if ($type === 1) {
@@ -116,29 +115,28 @@ class ToolsController extends Controller
         }
 
         if (! file_exists($filePath)) {
-            exit(trans('admin.tools.convert.file_missing'));
+            abort(trans('admin.tools.convert.file_missing'));
         }
 
-        return Response::download($filePath);
+        return response()->download($filePath);
     }
 
-    // 数据导入
-    public function import(Request $request)
-    {
+    public function import(Request $request): RedirectResponse|View
+    { // 数据导入
         if ($request->isMethod('POST')) {
             if (! $request->hasFile('uploadFile')) {
-                return Redirect::back()->withErrors(trans('admin.tools.import.file_required'));
+                return redirect()->back()->withErrors(trans('admin.tools.import.file_required'));
             }
 
             $file = $request->file('uploadFile');
 
             // 只能上传JSON文件
             if ($file->getClientMimeType() !== 'application/json' || $file->getClientOriginalExtension() !== 'json') {
-                return Redirect::back()->withErrors(trans('admin.tools.import.file_type_error', ['type' => 'JSON']));
+                return redirect()->back()->withErrors(trans('admin.tools.import.file_type_error', ['type' => 'JSON']));
             }
 
             if (! $file->isValid()) {
-                return Redirect::back()->withErrors(trans('admin.tools.import.file_error'));
+                return redirect()->back()->withErrors(trans('admin.tools.import.file_error'));
             }
 
             $save_path = realpath(storage_path('uploads'));
@@ -149,7 +147,7 @@ class ToolsController extends Controller
             $data = file_get_contents($save_path.'/'.$new_name);
             $data = json_decode($data, true);
             if (! $data) {
-                return Redirect::back()->withErrors(trans('admin.tools.import.format_error', ['type' => 'JSON']));
+                return redirect()->back()->withErrors(trans('admin.tools.import.format_error', ['type' => 'JSON']));
             }
 
             try {
@@ -178,21 +176,20 @@ class ToolsController extends Controller
                 DB::rollBack();
                 Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
 
-                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]).', '.$e->getMessage());
+                return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]).', '.$e->getMessage());
             }
 
-            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.import')]));
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.import')]));
         }
 
         return view('admin.tools.import');
     }
 
-    // 日志分析
-    public function analysis()
-    {
+    public function analysis(): View
+    { // 日志分析
         $file = storage_path('app/ssserver.log');
         if (! file_exists($file)) {
-            Session::flash('analysisErrorMsg', trans('admin.tools.analysis.file_missing', ['file_name' => $file]));
+            session()->flash('analysisErrorMsg', trans('admin.tools.analysis.file_missing', ['file_name' => $file]));
 
             return view('admin.tools.analysis');
         }
@@ -223,9 +220,8 @@ class ToolsController extends Controller
         return view('admin.tools.analysis', ['urlList' => array_unique($url ?? [])]);
     }
 
-    // 类似Linux中的tail命令
-    private function tail($file, $n, $base = 5)
-    {
+    private function tail(string $file, int $n, int $base = 5): array|false
+    { // 类似Linux中的tail命令
         $fileLines = $this->countLine($file);
         if ($fileLines < 15000) {
             return false;
@@ -239,7 +235,7 @@ class ToolsController extends Controller
         while ($counts <= $n) {
             try {
                 fseek($fp, -$pos, SEEK_END);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 break;
             }
 
@@ -253,11 +249,8 @@ class ToolsController extends Controller
         return array_slice($lines, 0, $n);
     }
 
-    /**
-     * 计算文件行数.
-     */
-    private function countLine($file): int
-    {
+    private function countLine(string $file): int
+    { // 计算文件行数
         $fp = fopen($file, 'rb');
         $i = 0;
         while (! feof($fp)) {

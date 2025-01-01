@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\PermissionRequest;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Permission::query();
 
@@ -35,12 +36,12 @@ class PermissionController extends Controller
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.permission.info');
     }
 
-    public function edit(Permission $permission)
+    public function edit(Permission $permission): View
     {
         return view('admin.permission.info', compact('permission'));
     }

@@ -6,11 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Services\ArticleService;
 use App\Services\NodeService;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 
 class ArticleController extends Controller
 {
-    public function index(NodeService $nodeService)
+    public function index(NodeService $nodeService): View
     { // 帮助中心
         $subscribe = auth()->user()->subscribe;
 
@@ -19,7 +20,7 @@ class ArticleController extends Controller
             'subUrl' => route('sub', $subscribe->code),
             'subStatus' => $subscribe->status,
             'subMsg' => $subscribe->ban_desc,
-            'knowledges' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
+            'knowledge' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
         ]);
     }
 

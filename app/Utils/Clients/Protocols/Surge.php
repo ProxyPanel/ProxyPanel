@@ -49,10 +49,10 @@ class Surge implements Protocol
             "udp-relay={$server['udp']}",
         ];
 
-        if ($server['v2_tls']) {
+        if (isset($server['v2_tls']) && $server['v2_tls']) {
             array_push($config, 'tls=true', "sni={$server['v2_host']}");
         }
-        if ($server['v2_net'] === 'ws') {
+        if (isset($server['v2_net']) && $server['v2_net'] === 'ws') {
             array_push($config, 'ws=true', "ws-path={$server['v2_path']}", "ws-headers=Host:{$server['v2_host']}");
         }
 
@@ -66,7 +66,7 @@ class Surge implements Protocol
             $server['host'],
             $server['port'],
             "password={$server['passwd']}",
-            $server['sni'] ? "sni={$server['sni']}" : '',
+            isset($server['sni']) ? "sni={$server['sni']}" : '',
             'tfo=true',
             "udp-relay={$server['udp']}",
             // "skip-cert-verify={$server['allow_insecure']}"

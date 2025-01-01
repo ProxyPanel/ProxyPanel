@@ -33,7 +33,7 @@ class ClientController extends Controller
         }
     }
 
-    public function getUserInfo()
+    public function getUserInfo(): false|JsonResponse
     {
         $user = auth()->user();
 
@@ -79,8 +79,7 @@ class ClientController extends Controller
 
     public function getOrders(Request $request): JsonResponse
     {
-        $user = $request->user();
-        $orders = $user->orders()->orderByDesc('id')->limit(8)->get();
+        $orders = $request->user()->orders()->orderByDesc('id')->limit(8)->get();
         $data = [];
         foreach ($orders as $order) {
             $data[] = [
@@ -125,6 +124,7 @@ class ClientController extends Controller
     public function getInvite(): JsonResponse
     {
         $user = auth()->user();
+        $userService = new UserService;
 
         $referral_traffic = formatBytes(sysConfig('referral_traffic'), 'MiB');
         $referral_percent = sysConfig('referral_percent');
@@ -135,8 +135,6 @@ class ClientController extends Controller
             'traffic' => $referral_traffic,
             'referral_percent' => $referral_percent * 100,
         ]);
-
-        $userService = new UserService;
 
         $data['invite_code'] = $code ?? $userService->inviteURI(true);
         $data['invite_url'] = $userService->inviteURI();
@@ -202,11 +200,10 @@ class ClientController extends Controller
 
     public function getProxyList(): JsonResponse
     {
-        $proxyServer = new ProxyService;
-
+        $proxyService = new ProxyService;
         $servers = [];
-        foreach ($proxyServer->getNodeList(null, false) as $node) {
-            $server = $proxyServer->getProxyConfig($node);
+        foreach ($proxyService->getNodeList(null, false) as $node) {
+            $server = $proxyService->getProxyConfig($node);
             if ($server['type'] === '`shadowsocks`' || $server['type'] === 'shadowsocksr') {
                 $server['type'] = 1;
             }
@@ -237,7 +234,7 @@ class ClientController extends Controller
         }
     }
 
-    public function getconfig(): JsonResponse
+    public function getConfig(): JsonResponse
     {
         $config = $this->clientConfig();
         Arr::forget($config, ['read', 'configured']);
@@ -245,7 +242,7 @@ class ClientController extends Controller
         return $this->succeed(null, ['config' => $config]);
     }
 
-    private function clientConfig(?string $key = null)
+    private function clientConfig(?string $key = null): array|bool|string|int
     {
         if (! config('client')) {
             Artisan::call('config:cache');

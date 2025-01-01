@@ -10,18 +10,17 @@ use App\Models\GoodsCategory;
 use App\Models\Level;
 use Arr;
 use Exception;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Log;
-use Redirect;
-use Response;
 use Str;
 
 class ShopController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Goods::query();
 
@@ -62,33 +61,33 @@ class ShopController extends Controller
         }
         try {
             if ($good = Goods::create($data)) {
-                return Redirect::route('admin.goods.edit', $good)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
+                return redirect()->route('admin.goods.edit', $good)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
         }
 
-        return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
-    public function fileUpload(UploadedFile $file)
+    public function fileUpload(UploadedFile $file): RedirectResponse|string
     { // 图片上传
         $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
         if (! $file->storeAs('public', $fileName)) {
-            return Redirect::back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.goods.logo')]));
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_action_item', ['action' => trans('common.store'), 'attribute' => trans('model.goods.logo')]));
         }
 
         return 'upload/'.$fileName;
     }
 
-    public function create()
+    public function create(): View
     {
         return view('admin.shop.info', ['levels' => Level::orderBy('level')->get(), 'categories' => GoodsCategory::all()]);
     }
 
-    public function edit(Goods $good)
+    public function edit(Goods $good): View
     {
         return view('admin.shop.info', [
             'good' => $good,
@@ -115,29 +114,29 @@ class ShopController extends Controller
             $data['is_hot'] = array_key_exists('is_hot', $data) ? 1 : 0;
             $data['status'] = array_key_exists('status', $data) ? 1 : 0;
             if ($good->update($data)) {
-                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
+                return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
+            return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
         }
 
-        return Redirect::back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
+        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
     }
 
     public function destroy(Goods $good): JsonResponse
     {
         try {
             if ($good->delete()) {
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.goods.attribute')]).': '.$e->getMessage());
 
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 }

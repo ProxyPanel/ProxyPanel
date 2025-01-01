@@ -9,7 +9,6 @@ use App\Services\ProxyService;
 use App\Utils\IP;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Redirect;
 
 class SubscribeController extends Controller
 {
@@ -22,13 +21,13 @@ class SubscribeController extends Controller
         preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
 
         if (empty($matches) || empty($code)) {
-            return Redirect::route('login');
+            return redirect()->route('login');
         }
         $code = $matches[0];
         self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
 
         // 检查订阅码是否有效
-        $subscribe = UserSubscribe::whereCode($code)->first();
+        $subscribe = UserSubscribe::whereCode($code)->firstOrFail();
         $this->proxyServer = new ProxyService;
 
         if (! $subscribe) {
