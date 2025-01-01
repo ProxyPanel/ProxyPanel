@@ -251,22 +251,25 @@ class Helpers
     {
         $ipLocation = IP::getIPInfo($ip);
 
-        if (empty($ipLocation)) {
+        $logData = [
+            'user_id' => $user->id,
+            'ip' => $ip,
+            'country' => $ipLocation['country'] ?? '',
+            'province' => $ipLocation['region'] ?? '',
+            'city' => $ipLocation['city'] ?? '',
+            'county' => '', // 未使用的字段
+            'isp' => $ipLocation['isp'] ?? '',
+            'area' => $ipLocation['area'] ?? '',
+        ];
+
+        // 记录错误日志仅在 IP 信息无效时
+        if (! $ipLocation) {
             Log::warning(trans('errors.get_ip').'：'.$ip);
         }
 
-        $log = new UserLoginLog;
-        $log->user_id = $user->id;
-        $log->ip = $ip;
-        $log->country = $ipLocation['country'] ?? '';
-        $log->province = $ipLocation['region'] ?? '';
-        $log->city = $ipLocation['city'] ?? '';
-        $log->county = '';
-        $log->isp = $ipLocation['isp'] ?? '';
-        $log->area = $ipLocation['area'] ?? '';
-        $log->save();
-
-        $user->update(['last_login' => time()]); // 更新登录信息
+        // 批量插入日志记录并更新用户登录时间
+        UserLoginLog::create($logData);
+        $user->update(['last_login' => time()]);
     }
 
     public static function getPriceTag(int|float $amount): string

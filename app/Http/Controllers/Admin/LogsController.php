@@ -172,15 +172,17 @@ class LogsController extends Controller
         });
 
         $onlineIPLogs = $query->groupBy(['user_id', 'node_id'])->latest()->paginate(20)->appends($request->except('page'));
-        foreach ($onlineIPLogs as $log) {
-            // 跳过上报多IP的
-            if ($log->ip === null || str_contains($log->ip, ',')) {
-                continue;
+        // 提前过滤 IP 数据以减少循环中的判断
+        $onlineIPLogs->transform(function ($log) {
+            if ($log->ip && ! str_contains($log->ip, ',')) {
+                $ipInfo = IP::getIPInfo($log->ip);
+                if ($ipInfo) {
+                    $log->ipInfo = $ipInfo['address'].' '.$ipInfo['isp'];
+                }
             }
-            $ipInfo = IP::getIPInfo($log->ip);
 
-            $log->ipInfo = $ipInfo['address'].' '.$ipInfo['isp'];
-        }
+            return $log;
+        });
 
         return view('admin.logs.onlineIPMonitor', [
             'onlineIPLogs' => $onlineIPLogs,
