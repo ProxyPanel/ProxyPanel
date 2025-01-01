@@ -200,7 +200,7 @@
 
         // 申请提现
         function extractMoney() {
-            $.post('{{ route('applyCommission') }}', {
+            $.post('{{ route('referral.withdraw') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(ret) {
                 if (ret.status === 'success') {

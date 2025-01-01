@@ -37,8 +37,7 @@
                                             <td>{{ $ticket->title }}</td>
                                             <td>{!! $ticket->status_label !!}</td>
                                             <td>
-                                                <a class="btn btn-animate btn-animate-vertical btn-outline-info"
-                                                   href="{{ route('replyTicket', ['id' => $ticket->id]) }}">
+                                                <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="{{ route('ticket.edit', $ticket) }}">
                                                     <span>
                                                         @if ($ticket->status === 2)
                                                             <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{ trans('common.view') }}
@@ -161,7 +160,7 @@
                 confirmButtonText: '{{ trans('common.confirm') }}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{ route('openTicket') }}', {
+                    $.post('{{ route('ticket.store') }}', {
                         _token: '{{ csrf_token() }}',
                         title: title,
                         content: content,

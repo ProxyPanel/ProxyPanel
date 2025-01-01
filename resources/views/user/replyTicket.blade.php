@@ -59,12 +59,11 @@
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        method: 'POST',
-                        url: '{{ route('closeTicket') }}',
+                        method: 'PATCH',
+                        url: '{{ route('ticket.close', $ticket) }}',
                         async: true,
                         data: {
                             _token: '{{ csrf_token() }}',
-                            id: '{{ $ticket->id }}'
                         },
                         dataType: 'json',
                         success: function(ret) {
@@ -72,7 +71,7 @@
                                 title: ret.message,
                                 icon: 'success',
                                 timer: 1300,
-                            }).then(() => window.location.href = '{{ route('ticket') }}');
+                            }).then(() => window.location.href = '{{ route('ticket.index') }}');
                         },
                         error: function() {
                             swal.fire({
@@ -106,24 +105,36 @@
                 confirmButtonText: '{{ trans('common.confirm') }}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{ route('replyTicket') }}', {
-                        _token: '{{ csrf_token() }}',
-                        id: '{{ $ticket->id }}',
-                        content: content,
-                    }, function(ret) {
-                        if (ret.status === 'success') {
+                    $.ajax({
+                        method: 'PUT',
+                        url: '{{ route('ticket.reply', $ticket) }}',
+                        async: true,
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            content: content,
+                        },
+                        dataType: 'json',
+                        success: function(ret) {
+                            if (ret.status === 'success') {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'success',
+                                    timer: 1000,
+                                    showConfirmButton: false,
+                                }).then(() => window.location.reload());
+                            } else {
+                                swal.fire({
+                                    title: ret.message,
+                                    icon: 'error'
+                                }).then(() => window.location.reload());
+                            }
+                        },
+                        error: function() {
                             swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false,
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
+                                title: '{{ trans('user.ticket.error') }}',
                                 icon: 'error'
-                            }).then(() => window.location.reload());
-                        }
+                            });
+                        },
                     });
                 }
             });

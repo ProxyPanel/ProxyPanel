@@ -37,7 +37,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
@@ -71,7 +71,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
@@ -105,7 +105,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
@@ -139,7 +139,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ trans('model.common.level') }}</th>
@@ -176,7 +176,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_category_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>
@@ -213,7 +213,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ trans('model.country.icon') }}</th>
@@ -253,7 +253,7 @@
                             <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_label_modal">
                                 <i class="icon wb-plus"></i>
                             </button>
-                            <table class="text-md-center" data-toggle="table" data-height="700" data-virtual-scroll="true" data-mobile-responsive="true">
+                            <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ ucfirst(trans('validation.attributes.name')) }}</th>

@@ -79,7 +79,7 @@
             const sign = tag[1];
             $.ajax({
                 method: 'POST',
-                url: '{{ route('redeemCoupon', $goods) }}',
+                url: '{{ route('shop.coupon.check', $goods) }}',
                 dataType: 'json',
                 data: {
                     _token: '{{ csrf_token() }}',
@@ -181,7 +181,7 @@
                                 timer: 1000,
                                 showConfirmButton: false
                             }).
-                            then(() => window.location.href = '{{ route('invoice') }}');
+                            then(() => window.location.href = '{{ route('invoice.index') }}');
                         }
                         if (ret.data) {
                             window.location.href = '{{ route('orderDetail', '') }}/' + ret.data;

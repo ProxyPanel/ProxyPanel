@@ -81,7 +81,7 @@
                                     {{ trans('user.menu.admin_dashboard') }}
                                 </a>
                             @endcan
-                            <a class="dropdown-item" href="{{ route('profile') }}" role="menuitem">
+                            <a class="dropdown-item" href="{{ route('profile.show') }}" role="menuitem">
                                 <i class="icon wb-settings" aria-hidden="true"></i>
                                 {{ trans('user.menu.profile') }}
                             </a>
@@ -99,32 +99,32 @@
     <div class="site-menubar {{ config('theme.sidebar') }}">
         <div class="site-menubar-body">
             <ul class="site-menu" data-plugin="menu">
-                <li class="site-menu-item {{ request()->routeIs('home', 'profile', 'article') ? 'active open' : '' }}">
+                <li class="site-menu-item {{ request()->routeIs('home') ? 'active open' : '' }}">
                     <a href="{{ route('home') }}">
                         <i class="site-menu-icon wb-home" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.home') }}</span>
                     </a>
                 </li>
-                <li class="site-menu-item {{ request()->routeIs('shop', 'buy', 'orderDetail') ? 'active open' : '' }}">
-                    <a href="{{ route('shop') }}">
+                <li class="site-menu-item {{ request()->routeIs('shop.*') ? 'active open' : '' }}">
+                    <a href="{{ route('shop.index') }}">
                         <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.shop') }}</span>
                     </a>
                 </li>
-                <li class="site-menu-item {{ request()->routeIs('node') ? 'active open' : '' }}">
-                    <a href="{{ route('node') }}">
+                <li class="site-menu-item {{ request()->routeIs('node.*') ? 'active open' : '' }}">
+                    <a href="{{ route('node.index') }}">
                         <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.nodes') }}</span>
                     </a>
                 </li>
-                <li class="site-menu-item {{ request()->routeIs('knowledge') ? 'active open' : '' }}">
-                    <a href="{{ route('knowledge') }}">
+                <li class="site-menu-item {{ request()->routeIs('knowledge.*') ? 'active open' : '' }}">
+                    <a href="{{ route('knowledge.index') }}">
                         <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.help') }}</span>
                     </a>
                 </li>
-                <li class="site-menu-item {{ request()->routeIs('profile') ? 'active open' : '' }}">
-                    <a href="{{ route('profile') }}">
+                <li class="site-menu-item {{ request()->routeIs('profile.*') ? 'active open' : '' }}">
+                    <a href="{{ route('profile.show') }}">
                         <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.profile') }}</span>
                     </a>
@@ -132,8 +132,8 @@
                 @php
                     $openTicket = auth()->user()->tickets()->where('status', '<>', 2)->count();
                 @endphp
-                <li class="site-menu-item {{ request()->routeIs('ticket', 'replyTicket') ? 'active open' : '' }}">
-                    <a href="{{ route('ticket') }}">
+                <li class="site-menu-item {{ request()->routeIs('ticket.*') ? 'active open' : '' }}">
+                    <a href="{{ route('ticket.index') }}">
                         <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.tickets') }}</span>
                         @if ($openTicket > 0)
@@ -143,16 +143,16 @@
                         @endif
                     </a>
                 </li>
-                <li class="site-menu-item {{ request()->routeIs('invoice', 'invoiceInfo') ? 'active open' : '' }}">
-                    <a href="{{ route('invoice') }}">
+                <li class="site-menu-item {{ request()->routeIs('invoice.*') ? 'active open' : '' }}">
+                    <a href="{{ route('invoice.index') }}">
                         <i class="site-menu-icon wb-bookmark" aria-hidden="true"></i>
                         <span class="site-menu-title">{{ trans('user.menu.invoices') }}</span>
                     </a>
                 </li>
                 @if (ReferralLog::uid()->exists() || Order::uid()->whereStatus(2)->exists())
                     @if (sysConfig('is_invite_register'))
-                        <li class="site-menu-item {{ request()->routeIs('invite') ? 'active open' : '' }}">
-                            <a href="{{ route('invite') }}">
+                        <li class="site-menu-item {{ request()->routeIs('invite.*') ? 'active open' : '' }}">
+                            <a href="{{ route('invite.index') }}">
                                 <i class="site-menu-icon wb-extension" aria-hidden="true"></i>
                                 <span class="site-menu-title">{{ trans('user.menu.invites') }}</span>
                             </a>
@@ -160,7 +160,7 @@
                     @endif
                     @if (sysConfig('referral_status'))
                         <li class="site-menu-item {{ request()->routeIs('commission') ? 'active open' : '' }}">
-                            <a href="{{ route('commission') }}">
+                            <a href="{{ route('referral.index') }}">
                                 <i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
                                 <span class="site-menu-title">{{ trans('user.menu.promotion') }}</span>
                             </a>

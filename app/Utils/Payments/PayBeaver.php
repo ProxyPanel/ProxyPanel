@@ -39,7 +39,7 @@ class PayBeaver extends PaymentService implements Gateway
             'merchant_order_id' => $payment->trade_no,
             'price_amount' => $payment->amount * 110,
             'notify_url' => route('payment.notify', ['method' => 'paybeaver']),
-            'return_url' => route('invoice'),
+            'return_url' => route('invoice.index'),
         ]);
 
         if (! isset($result['message']) && isset($result['data']['pay_url'])) {

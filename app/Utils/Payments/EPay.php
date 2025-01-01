@@ -22,7 +22,7 @@ class EPay extends PaymentService implements Gateway
             'pid' => sysConfig('epay_mch_id'),
             'type' => [1 => 'alipay', 2 => 'qqpay', 3 => 'wxpay'][$request->input('type')] ?? 'alipay',
             'notify_url' => route('payment.notify', ['method' => 'epay']),
-            'return_url' => route('invoice'),
+            'return_url' => route('invoice.index'),
             'out_trade_no' => $payment->trade_no,
             'name' => sysConfig('subject_name') ?: sysConfig('website_name'),
             'money' => $payment->amount,

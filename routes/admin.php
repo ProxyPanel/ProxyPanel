@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\Config\LabelController;
 use App\Http\Controllers\Admin\Config\LevelController;
 use App\Http\Controllers\Admin\Config\SsConfigController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\Admin\InviteController;
 use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\MarketingController;
 use App\Http\Controllers\Admin\NodeAuthController;
@@ -30,14 +31,7 @@ use App\Http\Controllers\AdminController;
 use App\Utils\Payments\EPay;
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::controller(AdminController::class)->group(function () {
-        Route::get('/', 'index')->name('index'); // 后台首页
-        Route::get('config', 'config')->name('config.index'); // 系统通用配置
-        Route::get('invite', 'inviteList')->name('invite.index'); // 邀请码列表
-        Route::post('invite', 'makeInvite')->name('invite.create'); // 生成邀请码
-        Route::get('Invite/export', 'exportInvite')->name('invite.export'); // 导出邀请码
-    });
-    Route::get('epayInfo', [EPay::class, 'queryInfo'])->name('test.epay'); // 易支付信息
+    Route::get('/', [AdminController::class, 'index'])->name('index'); // 后台首页
 
     Route::resource('user', UserController::class)->except('show');
     Route::name('user.')->group(function () {
@@ -58,8 +52,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::prefix('subscribe')->name('subscribe.')->controller(SubscribeController::class)->group(function () {
         Route::get('/', 'index')->name('index'); // 订阅码列表
-        Route::get('log/{id}', 'subscribeLog')->name('log'); // 订阅码记录
-        Route::post('set/{subscribe}', 'setSubscribeStatus')->name('set'); // 启用禁用用户的订阅
+        Route::get('log/{userSubscribe}', 'subscribeLog')->name('log'); // 订阅码记录
+        Route::post('set/{userSubscribe}', 'setSubscribeStatus')->name('set'); // 启用禁用用户的订阅
     });
 
     Route::resource('ticket', TicketController::class)->except('create', 'show');
@@ -91,6 +85,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('coupon/export', [CouponController::class, 'exportCoupon'])->name('coupon.export'); // 导出优惠券
     Route::resource('coupon', CouponController::class)->except('edit', 'update'); // 优惠券
 
+    Route::prefix('invite')->name('invite.')->controller(InviteController::class)->group(function () {
+        Route::get('/', 'index')->name('index'); // 邀请码列表
+        Route::post('/', 'generate')->name('create'); // 生成邀请码
+        Route::get('/export', 'export')->name('export'); // 导出邀请码
+    });
     Route::prefix('aff')->name('aff.')->controller(AffiliateController::class)->group(function () {
         Route::get('/', 'index')->name('index'); // 提现申请列表
         Route::get('rebate', 'rebate')->name('rebate'); // 返利流水记录
@@ -146,5 +145,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('setExtend', 'setExtend')->name('system.extend'); // 设置logo图片文件
         Route::post('setConfig', 'setConfig')->name('system.update'); // 设置某个配置项
         Route::post('sendTestNotification', 'sendTestNotification')->name('test.notify'); //推送通知测试
+        Route::get('config', 'common')->name('config.index'); // 系统通用配置
     });
+    Route::get('epayInfo', [EPay::class, 'queryInfo'])->name('test.epay'); // 易支付信息
 });

@@ -72,7 +72,7 @@
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.href = '{{ route('invoice') }}';
+                            window.location.href = '{{ route('invoice.index') }}';
                         });
                     } else if (ret.status === 'error') {
                         swal.fire({
@@ -81,7 +81,7 @@
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.href = '{{ route('invoice') }}';
+                            window.location.href = '{{ route('invoice.index') }}';
                         });
                     }
                 },

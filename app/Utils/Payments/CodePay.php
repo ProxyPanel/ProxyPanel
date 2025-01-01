@@ -25,7 +25,7 @@ class CodePay extends PaymentService implements Gateway
             'page' => 1,
             'outTime' => 900,
             'notify_url' => route('payment.notify', ['method' => 'codepay']),
-            'return_url' => route('invoice'),
+            'return_url' => route('invoice.index'),
         ];
         $data['sign'] = PaymentHelper::aliStyleSign($data, sysConfig('codepay_key'));
 

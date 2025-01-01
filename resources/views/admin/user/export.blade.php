@@ -49,14 +49,14 @@
                                 <td>
                                     @can('admin.user.exportProxy')
                                         <div class="btn-group">
-                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','code')"><i
-                                                   class="fa-solid fa-code"></i>
+                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','code')">
+                                                <i class="fa-solid fa-code" id="code{{ $node->id }}"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','qrcode')"><i
-                                                   class="fa-solid fa-qrcode"></i>
+                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','qrcode')">
+                                                <i class="fa-solid fa-qrcode" id="qrcode{{ $node->id }}"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','text')"><i
-                                                   class="fa-solid fa-list"></i>
+                                            <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','text')">
+                                                <i class="fa-solid fa-list" id="text{{ $node->id }}"></i>
                                             </button>
                                         </div>
                                     @endcan
@@ -86,12 +86,19 @@
     @can('admin.user.exportProxy')
         <script>
             function getInfo(id, type) {
-                $.post("{{ route('admin.user.exportProxy', $user) }}", {
+                const oldClass = $('#' + type + id).attr('class');
+                $.ajax({
+                    method: 'POST',
+                    url: '{{ route('admin.user.exportProxy', $user) }}',
+                    data: {
                         _token: '{{ csrf_token() }}',
                         id: id,
                         type: type
                     },
-                    function(ret) {
+                    beforeSend: function() {
+                        $('#' + type + id).removeAttr('class').addClass('icon wb-loop icon-spin');
+                    },
+                    success: function(ret) {
                         if (ret.status === 'success') {
                             switch (type) {
                                 case 'code':
@@ -131,7 +138,11 @@
                                     });
                             }
                         }
-                    });
+                    },
+                    complete: function() {
+                        $('#' + type + id).removeAttr('class').addClass(oldClass);
+                    },
+                });
             }
 
             function Download() {

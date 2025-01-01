@@ -85,7 +85,7 @@
                                             {!! $goods->info !!}
                                         </ul>
                                         <div class="pricing-footer text-center bg-blue-grey-100">
-                                            <a class="btn btn-lg btn-primary" href="{{ route('buy', $goods) }}"> {{ trans('user.shop.buy') }}</a>
+                                            <a class="btn btn-lg btn-primary" href="{{ route('shop.show', $goods) }}"> {{ trans('user.shop.buy') }}</a>
                                         </div>
                                     </div>
                                 </div>
@@ -183,7 +183,7 @@
                 confirmButtonText: '{{ trans('common.confirm') }}',
             }).then((result) => {
                 if (result.value) {
-                    $.post('{{ route('resetTraffic') }}', {
+                    $.post('{{ route('shop.resetTraffic') }}', {
                         _token: '{{ csrf_token() }}'
                     }, function(ret) {
                         if (ret.status === 'success') {
@@ -260,7 +260,7 @@
 
                 $.ajax({
                     method: 'POST',
-                    url: '{{ route('recharge') }}',
+                    url: '{{ route('shop.coupon.redeem') }}',
                     data: {
                         _token: '{{ csrf_token() }}',
                         coupon_sn: charge_coupon

@@ -4,19 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DataChart;
 use App\Models\Article;
-use App\Models\Coupon;
-use App\Models\Goods;
-use App\Models\Invite;
-use App\Models\Node;
-use App\Models\NodeHeartbeat;
-use App\Models\Order;
-use App\Models\Ticket;
-use App\Models\User;
-use App\Notifications\TicketCreated;
-use App\Notifications\TicketReplied;
-use App\Services\ArticleService;
-use App\Services\CouponService;
-use App\Services\ProxyService;
 use App\Services\UserService;
 use App\Utils\Helpers;
 use Cache;
@@ -26,14 +13,11 @@ use Hash;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use Log;
-use Notification;
 use Redirect;
 use Response;
 use Session;
 use Str;
-use Validator;
 
 class UserController extends Controller
 {
@@ -108,365 +92,65 @@ class UserController extends Controller
         return Response::json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
 
-    // 节点列表
-    public function nodeList(Request $request)
-    {
-        $user = auth()->user();
-        if ($request->isMethod('POST')) {
-            $proxyServer = new ProxyService;
-            $server = $proxyServer->getProxyConfig(Node::findOrFail($request->input('id')));
-
-            return Response::json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
-        }
-
-        // 获取当前用户可用节点
-        $nodeList = $user->nodes()->whereIn('is_display', [1, 3])->with(['labels', 'level_table'])->get();
-        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id')->toArray();
-        foreach ($nodeList as $node) {
-            // 节点在线状态
-            $node->offline = ! in_array($node->id, $onlineNode, true);
-        }
-
-        return view('user.nodeList', [
-            'nodesGeo' => $nodeList->pluck('name', 'geo')->toArray(),
-            'nodeList' => $nodeList,
-        ]);
-    }
-
-    public function article(Article $article): JsonResponse
-    { // 公告详情
-        $articleService = new ArticleService($article);
-
-        return response()->json(['title' => $article->title, 'content' => $articleService->getContent()]);
-    }
-
     // 修改个人资料
-    public function profile(Request $request)
+    public function profile()
     {
         $user = auth()->user();
-        if ($request->isMethod('POST')) {
-            // 修改密码
-            if ($request->has(['password', 'new_password'])) {
-                $data = $request->only(['password', 'new_password']);
-
-                if (! Hash::check($data['password'], $user->password)) {
-                    return Redirect::back()->withErrors(trans('auth.password.reset.error.wrong'));
-                }
-
-                if (Hash::check($data['new_password'], $user->password)) {
-                    return Redirect::back()->withErrors(trans('auth.password.reset.error.same'));
-                }
-
-                // 演示环境禁止改管理员密码
-                if ($user->id === 1 && config('app.env') === 'demo') {
-                    return Redirect::back()->withErrors(trans('auth.password.reset.error.demo'));
-                }
-
-                if (! $user->update(['password' => $data['new_password']])) {
-                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
-                }
-
-                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
-                // 修改代理密码
-            }
-
-            if ($request->has('passwd')) {
-                $passwd = $request->input('passwd');
-                if (! $user->update(['passwd' => $passwd])) {
-                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
-                }
-
-                return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
-            }
-
-            // 修改联系方式
-            if ($request->has(['nickname', 'wechat', 'qq'])) {
-                $data = $request->only(['nickname', 'wechat', 'qq']);
-                if (empty($data['nickname'])) {
-                    return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('model.user.nickname')]));
-                }
-
-                if (! $user->update($data)) {
-                    return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
-                }
-            }
-
-            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
-        }
         $auth = $user->userAuths()->pluck('type')->toArray();
 
         return view('user.profile', compact('auth'));
     }
 
-    // 商品列表
-    public function services()
+    public function updateProfile(Request $request): RedirectResponse
     {
         $user = auth()->user();
-        // 余额充值商品，只取10个
-        $renewOrder = Order::userActivePlan($user->id)->first();
-        $renewPrice = $renewOrder->goods->renew ?? 0;
-        // 有重置日时按照重置日为标准，否则就以过期日为标准
-        $dataPlusDays = $user->reset_time ?? $user->expired_at;
+        // 修改密码
+        if ($request->has(['password', 'new_password'])) {
+            $data = $request->only(['password', 'new_password']);
 
-        $goodsList = Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get();
-
-        if ($user && $nodes = $user->userGroup) {
-            $nodes = $nodes->nodes();
-        } else {
-            $nodes = Node::all();
-        }
-        foreach ($goodsList as $goods) {
-            $goods->node_count = $nodes->where('level', '<=', $goods->level)->where('status', 1)->count();
-            $goods->node_countries = $nodes->where('level', '<=', $goods->level)->where('status', 1)->pluck('country_code')->unique();
-        }
-
-        return view('user.services', [
-            'chargeGoodsList' => Goods::type(3)->orderBy('price')->get(),
-            'goodsList' => $goodsList,
-            'renewTraffic' => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
-            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
-        ]);
-    }
-
-    //重置流量
-    public function resetUserTraffic(): ?JsonResponse
-    {
-        $user = auth()->user();
-        $order = Order::userActivePlan()->firstOrFail();
-        $renewCost = $order->goods->renew;
-        if ($user->credit < $renewCost) {
-            return Response::json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
-        }
-
-        $user->update(['u' => 0, 'd' => 0]);
-
-        // 记录余额操作日志
-        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, 'The user manually reset the data.');
-
-        // 扣余额
-        $user->updateCredit(-$renewCost);
-
-        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
-    }
-
-    // 工单
-    public function ticketList(Request $request)
-    {
-        return view('user.ticketList', [
-            'tickets' => auth()->user()->tickets()->latest()->paginate(10)->appends($request->except('page')),
-        ]);
-    }
-
-    // 订单
-    public function invoices(Request $request)
-    {
-        return view('user.invoices', [
-            'orderList' => auth()->user()->orders()->with(['goods', 'payment'])->orderByDesc('id')->paginate(10)->appends($request->except('page')),
-            'prepaidPlan' => Order::userPrepay()->exists(),
-        ]);
-    }
-
-    public function closePlan(): JsonResponse
-    {
-        $activePlan = Order::userActivePlan()->first();
-        if ($activePlan) {
-            if ($activePlan->expired()) { // 关闭先前套餐后，新套餐自动运行
-                if (Order::userActivePlan()->exists()) {
-                    return Response::json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
-                }
-
-                return Response::json(['status' => 'success', 'message' => trans('common.close')]);
+            if (! Hash::check($data['password'], $user->password)) {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.wrong'));
             }
-        } else {
-            $prepaidPlan = Order::userPrepay()->first();
-            if ($prepaidPlan) { // 关闭先前套餐后，新套餐自动运行
-                if ($prepaidPlan->complete()) {
-                    return Response::json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
-                }
 
-                return Response::json(['status' => 'success', 'message' => trans('common.close')]);
+            if (Hash::check($data['new_password'], $user->password)) {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.same'));
+            }
+
+            // 演示环境禁止改管理员密码
+            if ($user->id === 1 && config('app.env') === 'demo') {
+                return Redirect::back()->withErrors(trans('auth.password.reset.error.demo'));
+            }
+
+            if (! $user->update(['password' => $data['new_password']])) {
+                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+            }
+
+            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
+            // 修改代理密码
+        }
+
+        if ($request->has('passwd')) {
+            $passwd = $request->input('passwd');
+            if (! $user->update(['passwd' => $passwd])) {
+                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+            }
+
+            return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
+        }
+
+        // 修改联系方式
+        if ($request->has(['nickname', 'wechat', 'qq'])) {
+            $data = $request->only(['nickname', 'wechat', 'qq']);
+            if (empty($data['nickname'])) {
+                return Redirect::back()->withErrors(trans('validation.required', ['attribute' => trans('model.user.nickname')]));
+            }
+
+            if (! $user->update($data)) {
+                return Redirect::back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
             }
         }
 
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
-    }
-
-    // 订单明细
-    public function invoiceDetail($sn)
-    {
-        return view('user.invoiceDetail', ['order' => Order::uid()->whereSn($sn)->with(['goods', 'coupon', 'payment'])->firstOrFail()]);
-    }
-
-    // 添加工单
-    public function createTicket(Request $request): ?JsonResponse
-    {
-        $user = auth()->user();
-        $title = $request->input('title');
-        $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
-
-        if (empty($title) || empty($content)) {
-            return Response::json([
-                'status' => 'fail', 'message' => trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.title')).'&'.ucfirst(trans('validation.attributes.content'))]),
-            ]);
-        }
-
-        if ($ticket = $user->tickets()->create(compact('title', 'content'))) {
-            // 通知相关管理员
-            Notification::send(User::find(1), new TicketCreated($ticket, route('admin.ticket.edit', $ticket)));
-        }
-
-        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.submit')])]);
-    }
-
-    // 回复工单
-    public function replyTicket(Request $request)
-    {
-        $id = $request->input('id');
-
-        $ticket = Ticket::uid()->with('user')->whereId($id)->firstOrFail();
-
-        if ($request->isMethod('POST')) {
-            $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
-
-            if (empty($content)) {
-                return Response::json([
-                    'status' => 'fail', 'message' => trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.title')).'&'.ucfirst(trans('validation.attributes.content'))]),
-                ]);
-            }
-
-            $reply = $ticket->reply()->create(['user_id' => auth()->id(), 'content' => $content]);
-            if ($reply) {
-                // 重新打开工单
-                if ($ticket->status === 2) {
-                    $ticket->update(['status' => 0]);
-                }
-
-                // 通知相关管理员
-                Notification::send(User::find(1), new TicketReplied($reply, route('admin.ticket.edit', $ticket)));
-
-                return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
-            }
-
-            return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.ticket.reply')])]);
-        }
-
-        return view('user.replyTicket', [
-            'ticket' => $ticket,
-            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
-        ]);
-    }
-
-    // 关闭工单
-    public function closeTicket(Request $request): ?JsonResponse
-    {
-        $id = $request->input('id');
-
-        if (Ticket::uid()->whereId($id)->firstOrFail()->close()) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.close')])]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
-    }
-
-    // 邀请码
-    public function invite()
-    {
-        if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
-            return Response::view('auth.error', ['message' => trans('user.purchase.required').' <a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
-        }
-
-        return view('user.invite', [
-            'num' => auth()->user()->invite_num, // 还可以生成的邀请码数量
-            'inviteList' => Invite::uid()->with(['invitee', 'inviter'])->paginate(10), // 邀请码列表
-            'referral_traffic' => formatBytes(sysConfig('referral_traffic'), 'MiB'),
-            'referral_percent' => sysConfig('referral_percent'),
-        ]);
-    }
-
-    // 生成邀请码
-    public function makeInvite(): JsonResponse
-    {
-        $user = auth()->user();
-        if ($user->invite_num <= 0) {
-            return Response::json(['status' => 'fail', 'message' => trans('user.invite.generate_failed')]);
-        }
-        $invite = $user->invites()->create([
-            'code' => strtoupper(mb_substr(md5(microtime().Str::random()), 8, 12)),
-            'dateline' => date('Y-m-d H:i:s', strtotime(sysConfig('user_invite_days').' days')),
-        ]);
-        if ($invite) {
-            $user->decrement('invite_num');
-
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')])]);
-    }
-
-    // 使用优惠券
-    public function redeemCoupon(Request $request, Goods $good): JsonResponse
-    {
-        $coupon_sn = $request->input('coupon_sn');
-
-        if (empty($coupon_sn)) {
-            return Response::json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.coupon.error.unknown')]);
-        }
-
-        $coupon = (new CouponService($coupon_sn))->search($good); // 检查券合规性
-
-        if (! $coupon instanceof Coupon) {
-            return $coupon;
-        }
-
-        $data = [
-            'name' => $coupon->name,
-            'type' => $coupon->type,
-            'value' => $coupon->type === 2 ? $coupon->value : Helpers::getPriceTag($coupon->value),
-        ];
-
-        return Response::json(['status' => 'success', 'data' => $data, 'message' => trans('common.applied', ['attribute' => trans('model.coupon.attribute')])]);
-    }
-
-    // 购买服务
-    public function buy(Goods $good)
-    {
-        $user = auth()->user();
-        // 有重置日时按照重置日为标准，否则就以过期日为标准
-        $dataPlusDays = $user->reset_time ?? $user->expired_at;
-
-        return view('user.buy', [
-            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
-            'activePlan' => Order::userActivePlan()->exists(),
-            'goods' => $good,
-        ]);
-    }
-
-    // 帮助中心
-    public function knowledge()
-    {
-        $data = [];
-        if (Node::whereType(0)->whereStatus(1)->exists()) {
-            $data[] = 'ss';
-        }
-        if (Node::whereIn('type', [1, 4])->whereStatus(1)->exists()) {
-            $data[] = 'ssr';
-        }
-        if (Node::whereType(2)->whereStatus(1)->exists()) {
-            $data[] = 'v2';
-        }
-        if (Node::whereType(3)->whereStatus(1)->exists()) {
-            $data[] = 'trojan';
-        }
-
-        $subscribe = auth()->user()->subscribe;
-
-        return view('user.knowledge', [
-            'subType' => $data,
-            'subUrl' => route('sub', $subscribe->code),
-            'subStatus' => $subscribe->status,
-            'subMsg' => $subscribe->ban_desc,
-            'knowledges' => Article::type(1)->lang()->orderByDesc('sort')->latest()->get()->groupBy('category'),
-        ]);
+        return Redirect::back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
     }
 
     public function exchangeSubscribe(): ?JsonResponse
@@ -506,27 +190,6 @@ class UserController extends Controller
         }
 
         return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.toggle')])]);
-    }
-
-    public function charge(Request $request): ?JsonResponse
-    {
-        $validator = Validator::make($request->all(), [
-            'coupon_sn' => [
-                'required', Rule::exists('coupon', 'sn')->where(static function ($query) {
-                    $query->whereType(3)->whereStatus(0);
-                }),
-            ],
-        ]);
-
-        if ($validator->fails()) {
-            return Response::json(['status' => 'fail', 'message' => $validator->errors()->all()]);
-        }
-
-        if ((new CouponService($request->input('coupon_sn')))->charge()) {
-            return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.recharge')])]);
-        }
-
-        return Response::json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
     }
 
     public function switchCurrency(string $code): RedirectResponse

@@ -224,7 +224,7 @@
                         swal.fire({
                             text: ret.message,
                             icon: 'success',
-                        }).then(() => window.location.href = '{{ route('invoice') }}');
+                        }).then(() => window.location.href = '{{ route('invoice.index') }}');
                     } else {
                         swal.fire({
                             title: ret.message,

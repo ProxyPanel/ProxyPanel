@@ -48,7 +48,7 @@ class PayPal extends PaymentService implements Gateway
             'intent' => 'CAPTURE',
             'application_context' => [
                 'return_url' => route('payment.notify', ['method' => 'paypal']),
-                'cancel_url' => route('invoice'),
+                'cancel_url' => route('invoice.index'),
             ],
             'purchase_units' => [
                 0 => [
@@ -98,7 +98,7 @@ class PayPal extends PaymentService implements Gateway
             ],
             'invoice_description' => $trade_no,
             'return_url' => route('payment.notify', ['method' => 'paypal']),
-            'cancel_url' => route('invoice'),
+            'cancel_url' => route('invoice.index'),
             'total' => $amount,
         ];
     }

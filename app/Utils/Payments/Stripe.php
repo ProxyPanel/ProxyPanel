@@ -41,7 +41,7 @@ class Stripe extends PaymentService implements Gateway
                     'identifier' => '',
                 ],
                 'redirect' => [
-                    'return_url' => route('invoice'),
+                    'return_url' => route('invoice.index'),
                 ],
             ]);
             if ($type === 3) {
@@ -99,8 +99,8 @@ class Stripe extends PaymentService implements Gateway
                 ],
             ],
             'mode' => 'payment',
-            'success_url' => route('invoice'),
-            'cancel_url' => route('invoice'),
+            'success_url' => route('invoice.index'),
+            'cancel_url' => route('invoice.index'),
             'client_reference_id' => $tradeNo,
             'customer_email' => Auth::getUser()->email,
         ];

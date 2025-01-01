@@ -96,7 +96,8 @@
                         </ul>
                         <div class="tab-content py-10">
                             <div class="tab-pane active animation-slide-left" id="account" role="tabpanel">
-                                <form class="form-horizontal" action="{{ route('profile') }}" method="post" enctype="multipart/form-data" autocomplete="off">
+                                <form class="form-horizontal" action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data"
+                                      autocomplete="off">
                                     @csrf
                                     <div class="form-group row">
                                         <label class="col-md-5 col-form-label" for="password">{{ trans('auth.password.original') }}</label>
@@ -112,7 +113,7 @@
                                 </form>
                             </div>
                             <div class="tab-pane animation-slide-left" id="contact" role="tabpanel">
-                                <form class="form-horizontal" action="{{ route('profile') }}" method="post" enctype="multipart/form-data">
+                                <form class="form-horizontal" action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group row">
                                         <label class="col-md-5 col-form-label" for="nickname">{{ trans('model.user.nickname') }}</label>
@@ -135,7 +136,7 @@
                                 </form>
                             </div>
                             <div class="tab-pane animation-slide-left" id="proxy" role="tabpanel">
-                                <form class="form-horizontal" action="{{ route('profile') }}" method="post" enctype="multipart/form-data">
+                                <form class="form-horizontal" action="{{ route('profile.update') }}" method="post" enctype="multipart/form-data">
                                     @csrf
                                     <div class="form-group row">
                                         <label class="col-md-5 col-form-label" for="passwd"> {{ trans('user.account.connect_password') }} </label>

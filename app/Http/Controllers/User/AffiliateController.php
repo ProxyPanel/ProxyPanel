@@ -15,7 +15,7 @@ use Response;
 class AffiliateController extends Controller
 {
     // 推广返利
-    public function referral()
+    public function index()
     {
         if (ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()) {
             return Response::view('auth.error', ['message' => trans('user.purchase.required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
@@ -35,7 +35,7 @@ class AffiliateController extends Controller
     }
 
     // 申请提现
-    public function extractMoney(): JsonResponse
+    public function withdraw(): JsonResponse
     {
         // 判断账户是否过期
         if (Auth::getUser()->expiration_date < date('Y-m-d')) {
@@ -48,8 +48,8 @@ class AffiliateController extends Controller
         }
 
         // 校验可以提现金额是否超过系统设置的阀值
-        $commission = ReferralLog::uid()->whereStatus(0)->sum('commission');
-        $commission /= 100;
+        $referrals = ReferralLog::uid()->whereStatus(0)->get();
+        $commission = $referrals->sum('commission');
         if ($commission < sysConfig('referral_money')) {
             return Response::json([
                 'status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.unfulfilled', ['amount' => Helpers::getPriceTag(sysConfig('referral_money'))]),
@@ -60,7 +60,7 @@ class AffiliateController extends Controller
         $ref->user_id = Auth::id();
         $ref->before = $commission;
         $ref->amount = $commission;
-        $ref->link_logs = ReferralLog::uid()->whereStatus(0)->pluck('id')->toArray();
+        $ref->link_logs = $referrals->pluck('id')->toArray();
         if ($ref->save()) {
             return Response::json(['status' => 'success', 'title' => trans('common.success_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.wait')]);
         }

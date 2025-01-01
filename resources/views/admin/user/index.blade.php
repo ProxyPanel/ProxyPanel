@@ -55,16 +55,16 @@
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="user_group_id" name="user_group_id" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                 title="{{ trans('model.user_group.attribute') }}">
-                            @foreach ($userGroups as $key => $group)
-                                <option value="{{ $key }}">{{ $group }}</option>
+                            @foreach ($userGroups as $id => $name)
+                                <option value="{{ $id }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4">
                         <select class="form-control" id="level" name="level" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                 title="{{ trans('model.common.level') }}">
-                            @foreach ($levels as $key => $level)
-                                <option value="{{ $key }}">{{ $level }}</option>
+                            @foreach ($levels as $level => $name)
+                                <option value="{{ $level }}">{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>

@@ -33,7 +33,7 @@
                         @foreach ($orderList as $order)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><a href="/invoice/{{ $order->sn }}" target="_blank">{{ $order->sn }}</a></td>
+                                <td><a href="{{ route('invoice.show', $order->sn) }}" target="_blank">{{ $order->sn }}</a></td>
                                 <td>{{ $order->goods->name ?? trans('user.recharge_credit') }}</td>
                                 <td>{{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</td>
                                 <td>{{ $order->amount_tag }}</td>
@@ -92,7 +92,7 @@
                 if (result.value) {
                     $.ajax({
                         method: 'POST',
-                        url: '{{ route('cancelPlan') }}',
+                        url: '{{ route('invoice.activate') }}',
                         dataType: 'json',
                         data: {
                             _token: '{{ csrf_token() }}'

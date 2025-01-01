@@ -46,8 +46,8 @@
                                 <label class="col-md-2 col-sm-3 col-form-label" for="level">{{ trans('model.common.level') }}</label>
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" id="level" name="level" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach ($levels as $level)
-                                            <option value="{{ $level->level }}">{{ $level->name }}</option>
+                                        @foreach ($levels as $level => $name)
+                                            <option value="{{ $level }}">{{ $name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -57,8 +57,8 @@
                                 <div class="col-xl-4 col-sm-8">
                                     <select class="form-control" id="group" name="group" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                             title="{{ trans('common.none') }}">
-                                        @foreach ($userGroups as $group)
-                                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                        @foreach ($userGroups as $id => $name)
+                                            <option value="{{ $id }}">{{ $name }}</option>
                                         @endforeach
                                     </select>
                                 </div>

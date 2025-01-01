@@ -171,10 +171,9 @@
             const oldClass = $('#' + type + id).attr('class');
             $.ajax({
                 method: 'POST',
-                url: '{{ route('node') }}',
+                url: '{{ route('node.show', '') }}/' + id,
                 data: {
                     _token: '{{ csrf_token() }}',
-                    id: id,
                     type: type
                 },
                 beforeSend: function() {

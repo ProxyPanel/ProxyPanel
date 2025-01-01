@@ -43,7 +43,7 @@ class TicketController extends Controller
         }
 
         if ($ticket = Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content'])])) {
-            $user->notify(new TicketCreated($ticket, route('replyTicket', ['id' => $ticket->id])));
+            $user->notify(new TicketCreated($ticket, route('ticket.edit', $ticket)));
 
             return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.create')])]);
         }
@@ -75,7 +75,7 @@ class TicketController extends Controller
 
             // 通知用户
             if (sysConfig('ticket_replied_notification')) {
-                $ticket->user->notify(new TicketReplied($reply, route('replyTicket', ['id' => $ticket->id]), true));
+                $ticket->user->notify(new TicketReplied($reply, route('ticket.edit', $ticket), true));
             }
 
             return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
@@ -92,7 +92,7 @@ class TicketController extends Controller
         }
         // 通知用户
         if (sysConfig('ticket_closed_notification')) {
-            $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('replyTicket', ['id' => $ticket->id]), \request('reason'), true));
+            $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('ticket.edit', $ticket), \request('reason'), true));
         }
 
         return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.close')])]);

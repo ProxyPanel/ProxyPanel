@@ -34,7 +34,7 @@
                                 <p class="mb-15 mr-15 text-right">{{ trans('common.more') }}
                                     <code>{{ trans('user.attribute.node') }}</code>
                                 </p>
-                                <a class="btn btn-block btn-danger" href="{{ route('shop') }}">{{ trans('user.purchase.promotion') }}</a>
+                                <a class="btn btn-block btn-danger" href="{{ route('shop.index') }}">{{ trans('user.purchase.promotion') }}</a>
                             @elseif(Auth::user()->enable)
                                 <i class="wb-check green-400 font-size-40 mr-10" aria-hidden="true"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.normal') }}</span>
@@ -106,7 +106,7 @@
                             @else
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.expire') }}</span>
                                 <br />
-                                <a class="btn btn-danger" href="{{ route('shop') }}">{{ trans('user.shop.buy') }}</a>
+                                <a class="btn btn-danger" href="{{ route('shop.index') }}">{{ trans('user.shop.buy') }}</a>
                             @endif
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                                 <i class="font-size-40 wb-wrench"></i>
                                 <h4 class="card-title">{{ trans('user.clients') }}</h4>
                                 <p class="card-text">{{ trans('common.download') . ' & ' . trans('user.tutorials') }}</p>
-                                <a class="btn btn-primary mb-10" href="{{ route('knowledge') }}">{{ trans('common.goto') }}</a>
+                                <a class="btn btn-primary mb-10" href="{{ route('knowledge.index') }}">{{ trans('common.goto') }}</a>
                             </div>
                         </div>
                     </div>
@@ -386,7 +386,7 @@
                     _token: '{{ csrf_token() }}'
                 }, function(ret) {
                     if (ret.status === 'success') {
-                        swal.fire(ret.title, ret.message, 'success');
+                        swal.fire(ret.title, ret.message, 'success').then(() => window.location.reload());
                     } else {
                         swal.fire(ret.title, ret.message, 'error');
                     }

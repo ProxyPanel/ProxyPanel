@@ -41,7 +41,7 @@
             if (!document.getElementById("article_B" + id).innerHTML) {
                 $.ajax({
                     method: "GET",
-                    url: '{{ route('article', '') }}/' + id,
+                    url: '{{ route('admin.article.show', '') }}/' + id,
                     beforeSend: function() {
                         $("#loading_article").show();
                     },

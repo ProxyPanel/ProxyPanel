@@ -61,7 +61,7 @@
                         <select class="form-control show-tick" id="status" name="status[]" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                                 title="{{ trans('model.order.status') }}" multiple>
                             <option value="-1">{{ trans('common.order.status.canceled') }}</option>
-                            <option value="0">{{ trans('common.payment.status.wait') }}</option>
+                            <option value="0">{{ trans('common.status.payment_pending') }}</option>
                             <option value="1">{{ trans('common.order.status.review') }}</option>
                             <option value="2">
                                 {{ trans('common.order.status.completed') . '/' . trans('common.status.expire') . '/' . trans('common.order.status.ongoing') }}

@@ -2,29 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Country;
-use App\Models\GoodsCategory;
-use App\Models\Invite;
-use App\Models\Label;
-use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeDailyDataFlow;
 use App\Models\NodeHourlyDataFlow;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
-use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserHourlyDataFlow;
 use Cache;
 use DB;
-use Illuminate\Http\JsonResponse;
-use Log;
-use PhpOffice\PhpSpreadsheet\Exception;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Response;
-use Str;
 
 class AdminController extends Controller
 {
@@ -75,69 +63,6 @@ class AdminController extends Controller
             'todayOnlinePayOrder' => Order::where('pay_type', '<>', 0)->whereDate('created_at', $today)->count(),
             'totalSuccessOrder' => Order::whereIn('status', [2, 3])->count(),
             'todaySuccessOrder' => Order::whereIn('status', [2, 3])->whereDate('created_at', $today)->count(),
-        ]);
-    }
-
-    // 邀请码列表
-    public function inviteList()
-    {
-        return view('admin.aff.invite', [
-            'inviteList' => Invite::with(['invitee:id,username', 'inviter:id,username'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page')),
-        ]);
-    }
-
-    // 生成邀请码
-    public function makeInvite(): JsonResponse
-    {
-        for ($i = 0; $i < 10; $i++) {
-            $obj = new Invite;
-            $obj->code = strtoupper(substr(md5(microtime().Str::random(6)), 8, 12));
-            $obj->dateline = date('Y-m-d H:i:s', strtotime(sysConfig('admin_invite_days').' days'));
-            $obj->save();
-        }
-
-        return Response::json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
-    }
-
-    // 导出邀请码
-    public function exportInvite(): void
-    {
-        $inviteList = Invite::whereStatus(0)->orderBy('id')->get();
-        $filename = trans('user.invite.attribute').'_'.date('Ymd').'.xlsx';
-
-        $spreadsheet = new Spreadsheet;
-        $spreadsheet->getProperties()->setCreator('ProxyPanel')->setLastModifiedBy('ProxyPanel')->setTitle(trans('user.invite.attribute'))->setSubject(trans('user.invite.attribute'));
-        $spreadsheet->setActiveSheetIndex(0);
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle(trans('user.invite.attribute'));
-        $sheet->fromArray([trans('user.invite.attribute'), trans('common.available_date')]);
-
-        foreach ($inviteList as $k => $vo) {
-            $sheet->fromArray([$vo->code, $vo->dateline], null, 'A'.($k + 2));
-        }
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
-        //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
-        header('Content-Disposition: attachment;filename="'.$filename.'"');
-        header('Cache-Control: max-age=0');
-        try {
-            $writer = new Xlsx($spreadsheet);
-            $writer->save('php://output');
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.export'), 'attribute' => trans('user.invite.attribute')]).': '.$e->getMessage());
-        }
-    }
-
-    public function config()
-    {
-        return view('admin.config.common', [
-            'methods' => SsConfig::type(1)->get(),
-            'protocols' => SsConfig::type(2)->get(),
-            'categories' => GoodsCategory::all(),
-            'obfsList' => SsConfig::type(3)->get(),
-            'countries' => Country::all(),
-            'levels' => Level::all(),
-            'labels' => Label::with('nodes')->get(),
         ]);
     }
 }

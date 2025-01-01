@@ -1,4 +1,4 @@
-<a class="list-group-item dropdown-item" href="{{ route('invoiceInfo', $notification->data['sn']) }}" role="menuitem">
+<a class="list-group-item dropdown-item" href="{{ route('invoice.show', $notification->data['sn']) }}" role="menuitem">
     <div class="media">
         <div class="pr-10">
             <i class="icon wb-order bg-primary-600 white icon-circle" aria-hidden="true"></i>

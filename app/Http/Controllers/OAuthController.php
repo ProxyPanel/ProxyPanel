@@ -18,10 +18,10 @@ class OAuthController extends Controller
         $user = Auth::user();
 
         if ($user && $user->userAuths()->whereType($provider)->delete()) {
-            return redirect()->route('profile')->with('successMsg', trans('common.success_item', ['attribute' => trans('user.oauth.unbind')]));
+            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('user.oauth.unbind')]));
         }
 
-        return redirect()->route('profile')->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.unbind')]));
+        return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.unbind')]));
     }
 
     public function bind(string $provider): RedirectResponse
@@ -36,7 +36,7 @@ class OAuthController extends Controller
         $user = Auth::user();
 
         if (! $user) {
-            return redirect()->route('profile')->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.bind')]));
+            return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('user.oauth.bind')]));
         }
 
         return $this->bindLogic($provider, $user, $authInfo);
@@ -60,7 +60,7 @@ class OAuthController extends Controller
             $message = trans('common.success_item', ['attribute' => trans('user.oauth.bind')]);
         }
 
-        return redirect()->route('profile')->with('successMsg', $message);
+        return redirect()->back()->with('successMsg', $message);
     }
 
     public function register(string $provider): RedirectResponse

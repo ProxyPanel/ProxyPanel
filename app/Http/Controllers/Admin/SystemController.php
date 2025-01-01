@@ -13,6 +13,11 @@ use App\Channels\WeChatChannel;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
+use App\Models\Country;
+use App\Models\GoodsCategory;
+use App\Models\Label;
+use App\Models\Level;
+use App\Models\SsConfig;
 use App\Notifications\Custom;
 use App\Services\TelegramService;
 use App\Utils\DDNS;
@@ -245,5 +250,18 @@ class SystemController extends Controller
         Notification::sendNow(Auth::getUser(), new Custom(trans('admin.system.notification.test.title'), sysConfig('website_name').' '.trans('admin.system.notification.test.content')), [$channels[$selectedChannel]]);
 
         return Response::json(['status' => 'success', 'message' => trans('admin.system.notification.test.success')]);
+    }
+
+    public function common(): View
+    {
+        return view('admin.config.common', [
+            'methods' => SsConfig::type(1)->get(),
+            'protocols' => SsConfig::type(2)->get(),
+            'categories' => GoodsCategory::all(),
+            'obfsList' => SsConfig::type(3)->get(),
+            'countries' => Country::all(),
+            'levels' => Level::all(),
+            'labels' => Label::with('nodes')->get(),
+        ]);
     }
 }

@@ -87,7 +87,7 @@
             $.ajax({
                 method: 'POST',
                 dataType: 'json',
-                url: '{{ route('createInvite') }}',
+                url: '{{ route('invite.store') }}',
                 data: {
                     _token: '{{ csrf_token() }}'
                 },

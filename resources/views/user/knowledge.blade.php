@@ -137,7 +137,7 @@
             if (!document.getElementById("load_article_" + id).innerHTML) {
                 $.ajax({
                     method: "GET",
-                    url: '{{ route('article', '') }}/' + id,
+                    url: '{{ route('knowledge.show', '') }}/' + id,
                     beforeSend: function() {
                         $("#loading_article").show();
                     },
