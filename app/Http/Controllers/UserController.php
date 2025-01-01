@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\DataChart;
 use App\Models\Article;
+use App\Services\NodeService;
 use App\Services\UserService;
 use App\Utils\Helpers;
 use Cache;
@@ -23,7 +24,7 @@ class UserController extends Controller
 {
     use DataChart;
 
-    public function index()
+    public function index(NodeService $nodeService)
     {
         // 用户转换
         if (Session::has('user')) {
@@ -33,18 +34,6 @@ class UserController extends Controller
         $totalTransfer = $user->transfer_enable;
         $usedTransfer = $user->used_traffic;
         $unusedTraffic = max($totalTransfer - $usedTransfer, 0);
-
-        $nodes = $user->nodes()->get();
-        $subType = [];
-        if ($nodes->whereIn('type', [1, 4])->isNotEmpty()) {
-            $subType[] = 'ss';
-        }
-        if ($nodes->where('type', 2)->isNotEmpty()) {
-            $subType[] = 'v2';
-        }
-        if ($nodes->where('type', 3)->isNotEmpty()) {
-            $subType[] = 'trojan';
-        }
 
         return view('user.index', array_merge([
             'remainDays' => now()->diffInDays($user->expired_at, false),
@@ -59,7 +48,7 @@ class UserController extends Controller
             'userLoginLog' => $user->loginLogs()->latest()->first(), // 近期登录日志
             'subscribe_status' => $user->subscribe->status,
             'subMsg' => $user->subscribe->ban_desc,
-            'subType' => $subType,
+            'subType' => $nodeService->getActiveNodeTypes($user->nodes()),
             'subUrl' => $user->subUrl(),
         ], $this->dataFlowChart($user->id)));
     }

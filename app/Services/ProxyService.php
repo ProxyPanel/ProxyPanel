@@ -150,20 +150,21 @@ class ProxyService
         return $config;
     }
 
-    public function failedProxyReturn(string $text, ?int $type = 1): void
+    public function failedProxyReturn(string $text, ?int $type = 0): void
     {
         $url = sysConfig('website_url');
 
         $data = [
             'name' => $text,
-            'type' => [1 => 'shadowsocks', 2 => 'vmess', 3 => 'trojan'][$type],
+            'type' => [0 => 'shadowsocks', 1 => 'shadowsocksr', 2 => 'vmess', 3 => 'trojan'][$type],
             'host' => $url,
             'port' => 0,
             'udp' => 0,
         ];
 
         $addition = match ($type) {
-            1 => ['method' => 'none', 'passwd' => 'error'],
+            0 => ['method' => 'none', 'passwd' => 'error'],
+            1 => ['method' => 'none', 'passwd' => 'error', 'obfs' => 'origin', 'obfs_param' => '', 'protocol' => 'plain', 'protocol_param' => ''],
             2 => ['uuid' => '0', 'v2_alter_id' => 0, 'method' => 'auto'],
             3 => ['passwd' => 'error']
         };

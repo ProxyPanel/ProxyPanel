@@ -155,7 +155,10 @@
                                                     <select class="form-control" id="subType" name="subType" data-plugin="selectpicker"
                                                             data-style="btn-outline btn-primary" title="{{ trans('common.all') }}">
                                                         @if (in_array('ss', $subType, true))
-                                                            <option value="1">{{ trans('user.subscribe.ss_only') }}</option>
+                                                            <option value="0">{{ trans('user.subscribe.ss_only') }}</option>
+                                                        @endif
+                                                        @if (in_array('ssr', $subType, true))
+                                                            <option value="1">{{ trans('user.subscribe.ssr_only') }}</option>
                                                         @endif
                                                         @if (in_array('v2', $subType, true))
                                                             <option value="2">{{ trans('user.subscribe.v2ray_only') }}</option>

@@ -17,9 +17,8 @@ class SubscribeController extends Controller
 
     private ProxyService $proxyServer;
 
-    // 通过订阅码获取订阅信息
     public function getSubscribeByCode(Request $request, string $code): RedirectResponse|string
-    {
+    { // 通过订阅码获取订阅信息
         preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
 
         if (empty($matches) || empty($code)) {
@@ -31,6 +30,7 @@ class SubscribeController extends Controller
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->first();
         $this->proxyServer = new ProxyService;
+
         if (! $subscribe) {
             $this->failed(trans('errors.subscribe.unknown'));
         }
@@ -39,10 +39,8 @@ class SubscribeController extends Controller
             $this->failed(trans('errors.subscribe.sub_banned'));
         }
 
-        // 检查用户是否有效
         $user = $subscribe->user;
-        $this->proxyServer->setUser($user);
-        if (! $user) {
+        if (! $user) { // 检查用户是否有效
             $this->failed(trans('errors.subscribe.user'));
         }
 
@@ -66,6 +64,7 @@ class SubscribeController extends Controller
 
             $this->failed(trans('errors.subscribe.question'));
         }
+        $this->proxyServer->setUser($user);
 
         $subscribe->increment('times'); // 更新访问次数
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode(['Host' => $request->getHost(), 'User-Agent' => $request->userAgent()])); // 记录每次请求
