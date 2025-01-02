@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -270,12 +269,12 @@ class User extends Authenticatable
         return $this->attributes['password'] = Hash::make($password);
     }
 
-    public function nodes(?int $userLevel = null, ?int $userGroupId = null): Node|Builder|BelongsToMany
+    public function nodes(?int $userLevel = null, ?int $userGroupId = null): Builder
     {
         if ($userGroupId === null && $this->user_group_id) { // 使用默认的用户分组
-            $query = $this->userGroup->nodes();
+            $query = $this->userGroup->nodes()->getQuery();
         } elseif ($userGroupId) { // 使用给的用户分组
-            $query = UserGroup::findOrFail($userGroupId)->nodes();
+            $query = UserGroup::findOrFail($userGroupId)->nodes()->getQuery();
         } else { // 无用户分组
             $query = Node::query();
         }
