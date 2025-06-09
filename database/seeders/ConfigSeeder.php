@@ -23,6 +23,8 @@ class ConfigSeeder extends Seeder
         'codepay_id',
         'codepay_key',
         'codepay_url',
+        'cryptomus_api_key',
+        'cryptomus_merchant_uuid',
         'data_anomaly_notification',
         'data_exhaust_notification',
         'ddns_key',

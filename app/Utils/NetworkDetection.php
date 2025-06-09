@@ -40,7 +40,7 @@ class NetworkDetection
 
     private function networkCheck(string $ip, int $port): ?array
     { // 通过众多API进行节点阻断检测.
-        $checkers = ['toolsdaquan', 'vps234', 'flyzy2005', 'idcoffer', 'ip112', 'upx8', 'rss', 'gd', 'vps1352', 'akile'];
+        $checkers = ['flyzy2005', 'toolsdaquan', 'vps234', 'idcoffer', 'ip112', 'upx8', 'rss', 'gd', 'vps1352', 'akile'];
         self::$basicRequest = Http::timeout(15)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36');
 
         foreach ($checkers as $checker) {

@@ -263,10 +263,10 @@ class NodeController extends Controller
         $ret = false;
         if ($id) {
             $node = Node::findOrFail($id);
-            $ret = reloadNode::dispatchSync($node);
+            $ret = (new reloadNode($node))->handle();
         } else {
             foreach (Node::whereStatus(1)->whereType(4)->get() as $node) {
-                $result = reloadNode::dispatchSync($node);
+                $result = (new reloadNode($node))->handle();
                 if ($result && ! $ret) {
                     $ret = true;
                 }

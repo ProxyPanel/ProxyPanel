@@ -19,6 +19,11 @@
             <img src="/assets/images/payment/btc.svg" alt="{{ trans('common.payment.crypto') }}" height="36px" />
             <span class="font-size-24 black"> {{ trans('common.payment.crypto') }} </span>
         </button>
+    @elseif(str_contains(sysConfig('is_otherPay'), 'cryptomus'))
+        <button class="btn btn-round btn-outline-default mt-2" onclick="pay('cryptomus','4')">
+            <img src="/assets/images/payment/btc.svg" alt="{{ trans('common.payment.crypto') }}" height="36px" />
+            <span class="font-size-24 black"> {{ trans('common.payment.crypto') }} </span>
+        </button>
     @endif
     @if (str_contains(sysConfig('is_otherPay'), 'paypal'))
         <button class="btn btn-round btn-outline-default mt-2" onclick="pay('paypal','5')">

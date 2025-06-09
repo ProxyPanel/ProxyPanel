@@ -47,21 +47,7 @@ class PayPal implements Gateway
 
         $data = $this->getCheckoutData($payment->trade_no, $payment->amount);
 
-        $response = self::$provider->createOrder([
-            'intent' => 'CAPTURE',
-            'application_context' => [
-                'return_url' => route('payment.notify', ['method' => 'paypal']),
-                'cancel_url' => route('invoice.index'),
-            ],
-            'purchase_units' => [
-                0 => [
-                    'amount' => [
-                        'currency_code' => 'USD',
-                        'value' => '100.00',
-                    ],
-                ],
-            ],
-        ]);
+        $response = self::$provider->createOrder($data);
         if (isset($response['id']) && $response['id'] != null) {
             Log::error('【Paypal】处理错误：'.var_export($response, true));
 

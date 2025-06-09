@@ -1,6 +1,6 @@
 #!/bin/bash
 # 设置工作目录为脚本所在的目录
-cd "$(dirname "$0")" || exit
+cd "$(dirname "$0")" || exit 1
 
 # 引入依赖脚本
 source scripts/lib.sh

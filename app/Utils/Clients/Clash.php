@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Developed based on
  * https://clash.wiki/configuration/configuration-reference.html

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Developed based on
  * https://github.com/crossutility/Quantumult/blob/master/quantumult-uri-scheme.md

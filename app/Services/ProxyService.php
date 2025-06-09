@@ -100,6 +100,8 @@ class ProxyService
         $config = [
             'id' => $node->id,
             'name' => $node->name,
+            'country' => $node->country_code,
+            'labels' => $node->labels->pluck('name')->toArray(),
             'area' => $node->country->name,
             'host' => $node->host,
             'group' => sysConfig('website_name'),

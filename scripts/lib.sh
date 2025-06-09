@@ -143,7 +143,9 @@ redirect_stderr=true
 stdout_logfile=$PWD/storage/logs/horizon.log
 stopwaitsecs=3600
 EOF
-    sudo supervisorctl restart horizon
+    sudo supervisorctl reread
+    sudo supervisorctl update
+    sudo supervisorctl start horizon
     echo -e "\e[32mHorizon configuration completed! | Horizon 配置完成!\e[0m"
   else
     echo -e "\e[36mHorizon already configured! | Horizon 已配置!\e[0m"

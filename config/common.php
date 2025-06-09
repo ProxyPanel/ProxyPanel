@@ -13,6 +13,7 @@ return [
             'payjs' => 'PayJs',
             'paypal' => 'PayPal',
             'stripe' => 'Stripe',
+            'cryptomus' => 'Cryptomus',
             'theadpay' => '平头哥支付',
             'youzan' => '有赞云',
         ],

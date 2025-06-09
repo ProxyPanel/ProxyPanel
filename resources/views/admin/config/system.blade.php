@@ -395,6 +395,7 @@
                                     <x-system.select code="is_otherPay" multiple="1" :list="[
                                         trans('admin.system.payment.channel.paypal') => 'paypal',
                                         trans('admin.system.payment.channel.stripe') => 'stripe',
+                                        trans('admin.system.payment.channel.cryptomus') => 'cryptomus',
                                     ]" />
                                     <x-system.input code="subject_name" :value="$subject_name" />
                                     <x-system.input type="url" code="website_callback_url" :value="$website_callback_url" :holder="trans('admin.system.placeholder.default_url', ['url' => $website_url])" />
@@ -484,6 +485,16 @@
                                     <x-system.input code="theadpay_mchid" :value="$theadpay_mchid" />
                                     <x-system.input code="theadpay_key" :value="$theadpay_key" />
                                 </x-system.tab-pane>
+                                <x-system.tab-pane id="Cryptomus">
+                                    <div class="form-group col-lg-6 d-flex">
+                                        <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.cryptomus') }}</label>
+                                        <div class="col-md-7">
+                                            {!! trans('admin.system.payment.hint.cryptomus') !!}
+                                        </div>
+                                    </div>
+                                    <x-system.input code="cryptomus_merchant_uuid" :value="$cryptomus_merchant_uuid" />
+                                    <x-system.input code="cryptomus_api_key" :value="$cryptomus_api_key" />
+                                </x-system.tab-pane>
                                 <x-system.tab-pane id="Manual">
                                     <div class="form-group col-lg-12 d-flex">
                                         <label class="col-md-3 col-form-label">{{ trans('admin.system.payment.channel.manual') }}</label>
@@ -538,6 +549,10 @@
                                        aria-controls="Stripe">{{ trans('admin.system.payment.channel.stripe') }}</a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#Cryptomus" role="tab"
+                                       aria-controls="Cryptomus">{{ trans('admin.system.payment.channel.cryptomus') }}</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#PayBeaver" role="tab"
                                        aria-controls="PayBeaver">{{ trans('admin.system.payment.channel.paybeaver') }}</a>
                                 </li>
@@ -567,6 +582,8 @@
                                            aria-controls="PayPal">{{ trans('admin.system.payment.channel.paypal') }}</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#Stripe" role="tab"
                                            aria-controls="Stripe">{{ trans('admin.system.payment.channel.stripe') }}</a>
+                                        <a class="dropdown-item" data-toggle="tab" href="#Cryptomus" role="tab"
+                                           aria-controls="Cryptomus">{{ trans('admin.system.payment.channel.cryptomus') }}</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#PayBeaver" role="tab"
                                            aria-controls="PayBeaver">{{ trans('admin.system.payment.channel.paybeaver') }}</a>
                                         <a class="dropdown-item" data-toggle="tab" href="#THeadPay" role="tab"
