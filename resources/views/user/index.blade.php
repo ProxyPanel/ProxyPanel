@@ -17,7 +17,7 @@
                             <i class="wb-heart red-500" aria-hidden="true"></i>
                         </button>
                         <span class="font-weight-400">{{ trans('user.account.status') }}</span>
-                        @if (sysConfig('is_checkin'))
+                        @if (sysConfig('checkin_interval'))
                             <button class="btn btn-md btn-round btn-info float-right" onclick="checkIn()">
                                 <i class="wb-star yellow-400 mr-5" aria-hidden="true"></i>
                                 {{ trans('user.home.attendance.attribute') }}
@@ -50,7 +50,7 @@
                             @elseif($user['ban_time'])
                                 <i class="wb-alert orange-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.limited') }}</span>
-                                <p class="font-weight-300 m-0 orange-500">{!! trans('user.account.reason.overused', ['data' => sysConfig('traffic_ban_value')]) !!}</p>
+                                <p class="font-weight-300 m-0 orange-500">{!! trans('user.account.reason.overused', ['data' => sysConfig('traffic_abuse_limit')]) !!}</p>
                             @else
                                 <i class="wb-help red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.disabled') }}</span>
@@ -323,26 +323,26 @@
             swal.fire({
                 title: '{{ trans('common.warning') }}',
                 text: '{{ trans('user.subscribe.exchange_warning') }}',
-                icon: 'warning',
+                icon: "warning",
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
+                confirmButtonText: '{{ trans('common.confirm') }}'
             }).then((result) => {
                 if (result.value) {
                     $.post('{{ route('changeSub') }}', {
                         _token: '{{ csrf_token() }}'
                     }, function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
                     });
@@ -350,48 +350,48 @@
             });
         }
 
-        const clipboard = new ClipboardJS('.mt-clipboard', {
+        const clipboard = new ClipboardJS(".mt-clipboard", {
             text: function(trigger) {
                 let base = @json($user['sub_url']);
-                const client = $('#client').val();
-                const subType = $('#subType').val();
+                const client = $("#client").val();
+                const subType = $("#subType").val();
                 if (subType && client) {
-                    base += '?target=' + client + '&type=' + subType;
+                    base += "?target=" + client + "&type=" + subType;
                 } else if (subType) {
-                    base += '?type=' + subType;
+                    base += "?type=" + subType;
                 } else if (client) {
-                    base += '?target=' + client;
+                    base += "?target=" + client;
                 }
                 return base;
-            },
+            }
         });
-        clipboard.on('success', function() {
+        clipboard.on("success", function() {
             swal.fire({
                 title: '{{ trans('common.copy.success') }}',
-                icon: 'success',
+                icon: "success",
                 timer: 1300,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on("error", function() {
             swal.fire({
                 title: '{{ trans('common.copy.failed') }}',
-                icon: 'error',
+                icon: "error",
                 timer: 1500,
-                showConfirmButton: false,
+                showConfirmButton: false
 
             });
         });
 
-        @if (sysConfig('is_checkin'))
+        @if (sysConfig('checkin_interval'))
             function checkIn() { // 签到
                 $.post('{{ route('checkIn') }}', {
                     _token: '{{ csrf_token() }}'
                 }, function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire(ret.title, ret.message, 'success').then(() => window.location.reload());
+                    if (ret.status === "success") {
+                        swal.fire(ret.title, ret.message, "success").then(() => window.location.reload());
                     } else {
-                        swal.fire(ret.title, ret.message, 'error');
+                        swal.fire(ret.title, ret.message, "error");
                     }
                 });
             }
@@ -404,40 +404,40 @@
                     x: {
                         ticks: {
                             callback: function(value) {
-                                return this.getLabelForValue(value) + ' ' + tail;
-                            },
+                                return this.getLabelForValue(value) + " " + tail;
+                            }
                         },
                         grid: {
-                            display: false,
-                        },
+                            display: false
+                        }
                     },
                     y: {
                         ticks: {
                             callback: function(value) {
-                                return this.getLabelForValue(value) + ' GB';
-                            },
+                                return this.getLabelForValue(value) + " GB";
+                            }
                         },
                         grid: {
-                            display: false,
+                            display: false
                         },
-                        min: 0,
-                    },
+                        min: 0
+                    }
                 },
                 plugins: {
                     legend: false,
                     tooltip: {
-                        mode: 'index',
+                        mode: "index",
                         intersect: false,
                         callbacks: {
                             title: function(context) {
-                                return context[0].label + ' ' + tail;
+                                return context[0].label + " " + tail;
                             },
                             label: function(context) {
-                                return context.parsed.y + ' GB';
-                            },
-                        },
-                    },
-                },
+                                return context.parsed.y + " GB";
+                            }
+                        }
+                    }
+                }
             };
         }
 
@@ -445,39 +445,39 @@
             return {
                 labels: label,
                 datasets: [{
-                    backgroundColor: 'rgba(184, 215, 255)',
-                    borderColor: 'rgba(184, 215, 255)',
+                    backgroundColor: "rgba(184, 215, 255)",
+                    borderColor: "rgba(184, 215, 255)",
                     data: data,
-                    tension: 0.4,
-                }],
+                    tension: 0.4
+                }]
             };
         }
 
-        new Chart(document.getElementById('dailyChart'), {
-            type: 'line',
+        new Chart(document.getElementById("dailyChart"), {
+            type: "line",
             data: datasets(@json($dayHours), @json($trafficHourly)),
-            options: common_options(@json(trans_choice('common.hour', 2))),
+            options: common_options(@json(trans_choice('common.hour', 2)))
         });
 
-        new Chart(document.getElementById('monthlyChart'), {
-            type: 'line',
+        new Chart(document.getElementById("monthlyChart"), {
+            type: "line",
             data: datasets(@json($monthDays), @json($trafficDaily)),
-            options: common_options(@json(trans_choice('common.days.attribute', 2))),
+            options: common_options(@json(trans_choice('common.days.attribute', 2)))
         });
 
         @if ($user['ban_time']) // 封禁倒计时
             const banedTime = new Date("{{ $user['ban_time'] }}").getTime();
-            countDown(banedTime, 'banedTime', true);
+            countDown(banedTime, "banedTime", true);
             setInterval(function() {
-                countDown(banedTime, 'banedTime', true);
+                countDown(banedTime, "banedTime", true);
             }, 1000);
         @endif
 
         @if (isset($resetDays) && $resetDays === 0) // 重置日倒计时
             const resetTime = new Date("{{ date('Y-m-d 00:00', strtotime('tomorrow')) }}").getTime();
-            countDown(resetTime, 'restTime');
+            countDown(resetTime, "restTime");
             setInterval(function() {
-                countDown(resetTime, 'restTime');
+                countDown(resetTime, "restTime");
             }, 60000);
         @endif
 
@@ -485,15 +485,15 @@
             const distance = endTime - new Date().getTime();
             const hour = Math.floor(distance % 86400000 / 3600000);
             const minute = Math.floor((distance % 3600000) / 60000);
-            let string = '';
+            let string = "";
             if (hour) {
-                string += hour + ' ' + @json(trans_choice('common.hour', 1));
+                string += hour + " " + @json(trans_choice('common.hour', 1));
             }
             if (minute) {
-                string += ' ' + minute + ' ' + @json(ucfirst(trans('validation.attributes.minute')));
+                string += " " + minute + " " + @json(ucfirst(trans('validation.attributes.minute')));
             }
             if (seconds) {
-                string += ' ' + Math.floor((distance % 60000) / 1000) + ' ' + @json(ucfirst(trans('validation.attributes.second')));
+                string += " " + Math.floor((distance % 60000) / 1000) + " " + @json(ucfirst(trans('validation.attributes.second')));
             }
             document.getElementById(id).innerHTML = string;
 

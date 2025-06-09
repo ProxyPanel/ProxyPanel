@@ -19,11 +19,6 @@ class PayBeaver implements Gateway
 {
     private const API_URL = 'https://api.paybeaver.com/api/v1/developer';
 
-    public static array $methodDetails = [
-        'key' => 'paybeaver',
-        'settings' => ['paybeaver_app_id', 'paybeaver_app_secret'],
-    ];
-
     private string $appId;
 
     private string $appSecret;
@@ -32,6 +27,18 @@ class PayBeaver implements Gateway
     {
         $this->appId = sysConfig('paybeaver_app_id');
         $this->appSecret = sysConfig('paybeaver_app_secret');
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'paybeaver',
+            'method' => ['ali', 'wechat'],
+            'settings' => [
+                'paybeaver_app_id' => null,
+                'paybeaver_app_secret' => null,
+            ],
+        ];
     }
 
     public function purchase(Request $request): JsonResponse

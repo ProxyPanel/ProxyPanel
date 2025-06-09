@@ -42,15 +42,15 @@ class TaskMonthly extends Command
     private function clearLog(): void
     {
         try {
-            NotificationLog::where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.notification_logs'))))->delete(); // 清理通知日志
+            NotificationLog::where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.notification_logs'))))->delete(); // 清理通知日志
 
-            UserLoginLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.login_logs'))))->delete(); // 清除用户登陆日志
+            UserLoginLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.login_logs'))))->delete(); // 清除用户登陆日志
 
-            Payment::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.payments'))))->delete(); // 清理在线支付日志
+            Payment::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.payments'))))->delete(); // 清理在线支付日志
 
-            UserBanedLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.user_baned_logs'))))->delete(); // 清理用户封禁日志
+            UserBanedLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.user_baned_logs'))))->delete(); // 清理用户封禁日志
 
-            Order::whereStatus(-1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(config('tasks.clean.unpaid_orders'))))->delete(); // 清理用户未支付订单
+            Order::whereStatus(-1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.unpaid_orders'))))->delete(); // 清理用户未支付订单
         } catch (Exception $e) {
             Log::emergency(trans('common.error_item', ['attribute' => trans('admin.system.is_clear_log')]).': '.$e->getMessage());
         }

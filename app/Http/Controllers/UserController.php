@@ -53,7 +53,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         // 系统开启登录加积分功能才可以签到
-        if (! sysConfig('is_checkin')) {
+        if (! sysConfig('checkin_interval')) {
             return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.disable')]);
         }
 
@@ -62,14 +62,14 @@ class UserController extends Controller
             return response()->json(['status' => 'success', 'title' => trans('common.success'), 'message' => trans('user.home.attendance.done')]);
         }
 
-        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MiB;
+        $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
 
         if (! $user->incrementData($traffic)) {
             return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
         }
         Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
 
-        cache()->put('userCheckIn_'.$user->id, '1', sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day); // 多久后可以再签到
+        cache()->put('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') ? sysConfig('checkin_interval') * Minute : Day); // 多久后可以再签到
 
         return response()->json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }

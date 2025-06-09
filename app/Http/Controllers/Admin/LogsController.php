@@ -15,6 +15,7 @@ use App\Models\UserCreditLog;
 use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use App\Utils\IP;
+use App\Utils\Payments\PaymentManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ class LogsController extends Controller
             });
         }
 
-        return view('admin.logs.order', ['orders' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page'))]);
+        return view('admin.logs.order', ['orders' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')), 'paymentLabels' => PaymentManager::getLabels(true)]);
     }
 
     public function changeOrderStatus(Request $request): JsonResponse

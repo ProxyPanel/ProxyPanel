@@ -14,11 +14,6 @@ class Cryptomus implements Gateway
 {
     private const API_URL = 'https://api.cryptomus.com/';
 
-    public static array $methodDetails = [
-        'key' => 'cryptomus',
-        'settings' => ['cryptomus_merchant_uuid', 'cryptomus_key'],
-    ];
-
     private string $apiKey;
 
     private string $mid;
@@ -27,6 +22,18 @@ class Cryptomus implements Gateway
     {
         $this->mid = sysConfig('cryptomus_merchant_uuid');
         $this->apiKey = sysConfig('cryptomus_api_key');
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'cryptomus',
+            'method' => ['other'],
+            'settings' => [
+                'cryptomus_merchant_uuid' => null,
+                'cryptomus_api_key' => null,
+            ],
+        ];
     }
 
     public function purchase(Request $request): JsonResponse

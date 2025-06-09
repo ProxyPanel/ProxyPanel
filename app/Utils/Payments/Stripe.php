@@ -17,14 +17,22 @@ use UnexpectedValueException;
 
 class Stripe implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'stripe',
-        'settings' => ['stripe_public_key', 'stripe_secret_key'],
-    ];
-
     public function __construct()
     {
         \Stripe\Stripe::setApiKey(sysConfig('stripe_secret_key'));
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'stripe',
+            'method' => ['ali', 'wechat', 'other'],
+            'settings' => [
+                'stripe_public_key' => null,
+                'stripe_secret_key' => null,
+                'stripe_signing_secret' => null,
+            ],
+        ];
     }
 
     public function purchase(Request $request): JsonResponse
@@ -136,8 +144,7 @@ class Stripe implements Gateway
         switch ($event->type) {
             case 'checkout.session.completed':
 
-                /* @var $session Session */
-                $session = $event->data->object;
+                /* @var $session Session */ $session = $event->data->object;
 
                 // Check if the order is paid (e.g., from a card payment)
                 //

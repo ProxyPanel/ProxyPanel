@@ -10,10 +10,21 @@ use Log;
 
 class CodePay implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'codepay',
-        'settings' => ['codepay_url', 'codepay_id', 'codepay_key'],
-    ];
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'codepay',
+            'method' => ['ali', 'qq', 'wechat'],
+            'settings' => [
+                'codepay_url' => [
+                    'type' => 'url',
+                    'placeholder' => 'admin.system.placeholder.codepay_url',
+                ],
+                'codepay_id' => null,
+                'codepay_key' => null,
+            ],
+        ];
+    }
 
     public function purchase(Request $request): JsonResponse
     {
@@ -22,7 +33,7 @@ class CodePay implements Gateway
         $data = [
             'id' => sysConfig('codepay_id'),
             'pay_id' => $payment->trade_no,
-            'type' => $request->input('type'), //1支付宝支付 2QQ钱包 3微信支付
+            'type' => $request->input('type'), // 1支付宝支付 2QQ钱包 3微信支付
             'price' => $payment->amount,
             'page' => 1,
             'outTime' => 900,
@@ -40,8 +51,7 @@ class CodePay implements Gateway
     public function notify(Request $request): void
     {
         $tradeNo = $request->input('pay_id');
-        if ($tradeNo && $request->input('pay_no')
-            && PaymentHelper::verify($request->except('method'), sysConfig('codepay_key'), $request->input('sign'), false)) {
+        if ($tradeNo && $request->input('pay_no') && PaymentHelper::verify($request->except('method'), sysConfig('codepay_key'), $request->input('sign'), false)) {
             if (PaymentHelper::paymentReceived($tradeNo)) {
                 exit('success');
             }

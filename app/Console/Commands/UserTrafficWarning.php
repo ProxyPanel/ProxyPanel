@@ -28,7 +28,7 @@ class UserTrafficWarning extends Command
     private function userTrafficWarning(): void
     { // 用户流量超过警告阈值提醒
         $trafficWarningPercent = sysConfig('traffic_warning_percent');
-        User::activeUser()->where('transfer_enable', '>', 0)->chunk(config('tasks.chunk'), function ($users) use ($trafficWarningPercent) {
+        User::activeUser()->where('transfer_enable', '>', 0)->chunk(sysConfig('tasks_chunk'), function ($users) use ($trafficWarningPercent) {
             foreach ($users as $user) {
                 // 用户账号不是邮箱的跳过
                 if (filter_var($user->username, FILTER_VALIDATE_EMAIL) === false) {

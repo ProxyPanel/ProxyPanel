@@ -331,7 +331,7 @@ class AuthController extends Controller
         if (is_numeric($aff)) {
             $uid = (int) $aff;
         } else {
-            $decode = (new Hashids(sysConfig('aff_salt'), 8))->decode($aff);
+            $decode = (new Hashids(sysConfig('affiliate_link_salt'), 8))->decode($aff);
             if ($decode) {
                 $uid = $decode[0];
             }

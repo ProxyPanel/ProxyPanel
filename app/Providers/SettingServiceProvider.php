@@ -55,6 +55,8 @@ class SettingServiceProvider extends ServiceProvider
             ->merge(collect(['is_onlinePay' => $settings->whereIn('name', $payments)->pluck('value')->filter()->isNotEmpty()])) // 设置在线支付开关
             ->sortKeys()
             ->toArray();
+        $modified['tasks_clean'] = json_decode($modified['tasks_clean'], true);
+        $modified['tasks_close'] = json_decode($modified['tasks_close'], true);
 
         config(['settings' => $modified]); // 设置系统参数
 

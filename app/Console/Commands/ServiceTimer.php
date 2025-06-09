@@ -24,7 +24,7 @@ class ServiceTimer extends Command
 
     private function expiredPlan(): void
     {
-        Order::activePlan()->where('expired_at', '<=', now())->chunk(config('tasks.chunk'), function ($orders) {
+        Order::activePlan()->where('expired_at', '<=', now())->chunk(sysConfig('tasks_chunk'), function ($orders) {
             $orders->each->expired(); // 过期订单
         });
     }

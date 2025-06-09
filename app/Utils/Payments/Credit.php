@@ -11,9 +11,12 @@ use Illuminate\Http\Request;
 
 class Credit implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'credit',
-    ];
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'credit',
+        ];
+    }
 
     public function purchase(Request $request): JsonResponse
     {

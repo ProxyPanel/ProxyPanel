@@ -58,7 +58,7 @@ if (! function_exists('formatTime')) {
 
 // 获取系统设置
 if (! function_exists('sysConfig')) {
-    function sysConfig(?string $key = null, ?string $default = null): array|null|string
+    function sysConfig(?string $key = null, ?string $default = null): array|string|int|null
     {
         return $key ? config("settings.$key", $default) : config('settings');
     }

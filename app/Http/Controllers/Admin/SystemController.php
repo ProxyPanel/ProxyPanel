@@ -21,6 +21,7 @@ use App\Models\SsConfig;
 use App\Notifications\Custom;
 use App\Services\TelegramService;
 use App\Utils\DDNS;
+use App\Utils\Payments\PaymentManager;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -32,42 +33,48 @@ class SystemController extends Controller
 {
     public function index(): View
     { // 系统设置
-        return view('admin.config.system', array_merge([
-            'payments' => $this->getPayments(),
-            'captcha' => $this->getCaptcha(),
-            'channels' => $this->getNotifyChannels(),
-            'ddns_labels' => (new DDNS)->getLabels(),
-        ], Config::pluck('value', 'name')->toArray()));
-    }
+        function parseTime(string|array $inputs): array
+        {
+            $items = is_array($inputs) ? $inputs : json_decode($inputs, true);
+            $result = [];
 
-    private function getPayments(): array
-    {
-        $paymentConfigs = cache()->rememberForever('payment_configs', function () { // 支付渠道及其所需配置项映射
-            foreach (glob(app_path('Utils/Payments/*.php')) as $file) {
-                $className = 'App\\Utils\\Payments\\'.basename($file, '.php');
-                if (class_exists($className)) {
-                    $methodDetails = $className::$methodDetails ?? null;
-                    if ($methodDetails && ! empty($methodDetails['settings'])) {
-                        $configs[$methodDetails['key']] = $methodDetails['settings'];
-                    }
-                }
+            foreach ($items as $key => $duration) {
+                preg_match('/-(\d+)\s+(\w+)/', $duration, $m);
+                $result[$key] = [
+                    'num' => $m[1] ?? 1,
+                    'unit' => $m[2] ?? 'hours',
+                ];
             }
 
-            return $configs ?? [];
-        });
-
-        // 遍历映射，检查配置项是否存在
-        foreach ($paymentConfigs as $paymentName => $configKeys) {
-            $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) {
-                return $carry && sysConfig($configKey);
-            }, true);
-
-            if ($allConfigsExist) {
-                $payment[] = $paymentName;
-            }
+            return $result;
         }
 
-        return $payment ?? [];
+        // 获取所有配置项
+        $config = Config::pluck('value', 'name')->toArray();
+
+        // 预处理复杂数据
+        // 解析时间类配置
+        $config['tasks_clean'] = parseTime($config['tasks_clean']);
+        $config['tasks_close'] = parseTime($config['tasks_close']);
+
+        $paymentForms = PaymentManager::getSettingsFormData();
+
+        return view('admin.config.system', [
+            'configs' => $config,
+            'payments' => PaymentManager::getAvailable(),
+            'paymentForms' => $paymentForms,
+            'paymentTabs' => array_keys($paymentForms),
+            'paymentLists' => [
+                'ali' => PaymentManager::getPaymentsByMethod('ali'),
+                'wechat' => PaymentManager::getPaymentsByMethod('wechat'),
+                'qq' => PaymentManager::getPaymentsByMethod('qq'),
+                'other' => PaymentManager::getPaymentsByMethod('other'),
+            ],
+            'captcha' => $this->getCaptcha(),
+            'notifies' => $this->getNotifyChannels(),
+            'notifyForms' => $this->getNotifyForms(),
+            'ddns_labels' => (new DDNS)->getLabels(),
+        ]);
     }
 
     private function getCaptcha(): bool
@@ -77,7 +84,7 @@ class SystemController extends Controller
 
     private function getNotifyChannels(): array
     {
-        $configs = [ // 支付渠道及其所需配置项映射
+        $configMap = [ // 支付渠道及其所需配置项映射
             'bark' => ['bark_key'],
             'dingTalk' => ['dingTalk_access_token'],
             'iYuu' => ['iYuu_token'],
@@ -92,7 +99,7 @@ class SystemController extends Controller
         $channels = ['database', 'mail'];
 
         // 遍历映射，检查配置项是否存在
-        foreach ($configs as $channel => $configKeys) {
+        foreach ($configMap as $channel => $configKeys) {
             $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) {
                 return $carry && sysConfig($configKey);
             }, true);
@@ -103,6 +110,26 @@ class SystemController extends Controller
         }
 
         return $channels;
+    }
+
+    private function getNotifyForms(): array
+    {
+        return [
+            'server_chan_key' => ['test' => 'serverChan'],
+            'pushDeer_key' => ['test' => 'pushDeer'],
+            'iYuu_token' => ['test' => 'iYuu'],
+            'bark_key' => ['test' => 'bark'],
+            'telegram_token' => ['test' => 'telegram'],
+            'pushplus_token' => ['test' => 'pushPlus'],
+            'dingTalk_access_token' => null,
+            'dingTalk_secret' => ['test' => 'dingTalk'],
+            'wechat_cid' => null,
+            'wechat_aid' => null,
+            'wechat_secret' => ['test' => 'weChat'],
+            'wechat_token' => ['url' => route('wechat.verify')],
+            'wechat_encodingAESKey' => null,
+            'tg_chat_token' => ['test' => 'tgChat'],
+        ];
     }
 
     public function setExtend(Request $request): RedirectResponse  // 设置涉及到上传的设置
@@ -179,7 +206,7 @@ class SystemController extends Controller
         }
 
         // 支付设置判断
-        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, $this->getPayments(), true)) {
+        if ($value !== null && in_array($name, ['is_AliPay', 'is_QQPay', 'is_WeChatPay'], true) && ! in_array($value, PaymentManager::getAvailable(), true)) {
             return response()->json(['status' => 'fail', 'message' => trans('admin.system.params_required', ['attribute' => trans('admin.system.payment.attribute')])]);
         }
 
@@ -192,8 +219,6 @@ class SystemController extends Controller
             $denyConfig = [
                 'website_url',
                 'is_captcha',
-                'min_rand_traffic',
-                'max_rand_traffic',
                 'forbid_mode',
                 'website_security_code',
                 'website_security_code',

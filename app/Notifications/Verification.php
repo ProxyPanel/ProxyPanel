@@ -28,7 +28,7 @@ class Verification extends Notification
             ->subject(trans('notification.verification_account'))
             ->line(trans('notification.verification'))
             ->line($this->code)
-            ->line(trans('notification.verification_limit', ['minutes' => config('tasks.close.verify')]));
+            ->line(trans('notification.verification_limit', ['minutes' => (time() - strtotime(sysConfig('tasks_close.verify'))) / 60]));
     }
 
     public function toArray($notifiable): array

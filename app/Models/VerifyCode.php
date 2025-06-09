@@ -16,6 +16,6 @@ class VerifyCode extends Model
 
     public function scopeRecentUnused(Builder $query): Builder
     {
-        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime('-'.config('tasks.close.verify').' minutes')));
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.verify'))));
     }
 }

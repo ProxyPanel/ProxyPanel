@@ -118,23 +118,24 @@
             },
             insecure: true,
             unsupported: true,
-            api: 2024.07,
-        }
+            api: 2024.07
+        };
 
         function $buo_f() {
-            const e = document.createElement('script')
+            const e = document.createElement("script");
             e.src = "//browser-update.org/update.min.js";
             document.body.appendChild(e);
         }
+
         try {
-            document.addEventListener("DOMContentLoaded", $buo_f, false)
+            document.addEventListener("DOMContentLoaded", $buo_f, false);
         } catch (e) {
-            window.attachEvent("onload", $buo_f)
+            window.attachEvent("onload", $buo_f);
         }
     </script>
     @yield('javascript')
     <!-- 统计 -->
-    {!! sysConfig('website_analytics') !!}
+    {!! sysConfig('website_statistics_code') !!}
     <!-- 客服 -->
-    {!! sysConfig('website_customer_service') !!}
+    {!! sysConfig('website_customer_service_code') !!}
 @endsection

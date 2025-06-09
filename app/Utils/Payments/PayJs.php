@@ -11,11 +11,6 @@ use Xhat\Payjs\Payjs as Pay;
 
 class PayJs implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'payjs',
-        'settings' => ['payjs_mch_id', 'payjs_key'],
-    ];
-
     private static array $config;
 
     public function __construct()
@@ -23,6 +18,18 @@ class PayJs implements Gateway
         self::$config = [
             'mchid' => sysConfig('payjs_mch_id'),   // 配置商户号
             'key' => sysConfig('payjs_key'),   // 配置通信密钥
+        ];
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'payjs',
+            'method' => ['wechat'],
+            'settings' => [
+                'payjs_mch_id' => null,
+                'payjs_key' => null,
+            ],
         ];
     }
 
@@ -40,7 +47,7 @@ class PayJs implements Gateway
         // 获取收款二维码内容
         $payment->update(['qr_code' => 1, 'url' => $result]);
 
-        //$this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
+        // $this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
         return response()->json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
     }
 

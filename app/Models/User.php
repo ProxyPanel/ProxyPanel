@@ -224,7 +224,7 @@ class User extends Authenticatable
     public function getInviteCodeAttribute(): string
     {
         $uid = $this->id;
-        $affSalt = sysConfig('aff_salt');
+        $affSalt = sysConfig('affiliate_link_salt');
 
         return empty($affSalt) ? $uid : (new Hashids($affSalt, 8))->encode($uid);
     }

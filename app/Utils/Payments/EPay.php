@@ -11,10 +11,25 @@ use Log;
 
 class EPay implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'epay',
-        'settings' => ['epay_url', 'epay_mch_id', 'epay_key'],
-    ];
+    public static function metadata(): array
+    {
+        if (auth()->user()?->can('admin.test.epay')) {
+            $button = '<div class="col-md-7"><button class="btn btn-primary" type="button" onclick="epayInfo()">'.trans('admin.query').'</button></div>';
+        }
+
+        return [
+            'key' => 'epay',
+            'method' => ['ali', 'qq', 'wechat'],
+            'settings' => [
+                'epay_url' => [
+                    'type' => 'url',
+                ],
+                'epay_mch_id' => null,
+                'epay_key' => null,
+            ],
+            'button' => $button ?? null,
+        ];
+    }
 
     public function purchase(Request $request): JsonResponse
     {

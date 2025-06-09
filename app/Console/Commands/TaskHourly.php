@@ -34,14 +34,14 @@ class TaskHourly extends Command
         $end = strtotime($created_at);
         $start = $end - 3599;
         $data_anomaly_notification = sysConfig('data_anomaly_notification');
-        $traffic_ban_value = (int) sysConfig('traffic_ban_value') * GiB;
+        $traffic_abuse_threshold = (int) sysConfig('traffic_abuse_limit') * GiB;
         User::activeUser()->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
         })->with([
             'dataFlowLogs' => function ($query) use ($start, $end) {
                 $query->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(config('tasks.chunk'), function ($users) use ($traffic_ban_value, $created_at, $data_anomaly_notification) {
+        ])->chunk(sysConfig('tasks_chunk'), function ($users) use ($traffic_abuse_threshold, $created_at, $data_anomaly_notification) {
             foreach ($users as $user) {
                 $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
@@ -74,7 +74,7 @@ class TaskHourly extends Command
                 $sum_all = $sum_u + $sum_d;
 
                 // 用户流量异常警告
-                if ($data_anomaly_notification && $sum_all >= $traffic_ban_value) {
+                if ($data_anomaly_notification && $sum_all >= $traffic_abuse_threshold) {
                     Notification::send(User::find(1), new DataAnomaly($user->id, formatBytes($sum_u), formatBytes($sum_d), formatBytes($sum_all)));
                 }
             }
@@ -97,7 +97,7 @@ class TaskHourly extends Command
             'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
                 $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(config('tasks.chunk'), function ($nodes) use ($created_at) {
+        ])->chunk(sysConfig('tasks_chunk'), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
                 $node->hourlyDataFlows()->create(['u' => $node->u_sum, 'd' => $node->d_sum, 'created_at' => $created_at]);
             }

@@ -153,7 +153,7 @@ class ClientController extends Controller
     {
         $user = $request->user();
         // 系统开启登录加积分功能才可以签到
-        if (! sysConfig('is_checkin')) {
+        if (! sysConfig('checkin_interval')) {
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.disable')]);
         }
 
@@ -162,7 +162,7 @@ class ClientController extends Controller
             return response()->json(['ret' => 0, 'title' => trans('common.success'), 'msg' => trans('user.home.attendance.done')]);
         }
 
-        $traffic = random_int((int) sysConfig('min_rand_traffic'), (int) sysConfig('max_rand_traffic')) * MiB;
+        $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
 
         if (! $user->incrementData($traffic)) {
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.failed')]);
@@ -170,7 +170,7 @@ class ClientController extends Controller
         Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
 
         // 多久后可以再签到
-        $ttl = sysConfig('traffic_limit_time') ? sysConfig('traffic_limit_time') * Minute : Day;
+        $ttl = sysConfig('checkin_interval') ? sysConfig('checkin_interval') * Minute : Day;
         Cache::put('userCheckIn_'.$user->id, '1', $ttl);
 
         return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
@@ -264,8 +264,8 @@ class ClientController extends Controller
             'client.node_class_name' => Level::all()->pluck('name', 'level')->toArray(),
             'client.baseUrl' => sysConfig('website_url'),
             'client.subscribe_url' => sysConfig('subscribe_domain') ?: sysConfig('website_url'),
-            'client.checkinMin' => sysConfig('min_rand_traffic'),
-            'client.checkinMax' => sysConfig('max_rand_traffic'),
+            'client.checkinMin' => sysConfig('checkin_reward'),
+            'client.checkinMax' => sysConfig('checkin_reward_max'),
             'client.invite_gift' => sysConfig('default_traffic') / 1024,
         ]);
     }

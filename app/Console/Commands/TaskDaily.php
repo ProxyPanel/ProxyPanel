@@ -60,7 +60,7 @@ class TaskDaily extends Command
         }
 
         User::activeUser()->where('expired_at', '<', date('Y-m-d')) // 过期
-            ->chunk(config('tasks.chunk'), function ($users) use ($banMsg, $dirtyWorks) {
+            ->chunk(sysConfig('tasks_chunk'), function ($users) use ($banMsg, $dirtyWorks) {
                 $users->each(function ($user) use ($banMsg, $dirtyWorks) {
                     $user->update($dirtyWorks);
                     Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, $banMsg);
@@ -71,11 +71,10 @@ class TaskDaily extends Command
 
     private function closeTickets(): void
     { // 关闭用户超时未处理的工单
-        $closeTicketsHours = config('tasks.close.tickets');
-
+        $closeTicketsHours = (time() - strtotime(sysConfig('tasks_close.tickets'))) / 3600;
         Ticket::whereStatus(1)->with('reply')->whereHas('reply', function ($query) {
             $query->where('admin_id', '<>', null);
-        })->where('updated_at', '<=', now()->subHours($closeTicketsHours))->chunk(config('tasks.chunk'), function ($tickets) use ($closeTicketsHours) {
+        })->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.tickets'))))->chunk(sysConfig('tasks_chunk'), function ($tickets) use ($closeTicketsHours) {
             $tickets->each(function ($ticket) use ($closeTicketsHours) {
                 if ($ticket->close()) {
                     $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('ticket.edit', $ticket),
@@ -92,7 +91,7 @@ class TaskDaily extends Command
             $query->activePlan();
         })->with(['orders' => function ($query) {
             $query->activePlan();
-        }])->chunk(config('tasks.chunk'), function ($users) {
+        }])->chunk(sysConfig('tasks_chunk'), function ($users) {
             $users->each(function ($user) {
                 $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
                 $order = $user->orders->first(); // 取出用户正在使用的套餐
@@ -111,7 +110,7 @@ class TaskDaily extends Command
     private function releaseAccountPort(): void
     { // 被封禁 / 过期N天 的账号自动释放端口
         User::where('port', '<>', 0)->where(function (Builder $query) {
-            $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.config('tasks.release_port').' days')));
+            $query->whereStatus(-1)->orWhere('expired_at', '<=', date('Y-m-d', strtotime('-'.sysConfig('auto_release_port').' days')));
         })->update(['port' => 0]);
     }
 
@@ -127,7 +126,7 @@ class TaskDaily extends Command
             'dataFlowLogs' => function ($query) use ($start, $end) {
                 $query->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(config('tasks.chunk'), function ($users) use ($created_at) {
+        ])->chunk(sysConfig('tasks_chunk'), function ($users) use ($created_at) {
             foreach ($users as $user) {
                 $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
@@ -175,7 +174,7 @@ class TaskDaily extends Command
             'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
                 $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(config('tasks.chunk'), function ($nodes) use ($created_at) {
+        ])->chunk(sysConfig('tasks_chunk'), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
                 $node->dailyDataFlows()->create([
                     'u' => $node->u_sum,

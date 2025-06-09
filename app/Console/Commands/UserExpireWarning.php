@@ -30,7 +30,7 @@ class UserExpireWarning extends Command
         // 只取没被禁用的用户，其他不用管
         User::whereEnable(1)
             ->where('expired_at', '<', date('Y-m-d', strtotime(sysConfig('expire_days').' days')))
-            ->chunk(config('tasks.chunk'), function ($users) {
+            ->chunk(sysConfig('tasks_chunk'), function ($users) {
                 foreach ($users as $user) {
                     if (filter_var($user->username, FILTER_VALIDATE_EMAIL) === false) { // 用户账号不是邮箱的跳过
                         continue;

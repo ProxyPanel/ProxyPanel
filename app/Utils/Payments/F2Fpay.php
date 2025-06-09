@@ -13,11 +13,6 @@ use Log;
 
 class F2FPay implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'f2fpay',
-        'settings' => ['f2fpay_app_id', 'f2fpay_private_key', 'f2fpay_public_key'],
-    ];
-
     private static AlipayF2F $aliClient;
 
     public function __construct()
@@ -28,6 +23,19 @@ class F2FPay implements Gateway
             'rsa_private_key' => sysConfig('f2fpay_private_key'),
             'notify_url' => route('payment.notify', ['method' => 'f2fpay']),
         ]);
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'f2fpay',
+            'method' => ['ali'],
+            'settings' => [
+                'f2fpay_app_id' => null,
+                'f2fpay_private_key' => null,
+                'f2fpay_public_key' => null,
+            ],
+        ];
     }
 
     public function purchase(Request $request): JsonResponse

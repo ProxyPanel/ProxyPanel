@@ -33,7 +33,7 @@ class NodeController extends Controller
                     $query->where('log_time', '>=', strtotime('-5 minutes'))->orderBy('log_time', 'desc');
                 },
                 'heartbeats' => function ($query) {
-                    $query->where('log_time', '>=', strtotime(config('tasks.recently_heartbeat')))->orderBy('log_time', 'desc');
+                    $query->where('log_time', '>=', strtotime('-'.sysConfig('recently_heartbeat').' minutes'))->orderBy('log_time', 'desc');
                 },
                 'childNodes',
             ])

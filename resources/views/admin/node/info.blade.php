@@ -498,24 +498,25 @@
     <script>
         const string = "{{ strtolower(Str::random()) }}";
 
-        $('[name="next_renewal_date"]').datepicker({
-            format: 'yyyy-mm-dd'
+        $("[name='next_renewal_date']").datepicker({
+            format: "yyyy-mm-dd"
         });
 
         function calculateNextNextRenewalDate() {
-            const nextRenewalDate = $('#next_renewal_date').val();
-            const termValue = parseInt($('#subscription_term_value').val() || 0);
-            const termUnit = $('#subscription_term_unit').val();
+            const nextRenewalDate = $("#next_renewal_date").val();
+            const termValue = parseInt($("#subscription_term_value").val() || 0);
+            const termUnit = $("#subscription_term_unit").val();
+            const nextNextRenewalDate = $("#next_next_renewal_date");
 
             if (!nextRenewalDate || termValue <= 0) {
-                $('#next_next_renewal_date').val('');
+                nextNextRenewalDate.val("");
                 return;
             }
 
             const currentDate = new Date(nextRenewalDate);
             const originalDay = currentDate.getDate();
 
-            if (termUnit === 'months') {
+            if (termUnit === "months") {
                 // 获取当前月份和年份
                 let targetMonth = currentDate.getMonth() + termValue;
                 let targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
@@ -533,15 +534,15 @@
             } else {
                 // 处理天数和年份的情况
                 const adjustments = {
-                    days: 'Date',
-                    years: 'FullYear'
+                    days: "Date",
+                    years: "FullYear"
                 };
                 currentDate[`set${adjustments[termUnit]}`](
                     currentDate[`get${adjustments[termUnit]}`]() + termValue
                 );
             }
 
-            $('#next_next_renewal_date').val(currentDate.toISOString().split('T')[0]);
+            nextNextRenewalDate.val(currentDate.toISOString().split("T")[0]);
         }
 
         $(document).ready(function() {
@@ -557,17 +558,17 @@
         });
 
         function initializeUI() {
-            $('.single-setting').hide();
-            $('#v2_path').val('/' + string);
+            $(".single-setting").hide();
+            $("#v2_path").val("/" + string);
         }
 
         function bindEvents() {
-            $('input:radio[name="type"]').on('change', updateServiceType);
-            $('#obfs').on('changed.bs.select', toggleObfsParam);
-            $('#relay_node_id').on('changed.bs.select', toggleRelayConfig);
-            $('#v2_net').on('changed.bs.select', updateV2RaySettings);
-            $('#nodeForm').on('submit', formSubmit);
-            $(document).on('change', '#next_renewal_date, #subscription_term_value, #subscription_term_unit', calculateNextNextRenewalDate);
+            $("input:radio[name='type']").on("change", updateServiceType);
+            $("#obfs").on("changed.bs.select", toggleObfsParam);
+            $("#relay_node_id").on("changed.bs.select", toggleRelayConfig);
+            $("#v2_net").on("changed.bs.select", updateV2RaySettings);
+            $("#nodeForm").on("submit", formSubmit);
+            $(document).on("change", "#next_renewal_date, #subscription_term_value, #subscription_term_unit", calculateNextNextRenewalDate);
         }
 
         function setupNodeData(nodeData) {
@@ -582,68 +583,68 @@
             } = nodeData;
 
             // 设置选项和输入值
-            ['is_ddns', 'is_udp', 'status'].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
-            ['is_display', 'detection_type', 'type'].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
-            ['name', 'server', 'ip', 'ipv6', 'push_port', 'traffic_rate', 'speed_limit', 'client_limit', 'description', 'sort']
+            ["is_ddns", "is_udp", "status"].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
+            ["is_display", "detection_type", "type"].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
+            ["name", "server", "ip", "ipv6", "push_port", "traffic_rate", "speed_limit", "client_limit", "description", "sort"]
             .forEach(prop => $(`#${prop}`).val(nodeData[prop]));
-            ['level', 'rule_group_id', 'country_code', 'relay_node_id'].forEach(prop => $(`#${prop}`).selectpicker('val', nodeData[prop]));
-            $('#labels').selectpicker('val', labels.map(label => label.id));
+            ["level", "rule_group_id", "country_code", "relay_node_id"].forEach(prop => $(`#${prop}`).selectpicker("val", nodeData[prop]));
+            $("#labels").selectpicker("val", labels.map(label => label.id));
 
-            if (details?.next_renewal_date) $('#next_renewal_date').datepicker('update', details.next_renewal_date);
+            if (details?.next_renewal_date) $("#next_renewal_date").datepicker("update", details.next_renewal_date);
             if (details?.subscription_term) setSubscriptionTerm(details.subscription_term);
-            if (details?.renewal_cost) $('#renewal_cost').val(details.renewal_cost);
+            if (details?.renewal_cost) $("#renewal_cost").val(details.renewal_cost);
             calculateNextNextRenewalDate(); // 手动触发计算下下次续费日期
 
             if (relay_node_id) {
-                $('#relay_port').val(port);
+                $("#relay_port").val(port);
             } else {
                 setupNodeTypeHandlers(type, profile, port, tls_provider);
             }
 
             function setSubscriptionTerm(term) {
-                const [value, unit] = term.split(' ');
+                const [value, unit] = term.split(" ");
 
-                $('#subscription_term_value').val(value || '');
-                $('#subscription_term_unit').selectpicker('val', unit || 'day'); // 默认选择 day
+                $("#subscription_term_value").val(value || "");
+                $("#subscription_term_unit").selectpicker("val", unit || "day"); // 默认选择 day
             }
         }
 
         function setupDefaultValues() {
-            switchSetting('single');
-            switchSetting('is_ddns');
-            $('input[name="type"][value="0"]').click();
-            $('#status, #is_udp').click();
+            switchSetting("single");
+            switchSetting("is_ddns");
+            $("input[name='type'][value='0']").click();
+            $("#status, #is_udp").click();
         }
 
         function setupNodeTypeHandlers(type, profile, port, tls_provider) {
             const typeHandlers = {
-                0: () => $('#method').selectpicker('val', profile?.method || null),
+                0: () => $("#method").selectpicker("val", profile?.method || null),
                 1: setSSRValues,
                 2: setV2RayValues,
-                3: () => $('#trojan_port').val(port),
+                3: () => $("#trojan_port").val(port),
                 4: setSSRValues
             };
 
             typeHandlers[type] && typeHandlers[type]();
-            $('input[name="port"]').val(port);
+            $("input[name='port']").val(port);
 
             function setSSRValues() {
-                ['protocol', 'obfs'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
-                ['protocol_param', 'obfs_param'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
+                ["protocol", "obfs"].forEach(prop => $(`#${prop}`).selectpicker("val", profile[prop] || null));
+                ["protocol_param", "obfs_param"].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
                 if (profile.passwd && port) {
-                    $('#single').click();
-                    $('#passwd').val(profile.passwd);
+                    $("#single").click();
+                    $("#passwd").val(profile.passwd);
                 }
             }
 
             function setV2RayValues() {
-                ['v2_alter_id', 'v2_host', 'v2_sni', 'v2_path'].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
-                ['v2_net', 'v2_type'].forEach(prop => $(`#${prop}`).selectpicker('val', profile[prop] || null));
-                $('#v2_method').selectpicker('val', profile['method'] || null);
+                ["v2_alter_id", "v2_host", "v2_sni", "v2_path"].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
+                ["v2_net", "v2_type"].forEach(prop => $(`#${prop}`).selectpicker("val", profile[prop] || null));
+                $("#v2_method").selectpicker("val", profile["method"] || null);
 
-                $('#v2_port').val(port);
-                profile.v2_tls && $('#v2_tls').click();
-                $('#tls_provider').val(tls_provider);
+                $("#v2_port").val(port);
+                profile.v2_tls && $("#v2_tls").click();
+                $("#tls_provider").val(tls_provider);
             }
         }
 
@@ -653,75 +654,75 @@
 
             // 获取所有非 hidden 的表单数据
             const data = Object.fromEntries(
-                $form.find('input:not([hidden]), select, textarea')
+                $form.find("input:not([hidden]), select, textarea")
                 .serializeArray()
                 .map(item => [item.name, item.value])
             );
 
             // 拼接 subscription_term
-            const termValue = $('#subscription_term_value').val();
-            const termUnit = $('#subscription_term_unit').val();
-            data['subscription_term'] = termValue ? `${termValue} ${termUnit}` : null;
+            const termValue = $("#subscription_term_value").val();
+            const termUnit = $("#subscription_term_unit").val();
+            data["subscription_term"] = termValue ? `${termValue} ${termUnit}` : null;
 
             // 将序列化的表单数据转换为 JSON 对象
-            $form.find('input[type="checkbox"]').each(function() {
+            $form.find("input[type='checkbox']").each(function() {
                 data[this.name] = this.checked ? 1 : 0;
             });
 
             // 处理多选 select
-            $form.find('select[multiple]').each(function() {
+            $form.find("select[multiple]").each(function() {
                 data[this.name] = $(this).val();
             });
 
             $.ajax({
                 url: '{{ isset($node) ? route('admin.node.update', $node) : route('admin.node.store') }}',
                 method: '{{ isset($node) ? 'PUT' : 'POST' }}',
-                contentType: 'application/json',
+                contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function(ret) {
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.href =
                             '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}');
                     } else {
                         swal.fire({
                             title: '{{ trans('common.error') }}',
                             text: ret.message,
-                            icon: 'error'
+                            icon: "error"
                         });
                     }
                 },
                 error: function(data) {
                     const errors = data.responseJSON?.errors;
                     if (errors) {
-                        const errorList = Object.values(errors).map(error => `<li>${error}</li>`).join('');
+                        const errorList = Object.values(errors).map(error => `<li>${error}</li>`).join("");
                         swal.fire({
                             title: '{{ trans('admin.hint') }}',
                             html: `<ul>${errorList}</ul>`,
-                            icon: 'error',
-                            confirmButtonText: '{{ trans('common.confirm') }}',
+                            icon: "error",
+                            confirmButtonText: '{{ trans('common.confirm') }}'
                         });
                     }
-                },
+                }
             });
         }
 
         function switchSetting(id) {
             const check = document.getElementById(id).checked;
-            if (id === 'single') {
-                $('.single-setting').toggle(check);
-                $('#single_port').attr({
-                    'hidden': !check,
-                    'required': check
+            if (id === "single") {
+                $(".single-setting").toggle(check);
+                $("#single_port").attr({
+                    "hidden": !check,
+                    "required": check
                 });
-                if (!check) $('#passwd').val('');
-            } else if (id === 'is_ddns') {
-                $('#ip, #ipv6').attr('readonly', check).val('');
-                $('#server').attr('required', check);
+                if (!check) $("#passwd").val("");
+            } else if (id === "is_ddns") {
+                $("#ip, #ipv6").attr("readonly", check).val("");
+                $("#server").attr("required", check);
             }
         }
 
@@ -729,29 +730,29 @@
         function updateServiceType() {
             const type = parseInt($(this).val());
             const settingsMap = {
-                0: ['.ss-setting'],
-                1: ['.ss-setting', '.ssr-setting'],
-                2: ['.v2ray-setting', '#v2_port'],
-                3: ['.trojan-setting', '#trojan_port'],
-                4: ['.ss-setting', '.ssr-setting'],
+                0: [".ss-setting"],
+                1: [".ss-setting", ".ssr-setting"],
+                2: [".v2ray-setting", "#v2_port"],
+                3: [".trojan-setting", "#trojan_port"],
+                4: [".ss-setting", ".ssr-setting"]
             };
 
-            $('.ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting').hide();
-            Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(',')).hide());
+            $(".ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting").hide();
+            Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(",")).hide());
             (settingsMap[type] || []).forEach(selector => $(selector).show());
         }
 
         function toggleObfsParam() {
-            const $obfsParam = $('.obfs_param');
-            $obfsParam.toggle($('#obfs').val() !== 'plain');
-            if ($('#obfs').val() === 'plain') $('#obfs_param').val('');
+            const $obfsParam = $(".obfs_param");
+            $obfsParam.toggle($("#obfs").val() !== "plain");
+            if ($("#obfs").val() === "plain") $("#obfs_param").val("");
         }
 
         function toggleRelayConfig() {
-            const hasRelay = $('#relay_node_id').val() !== '';
-            $('.relay-config').toggle(hasRelay);
-            $('.proxy-config').toggle(!hasRelay);
-            $('#relay_port').attr({
+            const hasRelay = $("#relay_node_id").val() !== "";
+            $(".relay-config").toggle(hasRelay);
+            $(".proxy-config").toggle(!hasRelay);
+            $("#relay_port").attr({
                 hidden: !hasRelay,
                 required: hasRelay
             });
@@ -760,37 +761,37 @@
         // 设置V2Ray详细设置
         function updateV2RaySettings() {
             const net = $(this).val();
-            const $type = $('.v2_type');
-            const $typeOption = $('#type_option');
-            const $host = $('.v2_host');
-            const $path = $('#v2_path');
+            const $type = $(".v2_type");
+            const $typeOption = $("#type_option");
+            const $host = $(".v2_host");
+            const $path = $("#v2_path");
             $type.show();
             $host.show();
             if (!$path.val()) {
-                $path.val('/' + string);
+                $path.val("/" + string);
             }
             switch (net) {
-                case 'ws':
-                case 'http':
+                case "ws":
+                case "http":
                     $type.hide();
                     break;
-                case 'domainsocket':
+                case "domainsocket":
                     $type.hide();
                     $host.hide();
                     break;
-                case 'quic':
-                    $typeOption.attr('disabled', false);
+                case "quic":
+                    $typeOption.attr("disabled", false);
                     if (!$path.val()) {
                         $path.val(string);
                     }
                     break;
-                case 'kcp':
-                case 'tcp':
+                case "kcp":
+                case "tcp":
                 default:
-                    $typeOption.attr('disabled', true);
+                    $typeOption.attr("disabled", true);
                     break;
             }
-            $('#v2_type').selectpicker('refresh');
+            $("#v2_type").selectpicker("refresh");
         }
 
         // 服务条款
@@ -809,8 +810,8 @@
             };
 
             swal.fire({
-                title: '[节点 user-config.json 配置示例]',
-                width: '36em',
+                title: "[节点 user-config.json 配置示例]",
+                width: "36em",
                 html: `
                     <div class="text-left">
                         <ol>
@@ -820,23 +821,23 @@
                         <pre class="bg-grey-800 text-white">${JSON.stringify(jsonConfig, null, 2)}</pre>
                     </div>
                 `,
-                icon: 'info',
-            })
+                icon: "info"
+            });
         };
 
         // 模式提示
         window.showPortsOnlyConfig = function() {
             swal.fire({
-                title: '[节点 user-config.json 配置示例]',
-                width: '36em',
+                title: "[节点 user-config.json 配置示例]",
+                width: "36em",
                 html: `
                   <ul class="bg-grey-800 text-white text-left">
                       <li>严格模式："additional_ports_only": "true"</li>
                       <li>兼容模式："additional_ports_only": "false"</li>
                   </ul>
                 `,
-                icon: 'info',
+                icon: "info"
             });
-        }
+        };
     </script>
 @endsection

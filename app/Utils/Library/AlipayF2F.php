@@ -14,7 +14,7 @@ use RuntimeException;
 
 class AlipayF2F
 {
-    private static string $gatewayUrl = 'https://openapi.alipay.com/gateway.do'; //https://openapi-sandbox.dl.alipaydev.com/gateway.do
+    private static string $gatewayUrl = 'https://openapi.alipay.com/gateway.do'; // https://openapi-sandbox.dl.alipaydev.com/gateway.do
 
     private array $config;
 

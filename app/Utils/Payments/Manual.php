@@ -12,9 +12,12 @@ use Illuminate\Http\Request;
 
 class Manual implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'manual',
-    ];
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'manual',
+        ];
+    }
 
     public function purchase(Request $request): JsonResponse
     {

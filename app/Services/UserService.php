@@ -82,7 +82,7 @@ class UserService
 
     public function isTrafficWarning(): bool
     { // 流量异常警告
-        return ((int) sysConfig('traffic_ban_value') * GiB) <= $this->recentTrafficUsed();
+        return ((int) sysConfig('traffic_abuse_limit') * GiB) <= $this->recentTrafficUsed();
     }
 
     public function recentTrafficUsed(): int

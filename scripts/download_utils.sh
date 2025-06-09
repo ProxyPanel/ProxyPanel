@@ -19,6 +19,8 @@ check_and_install() {
       sudo pacman -S "$pkg"
     elif command -v zypper >/dev/null 2>&1; then
       sudo zypper install -y "$pkg"
+    elif [[ -f /etc/alpine-release ]]; then
+      sudo apk add --no-cache "$pkg"
     else
       echo -e "\e[31m无法安装 $pkg，不支持的 Linux 发行版\e[0m"
       exit 1
@@ -29,6 +31,8 @@ check_and_install() {
 # 获取 GitHub 仓库的最新标签
 get_tag() {
   local repo=$1
+    local headers=("-H" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36")  # 合法 User-Agent
+
   curl -fsSL "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name'
 }
 
@@ -50,7 +54,7 @@ download_file() {
       echo -e "\e[31mURL $url 不存在\e[0m"
       return 2
     fi
-    if ! curl -L -m 60 -o "$tmp_file" "$url"; then
+    if ! curl -L -m 60 -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36" --retry 3 --retry-delay 5 -o "$tmp_file" "$url"; then
       echo -e "\e[31m下载 $name 失败\e[0m"
       rm -f "$tmp_file"
       return 1
@@ -76,17 +80,40 @@ download_file() {
 
 # 处理文件下载
 process_files() {
-  local json="{}"
+  # 读取当前版本信息（如果存在）
+  local current_versions
+  if [ -f "$VERSION_FILE" ]; then
+    current_versions=$(cat "$VERSION_FILE")
+  else
+    current_versions="{}"
+  fi
+
+  # 创建临时版本文件
+  local tmp_version_file="/tmp/version.json.tmp"
+  echo "$current_versions" > "$tmp_version_file"
+
+  # 遍历所有文档
   for doc in "${!docs[@]}"; do
     if [[ $doc == *_name ]]; then
       local name=${docs[$doc]}
       local version=${docs[${doc/_name/_version}]}
       local url=${docs[${doc/_name/_url}]}
 
-      download_file "$name" "$version" "$url"
-      json=$(jq -r --arg name "$name" --arg version "$version" '.[$name]=$version' <<<"$json")
+      # 下载文件并检查状态
+      if download_file "$name" "$version" "$url"; then
+        # 下载成功，更新临时版本文件
+        jq -r --arg name "$name" --arg version "$version" '.[$name]=$version' \
+          <"$tmp_version_file" > "$tmp_version_file.tmp"
+        mv "$tmp_version_file.tmp" "$tmp_version_file"
+      else
+        # 下载失败，保留旧版本（如果存在）
+        local old_version=$(jq -r ".[\"$name\"]" <"$tmp_version_file" 2>/dev/null)
+        echo -e "\e[33m[跳过] $name 版本保持为 ${old_version:-未安装}\e[0m"
+      fi
     fi
   done
 
-  echo "$json" >"$VERSION_FILE"
+  # 原子化替换原版本文件
+  mv "$tmp_version_file" "$VERSION_FILE"
+  echo -e "\e[32m版本文件已更新（仅包含成功下载的条目）\e[0m"
 }

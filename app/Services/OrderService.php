@@ -131,7 +131,7 @@ class OrderService
 
     private function setCommissionExpense(User $user): void
     { // 佣金计算
-        $referralType = sysConfig('referral_type');
+        $referralType = sysConfig('referral_reward_type');
 
         if ($referralType && $user->inviter_id) {// 是否需要支付佣金
             $inviter = $user->inviter;

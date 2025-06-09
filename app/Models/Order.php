@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Casts\money;
 use App\Observers\OrderObserver;
 use App\Utils\Helpers;
+use App\Utils\Payments\PaymentManager;
 use Auth;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,13 +55,9 @@ class Order extends Model
         return $query->whereUserId($uid ?? Auth::id());
     }
 
-    public function scopeRecentUnPay(Builder $query, int $minutes = 0): Builder
+    public function scopeRecentUnPay(Builder $query): Builder
     {
-        if (! $minutes) {
-            $minutes = (int) config('tasks.close.orders');
-        }
-
-        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime("-$minutes minutes")));
+        return $query->whereStatus(0)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.orders'))));
     }
 
     public function scopeUserPrepay(Builder $query, ?int $uid = null): Builder
@@ -191,8 +188,8 @@ class Order extends Model
             2 => trans('common.payment.qq'),
             3 => trans('common.payment.wechat'),
             4 => trans('common.payment.crypto'),
-            5 => 'PayPal',
-            6 => 'Stripe',
+            5 => trans('admin.system.payment.channel.paypal'),
+            6 => trans('admin.system.payment.channel.stripe'),
             7 => trans('common.payment.manual'),
             default => '',
         };
@@ -207,6 +204,6 @@ class Order extends Model
     // 支付方式
     public function getPayWayLabelAttribute(): string
     {
-        return config('common.payment.labels')[$this->pay_way] ?? trans('common.status.unknown');
+        return PaymentManager::getLabels('true')[$this->pay_way] ?? trans('common.status.unknown');
     }
 }

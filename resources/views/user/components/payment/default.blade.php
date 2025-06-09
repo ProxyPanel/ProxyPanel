@@ -19,7 +19,7 @@
                             @if ($days !== 0)
                                 <li class="list-group-item">{{ trans('common.available_date') . ': ' . $days . trans_choice('common.days.attribute', 1) }}</li>
                             @endif
-                            <li class="list-group-item"> {!! trans('user.payment.close_tips', ['minutes' => config('tasks.close.orders')]) !!}</li>
+                            <li class="list-group-item"> {!! trans('user.payment.close_tips', ['minutes' => (time() - strtotime(sysConfig('tasks_close.orders'))) / 60]) !!}</li>
                         </ul>
                     </div>
                     <div class="col-auto mx-auto">
@@ -45,11 +45,11 @@
             const options = {
                 text: @json($payment->url),
                 backgroundImage: '{{ asset($pay_type_icon) }}',
-                autoColor: true,
+                autoColor: true
             };
 
             // Create QRCode Object
-            new QRCode(document.getElementById('qrcode'), options);
+            new QRCode(document.getElementById("qrcode"), options);
         </script>
     @endif
 
@@ -57,34 +57,34 @@
         // 检查支付单状态
         const r = window.setInterval(function() {
             $.ajax({
-                method: 'GET',
+                method: "GET",
                 url: '{{ route('orderStatus') }}',
                 data: {
                     trade_no: '{{ $payment->trade_no }}'
                 },
-                dataType: 'json',
+                dataType: "json",
                 success: function(ret) {
                     window.clearInterval();
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
                             window.location.href = '{{ route('invoice.index') }}';
                         });
-                    } else if (ret.status === 'error') {
+                    } else if (ret.status === "error") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error',
+                            icon: "error",
                             timer: 1500,
                             showConfirmButton: false
                         }).then(() => {
                             window.location.href = '{{ route('invoice.index') }}';
                         });
                     }
-                },
+                }
             });
         }, 3000);
     </script>

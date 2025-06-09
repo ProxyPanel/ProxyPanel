@@ -2,7 +2,7 @@
 
 <div class="form-group col-lg-6">
     <div class="row">
-        <label class="col-md-3 col-form-label">{{ trans('admin.system.' . $code) }}</label>
+        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("admin.system.$code") }}</label>
         <div class="col-md-7">
             @isset($hcode)
                 <div class="input-group">
@@ -33,8 +33,8 @@
                     </div>
                 </div>
             @endisset
-            @if (trans('admin.system.hint.' . $code) !== 'admin.system.hint.' . $code)
-                <span class="text-help"> {!! trans('admin.system.hint.' . $code) !!} </span>
+            @if (trans("admin.system.hint.$code") !== "admin.system.hint.$code")
+                <span class="text-help"> {!! trans("admin.system.hint.$code") !!} </span>
             @endisset
     </div>
 </div>

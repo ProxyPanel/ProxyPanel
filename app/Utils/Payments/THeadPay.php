@@ -11,10 +11,20 @@ use Log;
 
 class THeadPay implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'theadpay',
-        'settings' => ['theadpay_mchid', 'theadpay_key'],
-    ];
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'theadpay',
+            'method' => ['ali'],
+            'settings' => [
+                'theadpay_url' => [
+                    'type' => 'url',
+                ],
+                'theadpay_mchid' => null,
+                'theadpay_key' => null,
+            ],
+        ];
+    }
 
     public function purchase(Request $request): JsonResponse
     {

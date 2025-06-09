@@ -52,7 +52,7 @@
                     <div class="form-group col-lg-2 col-sm-6">
                         <select class="form-control show-tick" id="pay_way" name="pay_way" data-plugin="selectpicker" data-style="btn-outline byn-primary"
                                 title="{{ trans('model.order.pay_way') }}">
-                            @foreach (config('common.payment.labels') as $key => $value)
+                            @foreach ($paymentLabels as $key => $value)
                                 <option value="{{ $key }}">{{ $key . ' - ' . $value }}</option>
                             @endforeach
                         </select>
@@ -174,15 +174,15 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
         $(document).ready(function() {
-            $('#is_coupon').selectpicker('val', @json(Request::query('is_coupon')));
-            $('#is_expire').selectpicker('val', @json(Request::query('is_expire')));
-            $('#pay_way').selectpicker('val', @json(Request::query('pay_way')));
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#is_coupon").selectpicker("val", @json(Request::query('is_coupon')));
+            $("#is_expire").selectpicker("val", @json(Request::query('is_expire')));
+            $("#pay_way").selectpicker("val", @json(Request::query('pay_way')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
 
         // 有效期
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd'
+        $(".input-daterange").datepicker({
+            format: "yyyy-mm-dd"
         });
 
         @can('admin.order.edit')
@@ -193,17 +193,17 @@
                     oid: id,
                     status: status
                 }, function(ret) {
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.reload());
                     } else {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error'
+                            icon: "error"
                         }).then(() => window.location.reload());
                     }
                 });

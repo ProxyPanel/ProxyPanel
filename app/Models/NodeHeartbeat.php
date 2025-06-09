@@ -18,6 +18,6 @@ class NodeHeartbeat extends Model
 
     public function scopeRecently(Builder $query): Builder
     {
-        return $query->where('log_time', '>=', strtotime(config('tasks.recently_heartbeat')))->latest('log_time');
+        return $query->where('log_time', '>=', strtotime('-'.sysConfig('recently_heartbeat').' minutes'))->latest('log_time');
     }
 }

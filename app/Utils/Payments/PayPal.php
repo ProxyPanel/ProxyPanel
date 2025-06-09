@@ -11,11 +11,6 @@ use Log;
 
 class PayPal implements Gateway
 {
-    public static array $methodDetails = [
-        'key' => 'paypal',
-        'settings' => ['paypal_client_id', 'paypal_client_secret', 'paypal_app_id'],
-    ];
-
     protected static \Srmklive\PayPal\Services\PayPal $provider;
 
     public function __construct()
@@ -39,6 +34,19 @@ class PayPal implements Gateway
 
         self::$provider->setApiCredentials($config);
         self::$provider->getAccessToken();
+    }
+
+    public static function metadata(): array
+    {
+        return [
+            'key' => 'paypal',
+            'method' => ['other'],
+            'settings' => [
+                'paypal_client_id' => null,
+                'paypal_client_secret' => null,
+                'paypal_app_id' => null,
+            ],
+        ];
     }
 
     public function purchase(Request $request): JsonResponse

@@ -222,53 +222,54 @@
             },
             insecure: true,
             unsupported: true,
-            api: 2024.07,
-        }
+            api: 2024.07
+        };
 
         function $buo_f() {
-            const e = document.createElement('script')
+            const e = document.createElement("script");
             e.src = "//browser-update.org/update.min.js";
             document.body.appendChild(e);
         }
+
         try {
-            document.addEventListener("DOMContentLoaded", $buo_f, false)
+            document.addEventListener("DOMContentLoaded", $buo_f, false);
         } catch (e) {
-            window.attachEvent("onload", $buo_f)
+            window.attachEvent("onload", $buo_f);
         }
     </script>
     @yield('javascript')
     @if (Session::has('admin'))
         <script>
-            $('#return_to_admin').click(function() {
+            $("#return_to_admin").click(function() {
                 $.ajax({
-                    method: 'POST',
+                    method: "POST",
                     url: '{{ route('switch') }}',
                     data: {
-                        '_token': '{{ csrf_token() }}'
+                        "_token": '{{ csrf_token() }}'
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.href = '{{ route('admin.index') }}');
                     },
                     error: function(ret) {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error',
+                            icon: "error",
                             timer: 1500,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         });
-                    },
+                    }
                 });
             });
         </script>
     @endif
     <!-- 统计 -->
-    {!! sysConfig('website_analytics') !!}
+    {!! sysConfig('website_statistics_code') !!}
     <!-- 客服 -->
-    {!! sysConfig('website_customer_service') !!}
+    {!! sysConfig('website_customer_service_code') !!}
 @endsection

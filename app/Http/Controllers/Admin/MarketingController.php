@@ -50,12 +50,6 @@ class MarketingController extends Controller
         $content = $request->input('content');
 
         if ($type === 'push') {
-            //            if (! sysConfig('is_push_bear')) {
-            //                return response()->json(['status' => 'fail', 'message' => '推送失败：请先启用并配置PushBear']);
-            //            }
-            //
-            //            Notification::send(PushBearChannel::class, new Custom($title, $content));
-            //            return response()->json(['status' => 'success', 'message' => '发送完成']);
             return response()->json(['status' => 'fail', 'message' => trans('common.developing')]);
         }
 

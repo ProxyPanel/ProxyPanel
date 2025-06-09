@@ -52,7 +52,7 @@ class UserHourlyDataFlow extends Model
             ->selectRaw('user_id, sum(u + d) as total')->pluck('total', 'user_id')
             ->toArray(); // 只统计10M以上的记录，加快速度
         foreach ($userTotalTrafficList as $user => $traffic) {
-            if ($traffic > (int) sysConfig('traffic_ban_value') * GiB) {
+            if ($traffic > (int) sysConfig('traffic_abuse_limit') * GiB) {
                 $result[] = $user;
             }
         }
