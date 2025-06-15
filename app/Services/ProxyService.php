@@ -62,7 +62,7 @@ class ProxyService
             }
         }
 
-        $nodes = $query->orderByDesc('sort')->orderBy('id')->get();
+        $nodes = $query->orderByDesc('sort')->orderBy('node.id')->get();
 
         if ($isConfig) {
             $servers = [];
