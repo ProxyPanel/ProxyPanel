@@ -12,7 +12,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.logs.order.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.shop.order') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -28,11 +28,13 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                             </div>
-                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}" autocomplete="off" />
+                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}"
+                                   placeholder="{{ trans('admin.filter.start_time') }}" autocomplete="off" />
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
-                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}" autocomplete="off" />
+                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}"
+                                   placeholder="{{ trans('admin.filter.end_time') }}" autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-6">

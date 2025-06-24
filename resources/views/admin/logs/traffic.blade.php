@@ -6,7 +6,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.logs.user_traffic.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.log.traffic') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -37,11 +37,13 @@
                                     <i class="icon wb-calendar" aria-hidden="true"></i>
                                 </span>
                             </div>
-                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}" autocomplete="off" />
+                            <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}"
+                                   placeholder="{{ trans('admin.filter.start_time') }}" autocomplete="off" />
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
-                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}" autocomplete="off" />
+                            <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}"
+                                   placeholder="{{ trans('admin.filter.end_time') }}" autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-group col-lg-2 col-sm-4 btn-group">
@@ -108,12 +110,12 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
+        $(".input-daterange").datepicker({
+            format: "yyyy-mm-dd"
         });
 
         $(document).ready(function() {
-            $('#node_id').selectpicker('val', @json(Request::query('node_id')));
+            $("#node_id").selectpicker("val", @json(Request::query('node_id')));
         });
     </script>
 @endpush

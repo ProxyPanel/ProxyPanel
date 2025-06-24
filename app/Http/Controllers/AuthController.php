@@ -365,7 +365,7 @@ class AuthController extends Controller
 
             // 是否开启重设密码
             if (! sysConfig('password_reset_notification')) {
-                return redirect()->back()->withErrors(trans('auth.password.reset.error.disabled', ['email' => sysConfig('webmaster_email')]));
+                return redirect()->back()->withErrors(trans('auth.password.reset.error.disabled'));
             }
 
             // 查找账号
@@ -487,7 +487,7 @@ class AuthController extends Controller
             if (cache()->has('activeUser_'.md5($username))) {
                 $activeTimes = cache()->get('activeUser_'.md5($username));
                 if ($activeTimes >= sysConfig('active_times')) {
-                    return redirect()->back()->withErrors(trans('auth.active.error.throttle', ['email' => sysConfig('webmaster_email')]));
+                    return redirect()->back()->withErrors(trans('auth.active.error.throttle'));
                 }
             }
 

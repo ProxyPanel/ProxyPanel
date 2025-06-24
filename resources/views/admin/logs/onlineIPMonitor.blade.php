@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    {!! trans('admin.logs.ip_monitor') !!}
+                    {{ trans('admin.menu.log.online_monitor') }} <small>{{ trans('admin.logs.monitor.sub_title') }}</small>
                 </h2>
             </div>
             <div class="panel-body">
@@ -90,7 +90,7 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#node_id').selectpicker('val', @json(Request::query('node_id')));
+            $("#node_id").selectpicker("val", @json(Request::query('node_id')));
         });
     </script>
 @endpush

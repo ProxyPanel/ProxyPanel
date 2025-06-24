@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.rule.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.rule.list') }}</h2>
                 @can('admin.rule.store')
                     <div class="panel-actions">
                         <button class="btn btn-outline-primary" data-toggle="modal" data-target="#add">
@@ -137,54 +137,54 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('select').selectpicker('val', {{ Request::query('type') }});
+            $("select").selectpicker("val", {{ Request::query('type') }});
         });
 
         @can('admin.rule.store')
             // 添加规则
             function addRule() {
                 $.ajax({
-                    method: 'POST',
+                    method: "POST",
                     url: "{{ route('admin.rule.store') }}",
                     data: {
                         _token: '{{ csrf_token() }}',
-                        type: $('#add_type').val(),
-                        name: $('#name').val(),
-                        pattern: $('#pattern').val(),
+                        type: $("#add_type").val(),
+                        name: $("#name").val(),
+                        pattern: $("#pattern").val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        $('#add').modal('hide');
-                        if (ret.status === 'success') {
+                        $("#add").modal("hide");
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
                     },
                     error: function(data) {
-                        $('#add').modal('hide');
-                        let str = '';
+                        $("#add").modal("hide");
+                        let str = "";
                         const errors = data.responseJSON;
                         if ($.isEmptyObject(errors) === false) {
                             $.each(errors.errors, function(index, value) {
-                                str += '<li>' + value + '</li>';
+                                str += "<li>" + value + "</li>";
                             });
                             swal.fire({
                                 title: '{{ trans('admin.hint') }}',
                                 html: str,
-                                icon: 'error',
-                                confirmButtonText: '{{ trans('common.confirm') }}',
+                                icon: "error",
+                                confirmButtonText: '{{ trans('common.confirm') }}'
                             });
                         }
-                    },
+                    }
                 });
             }
         @endcan
@@ -193,44 +193,44 @@
             // 编辑规则
             function editRule(id) {
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.rule.update', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        name: $('#name_' + id).val(),
-                        pattern: $('#pattern_' + id).val(),
+                        name: $("#name_" + id).val(),
+                        pattern: $("#pattern_" + id).val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
                     },
                     error: function(data) {
-                        let str = '';
+                        let str = "";
                         const errors = data.responseJSON;
                         if ($.isEmptyObject(errors) === false) {
                             $.each(errors.errors, function(index, value) {
-                                str += '<li>' + value + '</li>';
+                                str += "<li>" + value + "</li>";
                             });
                             swal.fire({
                                 title: '{{ trans('admin.hint') }}',
                                 html: str,
-                                icon: 'error',
-                                confirmButtonText: '{{ trans('common.confirm') }}',
+                                icon: "error",
+                                confirmButtonText: '{{ trans('common.confirm') }}'
                             });
                         }
-                    },
+                    }
                 });
             }
         @endcan
@@ -242,34 +242,34 @@
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.rule.attribute')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: url,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

@@ -58,7 +58,7 @@ class TicketCreated extends Notification implements ShouldQueue
 
     private function markdownMessage($ticket): string
     {
-        return '📮'.trans('admin.system.ticket_created_notification')." #$ticket->id\n———————————————\n".trans('validation.attributes.title').": \n`$ticket->title`\n".trans('validation.attributes.content').": \n`$ticket->content`";
+        return '📮'.trans('model.config.ticket_created_notification')." #$ticket->id\n———————————————\n".trans('validation.attributes.title').": \n`$ticket->title`\n".trans('validation.attributes.content').": \n`$ticket->content`";
     }
 
     public function toBark($notifiable): array

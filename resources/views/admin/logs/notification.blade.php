@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.logs.notification') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.log.notify') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -77,7 +77,7 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#type').selectpicker('val', @json(Request::query('type')));
+            $("#type").selectpicker("val", @json(Request::query('type')));
         });
     </script>
 @endpush

@@ -20,7 +20,7 @@
                 </label>
             </div>
         @else
-            <x-alert type="danger" :message="trans('auth.password.reset.error.disabled', ['email' => sysConfig('webmaster_email')])" />
+            <x-alert type="danger" :message="trans('auth.password.reset.error.disabled')" />
         @endif
         <a class="btn btn-danger btn-lg {{ sysConfig('password_reset_notification') ? 'float-left' : 'btn-block' }}" href="{{ route('login') }}">
             {{ trans('common.back') }}

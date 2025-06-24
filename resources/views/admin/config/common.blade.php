@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    <i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.setting.common.title') }}
+                    <i class="icon wb-settings" aria-hidden="true"></i>{{ trans('admin.menu.setting.universal') }}
                 </h1>
             </div>
             <div class="panel-body container-fluid">
@@ -449,58 +449,58 @@
     <script>
         function addLevel() { // 添加等级
             @can('admin.config.level.store')
-                const level = $('#add_level').val();
-                const level_name = $('#add_level_name').val();
+                const level = $("#add_level").val();
+                const level_name = $("#add_level_name").val();
 
-                if (level.trim() === '') {
-                    $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.level')]) }}');
-                    $('#level').focus();
+                if (level.trim() === "") {
+                    $("#level_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.common.level')]) }}');
+                    $("#level").focus();
                     return false;
                 }
 
-                if (level_name.trim() === '') {
-                    $('#level_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
-                    $('#level_name').focus();
+                if (level_name.trim() === "") {
+                    $("#level_msg").show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
+                    $("#level_name").focus();
                     return false;
                 }
 
                 $.ajax({
                     url: '{{ route('admin.config.level.store') }}',
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         level: level,
                         name: level_name
                     },
                     beforeSend: function() {
-                        $('#level_msg').show().html('{{ trans('admin.creating') }}');
+                        $("#level_msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#level_msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#level_msg").show().html(ret.message);
                             return false;
                         }
-                        $('#add_level_modal').modal('hide');
+                        $("#add_level_modal").modal("hide");
                         window.location.reload();
                     },
                     error: function() {
-                        $('#level_msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#level_msg").show().html('{{ trans('common.request_failed') }}');
                     },
                     complete: function() {
                         swal.fire({
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => window.location.reload());
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.level.store')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -508,37 +508,37 @@
         function updateLevel(id) { // 更新等级
             @can('admin.config.level.update')
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.config.level.update', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        level: $('#level_' + id).val(),
-                        name: $('#level_name_' + id).val(),
+                        level: $("#level_" + id).val(),
+                        name: $("#level_name_" + id).val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.level.update')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -548,35 +548,35 @@
                 swal.fire({
                     title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.common.level')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'question',
+                    icon: "question",
                     allowEnterKey: false,
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.config.level.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });
@@ -584,67 +584,67 @@
             @cannot('admin.config.level.destroy')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
 
         function addCategory() { // 添加分类
             @can('admin.config.category.store')
-                const name = $('#add_category_name').val();
-                const sort = $('#add_category_sort').val();
+                const name = $("#add_category_name").val();
+                const sort = $("#add_category_sort").val();
 
-                if (name.trim() === '') {
-                    $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
-                    $('#category_name').focus();
+                if (name.trim() === "") {
+                    $("#category_msg").show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
+                    $("#category_name").focus();
                     return false;
                 }
 
-                if (sort.trim() === '') {
-                    $('#category_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
-                    $('#category_sort').focus();
+                if (sort.trim() === "") {
+                    $("#category_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
+                    $("#category_sort").focus();
                     return false;
                 }
 
                 $.ajax({
                     url: '{{ route('admin.config.category.store') }}',
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         name: name,
                         sort: sort
                     },
                     beforeSend: function() {
-                        $('#category_msg').show().html('{{ trans('admin.creating') }}');
+                        $("#category_msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#category_msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#category_msg").show().html(ret.message);
                             return false;
                         }
-                        $('#add_category_modal').modal('hide');
+                        $("#add_category_modal").modal("hide");
                         window.location.reload();
                     },
                     error: function() {
-                        $('#category_msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#category_msg").show().html('{{ trans('common.request_failed') }}');
                     },
                     complete: function() {
                         swal.fire({
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => window.location.reload());
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.category.store')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -652,37 +652,37 @@
         function updateCategory(id) { // 更新分类
             @can('admin.config.category.update')
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.config.category.update', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        name: $('#category_name_' + id).val(),
-                        sort: $('#category_sort_' + id).val(),
+                        name: $("#category_name_" + id).val(),
+                        sort: $("#category_sort_" + id).val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.category.update')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -692,35 +692,35 @@
                 swal.fire({
                     title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.category')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'question',
+                    icon: "question",
                     allowEnterKey: false,
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.config.category.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });
@@ -728,67 +728,67 @@
             @cannot('admin.config.category.destroy')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
 
         function addCountry() { // 添加国家/地区
             @can('admin.config.country.store')
-                const country_name = $('#add_country_name').val();
-                const country_code = $('#add_country_code').val();
+                const country_name = $("#add_country_name").val();
+                const country_code = $("#add_country_code").val();
 
-                if (country_code.trim() === '') {
-                    $('#country_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.country.code')]) }}');
-                    $('#add_country_code').focus();
+                if (country_code.trim() === "") {
+                    $("#country_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.country.code')]) }}');
+                    $("#add_country_code").focus();
                     return false;
                 }
 
-                if (country_name.trim() === '') {
-                    $('#country_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.country.name')]) }}');
-                    $('#add_country_name').focus();
+                if (country_name.trim() === "") {
+                    $("#country_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.country.name')]) }}');
+                    $("#add_country_name").focus();
                     return false;
                 }
 
                 $.ajax({
                     url: '{{ route('admin.config.country.store') }}',
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         code: country_code,
                         name: country_name
                     },
                     beforeSend: function() {
-                        $('#country_msg').show().html('{{ trans('admin.creating') }}');
+                        $("#country_msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#country_msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#country_msg").show().html(ret.message);
                             return false;
                         }
-                        $('#add_country_modal').modal('hide');
+                        $("#add_country_modal").modal("hide");
                         window.location.reload();
                     },
                     error: function() {
-                        $('#country_msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#country_msg").show().html('{{ trans('common.request_failed') }}');
                     },
                     complete: function() {
                         swal.fire({
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.reload());
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.country.store')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -796,36 +796,36 @@
         function updateCountry(code) { // 更新国家/地区
             @can('admin.config.country.update')
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.config.country.update', '') }}/' + code,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        name: $('#country_' + code).val()
+                        name: $("#country_" + code).val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             });
                         }
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.country.update')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -835,35 +835,35 @@
                 swal.fire({
                     title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.country')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'question',
+                    icon: "question",
                     allowEnterKey: false,
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.config.country.destroy', '') }}/' + code,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });
@@ -871,62 +871,62 @@
             @cannot('admin.config.country.destroy')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
 
         function addConfig() { // 添加配置
             @can('admin.config.ss.store')
-                const name = $('#name').val();
-                const type = $('#type').val();
+                const name = $("#name").val();
+                const type = $("#type").val();
 
-                if (name.trim() === '') {
-                    $('#msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
-                    $('#name').focus();
+                if (name.trim() === "") {
+                    $("#msg").show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
+                    $("#name").focus();
                     return false;
                 }
 
                 $.ajax({
                     url: '{{ route('admin.config.ss.store') }}',
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         name: name,
                         type: type
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     beforeSend: function() {
-                        $('#msg').show().html('{{ trans('admin.creating') }}');
+                        $("#msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#msg").show().html(ret.message);
                             return false;
                         }
 
-                        $('#add_config_modal').modal('hide');
+                        $("#add_config_modal").modal("hide");
                     },
                     error: function() {
-                        $('#msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#msg").show().html('{{ trans('common.request_failed') }}');
                     },
                     complete: function() {
                         swal.fire({
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => window.location.reload());
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.ss.store')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -934,35 +934,35 @@
         function setDefault(id) { // 置为默认
             @can('admin.config.ss.update')
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.config.ss.update', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}'
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.ss.update')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -972,35 +972,35 @@
                 swal.fire({
                     title: '{{ trans('admin.confirm.delete.0', ['attribute' => '']) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'question',
+                    icon: "question",
                     allowEnterKey: false,
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.config.ss.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });
@@ -1008,65 +1008,65 @@
             @cannot('admin.config.ss.destroy')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
 
         function addLabel() { // 添加标签
             @can('admin.config.label.store')
-                const name = $('#add_label').val();
-                const sort = $('#add_label_sort').val();
+                const name = $("#add_label").val();
+                const sort = $("#add_label_sort").val();
 
-                if (name.trim() === '') {
-                    $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
+                if (name.trim() === "") {
+                    $("#lable_msg").show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.name'))]) }}');
                     return false;
                 }
 
-                if (sort.trim() === '') {
-                    $('#lable_msg').show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
+                if (sort.trim() === "") {
+                    $("#lable_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.common.sort')]) }}');
                     return false;
                 }
 
                 $.ajax({
                     url: '{{ route('admin.config.label.store') }}',
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         name: name,
                         sort: sort
                     },
                     beforeSend: function() {
-                        $('#level_msg').show().html('{{ trans('admin.creating') }}');
+                        $("#level_msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#lable_msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#lable_msg").show().html(ret.message);
                             return false;
                         }
-                        $('#add_label_modal').modal('hide');
+                        $("#add_label_modal").modal("hide");
                         window.location.reload();
                     },
                     error: function() {
-                        $('#lable_msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#lable_msg").show().html('{{ trans('common.request_failed') }}');
                     },
                     complete: function() {
                         swal.fire({
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.reload());
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.label.store')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -1074,37 +1074,37 @@
         function updateLabel(id) { // 编辑标签
             @can('admin.config.label.update')
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.config.label.update', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        name: $('#label_name_' + id).val(),
-                        sort: $('#label_sort_' + id).val(),
+                        name: $("#label_name_" + id).val(),
+                        sort: $("#label_sort_" + id).val()
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
-                    },
+                    }
                 });
             @endcan
             @cannot('admin.config.label.update')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }
@@ -1115,42 +1115,42 @@
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node.label')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     $.ajax({
-                        method: 'DELETE',
+                        method: "DELETE",
                         url: '{{ route('admin.config.label.destroy', '') }}/' + id,
                         data: {
                             _token: '{{ csrf_token() }}'
                         },
-                        dataType: 'json',
+                        dataType: "json",
                         success: function(ret) {
-                            if (ret.status === 'success') {
+                            if (ret.status === "success") {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'success',
+                                    icon: "success",
                                     timer: 1000,
-                                    showConfirmButton: false,
+                                    showConfirmButton: false
                                 }).then(() => window.location.reload());
                             } else {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'error'
+                                    icon: "error"
                                 }).then(() => window.location.reload());
                             }
-                        },
+                        }
                     });
                 });
             @endcan
             @cannot('admin.config.label.destroy')
                 swal.fire({
                     title: '{{ trans('admin.setting.no_permission') }}',
-                    icon: 'error',
+                    icon: "error",
                     timer: 1500,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
             @endcannot
         }

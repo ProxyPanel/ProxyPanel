@@ -7,7 +7,8 @@
         <h1 class="page-title cyan-600"><i class="icon wb-star"></i>{{ trans('user.menu.promotion') }}</h1>
     </div>
     <div class="page-content  container-fluid">
-        <x-alert type="success" :message="trans('user.invite.promotion', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])" />
+        <x-alert type="success" :message="trans('user.invite.promotion.base', ['traffic' => $referral_traffic]) .
+            trans('user.invite.promotion.bonus.' . $referral_reward_mode, ['referral_percent' => $referral_percent])" />
         <div class="row">
             <div class="col-lg-5">
                 <!-- 推广链接 -->
@@ -167,27 +168,27 @@
             dotScale: 0.9,
             width: 144,
             height: 144,
-            backgroundImage: '/assets/images/logo_original.png',
+            backgroundImage: "/assets/images/logo_original.png",
             backgroundImageAlpha: 1,
-            PO_TL: '#007bff',
-            PI_TL: '#17a2b8',
-            PI_TR: '#fd7e14',
-            PO_TR: '#28a745',
-            PI_BL: '#ffc107',
-            PO_BL: '#17a2b8',
-            AO: '#fd7e14',
-            AI: '#20c997',
-            autoColor: true,
+            PO_TL: "#007bff",
+            PI_TL: "#17a2b8",
+            PI_TR: "#fd7e14",
+            PO_TR: "#28a745",
+            PI_BL: "#ffc107",
+            PO_BL: "#17a2b8",
+            AO: "#fd7e14",
+            AI: "#20c997",
+            autoColor: true
         };
 
         // Create QRCode Object
-        new QRCode(document.getElementById('qrcode'), options);
+        new QRCode(document.getElementById("qrcode"), options);
 
         function Download() {
-            const canvas = document.getElementsByTagName('canvas')[0];
+            const canvas = document.getElementsByTagName("canvas")[0];
             canvas.toBlob((blob) => {
-                let link = document.createElement('a');
-                link.download = 'qr.png';
+                let link = document.createElement("a");
+                link.download = "qr.png";
 
                 let reader = new FileReader();
                 reader.readAsDataURL(blob);
@@ -195,7 +196,7 @@
                     link.href = reader.result;
                     link.click();
                 };
-            }, 'image/png');
+            }, "image/png");
         }
 
         // 申请提现
@@ -203,36 +204,36 @@
             $.post('{{ route('referral.withdraw') }}', {
                 _token: '{{ csrf_token() }}'
             }, function(ret) {
-                if (ret.status === 'success') {
+                if (ret.status === "success") {
                     swal.fire({
                         title: ret.message,
-                        icon: 'success',
+                        icon: "success",
                         timer: 1000,
                         showConfirmButton: false
                     }).then(() => {
                         window.location.reload();
                     });
                 } else {
-                    swal.fire(ret.title, ret.message, 'error');
+                    swal.fire(ret.title, ret.message, "error");
                 }
             });
         }
 
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        const clipboard = new ClipboardJS(".mt-clipboard");
+        clipboard.on("success", function() {
             swal.fire({
                 title: '{{ trans('common.copy.success') }}',
-                icon: 'success',
+                icon: "success",
                 timer: 1300,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on("error", function() {
             swal.fire({
                 title: '{{ trans('common.copy.failed') }}',
-                icon: 'error',
+                icon: "error",
                 timer: 1500,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
         });
     </script>

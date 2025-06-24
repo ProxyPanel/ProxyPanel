@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ trans('admin.ticket.title') }}</h3>
+                <h3 class="panel-title">{{ trans('admin.menu.customer_service.ticket') }}</h3>
                 @can('admin.ticket.store')
                     <div class="panel-actions">
                         <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
@@ -132,86 +132,86 @@
         @can('admin.ticket.store')
             // 发起工单
             function createTicket() {
-                const uid = $('#uid').val();
-                const username = $('#username').val();
-                const title = $('#title').val();
-                const content = $('#content').val();
+                const uid = $("#uid").val();
+                const username = $("#username").val();
+                const title = $("#title").val();
+                const content = $("#content").val();
 
-                if (uid.trim() === '' && username.trim() === '') {
+                if (uid.trim() === "" && username.trim() === "") {
                     swal.fire({
                         title: '{{ trans('admin.ticket.send_to') }}',
-                        icon: 'warning'
+                        icon: "warning"
                     });
                     return false;
                 }
 
-                if (title.trim() === '') {
+                if (title.trim() === "") {
                     swal.fire({
                         title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.title')])) }}',
-                        icon: 'warning',
+                        icon: "warning"
                     });
                     return false;
                 }
 
-                if (content.trim() === '') {
+                if (content.trim() === "") {
                     swal.fire({
                         title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}',
-                        icon: 'warning',
+                        icon: "warning"
                     });
                     return false;
                 }
 
                 swal.fire({
                     title: '{{ trans('user.ticket.submit_tips') }}',
-                    icon: 'question',
+                    icon: "question",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'POST',
+                            method: "POST",
                             url: "{{ route('admin.ticket.store') }}",
                             data: {
                                 _token: '{{ csrf_token() }}',
                                 uid: uid,
                                 username: username,
                                 title: title,
-                                content: content,
+                                content: content
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                $('#add_ticket_modal').modal('hide');
-                                if (ret.status === 'success') {
+                                $("#add_ticket_modal").modal("hide");
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
                             },
                             error: function(data) {
-                                $('#add_ticket_modal').modal('hide');
-                                let str = '';
+                                $("#add_ticket_modal").modal("hide");
+                                let str = "";
                                 const errors = data.responseJSON;
                                 if ($.isEmptyObject(errors) === false) {
                                     $.each(errors.errors, function(index, value) {
-                                        str += '<li>' + value + '</li>';
+                                        str += "<li>" + value + "</li>";
                                     });
                                     swal.fire({
                                         title: '{{ trans('admin.hint') }}',
                                         html: str,
-                                        icon: 'error',
-                                        confirmButtonText: '{{ trans('common.confirm') }}',
+                                        icon: "error",
+                                        confirmButtonText: '{{ trans('common.confirm') }}'
                                     });
                                 }
-                            },
+                            }
                         });
                     }
                 });

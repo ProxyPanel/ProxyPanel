@@ -3,7 +3,7 @@
 <div class="form-group col-lg-6">
     <div class="row">
         <label class="col-md-3 col-form-label" for="{{ $code }}">
-            {{ trans("admin.system.$code") }}
+            {{ trans("model.config.$code") }}
         </label>
         <div class="col-md-6">
             <div class="input-group">

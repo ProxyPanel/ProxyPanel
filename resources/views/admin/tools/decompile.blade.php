@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{!! trans('admin.tools.decompile.title') !!}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.tools.decompile') }}</h2>
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -28,41 +28,41 @@
     <script>
         // 转换
         function Decompile() {
-            const content = $('#content').val();
+            const content = $("#content").val();
 
-            if (content.trim() === '') {
+            if (content.trim() === "") {
                 swal.fire({
                     title: '{{ trans('admin.tools.decompile.content_placeholder') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     timer: 1000,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
                 return;
             }
             swal.fire({
                 title: '{{ trans('admin.confirm.continues') }}',
-                icon: 'question',
+                icon: "question",
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
+                confirmButtonText: '{{ trans('common.confirm') }}'
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        method: 'POST',
+                        method: "POST",
                         url: '{{ route('admin.tools.decompile') }}',
-                        dataType: 'json',
+                        dataType: "json",
                         data: {
                             _token: '{{ csrf_token() }}',
                             content: content
                         },
                         success: function(ret) {
-                            if (ret.status === 'success') {
-                                $('#result').val(ret.data);
+                            if (ret.status === "success") {
+                                $("#result").val(ret.data);
                             } else {
-                                $('#result').val(ret.message);
+                                $("#result").val(ret.message);
                             }
-                        },
+                        }
                     });
                 }
             });

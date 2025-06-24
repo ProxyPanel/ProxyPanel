@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ trans('admin.logs.user_data_modify_title') }}</h3>
+                <h3 class="panel-title">{{ trans('admin.menu.log.traffic_flow') }}</h3>
             </div>
             <div class="panel-body">
                 <form class="form-row">

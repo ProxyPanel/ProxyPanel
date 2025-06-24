@@ -9,7 +9,8 @@
         </h1>
     </div>
     <div class="page-content container-fluid">
-        <x-alert type="info" :message="trans('user.invite.promotion', ['traffic' => $referral_traffic, 'referral_percent' => $referral_percent * 100])" />
+        <x-alert type="info" :message="trans('user.invite.promotion.base', ['traffic' => $referral_traffic]) .
+            trans('user.invite.promotion.bonus.' . $referral_reward_mode, ['referral_percent' => $referral_percent])" />
         <div class="row">
             <div class="col-xxl-3 col-lg-4">
                 <div class="card">
@@ -85,44 +86,44 @@
         // 生成邀请码
         function makeInvite() {
             $.ajax({
-                method: 'POST',
-                dataType: 'json',
+                method: "POST",
+                dataType: "json",
                 url: '{{ route('invite.store') }}',
                 data: {
                     _token: '{{ csrf_token() }}'
                 },
                 success: function(ret) {
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success'
+                            icon: "success"
                         }).then(() => window.location.reload());
                     } else {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error'
+                            icon: "error"
                         }).then(() => window.location.reload());
                     }
-                },
+                }
             });
             return false;
         }
 
-        const clipboard = new ClipboardJS('.mt-clipboard');
-        clipboard.on('success', function() {
+        const clipboard = new ClipboardJS(".mt-clipboard");
+        clipboard.on("success", function() {
             swal.fire({
                 title: '{{ trans('common.copy.success') }}',
-                icon: 'success',
+                icon: "success",
                 timer: 1300,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
         });
-        clipboard.on('error', function() {
+        clipboard.on("error", function() {
             swal.fire({
                 title: '{{ trans('common.copy.failed') }}',
-                icon: 'error',
+                icon: "error",
                 timer: 1500,
-                showConfirmButton: false,
+                showConfirmButton: false
             });
         });
     </script>

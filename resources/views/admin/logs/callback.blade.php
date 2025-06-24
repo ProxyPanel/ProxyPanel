@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    {!! trans('admin.logs.callback') !!}
+                    {{ trans('admin.menu.log.payment_callback') }}
                 </h2>
             </div>
             <div class="panel-body">
@@ -79,7 +79,7 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
     </script>
 @endpush

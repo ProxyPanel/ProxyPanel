@@ -6,7 +6,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title">{{ trans('admin.logs.subscribe') }}</h1>
+                <h1 class="panel-title">{{ trans('admin.menu.user.subscribe') }}</h1>
             </div>
             <div class="panel-body row">
                 <form class="form-row col-12">
@@ -24,12 +24,12 @@
                                 </span>
                             </div>
                             <input class="form-control" name="start" type="text" value="{{ Request::query('start') }}"
-                                   placeholder="{{ trans('admin.start_time') }}" autocomplete="off" />
+                                   placeholder="{{ trans('admin.filter.start_time') }}" autocomplete="off" />
                             <div class="input-group-prepend">
                                 <span class="input-group-text">{{ trans('common.to') }}</span>
                             </div>
                             <input class="form-control" name="end" type="text" value="{{ Request::query('end') }}"
-                                   placeholder="{{ trans('admin.end_time') }}" autocomplete="off" />
+                                   placeholder="{{ trans('admin.filter.end_time') }}" autocomplete="off" />
                         </div>
                     </div>
                     <div class="form-group col-xxl-1 col-lg-2 btn-group">
@@ -131,8 +131,8 @@
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        $('.input-daterange').datepicker({
-            format: 'yyyy-mm-dd',
+        $(".input-daterange").datepicker({
+            format: "yyyy-mm-dd"
         });
 
         @can('admin.subscribe.set')
@@ -141,10 +141,10 @@
                 $.post(url, {
                     _token: '{{ csrf_token() }}'
                 }, function(ret) {
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => {
@@ -153,7 +153,7 @@
                     } else {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error',
+                            icon: "error",
                             timer: 1000,
                             showConfirmButton: false
                         }).then(() => {

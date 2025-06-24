@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <h2 class="panel-title">
-                    {!! trans('admin.tools.convert.title') !!}
+                    {{ trans('admin.menu.tools.convert') }} <small>{{ trans('admin.tools.convert.sub_title') }}</small>
                 </h2>
             </div>
             <div class="panel-body">
@@ -75,47 +75,47 @@
     <script>
         // 转换
         function Convert() {
-            const content = $('#content').val();
+            const content = $("#content").val();
 
-            if (content.trim() === '') {
+            if (content.trim() === "") {
                 swal.fire({
                     title: '{{ trans('admin.tools.convert.content_placeholder') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     timer: 1000,
-                    showConfirmButton: false,
+                    showConfirmButton: false
                 });
                 return;
             }
             swal.fire({
                 title: '{{ trans('admin.confirm.continues') }}',
-                icon: 'question',
+                icon: "question",
                 allowEnterKey: false,
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
+                confirmButtonText: '{{ trans('common.confirm') }}'
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
-                        method: 'POST',
+                        method: "POST",
                         url: '{{ route('admin.tools.convert') }}',
-                        dataType: 'json',
+                        dataType: "json",
                         data: {
                             _token: '{{ csrf_token() }}',
-                            method: $('#method').val(),
-                            transfer_enable: $('#transfer_enable').val(),
-                            protocol: $('#protocol').val(),
-                            protocol_param: $('#protocol_param').val(),
-                            obfs: $('#obfs').val(),
-                            obfs_param: $('#obfs_param').val(),
-                            content: content,
+                            method: $("#method").val(),
+                            transfer_enable: $("#transfer_enable").val(),
+                            protocol: $("#protocol").val(),
+                            protocol_param: $("#protocol_param").val(),
+                            obfs: $("#obfs").val(),
+                            obfs_param: $("#obfs_param").val(),
+                            content: content
                         },
                         success: function(ret) {
-                            if (ret.status === 'success') {
-                                $('#result').val(ret.data);
+                            if (ret.status === "success") {
+                                $("#result").val(ret.data);
                             } else {
-                                $('#result').val(ret.message);
+                                $("#result").val(ret.message);
                             }
-                        },
+                        }
                     });
                 }
             });

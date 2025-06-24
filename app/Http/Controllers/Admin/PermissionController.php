@@ -62,7 +62,7 @@ class PermissionController extends Controller
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('admin.logs.rule.title')]).': '.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.permission.attribute')]).': '.$e->getMessage());
 
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }

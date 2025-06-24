@@ -31,7 +31,7 @@ return [
     'node_offline' => 'Node offline warning',
     'node_offline_content' => 'Abnormal nodes, may be offline:',
     'node_renewal' => 'Node Renewal Reminder',
-    'node_renewal_blade' => 'The following nodes are about to expire. Please renew in advance:',
+    'node_renewal_blade' => 'The following nodes are about to expire. Please renew in advance: :nodes',
     'node_renewal_content' => 'The following nodes are about to expire. Please renew before the expiration to avoid service interruption.',
     'payment_received' => 'Payment received, amount: :amount. View order details',
     'reply_ticket' => 'Ticket replied: :title',

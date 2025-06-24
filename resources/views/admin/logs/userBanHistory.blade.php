@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ trans('admin.logs.ban.title') }}</h3>
+                <h3 class="panel-title">{{ trans('admin.menu.log.service_ban') }}</h3>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -21,7 +21,7 @@
                         <tr>
                             <th> #</th>
                             <th> {{ trans('common.account') }}</th>
-                            <th> {{ trans('admin.logs.ban.time') }}</th>
+                            <th> {{ trans('admin.logs.ban.time') }} ({{ ucfirst(trans('validation.attributes.minute')) }})</th>
                             <th> {{ trans('admin.logs.ban.reason') }}</th>
                             <th> {{ trans('admin.logs.ban.ban_time') }}</th>
                             <th> {{ trans('admin.logs.ban.last_connect_at') }}</th>
@@ -45,7 +45,7 @@
                                         【{{ trans('common.deleted_item', ['attribute' => trans('common.account')]) }}】
                                     @endif
                                 </td>
-                                <td> {{ $log->time }} {{ trans('admin.minute') }}</td>
+                                <td> {{ $log->time }}</td>
                                 <td> {{ $log->description }} </td>
                                 <td> {{ $log->created_at }} </td>
                                 <td> {{ date('Y-m-d H:i:s', $log->user->t) }} </td>

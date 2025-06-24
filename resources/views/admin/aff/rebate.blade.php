@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.aff.rebate_title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.promotion.rebate_flow') }}</h2>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -91,7 +91,7 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
     </script>
 @endpush

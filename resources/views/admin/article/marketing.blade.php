@@ -122,7 +122,7 @@
                                         <span class="input-group-text"><i class="fa-solid fa-calendar-minus"></i></span>
                                     </div>
                                     <input class="form-control" name="expire_start" data-plugin="datepicker" type="text"
-                                           placeholder="{{ trans('admin.marketing.email.expired_date') }}" autocomplete="off" />
+                                           placeholder="{{ trans('admin.marketing.email.expire_start') }}" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-4 col-6">
@@ -131,7 +131,7 @@
                                         <span class="input-group-text"><i class="fa-solid fa-calendar-plus"></i></span>
                                     </div>
                                     <input class="form-control" name="expire_end" data-plugin="datepicker" type="text"
-                                           placeholder="{{ trans('admin.marketing.email.will_expire_date') }}" autocomplete="off" />
+                                           placeholder="{{ trans('admin.marketing.email.expire_end') }}" autocomplete="off" />
                                 </div>
                             </div>
                             <div class="form-group col-lg-3 col-md-4 col-6">
@@ -312,137 +312,138 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
         function resetSearchForm() {
-            window.location.href = window.location.href.split('?')[0]
+            window.location.href = window.location.href.split("?")[0];
         }
 
         function renderMarkdown(element) {
-            var markdownText = $(element).data('markdown');
+            var markdownText = $(element).data("markdown");
             var htmlContent = marked(markdownText);
             $(element).html(htmlContent);
-            $(element).data('rendered', true); // Mark as rendered
+            $(element).data("rendered", true); // Mark as rendered
 
         }
+
         $(document).ready(function() {
-            $('#status').selectpicker('val', @json(Request::query('status')))
+            $("#status").selectpicker("val", @json(Request::query('status')));
 
             // Render Markdown content when collapse is shown
-            $('.collapse').on('shown.bs.collapse', function() {
-                if ($(this).find('.markdown-content').length > 0 && $(this).find('.markdown-content').data('rendered') === false) {
-                    renderMarkdown($(this).find('.markdown-content'));
+            $(".collapse").on("shown.bs.collapse", function() {
+                if ($(this).find(".markdown-content").length > 0 && $(this).find(".markdown-content").data("rendered") === false) {
+                    renderMarkdown($(this).find(".markdown-content"));
                 }
             });
 
             @can('admin.marketing.email')
-                fetchStatistics()
+                fetchStatistics();
 
-                $('#content').summernote({
+                $("#content").summernote({
                     tabsize: 2,
                     height: 400,
                     dialogsInBody: true,
-                    lang: '{{ config('common.language')[app()->getLocale()][2] }}', // default: 'en-US'
-                })
+                    lang: '{{ config('common.language')[app()->getLocale()][2] }}' // default: 'en-US'
+                });
             @endcan
-        })
+        });
 
         @can('admin.marketing.email')
-            $('[name="expire_start"]').datepicker({
-                format: 'yyyy-mm-dd',
-                endDate: new Date(),
-            })
+            $("[name=\"expire_start\"]").datepicker({
+                format: "yyyy-mm-dd",
+                endDate: new Date()
+            });
 
-            $('[name="expire_end"]').datepicker({
-                format: 'yyyy-mm-dd',
-                startDate: new Date(),
-            })
+            $("[name=\"expire_end\"]").datepicker({
+                format: "yyyy-mm-dd",
+                startDate: new Date()
+            });
 
             function resetFilterForm() {
-                const form = $('#filter-form');
+                const form = $("#filter-form");
                 form[0].reset();
-                form.find('select').selectpicker('refresh');
-                form.find('[data-plugin="tokenfield"]').each(function() {
-                    $(this).tokenfield('setTokens', []);
+                form.find("select").selectpicker("refresh");
+                form.find("[data-plugin=\"tokenfield\"]").each(function() {
+                    $(this).tokenfield("setTokens", []);
                 });
-                fetchStatistics()
+                fetchStatistics();
             }
 
             function fetchStatistics() {
-                const filterFormData = $('#filter-form').serializeArray()
-                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== '')
+                const filterFormData = $("#filter-form").serializeArray();
+                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== "");
                 $.ajax({
                     url: '{{ route('admin.marketing.create', ['type' => 'email']) }}',
-                    method: 'GET',
+                    method: "GET",
                     data: $.param(filteredFilterFormData),
                     beforeSend: function() {
-                        $('#statistics').html('{{ trans('admin.marketing.email.loading_statistics') }}')
+                        $("#statistics").html('{{ trans('admin.marketing.email.loading_statistics') }}');
                     },
                     success: function(data) {
-                        $('#statistics').html(data.count)
+                        $("#statistics").html(data.count);
                     },
                     error: function() {
-                        $('#statistics').html('<p>{{ trans('common.request_failed') }}</p>')
-                    },
-                })
+                        $("#statistics").html('<p>{{ trans('common.request_failed') }}</p>');
+                    }
+                });
             }
 
             function sendEmail() {
-                const filterFormData = $('#filter-form').serializeArray()
-                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== '')
+                const filterFormData = $("#filter-form").serializeArray();
+                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== "");
 
-                const emailFormData = $('#send-email-form').serializeArray()
+                const emailFormData = $("#send-email-form").serializeArray();
                 emailFormData.push({
-                    name: '_token',
-                    value: '{{ csrf_token() }}',
-                })
+                    name: "_token",
+                    value: '{{ csrf_token() }}'
+                });
 
                 $.ajax({
                     url: '{{ route('admin.marketing.create', ['type' => 'email']) }}?' + $.param(filteredFilterFormData),
-                    method: 'POST',
+                    method: "POST",
                     data: $.param(emailFormData),
                     beforeSend: function() {
-                        $('#msg').show().removeClass('alert-danger alert-success').addClass('alert-info').html('{{ trans('admin.creating') }}')
+                        $("#msg").show().removeClass("alert-danger alert-success").addClass("alert-info").html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        $('#msg').show().html(ret.message)
-                        if (ret.status === 'success') {
-                            $('#msg').removeClass('alert-info alert-danger').addClass('alert-success').show().html(ret.message)
+                        $("#msg").show().html(ret.message);
+                        if (ret.status === "success") {
+                            $("#msg").removeClass("alert-info alert-danger").addClass("alert-success").show().html(ret.message);
                         } else {
-                            $('#msg').removeClass('alert-info alert-success').addClass('alert-danger').show().html(ret.message)
+                            $("#msg").removeClass("alert-info alert-success").addClass("alert-danger").show().html(ret.message);
                         }
                     },
                     error: function() {
-                        $('#msg').removeClass('alert-info alert-success').addClass('alert-danger').show().html('{{ trans('common.request_failed') }}')
+                        $("#msg").removeClass("alert-info alert-success").addClass("alert-danger").show().html('{{ trans('common.request_failed') }}');
                     },
-                    complete: function() {},
-                })
+                    complete: function() {}
+                });
             }
         @endcan
 
         @can('admin.marketing.push')
             // 发送通道消息
             function sendPush() {
-                const formData = $('#send_push_modal').serializeArray()
+                const formData = $("#send_push_modal").serializeArray();
                 formData.push({
-                    name: '_token',
-                    value: '{{ csrf_token() }}',
-                })
+                    name: "_token",
+                    value: '{{ csrf_token() }}'
+                });
                 $.ajax({
                     url: '{{ route('admin.marketing.create', ['type' => 'push']) }}',
-                    method: 'POST',
+                    method: "POST",
                     data: $.param(formData),
                     beforeSend: function() {
-                        $('#msg').show().html('{{ trans('admin.creating') }}');
+                        $("#msg").show().html('{{ trans('admin.creating') }}');
                     },
                     success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#msg').show().html(ret.message);
+                        if (ret.status === "fail") {
+                            $("#msg").show().html(ret.message);
                             return false;
                         }
-                        $('#send_modal').modal('hide');
+                        $("#send_modal").modal("hide");
                     },
                     error: function() {
-                        $('#msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#msg").show().html('{{ trans('common.request_failed') }}');
                     },
-                    complete: function() {},
+                    complete: function() {}
                 });
             }
         @endcan

@@ -6,7 +6,7 @@
 @endsection
 @section('content')
     <div class="page-header">
-        <h1 class="page-title">{{ __('user.knowledge.title') }}</h1>
+        <h1 class="page-title">{{ __('user.menu.help') }}</h1>
     </div>
     <div class="page-content container-fluid">
         @if ($knowledge->isNotEmpty())
@@ -95,7 +95,7 @@
                                             @endif
                                             @foreach ($articles as $article)
                                                 <div class="panel">
-                                                    <div class="panel-heading"id="article_Q{{ $article->id }}">
+                                                    <div class="panel-heading" id="article_Q{{ $article->id }}">
                                                         <a class="panel-title collapsed" data-toggle="collapse" href="#article_A{{ $article->id }}"
                                                            role="tab" aria-controls="article_A{{ $article->id }}" aria-expanded="false"
                                                            style="display: flex;" onclick="getArticle('{{ $article->id }}')">
@@ -162,7 +162,7 @@
         function exchangeSubscribe() {
             swal.fire({
                 title: '{{ trans('common.warning') }}',
-                text: '{{ trans('user.subscribe.exchange_warning') }}',
+                html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',

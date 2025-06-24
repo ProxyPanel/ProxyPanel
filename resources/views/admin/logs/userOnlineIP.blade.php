@@ -4,7 +4,7 @@
         <div class="panel">
             <div class="panel-heading">
                 <h3 class="panel-title">
-                    {!! trans('admin.logs.user_ip.title') !!}
+                    {{ trans('admin.menu.log.online_logs') }} <small>{{ trans('admin.logs.user_ip.sub_title') }}</small>
                 </h3>
             </div>
             <div class="panel-body">

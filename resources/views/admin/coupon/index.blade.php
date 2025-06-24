@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h1 class="panel-title">{{ trans('admin.coupon.title') }}</h1>
+                <h1 class="panel-title">{{ trans('admin.menu.shop.coupon') }}</h1>
                 @canany(['admin.coupon.export', 'admin.coupon.create'])
                     <div class="panel-actions btn-group">
                         @can('admin.coupon.export')
@@ -122,8 +122,8 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#type').selectpicker('val', @json(Request::query('type')));
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#type").selectpicker("val", @json(Request::query('type')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
 
         @can('admin.coupon.export')
@@ -132,10 +132,10 @@
                 swal.fire({
                     title: '{{ trans('admin.coupon.export_title') }}',
                     text: '{{ trans('admin.confirm.export') }}？',
-                    icon: 'question',
+                    icon: "question",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         window.location.href = '{{ route('admin.coupon.export') }}';
@@ -150,35 +150,35 @@
                 swal.fire({
                     title: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.coupon.attribute')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'question',
+                    icon: "question",
                     allowEnterKey: false,
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.coupon.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

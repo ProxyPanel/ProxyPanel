@@ -58,7 +58,7 @@ class TicketReplied extends Notification implements ShouldQueue
 
     private function markdownMessage(TicketReply $reply): string
     {
-        return '📮'.trans('admin.system.ticket_replied_notification')." #{$reply->ticket->id}\n———————————————\n".trans('validation.attributes.title').": \n`{$reply->ticket->title}`\n".trans('validation.attributes.content').": \n`$reply->content`";
+        return '📮'.trans('model.config.ticket_replied_notification')." #{$reply->ticket->id}\n———————————————\n".trans('validation.attributes.title').": \n`{$reply->ticket->title}`\n".trans('validation.attributes.content').": \n`$reply->content`";
     }
 
     public function toBark($notifiable): array

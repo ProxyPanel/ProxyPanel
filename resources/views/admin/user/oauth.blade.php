@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.oauth.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.user.oauth') }}</h2>
             </div>
             <div class="panel-body">
                 <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">

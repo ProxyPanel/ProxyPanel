@@ -61,7 +61,7 @@ class AutoClearLogs extends Command
 
             UserDataFlowLog::where('log_time', '<=', strtotime(sysConfig('tasks_clean.traffic_logs')))->delete(); // 清除用户流量日志
         } catch (Exception $e) {
-            Log::emergency(trans('common.error_item', ['attribute' => trans('admin.system.is_clear_log')]).': '.$e->getMessage());
+            Log::emergency(trans('common.error_item', ['attribute' => trans('model.config.is_clear_log')]).': '.$e->getMessage());
         }
     }
 }

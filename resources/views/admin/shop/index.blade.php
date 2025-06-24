@@ -4,7 +4,7 @@
         <div class="panel panel-bordered">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    <i class="icon wb-shopping-cart" aria-hidden="true"></i>{{ trans('admin.goods.title') }}
+                    <i class="icon wb-shopping-cart" aria-hidden="true"></i>{{ trans('admin.menu.shop.goods') }}
                 </h1>
                 @can('admin.goods.create')
                     <div class="panel-actions">
@@ -133,8 +133,8 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#type').selectpicker('val', @json(Request::query('type')));
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#type").selectpicker("val", @json(Request::query('type')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
 
         @can('admin.goods.destroy')
@@ -144,34 +144,34 @@
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.goods.attribute')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.cancel') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
                             url: url,
-                            method: 'DELETE',
+                            method: "DELETE",
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

@@ -2,7 +2,7 @@
 
 <div class="form-group col-lg-6">
     <div class="row">
-        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("admin.system.$code") }}</label>
+        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("model.config.$code") }}</label>
         <div class="col-md-9">
             <select id="{{ $code }}" data-plugin="selectpicker" data-style="btn-outline btn-primary"
                     onchange="updateFromOther('{{ $multiple ? 'multiSelect' : 'select' }}','{{ $code }}')"

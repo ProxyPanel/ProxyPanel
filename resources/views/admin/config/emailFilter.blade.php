@@ -3,7 +3,8 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{!! trans('admin.setting.email.title') !!}
+                <h2 class="panel-title">
+                    {{ trans('admin.menu.setting.email_suffix') }} <small>{{ trans('admin.setting.email.sub_title') }}</small>
                 </h2>
                 @can('admin.config.filter.store')
                     <div class="panel-actions">
@@ -102,34 +103,34 @@
         @can('admin.config.filter.store')
             // 添加邮箱后缀
             function addEmailSuffix() {
-                const words = $('#words').val();
-                if (words.trim() === '') {
+                const words = $("#words").val();
+                if (words.trim() === "") {
                     swal.fire({
                         title: '{{ trans('validation.required', ['attribute' => trans('admin.setting.email.tail')]) }}',
-                        icon: 'warning',
+                        icon: "warning",
                         timer: 1000,
-                        showConfirmButton: false,
+                        showConfirmButton: false
                     });
-                    $('#words').focus();
+                    $("#words").focus();
                     return false;
                 }
 
                 $.post('{{ route('admin.config.filter.store') }}', {
                     _token: '{{ csrf_token() }}',
-                    type: $('input:radio[name=\'type\']:checked').val(),
-                    words: words,
+                    type: $("input:radio[name='type']:checked").val(),
+                    words: words
                 }, function(ret) {
-                    if (ret.status === 'success') {
+                    if (ret.status === "success") {
                         swal.fire({
                             title: ret.message,
-                            icon: 'success',
+                            icon: "success",
                             timer: 1000,
-                            showConfirmButton: false,
+                            showConfirmButton: false
                         }).then(() => window.location.reload());
                     } else {
                         swal.fire({
                             title: ret.message,
-                            icon: 'error'
+                            icon: "error"
                         }).then(() => window.location.reload());
                     }
                 });
@@ -143,34 +144,34 @@
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('admin.setting.email.tail')]) }}' + name +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.cancel') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.config.filter.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

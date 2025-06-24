@@ -88,7 +88,7 @@ class RuleController extends Controller
         try {
             $ret = RuleLog::query()->delete();
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('admin.logs.rule.title')]).': '.$e->getMessage());
+            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.rule.logs')]).': '.$e->getMessage());
 
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }

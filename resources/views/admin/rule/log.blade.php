@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.logs.rule.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.rule.trigger') }}</h2>
                 @can('admin.rule.clear')
                     <div class="panel-actions">
                         <button class="btn btn-outline-primary" onclick="clearLog()">
@@ -90,8 +90,8 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#node_id').selectpicker('val', @json(Request::query('node_id')));
-            $('#rule_id').selectpicker('val', @json(Request::query('rule_id')));
+            $("#node_id").selectpicker("val", @json(Request::query('node_id')));
+            $("#rule_id").selectpicker("val", @json(Request::query('rule_id')));
         });
 
         @can('admin.rule.clear')
@@ -100,26 +100,26 @@
                 swal.fire({
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.logs.rule.clear_confirm') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.post("{{ route('admin.rule.clear') }}", {
                             _token: '{{ csrf_token() }}'
                         }, function(ret) {
-                            if (ret.status === 'success') {
+                            if (ret.status === "success") {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'success',
+                                    icon: "success",
                                     timer: 1000,
-                                    showConfirmButton: false,
+                                    showConfirmButton: false
                                 }).then(() => window.location.reload());
                             } else {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'error'
+                                    icon: "error"
                                 });
                             }
                         });

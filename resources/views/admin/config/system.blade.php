@@ -4,13 +4,25 @@
     <link href="/assets/global/vendor/switchery/switchery.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/toastr/toastr.min.css" rel="stylesheet">
+    <style>
+        .hr-text::after {
+            content: attr(data-content);
+            position: absolute;
+            top: -0.8em;
+            left: 45%;
+            transform: translateX(-50%);
+            background: #fff;
+            padding: 0 15px;
+            font-size: 16px;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
                 <h1 class="panel-title">
-                    <i class="icon fas fa-cog" aria-hidden="true"></i>{{ trans('admin.setting.system.title') }}
+                    <i class="icon fas fa-cog" aria-hidden="true"></i>{{ trans('admin.menu.setting.system') }}
                 </h1>
             </div>
             <div class="panel-body">
@@ -23,7 +35,6 @@
                             'security' => ['icon' => 'shield-alt', 'text' => trans('admin.setting.system.security')],
                             'payment' => ['icon' => 'credit-card', 'text' => trans('admin.setting.system.payment')],
                             'notify' => ['icon' => 'bell', 'text' => trans('admin.setting.system.notify')],
-                            'checkIn' => ['icon' => 'calendar-check', 'text' => trans('admin.setting.system.check_in')],
                             'automation' => ['icon' => 'robot', 'text' => trans('admin.setting.system.auto_job')],
                         ];
                     @endphp
@@ -72,7 +83,7 @@
                             <x-system.input type="email" code="webmaster_email" :value="$configs['webmaster_email']" />
                             <div class="form-group col-lg-6">
                                 <div class="form-row">
-                                    <label class="col-md-3 col-form-label" for="website_security_code">{{ trans('admin.system.website_security_code') }}</label>
+                                    <label class="col-md-3 col-form-label" for="website_security_code">{{ trans('model.config.website_security_code') }}</label>
                                     <div class="col-md-6">
                                         <div class="input-group">
                                             <input class="form-control" id="website_security_code" type="text"
@@ -88,10 +99,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <x-system.switch code="maintenance_mode" :check="$configs['maintenance_mode']" :url="route('admin.login')" />
-                            <x-system.input type="datetime-local" code="maintenance_time" :value="$configs['maintenance_time']" />
-                            <x-system.textarea code="maintenance_content" :value="$configs['maintenance_content']" row="3" />
-                            <x-system.input type="url" code="redirect_url" :value="$configs['redirect_url']" />
                             <x-system.input type="url" code="website_home_logo" :value="$configs['website_home_logo']" />
                             <x-system.input type="url" code="website_logo" :value="$configs['website_logo']" />
                             <form class="upload-form col-lg-12 row" role="form" action="{{ route('admin.system.extend') }}" method="post"
@@ -111,6 +118,7 @@
                                 trans('admin.system.username.mobile') => 'numeric',
                                 trans('admin.system.username.any') => 'string',
                             ]" />
+                            <x-system.select code="is_email_filtering" :list="[trans('common.status.closed') => '', trans('admin.setting.email.black') => 1, trans('admin.setting.email.white') => 2]" />
                             <x-system.select code="is_invite_register" :list="[trans('common.status.closed') => '', trans('admin.optional') => 1, trans('admin.require') => 2]" />
                             <x-system.select code="is_activate_account" :list="[
                                 trans('common.status.closed') => '',
@@ -126,14 +134,29 @@
                             ('#min_port').val()" hmax="65535" />
                             <x-system.input-limit code="default_days" :value="$configs['default_days']" unit="{{ trans_choice('common.days.attribute', 1) }}" />
                             <x-system.input-limit code="default_traffic" :value="$configs['default_traffic']" unit="MB" />
-                            <x-system.input-limit code="invite_num" :value="$configs['invite_num']" />
                             <x-system.input-limit code="reset_password_times" :value="$configs['reset_password_times']" />
                             <x-system.input-limit code="active_times" :value="$configs['active_times']" />
                             <x-system.input-limit code="register_ip_limit" :value="$configs['register_ip_limit']" />
+                            <x-system.input-limit code="invite_num" :value="$configs['invite_num']" />
                             <x-system.input-limit code="user_invite_days" :value="$configs['user_invite_days']" min="1"
                                                   unit="{{ trans_choice('common.days.attribute', 1) }}" />
                             <x-system.input-limit code="admin_invite_days" :value="$configs['admin_invite_days']" min="1"
                                                   unit="{{ trans_choice('common.days.attribute', 1) }}" />
+                            <hr class="col-12 hr-text" data-content="{{ trans('admin.aff.referral') }}" />
+                            <x-system.switch code="referral_status" :check="$configs['referral_status']" />
+                            <x-system.input-limit code="referral_traffic" :value="$configs['referral_traffic']" unit="MB" />
+                            <x-system.select code="referral_reward_type" :list="[
+                                trans('common.status.closed') => '',
+                                trans('admin.system.referral.once') => 1,
+                                trans('admin.system.referral.loop') => 2,
+                            ]" />
+                            <x-system.input-limit code="referral_percent" :value="$configs['referral_percent'] * 100" max="100" unit="%" />
+                            <x-system.input-limit code="referral_money" :value="$configs['referral_money']"
+                                                  unit="{{ array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')] }}" />
+                            <hr class="col-12 hr-text" data-content="{{ trans('user.home.attendance.attribute') }}" />
+                            <x-system.input-limit code="checkin_interval" :value="$configs['checkin_interval']" unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
+                            <x-system.input-limit code="checkin_reward" hcode="checkin_reward_max" :value="$configs['checkin_reward']" :hvalue="$configs['checkin_reward_max']" :max="$configs['checkin_reward_max']"
+                                                  :hmin="$configs['checkin_reward']" unit="MB" />
                         </x-system.tab-pane>
                         <!-- 节点设置 -->
                         <x-system.tab-pane id="node">
@@ -145,6 +168,10 @@
                             <x-system.input code="v2ray_license" :value="$configs['v2ray_license']" />
                             <x-system.input code="trojan_license" :value="$configs['trojan_license']" />
                             <x-system.input code="v2ray_tls_provider" :value="$configs['v2ray_tls_provider']" />
+                            <hr class="col-lg-12 hr-text" data-content="{{ trans('model.node.ddns') }}">
+                            <x-system.select code="ddns_mode" :list="$ddns_labels" />
+                            <x-system.input code="ddns_key" :value="$configs['ddns_key']" />
+                            <x-system.input code="ddns_secret" :value="$configs['ddns_secret']" />
                         </x-system.tab-pane>
                         <!-- 安全&验证 -->
                         <x-system.tab-pane id="security">
@@ -155,8 +182,8 @@
                                 trans('admin.system.forbid.oversea') => 'ban_oversea',
                             ]" />
                             <x-system.switch code="is_forbid_robot" :check="$configs['is_forbid_robot']" />
-                            <x-system.select code="is_email_filtering" :list="[trans('common.status.closed') => '', trans('admin.setting.email.black') => 1, trans('admin.setting.email.white') => 2]" />
-                            <hr class="col-lg-12">
+                            <x-system.input type="url" code="redirect_url" :value="$configs['redirect_url']" />
+                            <hr class="col-lg-12 hr-text" data-content="{{ trans('auth.captcha.attribute') }}">
                             <x-system.select code="is_captcha" :list="[
                                 trans('common.status.closed') => '',
                                 trans('admin.system.captcha.standard') => 1,
@@ -167,31 +194,21 @@
                             ]" />
                             <x-system.input code="captcha_key" :value="$configs['captcha_key']" />
                             <x-system.input code="captcha_secret" :value="$configs['captcha_secret']" />
-                            <hr class="col-lg-12">
-                            <x-system.select code="ddns_mode" :list="$ddns_labels" />
-                            <x-system.input code="ddns_key" :value="$configs['ddns_key']" />
-                            <x-system.input code="ddns_secret" :value="$configs['ddns_secret']" />
+                            <hr class="col-lg-12 hr-text" data-content="{{ trans('auth.maintenance') }}">
+                            <x-system.switch code="maintenance_mode" :check="$configs['maintenance_mode']" :url="route('admin.login')" />
+                            <x-system.input type="datetime-local" code="maintenance_time" :value="$configs['maintenance_time']" />
+                            <x-system.textarea code="maintenance_content" :value="$configs['maintenance_content']" row="3" />
                         </x-system.tab-pane>
                         <!-- 支付系统 -->
                         <x-system.tab-pane id="payment">
                             <div class="tab-content pb-100 w-p100">
                                 <x-system.tab-pane id="paymentSetting" :active="true">
-                                    <x-system.select code="is_AliPay" :list="array_merge([trans('common.status.closed') => ''], $paymentLists['ali'])" />
-                                    <x-system.select code="is_QQPay" :list="array_merge([trans('common.status.closed') => ''], $paymentLists['qq'])" />
-                                    <x-system.select code="is_WeChatPay" :list="array_merge([trans('common.status.closed') => ''], $paymentLists['wechat'])" />
+                                    <x-system.select code="is_AliPay" :list="[trans('common.status.closed') => '', ...$paymentLists['ali']]" />
+                                    <x-system.select code="is_QQPay" :list="[trans('common.status.closed') => '', ...$paymentLists['qq']]" />
+                                    <x-system.select code="is_WeChatPay" :list="[trans('common.status.closed') => '', ...$paymentLists['wechat']]" />
                                     <x-system.select code="is_otherPay" multiple="1" :list="$paymentLists['other']" />
                                     <x-system.input code="subject_name" :value="$configs['subject_name']" />
                                     <x-system.input type="url" code="payment_callback_url" :value="$configs['payment_callback_url']" :holder="trans('admin.system.placeholder.default_url', ['url' => $configs['website_url']])" />
-                                    <x-system.switch code="referral_status" :check="$configs['referral_status']" />
-                                    <x-system.select code="referral_reward_type" :list="[
-                                        trans('common.status.closed') => '',
-                                        trans('admin.system.referral.once') => 1,
-                                        trans('admin.system.referral.loop') => 2,
-                                    ]" />
-                                    <x-system.input-limit code="referral_traffic" :value="$configs['referral_traffic']" unit="MB" />
-                                    <x-system.input-limit code="referral_percent" :value="$configs['referral_percent'] * 100" max="100" unit="%" />
-                                    <x-system.input-limit code="referral_money" :value="$configs['referral_money']"
-                                                          unit="{{ array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')] }}" />
                                 </x-system.tab-pane>
                                 @foreach ($paymentForms as $code => $forms)
                                     <x-system.tab-pane :id="$code">
@@ -262,17 +279,18 @@
                                 <x-system.input code="{{ $code }}" :value="$configs[$code]" holder="{{ trans('admin.system.placeholder.' . $code) }}"
                                                 :url="$config['url'] ?? null" :test="$config['test'] ?? null" />
                             @endforeach
-                            <hr class="col-10" />
+                            <hr class="col-12 hr-text" data-content="{{ trans('notification.attribute') }}" />
+                            <x-system.input-limit code="expire_days" :value="$configs['expire_days']" unit="{{ trans_choice('common.days.attribute', 1) }}" />
                             <x-system.select code="account_expire_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
                                 trans('admin.system.notification.channel.site') => 'database',
                             ]" />
-                            <x-system.input-limit code="expire_days" :value="$configs['expire_days']" unit="{{ trans_choice('common.days.attribute', 1) }}" />
+                            <x-system.input-limit code="traffic_warning_percent" :value="$configs['traffic_warning_percent']" unit="%" />
                             <x-system.select code="data_exhaust_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
                                 trans('admin.system.notification.channel.site') => 'database',
                             ]" />
-                            <x-system.input-limit code="traffic_warning_percent" :value="$configs['traffic_warning_percent']" unit="%" />
+                            <x-system.input-limit code="offline_check_times" :value="$configs['offline_check_times']" unit="{{ trans('admin.times') }}" />
                             <x-system.select code="node_offline_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
                                 trans('admin.system.notification.channel.bark') => 'bark',
@@ -281,6 +299,17 @@
                                 trans('admin.system.notification.channel.iyuu') => 'iYuu',
                                 trans('admin.system.notification.channel.telegram') => 'telegram',
                                 trans('admin.system.notification.channel.dingtalk') => 'dingTalk',
+                                trans('admin.system.notification.channel.wechat') => 'weChat',
+                                trans('admin.system.notification.channel.tg_chat') => 'tgChat',
+                                trans('admin.system.notification.channel.pushplus') => 'pushPlus',
+                            ]" />
+                            <x-system.input-limit code="detection_check_times" :value="$configs['detection_check_times']" max="12" unit="{{ trans('admin.times') }}" />
+                            <x-system.select code="node_blocked_notification" multiple="1" :list="[
+                                trans('admin.system.notification.channel.email') => 'mail',
+                                trans('admin.system.notification.channel.serverchan') => 'serverChan',
+                                trans('admin.system.notification.channel.pushdeer') => 'pushDear',
+                                trans('admin.system.notification.channel.iyuu') => 'iYuu',
+                                trans('admin.system.notification.channel.telegram') => 'telegram',
                                 trans('admin.system.notification.channel.wechat') => 'weChat',
                                 trans('admin.system.notification.channel.tg_chat') => 'tgChat',
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
@@ -298,18 +327,6 @@
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                                 trans('admin.system.notification.channel.site') => 'database',
                             ]" />
-                            <x-system.input-limit code="offline_check_times" :value="$configs['offline_check_times']" unit="{{ trans('admin.times') }}" />
-                            <x-system.select code="node_blocked_notification" multiple="1" :list="[
-                                trans('admin.system.notification.channel.email') => 'mail',
-                                trans('admin.system.notification.channel.serverchan') => 'serverChan',
-                                trans('admin.system.notification.channel.pushdeer') => 'pushDear',
-                                trans('admin.system.notification.channel.iyuu') => 'iYuu',
-                                trans('admin.system.notification.channel.telegram') => 'telegram',
-                                trans('admin.system.notification.channel.wechat') => 'weChat',
-                                trans('admin.system.notification.channel.tg_chat') => 'tgChat',
-                                trans('admin.system.notification.channel.pushplus') => 'pushPlus',
-                            ]" />
-                            <x-system.input-limit code="detection_check_times" :value="$configs['detection_check_times']" max="12" unit="{{ trans('admin.times') }}" />
                             <x-system.select code="payment_received_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
                                 trans('admin.system.notification.channel.site') => 'database',
@@ -320,18 +337,6 @@
                                 trans('admin.system.notification.channel.telegram') => 'telegram',
                                 trans('admin.system.notification.channel.dingtalk') => 'dingTalk',
                                 trans('admin.system.notification.channel.wechat') => 'weChat',
-                            ]" />
-                            <x-system.select code="ticket_closed_notification" multiple="1" :list="[
-                                trans('admin.system.notification.channel.email') => 'mail',
-                                trans('admin.system.notification.channel.bark') => 'bark',
-                                trans('admin.system.notification.channel.serverchan') => 'serverChan',
-                                trans('admin.system.notification.channel.pushdeer') => 'pushDear',
-                                trans('admin.system.notification.channel.iyuu') => 'iYuu',
-                                trans('admin.system.notification.channel.telegram') => 'telegram',
-                                trans('admin.system.notification.channel.dingtalk') => 'dingTalk',
-                                trans('admin.system.notification.channel.wechat') => 'weChat',
-                                trans('admin.system.notification.channel.tg_chat') => 'tgChat',
-                                trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                             ]" />
                             <x-system.select code="ticket_created_notification" multiple="1" :list="[
                                 trans('admin.system.notification.channel.email') => 'mail',
@@ -357,12 +362,18 @@
                                 trans('admin.system.notification.channel.tg_chat') => 'tgChat',
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                             ]" />
-                        </x-system.tab-pane>
-                        <!-- 签到系统 -->
-                        <x-system.tab-pane id="checkIn">
-                            <x-system.input-limit code="checkin_interval" :value="$configs['checkin_interval']" />
-                            <x-system.input-limit code="checkin_reward" hcode="checkin_reward_max" :value="$configs['checkin_reward']" :hvalue="$configs['checkin_reward_max']" :max="$configs['checkin_reward_max']"
-                                                  :hmin="$configs['checkin_reward']" unit="MB" />
+                            <x-system.select code="ticket_closed_notification" multiple="1" :list="[
+                                trans('admin.system.notification.channel.email') => 'mail',
+                                trans('admin.system.notification.channel.bark') => 'bark',
+                                trans('admin.system.notification.channel.serverchan') => 'serverChan',
+                                trans('admin.system.notification.channel.pushdeer') => 'pushDear',
+                                trans('admin.system.notification.channel.iyuu') => 'iYuu',
+                                trans('admin.system.notification.channel.telegram') => 'telegram',
+                                trans('admin.system.notification.channel.dingtalk') => 'dingTalk',
+                                trans('admin.system.notification.channel.wechat') => 'weChat',
+                                trans('admin.system.notification.channel.tg_chat') => 'tgChat',
+                                trans('admin.system.notification.channel.pushplus') => 'pushPlus',
+                            ]" />
                         </x-system.tab-pane>
                         <!-- 自动化任务 -->
                         <x-system.tab-pane id="automation">
@@ -383,7 +394,7 @@
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                             ]" />
                             <x-system.input-limit code="traffic_abuse_limit" :value="$configs['traffic_abuse_limit']" min="1" unit="GB" />
-                            <x-system.input-limit code="ban_duration" :value="$configs['ban_duration']" unit="{{ trans('admin.minute') }}" />
+                            <x-system.input-limit code="ban_duration" :value="$configs['ban_duration']" unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
                             <x-system.input-limit code="auto_release_port" min="0" :value="$configs['auto_release_port']"
                                                   unit="{{ ucfirst(trans('validation.attributes.day')) }}" />
                             <x-system.switch code="is_ban_status" :check="$configs['is_ban_status']" />
@@ -398,11 +409,9 @@
                                 trans('admin.system.notification.channel.tg_chat') => 'tgChat',
                                 trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                             ]" />
-
                             <x-system.input-limit code="recently_heartbeat" :value="$configs['recently_heartbeat']" :min="1"
                                                   unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
-                            <x-system.task-group type="clean" :items="$configs['tasks_clean']" :units="['minutes', 'hours', 'days', 'months', 'years']" />
-
+                            <x-system.task-group type="clean" :items="$configs['tasks_clean']" :units="['minutes', 'hours', 'days', 'months', 'years']" feature="tasks_clean" />
                             <x-system.task-group type="close" :items="$configs['tasks_close']" :units="['minutes', 'hours']" />
                         </x-system.tab-pane>
                     </div>

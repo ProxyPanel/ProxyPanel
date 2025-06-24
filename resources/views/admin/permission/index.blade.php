@@ -3,7 +3,7 @@
     <div class="page-content container">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.permission.title') }}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.rbac.permission') }}</h2>
                 @can('admin.permission.create')
                     <div class="panel-actions">
                         <a class="btn btn-outline-primary" href="{{ route('admin.permission.create') }}">
@@ -85,34 +85,34 @@
                     title: '{{ trans('common.warning') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.permission.attribute')]) }}' +
                         name + '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'warning',
+                    icon: "warning",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: url,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h2 class="panel-title">{!! trans('admin.node.auth.title') !!}</h2>
+                <h2 class="panel-title">{{ trans('admin.menu.node.auth') }}</h2>
                 @can('admin.node.auth.store')
                     <div class="panel-actions">
                         <button class="btn btn-primary" onclick="addAuth()">
@@ -220,26 +220,26 @@
                 swal.fire({
                     title: '{{ trans('admin.hint') }}',
                     text: '{{ trans('admin.node.auth.generating_all') }}',
-                    icon: 'info',
+                    icon: "info",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.post('{{ route('admin.node.auth.store') }}', {
                             _token: '{{ csrf_token() }}'
                         }, function(ret) {
-                            if (ret.status === 'success') {
+                            if (ret.status === "success") {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'success',
+                                    icon: "success",
                                     timer: 1000,
-                                    showConfirmButton: false,
+                                    showConfirmButton: false
                                 }).then(() => window.location.reload());
                             } else {
                                 swal.fire({
                                     title: ret.message,
-                                    icon: 'error'
+                                    icon: "error"
                                 }).then(() => window.location.reload());
                             }
                         });
@@ -255,34 +255,34 @@
                     title: '{{ trans('admin.hint') }}',
                     text: '{{ trans('admin.confirm.delete.0', ['attribute' => trans('model.node_auth.attribute')]) }}' + id +
                         '{{ trans('admin.confirm.delete.1') }}',
-                    icon: 'info',
+                    icon: "info",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'DELETE',
+                            method: "DELETE",
                             url: '{{ route('admin.node.auth.destroy', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });
@@ -295,34 +295,34 @@
                 swal.fire({
                     title: '{{ trans('admin.hint') }}',
                     text: '{{ trans('admin.confirm.continues') }}',
-                    icon: 'info',
+                    icon: "info",
                     showCancelButton: true,
                     cancelButtonText: '{{ trans('common.close') }}',
-                    confirmButtonText: '{{ trans('common.confirm') }}',
+                    confirmButtonText: '{{ trans('common.confirm') }}'
                 }).then((result) => {
                     if (result.value) {
                         $.ajax({
-                            method: 'PUT',
+                            method: "PUT",
                             url: '{{ route('admin.node.auth.update', '') }}/' + id,
                             data: {
                                 _token: '{{ csrf_token() }}'
                             },
-                            dataType: 'json',
+                            dataType: "json",
                             success: function(ret) {
-                                if (ret.status === 'success') {
+                                if (ret.status === "success") {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'success',
+                                        icon: "success",
                                         timer: 1000,
-                                        showConfirmButton: false,
+                                        showConfirmButton: false
                                     }).then(() => window.location.reload());
                                 } else {
                                     swal.fire({
                                         title: ret.message,
-                                        icon: 'error'
+                                        icon: "error"
                                     }).then(() => window.location.reload());
                                 }
-                            },
+                            }
                         });
                     }
                 });

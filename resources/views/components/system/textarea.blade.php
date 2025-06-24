@@ -2,7 +2,7 @@
 
 <div class="form-group col-lg-6">
     <div class="row">
-        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("admin.system.$code") }}</label>
+        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("model.config.$code") }}</label>
         <div class="col-md-8">
             <div class="input-group">
                 <textarea class="form-control" id="{{ $code }}" rows={{ $row }}>{{ $value }}</textarea>
@@ -13,6 +13,6 @@
             @if (trans("admin.system.hint.$code") !== "admin.system.hint.$code")
                 <span class="text-help"> {!! trans("admin.system.hint.$code") !!} </span>
             @endisset
+        </div>
     </div>
-</div>
 </div>

@@ -2,7 +2,7 @@
 
 <div class="form-group col-lg-6">
     <div class="row">
-        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("admin.system.$code") }}</label>
+        <label class="col-md-3 col-form-label" for="{{ $code }}">{{ trans("model.config.$code") }}</label>
         <div class="col-md-9">
             <input id="{{ $code }}" data-plugin="switchery" type="checkbox" @if ($check) checked @endif
                    @if ($feature) data-feature-toggle="{{ $feature }}" @endif

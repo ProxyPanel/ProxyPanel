@@ -3,7 +3,7 @@
     <div class="page-content container-fluid">
         <div class="panel">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ trans('admin.aff.title') }}</h3>
+                <h3 class="panel-title">{{ trans('admin.menu.promotion.withdraw') }}</h3>
             </div>
             <div class="panel-body">
                 <form class="form-row">
@@ -124,50 +124,50 @@
 @push('javascript')
     <script>
         $(document).ready(function() {
-            $('#status').selectpicker('val', @json(Request::query('status')));
+            $("#status").selectpicker("val", @json(Request::query('status')));
         });
 
         @can('admin.aff.setStatus')
             // 更改状态
             function setStatus(id, status) {
                 $.ajax({
-                    method: 'PUT',
+                    method: "PUT",
                     url: '{{ route('admin.aff.setStatus', '') }}/' + id,
                     data: {
                         _token: '{{ csrf_token() }}',
-                        status: status,
+                        status: status
                     },
-                    dataType: 'json',
+                    dataType: "json",
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
-                                showConfirmButton: false,
+                                showConfirmButton: false
                             }).then(() => window.location.reload());
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
                     },
                     error: function(data) {
-                        let str = '';
+                        let str = "";
                         const errors = data.responseJSON;
                         if ($.isEmptyObject(errors) === false) {
                             $.each(errors.errors, function(index, value) {
-                                str += '<li>' + value + '</li>';
+                                str += "<li>" + value + "</li>";
                             });
                             swal.fire({
                                 title: '{{ trans('admin.hint') }}',
                                 html: str,
-                                icon: 'error',
-                                confirmButtonText: '{{ trans('common.confirm') }}',
+                                icon: "error",
+                                confirmButtonText: '{{ trans('common.confirm') }}'
                             });
                         }
-                    },
+                    }
                 });
             }
         @endcan
@@ -177,20 +177,20 @@
             function handleUserCredit(uid, amount, aid, status) {
                 $.ajax({
                     url: '{{ route('admin.user.updateCredit', '') }}/' + uid,
-                    method: 'POST',
+                    method: "POST",
                     data: {
                         _token: '{{ csrf_token() }}',
                         amount: amount,
-                        description: '{{ trans('admin.aff.referral') }}',
+                        description: '{{ trans('admin.aff.referral') }}'
                     },
                     beforeSend: function() {
-                        $('#makePayment_' + aid).removeClass('wb-payment').addClass('wb-loop icon-spin');
+                        $("#makePayment_" + aid).removeClass("wb-payment").addClass("wb-loop icon-spin");
                     },
                     success: function(ret) {
-                        if (ret.status === 'success') {
+                        if (ret.status === "success") {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'success',
+                                icon: "success",
                                 timer: 1000,
                                 showConfirmButton: false
                             }).then(() => {
@@ -199,14 +199,14 @@
                         } else {
                             swal.fire({
                                 title: ret.message,
-                                icon: 'error'
+                                icon: "error"
                             }).then(() => window.location.reload());
                         }
                     },
                     error: function() {
-                        $('#msg').show().html('{{ trans('common.request_failed') }}');
+                        $("#msg").show().html('{{ trans('common.request_failed') }}');
                     },
-                    complete: function() {},
+                    complete: function() {}
                 });
             }
         @endcan

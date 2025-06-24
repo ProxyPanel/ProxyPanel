@@ -63,7 +63,7 @@ class SystemController extends Controller
             'configs' => $config,
             'payments' => PaymentManager::getAvailable(),
             'paymentForms' => $paymentForms,
-            'paymentTabs' => array_keys($paymentForms),
+            'paymentTabs' => [...array_keys($paymentForms), 'manual'],
             'paymentLists' => [
                 'ali' => PaymentManager::getPaymentsByMethod('ali'),
                 'wechat' => PaymentManager::getPaymentsByMethod('wechat'),

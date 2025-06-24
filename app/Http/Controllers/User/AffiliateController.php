@@ -9,19 +9,21 @@ use App\Models\ReferralLog;
 use App\Utils\Helpers;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class AffiliateController extends Controller
 {
     // 推广返利
-    public function index(): View
+    public function index(): Response|View
     {
         if (ReferralLog::uid()->doesntExist() && Order::uid()->whereStatus(2)->doesntExist()) {
-            return view('auth.error', ['message' => trans('user.purchase.required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
+            return Response::view('auth.error', ['message' => trans('user.purchase.required').'<a class="btn btn-sm btn-danger" href="/">'.trans('common.back').'</a>'], 402);
         }
 
         return view('user.referral', [
+            'referral_reward_mode' => sysConfig('referral_reward_type', 0),
             'referral_traffic' => formatBytes(sysConfig('referral_traffic'), 'MiB'),
-            'referral_percent' => sysConfig('referral_percent'),
+            'referral_percent' => sysConfig('referral_percent') * 100,
             'referral_money' => Helpers::getPriceTag(sysConfig('referral_money')),
             'totalAmount' => ReferralLog::uid()->sum('commission') / 100,
             'canAmount' => Helpers::getPriceTag(ReferralLog::uid()->whereStatus(0)->sum('commission') / 100),

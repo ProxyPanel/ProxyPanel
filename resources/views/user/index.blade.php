@@ -322,7 +322,7 @@
         function exchangeSubscribe() { // 更换订阅地址
             swal.fire({
                 title: '{{ trans('common.warning') }}',
-                text: '{{ trans('user.subscribe.exchange_warning') }}',
+                html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',

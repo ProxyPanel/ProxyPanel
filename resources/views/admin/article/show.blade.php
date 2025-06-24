@@ -61,7 +61,7 @@
         function exchangeSubscribe() {
             swal.fire({
                 title: '{{ trans('common.warning') }}',
-                text: '{{ trans('user.subscribe.exchange_warning') }}',
+                html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
                 showCancelButton: true,
                 cancelButtonText: '{{ trans('common.close') }}',

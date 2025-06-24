@@ -52,7 +52,7 @@ class TaskMonthly extends Command
 
             Order::whereStatus(-1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.unpaid_orders'))))->delete(); // 清理用户未支付订单
         } catch (Exception $e) {
-            Log::emergency(trans('common.error_item', ['attribute' => trans('admin.system.is_clear_log')]).': '.$e->getMessage());
+            Log::emergency(trans('common.error_item', ['attribute' => trans('model.config.is_clear_log')]).': '.$e->getMessage());
         }
     }
 }

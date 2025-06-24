@@ -23,9 +23,9 @@ return [
     'new_ticket' => '您收到了一个新工单 [标题: :title]，请点击查看详细内容。',
     'next_check_time' => '下次节点阻断检测时间：:time',
     'node' => [
-        'download' => '下载流量',
-        'total' => '总流量',
-        'upload' => '上传流量',
+        'download' => '下行',
+        'total' => '总计',
+        'upload' => '上行',
     ],
     'node_block' => '节点阻断警告通知',
     'node_offline' => '节点离线警告',
