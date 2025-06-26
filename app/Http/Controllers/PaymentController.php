@@ -9,6 +9,7 @@ use App\Models\Payment;
 use App\Services\CouponService;
 use App\Utils\Helpers;
 use App\Utils\Library\Templates\Gateway;
+use App\Utils\Payments\PaymentManager;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\View\View;
@@ -32,11 +33,11 @@ class PaymentController extends Controller
     public static function getClient(): Gateway
     {
         $method = self::$method;
-        $paymentClasses = self::getPaymentClasses();
+        $paymentClasses = PaymentManager::discover();
 
         if (isset($paymentClasses[$method])) {
             try {
-                return Container::getInstance()->make($paymentClasses[$method]);
+                return Container::getInstance()->make($paymentClasses[$method]['class']);
             } catch (Exception $e) {
                 Log::emergency('Failed to instantiate payment class: '.$e->getMessage());
                 abort(500);
@@ -45,23 +46,6 @@ class PaymentController extends Controller
 
         Log::emergency(trans('user.payment.order_creation.unknown_payment').': '.$method);
         abort(404);
-    }
-
-    private static function getPaymentClasses(): array
-    {
-        return cache()->rememberForever('payment_classes', function () {
-            foreach (glob(app_path('Utils/Payments/*.php')) as $file) {
-                $className = 'App\\Utils\\Payments\\'.basename($file, '.php');
-                if (class_exists($className)) {
-                    $methodDetails = $className::$methodDetails ?? null;
-                    if ($methodDetails) {
-                        $classes[$methodDetails['key']] = $className;
-                    }
-                }
-            }
-
-            return $classes ?? [];
-        });
     }
 
     public static function getStatus(Request $request): JsonResponse
@@ -134,7 +118,7 @@ class PaymentController extends Controller
                 $amount = $amount > 0 ? round($amount, 2) : 0; // 四舍五入保留2位小数，避免无法正常创建订单
             }
 
-            //非余额付款下，检查在线支付是否开启
+            // 非余额付款下，检查在线支付是否开启
             if (self::$method !== 'credit') {
                 // 判断是否开启在线支付
                 if (! sysConfig('is_onlinePay') && ! sysConfig('wechat_qrcode') && ! sysConfig('alipay_qrcode')) {
