@@ -217,7 +217,7 @@
                                 <thead class="thead-default">
                                     <tr>
                                         <th> {{ trans('model.country.icon') }}</th>
-                                        <th> {{ trans('model.country.code') }}</th>
+                                        <th> {{ ucfirst(trans('validation.attributes.national_code')) }}</th>
                                         <th> {{ trans('model.country.name') }}</th>
                                         <th> {{ trans('common.action') }}</th>
                                     </tr>
@@ -399,7 +399,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_country_code" name="country_code" type="text"
-                                   placeholder="{{ trans('model.country.code') }}">
+                                   placeholder="{{ ucfirst(trans('validation.attributes.national_code')) }}">
                         </div>
                         <div class="col-md-6 form-group">
                             <input class="form-control" id="add_country_name" name="country_name" type="text"
@@ -741,7 +741,7 @@
                 const country_code = $("#add_country_code").val();
 
                 if (country_code.trim() === "") {
-                    $("#country_msg").show().html('{{ trans('validation.required', ['attribute' => trans('model.country.code')]) }}');
+                    $("#country_msg").show().html('{{ trans('validation.required', ['attribute' => ucfirst(trans('validation.attributes.national_code'))]) }}');
                     $("#add_country_code").focus();
                     return false;
                 }

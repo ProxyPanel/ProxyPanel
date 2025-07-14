@@ -1,0 +1,220 @@
+/* ========== 响应式主卡片与全局 ========== */
+body {
+    background: linear-gradient(135deg, #22293b 0%, #16191d 100%) center top !important;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.panel {
+    background: #181d25;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+    border-radius: 1.5rem;
+    padding: 1.5rem 2rem 1.5rem 2rem;
+}
+
+@media (max-width: 600px) {
+    .panel {
+        max-width: 99vw;
+        padding: 0.8rem 1.6rem;
+    }
+}
+
+.avatar-big {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0.3rem 1rem 0.3rem 0;
+    background: #293651;
+}
+
+@media (max-width: 600px) {
+    .avatar-big {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+/* ======== 平台nav与客户端btn ======== */
+.nav-platforms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    justify-content: center;
+}
+
+.nav-platforms .nav-link {
+    flex: 1 1 auto;
+    min-width: 80px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+}
+
+.nav-platforms .nav-link.active {
+    color: #fff !important;
+    background: linear-gradient(90deg, #19acf4 50%, #13e5ce 150%);
+    font-weight: 700;
+    border-radius: 9px;
+}
+
+.nav-platforms .nav-link {
+    color: #2ec2e6 !important;
+    border-radius: 8px;
+    margin-right: 4px;
+    font-weight: 500;
+    background: #191e2e;
+    font-size: 1rem;
+    min-width: 64px;
+    text-align: center;
+}
+
+.info-label {
+    color: #fff;
+}
+
+.info-value {
+    color: #fff;
+}
+
+#apps-tab {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+#apps-tab .btn-app.selected,
+#apps-tab .btn-app.btn-primary {
+    background: linear-gradient(83deg, #24a4fa 20%, #23e1b7 150%) !important;
+    color: #fff !important;
+    border: none;
+    font-weight: 600;
+}
+
+#apps-tab .btn-app {
+    margin-right: 8px;
+    margin-bottom: 6px;
+    border: 1.1px solid #1ed6eb40;
+    background: #1a283b;
+    color: #65e8fc;
+    min-width: 96px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* ======= stepper主线和icon完美对齐 ======= */
+.stepper {
+    margin-top: 2em;
+}
+
+@media (max-width: 600px) {
+    .stepper {
+        margin-top: 1em;
+    }
+}
+
+.stepper {
+    position: relative;
+    --dot-width: 36px;
+    --line-width: 4px;
+}
+
+.stepper::before {
+    content: "";
+    position: absolute;
+    top: calc(var(--dot-width) / 2);
+    bottom: calc(var(--dot-width) / 2);
+    left: calc((var(--dot-width) - var(--line-width)) / 2);
+    width: var(--line-width);
+    background: #29dbe236;
+    border-radius: 3px;
+    z-index: 0;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    position: relative;
+    margin-bottom: 2.5rem;
+}
+
+.step-dot {
+    width: var(--dot-width);
+    height: var(--dot-width);
+    min-width: var(--dot-width);
+    min-height: var(--dot-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    position: relative;
+    z-index: 2;
+    margin-right: 1.2rem;
+    margin-left: 0;
+    box-shadow: 0 0 8px rgba(34, 202, 236, 0.8);
+    background: linear-gradient(145deg, #30b1ef 0%, #50edaf 100%);
+    color: #fff;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.step-title {
+    font-weight: 600;
+    margin-bottom: 0.2em;
+    color: #e0f2ff;
+    font-size: 1.15em;
+}
+
+.step-desc {
+    color: #b1c9de;
+    font-size: 0.98em;
+    margin-bottom: 0.33em;
+}
+
+.btn-group .btn, .btn-round-sm,
+.addsub-btn {
+    border-radius: 9px !important;
+}
+
+.dropdown-menu {
+    border-radius: 12px;
+}
+
+.app-download {
+    display: flex;
+    justify-content: center;
+}
+
+.addsub-btn {
+    background: linear-gradient(83deg, #24a4fa 20%, #23e1b7 150%) !important;
+    color: #fff !important;
+    border: none;
+    font-weight: 600;
+    font-size: 1.12em;
+    margin-top: 0.5em;
+    padding: 0.57em 1.55em !important;
+}
+
+.addsub-btn:not(.selected):hover,
+#apps-tab .btn-app:not(.selected):hover,
+.nav-platforms .nav-link:not(.active):hover {
+    transform: translateY(-2px);
+    transition: all 0.2s ease-in-out;
+}
+
+#apps-tab .btn-app:not(.selected):hover,
+.nav-platforms .nav-link:not(.active):hover {
+    filter: brightness(1.2);
+}
+
+@media (max-width: 400px) {
+    .step-dot {
+        width: 29px;
+        height: 29px;
+    }
+}

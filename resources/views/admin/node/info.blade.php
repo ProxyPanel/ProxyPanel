@@ -41,7 +41,7 @@
                                         <div class="col-md-9">
                                             <input id="is_ddns" name="is_ddns" data-plugin="switchery" type="checkbox" onchange="switchSetting('is_ddns')">
                                         </div>
-                                        <div class="text-help offset-md-3">
+                                        <div class="text-help col-md-9 offset-md-3 px-0">
                                             {!! trans('admin.node.info.ddns_hint') !!}
                                         </div>
                                     </div>
@@ -53,30 +53,30 @@
                                         <label class="col-md-3 col-form-label" for="server"> {{ trans('model.node.domain') }} </label>
                                         <input class="form-control col-md-4" id="server" name="server" type="text"
                                                placeholder="{{ trans('admin.node.info.domain_placeholder') }}">
-                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.domain_hint') }}</span>
+                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.domain_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="ip"> {{ trans('model.node.ipv4') }} </label>
                                         <input class="form-control col-md-4" id="ip" name="ip" type="text"
                                                placeholder="{{ trans('admin.node.info.ipv4_placeholder') }}" required>
-                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.ipv4_hint') }}</span>
+                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.ipv4_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="ipv6"> {{ trans('model.node.ipv6') }} </label>
                                         <input class="form-control col-md-4" id="ipv6" name="ipv6" type="text"
                                                placeholder="{{ trans('admin.node.info.ipv6_placeholder') }}">
-                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.ipv6_hint') }}</span>
+                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.ipv6_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="push_port"> {{ trans('model.node.push_port') }} </label>
                                         <input class="form-control col-md-4" id="push_port" name="push_port" type="number" value="1080">
-                                        <span class="text-help offset-md-3">{{ trans('admin.node.info.push_port_hint') }}</span>
+                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.push_port_hint') }}</span>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="traffic_rate"> {{ trans('model.node.data_rate') }} </label>
                                         <input class="form-control col-md-4" id="traffic_rate" name="traffic_rate" type="number" value="1.0" step="0.01"
                                                required>
-                                        <div class="text-help offset-md-3">{{ trans('admin.node.info.data_rate_hint') }}</div>
+                                        <div class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.data_rate_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="level">{{ trans('model.common.level') }}</label>
@@ -86,7 +86,7 @@
                                                 <option value="{{ $level->level }}">{{ $level->name }}</option>
                                             @endforeach
                                         </select>
-                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.level_hint') }}</div>
+                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.level_hint') }}</div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="rule_group_id">{{ trans('model.rule_group.attribute') }}</label>
@@ -113,7 +113,7 @@
                                         <label class="col-md-3 col-form-label" for="sort">{{ trans('model.common.sort') }}</label>
                                         <input class="form-control col-md-4" id="sort" name="sort" type="text" value="1" required />
                                         <span class="col-md-5"></span>
-                                        <div class="text-help offset-md-3"> {{ trans('admin.sort_asc') }}</div>
+                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.sort_asc') }}</div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="labels">{{ trans('model.node.label') }}</label>
@@ -206,7 +206,7 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.display.hint') }}</div>
+                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.display.hint') }}</div>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-md-3 col-form-label" for="detection_type">{{ trans('model.node.detection') }}</label>
@@ -236,7 +236,7 @@
                                                 </div>
                                             </li>
                                         </ul>
-                                        <div class="text-help offset-md-3"> {{ trans('admin.node.info.detection.hint') }}</div>
+                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.detection.hint') }}</div>
                                     </div>
                                     <!-- 中转 设置部分 -->
                                     <div class="form-group row">
@@ -344,16 +344,15 @@
                                                     <input id="single" name="single" data-plugin="switchery" type="checkbox"
                                                            onchange="switchSetting('single')">
                                                 </div>
-                                                <div class="text-help offset-md-3">
+                                                <div class="text-help col-md-9 offset-md-3 px-0">
                                                     {!! trans('admin.node.info.additional_ports_hint') !!}
                                                 </div>
                                             </div>
                                             <div class="single-setting">
                                                 <div class="form-group row">
                                                     <label class="col-md-3 col-form-label" for="single_port">{{ trans('model.node.service_port') }}</label>
-                                                    <input class="form-control col-md-4" id="single_port" name="port" type="number" value="443"
-                                                           hidden />
-                                                    <span class="text-help offset-md-3"> {!! trans('admin.node.info.single_hint') !!}</span>
+                                                    <input class="form-control col-md-4" id="single_port" name="port" type="number" value="443" />
+                                                    <span class="text-help col-md-9 offset-md-3 px-0"> {!! trans('admin.node.info.single_hint') !!}</span>
                                                 </div>
                                                 <div class="form-group row ssr-setting">
                                                     <label class="col-md-3 col-form-label" for="passwd">{{ trans('model.node.single_passwd') }}</label>
@@ -370,7 +369,7 @@
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="v2_port">{{ trans('model.node.service_port') }}</label>
-                                                <input class="form-control col-md-4" id="v2_port" name="port" type="number" value="10053" hidden />
+                                                <input class="form-control col-md-4" id="v2_port" name="port" type="number" value="10053" />
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="v2_method">{{ trans('model.node.method') }}</label>
@@ -382,7 +381,7 @@
                                                     <option value="aes-128-gcm">aes-128-gcm</option>
                                                     <option value="chacha20-poly1305">chacha20-poly1305</option>
                                                 </select>
-                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_method_hint') }}</div>
+                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_method_hint') }}</div>
                                             </div>
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="v2_net">{{ trans('model.node.v2_net') }}</label>
@@ -395,7 +394,7 @@
                                                     <option value="domainsocket">DomainSocket</option>
                                                     <option value="quic">QUIC</option>
                                                 </select>
-                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_net_hint') }}</div>
+                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_net_hint') }}</div>
                                             </div>
                                             <div class="form-group row v2_type">
                                                 <label class="col-md-3 col-form-label" for="v2_type">{{ trans('model.node.v2_cover') }}</label>
@@ -417,7 +416,7 @@
                                                 <div class="col-md-4 pl-0">
                                                     <input class="form-control" id="v2_host" name="v2_host" type="text">
                                                 </div>
-                                                <div class="text-help offset-md-3">
+                                                <div class="text-help col-md-9 offset-md-3 px-0">
                                                     {{ trans('admin.node.info.v2_host_hint') }}
                                                 </div>
                                             </div>
@@ -439,7 +438,7 @@
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="tls_provider">{{ trans('model.node.v2_tls_provider') }}</label>
                                                 <input class="form-control col-md-9" id="tls_provider" name="tls_provider" type="text" />
-                                                <div class="text-help offset-md-3"> {{ trans('admin.node.info.v2_tls_provider_hint') }}
+                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_tls_provider_hint') }}
                                                     <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan"
                                                        target="_blank">VNET-V2Ray</a>、
                                                     <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
@@ -451,14 +450,14 @@
                                         <div class="trojan-setting">
                                             <div class="form-group row">
                                                 <label class="col-md-3 col-form-label" for="trojan_port">{{ trans('model.node.service_port') }}</label>
-                                                <input class="form-control col-md-4" id="trojan_port" name="port" type="number" value="443" hidden />
+                                                <input class="form-control col-md-4" id="trojan_port" name="port" type="number" value="443" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="relay-config">
                                         <div class="form-group row">
                                             <label class="col-md-3 col-form-label" for="relay_port">{{ trans('model.node.relay_port') }}</label>
-                                            <input class="form-control col-md-4" id="relay_port" name="port" type="number" value="443" hidden />
+                                            <input class="form-control col-md-4" id="relay_port" name="port" type="number" value="443" />
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -549,11 +548,11 @@
             initializeUI(); // 初始化
             bindEvents(); // 事件绑定
 
-            @isset($node)
+            @if (isset($node))
                 setupNodeData(@json($node));
             @else
                 setupDefaultValues();
-            @endisset
+            @endif
 
         });
 
@@ -610,6 +609,7 @@
         }
 
         function setupDefaultValues() {
+            $(".relay-config").hide();
             switchSetting("single");
             switchSetting("is_ddns");
             $("input[name='type'][value='0']").click();
@@ -736,7 +736,6 @@
                 3: [".trojan-setting", "#trojan_port"],
                 4: [".ss-setting", ".ssr-setting"]
             };
-
             $(".ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting").hide();
             Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(",")).hide());
             (settingsMap[type] || []).forEach(selector => $(selector).show());

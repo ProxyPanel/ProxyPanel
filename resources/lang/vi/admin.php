@@ -501,7 +501,7 @@ return [
             'active_times' => 'Số lần kích hoạt tài khoản qua email trong 24 giờ',
             'admin_invite_days' => 'Thời hạn hiệu lực mã mời của quản trị viên',
             'aff_salt' => 'Muối mã hóa cho URL giới thiệu',
-            'auto_release_port' => 'Tự động giải phóng cổng sau khi bị cấm hoặc hết hạn <code>'.config('tasks.release_port').'</code> ngày',
+            'auto_release_port' => 'Tự động giải phóng cổng sau khi bị cấm hoặc hết hạn <code>'.sysConfig('tasks.release_port').'</code> ngày',
             'bark_key' => 'Khóa thiết bị cho thông báo đẩy iOS',
             'captcha_key' => 'Xem <a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">hướng dẫn cài đặt</a>',
             'data_anomaly_notification' => 'Thông báo cho quản trị viên khi lưu lượng hàng giờ vượt quá ngưỡng',

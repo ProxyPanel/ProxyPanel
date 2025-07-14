@@ -9,9 +9,12 @@ use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\User\SubscribeController;
 
 if (config('app.key') && config('settings')) {
-    Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))->get('s/{code}', [SubscribeController::class, 'getSubscribeByCode'])->name('sub'); // 节点订阅地址
+    Route::domain(sysConfig('subscribe_domain') ?: sysConfig('website_url'))->group(function () {
+        Route::get('s/{code}', [SubscribeController::class, 'getSubscribeByCode'])->name('sub'); // 节点订阅
+        Route::get('subscribe/{code}', [SubscribeController::class, 'index'])->name('subscribe.index'); // 节点订阅页面
+    });
 
-    Route::domain(sysConfig('payment_callback_url') ?: sysConfig('website_url'))->match(['get', 'post'], 'callback/notify', [PaymentController::class, 'notify'])->name('payment.notify'); //支付回调
+    Route::domain(sysConfig('payment_callback_url') ?: sysConfig('website_url'))->match(['get', 'post'], 'callback/notify', [PaymentController::class, 'notify'])->name('payment.notify'); // 支付回调
 }
 
 Route::post('api/telegram/webhook', [TelegramController::class, 'webhook'])->middleware('telegram'); // Telegram fallback

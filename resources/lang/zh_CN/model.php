@@ -16,7 +16,6 @@ return [
         'created_at' => '发布时间',
         'language' => '语言',
         'logo' => '封面',
-        'updated_at' => '更新时间',
     ],
     'common' => [
         'description' => '描述',
@@ -26,7 +25,6 @@ return [
         'type' => '类型',
     ],
     'country' => [
-        'code' => '国家代码',
         'icon' => '国旗',
         'name' => '国家名称',
     ],
@@ -172,6 +170,7 @@ return [
         'type' => '模式',
     ],
     'subscribe' => [
+        'attribute' => '订阅',
         'ban_desc' => '封禁原因',
         'ban_time' => '封禁时间',
         'code' => '订阅码',

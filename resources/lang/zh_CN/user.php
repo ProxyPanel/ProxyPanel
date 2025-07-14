@@ -232,6 +232,13 @@ return [
         'tips' => '警告：此链接仅限个人使用，传播将导致封号',
         'trojan_only' => '仅Trojan订阅',
         'v2ray_only' => '仅V2Ray订阅',
+        'page' => [
+            'get_link' => '获取链接',
+            'connect' => '连接&使用',
+            'error' => [
+                'no_app' => '暂无可用应用',
+            ],
+        ],
     ],
     'telegram' => [
         'bind_exists' => 'Telegram账号已绑定',

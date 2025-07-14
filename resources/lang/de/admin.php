@@ -501,7 +501,7 @@ return [
             'active_times' => 'Über E-Mail in 24 Stunden',
             'admin_invite_days' => 'Admin-Einladungslaufzeit',
             'aff_salt' => 'Verschlüsselungssalt für Empfehlungs-URL',
-            'auto_release_port' => 'Automatische Freigabe des Ports nach <code>'.config('tasks.release_port').'</code> Tagen Sperre/Ablauf',
+            'auto_release_port' => 'Automatische Freigabe des Ports nach <code>'.sysConfig('tasks.release_port').'</code> Tagen Sperre/Ablauf',
             'bark_key' => 'Geräteschlüssel für iOS-Push',
             'captcha_key' => 'Anleitung <a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">hier</a>',
             'data_anomaly_notification' => 'Benachrichtige Admin, wenn stündliche Daten den Schwellenwert überschreiten',

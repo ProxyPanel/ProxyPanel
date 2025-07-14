@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 
 const MiB = 1048576;
@@ -94,5 +95,16 @@ if (! function_exists('string_urlsafe')) {
         }
 
         return $clean;
+    }
+}
+
+if (! function_exists('localized_date')) {
+    function localized_date($date): string
+    {
+        $locale = app()->getLocale();
+        $carbon = Carbon::parse($date);
+        $format = config("common.language.$locale.3") ?? 'Y-m-d';
+
+        return $carbon->format($format);
     }
 }

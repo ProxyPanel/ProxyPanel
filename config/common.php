@@ -62,13 +62,14 @@ return [
     ],
 
     'language' => [
-        'de' => ['Deutsch', 'de', 'de-DE'],
-        'en' => ['English', 'us', 'en-US'],
-        'fa' => ['فارسی', 'ir', 'fa-IR'],
-        'ja' => ['日本語', 'jp', 'ja-JP'],
-        'ko' => ['한국어', 'kr', 'ko-KR'],
-        'vi' => ['Tiếng Việt', 'vn', 'vi-VN'],
-        'zh_CN' => ['简体中文', 'cn', 'zh-CN'],
+        'de' => ['Deutsch', 'de', 'de-DE', 'd.m.Y'],
+        'en' => ['English', 'us', 'en-US', 'F d, Y'],
+        'fa' => ['فارسی', 'ir', 'fa-IR', 'Y/m/d'],
+        'ja' => ['日本語', 'jp', 'ja-JP', 'Y年m月d日'],
+        'ko' => ['한국어', 'kr', 'ko-KR', 'Y년 m월 d일'],
+        'vi' => ['Tiếng Việt', 'vn', 'vi-VN', 'd/m/Y'],
+        'zh_CN' => ['简体中文', 'cn', 'zh-CN', 'Y年m月d日'],
+        'ru' => ['Русский', 'ru', 'ru', 'd.m.Y'],
     ],
 
     'currency' => [
@@ -85,7 +86,7 @@ return [
     ],
 
     'contact' => [
-        'telegram' => env('CONTACT_TELEGRAM', 'https://t.me/+nW8AwsPPUsliYzg1'),
+        'telegram' => env('CONTACT_TELEGRAM', null),
         'qq' => env('CONTACT_QQ', null),
     ],
 ];

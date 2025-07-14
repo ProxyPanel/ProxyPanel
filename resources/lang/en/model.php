@@ -16,7 +16,6 @@ return [
         'created_at' => 'Published Date',
         'language' => 'Language',
         'logo' => 'Cover',
-        'updated_at' => 'Last Updated',
     ],
     'common' => [
         'description' => 'Description',
@@ -26,7 +25,6 @@ return [
         'type' => 'Type',
     ],
     'country' => [
-        'code' => 'Country Code',
         'icon' => 'Flag Icon',
         'name' => 'Country Name',
     ],
@@ -172,6 +170,7 @@ return [
         'type' => 'Group Type',
     ],
     'subscribe' => [
+        'attribute' => 'Subscription',
         'ban_desc' => 'Suspension Reason',
         'ban_time' => 'Suspension Time',
         'code' => 'Subscription Code',

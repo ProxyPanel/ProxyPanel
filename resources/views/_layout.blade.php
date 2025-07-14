@@ -14,7 +14,7 @@
     <link href="{{ asset('favicon.ico') }}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
     <link href="/assets/bundle/app.min.css" rel="stylesheet">
-    <link href="https://cdn.staticfile.net/flag-icons/7.2.3/css/flag-icons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flag-icons@7/css/flag-icons.min.css" rel="stylesheet">
     @yield('layout_css')
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">

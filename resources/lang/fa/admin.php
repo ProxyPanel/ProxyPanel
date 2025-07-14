@@ -501,7 +501,7 @@ return [
             'active_times' => 'تعداد فعال‌سازی حساب از طریق ایمیل در 24 ساعت',
             'admin_invite_days' => 'مدت اعتبار کدهای دعوت ایجاد شده توسط مدیر',
             'aff_salt' => 'رمزنگاری لینک دعوت با استفاده از متن مخفی',
-            'auto_release_port' => 'پورت‌های مسدود شده/منقضی شده پس از <code>'.config('tasks.release_port').'</code> روز به‌صورت خودکار آزاد می‌شوند',
+            'auto_release_port' => 'پورت‌های مسدود شده/منقضی شده پس از <code>'.sysConfig('tasks.release_port').'</code> روز به‌صورت خودکار آزاد می‌شوند',
             'bark_key' => 'کلید دستگاه برای ارسال پیام به iOS',
             'captcha_key' => 'راهنمای تنظیمات <a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">اینجا</a>',
             'data_anomaly_notification' => 'اطلاع‌رسانی به مدیر در صورت استفاده غیرعادی از داده در یک ساعت',

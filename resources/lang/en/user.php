@@ -232,6 +232,13 @@ return [
         'tips' => 'Warning: This link is for personal use only. Sharing may result in account suspension.',
         'trojan_only' => 'Trojan Only',
         'v2ray_only' => 'V2Ray Only',
+        'page' => [
+            'get_link' => 'Get link',
+            'connect' => 'Connect & Use',
+            'error' => [
+                'no_app' => 'No available clients',
+            ],
+        ],
     ],
     'telegram' => [
         'bind_exists' => 'Telegram account already linked',

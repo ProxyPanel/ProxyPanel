@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use App\Services\ProxyService;
+use App\Services\UserService;
 use App\Utils\IP;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,36 @@ class SubscribeController extends Controller
     private static ?int $subType;
 
     private ProxyService $proxyServer;
+
+    public function __construct(ProxyService $proxyServer)
+    {
+        $this->proxyServer = $proxyServer;
+    }
+
+    public function index(Request $request, string $code)
+    {
+        preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
+
+        if (empty($matches) || empty($code)) {
+            return redirect()->route('login');
+        }
+
+        $code = $matches[0];
+        self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
+
+        // 检查订阅码是否有效
+        $subscribe = UserSubscribe::whereCode($code)->firstOrFail();
+        $user = $subscribe->user;
+
+        $userService = new UserService($user);
+
+        return view('user.subscribe', [
+            'remainDays' => $userService->getRemainingDays(),
+            'unusedPercent' => $userService->getUnusedTrafficPercent(),
+            'user' => $user,
+            'subscribe' => $subscribe,
+        ]);
+    }
 
     public function getSubscribeByCode(Request $request, string $code): RedirectResponse|string
     { // 通过订阅码获取订阅信息
@@ -28,7 +59,6 @@ class SubscribeController extends Controller
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->firstOrFail();
-        $this->proxyServer = new ProxyService;
 
         if (! $subscribe) {
             $this->failed(trans('errors.subscribe.unknown'));

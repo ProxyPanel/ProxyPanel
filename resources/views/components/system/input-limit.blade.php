@@ -35,7 +35,7 @@
             @endisset
             @if (trans("admin.system.hint.$code") !== "admin.system.hint.$code")
                 <span class="text-help"> {!! trans("admin.system.hint.$code") !!} </span>
-            @endisset
+            @endif
         </div>
     </div>
 </div>

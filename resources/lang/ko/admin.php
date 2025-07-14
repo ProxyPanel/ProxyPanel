@@ -501,7 +501,7 @@ return [
             'active_times' => '24시간 내 이메일을 통해 계정 활성화 횟수',
             'admin_invite_days' => '관리자가 생성한 초대 코드의 유효 기간',
             'aff_salt' => '비워두면 초대 링크에 사용자 ID가 표시됩니다; 임의의 영문/숫자를 입력하면 사용자 링크 ID가 암호화됩니다',
-            'auto_release_port' => '차단/만료된 계정의 포트를 자동으로 회수합니다 <code>'.config('tasks.release_port').'</code> 일 후 자동으로 포트를 회수합니다',
+            'auto_release_port' => '차단/만료된 계정의 포트를 자동으로 회수합니다 <code>'.sysConfig('tasks.release_port').'</code> 일 후 자동으로 포트를 회수합니다',
             'bark_key' => 'iOS 장치로 푸시 메시지를 보내려면 Bark라는 앱을 설치하고, URL 뒤에 있는 긴 문자열을 입력해야 합니다. Bark를 활성화하려면 반드시 이 값을 입력해야 합니다.',
             'captcha_key' => '설정 가이드를 보려면 <a href="https://proxypanel.gitbook.io/wiki/captcha" target="_blank">여기</a>를 클릭하세요',
             'data_anomaly_notification' => '1시간 내 데이터 이상 임계값을 초과하면 관리자에게 알림',

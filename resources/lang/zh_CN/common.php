@@ -46,6 +46,7 @@ return [
     'deleted_item' => ':attribute已删除',
     'developing' => '功能开发中，敬请期待！',
     'download' => '下载',
+    'download_item' => '下载:attribute',
     'edit' => '编辑',
     'error' => '错误',
     'error_action_item' => ':action:attribute出错',
