@@ -59,12 +59,12 @@ class Avatar
     }
 
     private static function qZonePortrait(string $url, string $qq): ?string
-    { //向接口发起请求获取json数据
+    { // 向接口发起请求获取json数据
         $response = self::$basicRequest->get($url);
         if ($response->ok()) {
             $message = mb_convert_encoding($response->body(), 'UTF-8', 'GBK');
             if (str_contains($message, $qq)) { // 接口是否异常
-                $message = json_decode(substr($message, 17, -1), true); //对获取的json数据进行截取并解析成数组
+                $message = json_decode(substr($message, 17, -1), true); // 对获取的json数据进行截取并解析成数组
 
                 return stripslashes($message[$qq][0]);
             }

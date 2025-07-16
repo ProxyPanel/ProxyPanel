@@ -75,9 +75,9 @@ class NodeDailyMaintenance extends Command
         $now = Carbon::now();
 
         $notificationDates = [ // 通知日期 分别是 前1天，3天和7天
-            $now->addDays(1)->format('Y-m-d'),
-            $now->addDays(2)->format('Y-m-d'),
-            $now->addDays(4)->format('Y-m-d'),
+            $now->addDays(1)->toDateString(),
+            $now->addDays(2)->toDateString(),
+            $now->addDays(4)->toDateString(),
         ];
 
         $nodes = Node::whereNotNull('details')->whereIn('details->next_renewal_date', $notificationDates)->pluck('name', 'id')->toArray();
@@ -93,14 +93,14 @@ class NodeDailyMaintenance extends Command
         $nodes = Node::whereNotNull('details')
             ->where(function (Builder $query) {
                 $query->where('details->subscription_term', '<>', null)
-                    ->where('details->next_renewal_date', '<=', Carbon::now()->format('Y-m-d'));
+                    ->where('details->next_renewal_date', '<=', Carbon::now()->toDateString());
             })
             ->get();
 
         // 更新每个节点的 next_renewal_date
         foreach ($nodes as $node) {
             $details = $node->details;
-            $details['next_renewal_date'] = Carbon::createFromFormat('Y-m-d', $details['next_renewal_date'])->add($details['subscription_term'])->format('Y-m-d');
+            $details['next_renewal_date'] = Carbon::createFromFormat('Y-m-d', $details['next_renewal_date'])->add($details['subscription_term'])->toDateString();
             $node->details = $details;
 
             $node->save();

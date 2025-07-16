@@ -13,7 +13,7 @@ class Shadowrocket implements Client
     public function getConfig(array $servers, User $user): string
     {
         $uri = '';
-        //display remaining traffic and expire date
+        // display remaining traffic and expire date
         if (sysConfig('is_custom_subscribe')) {
             $usedTraffic = formatBytes($user->used_traffic);
             $remainTraffic = formatBytes($user->unused_traffic);

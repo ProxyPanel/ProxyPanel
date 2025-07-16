@@ -32,7 +32,7 @@ class UserController extends Controller
             $query->latest()->first();
         }]);
 
-        return view('user.index', array_merge([
+        return view('user.index', [
             'remainDays' => $userService->getRemainingDays(),
             'resetDays' => $userService->getResetDays(),
             'unusedPercent' => $userService->getUnusedTrafficPercent(),
@@ -45,7 +45,7 @@ class UserController extends Controller
             'userLoginLog' => $user->loginLogs->first(), // 近期登录日志
             'subType' => $nodeService->getActiveNodeTypes($user->nodes()),
             'subscribe' => $user->subscribe->only(['status', 'ban_desc']),
-        ], $this->dataFlowChart($user->id)));
+            ...$this->dataFlowChart($user->id)]);
     }
 
     // 签到

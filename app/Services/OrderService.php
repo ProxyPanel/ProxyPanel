@@ -86,6 +86,7 @@ class OrderService
             'level' => self::$goods->level,
             'speed_limit' => self::$goods->speed_limit,
             'enable' => 1,
+            ...$this->resetTimeAndData(),
         ];
 
         // 无端口用户 添加端口
@@ -93,7 +94,7 @@ class OrderService
             $updateData['port'] = Helpers::getPort();
         }
 
-        if (self::$user->update(array_merge($this->resetTimeAndData(), $updateData))) {
+        if (self::$user->update($updateData)) {
             return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, trans('[:payment] plus the user’s purchased data plan.', ['payment' => $this->order->pay_way]), $this->order->id);
         }
 
@@ -106,8 +107,8 @@ class OrderService
             $expired_at = $this->getFinallyExpiredTime();
         }
 
-        //账号流量重置日期
-        $nextResetTime = now()->addDays(self::$goods->period)->format('Y-m-d');
+        // 账号流量重置日期
+        $nextResetTime = now()->addDays(self::$goods->period)->toDateString();
         if ($nextResetTime >= $expired_at) {
             $nextResetTime = null;
         }
@@ -126,7 +127,7 @@ class OrderService
         $orders = self::$user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
         $current = $orders->where('status', '==', 2)->first();
 
-        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->format('Y-m-d');
+        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->toDateString();
     }
 
     private function setCommissionExpense(User $user): void
@@ -159,8 +160,8 @@ class OrderService
     { // 刷新账号有效时间
         $data = ['expired_at' => $this->getFinallyExpiredTime()];
 
-        if ($data['expired_at'] < now()->format('Y-m-d')) {
-            $data = array_merge([
+        if ($data['expired_at'] < now()->toDateString()) {
+            $data += [
                 'u' => 0,
                 'd' => 0,
                 'transfer_enable' => 0,
@@ -168,7 +169,7 @@ class OrderService
                 'level' => 0,
                 'reset_time' => null,
                 'ban_time' => null,
-            ], $data);
+            ];
         }
 
         return self::$user->update($data);

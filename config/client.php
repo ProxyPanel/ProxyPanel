@@ -46,31 +46,31 @@ return [
     'subscribe_url' => 'http://api.xxx.com',
 
     // 签到获得流量
-    'checkinMin' => 1, //用户签到最少流量 单位MB
-    'checkinMax' => 50, //用户签到最多流量
+    'checkinMin' => 1, // 用户签到最少流量 单位MB
+    'checkinMax' => 50, // 用户签到最多流量
 
-    'code_payback' => 10, //充值返利百分比
-    'invite_gift' => 2, //邀请新用户获得流量奖励，单位G
+    'code_payback' => 10, // 充值返利百分比
+    'invite_gift' => 2, // 邀请新用户获得流量奖励，单位G
 
     // 软件版本和更新地址
     'vpn_update' => [
-        'enable' => false,                           //是否开启更新
+        'enable' => false,                           // 是否开启更新
         'android' => [
             'version' => '2.4.3',                    // 版本号
-            'download_url' => env('APP_URL').'/clients/bob.apk',       //下载地址
-            'message' => '版本更新：<br/>1.添加点击签到提示框<br/>2.修复剩余流量显示问题',       //提示信息
-            'must' => false,                          //true:强制更新  false:不强制更新
+            'download_url' => env('APP_URL').'/clients/bob.apk',       // 下载地址
+            'message' => '版本更新：<br/>1.添加点击签到提示框<br/>2.修复剩余流量显示问题',       // 提示信息
+            'must' => false,                          // true:强制更新  false:不强制更新
         ],
         'windows' => [
             'version' => '3.7.0',                    // 版本号
-            'download_url' => env('APP_URL').'/clients/bob.exe',       //下载地址
-            'message' => '版本更新：<br/>1.修复剩余流量显示问题<br/>2.优化节点测试显示<br/>3.修复弹出网页部分按钮无法使用问题',       //提示信息
-            'must' => false,                          //true:强制更新  false:不强制更新
+            'download_url' => env('APP_URL').'/clients/bob.exe',       // 下载地址
+            'message' => '版本更新：<br/>1.修复剩余流量显示问题<br/>2.优化节点测试显示<br/>3.修复弹出网页部分按钮无法使用问题',       // 提示信息
+            'must' => false,                          // true:强制更新  false:不强制更新
         ],
         'mac' => [
             'version' => '3.7.0',                    // 版本号
             'download_url' => env('APP_URL').'/clients/bob.zip',       // 下载地址
-            'message' => '版本更新：<br/>1.修复剩余流量显示问题<br/>2.优化节点测试显示<br/>3.修复弹出网页部分按钮无法使用问题',       //提示信息
+            'message' => '版本更新：<br/>1.修复剩余流量显示问题<br/>2.优化节点测试显示<br/>3.修复弹出网页部分按钮无法使用问题',       // 提示信息
             'must' => false,                          // true:强制更新  false:不强制更新
         ],
     ],
@@ -136,19 +136,19 @@ return [
         ],
         // 易支付
         'policepay' => [
-            'partner' => '', //商户号
-            'key' => '', //商户key
+            'partner' => '', // 商户号
+            'key' => '', // 商户key
             'sign_type' => strtoupper('MD5'),
             'input_charset' => strtolower('utf-8'),
-            'name' => '手抓饼',                  //商品名称，目前无意义
-            'transport' => 'https',                   //访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
-            'appname' => 'PolicePay',           //网站英文名
-            'apiurl' => 'https://policepay.cc/',      //支付网关 注意结尾的/符号
-            'min_price' => '1',                       //最小支付金额(请填正数)
+            'name' => '手抓饼',                  // 商品名称，目前无意义
+            'transport' => 'https',                   // 访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
+            'appname' => 'PolicePay',           // 网站英文名
+            'apiurl' => 'https://policepay.cc/',      // 支付网关 注意结尾的/符号
+            'min_price' => '1',                       // 最小支付金额(请填正数)
         ],
         // 当面付
         'facepay' => [
-            'alipay_app_id' => '',              //商户号
+            'alipay_app_id' => '',              // 商户号
             'merchant_private_key' => '',
             'alipay_public_key' => '',
         ],
@@ -156,9 +156,9 @@ return [
 
     // 商城配置
     'shop_plan' => [
-        '标准会员' => [1, 2, 3, 4],  //对应商店显示的名称 + [商品ID]
-        '高级会员' => [1, 2, 3, 4],  //对应商店显示的名称 + [商品ID]
-        '至尊会员' => [1, 2, 3, 4],  //对应商店显示的名称 + [商品ID]
+        '标准会员' => [1, 2, 3, 4],  // 对应商店显示的名称 + [商品ID]
+        '高级会员' => [1, 2, 3, 4],  // 对应商店显示的名称 + [商品ID]
+        '至尊会员' => [1, 2, 3, 4],  // 对应商店显示的名称 + [商品ID]
     ],
 
     // 购买配置

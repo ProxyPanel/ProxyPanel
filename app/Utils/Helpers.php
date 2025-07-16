@@ -68,7 +68,7 @@ class Helpers
             'protocol' => self::getDefaultProtocol(),
             'obfs' => self::getDefaultObfs(),
             'transfer_enable' => $transfer_enable,
-            'expired_at' => now()->addDays($date)->format('Y-m-d'),
+            'expired_at' => now()->addDays($date)->toDateString(),
             'user_group_id' => null,
             'reg_ip' => IP::getClientIp(),
             'inviter_id' => $inviter_id,

@@ -144,7 +144,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('system', 'index')->name('system.index'); // 系统设置
         Route::post('setExtend', 'setExtend')->name('system.extend'); // 设置logo图片文件
         Route::post('setConfig', 'setConfig')->name('system.update'); // 设置某个配置项
-        Route::post('sendTestNotification', 'sendTestNotification')->name('test.notify'); //推送通知测试
+        Route::post('sendTestNotification', 'sendTestNotification')->name('test.notify'); // 推送通知测试
         Route::get('config', 'common')->name('config.index'); // 系统通用配置
     });
     Route::get('epayInfo', [EPay::class, 'queryInfo'])->name('test.epay'); // 易支付信息

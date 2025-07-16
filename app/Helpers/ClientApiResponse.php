@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 trait ClientApiResponse
 {
-    private static string $client;
+    private static string $client = 'clash';
 
     public function __construct(Request $request)
     {
@@ -34,11 +34,11 @@ trait ClientApiResponse
             $result = ['ret' => $status, 'msg' => $message, 'data' => $data];
 
             if (isset($addition)) {
-                $result = array_merge($result, $addition);
+                $result += $addition;
             }
         } else { // ProxyPanel client api 规范格式
             if (isset($data, $addition) && is_array($data)) {
-                $data = array_merge($data, $addition);
+                $data += $addition;
             }
 
             $result = ['status' => $status ? 'success' : 'fail', 'code' => $code, 'message' => $message, 'data' => $data ?? $addition];

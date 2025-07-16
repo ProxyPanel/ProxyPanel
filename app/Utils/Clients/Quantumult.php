@@ -19,7 +19,7 @@ class Quantumult implements Client
 
     public function getConfig(array $servers, User $user, string $target): string
     {
-        //display remaining traffic and expire date
+        // display remaining traffic and expire date
         if (sysConfig('is_custom_subscribe')) {
             header("Subscription-Userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
         }

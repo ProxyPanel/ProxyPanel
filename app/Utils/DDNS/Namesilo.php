@@ -50,7 +50,7 @@ class Namesilo implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT.$action, array_merge(['version' => 1, 'type' => 'json', 'key' => $this->apiKey], $parameters));
+        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT.$action, ['version' => 1, 'type' => 'json', 'key' => $this->apiKey, ...$parameters]);
 
         if ($response->ok()) {
             $data = $response->json();

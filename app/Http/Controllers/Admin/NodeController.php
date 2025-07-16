@@ -282,6 +282,6 @@ class NodeController extends Controller
 
     public function nodeMonitor(Node $node): View
     { // 节点流量监控
-        return view('admin.node.monitor', array_merge(['nodeName' => $node->name, 'nodeServer' => $node->server], $this->DataFlowChart($node->id, true)));
+        return view('admin.node.monitor', ['nodeName' => $node->name, 'nodeServer' => $node->server, ...$this->DataFlowChart($node->id, true)]);
     }
 }

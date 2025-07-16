@@ -20,7 +20,7 @@ trait WebApiResponse
         $code = $code < 1000 ? $code : (int) ($code / 1000);
         $data = compact('status', 'code', 'data', 'message');
         if (isset($addition)) {
-            $data = array_merge($data, $addition);
+            $data += $addition;
         }
 
         return response()->json($data, $code, ['ETAG' => $etag ?? '']);

@@ -50,7 +50,7 @@ class InviteController extends Controller
         }
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'); // 输出07Excel文件
-        //header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
+        // header('Content-Type:application/vnd.ms-excel'); // 输出Excel03版本文件
         header('Content-Disposition: attachment;filename="'.$filename.'"');
         header('Cache-Control: max-age=0');
         try {

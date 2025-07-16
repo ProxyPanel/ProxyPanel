@@ -259,7 +259,7 @@ class LogsController extends Controller
 
     public function userTrafficMonitor(User $user): View
     { // 用户流量监控
-        return view('admin.logs.userMonitor', array_merge(['username' => $user->username], $this->dataFlowChart($user->id)));
+        return view('admin.logs.userMonitor', ['username' => $user->username, ...$this->dataFlowChart($user->id)]);
     }
 
     public function callbackList(Request $request): View

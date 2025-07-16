@@ -108,6 +108,7 @@ class ProxyService
             'udp' => $node->is_udp,
         ];
 
+        // 如果是中转节点，递归处理父节点配置
         if ($node->relay_node_id) {
             $parentConfig = $this->getProxyConfig($node->relayNode);
             $config = array_merge($config, Arr::except($parentConfig, ['id', 'name', 'host', 'group', 'udp']));
@@ -207,7 +208,7 @@ class ProxyService
             }
         }
 
-        return URLSchemes::build($this->getServers()); // Origin
+        return URLSchemes::build($this->getServers()); // Default return
     }
 
     public function getProxyCode(string $target, ?int $type = null): ?string

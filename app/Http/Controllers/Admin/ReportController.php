@@ -23,7 +23,7 @@ class ReportController extends Controller
     {
         $completedOrders = Order::where('status', '>=', 2)->has('goods')->selectRaw('DATE(created_at) as date, sum(amount)/100 as total')->groupBy('date')->get();
 
-        $ordersByDay = $completedOrders->filter(fn ($order) => $order->date >= now()->subMonthNoOverflow()->startOfMonth()->format('Y-m-d'))->pluck('total', 'date');
+        $ordersByDay = $completedOrders->filter(fn ($order) => $order->date >= now()->subMonthNoOverflow()->startOfMonth()->toDateString())->pluck('total', 'date');
 
         $ordersByMonth = $completedOrders->filter(fn ($order) => $order->date >= now()->subYearNoOverflow()->startOfYear())->groupBy(fn ($order) => Carbon::parse($order->date)->format('Y-m'))->map(fn ($rows) => round($rows->sum('total'),
             2))->toArray();
@@ -54,7 +54,7 @@ class ReportController extends Controller
         $user = $uid ? User::find($uid) : ($username ? User::whereUsername($username)->first() : null);
 
         $data = [
-            'start_date' => Carbon::parse(UserDailyDataFlow::whereNotNull('node_id')->orderBy('created_at')->value('created_at'))->format('Y-m-d'),
+            'start_date' => Carbon::parse(UserDailyDataFlow::whereNotNull('node_id')->orderBy('created_at')->value('created_at'))->toDateString(),
         ];
 
         if ($user) {
@@ -137,7 +137,7 @@ class ReportController extends Controller
                 $dailyFlows = $dailyFlows->concat($todayData->map(fn ($item) => $item['daily']));
             }
 
-            $data = array_merge($data, [
+            $data += [
                 'hours' => range(0, 23),
                 'days' => collect(CarbonPeriod::create($startDate, $endDate))->map(fn ($date) => $date->format('m-d')),
                 'nodes' => $hourlyFlows->concat($dailyFlows)->pluck('name', 'id')->unique()->toArray(),
@@ -147,7 +147,7 @@ class ReportController extends Controller
                     ->orderByDesc('date')
                     ->pluck('date')
                     ->toArray(),
-            ]);
+            ];
         }
 
         return view('admin.report.userDataAnalysis', compact('data'));
@@ -160,7 +160,7 @@ class ReportController extends Controller
         $currentHour = $currentTime->hour;
         $nodeId = $request->input('nodes');
         $startDate = $request->input('start') ?? $currentTime->format('Y-m-01');
-        $endDate = $request->input('end') ?? $currentTime->format('Y-m-d');
+        $endDate = $request->input('end') ?? $currentTime->toDateString();
         $hour_date = $request->input('hour_date') ?? $currentTime; // 默认是今天
 
         $nodes = Node::orderBy('name')->pluck('name', 'id'); // 用于前端节点显示
@@ -177,7 +177,7 @@ class ReportController extends Controller
 
         $data = [
             'hours' => range(0, 23),
-            'start_date' => Carbon::parse(NodeDailyDataFlow::orderBy('created_at')->value('created_at'))->format('Y-m-d'), // 数据库里最早的日期
+            'start_date' => Carbon::parse(NodeDailyDataFlow::orderBy('created_at')->value('created_at'))->toDateString(), // 数据库里最早的日期
         ];
 
         $hoursFlow = $hourlyQuery->whereDate('created_at', $hour_date)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
@@ -202,7 +202,7 @@ class ReportController extends Controller
                 'total' => round($item->total / GiB, 2),
             ])->toArray();
 
-            $hoursFlow = array_merge($hoursFlow, $currentHourFlow);
+            $hoursFlow += $currentHourFlow;
 
             if (Carbon::parse($endDate)->isToday()) {
                 $currentDayFlow = collect($hoursFlow)->groupBy('id')->map(fn ($items) => [
@@ -212,7 +212,7 @@ class ReportController extends Controller
                     'total' => round($items->sum('total'), 2),
                 ])->values()->toArray();
 
-                $daysFlow = array_merge($daysFlow, $currentDayFlow);
+                $daysFlow += $currentDayFlow;
             }
         } elseif (Carbon::parse($endDate)->isToday()) { // 如果结束日期是今天，本日流量需要另外计算
             $todayHourlyQuery = NodeHourlyDataFlow::query();
@@ -242,7 +242,7 @@ class ReportController extends Controller
                 'total' => round($items->sum('total'), 2),
             ])->values()->toArray();
 
-            $daysFlow = array_merge($daysFlow, $currentDayFlow);
+            $daysFlow += $currentDayFlow;
         }
 
         $data['hourlyFlows'] = $hoursFlow;

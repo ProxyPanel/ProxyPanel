@@ -57,7 +57,7 @@ Route::prefix('v1')->group(function () { // 客户端API
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login'); // 登录
         Route::post('register', 'register'); // 注册
-        Route::get('logout', 'logout'); //登出
+        Route::get('logout', 'logout'); // 登出
     });
     Route::controller(ClientController::class)->group(function () {
         Route::get('getconfig', 'getConfig'); // 获取配置文件

@@ -119,7 +119,7 @@ class NodeStatusDetection extends Command
             }
         }
 
-        if (! empty($data)) { //只有在出现阻断线路时，才会发出警报
+        if (! empty($data)) { // 只有在出现阻断线路时，才会发出警报
             Notification::send(User::find(1), new NodeBlocked($data));
 
             Log::notice(trans('notification.node_block').": \r\n".var_export($data, true));

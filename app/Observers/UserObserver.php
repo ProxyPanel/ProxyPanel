@@ -36,8 +36,8 @@ class UserObserver
                         addUser::dispatch($user->id, $allowNodes);
                     }
                 } else {
-                    $old = $oldAllowNodes->diff($allowNodes); //old 有 allow 没有
-                    $new = $allowNodes->diff($oldAllowNodes); //allow 有 old 没有
+                    $old = $oldAllowNodes->diff($allowNodes); // old 有 allow 没有
+                    $new = $allowNodes->diff($oldAllowNodes); // allow 有 old 没有
                     if ($old->isNotEmpty()) {
                         delUser::dispatch($user->id, $old);
                     }

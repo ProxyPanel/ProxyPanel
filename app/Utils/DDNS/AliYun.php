@@ -66,16 +66,16 @@ class AliYun implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $parameters = array_merge([
+        $parameters += [
             'Action' => $action,
             'Format' => 'JSON',
             'Version' => '2015-01-09',
             'AccessKeyId' => $this->accessKeyID,
             'SignatureMethod' => 'HMAC-SHA1',
-            'Timestamp' => gmdate("Y-m-d\TH:i:s\Z"), //公共参数Timestamp GMT时间
+            'Timestamp' => gmdate("Y-m-d\TH:i:s\Z"), // 公共参数Timestamp GMT时间
             'SignatureVersion' => '1.0',
-            'SignatureNonce' => str_replace('.', '', microtime(true)), //唯一数，用于防止网络重放攻击
-        ], $parameters);
+            'SignatureNonce' => str_replace('.', '', microtime(true)), // 唯一数，用于防止网络重放攻击
+        ];
         $parameters['Signature'] = $this->generateSignature($parameters);
 
         $response = Http::asForm()->timeout(15)->post(self::API_ENDPOINT, $parameters);

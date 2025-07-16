@@ -42,7 +42,7 @@ class ToolsController extends Controller
             }
 
             // 生成转换好的JSON文件
-            //file_put_contents(public_path('downloads/decompile.json'), $txt);
+            // file_put_contents(public_path('downloads/decompile.json'), $txt);
 
             return response()->json(['status' => 'success', 'data' => $txt, 'message' => trans('common.success_item', ['attribute' => trans('admin.tools.decompile.attribute')])]);
         }
@@ -254,9 +254,9 @@ class ToolsController extends Controller
         $fp = fopen($file, 'rb');
         $i = 0;
         while (! feof($fp)) {
-            //每次读取2M
+            // 每次读取2M
             if ($data = fread($fp, 1024 * 1024 * 2)) {
-                //计算读取到的行数
+                // 计算读取到的行数
                 $num = substr_count($data, "\n");
                 $i += $num;
             }

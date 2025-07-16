@@ -53,7 +53,7 @@ class ClouDNS implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $response = Http::timeout(15)->get(self::API_ENDPOINT."$action.json", array_merge(['auth-id' => $this->authID, 'auth-password' => $this->authPassword], $parameters));
+        $response = Http::timeout(15)->get(self::API_ENDPOINT."$action.json", ['auth-id' => $this->authID, 'auth-password' => $this->authPassword, ...$parameters]);
 
         if ($response->successful()) {
             $data = $response->json();
