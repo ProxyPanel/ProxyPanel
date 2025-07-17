@@ -28,7 +28,12 @@ class NodeController extends Controller
     { // 节点列表
         $query = Node::whereNull('relay_node_id')
             ->with([
-                'dailyDataFlows:node_id,u,d',
+                'dailyDataFlows' => function ($query) {
+                    $query->whereBetween('created_at', [now()->startOfMonth(), now()]);
+                },
+                'hourlyDataFlows' => function ($query) {
+                    $query->whereDate('created_at', now()->toDateString());
+                },
                 'onlineLogs' => function ($query) {
                     $query->where('log_time', '>=', strtotime('-5 minutes'))->orderBy('log_time', 'desc');
                 },
@@ -43,17 +48,18 @@ class NodeController extends Controller
             $query->where('status', $value);
         });
 
-        $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'));
-
-        // 预处理每个节点的数据
-        $nodeList->transform(function ($node) {
+        $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'))->through(function ($node) {
+            // 预处理每个节点的数据
             $node->online_users = $node->onlineLogs->first()?->online_user; // 在线人数
-            $node->transfer = formatBytes($node->dailyDataFlows->sum('u') + $node->dailyDataFlows->sum('d')); // 已产生流量
+            $node->transfer = formatBytes(
+                $node->dailyDataFlows->sum(fn ($item) => $item->u + $item->d) +
+                $node->hourlyDataFlows->sum(fn ($item) => $item->u + $item->d)
+            ); // 已产生流量
 
             $node_info = $node->heartbeats->first(); // 近期负载
-            $node->isOnline = $node_info !== null && ! empty($node_info->load);
+            $node->isOnline = ! empty($node_info?->load);
             $node->load = $node_info->load ?? false;
-            $node->uptime = $node_info === null ? 0 : formatTime($node_info->uptime);
+            $node->uptime = formatTime($node_info->uptime ?? 0);
 
             return $node;
         });
@@ -231,7 +237,7 @@ class NodeController extends Controller
     { // 节点IP阻断检测
         foreach ($node->ips() as $ip) {
             $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
-            $data[$ip] = [config('common.network_status')[$status['icmp']], config('common.network_status')[$status['tcp']]];
+            $data[$ip] = [trans("admin.network_status.{$status['icmp']}"), trans("admin.network_status.{$status['tcp']}")];
         }
 
         return response()->json(['status' => 'success', 'title' => '['.$node->name.'] '.trans('admin.node.connection_test'), 'message' => $data ?? []]);

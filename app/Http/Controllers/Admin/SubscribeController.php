@@ -46,10 +46,8 @@ class SubscribeController extends Controller
             $query->whereBetween('request_time', [$request->input('start').' 00:00:00', $request->input('end').' 23:59:59']);
         }
 
-        $subscribeLogs = $query->latest()->paginate(20)->appends($request->except('page'))->transform(function ($log) {
-            if ($log->request_ip) {
-                $log->ipInfo = optional(IP::getIPInfo($log->request_ip))['address'] ?? null;
-            }
+        $subscribeLogs = $query->latest()->paginate(20)->appends($request->except('page'))->through(function ($log) {
+            $log->ipInfo = $log->request_ip ? optional(IP::getIPInfo($log->request_ip))['address'] ?? null : null;
 
             return $log;
         });
