@@ -45,24 +45,22 @@ class ProxyService
         return $this->getClientConfig($target);
     }
 
-    public function getServers(): ?array
+    public function getServers(): array
     {
-        return self::$servers ?? null;
+        return self::$servers ?? [];
     }
 
     public function getNodeList(?int $type = null, bool $isConfig = true): array
     {
         $query = $this->getUser()->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
-        if ($type) {
-            if ($type === 1) {
-                $query = $query->whereIn('type', [1, 4]);
-            } else {
-                $query = $query->whereType($type);
-            }
+        if ($type === 1) {
+            $query->whereIn('type', [1, 4]);
+        } elseif ($type !== null) {
+            $query->whereType($type);
         }
 
-        $nodes = $query->orderByDesc('sort')->orderBy('id')->get();
+        $nodes = $query->orderByDesc('node.sort')->orderBy('node.id')->get();
 
         if ($isConfig) {
             $servers = [];
@@ -110,58 +108,70 @@ class ProxyService
 
         // 如果是中转节点，递归处理父节点配置
         if ($node->relay_node_id) {
-            $parentConfig = $this->getProxyConfig($node->relayNode);
-            $config = array_merge($config, Arr::except($parentConfig, ['id', 'name', 'host', 'group', 'udp']));
-            if ($parentConfig['type'] === 'trojan') {
-                $config['sni'] = $parentConfig['host'];
+            $parent = $this->getProxyConfig($node->relayNode);
+            $config += Arr::except($parent, ['id', 'name', 'host', 'group', 'udp']);
+            if ($parent['type'] === 'trojan') {
+                $config['sni'] = $parent['host'];
             }
             $config['port'] = $node->port;
+
+            return $config;
+        }
+
+        // 按节点类型生成特定配置
+        return array_merge($config, $this->generateProtocolConfig($node, $user));
+    }
+
+    private function generateProtocolConfig(Node $node, User $user): array
+    {
+        return match ($node->type) {
+            0 => [ // Shadowsocks
+                'type' => 'shadowsocks',
+                'port' => $node->port ?: $user->port,
+                'passwd' => $user->passwd,
+                ...$node->profile,
+            ],
+            2 => [ // Vmess
+                'type' => 'vmess',
+                'port' => $node->port,
+                'uuid' => $user->vmess_id,
+                ...$node->profile,
+            ],
+            3 => [ // Trojan
+                'type' => 'trojan',
+                'port' => $node->port,
+                'passwd' => $user->passwd,
+                'sni' => '',
+                ...$node->profile,
+            ],
+            default => $this->generateSSRConfig($node, $user), // 1, 4 => SSR
+        };
+    }
+
+    private function generateSSRConfig(Node $node, User $user): array
+    {
+        $config = [
+            'type' => 'shadowsocksr',
+            ...$node->profile,
+        ];
+
+        if (! empty($node->profile['passwd']) && $node->port) { // 单端口使用中转的端口
+            $config += [
+                'port' => $node->port,
+                'protocol_param' => "$user->port:$user->passwd",
+            ];
         } else {
-            switch ($node->type) {
-                case 0:
-                    $config = array_merge($config, [
-                        'type' => 'shadowsocks',
-                        'passwd' => $user->passwd,
-                    ], $node->profile);
-                    if ($node->port && $node->port !== 0) {
-                        $config['port'] = $node->port;
-                    } else {
-                        $config['port'] = $user->port;
-                    }
-                    break;
-                case 2:
-                    $config = array_merge($config, [
-                        'type' => 'vmess',
-                        'port' => $node->port,
-                        'uuid' => $user->vmess_id,
-                    ], $node->profile);
-                    break;
-                case 3:
-                    $config = array_merge($config, [
-                        'type' => 'trojan',
-                        'port' => $node->port,
-                        'passwd' => $user->passwd,
-                        'sni' => '',
-                    ], $node->profile);
-                    break;
-                case 1:
-                case 4:
-                default:
-                    $config = array_merge($config, ['type' => 'shadowsocksr'], $node->profile);
-                    if ($node->profile['passwd'] && $node->port) {
-                        //单端口使用中转的端口
-                        $config['port'] = $node->port;
-                        $config['protocol_param'] = $user->port.':'.$user->passwd;
-                    } else {
-                        $config['port'] = $user->port;
-                        $config['passwd'] = $user->passwd;
-                        if ($node->type === 1) {
-                            $config['method'] = $user->method;
-                            $config['protocol'] = $user->protocol;
-                            $config['obfs'] = $user->obfs;
-                        }
-                    }
-                    break;
+            $config += [
+                'port' => $user->port,
+                'protocol_param' => $user->passwd,
+            ];
+
+            if ($node->type === 1) {
+                $config += [
+                    'method' => $user->method,
+                    'protocol' => $user->protocol,
+                    'obfs' => $user->obfs,
+                ];
             }
         }
 
@@ -170,15 +180,7 @@ class ProxyService
 
     public function failedProxyReturn(string $text, ?int $type = 0): void
     {
-        $url = sysConfig('website_url');
-
-        $data = [
-            'name' => $text,
-            'type' => [0 => 'shadowsocks', 1 => 'shadowsocksr', 2 => 'vmess', 3 => 'trojan'][$type],
-            'host' => $url,
-            'port' => 0,
-            'udp' => 0,
-        ];
+        $types = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
 
         $addition = match ($type) {
             0 => ['method' => 'none', 'passwd' => 'error'],
@@ -187,7 +189,7 @@ class ProxyService
             3 => ['passwd' => 'error']
         };
 
-        $this->setServers([array_merge($data, $addition)]);
+        $this->setServers([['name' => $text, 'type' => $types[$type], 'host' => sysConfig('website_url'), 'port' => 0, 'udp' => 0, ...$addition]]);
     }
 
     private function setServers(array $servers): void
@@ -197,11 +199,17 @@ class ProxyService
 
     private function getClientConfig(string $target): string
     {
-        foreach (glob(app_path('Utils/Clients').'/*.php') as $file) {
+        $classes = glob(app_path('Utils/Clients').'/*.php');
+        foreach ($classes as $file) {
             $class = 'App\\Utils\\Clients\\'.basename($file, '.php');
-            $reflectionClass = new ReflectionClass($class);
+            $ref = new ReflectionClass($class);
 
-            foreach ($reflectionClass->getConstant('AGENT') as $agent) {
+            $agents = $ref->getConstant('AGENT');
+            if (! is_array($agents)) {
+                continue;
+            }
+
+            foreach ($agents as $agent) {
                 if (str_contains($target, $agent)) {
                     return (new $class)->getConfig($this->getServers(), $this->getUser(), $target);
                 }

@@ -24,19 +24,13 @@ class SubscribeController extends Controller
 
     public function index(Request $request, string $code)
     {
-        preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
-
-        if (empty($matches) || empty($code)) {
+        if (! preg_match('/^[0-9A-Za-z]+$/', $code)) {
             return redirect()->route('login');
         }
-
-        $code = $matches[0];
-        self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
 
         // 检查订阅码是否有效
         $subscribe = UserSubscribe::whereCode($code)->firstOrFail();
         $user = $subscribe->user;
-
         $userService = new UserService($user);
 
         return view('user.subscribe', [
@@ -49,17 +43,13 @@ class SubscribeController extends Controller
 
     public function getSubscribeByCode(Request $request, string $code): RedirectResponse|string
     { // 通过订阅码获取订阅信息
-        preg_match('/[0-9A-Za-z]+/', $code, $matches, PREG_UNMATCHED_AS_NULL);
-
-        if (empty($matches) || empty($code)) {
-            return redirect()->route('login');
-        }
-        $code = $matches[0];
         self::$subType = is_numeric($request->input('type')) ? $request->input('type') : null;
-
         // 检查订阅码是否有效
-        $subscribe = UserSubscribe::whereCode($code)->firstOrFail();
+        if (! preg_match('/^[0-9A-Za-z]+$/', $code)) {
+            $this->failed(trans('errors.subscribe.unknown'));
+        }
 
+        $subscribe = UserSubscribe::whereCode($code)->first();
         if (! $subscribe) {
             $this->failed(trans('errors.subscribe.unknown'));
         }
@@ -82,12 +72,11 @@ class SubscribeController extends Controller
                 $this->failed(trans('errors.subscribe.banned_until', ['time' => $user->ban_time]));
             }
 
-            $unusedTraffic = $user->unused_traffic;
-            if ($unusedTraffic <= 0) {
+            if ($user->unused_traffic <= 0) {
                 $this->failed(trans('errors.subscribe.out'));
             }
 
-            if ($user->expiration_date < date('Y-m-d')) {
+            if ($user->expiration_date < now()->toDateString()) {
                 $this->failed(trans('errors.subscribe.expired'));
             }
 
