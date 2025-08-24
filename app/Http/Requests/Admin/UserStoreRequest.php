@@ -14,7 +14,7 @@ class UserStoreRequest extends FormRequest
             'password' => 'nullable|string',
             'port' => 'nullable|numeric',
             'passwd' => 'nullable|string',
-            'uuid' => 'nullable|uuid',
+            'vmess_id' => 'nullable|uuid',
             'transfer_enable' => 'required|numeric|min:0',
             'enable' => 'required|boolean',
             'method' => 'required|exists:ss_config,name',

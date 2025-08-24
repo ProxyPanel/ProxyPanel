@@ -16,15 +16,39 @@ class RoleController extends Controller
 {
     public function index(): View
     {
-        return view('admin.role.index', ['roles' => Role::with('permissions')->paginate(15)]);
+        // 预加载角色权限，但只选择需要的字段
+        $roles = Role::with('permissions:description,name')->paginate(15);
+
+        // 预先处理权限描述，避免在 Blade 模板中重复处理
+        $processedRoles = $roles->through(function ($role) {
+            if ($role->name !== 'Super Admin') {
+                // 提前获取权限描述集合，避免在模板中重复调用
+                $role->permission_descriptions = $role->permissions->pluck('description');
+            }
+
+            return $role;
+        });
+
+        return view('admin.role.index', ['roles' => $processedRoles]);
     }
 
     public function store(RoleRequest $request): RedirectResponse
     {
-        if ($role = Role::create($request->only(['name', 'description']))) {
-            $role->givePermissionTo($request->input('permissions') ?? []);
+        try {
+            $role = Role::create($request->only(['name', 'description']));
 
-            return redirect()->route('admin.role.edit', $role)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
+            if ($role) {
+                $permissions = $request->input('permissions') ?? [];
+                if (! empty($permissions)) {
+                    $role->givePermissionTo($permissions);
+                }
+
+                return redirect()->route('admin.role.edit', $role)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
         }
 
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
@@ -32,14 +56,19 @@ class RoleController extends Controller
 
     public function create(): View
     {
-        return view('admin.role.info', ['permissions' => Permission::all()->pluck('description', 'name')]);
+        return view('admin.role.info', ['permissions' => Permission::orderBy('name')->pluck('description', 'name')]);
     }
 
     public function edit(Role $role): View
     {
+        $role->load('permissions:name');
+
         return view('admin.role.info', [
-            'role' => $role->load('permissions'),
-            'permissions' => Permission::all()->pluck('description', 'name'),
+            'role' => array_merge(
+                $role->toArray(),
+                ['permissions' => $role->permissions->pluck('name')->toArray()]
+            ),
+            'permissions' => Permission::orderBy('name')->pluck('description', 'name'),
         ]);
     }
 
@@ -49,10 +78,16 @@ class RoleController extends Controller
             return redirect()->back()->withInput()->withErrors(trans('admin.role.modify_admin_error'));
         }
 
-        if ($role->update($request->only(['name', 'description']))) {
-            $role->syncPermissions($request->input('permissions') ?: []);
+        try {
+            if ($role->update($request->only(['name', 'description']))) {
+                $role->syncPermissions($request->input('permissions', []));
 
-            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
+                return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
         }
 
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
@@ -64,6 +99,7 @@ class RoleController extends Controller
             if ($role->name === 'Super Admin') {
                 return response()->json(['status' => 'fail', 'message' => trans('admin.role.modify_admin_error')]);
             }
+
             $role->delete();
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());

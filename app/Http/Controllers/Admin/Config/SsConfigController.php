@@ -23,8 +23,14 @@ class SsConfigController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        if (SsConfig::create($validator->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+        try {
+            if (SsConfig::create($validator->validated())) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('user.node.info')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
@@ -32,8 +38,14 @@ class SsConfigController extends Controller
 
     public function update(SsConfig $ss): JsonResponse
     { // 设置SS默认配置
-        if ($ss->setDefault()) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+        try {
+            if ($ss->setDefault()) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('user.node.info')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
@@ -41,6 +53,11 @@ class SsConfigController extends Controller
 
     public function destroy(SsConfig $ss): JsonResponse
     { // 删除SS配置
+        // 检查是否为默认配置
+        if ($ss->is_default) {
+            return response()->json(['status' => 'fail', 'message' => trans('admin.setting.common.config_default_cannot_delete')]);
+        }
+
         try {
             if ($ss->delete()) {
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);

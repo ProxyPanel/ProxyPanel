@@ -55,37 +55,42 @@
 
     <script>
         // 检查支付单状态
-        const r = window.setInterval(function() {
-            $.ajax({
-                method: "GET",
-                url: '{{ route('orderStatus') }}',
-                data: {
-                    trade_no: '{{ $payment->trade_no }}'
-                },
-                dataType: "json",
+        let pollingInterval = window.setInterval(function() {
+            ajaxGet('{{ route('orderStatus') }}', {
+                trade_no: '{{ $payment->trade_no }}'
+            }, {
                 success: function(ret) {
-                    window.clearInterval();
-                    if (ret.status === "success") {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "success",
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = '{{ route('invoice.index') }}';
-                        });
-                    } else if (ret.status === "error") {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "error",
-                            timer: 1500,
-                            showConfirmButton: false
-                        }).then(() => {
-                            window.location.href = '{{ route('invoice.index') }}';
-                        });
+                    if (ret.status === "success" || ret.status === "error") {
+                        window.clearInterval(pollingInterval);
+
+                        if (ret.status === "success") {
+                            showMessage({
+                                title: ret.message,
+                                icon: "success",
+                                showConfirmButton: false,
+                                callback: function() {
+                                    window.location.href = '{{ route('invoice.index') }}';
+                                }
+                            });
+                        } else if (ret.status === "error") {
+                            showMessage({
+                                title: ret.message,
+                                icon: "error",
+                                showConfirmButton: false,
+                                callback: function() {
+                                    window.location.href = '{{ route('invoice.index') }}';
+                                }
+                            });
+                        }
                     }
                 }
             });
         }, 3000);
+
+        window.addEventListener('beforeunload', function() {
+            if (pollingInterval) {
+                window.clearInterval(pollingInterval);
+            }
+        });
     </script>
 @endsection

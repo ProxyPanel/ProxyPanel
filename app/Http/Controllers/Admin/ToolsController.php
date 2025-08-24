@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Utils\IP;
@@ -16,6 +17,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ToolsController extends Controller
 {
+    use ProxyConfig;
+
     public function decompile(Request $request): JsonResponse|View
     { // SS(R)链接反解析
         if ($request->isMethod('POST')) {
@@ -41,9 +44,6 @@ class ToolsController extends Controller
                 $txt .= "\r\n".base64url_decode($str);
             }
 
-            // 生成转换好的JSON文件
-            // file_put_contents(public_path('downloads/decompile.json'), $txt);
-
             return response()->json(['status' => 'success', 'data' => $txt, 'message' => trans('common.success_item', ['attribute' => trans('admin.tools.decompile.attribute')])]);
         }
 
@@ -67,13 +67,13 @@ class ToolsController extends Controller
 
             // 校验格式
             $content = json_decode($content, true);
-            if (empty($content->port_password)) {
+            if (! isset($content['port_password']) || ! is_array($content['port_password'])) {
                 return response()->json(['status' => 'fail', 'message' => trans('admin.tools.convert.missing_error')]);
             }
 
             // 转换成SSR格式JSON
             $data = [];
-            foreach ($content->port_password as $port => $passwd) {
+            foreach ($content['port_password'] as $port => $passwd) {
                 $data[] = [
                     'u' => 0,
                     'd' => 0,
@@ -98,14 +98,14 @@ class ToolsController extends Controller
             return response()->json(['status' => 'success', 'data' => $json, 'message' => trans('common.success_item', ['attribute' => trans('common.convert')])]);
         }
 
-        return view('admin.tools.convert');
+        return view('admin.tools.convert', $this->proxyConfigOptions());
     }
 
     public function download(Request $request): BinaryFileResponse
     { // 下载转换好的JSON文件
         $type = (int) $request->input('type');
         if (empty($type)) {
-            abort(trans('admin.tools.convert.params_unknown'));
+            abort(400, trans('admin.tools.convert.params_unknown'));
         }
 
         if ($type === 1) {
@@ -115,7 +115,7 @@ class ToolsController extends Controller
         }
 
         if (! file_exists($filePath)) {
-            abort(trans('admin.tools.convert.file_missing'));
+            abort(404, trans('admin.tools.convert.file_missing'));
         }
 
         return response()->download($filePath);
@@ -141,34 +141,44 @@ class ToolsController extends Controller
 
             $save_path = realpath(storage_path('uploads'));
             $new_name = md5($file->getClientOriginalExtension()).'.json';
-            $file->move($save_path, $new_name);
+
+            try {
+                $file->move($save_path, $new_name);
+            } catch (Exception $e) {
+                Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
+
+                return redirect()->back()->withErrors(trans('admin.tools.import.file_error'));
+            }
 
             // 读取文件内容
-            $data = file_get_contents($save_path.'/'.$new_name);
+            $file_path = $save_path.'/'.$new_name;
+            $data = file_get_contents($file_path);
+
+            // 删除临时文件
+            @unlink($file_path);
+
             $data = json_decode($data, true);
-            if (! $data) {
+            if (! $data || ! is_array($data)) {
                 return redirect()->back()->withErrors(trans('admin.tools.import.format_error', ['type' => 'JSON']));
             }
 
             try {
                 DB::beginTransaction();
                 foreach ($data as $user) {
-                    $obj = new User;
-                    $obj->nickname = $user->user;
-                    $obj->username = $user->user;
-                    $obj->password = '123456';
-                    $obj->port = $user->port;
-                    $obj->passwd = $user->passwd;
-                    $obj->vmess_id = $user->uuid;
-                    $obj->transfer_enable = $user->transfer_enable;
-                    $obj->method = $user->method;
-                    $obj->protocol = $user->protocol;
-                    $obj->obfs = $user->obfs;
-                    $obj->expired_at = '2099-01-01';
-                    $obj->reg_ip = IP::getClientIp();
-                    $obj->created_at = now();
-                    $obj->updated_at = now();
-                    $obj->save();
+                    User::create([
+                        'nickname' => $user['user'] ?? ('User_'.time()),
+                        'username' => $user['user'] ?? ('user_'.time().'_'.rand(1000, 9999)),
+                        'password' => bcrypt('123456'),
+                        'port' => $user['port'] ?? 0,
+                        'passwd' => $user['passwd'] ?? '',
+                        'vmess_id' => $user['uuid'] ?? '',
+                        'transfer_enable' => $user['transfer_enable'] ?? 0,
+                        'method' => $user['method'] ?? '',
+                        'protocol' => $user['protocol'] ?? '',
+                        'obfs' => $user['obfs'] ?? '',
+                        'expired_at' => '2099-01-01',
+                        'reg_ip' => IP::getClientIp(),
+                    ]);
                 }
 
                 DB::commit();
@@ -195,6 +205,7 @@ class ToolsController extends Controller
         }
 
         $logs = $this->tail($file, 10000);
+        $url = [];
         if ($logs) {
             foreach ($logs as $log) {
                 if (str_contains($log, 'TCP connecting')) {
@@ -217,7 +228,7 @@ class ToolsController extends Controller
             }
         }
 
-        return view('admin.tools.analysis', ['urlList' => array_unique($url ?? [])]);
+        return view('admin.tools.analysis', ['urlList' => array_unique($url)]);
     }
 
     private function tail(string $file, int $n, int $base = 5): array|false
@@ -245,6 +256,8 @@ class ToolsController extends Controller
                 $counts++;
             }
         }
+
+        fclose($fp);
 
         return array_slice($lines, 0, $n);
     }

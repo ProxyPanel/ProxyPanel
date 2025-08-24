@@ -28,9 +28,7 @@ class UserController extends Controller
         }
         $user = auth()->user();
 
-        $user->load(['subscribe', 'loginLogs' => function ($query) {
-            $query->latest()->first();
-        }]);
+        $user->load(['subscribe', 'latestLoginLog']);
 
         return view('user.index', [
             'remainDays' => $userService->getRemainingDays(),
@@ -42,7 +40,7 @@ class UserController extends Controller
             'isTrafficWarning' => $userService->isTrafficWarning(), // 流量异常判断
             'paying_user' => $userService->isActivePaying(), // 付费用户判断
             'user' => $user->only(['sub_url', 'unused_traffic', 'expiration_date', 'ban_time']),
-            'userLoginLog' => $user->loginLogs->first(), // 近期登录日志
+            'userLoginLog' => $user->latestLoginLog,
             'subType' => $nodeService->getActiveNodeTypes($user->nodes()),
             'subscribe' => $user->subscribe->only(['status', 'ban_desc']),
             ...$this->dataFlowChart($user->id)]);
@@ -67,6 +65,7 @@ class UserController extends Controller
         if (! $user->incrementData($traffic)) {
             return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
         }
+
         Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
 
         cache()->put('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') ? sysConfig('checkin_interval') * Minute : Day); // 多久后可以再签到
@@ -84,6 +83,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $url = null;
+
         if ($request->has(['password', 'new_password'])) { // 修改密码
             $url = url()->previous().'#account';
             $data = $request->only(['password', 'new_password']);

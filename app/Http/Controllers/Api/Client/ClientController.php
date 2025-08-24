@@ -198,15 +198,14 @@ class ClientController extends Controller
     public function getProxyList(ProxyService $proxyService): JsonResponse
     {
         $servers = [];
-        foreach ($proxyService->getNodeList(null, false) as $node) {
+        foreach ($proxyService->getNodeList(null, false)->load('latestOnlineLog') as $node) {
             $server = $proxyService->getProxyConfig($node);
             if ($server['type'] === '`shadowsocks`' || $server['type'] === 'shadowsocksr') {
                 $server['type'] = 1;
             }
 
-            $online_log = $node->onlineLogs->where('log_time', '>=', strtotime('-5 minutes'))->sortBy('log_time')->first(); // 在线人数
             $server['node_ip'] = filter_var($server['host'], FILTER_VALIDATE_IP) ? $server['host'] : gethostbyname($server['host']);
-            $server['online'] = $online_log->online_user ?? 0;
+            $server['online'] = $node->latestOnlineLog?->online_user ?? 0; // 在线人数
             $this->getOnlineCount($server, $server['online']);
             $servers[] = $server;
         }

@@ -19,7 +19,6 @@ class ArticleController extends Controller
 {
     public function index(Request $request): View
     { // 文章列表
-        $categories = Article::whereNotNull('category')->distinct()->get('category');
         $articles = Article::query();
 
         foreach (['id', 'category', 'language', 'type'] as $field) {
@@ -28,9 +27,7 @@ class ArticleController extends Controller
             });
         }
 
-        $articles = $articles->latest()->orderByDesc('sort')->paginate()->appends($request->except('page'));
-
-        return view('admin.article.index', compact('articles', 'categories'));
+        return view('admin.article.index', ['articles' => $articles->latest()->orderByDesc('sort')->paginate()->appends($request->except('page')), 'categories' => Article::whereNotNull('category')->distinct()->pluck('category', 'category')]);
     }
 
     public function store(ArticleRequest $request): RedirectResponse
@@ -67,9 +64,7 @@ class ArticleController extends Controller
 
     public function create(): View
     { // 添加文章页面
-        $categories = Article::whereNotNull('category')->distinct()->get('category');
-
-        return view('admin.article.info', compact('categories'));
+        return view('admin.article.info', ['categories' => Article::whereNotNull('category')->distinct()->pluck('category')]);
     }
 
     public function show(Article $article): View
@@ -81,7 +76,7 @@ class ArticleController extends Controller
 
     public function edit(Article $article): View
     { // 编辑文章页面
-        $categories = Article::whereNotNull('category')->distinct()->get('category');
+        $categories = Article::whereNotNull('category')->distinct()->pluck('category');
 
         return view('admin.article.info', compact('article', 'categories'));
     }

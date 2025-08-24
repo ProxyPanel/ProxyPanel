@@ -1,4 +1,6 @@
-<div role="alert" {{ $attributes->merge(['class' => 'alert  alert-dismissible alert-' . $type]) }}>
+@props(['type' => 'success', 'message' => null])
+
+<div class="alert alert-{{ $type }} alert-dismissible" role="alert">
     <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
         <span aria-hidden="true">&times;</span><span class="sr-only">{{ trans('common.close') }}</span>
     </button>
@@ -13,6 +15,6 @@
             {!! $message[0] !!}
         @endif
     @else
-        {!! $message !!}
+        {!! $message ?? $slot !!}
     @endif
 </div>

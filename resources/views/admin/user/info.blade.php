@@ -5,312 +5,82 @@
 @endsection
 @section('content')
     <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ isset($user) ? trans('admin.action.edit_item', ['attribute' => trans('model.user.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.user.attribute')]) }}
-                </h2>
-                @isset($user)
-                    @can('admin.user.switch')
-                        <div class="panel-actions">
-                            <button class="btn btn-sm btn-danger" type="button" onclick="switchToUser()">{{ trans('admin.user.info.switch') }}</button>
-                        </div>
-                    @endcan
-                @endisset
-            </div>
-            <div class="panel-body">
-                <form class="form-horizontal" onsubmit="return Submit()">
-                    <div class="form-row">
-                        <div class="col-lg-6">
-                            <h4 class="example-title">{{ trans('admin.user.info.account') }}</h4>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="nickname">{{ trans('model.user.nickname') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input class="form-control" id="nickname" name="nickname" type="text" required />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="username">{{ trans('model.user.username') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input class="form-control" id="username" name="username" type="text" required />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="password">{{ trans('model.user.password') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input class="form-control" id="password" name="password" type="password" autocomplete="new-password"
-                                           placeholder="@isset($user){{ trans('common.stay_unchanged') }} @else {{ trans('common.random_generate') }} @endisset" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="level">{{ trans('model.common.level') }}</label>
-                                <div class="col-xl-4 col-sm-8">
-                                    <select class="form-control" id="level" name="level" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach ($levels as $level => $name)
-                                            <option value="{{ $level }}">{{ $name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="group">{{ trans('model.user_group.attribute') }}</label>
-                                <div class="col-xl-4 col-sm-8">
-                                    <select class="form-control" id="group" name="group" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                            title="{{ trans('common.none') }}">
-                                        @foreach ($userGroups as $id => $name)
-                                            <option value="{{ $id }}">{{ $name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            @isset($user)
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-sm-3 col-form-label" for="credit">{{ trans('model.user.credit') }}</label>
-                                    <div class="col-xl-4 col-sm-8">
-                                        <div class="input-group">
-                                            <p class="form-control"> {{ $user->credit }} </p>
-                                            @can('admin.user.updateCredit')
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit"
-                                                            type="button">{{ trans('admin.goods.type.top_up') }}</button>
-                                                </div>
-                                            @endcan
-                                        </div>
-                                    </div>
-                                </div>
-                            @endisset
-
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="invite_num">{{ trans('model.user.invite_num') }}</label>
-                                <div class="col-xl-4 col-sm-8">
-                                    <input class="form-control" id="invite_num" name="invite_num" type="number" value="0" required />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="reset_time">{{ trans('model.user.reset_date') }}</label>
-                                <div class="col-xl-4 col-sm-4">
-                                    <div class="input-group input-daterange" data-plugin="datepicker">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="icon wb-calendar" aria-hidden="true"></i>
-                                            </span>
-                                        </div>
-                                        <input class="form-control" id="reset_time" name="reset_time" type="text" />
-                                    </div>
-                                    <span class="text-help"> {{ trans('admin.user.info.reset_date_hint') }} </span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="expired_at">{{ trans('model.user.expired_date') }}</label>
-                                <div class="col-xl-4 col-sm-4">
-                                    <div class="input-group input-daterange" data-plugin="datepicker">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">
-                                                <i class="icon wb-calendar" aria-hidden="true"></i>
-                                            </span>
-                                        </div>
-                                        <input class="form-control" id="expired_at" name="expired_at" type="text" />
-                                    </div>
-                                    <span class="text-help"> {{ trans('admin.user.info.expired_date_hint') }} </span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label">{{ trans('model.user.account_status') }}</label>
-                                <div class="col-md-10 col-sm-8">
-                                    <ul class="list-unstyled list-inline">
-                                        <li class="list-inline-item">
-                                            <div class="radio-custom radio-primary">
-                                                <input id="normal" name="status" type="radio" value="1" checked />
-                                                <label for="normal">{{ trans('common.status.normal') }}</label>
-                                            </div>
-                                        </li>
-                                        <li class="list-inline-item">
-                                            <div class="radio-custom radio-primary">
-                                                <input id="nonactive" name="status" type="radio" value="0" />
-                                                <label for="nonactive">{{ trans('common.status.inactive') }}</label>
-                                            </div>
-                                        </li>
-                                        <li class="list-inline-item">
-                                            <div class="radio-custom radio-primary">
-                                                <input id="baned" name="status" type="radio" value="-1" />
-                                                <label for="baned">{{ trans('common.status.banned') }}</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="roles">{{ trans('model.user.role') }}</label>
-                                <div class="col-xl-4 col-sm-8">
-                                    <select class="form-control show-tick" id="roles" name="roles[]" data-plugin="selectpicker"
-                                            data-style="btn-outline btn-primary" multiple>
-                                        @foreach ($roles as $key => $description)
-                                            <option value="{{ $key }}">{{ $description }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="wechat">{{ trans('model.user.wechat') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input class="form-control" id="wechat" name="wechat" type="text" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="qq">{{ trans('model.user.qq') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <input class="form-control" id="qq" name="qq" type="number" />
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="remark">{{ trans('model.user.remark') }}</label>
-                                <div class="col-xl-6 col-sm-8">
-                                    <textarea class="form-control" id="remark" name="remark" rows="3"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <h4 class="example-title">{{ trans('admin.user.info.proxy') }}</h4>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="port">{{ trans('model.user.port') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <div class="input-group">
-                                        <input class="form-control" id="port" name="port" type="number"
-                                               placeholder="{{ trans('common.random_generate') }}" />
+        <x-ui.panel icon="wb-user-add" :title="trans(isset($user) ? 'admin.action.edit_item' : 'admin.action.add_item', ['attribute' => trans('model.user.attribute')])">
+            @isset($user)
+                @can('admin.user.switch')
+                    <x-slot:actions>
+                        <button class="btn btn-sm btn-danger" type="button" onclick="switchToUser()">{{ trans('admin.user.info.switch') }}</button>
+                    </x-slot:actions>
+                @endcan
+            @endisset
+            <x-admin.form.container handler="Submit()">
+                <div class="form-row">
+                    <div class="col-lg-6">
+                        <h4 class="example-title">{{ trans('admin.user.info.account') }}</h4>
+                        <x-admin.form.input name="nickname" :label="trans('model.user.nickname')" required />
+                        <x-admin.form.input name="username" :label="trans('model.user.username')" required />
+                        <x-admin.form.input name="password" type="password" :label="trans('model.user.password')" :placeholder="isset($user) ? trans('common.stay_unchanged') : trans('common.random_generate')" attribute="autocomplete=new-password" />
+                        <x-admin.form.select name="level" :label="trans('model.common.level')" :options="$levels" />
+                        <x-admin.form.select name="group" :label="trans('model.user_group.attribute')" :options="$userGroups" :placeholder="trans('common.none')" />
+                        @isset($user)
+                            <x-admin.form.skeleton name="credit" :label="trans('model.user.credit')">
+                                <div class="input-group">
+                                    <p class="form-control"> {{ $user->credit }} </p>
+                                    @can('admin.user.updateCredit')
                                         <div class="input-group-append">
-                                            <button class="btn btn-success" type="button" onclick="makePort()">
-                                                <i class="icon wb-refresh"></i>
+                                            <button class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit" type="button">
+                                                {{ trans('user.recharge') }}
                                             </button>
                                         </div>
-                                    </div>
+                                    @endcan
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="uuid">{{ trans('model.user.uuid') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <div class="input-group">
-                                        <input class="form-control" id="uuid" name="uuid" type="text"
-                                               placeholder="{{ trans('common.random_generate') }}" />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-success" type="button" onclick="makeUUID()">
-                                                <i class="icon wb-refresh"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <span class="text-help"> {{ trans('admin.user.info.uuid_hint') }} </span>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="passwd">{{ trans('model.user.proxy_passwd') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <div class="input-group">
-                                        <input class="form-control" id="passwd" name="passwd" type="text"
-                                               placeholder="{{ trans('common.random_generate') }}" />
-                                        <div class="input-group-append">
-                                            <button class="btn btn-success" type="button" onclick="makePasswd()">
-                                                <i class="icon wb-refresh"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="method">{{ trans('model.user.proxy_method') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <select class="form-control" id="method" name="method" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach (Helpers::methodList() as $method)
-                                            <option value="{{ $method->name }}" @if ($method->is_default) selected @endif>{{ $method->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="transfer_enable">{{ trans('model.user.usable_traffic') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <div class="input-group">
-                                        <input class="form-control" id="transfer_enable" name="transfer_enable" type="text" value="1024" required>
-                                        <span class="input-group-text">GB</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label">{{ trans('model.user.proxy_status') }}</label>
-                                <div class="col-md-10 col-sm-8">
-                                    <ul class="list-unstyled list-inline">
-                                        <li class="list-inline-item">
-                                            <div class="radio-custom radio-primary">
-                                                <input id="enable" name="enable" type="radio" value="1" checked />
-                                                <label for="enable">{{ trans('common.status.enabled') }}</label>
-                                            </div>
-                                        </li>
-                                        <li class="list-inline-item">
-                                            <div class="radio-custom radio-primary">
-                                                <input id="disable" name="enable" type="radio" value="0" />
-                                                <label for="disable">{{ trans('common.status.banned') }}</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="protocol">{{ trans('model.user.proxy_protocol') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <select class="form-control" id="protocol" name="protocol" data-plugin="selectpicker"
-                                            data-style="btn-outline btn-primary">
-                                        @foreach (Helpers::protocolList() as $protocol)
-                                            <option value="{{ $protocol->name }}" @if ($protocol->is_default) selected @endif>{{ $protocol->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="obfs">{{ trans('model.user.proxy_obfs') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <select class="form-control" id="obfs" name="obfs" data-plugin="selectpicker" data-style="btn-outline btn-primary">
-                                        @foreach (Helpers::obfsList() as $obfs)
-                                            <option value="{{ $obfs->name }}" @if ($obfs->is_default) selected @endif>{{ $obfs->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="form-group row">
-                                <label class="col-md-2 col-sm-3 col-form-label" for="speed_limit">{{ trans('model.user.speed_limit') }}</label>
-                                <div class="col-xl-5 col-sm-8">
-                                    <div class="input-group">
-                                        <input class="form-control" id="speed_limit" name="speed_limit" type="number" value="200" />
-                                        <span class="input-group-text"> Mbps</span>
-                                    </div>
-                                    <span class="text-help">{{ trans('admin.zero_unlimited_hint') }} </span>
-                                </div>
-                            </div>
-                            @isset($user)
-                                <hr>
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-sm-3 col-form-label" for="inviter">{{ trans('model.user.inviter') }}</label>
-                                    <div class="col-xl-6 col-sm-8">
-                                        <p class="form-control"> {{ $user->inviter->username ?? trans('common.none') }} </p>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-2 col-sm-3 col-form-label" for="created_at">{{ trans('model.user.created_date') }}</label>
-                                    <div class="col-xl-6 col-sm-8">
-                                        <p class="form-control"> {{ $user->created_at }} </p>
-                                    </div>
-                                </div>
-                            @endisset
-                        </div>
+                            </x-admin.form.skeleton>
+                        @endisset
+                        <x-admin.form.input name="invite_num" type="number" :label="trans('model.user.invite_num')" required />
+                        <x-admin.form.input-group name="reset_time" attribute="data-plugin=datepicker" :label="trans('model.user.reset_date')" :prependIcon="'icon wb-calendar'" :help="trans('admin.user.info.reset_date_hint')"
+                                                  input_grid="col-auto" />
+                        <x-admin.form.input-group name="expired_at" attribute="data-plugin=datepicker" :label="trans('model.user.expired_date')" :prependIcon="'icon wb-calendar'" :help="trans('admin.user.info.expired_date_hint')"
+                                                  input_grid="col-auto" />
+                        <x-admin.form.radio-group name="status" :label="trans('model.user.account_status')" :options="[-1 => trans('common.status.banned'), 0 => trans('common.status.inactive'), 1 => trans('common.status.normal')]" />
+                        <x-admin.form.select name="roles" :label="trans('model.user.role')" :options="$roles" multiple="true"
+                                             input_grid="col-xxl-4 col-xl-6 col-lg-8 col-md-6 col-sm-8" />
+                        <x-admin.form.input name="wechat" :label="trans('model.user.wechat')" />
+                        <x-admin.form.input name="qq" :label="trans('model.user.qq')" />
+                        <x-admin.form.textarea name="remark" :label="trans('model.user.remark')" />
+                    </div>
+                    <div class="col-lg-6">
+                        <h4 class="example-title">{{ trans('admin.user.info.proxy') }}</h4>
+                        <x-admin.form.input-group name="port" type="number" :placeholder="trans('common.random_generate')" :label="trans('model.user.port')" button='<i class="icon wb-refresh"></i>'
+                                                  buttonClass="btn-success" buttonOnclick="makePort()" />
+                        <x-admin.form.input-group name="vmess_id" :placeholder="trans('common.random_generate')" :label="trans('model.user.uuid')" button='<i class="icon wb-refresh"></i>'
+                                                  buttonClass="btn-success" buttonOnclick="makeUUID()" :help="trans('admin.user.info.uuid_hint')" />
+                        <x-admin.form.input-group name="passwd" :placeholder="trans('common.random_generate')" :label="trans('model.user.proxy_passwd')" button='<i class="icon wb-refresh"></i>'
+                                                  buttonClass="btn-success" buttonOnclick="makePasswd()" />
+                        <x-admin.form.input-group name="transfer_enable" type="number" :label="trans('model.user.usable_traffic')" required append="GB" />
+                        <x-admin.form.radio-group name="enable" :label="trans('model.user.proxy_status')" :options="[0 => trans('common.status.banned'), 1 => trans('common.status.enabled')]" />
+                        <hr>
+                        <x-admin.form.select name="method" :label="trans('model.user.proxy_method')" :options="$methods" input_grid="col-xxl-3 col-xl-5 col-lg-6 col-md-4 col-sm-auto" />
+                        <x-admin.form.select name="protocol" :label="trans('model.user.proxy_protocol')" :options="$protocols" input_grid="col-xxl-3 col-xl-5 col-lg-6 col-md-4 col-sm-auto" />
+                        <x-admin.form.select name="obfs" :label="trans('model.user.proxy_obfs')" :options="$obfs" input_grid="col-xxl-3 col-xl-5 col-lg-6 col-md-4 col-sm-auto" />
+                        <hr />
+                        <x-admin.form.input-group name="speed_limit" type="number" :label="trans('model.user.speed_limit')" append="Mbps" :help="trans('admin.zero_unlimited_hint')" />
+                        @isset($user)
+                            <hr />
+                            <x-admin.form.skeleton name="inviter" :label="trans('model.user.inviter')">
+                                <p class="form-control"> {{ $user->inviter->username ?? trans('common.none') }} </p>
+                            </x-admin.form.skeleton>
+                            <x-admin.form.skeleton name="created_at" :label="trans('model.user.created_date')">
+                                <p class="form-control"> {{ localized_date($user->created_at) }} </p>
+                            </x-admin.form.skeleton>
+                        @endisset
                         <div class="col-12 form-actions text-right">
                             <a class="btn btn-secondary" href="{{ route('admin.user.index') }}">{{ trans('common.back') }}</a>
                             <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
+                </div>
+            </x-admin.form.container>
+        </x-ui.panel>
     </div>
     @isset($user)
         @can('admin.user.updateCredit')
@@ -322,7 +92,7 @@
                             <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
                                 <span aria-hidden="true">×</span>
                             </button>
-                            <h4 class="modal-title">{{ trans('user.recharge') }}</h4>
+                            <h4 class="modal-title">{{ trans('admin.goods.type.top_up') }}</h4>
                         </div>
                         <form class="modal-body" method="post">
                             <div class="alert alert-danger" id="msg" style="display: none;"></div>
@@ -345,67 +115,52 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    @if (app()->getLocale() !== 'en')
+        <script src="/assets/global/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.{{ str_replace('_', '-', app()->getLocale()) }}.min.js" charset="UTF-8">
+        </script>
+    @endif
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
         $(document).ready(function() {
+            let userData = { // 默认值
+                level: 0,
+                status: 1,
+                transfer_enable: 1024,
+                enable: 1,
+                method: '{{ $methodDefault }}',
+                protocol: '{{ $protocolDefault }}',
+                obfs: '{{ $obfsDefault }}',
+                speed_limit: 200
+            }
             @isset($user)
-                $('#nickname').val('{{ $user->nickname }}');
-                $('#username').val('{{ $user->username }}');
-                $('#level').selectpicker('val', '{{ $user->level }}');
-                $('#group').selectpicker('val', '{{ $user->user_group_id }}');
-                $('#invite_num').val('{{ $user->invite_num }}');
-                $('#reset_time').val('{{ $user->reset_date }}');
-                $('#expired_at').val('{{ $user->expiration_date }}');
-                $("input[name='status'][value='{{ $user->status }}']").click();
-                $('#wechat').val('{{ $user->wechat }}');
-                $('#qq').val('{{ $user->qq }}');
-                $('#remark').val('{{ $user->remark }}');
-                $('#port').val('{{ $user->port }}');
-                $('#passwd').val('{{ $user->passwd }}');
-                $('#method').selectpicker('val', '{{ $user->method }}');
-                $('#transfer_enable').val('{{ $user->transfer_enable / GiB }}');
-                $("input[name='enable'][value='{{ $user->enable }}']").click();
-                $('#protocol').selectpicker('val', '{{ $user->protocol }}');
-                $('#obfs').selectpicker('val', '{{ $user->obfs }}');
-                $('#speed_limit').val('{{ $user->speed_limit }}');
-                $('#uuid').val('{{ $user->vmess_id }}');
-                $('#roles').selectpicker('val', @json($user->roles()->pluck('name')));
-            @else
-                $('#level').selectpicker('val', '0');
+                // 预处理需要特殊处理的字段
+                userData = {
+                    ...@json($user),
+                    expired_at: '{{ $user->expiration_date }}',
+                    transfer_enable: '{{ $user->transfer_enable / GiB }}',
+                    reset_time: '{{ $user->reset_date }}',
+                    roles: @json($user->roles()->pluck('name')),
+                }
             @endisset
-        });
 
-        $('.input-daterange>input').datepicker({
-            format: 'yyyy-mm-dd',
+            // 自动填充表单
+            autoPopulateForm(userData, {
+                skipFields: 'password'
+            });
         });
 
         @isset($user)
             @can('admin.user.switch')
                 // 切换用户身份
                 function switchToUser() {
-                    $.ajax({
-                        url: '{{ route('admin.user.switch', $user) }}',
-                        data: {
-                            '_token': '{{ csrf_token() }}'
-                        },
-                        dataType: 'json',
-                        method: 'POST',
+                    ajaxPost('{{ route('admin.user.switch', $user) }}', {}, {
                         success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false,
-                                }).then(() => window.location.href = '/');
-                            } else {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'error'
-                                }).then(() => window.location.reload());
-                            }
-                        },
+                            handleResponse(ret, {
+                                reload: ret.status === 'success',
+                                redirectUrl: ret.status === 'success' ? '/' : null
+                            });
+                        }
                     });
                 }
             @endcan
@@ -422,13 +177,9 @@
                         return false;
                     }
 
-                    $.ajax({
-                        url: '{{ route('admin.user.updateCredit', $user) }}',
-                        method: 'POST',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            amount: amount
-                        },
+                    ajaxPost('{{ route('admin.user.updateCredit', $user) }}', {
+                        amount: amount
+                    }, {
                         beforeSend: function() {
                             $('#msg').show().html('{{ trans('user.recharging') }}');
                         },
@@ -438,113 +189,36 @@
                                 return false;
                             } else {
                                 $('#handle_user_credit').modal('hide');
-                                if (ret.status === 'success') {
-                                    swal.fire({
-                                        title: ret.message,
-                                        icon: 'success',
-                                        timer: 1000,
-                                        showConfirmButton: false,
-                                    }).then(() => {
-                                        window.location.reload();
-                                    });
-                                } else {
-                                    swal.fire({
-                                        title: ret.message,
-                                        icon: 'error'
-                                    }).then(() => window.location.reload());
-                                }
+                                handleResponse(ret, {
+                                    reload: true
+                                });
                             }
                         },
                         error: function() {
                             $('#msg').show().html('{{ trans('common.request_failed') }}');
-                        },
-                        complete: function() {},
+                        }
                     });
                 }
             @endcan
         @endisset
 
-        // ajax同步提交
-        function Submit() {
-            // 用途
-            let usage = '';
-            $.each($('input:checkbox[name=\'usage\']'), function() {
-                if (this.checked) {
-                    usage += $(this).val() + ',';
-                }
-            });
 
-            $.ajax({
-                method: @isset($user)
-                    'PUT'
-                @else
-                    'POST'
-                @endisset ,
+        // 使用表单提交函数
+        function Submit() {
+            ajaxRequest({
                 url: '{{ isset($user) ? route('admin.user.update', $user) : route('admin.user.store') }}',
-                dataType: 'json',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    nickname: $('#nickname').val(),
-                    username: $('#username').val(),
-                    password: $('#password').val(),
-                    port: $('#port').val(),
-                    passwd: $('#passwd').val(),
-                    uuid: $('#uuid').val(),
-                    transfer_enable: $('#transfer_enable').val(),
-                    enable: $('input:radio[name=\'enable\']:checked').val(),
-                    method: $('#method option:selected').val(),
-                    protocol: $('#protocol option:selected').val(),
-                    obfs: $('#obfs option:selected').val(),
-                    speed_limit: $('#speed_limit').val(),
-                    wechat: $('#wechat').val(),
-                    qq: $('#qq').val(),
-                    expired_at: $('#expired_at').val(),
-                    remark: $('#remark').val(),
-                    level: $('#level').val(),
-                    user_group_id: $('#group').val(),
-                    roles: $('#roles').val(),
-                    reset_time: $('#reset_time').val(),
-                    invite_num: $('#invite_num').val(),
-                    status: $('input:radio[name=\'status\']:checked').val(),
-                },
+                method: '{{ isset($user) ? 'PUT' : 'POST' }}',
+                data: collectFormData('.form-horizontal'),
                 success: function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            title: '{{ trans('admin.hint') }}',
-                            text: '{{ trans('admin.user.update_help') }}',
-                            icon: 'question',
-                            showCancelButton: true,
-                            cancelButtonText: '{{ trans('common.close') }}',
-                            confirmButtonText: '{{ trans('common.confirm') }}',
-                        }).then((result) => {
-                            if (result.value) {
-                                window.location.href = '{!! route('admin.user.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') !!}';
-                            }
-                        }, );
-                    } else {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'error',
-                            timer: 1000,
-                            showConfirmButton: false
-                        });
-                    }
+                    handleResponse(ret, {
+                        redirectUrl: '{{ route('admin.user.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}'
+                    });
                 },
-                error: function(data) {
-                    let str = '';
-                    const errors = data.responseJSON;
-                    if ($.isEmptyObject(errors) === false) {
-                        $.each(errors.errors, function(index, value) {
-                            str += '<li>' + value + '</li>';
-                        });
-                        swal.fire({
-                            title: '{{ trans('admin.hint') }}',
-                            html: str,
-                            icon: 'error',
-                            confirmButtonText: '{{ trans('common.confirm') }}',
-                        });
-                    }
-                },
+                error: function(xhr) {
+                    handleErrors(xhr, {
+                        form: '.form-horizontal'
+                    });
+                }
             });
 
             return false;
@@ -552,22 +226,28 @@
 
         // 生成随机端口
         function makePort() {
-            $.get('{{ route('getPort') }}', function(ret) {
-                $('#port').val(ret);
+            ajaxGet('{{ route('getPort') }}', {}, {
+                success: function(ret) {
+                    $('#port').val(ret);
+                }
             });
         }
 
         // 生成UUID
         function makeUUID() {
-            $.get('{{ route('createUUID') }}', function(ret) {
-                $('#uuid').val(ret);
+            ajaxGet('{{ route('createUUID') }}', {}, {
+                success: function(ret) {
+                    $('#vmess_id').val(ret);
+                }
             });
         }
 
         // 生成随机密码
         function makePasswd() {
-            $.get('{{ route('createStr') }}', function(ret) {
-                $('#passwd').val(ret);
+            ajaxGet('{{ route('createStr') }}', {}, {
+                success: function(ret) {
+                    $('#passwd').val(ret);
+                }
             });
         }
     </script>

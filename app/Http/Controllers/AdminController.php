@@ -20,15 +20,10 @@ class AdminController extends Controller
         $past = strtotime('-'.sysConfig('expire_days').' days');
         $today = today();
 
-        $stats = cache()->remember('user_stats', now()->addMinutes(5), function () use ($today, $past) {
+        $stats = cache()->remember('user_stats', now()->addMinutes(5), function () use ($today) {
             $dailyTrafficUsage = NodeHourlyDataFlow::whereDate('created_at', $today)->sum(DB::raw('u + d'));
 
             return [
-                'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数
-                'inactiveUserCount' => User::whereEnable(1)->where('t', '<', $past)->count(), // 不活跃用户数
-                'expireWarningUserCount' => User::whereBetween('expired_at', [$today, today()->addDays(sysConfig('expire_days'))])->count(), // 临近过期用户数
-                'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
-                'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
                 'monthlyTrafficUsage' => formatBytes(NodeDailyDataFlow::whereNull('node_id')->whereMonth('created_at', now()->month)->sum(DB::raw('u + d'))),
                 'dailyTrafficUsage' => $dailyTrafficUsage ? formatBytes($dailyTrafficUsage) : 0,
                 'totalTrafficUsage' => formatBytes(NodeDailyDataFlow::whereNull('node_id')->where('created_at', '>=', now()->subDays(30))->sum(DB::raw('u + d'))),
@@ -39,14 +34,14 @@ class AdminController extends Controller
             'totalUserCount' => User::count(), // 总用户数
             'todayRegister' => User::whereDate('created_at', $today)->count(), // 今日注册用户
             'enableUserCount' => User::whereEnable(1)->count(), // 有效用户数
-            'activeUserCount' => $stats['activeUserCount'],
+            'activeUserCount' => User::where('t', '>=', $past)->count(), // 活跃用户数
             'payingUserCount' => User::has('paidOrders')->count(), // 付费用户数
-            'payingNewUserCount' => User::whereDate('created_at', $today)->has('paidOrders')->count(), // 不活跃用户数
-            'inactiveUserCount' => $stats['inactiveUserCount'],
-            'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数,
-            'expireWarningUserCount' => $stats['expireWarningUserCount'],
-            'largeTrafficUserCount' => $stats['largeTrafficUserCount'],
-            'flowAbnormalUserCount' => $stats['flowAbnormalUserCount'],
+            'payingNewUserCount' => User::whereDate('created_at', $today)->has('paidOrders')->count(), // 今日新增付费用户
+            'inactiveUserCount' => User::whereEnable(1)->where('t', '<', $past)->count(), // 不活跃用户数
+            'onlineUserCount' => User::where('t', '>=', strtotime('-10 minutes'))->count(), // 10分钟内在线用户数
+            'expireWarningUserCount' => User::whereBetween('expired_at', [$today, today()->addDays(sysConfig('expire_days'))])->count(), // 临近过期用户数
+            'largeTrafficUserCount' => User::whereRaw('(u + d)/transfer_enable >= 0.9')->where('status', '<>', -1)->count(), // 流量使用超过90%的用户
+            'flowAbnormalUserCount' => count((new UserHourlyDataFlow)->trafficAbnormal()), // 1小时内流量异常用户
             'nodeCount' => Node::count(),
             'abnormalNodeCount' => Node::whereStatus(0)->count(),
             'monthlyTrafficUsage' => $stats['monthlyTrafficUsage'],

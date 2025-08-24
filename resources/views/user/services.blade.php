@@ -164,7 +164,7 @@
             @endif
 
             itemControl(which_selected);
-            $('charge_type').val(which_selected);
+            $('#charge_type').val(which_selected);
         });
 
         // 切换充值方式
@@ -174,33 +174,11 @@
 
         // 重置流量
         function resetTraffic() {
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('user.reset_data.action') }}',
                 text: '{{ trans('user.reset_data.cost_tips', ['amount' => $renewTraffic]) }}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{ route('shop.resetTraffic') }}', {
-                        _token: '{{ csrf_token() }}'
-                    }, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false,
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                text: ret.data,
-                                icon: 'error',
-                            }).then(() => window.location.reload());
-                        }
-                    });
+                onConfirm: function() {
+                    ajaxPost('{{ route('shop.resetTraffic') }}');
                 }
             });
         }
@@ -212,26 +190,20 @@
             const amount = parseInt($('#amount').val());
             if (paymentType === 1) {
                 if (amount <= 0) {
-                    swal.fire({
+                    showMessage({
                         title: '{{ trans('common.error') }}',
                         text: '{{ trans('user.payment.error') }}',
                         icon: 'warning',
-                        timer: 1000,
                         showConfirmButton: false,
                     });
                     return false;
                 }
 
-                $.ajax({
-                    method: 'POST',
-                    url: '{{ route('purchase') }}',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        amount: amount,
-                        method: method,
-                        pay_type: pay_type
-                    },
-                    dataType: 'json',
+                ajaxPost('{{ route('purchase') }}', {
+                    amount: amount,
+                    method: method,
+                    pay_type: pay_type
+                }, {
                     beforeSend: function() {
                         $('#charge_msg').show().html('{{ trans('user.payment.creating') }}');
                     },
@@ -241,7 +213,7 @@
                             return false;
                         } else {
                             if (ret.data) {
-                                window.location.href = '{{ route('orderDetail', '') }}/' + ret.data;
+                                window.location.href = jsRoute('{{ route('orderDetail', 'PLACEHOLDER') }}', ret.data);
                             } else if (ret.url) {
                                 window.location.href = ret.url;
                             }
@@ -258,13 +230,9 @@
                     return false;
                 }
 
-                $.ajax({
-                    method: 'POST',
-                    url: '{{ route('shop.coupon.redeem') }}',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        coupon_sn: charge_coupon
-                    },
+                ajaxPost('{{ route('shop.coupon.redeem') }}', {
+                    coupon_sn: charge_coupon
+                }, {
                     beforeSend: function() {
                         $('#charge_msg').show().html("{{ trans('user.recharging') }}");
                     },

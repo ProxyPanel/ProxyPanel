@@ -14,7 +14,7 @@ class UserUpdateRequest extends FormRequest
             'password' => 'nullable|string',
             'port' => 'required|numeric|exclude_if:port,0|gt:0|unique:user,port,'.$this->user->id,
             'passwd' => 'required|string',
-            'uuid' => 'required|uuid',
+            'vmess_id' => 'nullable|uuid',
             'transfer_enable' => 'required|numeric|min:0',
             'enable' => 'required|boolean',
             'method' => 'required|exists:ss_config,name',

@@ -38,12 +38,8 @@ class CouponController extends Controller
     }
 
     public function show(Coupon $coupon): View
-    { // 优惠券列表
-        return view('admin.coupon.show', [
-            'coupon' => $coupon,
-            'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels' => Level::all()->pluck('name', 'level')->toArray(),
-        ]);
+    { // 优惠券详情
+        return view('admin.coupon.show', ['coupon' => $coupon, 'userGroups' => UserGroup::pluck('name', 'id'), 'levels' => Level::pluck('name', 'level')]);
     }
 
     public function store(CouponRequest $request): RedirectResponse
@@ -94,16 +90,13 @@ class CouponController extends Controller
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.generate'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage());
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage());
         }
     }
 
     public function create(): View
     { // 添加优惠券页面
-        return view('admin.coupon.create', [
-            'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels' => Level::all()->pluck('name', 'level')->toArray(),
-        ]);
+        return view('admin.coupon.create', ['userGroups' => UserGroup::pluck('name', 'id'), 'levels' => Level::pluck('name', 'level')]);
     }
 
     public function destroy(Coupon $coupon): JsonResponse

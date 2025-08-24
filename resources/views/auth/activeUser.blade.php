@@ -2,7 +2,7 @@
 @section('title', trans('common.active_item', ['attribute' => trans('common.account')]))
 @section('content')
     @if (Session::has('successMsg'))
-        <x-alert type="success" :message="Session::pull('successMsg')" />
+        <x-alert :message="Session::pull('successMsg')" />
     @endif
     @if ($errors->any())
         <x-alert type="danger" :message="$errors->all()" />

@@ -33,23 +33,14 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script>
-        const clipboard = new ClipboardJS(".mt-clipboard");
-
         function fetch(id) {
-            if (!document.getElementById("article_B" + id).innerHTML) {
-                $.ajax({
-                    method: "GET",
-                    url: '{{ route('admin.article.show', '') }}/' + id,
-                    beforeSend: function() {
-                        $("#loading_article").show();
-                    },
+            const articleElement = document.getElementById(`article_B${id}`);
+            if (!articleElement.innerHTML) {
+                ajaxGet(jsRoute('{{ route('admin.article.show', 'PLACEHOLDER') }}', id), {}, {
+                    loadingSelector: "#loading_article",
                     success: function(ret) {
-                        document.getElementById("article_B" + id).innerHTML = ret.content;
-                    },
-                    complete: function() {
-                        $("#loading_article").hide();
+                        articleElement.innerHTML = ret.content;
                     }
                 });
             }
@@ -59,51 +50,19 @@
 
         // 更换订阅地址
         function exchangeSubscribe() {
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('common.warning') }}',
                 html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}'
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{ route('changeSub') }}', {
-                        _token: '{{ csrf_token() }}'
-                    }, function(ret) {
-                        if (ret.status === "success") {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "success",
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "error"
-                            }).then(() => window.location.reload());
-                        }
-                    });
+                onConfirm: function() {
+                    ajaxPost('{{ route('changeSub') }}');
                 }
             });
         }
 
-        clipboard.on("success", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: "success",
-                timer: 1300,
-                showConfirmButton: false
-            });
-        });
-        clipboard.on("error", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false
-            });
+        $(document).on('click', '.mt-clipboard', function(e) {
+            e.preventDefault();
+            copyToClipboard($(this).text());
         });
     </script>
 @endsection

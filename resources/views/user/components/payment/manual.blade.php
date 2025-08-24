@@ -217,19 +217,11 @@
             // if you have reached the end of the form... :
             if (currentTab === x.length - 1 && n === 1) {
                 //...the form gets submitted:
-                $.post('{{ route('manual.inform', ['payment' => $payment->trade_no]) }}', {
-                    _token: '{{ csrf_token() }}'
-                }, function(ret) {
-                    if (ret.status === 'success') {
-                        swal.fire({
-                            text: ret.message,
-                            icon: 'success',
-                        }).then(() => window.location.href = '{{ route('invoice.index') }}');
-                    } else {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'error'
-                        }).then(() => window.location.reload());
+                ajaxPost('{{ route('manual.inform', ['payment' => $payment->trade_no]) }}', {}, {
+                    success: function(ret) {
+                        handleResponse(ret, {
+                            redirectUrl: '{{ route('invoice.index') }}'
+                        });
                     }
                 });
                 return false;

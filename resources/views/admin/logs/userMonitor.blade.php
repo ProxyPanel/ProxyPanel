@@ -1,28 +1,22 @@
 @extends('admin.layouts')
 @section('content')
     <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">{{ trans('admin.monitor.user') }}</h2>
-            </div>
-            <div class="alert alert-info alert-dismissible">
-                <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
-                    <span aria-hidden="true">&times;</span><span class="sr-only">{{ trans('common.close') }}</span>
-                </button>
-                <h4 class="block">{{ $username }}</h4>
-                {!! trans('admin.monitor.hint') !!}
-            </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <canvas id="dailyChart" role="img" aria-label="{{ trans('admin.monitor.daily_chart') }}"></canvas>
-                    </div>
-                    <div class="col-md-6">
-                        <canvas id="monthlyChart" role="img" aria-label="{{ trans('admin.monitor.monthly_chart') }}"></canvas>
-                    </div>
+        <x-ui.panel :title="trans('admin.monitor.user')">
+            <x-slot:alert>
+                <x-alert type="info">
+                    <h4 class="block">{{ $username }}</h4>
+                    {!! trans('admin.monitor.hint') !!}
+                </x-alert>
+            </x-slot:alert>
+            <div class="row">
+                <div class="col-md-6">
+                    <canvas id="dailyChart" role="img" aria-label="{{ trans('admin.monitor.daily_chart') }}"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <canvas id="monthlyChart" role="img" aria-label="{{ trans('admin.monitor.monthly_chart') }}"></canvas>
                 </div>
             </div>
-        </div>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')

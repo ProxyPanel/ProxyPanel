@@ -7,15 +7,8 @@
         <div class="card card-shadow">
             <div class="card-block p-30">
                 <form class="form-row">
-                    <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <select class="form-control" id="node_id" name="node_id" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                title="{{ trans('admin.logs.user_traffic.choose_node') }}" onchange="this.form.submit()">
-                            @foreach ($nodes as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
+                    <x-admin.filter.selectpicker class="col-xxl-2 col-md-3 col-sm-4" name="node_id" :title="trans('admin.logs.user_traffic.choose_node')" :options="$nodes" />
+                    <div class="form-group col-xxl-1 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
                         <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>

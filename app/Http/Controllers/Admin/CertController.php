@@ -15,19 +15,7 @@ class CertController extends Controller
 {
     public function index(): View
     {
-        $certs = NodeCertificate::orderBy('id')->paginate()->appends(request('page'));
-        foreach ($certs as $cert) {
-            if ($cert->pem) {
-                $certInfo = openssl_x509_parse($cert->pem);
-                if ($certInfo) {
-                    $cert->issuer = $certInfo['issuer']['O'] ?? null;
-                    $cert->from = date('Y-m-d', $certInfo['validFrom_time_t']) ?: null;
-                    $cert->to = date('Y-m-d', $certInfo['validTo_time_t']) ?: null;
-                }
-            }
-        }
-
-        return view('admin.node.cert.index', ['certs' => $certs]);
+        return view('admin.node.cert.index', ['certs' => NodeCertificate::orderBy('id')->paginate()->appends(request('page'))]);
     }
 
     public function store(CertRequest $request): RedirectResponse

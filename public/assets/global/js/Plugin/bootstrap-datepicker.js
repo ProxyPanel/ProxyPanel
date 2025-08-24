@@ -39,7 +39,9 @@
       key: "getDefaults",
       value: function getDefaults() {
         return {
-          autoclose: true
+          language: document.documentElement.lang || 'en',
+          autoclose: true,
+          todayHighlight: true
         };
       }
     }]);

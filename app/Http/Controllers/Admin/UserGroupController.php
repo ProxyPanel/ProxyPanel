@@ -37,8 +37,13 @@ class UserGroupController extends Controller
 
     public function edit(UserGroup $group): View
     {
+        $group->load('nodes:id');
+
         return view('admin.user.group.info', [
-            'group' => $group,
+            'group' => array_merge(
+                $group->toArray(),
+                ['nodes' => $group->nodes->pluck('id')->map('strval')->toArray()]
+            ),
             'nodes' => Node::whereStatus(1)->pluck('name', 'id'),
         ]);
     }

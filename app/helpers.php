@@ -49,8 +49,11 @@ if (! function_exists('formatBytes')) {
 
 // 秒转时间
 if (! function_exists('formatTime')) {
-    function formatTime(int $seconds): string
+    function formatTime(?int $seconds): string
     {
+        if (! $seconds) {
+            return '-';
+        }
         $interval = CarbonInterval::seconds($seconds);
 
         return $interval->cascade()->forHumans();
@@ -101,10 +104,32 @@ if (! function_exists('string_urlsafe')) {
 if (! function_exists('localized_date')) {
     function localized_date($date): string
     {
-        $locale = app()->getLocale();
-        $carbon = Carbon::parse($date);
-        $format = config("common.language.$locale.3") ?? 'Y-m-d';
+        if (! $date) {
+            return '';
+        }
 
-        return $carbon->format($format);
+        $carbon = Carbon::parse($date);
+        $locale = app()->getLocale();
+        $carbon->setLocale($locale);
+
+        // 获取原始字符串表示
+        $dateStr = is_string($date) ? $date : $date->format('Y-m-d H:i:s');
+
+        // 使用正则检测精度
+        if (preg_match('/(\d{4}-\d{2}-\d{2}) (\d{2}):(\d{2}):(\d{2})/', $dateStr, $matches)) {
+            $hours = (int) $matches[2];
+            $minutes = (int) $matches[3];
+            $seconds = (int) $matches[4];
+
+            if ($seconds > 0) {
+                return $carbon->isoFormat('LL LTS'); // 显示完整时间
+            }
+
+            if ($minutes > 0 || $hours > 0) {
+                return $carbon->isoFormat('LL LT'); // 显示到分钟
+            }
+        }
+
+        return $carbon->isoFormat('LL'); // 只显示日期
     }
 }

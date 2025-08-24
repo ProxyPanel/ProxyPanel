@@ -51,8 +51,7 @@
                                                     <a class="btn btn-primary" href="{{ $order->payment->url }}" target="_blank">{{ trans('user.pay') }}</a>
                                                 @endif
                                             @endif
-                                            <button class="btn btn-danger"
-                                                    onclick="closeOrder('{{ route('closeOrder', $order) }}')">{{ trans('common.cancel') }}</button>
+                                            <button class="btn btn-danger" onclick="closeOrder('{{ $order->id }}')">{{ trans('common.cancel') }}</button>
                                         @elseif ($order->status === 1)
                                             <button class="btn btn-primary" onClick="window.location.reload();">
                                                 <i class="icon wb-refresh" aria-hidden="true"></i></button>
@@ -81,74 +80,22 @@
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
         function closePlan() {
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('user.invoice.active_prepaid_question') }}',
                 html: `{!! trans('user.invoice.active_prepaid_tips') !!}`,
                 icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'POST',
-                        url: '{{ route('invoice.activate') }}',
-                        dataType: 'json',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false,
-                                }).then(() => window.location.reload());
-                            } else {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                    });
+                onConfirm: function() {
+                    ajaxPost('{{ route('invoice.activate') }}');
                 }
             });
         }
 
-        function closeOrder(url) {
-            swal.fire({
+        function closeOrder(id) {
+            showConfirm({
                 title: '{{ trans('common.close_item', ['attribute' => trans('user.invoice.attribute')]) }}？',
                 icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'PUT',
-                        url: url,
-                        dataType: 'json',
-                        data: {
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false,
-                                }).then(() => window.location.reload());
-                            } else {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'error'
-                                });
-                            }
-                        },
-                    });
+                onConfirm: function() {
+                    ajaxPut(jsRoute('{{ route('closeOrder', 'PLACEHOLDER') }}', id));
                 }
             });
         }

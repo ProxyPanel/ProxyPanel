@@ -19,27 +19,11 @@ class Helpers
 {
     private static array $denyPorts = [1068, 1109, 1434, 3127, 3128, 3129, 3130, 3332, 4444, 5554, 6669, 8080, 8081, 8082, 8181, 8282, 9996, 17185, 24554, 35601, 60177, 60179]; // 不生成的端口
 
-    public static function methodList()
-    { // 加密方式
-        return SsConfig::type(1)->get();
-    }
-
-    public static function protocolList()
-    { // 协议
-        return SsConfig::type(2)->get();
-    }
-
-    public static function obfsList()
-    { // 混淆
-        return SsConfig::type(3)->get();
-    }
-
     public static function makeSubscribeCode(): string
     { // 生成用户的订阅码
-        $code = Str::random();
-        if (UserSubscribe::whereCode($code)->exists()) {
-            $code = self::makeSubscribeCode();
-        }
+        do {
+            $code = Str::random();
+        } while (UserSubscribe::whereCode($code)->exists());
 
         return $code;
     }
@@ -91,8 +75,14 @@ class Helpers
         }
 
         if ($isRandPort) {
+            $attempts = 0;
             do {
                 $port = random_int($minPort, $maxPort);
+                $attempts++;
+                // 防止无限循环
+                if ($attempts > 100) {
+                    throw new RuntimeException('Unable to find available port after 100 attempts.');
+                }
             } while (in_array($port, $occupiedPorts, true));
         } else {
             $port = $minPort;
@@ -109,23 +99,38 @@ class Helpers
 
     public static function getDefaultMethod(): string
     { // 获取默认加密方式
-        $config = SsConfig::default()->type(1)->first();
+        static $method = null;
 
-        return $config->name ?? 'aes-256-cfb';
+        if ($method === null) {
+            $config = SsConfig::default()->type(1)->first();
+            $method = $config->name ?? 'aes-256-cfb';
+        }
+
+        return $method;
     }
 
     public static function getDefaultProtocol(): string
     { // 获取默认协议
-        $config = SsConfig::default()->type(2)->first();
+        static $protocol = null;
 
-        return $config->name ?? 'origin';
+        if ($protocol === null) {
+            $config = SsConfig::default()->type(2)->first();
+            $protocol = $config->name ?? 'origin';
+        }
+
+        return $protocol;
     }
 
     public static function getDefaultObfs(): string
     { // 获取默认混淆
-        $config = SsConfig::default()->type(3)->first();
+        static $obfs = null;
 
-        return $config->name ?? 'plain';
+        if ($obfs === null) {
+            $config = SsConfig::default()->type(3)->first();
+            $obfs = $config->name ?? 'plain';
+        }
+
+        return $obfs;
     }
 
     /**
@@ -141,17 +146,7 @@ class Helpers
      */
     public static function addNotificationLog(string $title, string $content, int $type, int $status = 1, ?string $error = null, ?string $msgId = null, string $address = 'admin'): int
     {
-        $log = new NotificationLog;
-        $log->type = $type;
-        $log->msg_id = $msgId;
-        $log->address = $address;
-        $log->title = $title;
-        $log->content = $content;
-        $log->status = $status;
-        $log->error = $error;
-        $log->save();
-
-        return $log->id;
+        return NotificationLog::create(['type' => $type, 'msg_id' => $msgId, 'address' => $address, 'title' => $title, 'content' => $content, 'status' => $status, 'error' => $error])->id;
     }
 
     /**
@@ -164,13 +159,7 @@ class Helpers
      */
     public static function addCouponLog(string $description, int $couponId, ?int $goodsId = null, ?int $orderId = null): bool
     {
-        $log = new CouponLog;
-        $log->coupon_id = $couponId;
-        $log->goods_id = $goodsId;
-        $log->order_id = $orderId;
-        $log->description = $description;
-
-        return $log->save();
+        return CouponLog::create(['coupon_id' => $couponId, 'goods_id' => $goodsId, 'order_id' => $orderId, 'description' => $description])->wasRecentlyCreated;
     }
 
     /**
@@ -185,16 +174,7 @@ class Helpers
      */
     public static function addUserCreditLog(int $userId, ?int $orderId, float|int $before, float|int $after, float|int $amount, ?string $description = null): bool
     {
-        $log = new UserCreditLog;
-        $log->user_id = $userId;
-        $log->order_id = $orderId;
-        $log->before = $before;
-        $log->after = $after;
-        $log->amount = $amount;
-        $log->description = $description;
-        $log->created_at = now();
-
-        return $log->save();
+        return UserCreditLog::create(['user_id' => $userId, 'order_id' => $orderId, 'before' => $before, 'after' => $after, 'amount' => $amount, 'description' => $description, 'created_at' => now()])->wasRecentlyCreated;
     }
 
     /**
@@ -208,14 +188,7 @@ class Helpers
      */
     public static function addUserTrafficModifyLog(int $userId, int $before, int $after, ?string $description = null, ?int $orderId = null): bool
     {
-        $log = new UserDataModifyLog;
-        $log->user_id = $userId;
-        $log->order_id = $orderId;
-        $log->before = $before;
-        $log->after = $after;
-        $log->description = $description;
-
-        return $log->save();
+        return UserDataModifyLog::create(['user_id' => $userId, 'order_id' => $orderId, 'before' => $before, 'after' => $after, 'description' => $description])->wasRecentlyCreated;
     }
 
     /**
@@ -230,15 +203,7 @@ class Helpers
      */
     public static function addMarketing(string $receiver, int $type, string $title, string $content, int $status = 1, ?string $error = null): bool
     {
-        $marketing = new Marketing;
-        $marketing->type = $type;
-        $marketing->receiver = $receiver;
-        $marketing->title = $title;
-        $marketing->content = $content;
-        $marketing->error = $error;
-        $marketing->status = $status;
-
-        return $marketing->save();
+        return Marketing::create(['type' => $type, 'receiver' => $receiver, 'title' => $title, 'content' => $content, 'error' => $error, 'status' => $status])->wasRecentlyCreated;
     }
 
     /**

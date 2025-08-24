@@ -15,7 +15,7 @@ class EmailFilterController extends Controller
 {
     public function index(): View
     { // 邮箱过滤列表
-        return view('admin.config.emailFilter', ['filters' => EmailFilter::orderByDesc('id')->paginate()]);
+        return view('admin.config.emailFilter', ['filters' => EmailFilter::select(['id', 'type', 'words'])->orderByDesc('id')->paginate()]);
     }
 
     public function store(Request $request): JsonResponse

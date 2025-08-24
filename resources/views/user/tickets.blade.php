@@ -137,50 +137,37 @@
             const content = $('#content').val();
 
             if (title.trim() === '') {
-                swal.fire({
+                showMessage({
                     title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.title')])) }}!',
-                    icon: 'warning',
+                    icon: 'warning'
                 });
                 return false;
             }
 
             if (content.trim() === '') {
-                swal.fire({
+                showMessage({
                     title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}!',
-                    icon: 'warning',
+                    icon: 'warning'
                 });
                 return false;
             }
 
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('user.ticket.submit_tips') }}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{ route('ticket.store') }}', {
-                        _token: '{{ csrf_token() }}',
+                onConfirm: function() {
+                    ajaxPost('{{ route('ticket.store') }}', {
                         title: title,
-                        content: content,
-                    }, function(ret) {
-                        if (ret.status === 'success') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false,
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'error'
-                            }).then(() => window.location.reload());
-                        }
+                        content: content
                     });
                 }
             });
         }
+
+        $(document).ready(function() {
+            $('#create_ticket_form').on('submit', function(e) {
+                e.preventDefault();
+                createTicket();
+            });
+        });
     </script>
 @endsection

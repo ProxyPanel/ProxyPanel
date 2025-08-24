@@ -78,469 +78,286 @@
             </div>
         </div>
     </nav>
-    <div class="site-menubar {{ config('theme.sidebar') }}">
-        <div class="site-menubar-body">
-            <ul class="site-menu" data-plugin="menu">
-                @can('admin.index')
-                    <li class="site-menu-item {{ request()->routeIs('admin.index') ? 'active open' : '' }}">
-                        <a href="{{ route('admin.index') }}">
-                            <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.dashboard') }}</span>
-                        </a>
-                    </li>
-                @endcan
-                @canany(['admin.user.index', 'admin.user.group.index', 'admin.log.credit', 'admin.subscribe.index'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.user.*', 'admin.log.credit', 'admin.subscribe.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-user" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.user.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.user.index')
-                                <li
-                                    class="site-menu-item {{ request()->routeIs('admin.user.index', 'admin.user.edit', 'admin.user.monitor', 'admin.user.online', 'admin.user.online', 'admin.user.export') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.user.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.user.list') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.user.oauth')
-                                <li class="site-menu-item {{ request()->routeIs('admin.user.oauth') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.user.oauth') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.user.oauth') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.user.group.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.user.group.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.user.group.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.user.group') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.credit')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.credit') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.credit') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.user.credit_log') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.subscribe.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.subscribe.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.subscribe.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.user.subscribe') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.permission.index', 'admin.role.index'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.permission.*', 'admin.role.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-users" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.rbac.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.permission.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.permission.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.permission.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.rbac.permission') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.role.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.role.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.role.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.rbac.role') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.ticket.index', 'admin.article.index', 'admin.marketing.index'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.ticket.*', 'admin.article.*', 'admin.marketing.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.customer_service.attribute') }}</span>
-                            @can('admin.ticket.index')
-                                @php
-                                    $openTicket = Cache::rememberForever('open_ticket_count', static function () {
-                                        return App\Models\Ticket::whereStatus(0)->count();
-                                    });
-                                @endphp
-                                @if ($openTicket)
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success">{{ $openTicket }}</span>
-                                    </div>
-                                @endif
-                            @endcan
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.ticket.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.ticket.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.ticket.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.ticket') }}</span>
-                                        @if ($openTicket > 0)
-                                            <div class="site-menu-label">
-                                                <span class="badge badge-danger badge-round mr-25">{{ $openTicket }}</span>
-                                            </div>
-                                        @endif
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.article.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.article.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.article.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.article') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.marketing.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.marketing.index') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.marketing.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.customer_service.marketing') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.node.index', 'admin.node.auth.index', 'admin.node.cert.index'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.node.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.node.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.node.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.node.index', 'admin.node.create', 'admin.node.edit') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.node.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.node.list') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.node.auth.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.node.auth.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.node.auth.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.node.auth') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.node.cert.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.node.cert.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.node.cert.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.node.cert') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.rule.index', 'admin.rule.group.index', 'admin.rule.log'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.rule.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-eye" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.rule.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.rule.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.rule.index') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.rule.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.rule.list') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.rule.group.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.rule.group.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.rule.group.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.rule.group') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.rule.log')
-                                <li class="site-menu-item {{ request()->routeIs('admin.rule.log') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.rule.log') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.rule.trigger') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.goods.index', 'admin.coupon.index', 'admin.order'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.goods.*', 'admin.coupon.*', 'admin.order') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.shop.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.goods.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.goods.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.goods.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.shop.goods') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.coupon.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.coupon.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.coupon.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.shop.coupon') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.order')
-                                <li class="site-menu-item {{ request()->routeIs('admin.order') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.order') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.shop.order') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.invite.index', 'admin.aff.index', 'admin.aff.rebate'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.invite.*', 'admin.aff.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-thumb-up" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.promotion.attribute') }}</span>
-                            @can('admin.aff.index')
-                                @php
-                                    $openApply = Cache::rememberForever('open_referral_apply_count', static function () {
-                                        return App\Models\ReferralApply::whereStatus(0)->count();
-                                    });
-                                @endphp
-                                @if ($openApply)
-                                    <div class="site-menu-badge">
-                                        <span class="badge badge-pill badge-success">{{ $openApply }}</span>
-                                    </div>
-                                @endif
-                            @endcan
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.invite.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.invite.index') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.invite.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.promotion.invite') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.aff.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.aff.index', 'admin.aff.detail') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.aff.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.promotion.withdraw') }}</span>
-                                        @if ($openApply > 0)
-                                            <div class="site-menu-label">
-                                                <span class="badge badge-danger badge-round mr-25">{{ $openApply }}</span>
-                                            </div>
-                                        @endif
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.aff.rebate')
-                                <li class="site-menu-item {{ request()->routeIs('admin.aff.rebate') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.aff.rebate') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.promotion.rebate_flow') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.report.accounting', 'admin.report.userAnalysis', 'admin.report.siteAnalysis'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.report.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-stats-bars" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.analysis.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.report.accounting')
-                                <li class="site-menu-item {{ request()->routeIs('admin.report.accounting') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.report.accounting') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.accounting') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.report.userAnalysis')
-                                <li class="site-menu-item {{ request()->routeIs('admin.report.userAnalysis') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.report.userAnalysis') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.user_flow') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.report.nodeAnalysis')
-                                <li class="site-menu-item {{ request()->routeIs('admin.report.nodeAnalysis') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.report.nodeAnalysis') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.node_flow') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.report.siteAnalysis')
-                                <li class="site-menu-item {{ request()->routeIs('admin.report.siteAnalysis') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.report.siteAnalysis') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.analysis.site_flow') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.log.traffic', 'admin.log.flow', 'admin.log.ban', 'admin.log.ip', 'admin.log.online', 'admin.log.notify', 'admin.payment.callback'])
-                    <li
-                        class="site-menu-item has-sub {{ request()->routeIs('admin.log.traffic', 'admin.log.flow', 'admin.log.ban', 'admin.log.ip', 'admin.log.online', 'admin.log.notify', 'admin.payment.callback') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-calendar" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.log.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.log.traffic')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.traffic') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.traffic') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.traffic') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.flow')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.flow') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.flow') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.traffic_flow') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.ban')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.ban') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.ban') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.service_ban') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.ip')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.ip') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.ip') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.online_logs') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.online')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.online') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.online') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.online_monitor') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.log.notify')
-                                <li class="site-menu-item {{ request()->routeIs('admin.log.notify') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.log.notify') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.notify') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.payment.callback')
-                                <li class="site-menu-item {{ request()->routeIs('admin.payment.callback') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.payment.callback') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.payment_callback') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('log-viewer')
-                                <li class="site-menu-item">
-                                    <a href="{{ route('log-viewer::dashboard') }}" target="_blank">
-                                        <span class="site-menu-title">{{ trans('admin.menu.log.system') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('viewHorizon')
-                                <li class="site-menu-item">
-                                    <a href="{{ route('horizon.index') }}" target="_blank">
-                                        <span class="site-menu-title"> Horizon </span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @if (config('app.debug') && config('app.env') === 'local')
-                                @can('viewTelescope')
-                                    <li class="site-menu-item">
-                                        <a href="{{ route('telescope') }}" target="_blank">
-                                            <span class="site-menu-title"> Telescope </span>
-                                        </a>
-                                    </li>
-                                @endcan
-                            @endif
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.tools.decompile', 'admin.tools.convert', 'admin.tools.import', 'admin.tools.analysis'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.tools.*') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-briefcase" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.tools.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.tools.decompile')
-                                <li class="site-menu-item {{ request()->routeIs('admin.tools.decompile') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.tools.decompile') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.tools.decompile') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.tools.convert')
-                                <li class="site-menu-item {{ request()->routeIs('admin.tools.convert') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.tools.convert') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.tools.convert') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.tools.import')
-                                <li class="site-menu-item {{ request()->routeIs('admin.tools.import') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.tools.import') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.tools.import') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.tools.analysis')
-                                <li class="site-menu-item {{ request()->routeIs('admin.tools.analysis') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.tools.analysis') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.tools.analysis') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-                @canany(['admin.config.filter.index', 'admin.config.index', 'admin.system.index'])
-                    <li class="site-menu-item has-sub {{ request()->routeIs('admin.config.*', 'admin.system.index') ? 'active open' : '' }}">
-                        <a href="javascript:void(0)">
-                            <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('admin.menu.setting.attribute') }}</span>
-                        </a>
-                        <ul class="site-menu-sub">
-                            @can('admin.config.filter.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.config.filter.index') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.config.filter.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.setting.email_suffix') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.config.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.config.common.*') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.config.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.setting.universal') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                            @can('admin.system.index')
-                                <li class="site-menu-item {{ request()->routeIs('admin.system.index') ? 'active open' : '' }}">
-                                    <a href="{{ route('admin.system.index') }}">
-                                        <span class="site-menu-title">{{ trans('admin.menu.setting.system') }}</span>
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </li>
-                @endcanany
-            </ul>
-        </div>
-    </div>
+    @php
+        $apply_count = auth()->user()->can('admin.aff.index')
+            ? Cache::rememberForever('open_referral_apply_count', static function () {
+                return App\Models\ReferralApply::whereStatus(0)->count();
+            })
+            : null;
+        $ticket_count = auth()->user()->can('admin.ticket.index')
+            ? Cache::rememberForever('open_ticket_count', static function () {
+                return App\Models\Ticket::whereStatus(0)->count();
+            })
+            : null;
+        $env = config('app.env') === 'local' && config('app.debug');
+    @endphp
+    <x-ui.site.menubar :items="[
+        ['icon' => 'wb-dashboard', 'route' => 'admin.index', 'text' => trans('admin.menu.dashboard'), 'can' => 'admin.index'],
+        [
+            'icon' => 'wb-user',
+            'text' => trans('admin.menu.user.attribute'),
+            'active' => ['admin.user.*', 'admin.log.credit', 'admin.subscribe.*'],
+            'can' => ['admin.user.index', 'admin.user.group.index', 'admin.log.credit', 'admin.subscribe.index'],
+            'children' => [
+                [
+                    'route' => 'admin.user.index',
+                    'active' => ['admin.user.index', 'admin.user.edit', 'admin.user.monitor', 'admin.user.online', 'admin.user.online', 'admin.user.export'],
+                    'text' => trans('admin.menu.user.list'),
+                    'can' => 'admin.user.index',
+                ],
+                ['route' => 'admin.user.oauth', 'active' => 'admin.user.oauth', 'text' => trans('admin.menu.user.oauth'), 'can' => 'admin.user.oauth'],
+                [
+                    'route' => 'admin.user.group.index',
+                    'active' => 'admin.user.group.*',
+                    'text' => trans('admin.menu.user.group'),
+                    'can' => 'admin.user.group.index',
+                ],
+                ['route' => 'admin.log.credit', 'active' => 'admin.log.credit', 'text' => trans('admin.menu.user.credit_log'), 'can' => 'admin.log.credit'],
+                [
+                    'route' => 'admin.subscribe.index',
+                    'active' => 'admin.subscribe.*',
+                    'text' => trans('admin.menu.user.subscribe'),
+                    'can' => 'admin.subscribe.index',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-users',
+            'text' => trans('admin.menu.rbac.attribute'),
+            'active' => ['admin.permission.*', 'admin.role.*'],
+            'can' => ['admin.permission.index', 'admin.role.index'],
+            'children' => [
+                [
+                    'route' => 'admin.permission.index',
+                    'active' => 'admin.permission.*',
+                    'text' => trans('admin.menu.rbac.permission'),
+                    'can' => 'admin.permission.index',
+                ],
+                ['route' => 'admin.role.index', 'active' => 'admin.role.*', 'text' => trans('admin.menu.rbac.role'), 'can' => 'admin.role.index'],
+            ],
+        ],
+        [
+            'icon' => 'wb-chat-working',
+            'text' => trans('admin.menu.customer_service.attribute'),
+            'active' => ['admin.ticket.*', 'admin.article.*', 'admin.marketing.*'],
+            'can' => ['admin.ticket.index', 'admin.article.index', 'admin.marketing.index'],
+            'badge' => $ticket_count,
+            'children' => [
+                [
+                    'route' => 'admin.ticket.index',
+                    'active' => 'admin.ticket.*',
+                    'text' => trans('admin.menu.customer_service.ticket'),
+                    'can' => 'admin.ticket.index',
+                    'badge' => $ticket_count,
+                ],
+                [
+                    'route' => 'admin.article.index',
+                    'active' => 'admin.article.*',
+                    'text' => trans('admin.menu.customer_service.article'),
+                    'can' => 'admin.article.index',
+                ],
+                [
+                    'route' => 'admin.marketing.index',
+                    'active' => 'admin.marketing.*',
+                    'text' => trans('admin.menu.customer_service.marketing'),
+                    'can' => 'admin.marketing.index',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-cloud',
+            'text' => trans('admin.menu.node.attribute'),
+            'active' => ['admin.node.*', 'admin.node.auth.*', 'admin.node.cert.*'],
+            'can' => ['admin.node.index', 'admin.node.auth.index', 'admin.node.cert.index'],
+            'children' => [
+                [
+                    'route' => 'admin.node.index',
+                    'active' => ['admin.node.index', 'admin.node.create', 'admin.node.edit'],
+                    'text' => trans('admin.menu.node.list'),
+                    'can' => 'admin.node.index',
+                ],
+                [
+                    'route' => 'admin.node.auth.index',
+                    'active' => 'admin.node.auth.*',
+                    'text' => trans('admin.menu.node.auth'),
+                    'can' => 'admin.node.auth.index',
+                ],
+                [
+                    'route' => 'admin.node.cert.index',
+                    'active' => 'admin.node.cert.*',
+                    'text' => trans('admin.menu.node.cert'),
+                    'can' => 'admin.node.cert.index',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-eye',
+            'text' => trans('admin.menu.rule.attribute'),
+            'active' => 'admin.rule.*',
+            'can' => ['admin.rule.index', 'admin.rule.group.index', 'admin.rule.log'],
+            'children' => [
+                ['route' => 'admin.rule.index', 'active' => 'admin.rule.index', 'text' => trans('admin.menu.rule.list'), 'can' => 'admin.rule.index'],
+                [
+                    'route' => 'admin.rule.group.index',
+                    'active' => 'admin.rule.group.*',
+                    'text' => trans('admin.menu.rule.group'),
+                    'can' => 'admin.rule.group.index',
+                ],
+                ['route' => 'admin.rule.log', 'active' => 'admin.rule.log', 'text' => trans('admin.menu.rule.trigger'), 'can' => 'admin.rule.log'],
+            ],
+        ],
+        [
+            'icon' => 'wb-shopping-cart',
+            'text' => trans('admin.menu.shop.attribute'),
+            'active' => ['admin.goods.*', 'admin.coupon.*', 'admin.order'],
+            'can' => ['admin.goods.index', 'admin.coupon.index', 'admin.order'],
+            'children' => [
+                ['route' => 'admin.goods.index', 'active' => 'admin.goods.*', 'text' => trans('admin.menu.shop.goods'), 'can' => 'admin.goods.index'],
+                ['route' => 'admin.coupon.index', 'active' => 'admin.coupon.*', 'text' => trans('admin.menu.shop.coupon'), 'can' => 'admin.coupon.index'],
+                ['route' => 'admin.order', 'active' => 'admin.order', 'text' => trans('admin.menu.shop.order'), 'can' => 'admin.order'],
+            ],
+        ],
+        [
+            'icon' => 'wb-thumb-up',
+            'text' => trans('admin.menu.promotion.attribute'),
+            'active' => ['admin.invite.*', 'admin.aff.*'],
+            'can' => ['admin.invite.index', 'admin.aff.index', 'admin.aff.rebate'],
+            'badge' => $apply_count,
+            'children' => [
+                ['route' => 'admin.invite.index', 'active' => 'admin.invite.*', 'text' => trans('admin.menu.promotion.invite'), 'can' => 'admin.invite.index'],
+                [
+                    'route' => 'admin.aff.index',
+                    'active' => ['admin.aff.index', 'admin.aff.detail'],
+                    'text' => trans('admin.menu.promotion.withdraw'),
+                    'can' => 'admin.aff.index',
+                    'badge' => $apply_count,
+                ],
+                [
+                    'route' => 'admin.aff.rebate',
+                    'active' => 'admin.aff.rebate',
+                    'text' => trans('admin.menu.promotion.rebate_flow'),
+                    'can' => 'admin.aff.rebate',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-stats-bars',
+            'text' => trans('admin.menu.analysis.attribute'),
+            'active' => 'admin.report.*',
+            'can' => ['admin.report.accounting', 'admin.report.userAnalysis', 'admin.report.nodeAnalysis', 'admin.report.siteAnalysis'],
+            'children' => [
+                [
+                    'route' => 'admin.report.accounting',
+                    'active' => 'admin.report.accounting',
+                    'text' => trans('admin.menu.analysis.accounting'),
+                    'can' => 'admin.report.accounting',
+                ],
+                [
+                    'route' => 'admin.report.userAnalysis',
+                    'active' => 'admin.report.userAnalysis',
+                    'text' => trans('admin.menu.analysis.user_flow'),
+                    'can' => 'admin.report.userAnalysis',
+                ],
+                [
+                    'route' => 'admin.report.nodeAnalysis',
+                    'active' => 'admin.report.nodeAnalysis',
+                    'text' => trans('admin.menu.analysis.node_flow'),
+                    'can' => 'admin.report.nodeAnalysis',
+                ],
+                [
+                    'route' => 'admin.report.siteAnalysis',
+                    'active' => 'admin.report.siteAnalysis',
+                    'text' => trans('admin.menu.analysis.site_flow'),
+                    'can' => 'admin.report.siteAnalysis',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-calendar',
+            'text' => trans('admin.menu.log.attribute'),
+            'active' => [
+                'admin.log.traffic',
+                'admin.log.flow',
+                'admin.log.ban',
+                'admin.log.ip',
+                'admin.log.online',
+                'admin.log.notify',
+                'admin.payment.callback',
+            ],
+            'can' => ['admin.log.traffic', 'admin.log.flow', 'admin.log.ban', 'admin.log.ip', 'admin.log.online', 'admin.log.notify', 'admin.payment.callback'],
+            'children' => [
+                ['route' => 'admin.log.traffic', 'active' => 'admin.log.traffic', 'text' => trans('admin.menu.log.traffic'), 'can' => 'admin.log.traffic'],
+                ['route' => 'admin.log.flow', 'active' => 'admin.log.flow', 'text' => trans('admin.menu.log.traffic_flow'), 'can' => 'admin.log.flow'],
+                ['route' => 'admin.log.ban', 'active' => 'admin.log.ban', 'text' => trans('admin.menu.log.service_ban'), 'can' => 'admin.log.ban'],
+                ['route' => 'admin.log.ip', 'active' => 'admin.log.ip', 'text' => trans('admin.menu.log.online_logs'), 'can' => 'admin.log.ip'],
+                ['route' => 'admin.log.online', 'active' => 'admin.log.online', 'text' => trans('admin.menu.log.online_monitor'), 'can' => 'admin.log.online'],
+                ['route' => 'admin.log.notify', 'active' => 'admin.log.notify', 'text' => trans('admin.menu.log.notify'), 'can' => 'admin.log.notify'],
+                [
+                    'route' => 'admin.payment.callback',
+                    'active' => 'admin.payment.callback',
+                    'text' => trans('admin.menu.log.payment_callback'),
+                    'can' => 'admin.payment.callback',
+                ],
+                ['route' => 'log-viewer::dashboard', 'text' => trans('admin.menu.log.system'), 'can' => 'log-viewer'],
+                ['route' => 'horizon.index', 'text' => 'Horizon', 'can' => 'viewHorizon'],
+                ['route' => 'telescope', 'text' => 'Telescope', 'can' => 'viewTelescope', 'show' => $env],
+            ],
+        ],
+        [
+            'icon' => 'wb-briefcase',
+            'text' => trans('admin.menu.tools.attribute'),
+            'active' => 'admin.tools.*',
+            'can' => ['admin.tools.decompile', 'admin.tools.convert', 'admin.tools.import', 'admin.tools.analysis'],
+            'children' => [
+                [
+                    'route' => 'admin.tools.decompile',
+                    'active' => 'admin.tools.decompile',
+                    'text' => trans('admin.menu.tools.decompile'),
+                    'can' => 'admin.tools.decompile',
+                ],
+                [
+                    'route' => 'admin.tools.convert',
+                    'active' => 'admin.tools.convert',
+                    'text' => trans('admin.menu.tools.convert'),
+                    'can' => 'admin.tools.convert',
+                ],
+                ['route' => 'admin.tools.import', 'active' => 'admin.tools.import', 'text' => trans('admin.menu.tools.import'), 'can' => 'admin.tools.import'],
+                [
+                    'route' => 'admin.tools.analysis',
+                    'active' => 'admin.tools.analysis',
+                    'text' => trans('admin.menu.tools.analysis'),
+                    'can' => 'admin.tools.analysis',
+                ],
+            ],
+        ],
+        [
+            'icon' => 'wb-settings',
+            'text' => trans('admin.menu.setting.attribute'),
+            'active' => ['admin.config.*', 'admin.system.index'],
+            'can' => ['admin.config.filter.index', 'admin.config.index', 'admin.system.index'],
+            'children' => [
+                [
+                    'route' => 'admin.config.filter.index',
+                    'active' => 'admin.config.filter.index',
+                    'text' => trans('admin.menu.setting.email_suffix'),
+                    'can' => 'admin.config.filter.index',
+                ],
+                [
+                    'route' => 'admin.config.index',
+                    'active' => 'admin.config.index',
+                    'text' => trans('admin.menu.setting.universal'),
+                    'can' => 'admin.config.index',
+                ],
+                [
+                    'route' => 'admin.system.index',
+                    'active' => 'admin.system.index',
+                    'text' => trans('admin.menu.setting.system'),
+                    'can' => 'admin.system.index',
+                ],
+            ],
+        ],
+    ]" />
+
     <div class="page">
         @yield('content')
     </div>
@@ -548,6 +365,23 @@
 @section('layout_javascript')
     <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js"></script>
     <script>
+        // 全局变量，用于common.js
+        const CSRF_TOKEN = '{{ csrf_token() }}';
+        const TRANS = {
+            warning: '{{ trans('common.warning') }}',
+            confirm: {
+                delete: '{{ trans('admin.confirm.delete', ['attribute' => '{attribute}', 'name' => '{name}']) }}'
+            },
+            btn: {
+                close: '{{ trans('common.close') }}',
+                confirm: '{{ trans('common.confirm') }}'
+            },
+            copy: {
+                success: '{{ trans('common.copy.success') }}',
+                failed: '{{ trans('common.copy.failed') }}'
+            }
+        };
+
         const $buoop = {
             required: {
                 e: 11,
@@ -558,19 +392,22 @@
             },
             insecure: true,
             unsupported: true,
-            api: 2024.07,
-        }
+            api: 2024.07
+        };
 
         function $buo_f() {
-            const e = document.createElement('script')
+            const e = document.createElement("script");
             e.src = "//browser-update.org/update.min.js";
             document.body.appendChild(e);
         }
+
         try {
-            document.addEventListener("DOMContentLoaded", $buo_f, false)
+            document.addEventListener("DOMContentLoaded", $buo_f, false);
         } catch (e) {
-            window.attachEvent("onload", $buo_f)
+            window.attachEvent("onload", $buo_f);
         }
     </script>
+    <script src="/assets/js/config/common.js"></script>
+    <script src="/assets/js/config/admin.js"></script>
     @yield('javascript')
 @endsection

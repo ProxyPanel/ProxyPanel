@@ -20,29 +20,32 @@ class ShopController extends Controller
     public function index(): View
     { // 商品列表
         $user = auth()->user();
-        // 余额充值商品，只取10个
+
+        // 获取可用商品列表
+        $goodsList = Goods::whereStatus(1)->where('type', '<=', 2)->orderByDesc('type')->orderByDesc('sort')->get();
+
+        // 获取用户节点信息
+        $nodes = $user->userGroup ? $user->userGroup->nodes() : Node::query();
+
+        // 为每个商品计算节点数量和国家
+        $goodsList->each(function ($goods) use ($nodes) {
+            $filteredNodes = $nodes->where('level', '<=', $goods->level)->where('status', 1);
+            $goods->node_count = $filteredNodes->count();
+            $goods->node_countries = $filteredNodes->pluck('country_code')->unique();
+        });
+
+        // 获取续费订单和价格
         $renewOrder = Order::userActivePlan($user->id)->first();
-        $renewPrice = $renewOrder->goods->renew ?? 0;
-        // 有重置日时按照重置日为标准，否则就以过期日为标准
+        $renewPrice = $renewOrder?->goods->renew ?? 0;
+
+        // 计算数据增加天数
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
-
-        $goodsList = Goods::whereStatus(1)->where('type', '<=', '2')->orderByDesc('type')->orderByDesc('sort')->get();
-
-        if ($user && $nodes = $user->userGroup) {
-            $nodes = $nodes->nodes();
-        } else {
-            $nodes = Node::all();
-        }
-        foreach ($goodsList as $goods) {
-            $goods->node_count = $nodes->where('level', '<=', $goods->level)->where('status', 1)->count();
-            $goods->node_countries = $nodes->where('level', '<=', $goods->level)->where('status', 1)->pluck('country_code')->unique();
-        }
 
         return view('user.services', [
             'chargeGoodsList' => Goods::type(3)->orderBy('price')->get(),
             'goodsList' => $goodsList,
             'renewTraffic' => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,
-            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
+            'dataPlusDays' => $dataPlusDays > now() ? $dataPlusDays->diffInDays() : 0,
         ]);
     }
 
@@ -51,16 +54,17 @@ class ShopController extends Controller
         $user = auth()->user();
         $order = Order::userActivePlan()->firstOrFail();
         $renewCost = $order->goods->renew;
+
+        // 检查余额是否足够
         if ($user->credit < $renewCost) {
             return response()->json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
         }
 
+        // 重置用户流量
         $user->update(['u' => 0, 'd' => 0]);
 
-        // 记录余额操作日志
+        // 记录余额操作日志并扣费
         Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, 'The user manually reset the data.');
-
-        // 扣余额
         $user->updateCredit(-$renewCost);
 
         return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
@@ -96,7 +100,7 @@ class ShopController extends Controller
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
         return view('user.buy', [
-            'dataPlusDays' => $dataPlusDays > date('Y-m-d') ? $dataPlusDays->diffInDays() : 0,
+            'dataPlusDays' => $dataPlusDays > now() ? $dataPlusDays->diffInDays() : 0,
             'activePlan' => Order::userActivePlan()->exists(),
             'goods' => $good,
         ]);

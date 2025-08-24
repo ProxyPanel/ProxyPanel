@@ -4,74 +4,41 @@
 @endsection
 @section('content')
     <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ isset($ruleGroup)
-                        ? trans('admin.action.edit_item', ['attribute' => trans('model.rule_group.attribute')])
-                        : trans('admin.action.add_item', ['attribute' => trans('model.rule_group.attribute')]) }}
-                </h2>
-                <div class="panel-actions">
-                    <a class="btn btn-danger" href="{{ route('admin.rule.group.index') }}">{{ trans('common.back') }}</a>
+        <x-ui.panel :title="trans(isset($ruleGroup) ? 'admin.action.edit_item' : 'admin.action.add_item', ['attribute' => trans('model.rule_group.attribute')])">
+            <x-slot:actions>
+                <a class="btn btn-danger" href="{{ route('admin.rule.group.index') }}">{{ trans('common.back') }}</a>
+            </x-slot:actions>
+            <x-slot:alert>
+                @if (Session::has('successMsg'))
+                    <x-alert :message="Session::pull('successMsg')" />
+                @endif
+                @if ($errors->any())
+                    <x-alert type="danger" :message="$errors->all()" />
+                @endif
+            </x-slot:alert>
+            <x-admin.form.container :route="isset($ruleGroup) ? route('admin.rule.group.update', $ruleGroup['id']) : route('admin.rule.group.store')" :method="isset($ruleGroup) ? 'PUT' : 'POST'">
+                <x-admin.form.input name="name" :label="trans('model.rule_group.name')" required />
+
+                <x-admin.form.radio-group name="type" :label="trans('model.rule_group.type')" :options="[
+                    '1' => trans('admin.rule.group.type.off'),
+                    '0' => trans('admin.rule.group.type.on'),
+                ]" />
+                <x-admin.form.skeleton name="rules" :label="trans('model.rule_group.rules')" input_grid="col-xl-9 col-sm-8">
+                    <div class="btn-group mb-20">
+                        <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
+                        <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
+                    </div>
+                    <select class="form-control" id="rules" name="rules[]" data-plugin="multiSelect" multiple>
+                        @foreach ($rules as $id => $name)
+                            <option value="{{ $id }}">{{ $id . ' - ' . $name }}</option>
+                        @endforeach
+                    </select>
+                </x-admin.form.skeleton>
+                <div class="form-actions text-right">
+                    <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
                 </div>
-            </div>
-            @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::pull('successMsg')" />
-            @endif
-            @if ($errors->any())
-                <x-alert type="danger" :message="$errors->all()" />
-            @endif
-            <div class="panel-body">
-                <form class="form-horizontal" action="{{ isset($ruleGroup) ? route('admin.rule.group.update', $ruleGroup) : route('admin.rule.group.store') }}"
-                      method="post" enctype="multipart/form-data">
-                    @isset($ruleGroup)
-                        @method('PUT')
-                    @endisset @csrf
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="name">{{ trans('model.rule_group.name') }}</label>
-                        <div class="col-md-9 col-sm-9">
-                            <input class="form-control" id="name" name="name" type="text" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="type">{{ trans('model.rule_group.type') }}</label>
-                        <div class="col-md-10 col-sm-8">
-                            <ul class="list-unstyled list-inline">
-                                <li class="list-inline-item">
-                                    <div class="radio-custom radio-primary">
-                                        <input id="block" name="type" type="radio" value="1" checked />
-                                        <label for="block">{{ trans('admin.rule.group.type.off') }}</label>
-                                    </div>
-                                </li>
-                                <li class="list-inline-item">
-                                    <div class="radio-custom radio-primary">
-                                        <input id="unblock" name="type" type="radio" value="0" />
-                                        <label for="unblock">{{ trans('admin.rule.group.type.on') }}</label>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="rules">{{ trans('model.rule_group.rules') }}</label>
-                        <div class="col-md-9 col-sm-9">
-                            <div class="btn-group mb-20">
-                                <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
-                                <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
-                            </div>
-                            <select class="form-control" id="rules" name="rules[]" data-plugin="multiSelect" multiple>
-                                @foreach ($rules as $rule)
-                                    <option value="{{ $rule->id }}">{{ $rule->id . ' - ' . $rule->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-actions text-right">
-                        <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            </x-admin.form.container>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')
@@ -79,13 +46,19 @@
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
     <script src="/assets/custom/jquery.quicksearch.min.js"></script>
     <script>
+        let groupData = {};
+
         @isset($ruleGroup)
-            $(document).ready(function() {
-                $('#name').val('{{ $ruleGroup->name }}');
-                $("input[name='type'][value='{{ $ruleGroup->type }}']").click();
-                $('#rules').multiSelect('select', @json(array_map('strval', $ruleGroup->rules()->get()->pluck('id')->toArray())));
-            });
+            groupData = @json($ruleGroup)
         @endisset
+        @if (old())
+            groupData = @json(old())
+        @endif
+
+        $(document).ready(function() {
+            autoPopulateForm(groupData); // 填充表单数据
+        });
+
         // 权限列表
         $('#rules').multiSelect({
             selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'{{ trans('admin.unselected_hint') }}\'>',

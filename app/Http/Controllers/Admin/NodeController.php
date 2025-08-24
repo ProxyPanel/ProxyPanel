@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Helpers\DataChart;
+use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
 use App\Jobs\VNet\reloadNode;
@@ -13,6 +14,7 @@ use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
 use App\Utils\NetworkDetection;
+use Arr;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +24,7 @@ use Log;
 
 class NodeController extends Controller
 {
-    use DataChart;
+    use DataChart, ProxyConfig;
 
     public function index(Request $request): View
     { // 节点列表
@@ -34,15 +36,10 @@ class NodeController extends Controller
                 'hourlyDataFlows' => function ($query) {
                     $query->whereDate('created_at', now()->toDateString());
                 },
-                'onlineLogs' => function ($query) {
-                    $query->where('log_time', '>=', strtotime('-5 minutes'))->orderBy('log_time', 'desc');
-                },
-                'heartbeats' => function ($query) {
-                    $query->where('log_time', '>=', strtotime('-'.sysConfig('recently_heartbeat').' minutes'))->orderBy('log_time', 'desc');
-                },
+                'latestOnlineLog',
+                'latestHeartbeat',
                 'childNodes',
-            ])
-            ->withCount('onlineLogs'); // 提前统计在线人数
+            ]);
 
         $request->whenFilled('status', function ($value) use ($query) {
             $query->where('status', $value);
@@ -50,16 +47,17 @@ class NodeController extends Controller
 
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'))->through(function ($node) {
             // 预处理每个节点的数据
-            $node->online_users = $node->onlineLogs->first()?->online_user; // 在线人数
-            $node->transfer = formatBytes(
-                $node->dailyDataFlows->sum(fn ($item) => $item->u + $item->d) +
-                $node->hourlyDataFlows->sum(fn ($item) => $item->u + $item->d)
-            ); // 已产生流量
+            $node->online_users = $node->latestOnlineLog?->online_user; // 在线人数
 
-            $node_info = $node->heartbeats->first(); // 近期负载
+            // 计算流量总和
+            $dailyTransfer = $node->dailyDataFlows->sum(fn ($item) => $item->u + $item->d);
+            $hourlyTransfer = $node->hourlyDataFlows->sum(fn ($item) => $item->u + $item->d);
+            $node->transfer = formatBytes($dailyTransfer + $hourlyTransfer); // 已产生流量
+
+            $node_info = $node->latestHeartbeat; // 近期负载
             $node->isOnline = ! empty($node_info?->load);
-            $node->load = $node_info->load ?? false;
-            $node->uptime = formatTime($node_info->uptime ?? 0);
+            $node->load = $node_info?->load ?? false;
+            $node->uptime = formatTime($node_info?->uptime);
 
             return $node;
         });
@@ -91,10 +89,11 @@ class NodeController extends Controller
         return view('admin.node.info', [
             'nodes' => Node::orderBy('id')->pluck('id', 'name'),
             'countries' => Country::orderBy('code')->get(),
-            'levels' => Level::orderBy('level')->get(),
-            'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs' => NodeCertificate::orderBy('id')->get(),
+            'levels' => Level::orderBy('level')->pluck('name', 'level'),
+            'ruleGroups' => RuleGroup::orderBy('id')->pluck('name', 'id'),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->pluck('name', 'id'),
+            'certs' => NodeCertificate::orderBy('id')->pluck('domain', 'id'),
+            ...$this->proxyConfigOptions(),
         ]);
     }
 
@@ -189,14 +188,23 @@ class NodeController extends Controller
 
     public function edit(Node $node): View
     { // 编辑节点页面
+        $node->load('labels:id');
+        $nodeArray = $node->toArray();
+
         return view('admin.node.info', [
-            'node' => $node->load('labels'),
+            'node' => array_merge(
+                Arr::except($nodeArray, ['details', 'profile']),
+                $nodeArray['details'] ?? [],
+                $nodeArray['profile'] ?? [],
+                ['labels' => $node->labels->pluck('id')->toArray()]// 将标签ID列表作为一维数组
+            ),
             'nodes' => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
             'countries' => Country::orderBy('code')->get(),
-            'levels' => Level::orderBy('level')->get(),
-            'ruleGroups' => RuleGroup::orderBy('id')->get(),
-            'labels' => Label::orderByDesc('sort')->orderBy('id')->get(),
-            'certs' => NodeCertificate::orderBy('id')->get(),
+            'levels' => Level::orderBy('level')->pluck('name', 'level'),
+            'ruleGroups' => RuleGroup::orderBy('id')->pluck('name', 'id'),
+            'labels' => Label::orderByDesc('sort')->orderBy('id')->pluck('name', 'id'),
+            'certs' => NodeCertificate::orderBy('id')->pluck('domain', 'id'),
+            ...$this->proxyConfigOptions(),
         ]);
     }
 
@@ -247,7 +255,8 @@ class NodeController extends Controller
     { // 刷新节点地理位置
         $ret = false;
         if ($id) {
-            $ret = Node::findOrFail($id)->refresh_geo();
+            $node = Node::findOrFail($id);
+            $ret = $node->refresh_geo();
         } else {
             foreach (Node::whereStatus(1)->get() as $node) {
                 $result = $node->refresh_geo();

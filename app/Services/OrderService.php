@@ -71,7 +71,7 @@ class OrderService
     private function activatePackage(): bool
     { // 激活流量包
         if (self::$user->incrementData(self::$goods->traffic * MiB)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, trans('[:payment] plus the user’s purchased data plan.', ['payment' => $this->order->pay_way]));
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]));
         }
 
         return false;
@@ -95,7 +95,7 @@ class OrderService
         }
 
         if (self::$user->update($updateData)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, trans('[:payment] plus the user’s purchased data plan.', ['payment' => $this->order->pay_way]), $this->order->id);
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]), $this->order->id);
         }
 
         return false;

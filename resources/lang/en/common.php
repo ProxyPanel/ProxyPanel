@@ -46,6 +46,7 @@ return [
     'deleted_item' => ':attribute deleted',
     'developing' => 'Under development! Stay tuned',
     'download' => 'Download',
+    'download_item' => 'Download :attribute',
     'edit' => 'Edit',
     'error' => 'Error',
     'error_action_item' => 'Error during :action :attribute',

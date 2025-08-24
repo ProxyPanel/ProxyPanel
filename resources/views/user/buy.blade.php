@@ -77,14 +77,9 @@
             let tag = '{{ $goods->price_tag }}'.match(/(.*?[^0-9])(\d+\.?.*)/);
             const goods_price = tag[2];
             const sign = tag[1];
-            $.ajax({
-                method: 'POST',
-                url: '{{ route('shop.coupon.check', $goods) }}',
-                dataType: 'json',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    coupon_sn: coupon_sn
-                },
+            ajaxPost('{{ route('shop.coupon.check', $goods) }}', {
+                coupon_sn: coupon_sn
+            }, {
                 success: function(ret) {
                     $('.input-group-prepend').remove();
                     if (ret.status === 'success') {
@@ -112,38 +107,25 @@
 
                         // 四舍五入，保留2位小数
                         $('.grand-total').text(sign + total_price.toFixed(2));
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1300,
-                            showConfirmButton: false,
-                        });
                     } else {
                         $('.grand-total').text(sign + goods_price);
                         $('#coupon_sn').parent().prepend(
                             '<div class="input-group-prepend"><span class="input-group-text bg-red-700"><i class="icon wb-close white" aria-hidden="true"></i></span></div>'
                         );
-                        swal.fire({
-                            title: ret.title,
-                            text: ret.message,
-                            icon: 'error',
-                        });
                     }
-                },
+                }
             });
         }
 
         function pay(method, pay_type) { // 检查预支付
             if ('{{ $activePlan }}' === '1' && '{{ $goods->type }}' === '2') { // 存在套餐 和 购买类型为套餐时 出现提示
-                swal.fire({
+                showConfirm({
                     title: '{{ trans('user.shop.conflict') }}',
                     html: '{!! trans('user.shop.conflict_tips') !!}',
                     icon: 'info',
-                    showCancelButton: true,
                     cancelButtonText: '{{ trans('common.back') }}',
                     confirmButtonText: '{{ trans('common.continue') }}',
-                }).then((result) => {
-                    if (result.value) {
+                    onConfirm: function() {
                         continuousPayment(method, pay_type);
                     }
                 });
@@ -153,57 +135,25 @@
         }
 
         function continuousPayment(method, pay_type) {
-            const goods_id = '{{ $goods->id }}';
-            const coupon_sn = $('#coupon_sn').val();
-            $.ajax({
-                method: 'POST',
-                url: '{{ route('purchase') }}',
-                dataType: 'json',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    goods_id: goods_id,
-                    coupon_sn: coupon_sn,
-                    method: method,
-                    pay_type: pay_type,
-                },
+            ajaxPost('{{ route('purchase') }}', {
+                goods_id: '{{ $goods->id }}',
+                coupon_sn: $('#coupon_sn').val(),
+                method: method,
+                pay_type: pay_type,
+            }, {
                 success: function(ret) {
+                    let options = {};
                     if (ret.status === 'success') {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'success',
-                            timer: 1300,
-                            showConfirmButton: false
-                        });
                         if (method === 'credit') {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).
-                            then(() => window.location.href = '{{ route('invoice.index') }}');
-                        }
-                        if (ret.data) {
-                            window.location.href = '{{ route('orderDetail', '') }}/' + ret.data;
+                            options.redirectUrl = '{{ route('invoice.index') }}';
+                        } else if (ret.data) {
+                            options.redirectUrl = '{{ route('orderDetail', '') }}/' + ret.data;
                         } else if (ret.url) {
-                            window.location.href = ret.url;
+                            options.redirectUrl = ret.url;
                         }
-                    } else if (ret.status === 'info') {
-                        swal.fire({
-                            title: ret.title,
-                            text: ret.message,
-                            icon: 'question'
-                        });
-                    } else {
-                        swal.fire({
-                            title: ret.message,
-                            icon: 'error',
-                        });
                     }
-                },
-                error: function() {
-                    swal.fire('{{ trans('http-statuses.unknownError') }}', '{{ trans('user.shop.call4help') }}', 'error');
-                },
+                    handleResponse(ret, options)
+                }
             });
         }
     </script>

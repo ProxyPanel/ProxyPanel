@@ -1,38 +1,26 @@
 @extends('admin.table_layouts')
 @section('content')
     <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ trans('admin.menu.tools.analysis') }} <small>{{ trans('admin.tools.analysis.sub_title') }}</small>
-                </h2>
-            </div>
+        <x-admin.table-panel :title="trans('admin.menu.tools.analysis') . ' <small>' . trans('admin.tools.analysis.sub_title') . '</small>'" :theads="[trans('admin.tools.analysis.req_url')]">
             @if (Session::has('analysisErrorMsg'))
-                <x-alert type="danger" :message="Session::pull('analysisErrorMsg')" />
+                <x-slot:filters>
+                    <x-alert type="danger" :message="Session::pull('analysisErrorMsg')" />
+                </x-slot:filters>
             @endif
-            <div class="panel-body">
-                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
-                    <thead class="thead-default">
+            <x-slot:tbody>
+                @if (!empty($urlList))
+                    @foreach ($urlList as $url)
                         <tr>
-                            <th>{{ trans('admin.tools.analysis.req_url') }}</th>
+                            <td> {{ $url }} </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @if (!empty($urlList))
-                            @foreach ($urlList as $url)
-                                <tr>
-                                    <td> {{ $url }} </td>
-                                </tr>
-                            @endforeach
-                        @else
-                            <tr>
-                                <td colspan="1">{{ trans('admin.tools.analysis.not_enough') }}</td>
-                            </tr>
-                        @endif
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="1">{{ trans('admin.tools.analysis.not_enough') }}</td>
+                    </tr>
+                @endif
+            </x-slot:tbody>
+        </x-admin.table-panel>
     </div>
 
 @endsection

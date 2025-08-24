@@ -37,6 +37,16 @@ class Node extends Model
         return $this->hasMany(NodeHeartbeat::class);
     }
 
+    public function latestHeartbeat(): HasOne
+    {
+        return $this->hasOne(NodeHeartbeat::class)->ofMany(
+            ['log_time' => 'max'],
+            function ($query) {
+                $query->where('log_time', '>=', strtotime(sysConfig('recently_heartbeat')));
+            }
+        );
+    }
+
     public function onlineIps(): HasMany
     {
         return $this->hasMany(NodeOnlineIp::class);
@@ -45,6 +55,16 @@ class Node extends Model
     public function onlineLogs(): HasMany
     {
         return $this->hasMany(NodeOnlineLog::class);
+    }
+
+    public function latestOnlineLog(): HasOne
+    {
+        return $this->hasOne(NodeOnlineLog::class)->ofMany(
+            ['log_time' => 'max'],
+            function ($query) {
+                $query->where('log_time', '>=', strtotime('-5 minutes'));
+            }
+        );
     }
 
     public function userDataFlowLogs(): HasMany

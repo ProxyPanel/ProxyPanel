@@ -56,8 +56,8 @@ class AuthController extends Controller
         if (! auth()->attempt($data, $request->has('remember'))) {
             return redirect()->back()->withInput()->withErrors(trans('auth.error.login_failed'));
         }
-        $user = auth()->getUser();
 
+        $user = auth()->getUser();
         if (! $user) {
             return redirect()->back()->withInput()->withErrors(trans('auth.error.login_error'));
         }
@@ -131,7 +131,7 @@ class AuthController extends Controller
     {
         session()->put('register_token', Str::random());
 
-        return view('auth.register', ['emailList' => (int) sysConfig('is_email_filtering') !== 2 ? false : EmailFilter::whereType(2)->get()]);
+        return view('auth.register', ['emailList' => sysConfig('is_email_filtering') === '2' ? EmailFilter::whereType(2)->get() : false]);
     }
 
     public function register(RegisterRequest $request): RedirectResponse
@@ -185,8 +185,7 @@ class AuthController extends Controller
                 return redirect()->back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha.error.timeout'));
             }
 
-            $verifyCode->status = 1;
-            $verifyCode->save();
+            $verifyCode->update(['status' => 1]);
         }
 
         // 是否校验验证码
@@ -342,13 +341,10 @@ class AuthController extends Controller
 
     private function addVerifyUrl(int $uid, string $email): string
     { // 生成申请的请求地址
-        $token = md5(sysConfig('website_name').$email.microtime());
-        $verify = new Verify;
-        $verify->user_id = $uid;
-        $verify->token = $token;
-        $verify->save();
-
-        return $token;
+        return Verify::create([
+            'user_id' => $uid,
+            'token' => md5(sysConfig('website_name').$email.microtime()),
+        ])->token;
     }
 
     public function resetPassword(Request $request): RedirectResponse|View
@@ -436,8 +432,7 @@ class AuthController extends Controller
             }
 
             // 置为已使用
-            $verify->status = 1;
-            $verify->save();
+            $verify->update(['status' => 1]);
 
             return redirect()->route('login')->with('successMsg', trans('auth.password.reset.success'));
         }
@@ -449,8 +444,7 @@ class AuthController extends Controller
 
         if (time() - strtotime($verify->created_at) >= 1800) {
             // 置为已失效
-            $verify->status = 2;
-            $verify->save();
+            $verify->update(['status' => 2]);
         }
 
         return view('auth.reset', ['verify' => Verify::type(1)->whereToken($token)->first()]); // 重新获取一遍verify
@@ -531,8 +525,7 @@ class AuthController extends Controller
             session()->flash('errorMsg', trans('auth.error.url_timeout'));
 
             // 置为已失效
-            $verify->status = 2;
-            $verify->save();
+            $verify->update(['status' => 2]);
 
             return view('auth.active');
         }
@@ -545,8 +538,7 @@ class AuthController extends Controller
         }
 
         // 置为已使用
-        $verify->status = 1;
-        $verify->save();
+        $verify->update(['status' => 1]);
 
         // 账号激活后给邀请人送流量
         $inviter = $user->inviter;

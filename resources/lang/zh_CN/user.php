@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 return [
     'account' => [
-        'connect_password' => '节点连接密码',
+        'connect_password' => '代理连接密码',
         'credit' => '账户余额',
         'group' => '所属分组',
-        'last_login' => '最后登录',
+        'last_login' => '最近登录',
         'level' => '账号等级',
         'reason' => [
             'expired' => '套餐已过期',
-            'normal' => '账号状态正常',
+            'normal' => '账号一切正常',
             'overused' => '超出 <code>:data</code>GB 限额，<code id="banedTime">:min</code> 分钟后恢复使用',
             'traffic_exhausted' => '套餐流量已耗尽',
             'unknown' => '未知错误，请刷新重试',
@@ -33,7 +33,7 @@ return [
     'clients' => '客户端',
     'contact' => '联系方式',
     'coupon' => [
-        'discount' => '折扣',
+        'discount' => '优惠',
         'error' => [
             'expired' => '优惠券已过期',
             'inactive' => '优惠券尚未生效',
@@ -80,8 +80,8 @@ return [
         ],
         'tips' => '剩余名额：<strong>:num</strong>，有效期 :days 天',
     ],
-    'invitee' => '受邀用户',
-    'inviter' => '邀请人',
+    'invitee' => '受邀者',
+    'inviter' => '邀请者',
     'invoice' => [
         'active_prepaid_question' => '启用预付套餐？',
         'active_prepaid_tips' => '<p class="text-left">提取启用意味着：</p><ol class="text-left"><li>当前套餐将立即失效，剩余有效期作废；</li><li>新套餐将立刻生效，并从当前时间起开始计算；</li></ol>',
@@ -90,16 +90,16 @@ return [
         'detail' => '消费记录',
     ],
     'menu' => [
-        'admin_dashboard' => '管理后台',
-        'help' => '帮助中心',
+        'admin_dashboard' => '管理',
+        'help' => '帮助',
         'home' => '首页',
-        'invites' => '邀请管理',
-        'invoices' => '我的订单',
-        'nodes' => '节点列表',
-        'profile' => '账户设置',
-        'promotion' => '推广计划',
-        'shop' => '服务商店',
-        'tickets' => '我的工单',
+        'invites' => '邀请',
+        'invoices' => '订单',
+        'nodes' => '节点',
+        'profile' => '设置',
+        'promotion' => '推广',
+        'shop' => '商店',
+        'tickets' => '工单',
     ],
     'node' => [
         'info' => '配置信息',

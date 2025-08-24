@@ -1,66 +1,47 @@
 @extends('admin.layouts')
 @section('content')
     <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ isset($cert) ? trans('admin.action.edit_item', ['attribute' => trans('model.node_cert.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.node_cert.attribute')]) }}
-                </h2>
-                <div class="panel-actions">
-                    <a class="btn btn-danger" href="{{ route('admin.node.cert.index') }}">{{ trans('common.back') }}</a>
+        <x-ui.panel :title="trans(isset($cert) ? 'admin.action.edit_item' : 'admin.action.add_item', ['attribute' => trans('model.node_cert.attribute')])">
+            <x-slot:actions>
+                <a class="btn btn-danger" href="{{ route('admin.node.cert.index') }}">{{ trans('common.back') }}</a>
+            </x-slot:actions>
+
+            <x-slot:alert>
+                @if (Session::has('successMsg'))
+                    <x-alert :message="Session::pull('successMsg')" />
+                @endif
+                @if ($errors->any())
+                    <x-alert type="danger" :message="$errors->all()" />
+                @endif
+            </x-slot:alert>
+
+            <x-admin.form.container :route="isset($cert) ? route('admin.node.cert.update', $cert) : route('admin.node.cert.store')" :method="isset($cert) ? 'PUT' : 'POST'">
+                <x-admin.form.input-group name="domain" type="text" :label="trans('model.node_cert.domain')" required label_grid="col-md-3" input_grid="col-md-9" />
+
+                <x-admin.form.textarea name="key" :label="trans('model.node_cert.key')" rows="10" :placeholder="trans('admin.node.cert.key_placeholder')" label_grid="col-md-3" input_grid="col-md-9" />
+
+                <x-admin.form.textarea name="pem" :label="trans('model.node_cert.pem')" rows="10" :placeholder="trans('admin.node.cert.pem_placeholder')" label_grid="col-md-3" input_grid="col-md-9" />
+
+                <div class="form-actions">
+                    <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
                 </div>
-            </div>
-            @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::pull('successMsg')" />
-            @endif
-            @if ($errors->any())
-                <x-alert type="danger" :message="$errors->all()" />
-            @endif
-            <div class="panel-body">
-                <form class="form-horizontal"
-                      action="@isset($cert) {{ route('admin.node.cert.update', $cert) }} @else {{ route('admin.node.cert.store') }} @endisset"
-                      method="POST" enctype="multipart/form-data">
-                    @isset($cert)
-                        @method('PUT')
-                    @endisset
-                    @csrf
-                    <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="domain">{{ trans('model.node_cert.domain') }}</label>
-                        <div class="col-md-9">
-                            <input class="form-control" id="domain" name="domain" type="text" required>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="key">{{ trans('model.node_cert.key') }}</label>
-                        <div class="col-md-9">
-                            <textarea class="form-control" id="key" name="key" type="text" rows="10" placeholder="{{ trans('admin.node.cert.key_placeholder') }}"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-3 col-form-label" for="pem">{{ trans('model.node_cert.pem') }}</label>
-                        <div class="col-md-9">
-                            <textarea class="form-control" id="pem" name="pem" type="text" rows="10" placeholder="{{ trans('admin.node.cert.pem_placeholder') }}"></textarea>
-                        </div>
-                    </div>
-                    <div class="form-actions">
-                        <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            </x-admin.form.container>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')
     <script>
+        let certData = {};
+
+        @isset($cert)
+            certData = @json($cert)
+        @endisset
+        @if (old())
+            certData = @json(old())
+        @endif
+
         $(document).ready(function() {
-            $('#domain').val(@json(old('domain')));
-            $('#key').val(@json(old('key')));
-            $('#pem').val(@json(old('pem')));
-            @isset($cert)
-                $('#domain').val(@json(old('domain') ?? $cert->domain));
-                $('#key').val(@json(old('key') ?? $cert->key));
-                $('#pem').val(@json(old('pem') ?? $cert->pem));
-            @endisset
+            autoPopulateForm(certData); // 填充表单数据
         });
     </script>
 @endsection

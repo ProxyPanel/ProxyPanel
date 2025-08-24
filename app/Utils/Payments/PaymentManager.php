@@ -70,7 +70,7 @@ class PaymentManager
 
     public static function getLabels(bool $history = false): array
     {
-        return cache()->rememberForever('payment_labels', function () use ($history) {
+        return cache()->rememberForever('payment_labels'.app()->getLocale(), function () use ($history) {
             if ($history) {
                 $labels = [
                     'bitpayx' => trans('admin.system.payment.channel.bitpayx'),

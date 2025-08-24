@@ -23,8 +23,14 @@ class LevelController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        if (Level::create($validator->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+        try {
+            if (Level::create($validator->validated())) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.common.level')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
@@ -41,8 +47,14 @@ class LevelController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        if ($level->update($validator->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+        try {
+            if ($level->update($validator->validated())) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.common.level')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);

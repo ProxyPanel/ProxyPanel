@@ -4,55 +4,36 @@
 @endsection
 @section('content')
     <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ isset($user) ? trans('admin.action.edit_item', ['attribute' => trans('model.user_group.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.user_group.attribute')]) }}
-                </h2>
-                <div class="panel-actions">
-                    <a class="btn btn-danger" href="{{ route('admin.user.group.index') }}">{{ trans('common.back') }}</a>
+        <x-ui.panel :title="trans(isset($user) ? 'admin.action.edit_item' : 'admin.action.add_item', ['attribute' => trans('model.user_group.attribute')])" icon="wb-users">
+            <x-slot:actions>
+                <a class="btn btn-danger" href="{{ route('admin.user.group.index') }}">{{ trans('common.back') }}</a>
+            </x-slot:actions>
+            <x-slot:alert>
+                @if (Session::has('successMsg'))
+                    <x-alert :message="Session::pull('successMsg')" />
+                @endif
+                @if ($errors->any())
+                    <x-alert type="danger" :message="$errors->all()" />
+                @endif
+            </x-slot:alert>
+            <x-admin.form.container :route="isset($group) ? route('admin.user.group.update', $group['id']) : route('admin.user.group.store')" :method="isset($group) ? 'PUT' : 'POST'">
+                <x-admin.form.input name="name" :label="trans('model.user_group.name')" required />
+                <x-admin.form.skeleton name="nodes" :label="trans('model.user_group.nodes')" input_grid="col-md-8">
+                    <div class="btn-group mb-20">
+                        <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
+                        <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
+                    </div>
+                    <select class="form-control" id="nodes" name="nodes[]" data-plugin="multiSelect" multiple>
+                        @foreach ($nodes as $id => $name)
+                            <option value="{{ $id }}">{{ $id . ' - ' . $name }}</option>
+                        @endforeach
+                    </select>
+                </x-admin.form.skeleton>
+                <div class="form-actions text-right col-12">
+                    <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
                 </div>
-            </div>
-            @if (Session::has('successMsg'))
-                <x-alert type="success" :message="Session::pull('successMsg')" />
-            @endif
-            @if ($errors->any())
-                <x-alert type="danger" :message="$errors->all()" />
-            @endif
-            <div class="panel-body">
-                <form class="form-horizontal"
-                      action="@isset($group){{ route('admin.user.group.update', $group) }}@else{{ route('admin.user.group.store') }}@endisset"
-                      method="POST" enctype="multipart/form-data">
-                    @isset($group)
-                        @method('PUT')
-                    @endisset
-                    @csrf
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="name">{{ trans('model.user_group.name') }}</label>
-                        <div class="col-md-9 col-sm-9">
-                            <input class="form-control" id="name" name="name" type="text" required />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 col-sm-3 col-form-label" for="nodes">{{ trans('model.user_group.nodes') }}</label>
-                        <div class="col-md-9 col-sm-9">
-                            <div class="btn-group mb-20">
-                                <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
-                                <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
-                            </div>
-                            <select class="form-control" id="nodes" name="nodes[]" data-plugin="multiSelect" multiple>
-                                @foreach ($nodes as $id => $name)
-                                    <option value="{{ $id }}">{{ $id . ' - ' . $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-actions text-right">
-                        <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+            </x-admin.form.container>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')
@@ -60,12 +41,19 @@
     <script src="/assets/global/js/Plugin/multi-select.js"></script>
     <script src="/assets/custom/jquery.quicksearch.min.js"></script>
     <script>
+        let groupData = {};
+
         @isset($group)
-            $(document).ready(function() {
-                $('#name').val('{{ $group->name }}');
-                $('#nodes').multiSelect('select', @json(array_map('strval', $group->nodes->pluck('id')->toArray())));
-            });
+            groupData = @json($group)
         @endisset
+        @if (old())
+            groupData = @json(old())
+        @endif
+
+        $(document).ready(function() {
+            autoPopulateForm(groupData); // 填充表单数据
+        });
+
         // 权限列表
         $('#nodes').multiSelect({
             selectableHeader: '<input type=\'text\' class=\'search-input form-control\' autocomplete=\'off\' placeholder=\'{{ trans('admin.unselected_hint') }}\'>',

@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Models\Goods;
 use App\Models\GoodsCategory;
 use App\Models\Level;
+use App\Models\Order;
 use Arr;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -32,12 +33,28 @@ class ShopController extends Controller
 
         $goodsList = $query->orderByDesc('status')->paginate(10)->appends($request->except('page'));
 
-        foreach ($goodsList->load('orders') as $goods) {
-            $goods->use_count = $goods->orders->whereIn('status', [2, 3])->where('is_expire', 0)->count();
-            $goods->total_count = $goods->orders->whereIn('status', [2, 3])->count();
+        // 优化订单统计查询，使用更高效的方式
+        $goodsIds = $goodsList->pluck('id')->toArray();
+
+        // 批量获取订单统计数据
+        $orderStats = Order::whereIn('goods_id', $goodsIds)
+            ->whereIn('status', [2, 3])
+            ->selectRaw('goods_id, is_expire, count(*) as count')
+            ->groupBy('goods_id', 'is_expire')
+            ->get()
+            ->groupBy('goods_id');
+
+        // 为每个商品设置使用统计
+        foreach ($goodsList as $goods) {
+            $stats = $orderStats->get($goods->id, collect());
+            $usedCount = $stats->where('is_expire', 0)->sum('count');
+            $totalCount = $stats->sum('count');
+
+            $goods->use_count = $usedCount;
+            $goods->total_count = $totalCount;
         }
 
-        return view('admin.shop.index', ['goodsList' => $goodsList]);
+        return view('admin.shop.index', compact('goodsList'));
     }
 
     public function store(ShopStoreRequest $request): RedirectResponse
@@ -84,15 +101,15 @@ class ShopController extends Controller
 
     public function create(): View
     {
-        return view('admin.shop.info', ['levels' => Level::orderBy('level')->get(), 'categories' => GoodsCategory::all()]);
+        return view('admin.shop.info', ['levels' => Level::orderBy('level')->pluck('name', 'id'), 'categories' => GoodsCategory::pluck('name', 'id')]);
     }
 
     public function edit(Goods $good): View
     {
         return view('admin.shop.info', [
             'good' => $good,
-            'levels' => Level::orderBy('level')->get(),
-            'categories' => GoodsCategory::all(),
+            'levels' => Level::orderBy('level')->pluck('name', 'id'),
+            'categories' => GoodsCategory::pluck('name', 'id'),
         ]);
     }
 

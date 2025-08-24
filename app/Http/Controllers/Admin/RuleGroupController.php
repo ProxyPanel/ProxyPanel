@@ -21,10 +21,21 @@ class RuleGroupController extends Controller
 
     public function store(RuleGroupRequest $request): RedirectResponse
     {
-        if ($group = RuleGroup::create($request->only('name', 'type'))) {
-            $group->rules()->attach($request->input('rules'));
+        try {
+            $group = RuleGroup::create($request->only('name', 'type'));
 
-            return redirect(route('admin.rule.group.edit', $group))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
+            if ($group) {
+                $rules = $request->input('rules');
+                if (! empty($rules)) {
+                    $group->rules()->attach($rules);
+                }
+
+                return redirect(route('admin.rule.group.edit', $group))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
         }
 
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
@@ -32,23 +43,31 @@ class RuleGroupController extends Controller
 
     public function create(): View
     {
-        return view('admin.rule.group.info', ['rules' => Rule::all()]);
+        return view('admin.rule.group.info', ['rules' => Rule::pluck('name', 'id')]);
     }
 
     public function edit(RuleGroup $group): View
     {
+        $group->load('rules:id');
+
         return view('admin.rule.group.info', [
-            'ruleGroup' => $group,
-            'rules' => Rule::all(),
+            'ruleGroup' => array_merge($group->toArray(), ['rules' => $group->rules->pluck('id')->map('strval')->toArray()]),
+            'rules' => Rule::pluck('name', 'id'),
         ]);
     }
 
     public function update(RuleGroupRequest $request, RuleGroup $group): RedirectResponse
     {
-        if ($group->update($request->only(['name', 'type']))) {
-            $group->rules()->sync($request->input('rules'));
+        try {
+            if ($group->update($request->only(['name', 'type']))) {
+                $group->rules()->sync($request->input('rules', []));
 
-            return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
+                return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
+
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
         }
 
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));

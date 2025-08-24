@@ -134,8 +134,8 @@
   "Order canceled, coupon reinstated.": "订单取消，优惠券恢复",
   "Used for credit recharge.": "用于余额充值",
   "The user manually reset the data.": "用户自行重置流量",
-  "Recharge using a recharge voucher.":"使用充值券充值",
-  "The user topped up the balance.":"用户充值了余额",
-  "Purchased an item.":"购买了商品",
-  "[:payment] plus the user’s purchased data plan." : "【:payment】加上用户购买的套餐流量"
+  "Recharge using a recharge voucher.": "使用充值券充值",
+  "The user topped up the balance.": "用户充值了余额",
+  "Purchased an item.": "购买了商品",
+  "[:payment] plus the user's purchased data plan.": "【:payment】加上用户购买的套餐流量"
 }

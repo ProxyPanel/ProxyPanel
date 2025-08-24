@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
@@ -21,16 +22,17 @@ use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Log;
 use Spatie\Permission\Models\Role;
 use Str;
 
 class UserController extends Controller
 {
+    use ProxyConfig;
+
     public function index(Request $request): View
     {
-        $query = User::with('subscribe');
+        $query = User::with(['subscribe:user_id,code']);
 
         foreach (['id', 'port', 'status', 'enable', 'user_group_id', 'level'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
@@ -76,7 +78,7 @@ class UserController extends Controller
         });
 
         return view('admin.user.index', [
-            'userList' => $query->with('subscribe:user_id,code')->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
+            'userList' => $query->sortable(['id' => 'desc'])->paginate(15)->appends($request->except('page')),
             'userGroups' => UserGroup::pluck('name', 'id'),
             'levels' => Level::orderBy('level')->pluck('name', 'level'),
         ]);
@@ -89,7 +91,7 @@ class UserController extends Controller
         $data['password'] = $data['password'] ?? Str::random();
         $data['port'] = $data['port'] ?? Helpers::getPort();
         $data['passwd'] = $data['passwd'] ?? Str::random();
-        $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+        $data['vmess_id'] = $data['vmess_id'] ?: Str::uuid();
         Arr::forget($data, 'uuid');
         $data['transfer_enable'] *= GiB;
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
@@ -122,35 +124,35 @@ class UserController extends Controller
 
     public function create(): View
     {
-        return view('admin.user.info', [
-            'levels' => Level::orderBy('level')->pluck('name', 'level'),
-            'userGroups' => UserGroup::orderBy('id')->pluck('name', 'id'),
-            'roles' => $this->getAvailableRoles(),
-        ]);
-    }
-
-    private function getAvailableRoles(): ?Collection
-    {
-        $editor = auth()->user();
-        if ($editor->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
-            return Role::pluck('description', 'name');
-        }
-
-        if ($editor->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
-            return $editor->roles()->pluck('description', 'name');
-        }
-
-        return null;
+        return view('admin.user.info', $this->getUserViewData());
     }
 
     public function edit(User $user): View
     {
-        return view('admin.user.info', [
-            'user' => $user->load('inviter:id,username'),
+        return view('admin.user.info', [...$this->getUserViewData(), 'user' => $user->load('inviter:id,username')]);
+    }
+
+    /**
+     * 获取用户创建/编辑页面的共享数据.
+     */
+    private function getUserViewData(): array
+    {
+        $editor = auth()->user();
+        $roles = null;
+        if ($editor->hasRole('Super Admin')) { // 超级管理员直接获取全部角色
+            $roles = Role::pluck('description', 'name');
+        }
+
+        if ($editor->can('give roles')) { // 有权者只能获得已有角色，防止权限泛滥
+            $roles = $editor->roles()->pluck('description', 'name');
+        }
+
+        return [
             'levels' => Level::orderBy('level')->pluck('name', 'level'),
             'userGroups' => UserGroup::orderBy('id')->pluck('name', 'id'),
-            'roles' => $this->getAvailableRoles(),
-        ]);
+            'roles' => $roles,
+            ...$this->proxyConfigOptions(),
+        ];
     }
 
     public function destroy(User $user): JsonResponse
@@ -216,7 +218,7 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $data['passwd'] = $request->input('passwd') ?? Str::random();
-        $data['vmess_id'] = $data['uuid'] ?? Str::uuid();
+        $data['vmess_id'] = $data['vmess_id'] ?: Str::uuid();
         Arr::forget($data, ['roles', 'uuid', 'password']);
         $data['transfer_enable'] *= GiB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
@@ -299,11 +301,25 @@ class UserController extends Controller
         return response()->json(['status' => 'success', 'data' => $proxyService->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
     }
 
-    public function oauth(): View
+    public function oauth(Request $request): View
     {
-        $list = UserOauth::with('user:id,username')->paginate(15)->appends(\request('page'));
+        $query = UserOauth::with('user:id,username');
 
-        return view('admin.user.oauth', compact('list'));
+        // 用户名过滤
+        $request->whenFilled('username', function ($value) use ($query) {
+            $query->whereHas('user', function ($userQuery) use ($value) {
+                $userQuery->where('username', 'like', "%$value%");
+            });
+        });
+
+        // 类型过滤
+        $request->whenFilled('type', function ($value) use ($query) {
+            $query->where('type', $value);
+        });
+
+        return view('admin.user.oauth', [
+            'list' => $query->paginate(15)->appends(\request('page')),
+        ]);
     }
 
     public function VNetInfo(User $user): JsonResponse

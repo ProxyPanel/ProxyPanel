@@ -11,7 +11,9 @@
                 <h1 class="animation-slide-top">{{ trans('errors.whoops') }}</h1>
             </header>
             <h3>{{ trans('errors.report') }}</h3>
-            <code class="error-advise">{!! $message !!}</code>
+            <div class="error-advise">
+                {!! $message !!}
+            </div>
         </div>
     </div>
 @endsection

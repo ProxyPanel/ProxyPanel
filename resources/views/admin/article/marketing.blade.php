@@ -1,91 +1,56 @@
-@extends('admin.layouts')
-@section('css')
+@extends('admin.table_layouts')
+@push('css')
     <link href="/assets/global/vendor/summernote/summernote-bs4.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-tokenfield/bootstrap-tokenfield.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.css" rel="stylesheet">
-@endsection
+@endpush
 @section('content')
     <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h3 class="panel-title">{{ trans('admin.menu.customer_service.marketing') }}</h3>
-                <div class="panel-actions">
-                    @can('admin.marketing.email')
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#send_email_modal" type="button">
-                            <i class="fa-solid fa-envelope"></i> {{ trans('admin.marketing.email_send') }}</button>
-                    @endcan
-                    @can('admin.marketing.push')
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#send_push_modal" type="button" disabled>
-                            <i class="fa-solid fa-bell"></i> {{ trans('admin.marketing.push_send') }}</button>
-                    @endcan
-                </div>
-            </div>
-            <div class="panel-body">
-                <form class="form-row">
-                    <div class="form-group col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-6">
-                        <select class="form-control" id="status" name="status" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                title="{{ trans('common.status.attribute') }}" onchange="this.form.submit();">
-                            <option value="0">{{ trans('common.to_be_send') }}</option>
-                            <option value="-1">{{ trans('common.failed') }}</option>
-                            <option value="1">{{ trans('common.success') }}</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-lg-3 col-sm-6 btn-group">
-                        <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
-                        <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
-                    </div>
-                </form>
-                <table class="text-md-center" data-toggle="table" data-mobile-responsive="true">
-                    <thead class="thead-default">
-                        <tr>
-                            <th> #</th>
-                            <th> {{ ucfirst(trans('validation.attributes.title')) }}</th>
-                            <th> {{ trans('admin.marketing.send_status') }}</th>
-                            <th> {{ trans('admin.marketing.send_time') }}</th>
-                            <th> {{ trans('admin.marketing.error_message') }}</th>
-                            <th> {{ trans('common.action') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($marketingMessages as $message)
-                            <tr>
-                                <td> {{ $message->id }} </td>
-                                <td> {{ $message->title }} </td>
-                                <td> {{ $message->status_label }} </td>
-                                <td> {{ $message->created_at }} </td>
-                                <td> {{ $message->error }} </td>
-                                <td>
-                                    <a class="btn btn-primary" data-toggle="collapse" href="#marketing_{{ $loop->iteration }}" aria-expanded="false"
-                                       aria-controls="marketing_{{ $loop->iteration }}">{{ trans('common.view') }}</a>
-                                    @if ($message->type === 1)
-                                        <div class="collapse" id="marketing_{{ $loop->iteration }}">{!! $message->content !!}</div>
-                                    @else
-                                        <div class="collapse" id="marketing_{{ $loop->iteration }}">
-                                            <div class="markdown-content" data-markdown="{{ $message->content }}" data-rendered="false"></div>
-                                        </div>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-sm-4">
-                        {!! trans('admin.marketing.counts', ['num' => $marketingMessages->total()]) !!}
-                    </div>
-                    <div class="col-sm-8">
-                        <nav class="Page navigation float-right">
-                            {{ $marketingMessages->links() }}
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <x-admin.table-panel :title="trans('admin.menu.customer_service.marketing')" :theads="[
+            '#',
+            ucfirst(trans('validation.attributes.title')),
+            trans('admin.marketing.send_status'),
+            trans('admin.marketing.send_time'),
+            trans('admin.marketing.error_message'),
+            trans('common.action'),
+        ]" :count="trans('admin.marketing.counts', ['num' => $marketingMessages->total()])" :pagination="$marketingMessages->links()">
+            <x-slot:actions>
+                @can('admin.marketing.email')
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#send_email_modal" type="button">
+                        <i class="fa-solid fa-envelope"></i> {{ trans('admin.marketing.email_send') }}</button>
+                @endcan
+                @can('admin.marketing.push')
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#send_push_modal" type="button" disabled>
+                        <i class="fa-solid fa-bell"></i> {{ trans('admin.marketing.push_send') }}</button>
+                @endcan
+            </x-slot:actions>
+            <x-slot:filters>
+                <x-admin.filter.selectpicker class="col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-6" name="status" :title="trans('common.status.attribute')" :options="[-1 => trans('common.failed'), 0 => trans('common.to_be_send'), 1 => trans('common.success')]" />
+            </x-slot:filters>
+            <x-slot:tbody>
+                @foreach ($marketingMessages as $message)
+                    <tr>
+                        <td> {{ $message->id }} </td>
+                        <td> {{ $message->title }} </td>
+                        <td> {{ $message->status_label }} </td>
+                        <td> {{ $message->created_at }} </td>
+                        <td> {{ $message->error }} </td>
+                        <td>
+                            <a class="btn btn-primary" data-toggle="collapse" href="#marketing_{{ $loop->iteration }}" aria-expanded="false"
+                               aria-controls="marketing_{{ $loop->iteration }}">{{ trans('common.view') }}</a>
+                            @if ($message->type === 1)
+                                <div class="collapse" id="marketing_{{ $loop->iteration }}">{!! $message->content !!}</div>
+                            @else
+                                <div class="collapse" id="marketing_{{ $loop->iteration }}">
+                                    <div class="markdown-content" data-markdown="{{ $message->content }}" data-rendered="false"></div>
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+            </x-slot:tbody>
+        </x-admin.table-panel>
     </div>
 
     @can('admin.marketing.email')
@@ -113,8 +78,7 @@
                                 <input class="form-control" name="id" data-plugin="tokenfield" type="text" placeholder="{{ trans('model.user.id') }}" />
                             </div>
                             <div class="form-group col-lg-3 col-md-4 col-6">
-                                <input class="form-control" name="username" data-plugin="tokenfield" type="text"
-                                       placeholder="{{ trans('model.user.username') }}" />
+                                <input class="form-control" name="username" data-plugin="tokenfield" type="text" placeholder="{{ trans('model.user.username') }}" />
                             </div>
                             <div class="form-group col-lg-3 col-md-4 col-6">
                                 <div class="input-group">
@@ -295,37 +259,28 @@
         </div>
     @endcan
 @endsection
-@section('javascript')
+@push('javascript')
     <script src="/assets/global/vendor/summernote/summernote-bs4.min.js"></script>
+    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     @if (app()->getLocale() !== 'en')
         <script src="/assets/global/vendor/summernote/lang/summernote-{{ config('common.language')[app()->getLocale()][2] }}.min.js"></script>
+        <script src="/assets/global/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.{{ str_replace('_', '-', app()->getLocale()) }}.min.js" charset="UTF-8">
+        </script>
     @endif
-    <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-tokenfield/bootstrap-tokenfield.min.js"></script>
-    <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-markdown/bootstrap-markdown.min.js"></script>
     <script src="/assets/global/vendor/marked/marked.min.js"></script>
-    <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-tokenfield.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script>
-        function resetSearchForm() {
-            window.location.href = window.location.href.split("?")[0];
-        }
-
         function renderMarkdown(element) {
             var markdownText = $(element).data("markdown");
             var htmlContent = marked(markdownText);
             $(element).html(htmlContent);
             $(element).data("rendered", true); // Mark as rendered
-
         }
 
         $(document).ready(function() {
-            $("#status").selectpicker("val", @json(Request::query('status')));
-
             // Render Markdown content when collapse is shown
             $(".collapse").on("shown.bs.collapse", function() {
                 if ($(this).find(".markdown-content").length > 0 && $(this).find(".markdown-content").data("rendered") === false) {
@@ -346,16 +301,6 @@
         });
 
         @can('admin.marketing.email')
-            $("[name=\"expire_start\"]").datepicker({
-                format: "yyyy-mm-dd",
-                endDate: new Date()
-            });
-
-            $("[name=\"expire_end\"]").datepicker({
-                format: "yyyy-mm-dd",
-                startDate: new Date()
-            });
-
             function resetFilterForm() {
                 const form = $("#filter-form");
                 form[0].reset();
@@ -367,85 +312,79 @@
             }
 
             function fetchStatistics() {
-                const filterFormData = $("#filter-form").serializeArray();
-                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== "");
-                $.ajax({
-                    url: '{{ route('admin.marketing.create', ['type' => 'email']) }}',
-                    method: "GET",
-                    data: $.param(filteredFilterFormData),
-                    beforeSend: function() {
-                        $("#statistics").html('{{ trans('admin.marketing.email.loading_statistics') }}');
-                    },
-                    success: function(data) {
-                        $("#statistics").html(data.count);
-                    },
-                    error: function() {
-                        $("#statistics").html('<p>{{ trans('common.request_failed') }}</p>');
+                ajaxGet('{{ route('admin.marketing.create', ['type' => 'email']) }}',
+                    collectFormData("#filter-form", {
+                        removeEmpty: true
+                    }), {
+                        beforeSend: function() {
+                            $("#statistics").html('{{ trans('admin.marketing.email.loading_statistics') }}');
+                        },
+                        success: function(data) {
+                            $("#statistics").html(data.count);
+                        },
+                        error: function() {
+                            $("#statistics").html('<p>{{ trans('common.request_failed') }}</p>');
+                        }
                     }
-                });
+                );
             }
 
             function sendEmail() {
-                const filterFormData = $("#filter-form").serializeArray();
-                const filteredFilterFormData = filterFormData.filter(field => field.value.trim() !== "");
-
-                const emailFormData = $("#send-email-form").serializeArray();
-                emailFormData.push({
-                    name: "_token",
-                    value: '{{ csrf_token() }}'
+                const filterData = collectFormData("#filter-form", {
+                    removeEmpty: true
                 });
+                const emailData = collectFormData("#send-email-form");
 
-                $.ajax({
-                    url: '{{ route('admin.marketing.create', ['type' => 'email']) }}?' + $.param(filteredFilterFormData),
-                    method: "POST",
-                    data: $.param(emailFormData),
-                    beforeSend: function() {
-                        $("#msg").show().removeClass("alert-danger alert-success").addClass("alert-info").html('{{ trans('admin.creating') }}');
-                    },
-                    success: function(ret) {
-                        $("#msg").show().html(ret.message);
-                        if (ret.status === "success") {
-                            $("#msg").removeClass("alert-info alert-danger").addClass("alert-success").show().html(ret.message);
-                        } else {
-                            $("#msg").removeClass("alert-info alert-success").addClass("alert-danger").show().html(ret.message);
+                ajaxPost(
+                    '{{ route('admin.marketing.create', ['type' => 'email']) }}?' + $.param(filterData),
+                    emailData, {
+                        beforeSend: function() {
+                            $("#msg")
+                                .show()
+                                .removeClass("alert-danger alert-success")
+                                .addClass("alert-info")
+                                .html('{{ trans('admin.creating') }}');
+                        },
+                        success: function(ret) {
+                            $("#msg")
+                                .show()
+                                .removeClass("alert-info alert-danger alert-success")
+                                .addClass(ret.status === "success" ? "alert-success" : "alert-danger")
+                                .html(ret.message);
+                        },
+                        error: function() {
+                            $("#msg")
+                                .removeClass("alert-info alert-success")
+                                .addClass("alert-danger")
+                                .show()
+                                .html('{{ trans('common.request_failed') }}');
                         }
-                    },
-                    error: function() {
-                        $("#msg").removeClass("alert-info alert-success").addClass("alert-danger").show().html('{{ trans('common.request_failed') }}');
-                    },
-                    complete: function() {}
-                });
+                    }
+                );
             }
         @endcan
 
         @can('admin.marketing.push')
-            // 发送通道消息
             function sendPush() {
-                const formData = $("#send_push_modal").serializeArray();
-                formData.push({
-                    name: "_token",
-                    value: '{{ csrf_token() }}'
-                });
-                $.ajax({
-                    url: '{{ route('admin.marketing.create', ['type' => 'push']) }}',
-                    method: "POST",
-                    data: $.param(formData),
-                    beforeSend: function() {
-                        $("#msg").show().html('{{ trans('admin.creating') }}');
-                    },
-                    success: function(ret) {
-                        if (ret.status === "fail") {
-                            $("#msg").show().html(ret.message);
-                            return false;
+                ajaxPost(
+                    '{{ route('admin.marketing.create', ['type' => 'push']) }}',
+                    collectFormData("#send_push_modal form"), {
+                        beforeSend: function() {
+                            $("#msg").show().html('{{ trans('admin.creating') }}');
+                        },
+                        success: function(ret) {
+                            if (ret.status === "fail") {
+                                $("#msg").show().html(ret.message);
+                                return;
+                            }
+                            $("#send_push_modal").modal("hide");
+                        },
+                        error: function() {
+                            $("#msg").show().html('{{ trans('common.request_failed') }}');
                         }
-                        $("#send_modal").modal("hide");
-                    },
-                    error: function() {
-                        $("#msg").show().html('{{ trans('common.request_failed') }}');
-                    },
-                    complete: function() {}
-                });
+                    }
+                );
             }
         @endcan
     </script>
-@endsection
+@endpush

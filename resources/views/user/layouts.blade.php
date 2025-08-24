@@ -96,95 +96,42 @@
             </div>
         </div>
     </nav>
-    <div class="site-menubar {{ config('theme.sidebar') }}">
-        <div class="site-menubar-body">
-            <ul class="site-menu" data-plugin="menu">
-                <li class="site-menu-item {{ request()->routeIs('home') ? 'active open' : '' }}">
-                    <a href="{{ route('home') }}">
-                        <i class="site-menu-icon wb-home" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.home') }}</span>
-                    </a>
-                </li>
-                <li class="site-menu-item {{ request()->routeIs('shop.*') ? 'active open' : '' }}">
-                    <a href="{{ route('shop.index') }}">
-                        <i class="site-menu-icon wb-shopping-cart" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.shop') }}</span>
-                    </a>
-                </li>
-                <li class="site-menu-item {{ request()->routeIs('node.*') ? 'active open' : '' }}">
-                    <a href="{{ route('node.index') }}">
-                        <i class="site-menu-icon wb-cloud" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.nodes') }}</span>
-                    </a>
-                </li>
-                <li class="site-menu-item {{ request()->routeIs('knowledge.*') ? 'active open' : '' }}">
-                    <a href="{{ route('knowledge.index') }}">
-                        <i class="site-menu-icon wb-info-circle" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.help') }}</span>
-                    </a>
-                </li>
-                <li class="site-menu-item {{ request()->routeIs('profile.*') ? 'active open' : '' }}">
-                    <a href="{{ route('profile.show') }}">
-                        <i class="site-menu-icon wb-settings" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.profile') }}</span>
-                    </a>
-                </li>
-                @php
-                    $openTicket = auth()->user()->tickets()->where('status', '<>', 2)->count();
-                @endphp
-                <li class="site-menu-item {{ request()->routeIs('ticket.*') ? 'active open' : '' }}">
-                    <a href="{{ route('ticket.index') }}">
-                        <i class="site-menu-icon wb-chat-working" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.tickets') }}</span>
-                        @if ($openTicket > 0)
-                            <div class="site-menu-badge">
-                                <span class="badge badge-pill badge-success">{{ $openTicket }}</span>
-                            </div>
-                        @endif
-                    </a>
-                </li>
-                <li class="site-menu-item {{ request()->routeIs('invoice.*') ? 'active open' : '' }}">
-                    <a href="{{ route('invoice.index') }}">
-                        <i class="site-menu-icon wb-bookmark" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('user.menu.invoices') }}</span>
-                    </a>
-                </li>
-                @if (ReferralLog::uid()->exists() || Order::uid()->whereStatus(2)->exists())
-                    @if (sysConfig('is_invite_register'))
-                        <li class="site-menu-item {{ request()->routeIs('invite.*') ? 'active open' : '' }}">
-                            <a href="{{ route('invite.index') }}">
-                                <i class="site-menu-icon wb-extension" aria-hidden="true"></i>
-                                <span class="site-menu-title">{{ trans('user.menu.invites') }}</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if (sysConfig('referral_status'))
-                        <li class="site-menu-item {{ request()->routeIs('commission') ? 'active open' : '' }}">
-                            <a href="{{ route('referral.index') }}">
-                                <i class="site-menu-icon wb-star-outline" aria-hidden="true"></i>
-                                <span class="site-menu-title">{{ trans('user.menu.promotion') }}</span>
-                            </a>
-                        </li>
-                    @endif
-                @endif
-                <hr>
-                @can('admin.index')
-                    <li class="site-menu-item">
-                        <a href="{{ route('admin.index') }}">
-                            <i class="site-menu-icon wb-dashboard" aria-hidden="true"></i>
-                            <span class="site-menu-title">{{ trans('user.menu.admin_dashboard') }}</span>
-                        </a>
-                    </li>
-                @endcan
-                <li class="site-menu-item">
-                    <a href="{{ route('logout') }}">
-                        <i class="site-menu-icon wb-power" aria-hidden="true"></i>
-                        <span class="site-menu-title">{{ trans('auth.logout') }}</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
+    @php
+        $ticket_count = auth()->user()->tickets()->where('status', '<>', 2)->count();
+        $activePlan = Order::uid()->whereStatus(2)->exists();
+    @endphp
+    <x-ui.site.menubar :items="[
+        ['icon' => 'wb-home', 'route' => 'home', 'text' => trans('user.menu.home')],
+        ['icon' => 'wb-shopping-cart', 'route' => 'shop.index', 'active' => 'shop.*', 'text' => trans('user.menu.shop')],
+        ['icon' => 'wb-cloud', 'route' => 'node.index', 'active' => 'node.*', 'text' => trans('user.menu.nodes')],
+        ['icon' => 'wb-info-circle', 'route' => 'knowledge.index', 'active' => 'knowledge.*', 'text' => trans('user.menu.help')],
+        ['icon' => 'wb-settings', 'route' => 'profile.show', 'active' => 'profile.*', 'text' => trans('user.menu.profile')],
+        [
+            'icon' => 'wb-chat-working',
+            'route' => 'ticket.index',
+            'active' => 'ticket.*',
+            'text' => trans('user.menu.tickets'),
+            'badge' => $ticket_count,
+        ],
+        ['icon' => 'wb-bookmark', 'route' => 'invoice.index', 'active' => 'invoice.*', 'text' => trans('user.menu.invoices')],
+        [
+            'icon' => 'wb-extension',
+            'route' => 'invite.index',
+            'active' => 'invite.*',
+            'text' => trans('user.menu.invites'),
+            'show' => sysConfig('is_invite_register') && ReferralLog::uid()->exists(),
+        ],
+        [
+            'icon' => 'wb-star-outline',
+            'route' => 'referral.index',
+            'active' => 'referral.*',
+            'text' => trans('user.menu.promotion'),
+            'show' => sysConfig('referral_status') && $activePlan,
+        ],
+        '',
+        ['icon' => 'wb-dashboard', 'route' => 'admin.index', 'text' => trans('user.menu.admin_dashboard'), 'can' => 'admin.index'],
+        ['icon' => 'wb-power', 'route' => 'logout', 'text' => trans('auth.logout')],
+    ]" />
     <div class="page">
         @yield('content')
     </div>
@@ -211,7 +158,21 @@
 @endsection
 @section('layout_javascript')
     <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="/assets/js/config/common.js"></script>
     <script>
+        // 全局变量，用于common.js
+        const CSRF_TOKEN = '{{ csrf_token() }}';
+        const TRANS = {
+            warning: '{{ trans('common.warning') }}',
+            btn: {
+                close: '{{ trans('common.close') }}',
+                confirm: '{{ trans('common.confirm') }}'
+            },
+            copy: {
+                success: '{{ trans('common.copy.success') }}',
+                failed: '{{ trans('common.copy.failed') }}'
+            }
+        };
         const $buoop = {
             required: {
                 e: 11,
@@ -236,38 +197,21 @@
         } catch (e) {
             window.attachEvent("onload", $buo_f);
         }
-    </script>
-    @yield('javascript')
-    @if (Session::has('admin'))
-        <script>
+
+        @if (Session::has('admin'))
             $("#return_to_admin").click(function() {
-                $.ajax({
-                    method: "POST",
-                    url: '{{ route('switch') }}',
-                    data: {
-                        "_token": '{{ csrf_token() }}'
-                    },
-                    dataType: "json",
+                ajaxPost('{{ route('switch') }}', {}, {
                     success: function(ret) {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "success",
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(() => window.location.href = '{{ route('admin.index') }}');
-                    },
-                    error: function(ret) {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "error",
-                            timer: 1500,
-                            showConfirmButton: false
+                        handleResponse(ret, {
+                            redirectUrl: '{{ route('admin.index') }}'
                         });
                     }
                 });
             });
-        </script>
-    @endif
+        @endif
+    </script>
+    @yield('javascript')
+
     <!-- 统计 -->
     {!! sysConfig('website_statistics_code') !!}
     <!-- 客服 -->

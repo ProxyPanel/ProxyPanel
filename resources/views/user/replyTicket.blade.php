@@ -49,36 +49,16 @@
 
         // 关闭工单
         function closeTicket() {
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('common.close_item', ['attribute' => trans('user.ticket.attribute')]) }}',
                 text: '{{ trans('user.ticket.close_tips') }}',
-                icon: 'question',
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'PATCH',
-                        url: '{{ route('ticket.close', $ticket) }}',
-                        async: true,
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                        },
-                        dataType: 'json',
+                onConfirm: function() {
+                    ajaxPatch('{{ route('ticket.close', $ticket) }}', {}, {
                         success: function(ret) {
-                            swal.fire({
-                                title: ret.message,
-                                icon: 'success',
-                                timer: 1300,
-                            }).then(() => window.location.href = '{{ route('ticket.index') }}');
-                        },
-                        error: function() {
-                            swal.fire({
-                                title: '{{ trans('user.ticket.error') }}',
-                                icon: 'error'
-                            });
-                        },
+                            handleResponse(ret, {
+                                redirectUrl: '{{ route('ticket.index') }}'
+                            })
+                        }
                     });
                 }
             });
@@ -89,52 +69,19 @@
             const content = document.getElementById('editor').value;
 
             if (content.trim() === '') {
-                swal.fire({
+                showMessage({
                     title: '{{ ucfirst(trans('validation.required', ['attribute' => trans('validation.attributes.content')])) }}!',
                     icon: 'warning',
-                    timer: 1500,
+                    showConfirmButton: true
                 });
                 return false;
             }
-            swal.fire({
+
+            showConfirm({
                 title: '{{ trans('user.ticket.reply_confirm') }}',
-                icon: 'question',
-                allowEnterKey: false,
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}',
-            }).then((result) => {
-                if (result.value) {
-                    $.ajax({
-                        method: 'PUT',
-                        url: '{{ route('ticket.reply', $ticket) }}',
-                        async: true,
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            content: content,
-                        },
-                        dataType: 'json',
-                        success: function(ret) {
-                            if (ret.status === 'success') {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'success',
-                                    timer: 1000,
-                                    showConfirmButton: false,
-                                }).then(() => window.location.reload());
-                            } else {
-                                swal.fire({
-                                    title: ret.message,
-                                    icon: 'error'
-                                }).then(() => window.location.reload());
-                            }
-                        },
-                        error: function() {
-                            swal.fire({
-                                title: '{{ trans('user.ticket.error') }}',
-                                icon: 'error'
-                            });
-                        },
+                onConfirm: function() {
+                    ajaxPut('{{ route('ticket.reply', $ticket) }}', {
+                        content: content
                     });
                 }
             });

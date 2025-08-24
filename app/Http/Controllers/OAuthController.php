@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invite;
 use App\Models\User;
 use App\Models\UserOauth;
 use App\Utils\Helpers;
 use App\Utils\IP;
+use Hashids\Hashids;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Str;
@@ -85,7 +87,31 @@ class OAuthController extends Controller
             $userAuth = UserOauth::whereType($provider)->whereIdentifier($registerInfo->getId())->first();
 
             if (! $userAuth) { // 第三方账号未被绑定
-                $user = Helpers::addUser($registerInfo->getEmail(), Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'), $registerInfo->getNickname(), 1);
+                // 获取邀请信息
+                $affArr = $this->getAff();
+                $inviter_id = $affArr['inviter_id'];
+
+                // 计算流量值（包括邀请奖励流量）
+                $transfer_enable = MiB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
+
+                // 创建用户并传入邀请者 ID
+                $user = Helpers::addUser($registerInfo->getEmail(), Str::random(), $transfer_enable, (int) sysConfig('default_days'), $inviter_id, $registerInfo->getNickname(), 1);
+
+                // 更新邀请码（如果使用了邀请码）
+                if ($affArr['code_id'] && sysConfig('is_invite_register')) {
+                    Invite::find($affArr['code_id'])?->update(['invitee_id' => $user->id, 'status' => 1]);
+                }
+
+                // 清除邀请人Cookie
+                cookie()->unqueue('register_aff');
+
+                // 给邀请人增加流量（如果有的话）
+                if ($inviter_id) {
+                    $referralUser = User::find($inviter_id);
+                    if ($referralUser && $referralUser->expiration_date >= date('Y-m-d')) {
+                        $referralUser->incrementData(sysConfig('referral_traffic') * MiB);
+                    }
+                }
 
                 $user->userAuths()->create([
                     'type' => $provider,
@@ -98,6 +124,34 @@ class OAuthController extends Controller
         }
 
         return redirect()->route('login')->withErrors(trans('auth.oauth.registered'));
+    }
+
+    private function getAff(): array
+    { // 获取邀请信息
+        $data = ['inviter_id' => null, 'code_id' => 0]; // 邀请人ID 与 邀请码ID
+
+        // 检查cookie中的邀请信息（通过Affiliate中间件设置）
+        $cookieAff = request()?->cookie('register_aff');
+        if ($cookieAff) {
+            $data['inviter_id'] = $this->setInviter($cookieAff);
+        }
+
+        return $data;
+    }
+
+    private function setInviter(string|int $aff): ?int
+    {
+        $uid = 0;
+        if (is_numeric($aff)) {
+            $uid = (int) $aff;
+        } else {
+            $decode = (new Hashids(sysConfig('affiliate_link_salt'), 8))->decode($aff);
+            if ($decode) {
+                $uid = $decode[0];
+            }
+        }
+
+        return $uid && User::whereId($uid)->exists() ? $uid : null;
     }
 
     private function handleLogin(User $user): RedirectResponse

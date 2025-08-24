@@ -29,6 +29,11 @@ class Goods extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(GoodsCategory::class, 'category_id');
+    }
+
     public function scopeType(Builder $query, int $type): Builder
     {
         return $query->whereType($type)->whereStatus(1)->orderByDesc('sort');

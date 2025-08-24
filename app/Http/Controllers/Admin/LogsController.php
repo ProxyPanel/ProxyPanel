@@ -50,7 +50,7 @@ class LogsController extends Controller
             if ($value) {
                 $query->where('coupon_id', '<>', null);
             } else {
-                $query->where('coupon_id', 'null');
+                $query->where('coupon_id', null);
             }
         });
 
@@ -85,7 +85,7 @@ class LogsController extends Controller
 
     public function trafficLog(Request $request): View
     { // 流量日志
-        $query = UserDataFlowLog::with(['user', 'node']);
+        $query = UserDataFlowLog::with(['user:id,username,port', 'node:id,name']);
 
         $request->whenFilled('port', function ($value) use ($query) {
             $query->whereHas('user', function ($query) use ($value) {
@@ -120,7 +120,7 @@ class LogsController extends Controller
             $log->d = formatBytes($log->d);
             $log->log_time = date('Y-m-d H:i:s', $log->log_time);
         }
-        $nodes = Node::whereStatus(1)->orderByDesc('sort')->latest()->get();
+        $nodes = Node::whereStatus(1)->orderByDesc('sort')->latest()->pluck('name', 'id');
 
         return view('admin.logs.traffic', compact(['totalTraffic', 'dataFlowLogs', 'nodes']));
     }
@@ -142,7 +142,7 @@ class LogsController extends Controller
 
     public function onlineIPMonitor(Request $request, ?int $id = null): View
     { // 在线IP监控（实时）
-        $query = NodeOnlineIp::with(['node:id,name', 'user:id,username'])->where('created_at', '>=', strtotime('-2 minutes'));
+        $query = NodeOnlineIp::with(['node:id,name', 'user:id,username,port'])->where('created_at', '>=', strtotime('-2 minutes'));
 
         if ($id !== null) {
             $query->whereHas('user', static function ($query) use ($id) {
@@ -183,7 +183,7 @@ class LogsController extends Controller
 
         return view('admin.logs.onlineIPMonitor', [
             'onlineIPLogs' => $onlineIPLogs,
-            'nodes' => Node::whereStatus(1)->orderByDesc('sort')->latest()->get(),
+            'nodes' => Node::whereStatus(1)->orderByDesc('sort')->latest()->pluck('name', 'id'),
         ]);
     }
 
@@ -244,7 +244,9 @@ class LogsController extends Controller
 
         $userList = $query->orderBy('id')->paginate(15)->appends($request->except('page'));
 
-        $nodeOnlineIPs = NodeOnlineIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct()->get();
+        // 获取最近10分钟的在线IP记录
+        $nodeOnlineIPs = NodeOnlineIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct()->get(['user_id', 'node_id', 'port', 'ip', 'type', 'created_at']);
+
         foreach ($userList as $user) {
             // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
             $user->onlineIPList = $nodeOnlineIPs->where('port', $user->port)->take(5);

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\Node;
-use App\Models\NodeHeartbeat;
 use App\Models\User;
 use App\Notifications\NodeBlocked;
 use App\Notifications\NodeOffline;
@@ -44,10 +43,9 @@ class NodeStatusDetection extends Command
     private function checkNodeStatus(): void
     {
         $offlineCheckTimes = sysConfig('offline_check_times');
-        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id');
 
         $data = [];
-        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->whereNotIn('id', $onlineNode)->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(1)->whereDoesntHave('latestHeartbeat')->get() as $node) {
             // 近期无节点负载信息则认为是后端炸了
             if ($offlineCheckTimes > 0) {
                 $times = $this->updateCache('offline_check_times'.$node->id, 24);
@@ -90,11 +88,11 @@ class NodeStatusDetection extends Command
                     $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
 
                     if ($node->detection_type !== 1 && $status['icmp'] !== 1) {
-                        $data[$node_id][$ip]['icmp'] = config('common.network_status')[$status['icmp']];
+                        $data[$node_id][$ip]['icmp'] = trans("admin.network_status.{$status['icmp']}");
                     }
 
                     if ($node->detection_type !== 2 && $status['tcp'] !== 1) {
-                        $data[$node_id][$ip]['tcp'] = config('common.network_status')[$status['tcp']];
+                        $data[$node_id][$ip]['tcp'] = trans("admin.network_status.{$status['tcp']}");
                     }
 
                     sleep(2);
@@ -132,8 +130,7 @@ class NodeStatusDetection extends Command
 
     private function reliveNode(): void
     {
-        $onlineNode = NodeHeartbeat::recently()->distinct()->pluck('node_id');
-        foreach (Node::whereRelayNodeId(null)->whereStatus(0)->whereIn('id', $onlineNode)->where('detection_type', '<>', 0)->get() as $node) {
+        foreach (Node::whereRelayNodeId(null)->whereStatus(0)->where('detection_type', '<>', 0)->whereHas('latestHeartbeat')->get() as $node) {
             $ips = $node->ips();
             $reachableIPs = 0;
 

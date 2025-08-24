@@ -113,6 +113,11 @@ class User extends Authenticatable
         return $this->HasMany(UserLoginLog::class);
     }
 
+    public function latestLoginLog(): HasOne
+    {
+        return $this->hasOne(UserLoginLog::class)->latestOfMany();
+    }
+
     public function subscribe(): HasOne
     {
         return $this->hasOne(UserSubscribe::class);

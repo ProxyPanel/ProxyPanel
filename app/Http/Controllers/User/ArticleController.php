@@ -24,9 +24,7 @@ class ArticleController extends Controller
     }
 
     public function show(Article $article): JsonResponse
-    { // 公告详情
-        $articleService = new ArticleService($article);
-
-        return response()->json(['title' => $article->title, 'content' => $articleService->getContent()]);
+    { // 文章详情
+        return response()->json(['title' => $article->title, 'content' => (new ArticleService($article))->getContent()]);
     }
 }

@@ -27,7 +27,7 @@ return [
     'clone' => 'Clone',
     'confirm' => [
         'continues' => 'Are you sure you want to continue?',
-        'delete' => [0 => 'Confirm deletion of :attribute', 1 => '? This action is irreversible!'],
+        'delete' => 'Confirm deletion of :attribute [:name]? This action is irreversible!',
         'export' => 'Confirm export of all data?',
     ],
     'coupon' => [
@@ -698,7 +698,7 @@ return [
         'online_monitor' => 'Online monitor',
         'proxies_config' => '[:username] proxy config',
         'proxy_info' => 'Proxy Information',
-        'reset_confirm' => [0 => '⚠️ Confirm reset traffic for ', 1 => '?'],
+        'reset_confirm' => '⚠️ Confirm resetting traffic for :username?',
         'reset_traffic' => 'Reset traffic',
         'traffic_monitor' => 'Traffic monitor',
         'update_help' => 'Updated! Return to list?',
@@ -707,4 +707,10 @@ return [
     'user_dashboard' => 'User Center',
     'yes' => 'Yes',
     'zero_unlimited_hint' => 'No setting/0 means no restriction',
+    'network_status' => [
+        1 => '✔️ Normal',
+        2 => '🛑 Blocked Overseas',
+        3 => '🛑 Blocked Domestically',
+        4 => '❌ Disconnected',
+    ],
 ];

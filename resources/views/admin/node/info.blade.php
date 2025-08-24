@@ -15,491 +15,179 @@
 @endsection
 @section('content')
     <div class="page-content container-fluid">
-        <div class="panel">
-            <div class="panel-heading">
-                <h2 class="panel-title">
-                    {{ isset($node) ? trans('admin.action.edit_item', ['attribute' => trans('model.node.attribute')]) : trans('admin.action.add_item', ['attribute' => trans('model.node.attribute')]) }}
-                </h2>
-            </div>
-            <div class="alert alert-info" role="alert">
-                <button class="close" data-dismiss="alert" aria-label="{{ trans('common.close') }}">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">{{ trans('common.close') }}</span>
-                </button>
-                {!! trans('admin.node.info.hint') !!}
-            </div>
-            <div class="panel-body">
-                <form class="form-horizontal" id="nodeForm">
-                    @csrf
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="example-wrap">
-                                <h4 class="example-title">{{ trans('admin.node.info.basic') }}</h4>
-                                <div class="example">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="is_ddns">{{ trans('model.node.ddns') }}</label>
-                                        <div class="col-md-9">
-                                            <input id="is_ddns" name="is_ddns" data-plugin="switchery" type="checkbox" onchange="switchSetting('is_ddns')">
+        <x-ui.panel :title="trans(isset($node) ? 'admin.action.edit_item' : 'admin.action.add_item', ['attribute' => trans('model.node.attribute')])">
+            <x-alert type="info" :message="trans('admin.node.info.hint')" />
+            <x-admin.form.container handler="Submit()" enctype="true">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h4 class="example-title">{{ trans('admin.node.info.basic') }}</h4>
+                        <x-admin.form.input name="is_ddns" type="checkbox" :label="trans('model.node.ddns')" attribute="data-plugin=switchery onchange=switchSetting('is_ddns')"
+                                            :help="trans('admin.node.info.ddns_hint')" />
+                        <x-admin.form.input name="name" :label="trans('model.node.name')" required />
+                        <x-admin.form.input name="server" :label="trans('model.node.domain')" :placeholder="trans('admin.node.info.domain_placeholder')" :help="trans('admin.node.info.domain_hint')" />
+                        <x-admin.form.input name="ip" :label="trans('model.node.ipv4')" :placeholder="trans('admin.node.info.ipv4_placeholder')" required :help="trans('admin.node.info.ipv4_hint')" />
+                        <x-admin.form.input name="ipv6" :label="trans('model.node.ipv6')" :placeholder="trans('admin.node.info.ipv6_placeholder')" :help="trans('admin.node.info.ipv6_hint')" />
+                        <x-admin.form.input name="push_port" type="number" :label="trans('model.node.push_port')" :help="trans('admin.node.info.push_port_hint')" />
+                        <x-admin.form.input name="traffic_rate" type="number" :label="trans('model.node.data_rate')" step="0.01" required :help="trans('admin.node.info.data_rate_hint')" />
+
+                        <x-admin.form.select name="level" :label="trans('model.common.level')" :options="$levels" :help="trans('admin.node.info.level_hint')" />
+                        <x-admin.form.select name="rule_group_id" :label="trans('model.rule_group.attribute')" :options="$ruleGroups" :placeholder="trans('common.none')" />
+                        <x-admin.form.input-group name="speed_limit" type="number" :label="trans('model.node.traffic_limit')" append="Mbps" required />
+                        <x-admin.form.input name="client_limit" type="number" :label="trans('model.node.client_limit')" required />
+                        <x-admin.form.input name="sort" type="number" :label="trans('model.common.sort')" required />
+                        <x-admin.form.select name="labels" :label="trans('model.node.label')" :options="$labels" multiple />
+                        <x-admin.form.select name="country_code" :label="trans('model.node.country')">
+                            @foreach ($countries as $country)
+                                <option data-icon="fi fis fi-{{ $country->code }}" value="{{ $country->code }}">
+                                    {{ strtoupper($country->code) . ' - ' . $country->name }}
+                                </option>
+                            @endforeach
+                        </x-admin.form.select>
+
+                        <!-- 节点 细则部分 -->
+                        <x-admin.form.input-group name="next_renewal_date" attribute="data-plugin=datepicker" :label="trans('model.node.next_renewal_date')" />
+                        <x-admin.form.skeleton name="subscription_term_value" :label="trans('model.node.subscription_term')">
+                            <div class="input-group">
+                                <input class="form-control" id="subscription_term_value" type="number" min="1" />
+                                <select class="form-control" id="subscription_term_unit" data-plugin="selectpicker" data-style="btn-outline btn-primary">
+                                    <option value="days">{{ ucfirst(trans('validation.attributes.day')) }}</option>
+                                    <option value="months">{{ ucfirst(trans('validation.attributes.month')) }}</option>
+                                    <option value="years">{{ ucfirst(trans('validation.attributes.year')) }}</option>
+                                </select>
+                            </div>
+                        </x-admin.form.skeleton>
+                        <x-admin.form.input name="renewal_cost" type="number" :label="trans('model.node.renewal_cost')" step="0.01" />
+                        <x-admin.form.textarea name="description" :label="trans('model.common.description')" />
+                    </div>
+
+                    <div class="col-lg-6">
+                        <h4 class="example-title">{{ trans('admin.node.info.extend') }}</h4>
+                        <x-admin.form.radio-group name="is_display" :label="trans('model.node.display')" :options="[
+                            0 => trans('admin.node.info.display.invisible'),
+                            1 => trans('admin.node.info.display.node'),
+                            2 => trans('admin.node.info.display.sub'),
+                            3 => trans('admin.node.info.display.all'),
+                        ]" :help="trans('admin.node.info.display.hint')" />
+                        <x-admin.form.radio-group name="detection_type" :label="trans('model.node.detection')" :options="[
+                            0 => trans('common.close'),
+                            1 => trans('admin.node.info.detection.tcp'),
+                            2 => trans('admin.node.info.detection.icmp'),
+                            3 => trans('admin.node.info.detection.all'),
+                        ]" :help="trans('admin.node.info.detection.hint')" />
+
+                        <!-- 中转 设置部分 -->
+                        <x-admin.form.select name="relay_node_id" :label="trans('model.node.transfer')" :options="$nodes" :placeholder="trans('common.none')" />
+
+                        <hr />
+                        <div class="relay-config">
+                            <x-admin.form.input name="port" type="number" :label="trans('model.node.relay_port')" />
+                        </div>
+                        <!-- 代理 设置部分 -->
+                        <div class="proxy-config">
+                            <x-admin.form.radio-group name="type" :label="trans('model.common.type')" :options="[0 => 'Shadowsocks', 1 => 'ShadowsocksR', 2 => 'V2Ray', 3 => 'Trojan', 4 => 'VNET']" />
+                            <hr />
+                            <!-- SS/SSR 设置部分 -->
+                            <div class="ss-setting">
+                                <x-admin.form.select name="method" :label="trans('model.node.method')" :options="$methods" />
+                                <!-- TODO: Supporting SS plugin -->
+                                {{--                                <x-admin.form.select name="plugin" :label="trans('model.node.plugin')" :options="['none'=>'None', 'kcptun'=>'Kcptun', 'v2ray-plugin' => 'V2ray-plugin', 'cloak'=> 'Cloak', 'shadow-tls' => 'Shadow-tls']" /> --}}
+                                {{--                                <x-admin.form.textarea name="plugin_opts" :label="trans('model.node.plugin_opts')" /> --}}
+
+                                <div class="ssr-setting">
+                                    <x-admin.form.select name="protocol" :label="trans('model.node.protocol')" :options="$protocols" />
+                                    <x-admin.form.textarea name="protocol_param" :label="trans('model.node.protocol_param')" />
+                                    <x-admin.form.select name="obfs" :label="trans('model.node.obfs')" :options="$obfs" />
+                                    <x-admin.form.textarea name="obfs_param" :label="trans('model.node.obfs_param')" :placeholder="trans('admin.node.info.obfs_param_hint')" />
+                                    <x-admin.form.skeleton name="proxy_info" :label="trans('admin.node.proxy_info')">
+                                        <div class="text-help">
+                                            {!! trans('admin.node.proxy_info_hint') !!}
                                         </div>
-                                        <div class="text-help col-md-9 offset-md-3 px-0">
-                                            {!! trans('admin.node.info.ddns_hint') !!}
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="name"> {{ trans('model.node.name') }} </label>
-                                        <input class="form-control col-md-4" id="name" name="name" type="text" required>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="server"> {{ trans('model.node.domain') }} </label>
-                                        <input class="form-control col-md-4" id="server" name="server" type="text"
-                                               placeholder="{{ trans('admin.node.info.domain_placeholder') }}">
-                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.domain_hint') }}</span>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="ip"> {{ trans('model.node.ipv4') }} </label>
-                                        <input class="form-control col-md-4" id="ip" name="ip" type="text"
-                                               placeholder="{{ trans('admin.node.info.ipv4_placeholder') }}" required>
-                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.ipv4_hint') }}</span>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="ipv6"> {{ trans('model.node.ipv6') }} </label>
-                                        <input class="form-control col-md-4" id="ipv6" name="ipv6" type="text"
-                                               placeholder="{{ trans('admin.node.info.ipv6_placeholder') }}">
-                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.ipv6_hint') }}</span>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="push_port"> {{ trans('model.node.push_port') }} </label>
-                                        <input class="form-control col-md-4" id="push_port" name="push_port" type="number" value="1080">
-                                        <span class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.push_port_hint') }}</span>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="traffic_rate"> {{ trans('model.node.data_rate') }} </label>
-                                        <input class="form-control col-md-4" id="traffic_rate" name="traffic_rate" type="number" value="1.0" step="0.01"
-                                               required>
-                                        <div class="text-help col-md-9 offset-md-3 px-0">{{ trans('admin.node.info.data_rate_hint') }}</div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="level">{{ trans('model.common.level') }}</label>
-                                        <select class="col-md-5 form-control show-tick" id="level" name="level" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary">
-                                            @foreach ($levels as $level)
-                                                <option value="{{ $level->level }}">{{ $level->name }}</option>
-                                            @endforeach
-                                        </select>
-                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.level_hint') }}</div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="rule_group_id">{{ trans('model.rule_group.attribute') }}</label>
-                                        <select class="col-md-5 form-control show-tick" id="rule_group_id" name="rule_group_id" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary">
-                                            <option value="">{{ trans('common.none') }}</option>
-                                            @foreach ($ruleGroups as $ruleGroup)
-                                                <option value="{{ $ruleGroup->id }}">{{ $ruleGroup->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="speed_limit">{{ trans('model.node.traffic_limit') }}</label>
-                                        <div class="col-md-4 input-group p-0">
-                                            <input class="form-control" id="speed_limit" name="speed_limit" type="number" value="1000" required>
-                                            <span class="input-group-text">Mbps</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="client_limit">{{ trans('model.node.client_limit') }}</label>
-                                        <input class="form-control col-md-4" id="client_limit" name="client_limit" type="number" value="1000" required>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="sort">{{ trans('model.common.sort') }}</label>
-                                        <input class="form-control col-md-4" id="sort" name="sort" type="text" value="1" required />
-                                        <span class="col-md-5"></span>
-                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.sort_asc') }}</div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="labels">{{ trans('model.node.label') }}</label>
-                                        <select class="col-md-5 form-control show-tick" id="labels" name="labels" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary" multiple>
-                                            @foreach ($labels as $label)
-                                                <option value="{{ $label->id }}">{{ $label->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="country_code"> {{ trans('model.node.country') }} </label>
-                                        <select class="col-md-5 form-control" id="country_code" name="country_code" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary">
-                                            @foreach ($countries as $country)
-                                                <option value="{{ $country->code }}">{{ $country->code . ' - ' . $country->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <!-- 节点 细则部分 -->
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="next_renewal_date">{{ trans('model.node.next_renewal_date') }}</label>
-                                        <div class="col-md-6 input-group p-0">
-                                            <input class="form-control" id="next_renewal_date" name="next_renewal_date" data-plugin="datepicker" type="text"
-                                                   autocomplete="off" />
-                                            <input class="form-control" id="next_next_renewal_date" type="text" readonly />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="subscription_term_value">
-                                            {{ trans('model.node.subscription_term') }}
-                                        </label>
-                                        <div class="col-md-4 input-group p-0">
-                                            <input class="form-control" id="subscription_term_value" type="number" min="1" />
-                                            <select class="form-control" id="subscription_term_unit" data-plugin="selectpicker"
-                                                    data-style="btn-outline btn-primary">
-                                                <option value="days" selected>{{ ucfirst(trans('validation.attributes.day')) }}</option>
-                                                <option value="months">{{ ucfirst(trans('validation.attributes.month')) }}</option>
-                                                <option value="years">{{ ucfirst(trans('validation.attributes.year')) }}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="renewal_cost">{{ trans('model.node.renewal_cost') }}</label>
-                                        <div class="col-md-4 input-group p-0">
-                                            <div class="input-group-prepend">
-                                                <span class="input-group-text">
-                                                    {{ array_column(config('common.currency'), 'symbol', 'code')[sysConfig('standard_currency')] }}
-                                                </span>
-                                            </div>
-                                            <input class="form-control" id="renewal_cost" name="renewal_cost" type="number" step="0.01" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="description"> {{ trans('model.common.description') }} </label>
-                                        <input class="form-control col-md-6" id="description" name="description" type="text">
-                                    </div>
+                                    </x-admin.form.skeleton>
                                 </div>
+
+                                <hr />
+                                <x-admin.form.input name="single" type="checkbox" :label="trans('model.node.single')"
+                                                    attribute="data-plugin=switchery onchange=switchSetting('single')" :help="trans('admin.node.info.single_hint')" />
+
+                                <div class="single-setting">
+                                    <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" :help="trans('admin.node.info.single_hint')" />
+                                    <x-admin.form.input name="passwd" :label="trans('model.node.single_passwd')" />
+                                </div>
+                            </div>
+
+                            <!-- V2ray TODO: Supporting new feature -->
+                            <div class="v2ray-setting">
+                                <x-admin.form.input name="v2_alter_id" :label="trans('model.node.v2_alter_id')" />
+                                <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" />
+                                <x-admin.form.select name="v2_method" :label="trans('model.node.method')" :options="[
+                                    'none' => 'none',
+                                    'auto' => 'auto',
+                                    'zero' => 'zero',
+                                    'aes-128-gcm' => 'aes-128-gcm',
+                                    'chacha20-poly1305' => 'chacha20-poly1305',
+                                ]" :help="trans('admin.node.info.v2_method_hint')" />
+                                <x-admin.form.select name="v2_net" :label="trans('model.node.v2_net')" :options="[
+                                    'tcp' => 'TCP',
+                                    'kcp' => 'mKCP',
+                                    'ws' => 'WebSocket',
+                                    'httpupgrade' => 'HTTPUpgrade',
+                                    'xhttp' => 'xHTTP   ',
+                                    'h2' => 'HTTP/2',
+                                    'quic' => 'QUIC',
+                                    'domainsocket' => 'DomainSocket',
+                                    'grpc' => 'gRPC',
+                                ]" :help="trans('admin.node.info.v2_net_hint')" />
+                                <x-admin.form.select name="v2_type" :label="trans('model.node.v2_cover')" :options="[
+                                    'none' => trans('admin.node.info.v2_cover.none'),
+                                    'http' => trans('admin.node.info.v2_cover.http'),
+                                    'srtp' => trans('admin.node.info.v2_cover.srtp'),
+                                    'utp' => trans('admin.node.info.v2_cover.utp'),
+                                    'wechat-video' => trans('admin.node.info.v2_cover.wechat'),
+                                    'dtls' => trans('admin.node.info.v2_cover.dtls'),
+                                    'wireguard' => trans('admin.node.info.v2_cover.wireguard'),
+                                ]" />
+                                <x-admin.form.input name="v2_host" :label="trans('model.node.v2_host')" :help="trans('admin.node.info.v2_host_hint')" />
+                                <x-admin.form.input name="v2_path" :label="trans('model.node.v2_path')" />
+                                <x-admin.form.input name="v2_sni" :label="trans('model.node.v2_sni')" />
+                                <x-admin.form.input name="v2_tls" type="checkbox" :label="trans('model.node.v2_tls')"
+                                                    attribute="data-plugin=switchery onchange=switchSetting('v2_tls')" />
+                                <x-admin.form.input name="tls_provider" :label="trans('model.node.v2_tls_provider')" :help="trans('admin.node.info.v2_tls_provider_hint')" />
+                                {{--                                <x-admin.form.input name="mux" type="checkbox" :label="trans('model.node.mux')" attribute="data-plugin=switchery onchange=switchSetting('mux')" --}}
+                                {{--                                                    :help="trans('admin.node.info.mux')" /> --}}
+                            </div>
+
+                            <!-- Trojan 设置部分 -->
+                            <div class="trojan-setting">
+                                <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" />
                             </div>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="example-wrap">
-                                <h4 class="example-title">{{ trans('admin.node.info.extend') }}</h4>
-                                <div class="example">
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="is_display">{{ trans('model.node.display') }}</label>
-                                        <ul class="col-md-9 list-unstyled list-inline">
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="invisible" name="is_display" type="radio" value="0" />
-                                                    <label for="invisible">{{ trans('admin.node.info.display.invisible') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="page_only" name="is_display" type="radio" value="1" />
-                                                    <label for="page_only">{{ trans('admin.node.info.display.node') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="sub_only" name="is_display" type="radio" value="2" />
-                                                    <label for="sub_only">{{ trans('admin.node.info.display.sub') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="visible" name="is_display" type="radio" value="3" checked />
-                                                    <label for="visible">{{ trans('admin.node.info.display.all') }}</label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.display.hint') }}</div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="detection_type">{{ trans('model.node.detection') }}</label>
-                                        <ul class="col-md-9 list-unstyled list-inline">
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="detect_disable" name="detection_type" type="radio" value="0" checked />
-                                                    <label for="detect_disable">{{ trans('common.close') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="detect_tcp" name="detection_type" type="radio" value="1" />
-                                                    <label for="detect_tcp">{{ trans('admin.node.info.detection.tcp') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="detect_icmp" name="detection_type" type="radio" value="2" />
-                                                    <label for="detect_icmp">{{ trans('admin.node.info.detection.icmp') }}</label>
-                                                </div>
-                                            </li>
-                                            <li class="list-inline-item">
-                                                <div class="radio-custom radio-primary">
-                                                    <input id="detect_all" name="detection_type" type="radio" value="3" />
-                                                    <label for="detect_all">{{ trans('admin.node.info.detection.all') }}</label>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.detection.hint') }}</div>
-                                    </div>
-                                    <!-- 中转 设置部分 -->
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="relay_node_id">{{ trans('model.node.transfer') }}</label>
-                                        <select class="col-md-5 form-control show-tick" id="relay_node_id" name="relay_node_id" data-plugin="selectpicker"
-                                                data-style="btn-outline btn-primary">
-                                            <option value="">{{ trans('common.none') }}</option>
-                                            @foreach ($nodes as $name => $id)
-                                                <option value="{{ $id }}">{{ $id }} - {{ $name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <hr />
-                                    <!-- 代理 设置部分 -->
-                                    <div class="proxy-config">
-                                        <div class="form-group row">
-                                            <label class="col-md-3 col-form-label" for="type">{{ trans('model.common.type') }}</label>
-                                            <ul class="col-md-9 list-unstyled list-inline">
-                                                <li class="list-inline-item">
-                                                    <div class="radio-custom radio-primary">
-                                                        <input id="shadowsocks" name="type" type="radio" value="0">
-                                                        <label for="shadowsocks">Shadowsocks</label>
-                                                    </div>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <div class="radio-custom radio-primary">
-                                                        <input id="shadowsocksR" name="type" type="radio" value="1">
-                                                        <label for="shadowsocksR">ShadowsocksR</label>
-                                                    </div>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <div class="radio-custom radio-primary">
-                                                        <input id="v2ray" name="type" type="radio" value="2">
-                                                        <label for="v2ray">V2Ray</label>
-                                                    </div>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <div class="radio-custom radio-primary">
-                                                        <input id="trojan" name="type" type="radio" value="3">
-                                                        <label for="trojan">Trojan</label>
-                                                    </div>
-                                                </li>
-                                                <li class="list-inline-item">
-                                                    <div class="radio-custom radio-primary">
-                                                        <input id="vnet" name="type" type="radio" value="4">
-                                                        <label for="vnet">VNET</label>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <hr />
-                                        <!-- SS/SSR 设置部分 -->
-                                        <div class="ss-setting">
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="method">{{ trans('model.node.method') }}</label>
-                                                <select class="col-md-5 form-control" id="method" name="method" data-plugin="selectpicker"
-                                                        data-style="btn-outline btn-primary">
-                                                    @foreach (Helpers::methodList() as $method)
-                                                        <option value="{{ $method->name }}" @if (!isset($node) && $method->is_default) selected @endif>{{ $method->name }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="ssr-setting">
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label" for="protocol">{{ trans('model.node.protocol') }}</label>
-                                                    <select class="col-md-5 form-control" id="protocol" name="protocol" data-plugin="selectpicker"
-                                                            data-style="btn-outline btn-primary">
-                                                        @foreach (Helpers::protocolList() as $protocol)
-                                                            <option value="{{ $protocol->name }}" @if (!isset($node) && $protocol->is_default) selected @endif>
-                                                                {{ $protocol->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label" for="protocol_param"> {{ trans('model.node.protocol_param') }}
-                                                    </label>
-                                                    <input class="form-control col-md-4" id="protocol_param" name="protocol_param" type="text">
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label" for="obfs">{{ trans('model.node.obfs') }}</label>
-                                                    <select class="col-md-5 form-control" id="obfs" name="obfs" data-plugin="selectpicker"
-                                                            data-style="btn-outline btn-primary">
-                                                        @foreach (Helpers::obfsList() as $obfs)
-                                                            <option value="{{ $obfs->name }}" @if (!isset($node) && $obfs->is_default) selected @endif>
-                                                                {{ $obfs->name }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="form-group row obfs_param">
-                                                    <label class="col-md-3 col-form-label" for="obfs_param"> {{ trans('model.node.obfs_param') }} </label>
-                                                    <textarea class="form-control col-md-8" id="obfs_param" name="obfs_param" rows="5" placeholder="{!! trans('admin.node.info.obfs_param_hint') !!}"></textarea>
-                                                </div>
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label">{{ trans('admin.node.proxy_info') }}</label>
-                                                    <div class="text-help col-md-9">
-                                                        {!! trans('admin.node.proxy_info_hint') !!}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <hr />
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="single">{{ trans('model.node.single') }}</label>
-                                                <div class="col-md-9">
-                                                    <input id="single" name="single" data-plugin="switchery" type="checkbox"
-                                                           onchange="switchSetting('single')">
-                                                </div>
-                                                <div class="text-help col-md-9 offset-md-3 px-0">
-                                                    {!! trans('admin.node.info.additional_ports_hint') !!}
-                                                </div>
-                                            </div>
-                                            <div class="single-setting">
-                                                <div class="form-group row">
-                                                    <label class="col-md-3 col-form-label" for="single_port">{{ trans('model.node.service_port') }}</label>
-                                                    <input class="form-control col-md-4" id="single_port" name="port" type="number" value="443" />
-                                                    <span class="text-help col-md-9 offset-md-3 px-0"> {!! trans('admin.node.info.single_hint') !!}</span>
-                                                </div>
-                                                <div class="form-group row ssr-setting">
-                                                    <label class="col-md-3 col-form-label" for="passwd">{{ trans('model.node.single_passwd') }}</label>
-                                                    <input class="form-control col-md-4" id="passwd" name="passwd" type="text"
-                                                           placeholder="{{ ucfirst(trans('validation.attributes.password')) }}">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- V2ray 设置部分 -->
-                                        <div class="v2ray-setting">
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_alter_id">{{ trans('model.node.v2_alter_id') }}</label>
-                                                <input class="form-control col-md-4" id="v2_alter_id" name="v2_alter_id" type="text" value="16" />
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_port">{{ trans('model.node.service_port') }}</label>
-                                                <input class="form-control col-md-4" id="v2_port" name="port" type="number" value="10053" />
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_method">{{ trans('model.node.method') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_method" name="v2_method" data-plugin="selectpicker"
-                                                        data-style="btn-outline btn-primary">
-                                                    <option value="none">none</option>
-                                                    <option value="auto">auto</option>
-                                                    <option value="aes-128-cfb">aes-128-cfb</option>
-                                                    <option value="aes-128-gcm">aes-128-gcm</option>
-                                                    <option value="chacha20-poly1305">chacha20-poly1305</option>
-                                                </select>
-                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_method_hint') }}</div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_net">{{ trans('model.node.v2_net') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_net" name="v2_net" data-plugin="selectpicker"
-                                                        data-style="btn-outline btn-primary">
-                                                    <option value="tcp">TCP</option>
-                                                    <option value="http">HTTP/2</option>
-                                                    <option value="ws">WebSocket</option>
-                                                    <option value="kcp">mKCP</option>
-                                                    <option value="domainsocket">DomainSocket</option>
-                                                    <option value="quic">QUIC</option>
-                                                </select>
-                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_net_hint') }}</div>
-                                            </div>
-                                            <div class="form-group row v2_type">
-                                                <label class="col-md-3 col-form-label" for="v2_type">{{ trans('model.node.v2_cover') }}</label>
-                                                <select class="col-md-5 form-control" id="v2_type" name="v2_type" data-plugin="selectpicker"
-                                                        data-style="btn-outline btn-primary">
-                                                    <option value="none">{{ trans('admin.node.info.v2_cover.none') }}</option>
-                                                    <option value="http">{{ trans('admin.node.info.v2_cover.http') }}</option>
-                                                    <optgroup id="type_option" label="">
-                                                        <option value="srtp">{{ trans('admin.node.info.v2_cover.srtp') }}</option>
-                                                        <option value="utp">{{ trans('admin.node.info.v2_cover.utp') }}</option>
-                                                        <option value="wechat-video">{{ trans('admin.node.info.v2_cover.wechat') }}</option>
-                                                        <option value="dtls">{{ trans('admin.node.info.v2_cover.dtls') }}</option>
-                                                        <option value="wireguard">{{ trans('admin.node.info.v2_cover.wireguard') }}</option>
-                                                    </optgroup>
-                                                </select>
-                                            </div>
-                                            <div class="form-group row v2_host">
-                                                <label class="col-md-3 col-form-label" for="v2_host">{{ trans('model.node.v2_host') }}</label>
-                                                <div class="col-md-4 pl-0">
-                                                    <input class="form-control" id="v2_host" name="v2_host" type="text">
-                                                </div>
-                                                <div class="text-help col-md-9 offset-md-3 px-0">
-                                                    {{ trans('admin.node.info.v2_host_hint') }}
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_path">{{ trans('model.node.v2_path') }}</label>
-                                                <input class="form-control col-md-4" id="v2_path" name="v2_path" type="text">
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_sni">{{ trans('model.node.v2_sni') }}</label>
-                                                <input class="form-control col-md-4" id="v2_sni" name="v2_sni" type="text">
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="v2_tls">{{ trans('model.node.v2_tls') }}</label>
-                                                <div class="col-md-9">
-                                                    <input id="v2_tls" name="v2_tls" data-plugin="switchery" type="checkbox"
-                                                           onchange="switchSetting('v2_tls')">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="tls_provider">{{ trans('model.node.v2_tls_provider') }}</label>
-                                                <input class="form-control col-md-9" id="tls_provider" name="tls_provider" type="text" />
-                                                <div class="text-help col-md-9 offset-md-3 px-0"> {{ trans('admin.node.info.v2_tls_provider_hint') }}
-                                                    <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#vnet-v2-ray-hou-duan"
-                                                       target="_blank">VNET-V2Ray</a>、
-                                                    <a href="https://proxypanel.gitbook.io/wiki/webapi/webapi-basic-setting#v-2-ray-poseidon-hou-duan"
-                                                       target="_blank">V2Ray-Poseidon</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- Trojan 设置部分 -->
-                                        <div class="trojan-setting">
-                                            <div class="form-group row">
-                                                <label class="col-md-3 col-form-label" for="trojan_port">{{ trans('model.node.service_port') }}</label>
-                                                <input class="form-control col-md-4" id="trojan_port" name="port" type="number" value="443" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="relay-config">
-                                        <div class="form-group row">
-                                            <label class="col-md-3 col-form-label" for="relay_port">{{ trans('model.node.relay_port') }}</label>
-                                            <input class="form-control col-md-4" id="relay_port" name="port" type="number" value="443" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="is_udp">{{ trans('model.node.udp') }}</label>
-                                        <div class="col-md-9">
-                                            <input id="is_udp" name="is_udp" data-plugin="switchery" type="checkbox">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-3 col-form-label" for="status">{{ trans('common.status.attribute') }}</label>
-                                        <div class="col-md-9">
-                                            <input id="status" name="status" data-plugin="switchery" type="checkbox">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 form-actions">
-                                <div class="float-right">
-                                    <a class="btn btn-danger" href="{{ route('admin.node.index') }}">{{ trans('common.back') }}</a>
-                                    <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
-                                </div>
-                            </div>
+
+                        <x-admin.form.input name="is_udp" type="checkbox" :label="trans('model.node.udp')" attribute="data-plugin=switchery" />
+                        <x-admin.form.input name="status" type="checkbox" :label="trans('common.status.attribute')" attribute="data-plugin=switchery" />
+
+                        <div class="col-12 form-actions text-right">
+                            <a class="btn btn-secondary" href="{{ route('admin.node.index') }}">{{ trans('common.back') }}</a>
+                            <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
                         </div>
                     </div>
-                </form>
-            </div>
-        </div>
+                </div>
+            </x-admin.form.container>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    @if (app()->getLocale() !== 'en')
+        <script src="/assets/global/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.{{ str_replace('_', '-', app()->getLocale()) }}.min.js" charset="UTF-8">
+        </script>
+    @endif
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/js/Plugin/switchery.js"></script>
     <script>
         const string = "{{ strtolower(Str::random()) }}";
-
-        $("[name='next_renewal_date']").datepicker({
-            format: "yyyy-mm-dd"
-        });
 
         function calculateNextNextRenewalDate() {
             const nextRenewalDate = $("#next_renewal_date").val();
@@ -541,19 +229,58 @@
                 );
             }
 
-            nextNextRenewalDate.val(currentDate.toISOString().split("T")[0]);
+            // 显示计算结果（如果需要）
+            if ($("#next_next_renewal_date").length) {
+                nextNextRenewalDate.val(currentDate.toISOString().split("T")[0]);
+            }
         }
 
         $(document).ready(function() {
-            initializeUI(); // 初始化
-            bindEvents(); // 事件绑定
+            // 初始化UI元素
+            initializeUI();
 
-            @if (isset($node))
-                setupNodeData(@json($node));
-            @else
-                setupDefaultValues();
-            @endif
+            // 绑定事件
+            bindEvents();
 
+            // 准备节点数据
+            let nodeData = {
+                is_ddns: 0,
+                push_port: 1080,
+                traffic_rate: 1.0,
+                level: 0,
+                speed_limit: 1000,
+                client_limit: 1000,
+                is_display: 3,
+                detection_type: 0,
+                is_udp: 1,
+                status: 1,
+                sort: 1,
+                method: '{{ $methodDefault }}',
+                protocol: '{{ $protocolDefault }}',
+                obfs: '{{ $obfsDefault }}',
+                relay_node_id: '',
+                type: 1
+            };
+            @isset($node)
+                // 反向解析节点数据以    适配表单字段
+                const node = @json($node);
+                nodeData = {
+                    single: node.type === 0 || node.type === 1 || node.type === 4 ? (node.passwd ? 1 : 0) : undefined,
+                    ...node,
+                    v2_tls: node.type === 2 ? (node?.v2_tls === 'tls' ? 1 : 0) : undefined,
+                };
+
+                // 处理订阅期限字段
+                if (node.subscription_term) {
+                    const [value, unit] = node.subscription_term.split(" ");
+                    nodeData.subscription_term_value = value;
+                    nodeData.subscription_term_unit = unit;
+                }
+            @endisset
+
+            // 自动填充表单
+            autoPopulateForm(nodeData);
+            calculateNextNextRenewalDate();
         });
 
         function initializeUI() {
@@ -566,149 +293,7 @@
             $("#obfs").on("changed.bs.select", toggleObfsParam);
             $("#relay_node_id").on("changed.bs.select", toggleRelayConfig);
             $("#v2_net").on("changed.bs.select", updateV2RaySettings);
-            $("#nodeForm").on("submit", formSubmit);
             $(document).on("change", "#next_renewal_date, #subscription_term_value, #subscription_term_unit", calculateNextNextRenewalDate);
-        }
-
-        function setupNodeData(nodeData) {
-            const {
-                type,
-                labels,
-                relay_node_id,
-                port,
-                profile,
-                tls_provider,
-                details
-            } = nodeData;
-
-            // 设置选项和输入值
-            ["is_ddns", "is_udp", "status"].forEach(prop => nodeData[prop] && $(`#${prop}`).click());
-            ["is_display", "detection_type", "type"].forEach(prop => $(`input[name="${prop}"][value="${nodeData[prop]}"]`).click());
-            ["name", "server", "ip", "ipv6", "push_port", "traffic_rate", "speed_limit", "client_limit", "description", "sort"]
-            .forEach(prop => $(`#${prop}`).val(nodeData[prop]));
-            ["level", "rule_group_id", "country_code", "relay_node_id"].forEach(prop => $(`#${prop}`).selectpicker("val", nodeData[prop]));
-            $("#labels").selectpicker("val", labels.map(label => label.id));
-
-            if (details?.next_renewal_date) $("#next_renewal_date").datepicker("update", details.next_renewal_date);
-            if (details?.subscription_term) setSubscriptionTerm(details.subscription_term);
-            if (details?.renewal_cost) $("#renewal_cost").val(details.renewal_cost);
-            calculateNextNextRenewalDate(); // 手动触发计算下下次续费日期
-
-            if (relay_node_id) {
-                $("#relay_port").val(port);
-            } else {
-                setupNodeTypeHandlers(type, profile, port, tls_provider);
-            }
-
-            function setSubscriptionTerm(term) {
-                const [value, unit] = term.split(" ");
-
-                $("#subscription_term_value").val(value || "");
-                $("#subscription_term_unit").selectpicker("val", unit || "day"); // 默认选择 day
-            }
-        }
-
-        function setupDefaultValues() {
-            $(".relay-config").hide();
-            switchSetting("single");
-            switchSetting("is_ddns");
-            $("input[name='type'][value='0']").click();
-            $("#status, #is_udp").click();
-        }
-
-        function setupNodeTypeHandlers(type, profile, port, tls_provider) {
-            const typeHandlers = {
-                0: () => $("#method").selectpicker("val", profile?.method || null),
-                1: setSSRValues,
-                2: setV2RayValues,
-                3: () => $("#trojan_port").val(port),
-                4: setSSRValues
-            };
-
-            typeHandlers[type] && typeHandlers[type]();
-            $("input[name='port']").val(port);
-
-            function setSSRValues() {
-                ["protocol", "obfs"].forEach(prop => $(`#${prop}`).selectpicker("val", profile[prop] || null));
-                ["protocol_param", "obfs_param"].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
-                if (profile.passwd && port) {
-                    $("#single").click();
-                    $("#passwd").val(profile.passwd);
-                }
-            }
-
-            function setV2RayValues() {
-                ["v2_alter_id", "v2_host", "v2_sni", "v2_path"].forEach(prop => $(`#${prop}`).val(profile[prop] || null));
-                ["v2_net", "v2_type"].forEach(prop => $(`#${prop}`).selectpicker("val", profile[prop] || null));
-                $("#v2_method").selectpicker("val", profile["method"] || null);
-
-                $("#v2_port").val(port);
-                profile.v2_tls && $("#v2_tls").click();
-                $("#tls_provider").val(tls_provider);
-            }
-        }
-
-        function formSubmit(event) {
-            event.preventDefault(); // 阻止表单的默认提交行为
-            const $form = $(event.target); // 获取触发事件的表单
-
-            // 获取所有非 hidden 的表单数据
-            const data = Object.fromEntries(
-                $form.find("input:not([hidden]), select, textarea")
-                .serializeArray()
-                .map(item => [item.name, item.value])
-            );
-
-            // 拼接 subscription_term
-            const termValue = $("#subscription_term_value").val();
-            const termUnit = $("#subscription_term_unit").val();
-            data["subscription_term"] = termValue ? `${termValue} ${termUnit}` : null;
-
-            // 将序列化的表单数据转换为 JSON 对象
-            $form.find("input[type='checkbox']").each(function() {
-                data[this.name] = this.checked ? 1 : 0;
-            });
-
-            // 处理多选 select
-            $form.find("select[multiple]").each(function() {
-                data[this.name] = $(this).val();
-            });
-
-            $.ajax({
-                url: '{{ isset($node) ? route('admin.node.update', $node) : route('admin.node.store') }}',
-                method: '{{ isset($node) ? 'PUT' : 'POST' }}',
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                success: function(ret) {
-                    if (ret.status === "success") {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "success",
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(() => window.location.href =
-                            '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}');
-                    } else {
-                        swal.fire({
-                            title: '{{ trans('common.error') }}',
-                            text: ret.message,
-                            icon: "error"
-                        });
-                    }
-                },
-                error: function(data) {
-                    const errors = data.responseJSON?.errors;
-                    if (errors) {
-                        const errorList = Object.values(errors).map(error => `<li>${error}</li>`).join("");
-                        swal.fire({
-                            title: '{{ trans('admin.hint') }}',
-                            html: `<ul>${errorList}</ul>`,
-                            icon: "error",
-                            confirmButtonText: '{{ trans('common.confirm') }}'
-                        });
-                    }
-                }
-            });
         }
 
         function switchSetting(id) {
@@ -742,9 +327,10 @@
         }
 
         function toggleObfsParam() {
-            const $obfsParam = $(".obfs_param");
-            $obfsParam.toggle($("#obfs").val() !== "plain");
-            if ($("#obfs").val() === "plain") $("#obfs_param").val("");
+            const $obfsParam = $("#obfs_param");
+            const show = $("#obfs").val() !== "plain";
+            $obfsParam.closest('.form-group').toggle(show);
+            if (!show) $obfsParam.val("");
         }
 
         function toggleRelayConfig() {
@@ -791,6 +377,49 @@
                     break;
             }
             $("#v2_type").selectpicker("refresh");
+        }
+
+        // ajax同步提交
+        function Submit() {
+            // 收集表单数据
+            const data = collectFormData('.form-horizontal');
+
+            // 拼接 subscription_term
+            const termValue = $("#subscription_term_value").val();
+            const termUnit = $("#subscription_term_unit").val();
+            data["subscription_term"] = termValue ? `${termValue} ${termUnit}` : null;
+
+            // 处理端口字段（根据节点类型选择正确的端口字段）
+            switch (parseInt(data.type)) {
+                case 0: // Shadowsocks
+                    data.port = 0; // SS类型不需要端口设置
+                    break;
+                case 1: // ShadowsocksR
+                case 4: // VNET
+                    if (data.single !== 1) {
+                        data.port = 0; // 非single模式不需要端口设置
+                    }
+                    break;
+            }
+
+            // 发送 AJAX 请求
+            ajaxRequest({
+                url: '{{ isset($node) ? route('admin.node.update', $node['id']) : route('admin.node.store') }}',
+                method: '{{ isset($node) ? 'PUT' : 'POST' }}',
+                data: data,
+                success: function(ret) {
+                    handleResponse(ret, {
+                        redirectUrl: '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}'
+                    });
+                },
+                error: function(xhr) {
+                    handleErrors(xhr, {
+                        form: '.form-horizontal'
+                    });
+                }
+            });
+
+            return false;
         }
 
         // 服务条款

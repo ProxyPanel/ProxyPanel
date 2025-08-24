@@ -22,8 +22,14 @@ dns:
   fake-ip-range: 198.18.0.1/16
   use-hosts: true
   nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    - 8.8.8.8
     - https://doh.pub/dns-query
     - https://dns.alidns.com/dns-query
+    - tls://dns.rubyfish.cn:853 # DNS over TLS
+    - https://1.1.1.1/dns-query # DNS over HTTPS
+    - dhcp://en0 # 来自 dhcp 的 dns
   fallback:
     - https://doh.dns.sb/dns-query
     - https://dns.cloudflare.com/dns-query
@@ -38,12 +44,11 @@ dns:
 proxies:
 
 proxy-groups:
-  - { name: "$app_name", type: select, proxies: ["自动选择", "故障转移"] }
-  - { name: "自动选择", type: url-test, proxies: [], url: "https://www.gstatic.com/generate_204", interval: 86400 }
-  - { name: "故障转移", type: fallback, proxies: [], url: "https://www.gstatic.com/generate_204", interval: 7200 }
+  - { name: "$app_name", type: select, proxies: [ "自动选择", "故障转移" ] }
+  - { name: "自动选择", type: url-test, proxies: [ ], url: "https://www.gstatic.com/generate_204", interval: 86400 }
+  - { name: "故障转移", type: fallback, proxies: [ ], url: "https://www.gstatic.com/generate_204", interval: 7200 }
 
-rules:
-  # 自定义规则
+rules: # 自定义规则
   ## 您可以在此处插入您补充的自定义规则（请注意保持缩进）
 
   # Google 中国服务

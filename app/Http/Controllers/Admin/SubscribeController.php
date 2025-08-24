@@ -46,8 +46,22 @@ class SubscribeController extends Controller
             $query->whereBetween('request_time', [$request->input('start').' 00:00:00', $request->input('end').' 23:59:59']);
         }
 
-        $subscribeLogs = $query->latest()->paginate(20)->appends($request->except('page'))->through(function ($log) {
-            $log->ipInfo = $log->request_ip ? optional(IP::getIPInfo($log->request_ip))['address'] ?? null : null;
+        $subscribeLogs = $query->latest()->paginate(20)->appends($request->except('page'));
+
+        // 批量获取 IP 信息以减少查询次数
+        $ipList = $subscribeLogs->pluck('request_ip')->filter()->unique()->toArray();
+        $ipInfoMap = [];
+
+        foreach ($ipList as $ip) {
+            if ($ip) {
+                $ipInfo = IP::getIPInfo($ip);
+                $ipInfoMap[$ip] = $ipInfo ? ($ipInfo['address'] ?? null) : null;
+            }
+        }
+
+        // 将 IP 信息附加到日志记录中
+        $subscribeLogs->getCollection()->transform(function ($log) use ($ipInfoMap) {
+            $log->ipInfo = $log->request_ip ? ($ipInfoMap[$log->request_ip] ?? null) : null;
 
             return $log;
         });

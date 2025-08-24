@@ -28,8 +28,14 @@ class RuleController extends Controller
 
     public function store(RuleRequest $request): JsonResponse
     { // 添加审计规则
-        if (Rule::create($request->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+        try {
+            if (Rule::create($request->validated())) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.rule.attribute')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
@@ -37,8 +43,14 @@ class RuleController extends Controller
 
     public function update(RuleRequest $request, Rule $rule): JsonResponse
     { // 编辑审计规则
-        if ($rule->update($request->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+        try {
+            if ($rule->update($request->validated())) {
+                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+            }
+        } catch (Exception $e) {
+            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.rule.attribute')]).': '.$e->getMessage());
+
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
@@ -76,8 +88,8 @@ class RuleController extends Controller
         });
 
         return view('admin.rule.log', [
-            'nodes' => Node::all(),
-            'rules' => Rule::all(),
+            'nodes' => Node::pluck('name', 'id'),
+            'rules' => Rule::pluck('name', 'id'),
             'ruleLogs' => $query->latest()->paginate(15)->appends($request->except('page')),
         ]);
     }

@@ -15,9 +15,9 @@
                     <div class="panel">
                         <div class="list-group" role="tablist">
                             @foreach ($knowledge as $category => $articles)
-                                @php $str = string_urlsafe($category) @endphp
+                                @php $categoryId = string_urlsafe($category) @endphp
                                 <a class="list-group-item @if ($loop->first) list-group-item-action active @endif" data-toggle="tab"
-                                   href="#{{ $str }}" role="tab" aria-controls="{{ $str }}">{{ $category }}</a>
+                                   href="#{{ $categoryId }}" role="tab" aria-controls="{{ $categoryId }}">{{ $category }}</a>
                             @endforeach
                         </div>
                     </div>
@@ -80,8 +80,7 @@
                                                                         <button class="btn btn-outline-info" onclick="exchangeSubscribe();">
                                                                             <i class="icon wb-refresh" aria-hidden="true"></i>
                                                                             {{ trans('common.change') }}</button>
-                                                                        <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy"
-                                                                                data-clipboard-target="#sub_link">
+                                                                        <button class="btn btn-outline-info mt-clipboard" data-clipboard-target="#sub_link">
                                                                             <i class="icon wb-copy" aria-hidden="true"></i>
                                                                             {{ trans('common.copy.attribute') }}</button>
                                                                     </div>
@@ -124,87 +123,63 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/global/vendor/asprogress/jquery-asProgress.min.js"></script>
     <script src="/assets/global/js/Plugin/responsive-tabs.js"></script>
     <script src="/assets/global/js/Plugin/tabs.js"></script>
     <script src="/assets/custom/jump-tab.js"></script>
     <script src="/assets/global/js/Plugin/asprogress.js"></script>
     <script>
-        const clipboard = new ClipboardJS(".mt-clipboard");
+        $(document).on('click', '.mt-clipboard', function(e) {
+            let text = $(this).data('clipboard-target') ?
+                $($(this).data('clipboard-target')).val() :
+                $(this).data('clipboard-text');
+            copyToClipboard(text);
+        });
 
         function getArticle(id) {
-            if (!document.getElementById("load_article_" + id).innerHTML) {
-                $.ajax({
-                    method: "GET",
-                    url: '{{ route('knowledge.show', '') }}/' + id,
-                    beforeSend: function() {
-                        $("#loading_article").show();
-                    },
+            if (!document.getElementById(`load_article_${id}`).innerHTML) {
+                ajaxGet(jsRoute('{{ route('knowledge.show', 'PLACEHOLDER') }}/', id), {}, {
+                    loadingSelector: "#loading_article",
                     success: function(ret) {
-                        document.getElementById("load_article_" + id).innerHTML = ret.content;
-                    },
-                    complete: function() {
-                        $("#loading_article").hide();
+                        document.getElementById(`load_article_${id}`).innerHTML = ret.content;
                     }
                 });
             }
-
-            return false;
         }
 
-        function linkManager($type) {
-            $("#sub_link").val('{{ $subUrl }}?type=' + $type);
-            return false;
+        function linkManager(type) {
+            $("#sub_link").val(`{{ $subUrl }}?type=${type}`);
         }
 
         // 更换订阅地址
         function exchangeSubscribe() {
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('common.warning') }}',
                 html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}'
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{ route('changeSub') }}', {
-                        _token: '{{ csrf_token() }}'
-                    }, function(ret) {
-                        if (ret.status === "success") {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "success",
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "error"
-                            }).then(() => window.location.reload());
-                        }
-                    });
+                onConfirm: function() {
+                    ajaxPost('{{ route('changeSub') }}');
                 }
             });
         }
 
-        clipboard.on("success", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: "success",
-                timer: 1300,
-                showConfirmButton: false
+        function download_client(repo, suffix) {
+            const apiUrl = `https://api.github.com/repos/${repo}/releases/latest`;
+
+            fetch(apiUrl).then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            }).then(data => {
+                const asset = data.assets.find(a => a.name.endsWith(suffix));
+                if (asset) {
+                    window.location.href = `https://ghproxy.net/${asset.browser_download_url}`;
+                    //https://git.5st.top
+                }
+            }).catch(error => {
+                console.error("Error fetching release information:", error);
             });
-        });
-        clipboard.on("error", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false
-            });
-        });
+        }
     </script>
 @endsection

@@ -1,4 +1,4 @@
-@props(['code', 'list', 'multiple' => 0])
+@props(['code', 'list', 'multiple' => false])
 
 <div class="form-group col-lg-6">
     <div class="row">

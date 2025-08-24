@@ -23,11 +23,11 @@
                             <i class="fi fi-{{ config('common.language.' . app()->getLocale())[1] }}"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langDropdown">
-                            @foreach (['zh_CN', 'en', 'fa', 'ru'] as $key)
-                                @if (config("common.language.$key") && $key !== app()->getLocale())
+                            @foreach (config('common.language') as $key => $value)
+                                @if ($key !== app()->getLocale())
                                     <a class="dropdown-item" href="{{ route('lang', ['locale' => $key]) }}">
-                                        <i class="fi fi-{{ config("common.language.$key")[1] }} mr-2"></i>
-                                        {{ config("common.language.$key")[0] }}
+                                        <i class="fi fi-{{ $value[1] }} mr-2" aria-hidden="true"></i>
+                                        {{ $value[0] }}
                                     </a>
                                 @endif
                             @endforeach
@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-6 col-md-3 mb-2">
                                 <div class="info-label"><i class="fa fa-gauge-high text-primary"></i> {{ trans('user.attribute.data') }}</div>
-                                <div class="info-value text-info">{{ $user->used_traffic / GiB }} / {{ $user->transfer_enable_formatted }}</div>
+                                <div class="info-value text-info">{{ number_format($user->used_traffic / GiB, 2) }} / {{ $user->transfer_enable_formatted }}</div>
                             </div>
                         </div>
                     </div>

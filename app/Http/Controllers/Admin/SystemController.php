@@ -54,8 +54,8 @@ class SystemController extends Controller
 
         // 预处理复杂数据
         // 解析时间类配置
-        $config['tasks_clean'] = parseTime($config['tasks_clean']);
-        $config['tasks_close'] = parseTime($config['tasks_close']);
+        $config['tasks_clean'] = parseTime($config['tasks_clean'] ?? []);
+        $config['tasks_close'] = parseTime($config['tasks_close'] ?? []);
 
         $paymentForms = PaymentManager::getSettingsFormData();
 
@@ -98,10 +98,13 @@ class SystemController extends Controller
 
         $channels = ['database', 'mail'];
 
+        // 预先获取所有配置值，减少数据库查询
+        $configValues = Config::whereIn('name', array_merge(...array_values($configMap)))->pluck('value', 'name')->toArray();
+
         // 遍历映射，检查配置项是否存在
         foreach ($configMap as $channel => $configKeys) {
-            $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) {
-                return $carry && sysConfig($configKey);
+            $allConfigsExist = array_reduce($configKeys, static function ($carry, $configKey) use ($configValues) {
+                return $carry && ! empty($configValues[$configKey]);
             }, true);
 
             if ($allConfigsExist) {
@@ -134,63 +137,68 @@ class SystemController extends Controller
 
     public function setExtend(Request $request): RedirectResponse  // 设置涉及到上传的设置
     {
-        if ($request->hasAny(['website_home_logo', 'website_home_logo'])) { // 首页LOGO
+        // 处理LOGO上传
+        if ($request->hasAny(['website_home_logo', 'website_logo'])) {
+            $logoType = null;
+            $file = null;
+
             if ($request->hasFile('website_home_logo')) {
-                $validator = validator()->make($request->all(), ['website_home_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
-
-                if ($validator->fails()) {
-                    return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
-                }
+                $logoType = 'website_home_logo';
                 $file = $request->file('website_home_logo');
-                $file->move('uploads/logo', $file->getClientOriginalName());
-                if (Config::findOrNew('website_home_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#other')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
-                }
+            } elseif ($request->hasFile('website_logo')) {
+                $logoType = 'website_logo';
+                $file = $request->file('website_logo');
             }
-            if ($request->hasFile('website_logo')) { // 站内LOGO
-                $validator = validator()->make($request->all(), ['website_logo' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+
+            if ($logoType && $file) {
+                $validator = validator()->make($request->all(), [$logoType => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
                 if ($validator->fails()) {
                     return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
                 }
-                $file = $request->file('website_logo');
-                $file->move('uploads/logo', $file->getClientOriginalName());
-                if (Config::findOrNew('website_logo')->update(['value' => 'uploads/logo/'.$file->getClientOriginalName()])) {
+
+                $fileName = $file->getClientOriginalName();
+                $file->move('uploads/logo', $fileName);
+
+                $configKey = $logoType;
+                if (Config::findOrNew($configKey)->update(['value' => 'uploads/logo/'.$fileName])) {
                     return redirect()->route('admin.system.index', '#other')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
-            }
 
-            return redirect()->route('admin.system.index', '#other')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+                return redirect()->route('admin.system.index', '#other')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+            }
         }
 
+        // 处理支付二维码上传
         if ($request->hasAny(['alipay_qrcode', 'wechat_qrcode'])) {
+            $qrcodeType = null;
+            $file = null;
+
             if ($request->hasFile('alipay_qrcode')) {
-                $validator = validator()->make($request->all(), ['alipay_qrcode' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
-
-                if ($validator->fails()) {
-                    return redirect()->route('admin.system.index', '#payment')->withErrors($validator->errors());
-                }
+                $qrcodeType = 'alipay_qrcode';
                 $file = $request->file('alipay_qrcode');
-                $file->move('uploads/images', $file->getClientOriginalName());
-                if (Config::findOrNew('alipay_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
-                    return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
-                }
+            } elseif ($request->hasFile('wechat_qrcode')) {
+                $qrcodeType = 'wechat_qrcode';
+                $file = $request->file('wechat_qrcode');
             }
 
-            if ($request->hasFile('wechat_qrcode')) { // 站内LOGO
-                $validator = validator()->make($request->all(), ['wechat_qrcode' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+            if ($qrcodeType && $file) {
+                $validator = validator()->make($request->all(), [$qrcodeType => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
 
                 if ($validator->fails()) {
                     return redirect()->route('admin.system.index', '#payment')->withErrors($validator->errors());
                 }
-                $file = $request->file('wechat_qrcode');
-                $file->move('uploads/images', $file->getClientOriginalName());
-                if (Config::findOrNew('wechat_qrcode')->update(['value' => 'uploads/images/'.$file->getClientOriginalName()])) {
+
+                $fileName = $file->getClientOriginalName();
+                $file->move('uploads/images', $fileName);
+
+                $configKey = $qrcodeType;
+                if (Config::findOrNew($configKey)->update(['value' => 'uploads/images/'.$fileName])) {
                     return redirect()->route('admin.system.index', '#payment')->with('successMsg', trans('common.success_item', ['attribute' => trans('common.update')]));
                 }
-            }
 
-            return redirect()->route('admin.system.index', '#payment')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+                return redirect()->route('admin.system.index', '#payment')->withErrors(trans('common.failed_item', ['attribute' => trans('common.update')]));
+            }
         }
 
         return redirect()->route('admin.system.index');
@@ -278,13 +286,13 @@ class SystemController extends Controller
     public function common(): View
     {
         return view('admin.config.common', [
-            'methods' => SsConfig::type(1)->get(),
-            'protocols' => SsConfig::type(2)->get(),
-            'categories' => GoodsCategory::all(),
-            'obfsList' => SsConfig::type(3)->get(),
+            'methods' => SsConfig::select(['id', 'name', 'is_default'])->type(1)->get(),
+            'protocols' => SsConfig::select(['id', 'name', 'is_default'])->type(2)->get(),
+            'obfsList' => SsConfig::select(['id', 'name', 'is_default'])->type(3)->get(),
+            'categories' => GoodsCategory::select(['id', 'name', 'sort'])->get(),
             'countries' => Country::all(),
             'levels' => Level::all(),
-            'labels' => Label::with('nodes')->get(),
+            'labels' => Label::withCount('nodes')->get(),
         ]);
     }
 }

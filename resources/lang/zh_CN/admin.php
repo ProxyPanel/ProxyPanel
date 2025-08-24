@@ -27,7 +27,7 @@ return [
     'clone' => '克隆',
     'confirm' => [
         'continues' => '确认继续操作？',
-        'delete' => [0 => '确认删除:attribute【', 1 => '】？此操作不可恢复！'],
+        'delete' => '确认删除:attribute【:name】？此操作不可恢复！',
         'export' => '确认导出全部数据？',
     ],
     'coupon' => [
@@ -313,7 +313,7 @@ return [
             'ipv6_hint' => '多IP用英文逗号分隔',
             'ipv6_placeholder' => 'IPv6地址',
             'level_hint' => '0=无等级限制',
-            'obfs_param_hint' => '非plain混淆参数要求：<br>• http_simple建议80端口<br>• tls建议443端口',
+            'obfs_param_hint' => '混淆为 [http_simple] 时，建议端口为 80；&#13;&#10;混淆为 [tls] 时，建议端口为 443；',
             'push_port_hint' => '需开放防火墙端口',
             'single_hint' => '推荐80/443端口<br><a href="javascript:showPortsOnlyConfig();">查看严格模式配置</a>',
             'v2_cover' => [
@@ -698,7 +698,7 @@ return [
         'online_monitor' => '在线监控',
         'proxies_config' => '【:username】代理配置',
         'proxy_info' => '代理信息',
-        'reset_confirm' => [0 => '⚠️ 确认重置【', 1 => '】的流量？'],
+        'reset_confirm' => '⚠️ 确认重置【:username】的流量？',
         'reset_traffic' => '流量重置',
         'traffic_monitor' => '流量监控',
         'update_help' => '更新成功，返回列表？',
@@ -707,4 +707,10 @@ return [
     'user_dashboard' => '个人中心',
     'yes' => '是',
     'zero_unlimited_hint' => '不设置/0，即为无限制',
+    'network_status' => [
+        1 => '✔️正 常',
+        2 => '🛑 海外阻断',
+        3 => '🛑 国内阻断',
+        4 => '❌ 断 连',
+    ],
 ];

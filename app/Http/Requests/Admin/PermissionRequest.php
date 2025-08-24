@@ -9,7 +9,7 @@ class PermissionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:permissions,name',
             'description' => 'required|string',
         ];
     }

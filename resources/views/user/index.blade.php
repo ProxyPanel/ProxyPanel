@@ -8,7 +8,7 @@
     <div class="page-content container-fluid">
         <div class="row" data-plugin="matchHeight" data-by-row="true">
             @if (Session::has('successMsg'))
-                <x-alert class="col-md-12" type="success" :message="Session::pull('successMsg')" />
+                <x-alert class="col-md-12" :message="Session::pull('successMsg')" />
             @endif
             <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12">
                 <div class="card card-shadow">
@@ -191,7 +191,7 @@
                                         <button class="btn btn-outline-danger" onclick="exchangeSubscribe();">
                                             <i class="icon wb-refresh" aria-hidden="true"></i>
                                             {{ trans('common.change') }}</button>
-                                        <button class="btn btn-outline-info mt-clipboard" data-clipboard-action="copy">
+                                        <button class="btn btn-outline-info mt-clipboard">
                                             <i class="icon wb-copy" aria-hidden="true"></i>
                                             {{ trans('common.copy.attribute') }}</button>
                                     </div>
@@ -310,7 +310,6 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
     <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
@@ -320,80 +319,40 @@
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script>
         function exchangeSubscribe() { // 更换订阅地址
-            swal.fire({
+            showConfirm({
                 title: '{{ trans('common.warning') }}',
                 html: `{!! trans('user.subscribe.exchange_warning') !!}`,
                 icon: "warning",
-                showCancelButton: true,
-                cancelButtonText: '{{ trans('common.close') }}',
-                confirmButtonText: '{{ trans('common.confirm') }}'
-            }).then((result) => {
-                if (result.value) {
-                    $.post('{{ route('changeSub') }}', {
-                        _token: '{{ csrf_token() }}'
-                    }, function(ret) {
-                        if (ret.status === "success") {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "success",
-                                timer: 1000,
-                                showConfirmButton: false
-                            }).then(() => window.location.reload());
-                        } else {
-                            swal.fire({
-                                title: ret.message,
-                                icon: "error"
-                            }).then(() => window.location.reload());
-                        }
-                    });
+                onConfirm: function() {
+                    ajaxPost('{{ route('changeSub') }}');
                 }
             });
         }
 
-        const clipboard = new ClipboardJS(".mt-clipboard", {
-            text: function(trigger) {
-                let base = @json($user['sub_url']);
-                const client = $("#client").val();
-                const subType = $("#subType").val();
-                if (subType && client) {
-                    base += "?target=" + client + "&type=" + subType;
-                } else if (subType) {
-                    base += "?type=" + subType;
-                } else if (client) {
-                    base += "?target=" + client;
-                }
-                return base;
-            }
-        });
-        clipboard.on("success", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: "success",
-                timer: 1300,
-                showConfirmButton: false
-            });
-        });
-        clipboard.on("error", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false
+        $(".mt-clipboard").on("click", function() {
+            let base = @json($user['sub_url']);
+            const client = $("#client").val();
+            const subType = $("#subType").val();
+            const params = [];
 
-            });
+            if (client) {
+                params.push("target=" + client);
+            }
+
+            if (subType) {
+                params.push("type=" + subType);
+            }
+
+            if (params.length > 0) {
+                base += "?" + params.join("&");
+            }
+
+            copyToClipboard(base);
         });
 
         @if (sysConfig('checkin_interval'))
             function checkIn() { // 签到
-                $.post('{{ route('checkIn') }}', {
-                    _token: '{{ csrf_token() }}'
-                }, function(ret) {
-                    if (ret.status === "success") {
-                        swal.fire(ret.title, ret.message, "success").then(() => window.location.reload());
-                    } else {
-                        swal.fire(ret.title, ret.message, "error");
-                    }
-                });
+                ajaxPost('{{ route('checkIn') }}');
             }
         @endif
 

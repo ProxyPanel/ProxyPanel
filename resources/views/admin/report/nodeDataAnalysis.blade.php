@@ -8,15 +8,8 @@
         <div class="card card-shadow">
             <div class="card-block p-30">
                 <form class="form-row">
-                    <div class="form-group col-xxl-2 col-lg-3 col-md-3 col-sm-4">
-                        <select class="form-control show-tick" id="nodes" name="nodes[]" data-plugin="selectpicker" data-style="btn-outline btn-primary"
-                                title="{{ trans('admin.logs.user_traffic.choose_node') }}" multiple>
-                            @foreach ($nodes as $id => $name)
-                                <option value="{{ $id }}">{{ $name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="form-group col-xxl-1 col-lg-3 col-md-3 col-4 btn-group">
+                    <x-admin.filter.selectpicker class="col-xxl-2 col-md-3 col-sm-4" name="nodes" :title="trans('admin.logs.user_traffic.choose_node')" :multiple="true" :options="$nodes" />
+                    <div class="form-group col-xxl-1 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
                         <button class="btn btn-danger" type="button" onclick="resetSearchForm()">{{ trans('common.reset') }}</button>
                     </div>
@@ -69,11 +62,11 @@
                                                 <span class="input-group-text"><i class="icon wb-calendar" aria-hidden="true"></i></span>
                                             </div>
                                             <input class="form-control" name="start" type="text"
-                                                   value="{{ Request::query('start', now()->startOfMonth()->format('Y-m-d')) }}" autocomplete="off" />
+                                                   value="{{ Request::query('start', now()->startOfMonth()->toDateString()) }}" autocomplete="off" />
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text">{{ trans('common.to') }}</span>
                                             </div>
-                                            <input class="form-control" name="end" type="text" value="{{ Request::query('end', now()->format('Y-m-d')) }}"
+                                            <input class="form-control" name="end" type="text" value="{{ Request::query('end', now()->toDateString()) }}"
                                                    autocomplete="off" />
                                             <div class="input-group-addon">
                                                 <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
@@ -96,12 +89,16 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/vendor/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    @if (app()->getLocale() !== 'en')
+        <script src="/assets/global/vendor/bootstrap-datepicker/locales/bootstrap-datepicker.{{ str_replace('_', '-', app()->getLocale()) }}.min.js" charset="UTF-8">
+        </script>
+    @endif
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script type="text/javascript">
         const nodeData = @json($data);
 
         const getRandomColor = (name) => {
-            const hash = name.split('').reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+            const hash = name.split("").reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
             const hue = (hash % 360 + Math.random() * 50) % 360;
             const saturation = 50 + (hash % 30);
             const lightness = 40 + (hash % 20);
@@ -153,13 +150,13 @@
                 backgroundColor: nodeColorMap[nodeId],
                 borderColor: nodeColorMap[nodeId],
                 data,
-                fill: true,
+                fill: true
             }));
 
-        const createBarChart = (elementId, labels, datasets, labelTail, unit = 'GiB') => {
+        const createBarChart = (elementId, labels, datasets, labelTail, unit = "GiB") => {
             const optimizedDatasets = optimizeDatasets(datasets);
             new Chart(document.getElementById(elementId), {
-                type: 'bar',
+                type: "bar",
                 data: {
                     labels: labels || optimizedDatasets[0]?.data.map(d => d.time),
                     datasets: optimizedDatasets
@@ -167,8 +164,8 @@
                 plugins: [ChartDataLabels],
                 options: {
                     parsing: {
-                        xAxisKey: 'time',
-                        yAxisKey: 'total'
+                        xAxisKey: "time",
+                        yAxisKey: "total"
                     },
                     scales: {
                         x: {
@@ -184,28 +181,28 @@
                             labels: {
                                 padding: 10,
                                 usePointStyle: true,
-                                pointStyle: 'circle',
+                                pointStyle: "circle",
                                 font: {
                                     size: 14
                                 }
-                            },
+                            }
                         },
                         tooltip: {
-                            mode: 'index',
+                            mode: "index",
                             intersect: false,
                             callbacks: {
                                 title: context => `${context[0].label} ${labelTail}`,
                                 label: context => {
                                     const dataset = context.dataset;
                                     const value = dataset.data[context.dataIndex]?.total || context.parsed.y;
-                                    return `${dataset.label || ''}: ${value.toFixed(2)} ${unit}`;
+                                    return `${dataset.label || ""}: ${value.toFixed(2)} ${unit}`;
                                 }
                             }
                         },
                         datalabels: {
                             display: true,
-                            align: 'end',
-                            anchor: 'end',
+                            align: "end",
+                            anchor: "end",
                             formatter: (value, context) => {
                                 if (context.datasetIndex === context.chart.data.datasets.length - 1) {
                                     let total = context.chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[context.dataIndex].total,
@@ -213,16 +210,16 @@
                                     return total.toFixed(2) + unit;
                                 }
                                 return null;
-                            },
-                        },
-                    },
-                },
+                            }
+                        }
+                    }
+                }
             });
         };
 
         const createDoughnutChart = (elementId, labels, data, colors, date) => {
             Chart.register({
-                id: 'totalLabel',
+                id: "totalLabel",
                 beforeDraw(chart) {
                     const {
                         ctx,
@@ -232,7 +229,7 @@
                     if (!chartArea || !data.datasets.length) return;
 
                     const total = data.datasets[0].data.reduce((acc, val) => acc + val, 0);
-                    if (typeof total !== 'number') return;
+                    if (typeof total !== "number") return;
 
                     const {
                         width,
@@ -242,20 +239,20 @@
                     } = chartArea;
                     const text = `${date}\n${total.toFixed(2)} GiB`;
                     ctx.save();
-                    ctx.font = 'bold 32px Roboto';
-                    ctx.fillStyle = 'black';
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
+                    ctx.font = "bold 32px Roboto";
+                    ctx.fillStyle = "black";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
                     const lineHeight = 40;
-                    text.split('\n').forEach((line, index) => {
+                    text.split("\n").forEach((line, index) => {
                         ctx.fillText(line, left + width / 2, top + height / 2 - lineHeight / 2 + index * lineHeight);
                     });
                     ctx.restore();
-                },
+                }
             });
 
             new Chart(document.getElementById(elementId), {
-                type: 'doughnut',
+                type: "doughnut",
                 data: {
                     labels,
                     datasets: [{
@@ -274,18 +271,18 @@
                                 label: tooltipItem => {
                                     const dataset = tooltipItem.dataset;
                                     const currentValue = dataset.data[tooltipItem.dataIndex];
-                                    const label = tooltipItem.label || '';
+                                    const label = tooltipItem.label || "";
                                     return `${label}: ${currentValue.toFixed(2)} G`;
-                                },
-                            },
+                                }
+                            }
                         },
                         datalabels: {
-                            color: '#fff',
+                            color: "#fff",
                             formatter: (value, context) => {
                                 const total = context.dataset.data.reduce((sum, val) => sum + val, 0);
                                 const percentage = (value / total * 100).toFixed(1);
                                 const label = context.chart.data.labels[context.dataIndex];
-                                return percentage > 1 ? `${label} ${percentage}%` : '';
+                                return percentage > 1 ? `${label} ${percentage}%` : "";
                             },
                             anchor: "center",
                             rotation: function(ctx) {
@@ -295,31 +292,31 @@
                                 return rotation < 180 ? rotation - 90 : rotation + 90;
                             },
                             font: {
-                                weight: 'bold',
+                                weight: "bold",
                                 size: 16,
-                                family: 'Roboto'
-                            },
-                        },
-                    },
+                                family: "Roboto"
+                            }
+                        }
+                    }
                 },
-                plugins: [ChartDataLabels, 'totalLabel'],
+                plugins: [ChartDataLabels, "totalLabel"]
             });
-        }
+        };
 
         const generatePieData = (flows, nodeColorMap) => {
             return {
                 labels: flows.map(flow => flow.name),
                 data: flows.map(flow => flow.total),
-                colors: flows.map(flow => nodeColorMap[flow.id]),
+                colors: flows.map(flow => nodeColorMap[flow.id])
             };
-        }
+        };
 
         const initCharts = () => {
             if (nodeData) {
                 const nodeColorMap = generateNodeColorMap(nodeData.nodes);
-                createBarChart('hourlyBar', nodeData.hours.map(String), generateDatasets(nodeData.hourlyFlows, nodeColorMap), @json(trans_choice('common.hour', 2)),
-                    'GiB');
-                createBarChart('dailyBar', '', generateDatasets(nodeData.dailyFlows, nodeColorMap), '', 'GiB');
+                createBarChart("hourlyBar", nodeData.hours.map(String), generateDatasets(nodeData.hourlyFlows, nodeColorMap), @json(trans_choice('common.hour', 2)),
+                    "GiB");
+                createBarChart("dailyBar", "", generateDatasets(nodeData.dailyFlows, nodeColorMap), "", "GiB");
 
                 const lastDate = nodeData.dailyFlows[nodeData.dailyFlows.length - 1].time;
                 const lastDayData = nodeData.dailyFlows.filter(flow => flow.time === lastDate);
@@ -328,7 +325,7 @@
                     data,
                     colors
                 } = generatePieData(lastDayData, nodeColorMap);
-                createDoughnutChart('dailyPie', labels, data, colors, lastDate);
+                createDoughnutChart("dailyPie", labels, data, colors, lastDate);
             }
         };
 
@@ -345,23 +342,21 @@
         };
 
         const resetSearchForm = () => {
-            window.location.href = window.location.href.split('?')[0];
+            window.location.href = window.location.href.split("?")[0];
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener("DOMContentLoaded", () => {
             initCharts();
-            $('#nodes').selectpicker('val', @json(Request::query('nodes')));
 
-            const hourDateSelect = document.getElementById('hour_date');
+            const hourDateSelect = document.getElementById("hour_date");
             if (hourDateSelect) {
-                hourDateSelect.addEventListener('change', (event) => handleFormSubmit(event, event.target.form));
-                $(hourDateSelect).selectpicker('val', new URLSearchParams(window.location.search).get('hour_date') || @json(now()->format('Y-m-d')));
+                hourDateSelect.addEventListener("change", (event) => handleFormSubmit(event, event.target.form));
+                $(hourDateSelect).selectpicker("val", new URLSearchParams(window.location.search).get("hour_date") || @json(now()->toDateString()));
             }
 
-            $('.input-daterange').datepicker({
-                format: 'yyyy-mm-dd',
+            $(".input-daterange").datepicker({
                 startDate: nodeData.start_date,
-                endDate: new Date(),
+                endDate: new Date()
             });
         });
     </script>

@@ -8,6 +8,7 @@ use App\Utils\Clients\Protocols\Text;
 use App\Utils\Clients\Protocols\URLSchemes;
 use Arr;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
 use ReflectionClass;
 use RuntimeException;
 
@@ -50,7 +51,7 @@ class ProxyService
         return self::$servers ?? [];
     }
 
-    public function getNodeList(?int $type = null, bool $isConfig = true): array
+    public function getNodeList(?int $type = null, bool $isConfig = true): array|Collection
     {
         $query = $this->getUser()->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
 
@@ -155,23 +156,17 @@ class ProxyService
             ...$node->profile,
         ];
 
-        if (! empty($node->profile['passwd']) && $node->port) { // 单端口使用中转的端口
-            $config += [
-                'port' => $node->port,
-                'protocol_param' => "$user->port:$user->passwd",
-            ];
+        if ($node->profile['passwd'] && $node->port) {
+            // 单端口使用中转的端口
+            $config['port'] = $node->port;
+            $config['protocol_param'] = $user->port.':'.$user->passwd;
         } else {
-            $config += [
-                'port' => $user->port,
-                'protocol_param' => $user->passwd,
-            ];
-
+            $config['port'] = $user->port;
+            $config['passwd'] = $user->passwd;
             if ($node->type === 1) {
-                $config += [
-                    'method' => $user->method,
-                    'protocol' => $user->protocol,
-                    'obfs' => $user->obfs,
-                ];
+                $config['method'] = $user->method;
+                $config['protocol'] = $user->protocol;
+                $config['obfs'] = $user->obfs;
             }
         }
 

@@ -6,8 +6,8 @@
     <div class="page-header">
         <h1 class="page-title cyan-600"><i class="icon wb-star"></i>{{ trans('user.menu.promotion') }}</h1>
     </div>
-    <div class="page-content  container-fluid">
-        <x-alert type="success" :message="trans('user.invite.promotion.base', ['traffic' => $referral_traffic]) .
+    <div class="page-content container-fluid">
+        <x-alert :message="trans('user.invite.promotion.base', ['traffic' => $referral_traffic]) .
             trans('user.invite.promotion.bonus.' . $referral_reward_mode, ['referral_percent' => $referral_percent])" />
         <div class="row">
             <div class="col-lg-5">
@@ -19,14 +19,14 @@
                             <h4 class="card-title cyan-600"><i class="icon wb-link"></i>
                                 {{ trans('user.referral.link') }}
                             </h4>
-                            <div class="mt-clipboard-container input-group">
+                            <div class="input-group">
                                 <input class="form-control" id="mt-target-1" type="text" value="{{ $aff_link }}" />
                             </div>
                             <div class="btn-group float-right pt-4">
                                 <button class="btn btn-outline-primary" onclick="Download()">
                                     <i class="icon wb-download"></i> {{ trans('common.download') }}
                                 </button>
-                                <button class="btn btn-info mt-clipboard" data-clipboard-action="copy" data-clipboard-text="{{ $aff_link }}">
+                                <button class="btn btn-info mt-clipboard">
                                     <i class="icon wb-copy"></i> {{ trans('common.copy.attribute') }}
                                 </button>
                             </div>
@@ -94,7 +94,7 @@
                             <tbody>
                                 @foreach ($referralLogList as $referralLog)
                                     <tr>
-                                        <td> {{ $loop->iteration }} </td>
+                                        <td> {{ $loop->iteration + ($referralLogList->currentPage() - 1) * $referralLogList->perPage() }} </td>
                                         <td> {{ empty($referralLog->invitee) ? '【' . trans('common.deleted_item', ['attribute' => trans('common.account')]) . '】' : str_replace(mb_substr($referralLog->invitee->username, 3, 4), '****', $referralLog->invitee->username) }}
                                         </td>
                                         <td> {{ $referralLog->amount_tag }} </td>
@@ -135,7 +135,7 @@
                             <tbody>
                                 @foreach ($referralApplyList as $referralApply)
                                     <tr>
-                                        <td> {{ $loop->iteration }} </td>
+                                        <td> {{ $loop->iteration + ($referralApplyList->currentPage() - 1) * $referralApplyList->perPage() }} </td>
                                         <td> {{ $referralApply->created_at }} </td>
                                         <td> {{ $referralApply->amount_tag }} </td>
                                         <td>
@@ -159,7 +159,6 @@
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
-    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/custom/easy.qrcode.min.js"></script>
     <script>
         // Options
@@ -199,42 +198,13 @@
             }, "image/png");
         }
 
+        $(document).on('click', '.mt-clipboard', function() {
+            copyToClipboard($('#mt-target-1').val());
+        });
+
         // 申请提现
         function extractMoney() {
-            $.post('{{ route('referral.withdraw') }}', {
-                _token: '{{ csrf_token() }}'
-            }, function(ret) {
-                if (ret.status === "success") {
-                    swal.fire({
-                        title: ret.message,
-                        icon: "success",
-                        timer: 1000,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.reload();
-                    });
-                } else {
-                    swal.fire(ret.title, ret.message, "error");
-                }
-            });
+            ajaxPost('{{ route('referral.withdraw') }}');
         }
-
-        const clipboard = new ClipboardJS(".mt-clipboard");
-        clipboard.on("success", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: "success",
-                timer: 1300,
-                showConfirmButton: false
-            });
-        });
-        clipboard.on("error", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false
-            });
-        });
     </script>
 @endsection

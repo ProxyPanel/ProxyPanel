@@ -14,6 +14,7 @@ class AffiliateController extends Controller
     public function index(Request $request): View
     { // 提现申请列表
         $query = ReferralApply::with('user:id,username');
+
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
                 $query->where('username', 'like', "%$username%");
@@ -42,9 +43,7 @@ class AffiliateController extends Controller
         if ($aff->update(['status' => $status])) {
             // 将关联的返现单更新状态
             if ($status === 1 || $status === 2) {
-                if ($aff->referral_logs()->update(['status' => $status])) {
-                    return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.action')])]);
-                }
+                $aff->referral_logs()->update(['status' => $status]);
             }
 
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.action')])]);

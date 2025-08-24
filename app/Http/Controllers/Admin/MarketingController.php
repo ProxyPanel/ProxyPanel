@@ -29,8 +29,8 @@ class MarketingController extends Controller
 
         return view('admin.article.marketing', [
             'marketingMessages' => $query->latest()->paginate(15)->appends($request->except('page')),
-            'userGroups' => UserGroup::all()->pluck('name', 'id')->toArray(),
-            'levels' => Level::all()->pluck('name', 'level')->toArray(),
+            'userGroups' => UserGroup::pluck('name', 'id'),
+            'levels' => Level::pluck('name', 'level'),
         ]);
     }
 
@@ -57,7 +57,7 @@ class MarketingController extends Controller
             $users = $this->userStat($request);
             if ($users->isNotEmpty()) {
                 Notification::send($users, new Custom($title, $content, ['mail']));
-                Helpers::addMarketing($users->pluck('id')->toJson(), '1', $title, $content);
+                Helpers::addMarketing($users->pluck('id')->toJson(), 1, $title, $content);
 
                 return response()->json(['status' => 'success', 'message' => trans('admin.marketing.processed')]);
             }
@@ -74,7 +74,7 @@ class MarketingController extends Controller
 
         foreach (['id', 'username', 'status', 'enable', 'user_group_id', 'level'] as $field) {
             $request->whenFilled($field, function ($value) use ($users, $field) {
-                $users->whereIn($field, array_map('trim', explode(',', $value)));
+                $users->whereIn($field, is_string($value) ? array_map('trim', explode(',', $value)) : (array) $value);
             });
         }
 
@@ -93,7 +93,7 @@ class MarketingController extends Controller
 
         // 最近N分钟活跃过
         $request->whenFilled('lastAlive', function ($value) use ($users) {
-            $users->where('t', '>=', now()->subMinutes($value)->timestamp);
+            $users->where('t', '>=', now()->subMinutes((int) $value)->timestamp);
         });
 
         $paidOrderCondition = function ($query) {
@@ -129,6 +129,6 @@ class MarketingController extends Controller
             $users->whereIn('id', (new UserHourlyDataFlow)->trafficAbnormal());
         });
 
-        return $request->isMethod('POST') ? $users->get() : $users->count();
+        return $request->isMethod('POST') ? $users->select('id')->get() : $users->count();
     }
 }

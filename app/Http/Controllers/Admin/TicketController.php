@@ -15,8 +15,8 @@ class TicketController extends Controller
 {
     public function index(Request $request): View
     { // 工单列表
-        $query = Ticket::where(static function ($query) {
-            $query->whereAdminId(auth()->id())->orwhere('admin_id');
+        $query = Ticket::where(function ($query) {
+            $query->where('admin_id', auth()->id())->orWhereNull('admin_id');
         })->with('user');
 
         $request->whenFilled('username', function ($username) use ($query) {
@@ -31,9 +31,19 @@ class TicketController extends Controller
     public function store(TicketRequest $request): JsonResponse
     { // 创建工单
         $data = $request->validated();
-        $user = User::find($data['uid']) ?: User::whereUsername($data['username'])->first();
 
-        if ($user === auth()->user()) {
+        $user = null;
+        if (! empty($data['uid'])) {
+            $user = User::find($data['uid']);
+        } elseif (! empty($data['username'])) {
+            $user = User::whereUsername($data['username'])->first();
+        }
+
+        if (! $user) {
+            return response()->json(['status' => 'fail', 'message' => trans('admin.marketing.targeted_users_not_found')]);
+        }
+
+        if ($user->id === auth()->id()) {
             return response()->json(['status' => 'fail', 'message' => trans('admin.ticket.self_send')]);
         }
 
@@ -49,7 +59,7 @@ class TicketController extends Controller
         return view('admin.ticket.reply', [
             'ticket' => $ticket,
             'user' => $ticket->user,
-            'replyList' => $ticket->reply()->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')->oldest()->get(),
+            'replyList' => $ticket->reply()->with(['ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq'])->oldest()->get(),
         ]);
     }
 
@@ -58,6 +68,8 @@ class TicketController extends Controller
         $content = substr(str_replace(['atob', 'eval'], '', clean($request->input('content'))), 0, 300);
 
         if ($ticket->reply()->create(['admin_id' => auth()->id(), 'content' => $content])) {
+            $ticket->update(['status' => 1]);
+
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
         }
 

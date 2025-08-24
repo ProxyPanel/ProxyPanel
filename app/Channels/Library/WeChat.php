@@ -20,8 +20,8 @@ class WeChat
     }
 
     public function encryptMsg(string $sReplyMsg, ?int $sTimeStamp, string $sNonce, string &$sEncryptMsg): int
-    { //将公众平台回复用户的消息加密打包.
-        $array = $this->prpcrypt_encrypt($sReplyMsg); //加密
+    { // 将公众平台回复用户的消息加密打包.
+        $array = $this->prpcrypt_encrypt($sReplyMsg); // 加密
 
         if ($array[0] !== 0) {
             return $array[0];
@@ -44,11 +44,11 @@ class WeChat
     public function prpcrypt_encrypt(string $data): array
     {
         try {
-            //拼接
+            // 拼接
             $data = Str::random().pack('N', strlen($data)).$data.sysConfig('wechat_cid');
-            //添加PKCS#7填充
+            // 添加PKCS#7填充
             $data = $this->pkcs7_encode($data);
-            //加密
+            // 加密
             $encrypted = openssl_encrypt($data, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
 
             return [0, $encrypted];
@@ -61,7 +61,7 @@ class WeChat
 
     public function pkcs7_encode(string $data): string
     {// 对需要加密的明文进行填充补位
-        //计算需要填充的位数
+        // 计算需要填充的位数
         $padding = 32 - (strlen($data) % 32);
         $padding = ($padding === 0) ? 32 : $padding;
         $pattern = chr($padding);
@@ -102,15 +102,13 @@ XML;
 
     public function decryptMsg(string $sMsgSignature, ?int $sTimeStamp, string $sNonce, string $sPostData, string &$sMsg)
     { // 检验消息的真实性，并且获取解密后的明文.
-        //提取密文
-        $array = $this->extract($sPostData);
-
-        if ($array[0] !== 0) {
-            return $array[0];
+        // 提取密文
+        [$code, $encrypt] = $this->extract($sPostData);
+        if ($code !== 0) {
+            return $code;
         }
 
         $sTimeStamp = $sTimeStamp ?? time();
-        $encrypt = $array[1];
 
         $this->verifySignature($sMsgSignature, $sTimeStamp, $sNonce, $encrypt, $sMsg); // 验证安全签名
     }
@@ -138,22 +136,18 @@ XML;
 
     public function verifySignature(string $sMsgSignature, string $sTimeStamp, string $sNonce, string $sEcho, string &$sMsg): int
     { // 验证URL
-        //verify msg_signature
-        $array = $this->extract($sEcho);
+        // verify msg_signature
+        [$code, $encrypt] = $this->extract($sEcho);
 
-        if ($array[0] !== 0) {
-            return $array[0];
+        if ($code !== 0) {
+            return $code;
         }
 
-        $encrypt = $array[1];
+        [$code, $signature] = $this->getSHA1($sTimeStamp, $sNonce, $encrypt);
 
-        $array = $this->getSHA1($sTimeStamp, $sNonce, $encrypt);
-
-        if ($array[0] !== 0) {
-            return $array[0];
+        if ($code !== 0) {
+            return $code;
         }
-
-        $signature = $array[1];
 
         if ($sMsgSignature !== $signature) {
             Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => trans('notification.sign_failed')]));
@@ -162,12 +156,14 @@ XML;
         }
 
         $sMsg = $encrypt;
+
+        return 0;
     }
 
     public function prpcrypt_decrypt(string $encrypted): array
     {
         try {
-            //解密
+            // 解密
             $decrypted = openssl_decrypt($encrypted, 'AES-256-CBC', $this->key, OPENSSL_ZERO_PADDING, $this->iv);
         } catch (Exception $e) {
             Log::critical(trans('notification.error', ['channel' => trans('admin.system.notification.channel.wechat'), 'reason' => var_export($e->getMessage(), true)]));
@@ -175,12 +171,12 @@ XML;
             return [-40007, null]; // DecryptAESError
         }
         try {
-            //删除PKCS#7填充
+            // 删除PKCS#7填充
             $result = $this->pkcs7_decode($decrypted);
             if (strlen($result) < 16) {
                 return [];
             }
-            //拆分
+            // 拆分
             $content = substr($result, 16, strlen($result));
             $len_list = unpack('N', substr($content, 0, 4));
             $xml_len = $len_list[1];

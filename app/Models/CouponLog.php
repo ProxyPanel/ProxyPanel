@@ -14,6 +14,8 @@ class CouponLog extends Model
 
     protected $table = 'coupon_log';
 
+    protected $guarded = [];
+
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(User::class);

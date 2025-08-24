@@ -45,17 +45,19 @@
                             <tbody>
                                 @foreach ($inviteList as $invite)
                                     <tr>
-                                        <td> {{ $loop->iteration }} </td>
+                                        <td> {{ $loop->iteration + ($inviteList->currentPage() - 1) * $inviteList->perPage() }} </td>
                                         <td>
-                                            <a class="mt-clipboard" data-clipboard-action="copy"
-                                               data-clipboard-text="{{ route('register', ['code' => $invite->code]) }}"
-                                               href="javascript:void(0)">{{ $invite->code }}</a>
+                                            <a class="mt-clipboard" href="javascript:(0)">{{ $invite->code }}</a>
                                         </td>
                                         <td> {{ $invite->dateline }} </td>
                                         <td>
                                             {!! $invite->status_label !!}
                                         </td>
-                                        {{ $invite->status === 1 ? $invite->invitee->username ?? '【' . trans('common.deleted_item', ['attribute' => trans('common.account')]) . '】' : '' }}
+                                        <td>
+                                            @if ($invite->status === 1)
+                                                {{ $invite->invitee->username ?? '【' . trans('common.deleted_item', ['attribute' => trans('common.account')]) . '】' }}
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -79,52 +81,17 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/custom/clipboardjs/clipboard.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
         // 生成邀请码
         function makeInvite() {
-            $.ajax({
-                method: "POST",
-                dataType: "json",
-                url: '{{ route('invite.store') }}',
-                data: {
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function(ret) {
-                    if (ret.status === "success") {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "success"
-                        }).then(() => window.location.reload());
-                    } else {
-                        swal.fire({
-                            title: ret.message,
-                            icon: "error"
-                        }).then(() => window.location.reload());
-                    }
-                }
-            });
-            return false;
+            ajaxPost('{{ route('invite.store') }}');
         }
 
-        const clipboard = new ClipboardJS(".mt-clipboard");
-        clipboard.on("success", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.success') }}',
-                icon: "success",
-                timer: 1300,
-                showConfirmButton: false
-            });
-        });
-        clipboard.on("error", function() {
-            swal.fire({
-                title: '{{ trans('common.copy.failed') }}',
-                icon: "error",
-                timer: 1500,
-                showConfirmButton: false
-            });
+        $(document).on('click', '.mt-clipboard', function(e) {
+            e.preventDefault();
+            copyToClipboard(jsRoute('{{ route('register', ['code' => 'PLACEHOLDER']) }}', $(this).text()));
         });
     </script>
 @endsection
