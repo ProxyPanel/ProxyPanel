@@ -36,7 +36,7 @@
                                 </div>
                             </x-admin.form.skeleton>
                         @endisset
-                        <x-admin.form.input name="invite_num" type="number" :label="trans('model.user.invite_num')" required />
+                        <x-admin.form.input name="invite_num" type="number" :label="trans('model.user.invite_num')" input_grid="col-auto" required />
                         <x-admin.form.input-group name="reset_time" attribute="data-plugin=datepicker" :label="trans('model.user.reset_date')" :prependIcon="'icon wb-calendar'" :help="trans('admin.user.info.reset_date_hint')"
                                                   input_grid="col-auto" />
                         <x-admin.form.input-group name="expired_at" attribute="data-plugin=datepicker" :label="trans('model.user.expired_date')" :prependIcon="'icon wb-calendar'" :help="trans('admin.user.info.expired_date_hint')"
@@ -56,7 +56,7 @@
                                                   buttonClass="btn-success" buttonOnclick="makeUUID()" :help="trans('admin.user.info.uuid_hint')" />
                         <x-admin.form.input-group name="passwd" :placeholder="trans('common.random_generate')" :label="trans('model.user.proxy_passwd')" button='<i class="icon wb-refresh"></i>'
                                                   buttonClass="btn-success" buttonOnclick="makePasswd()" />
-                        <x-admin.form.input-group name="transfer_enable" type="number" :label="trans('model.user.usable_traffic')" required append="GB" />
+                        <x-admin.form.input-group name="transfer_enable" :label="trans('model.user.usable_traffic')" required append="GB" />
                         <x-admin.form.radio-group name="enable" :label="trans('model.user.proxy_status')" :options="[0 => trans('common.status.banned'), 1 => trans('common.status.enabled')]" />
                         <hr>
                         <x-admin.form.select name="method" :label="trans('model.user.proxy_method')" :options="$methods" input_grid="col-xxl-3 col-xl-5 col-lg-6 col-md-4 col-sm-auto" />
@@ -125,6 +125,7 @@
         $(document).ready(function() {
             let userData = { // 默认值
                 level: 0,
+                invite_num: 0,
                 status: 1,
                 transfer_enable: 1024,
                 enable: 1,

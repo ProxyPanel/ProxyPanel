@@ -389,19 +389,6 @@
             const termUnit = $("#subscription_term_unit").val();
             data["subscription_term"] = termValue ? `${termValue} ${termUnit}` : null;
 
-            // 处理端口字段（根据节点类型选择正确的端口字段）
-            switch (parseInt(data.type)) {
-                case 0: // Shadowsocks
-                    data.port = 0; // SS类型不需要端口设置
-                    break;
-                case 1: // ShadowsocksR
-                case 4: // VNET
-                    if (data.single !== 1) {
-                        data.port = 0; // 非single模式不需要端口设置
-                    }
-                    break;
-            }
-
             // 发送 AJAX 请求
             ajaxRequest({
                 url: '{{ isset($node) ? route('admin.node.update', $node['id']) : route('admin.node.store') }}',
