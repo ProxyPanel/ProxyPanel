@@ -262,7 +262,7 @@
                 type: 1
             };
             @isset($node)
-                // 反向解析节点数据以    适配表单字段
+                // 反向解析节点数据以适配表单字段
                 const node = @json($node);
                 nodeData = {
                     single: node.type === 0 || node.type === 1 || node.type === 4 ? (node.passwd ? 1 : 0) : undefined,

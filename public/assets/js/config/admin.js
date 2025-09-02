@@ -1,6 +1,33 @@
+/** 判断字段是否数组（以 [] 结尾）并返回标准名字 */
+function normalizeFieldName(name) {
+    if (!name) return {isArray: false, base: name};
+    if (name.endsWith('[]')) return {isArray: true, base: name.slice(0, -2)};
+    return {isArray: false, base: name};
+}
+
+/** 格式化 Date 为 Y-m-d */
+function formatDateToYMD(date) {
+    if (!date) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
+/**
+ * 从嵌套对象中获取值
+ * @param {Object} obj - 源对象
+ * @param {string} path - 属性路径，支持点号分隔
+ * @returns {*} 属性值或 undefined
+ */
+function getObjectValue(obj, path) {
+    if (!obj || !path) return undefined;
+    return path.split('.').reduce((cur, key) => (cur !== null && cur !== undefined) ? cur[key] : undefined, obj);
+}
+
 /**
  * 自动填充表单字段
- * @param {Object} data - 要填充的数据对象
+ * @param {Object} data - 数据对象
  * @param {Object} options - 配置选项
  * @param {string} options.formSelector - 表单选择器，默认为 'form'
  * @param {Array} options.skipFields - 跳过的字段名
@@ -8,43 +35,102 @@
 function autoPopulateForm(data, options = {}) {
     if (!data) return;
 
-    const defaults = {
-        formSelector: "form", skipFields: []
-    };
-
-    const settings = { ...defaults, ...options };
-
-    // 获取表单内的所有输入元素
+    const settings = {formSelector: 'form', skipFields: [], ...options};
     const $form = $(settings.formSelector);
-    const $inputs = $form.find("input, select, textarea");
+    if (!$form.length) return;
 
-    $inputs.each(function() {
-        const $element = $(this);
-        const name = $element.attr("name");
-        const id = $element.attr("id");
+    // 查询所有 input/select/textarea（包含可能是同名的多元素）
+    $form.find('input, select, textarea').each(function () {
+        const $el = $(this);
+        const name = $el.attr('name') || $el.attr('id');
 
-        // 使用 name 作为主要查找键，id 作为备选
-        const fieldKey = name || id;
+        if (!name || settings.skipFields.includes(name)) return;
 
-        // 跳过没有名称或ID的元素，以及明确指定跳过的字段
-        if (!fieldKey || settings.skipFields.includes(fieldKey)) {
-            return; // continue to next element
-        }
+        const {isArray, base} = normalizeFieldName(name);
 
-        // 处理数组字段（如 roles[]）
-        const cleanFieldKey = fieldKey.replace(/\[\]$/, "");
-
-        // 从数据对象中获取对应值
-        let value = getObjectValue(data, cleanFieldKey);
-
-        // 如果找不到值，尝试使用原始字段名
-        if (value === undefined && cleanFieldKey !== fieldKey) {
-            value = getObjectValue(data, fieldKey);
+        // 优先使用无 [] 的字段名去 data 中取值；若不存在且原名不是相同，则尝试原名
+        let value = getObjectValue(data, base);
+        if (value === undefined && base !== name) {
+            value = getObjectValue(data, name);
         }
 
         if (value !== undefined) {
-            // 根据元素类型设置值
-            setElementValue($element, value);
+            const tag = $el.prop('tagName').toLowerCase();
+            const type = $el.attr('type');
+            const plugin = $el.attr('data-plugin');
+
+            if (tag === 'input') {
+                if (type === 'radio') {
+                    // $el 可能是选组：将匹配 value 的那项触发 click（保持原来用 click 的行为）
+                    $el.filter(`[value="${value}"]`).each(function () {
+                        const $this = $(this);
+                        if (!$this.is(':checked')) $this.click();
+                    });
+                    return;
+                }
+
+                if (type === 'checkbox') {
+                    if (Array.isArray(value)) {
+                        // 对应多个 checkbox（数组值）
+                        $el.each(function () {
+                            const $this = $(this);
+                            const should = value.includes($this.val());
+                            if ($this.is(':checked') !== should) $this.click();
+                        });
+                    } else {
+                        // 单一 checkbox（switchery 等插件映射 1/0）
+                        const shouldBeChecked = (value === true || value === 1 || value === '1' || value === 'true');
+                        $el.each(function () {
+                            const $this = $(this);
+                            if ($this.is(':checked') !== shouldBeChecked) $this.click();
+                        });
+                    }
+                    return;
+                }
+
+                // 非选择类 input
+                if (plugin === 'datepicker') {
+                    // 设置日期，若 value 为空则传 null 以清除
+                    try {
+                        $el.datepicker('setDate', value ? new Date(value) : null);
+                    } catch (e) {
+                        // 忽略插件异常
+                    }
+                    return;
+                }
+                if (plugin === 'asColorPicker') {
+                    try {
+                        $el.asColorPicker('val', value);
+                    } catch (e) { }
+                    return;
+                }
+
+                $el.val(value);
+                return;
+            }
+
+            if (tag === 'select') {
+                if (plugin === 'multiSelect') {
+                    try { $el.multiSelect('select', value); } catch (e) { $el.val(value); }
+                    return;
+                }
+                if (plugin === 'selectpicker') {
+                    try {
+                        $el.selectpicker('val', value);
+                        $el.selectpicker('refresh');
+                    } catch (e) {
+                        $el.val(value);
+                    }
+                    return;
+                }
+                $el.val(value);
+                return;
+            }
+
+            if (tag === 'textarea') {
+                $el.val(value);
+                return;
+            }
         }
     });
 }
@@ -58,214 +144,149 @@ function autoPopulateForm(data, options = {}) {
  * @returns {Object} 表单数据对象
  */
 function collectFormData(formSelector, options = {}) {
-    const $form = typeof formSelector === "string" ? $(formSelector) : formSelector;
-    const defaults = {
-        excludeFields: [],
-        removeEmpty: false,
-    };
+    const $form = (typeof formSelector === 'string') ? $(formSelector) : formSelector;
+    if (!$form || !$form.length) return {};
 
-    const settings = { ...defaults, ...options };
+    const settings = {excludeFields: [], removeEmpty: false, ...options};
     const formData = {};
 
-    // 收集所有表单元素的值
-    $form.find('input:not([hidden]), select, textarea').each(function() {
-        const $element = $(this);
-        const name = $element.attr('name');
-        const type = $element.attr('type');
-        const tagName = $element.prop('tagName').toLowerCase();
+    // 查找非 hidden 的 input/select/textarea（但还要跳过 data-hidden / [hidden] 或父元素 data-hidden）
+    $form.find('input:not([hidden]), select:not([hidden]), textarea:not([hidden])').each(function () {
+        const $el = $(this);
+        const name = $el.attr('name');
+        const type = $el.attr('type');
+        const tag = $el.prop('tagName').toLowerCase();
+        const {isArray, base} = normalizeFieldName(name);
 
-        // 跳过没有名称的字段和排除的字段
-        if (!name || settings.excludeFields.includes(name)) {
-            return;
-        }
+        if (!name || settings.excludeFields.includes(base)) return;
 
-        // 处理数组字段
-        const isArrayField = name.endsWith('[]');
-        const fieldName = isArrayField ? name.slice(0, -2) : name;
+        // 跳过通过 hide() / data-hidden 或父元素 data-hidden 隐藏的元素
+        if ($el.is('[hidden], [data-hidden]') || $el.closest('[data-hidden]').length > 0) return;
 
         let value;
+        const plugin = $el.attr('data-plugin');
 
-        // 标准值收集
-        switch (tagName) {
-            case 'input':
-                switch (type) {
-                    case 'checkbox':
-                        if (isArrayField) {
-                            if (!formData[fieldName]) formData[fieldName] = [];
-                            if ($element.is(':checked')) {
-                                formData[fieldName].push($element.val());
-                            }
-                        } else if($element.attr("data-plugin") === "switchery"){
-                            value = $element.is(':checked') ? 1 : 0;
-                        }
-                        else{
-                            value = $element.is(':checked') ? $element.val() : null;
-                        }
-                        break;
-                    case 'radio':
-                        if ($element.is(':checked')) {
-                            value = $element.val();
-                        }
-                        break;
-                    default:
-                        // 特殊处理 datepicker 元素
-                        if ($element.attr("data-plugin") === "datepicker" || $element.parent().attr("data-plugin") === "datepicker" || $element.parent().hasClass("input-daterange")) {
-                            value = formatDateToYMD($element.datepicker('getDate'));
-                        } else if ($element.attr("data-plugin") === "asColorPicker") {
-                            // asColorPicker 取值
-                            value = $element.asColorPicker('val');
-                        } else {
-                            value = $element.val();
-                        }
+        if (tag === 'input') {
+            if (type === 'checkbox') {
+                if (isArray) {
+                    // collect all checked ones by pushing to array
+                    if (!$el.is(':checked')) {
+                        // 不勾选时不推入
+                    } else {
+                        if (!formData[base]) formData[base] = [];
+                        formData[base].push($el.val());
+                    }
+                    return; // 已在数组处理，不继续后续赋值逻辑
                 }
-                break;
 
-            case 'select':
-                if ($element.prop('multiple')) {
-                    value = $element.val() || [];
+                // 非数组 checkbox：可能是 switchery (取 1/0)，或普通单选取值/否则 null
+                if (plugin === 'switchery') {
+                    value = $el.is(':checked') ? 1 : 0;
                 } else {
-                    value = $element.val();
+                    value = $el.is(':checked') ? $el.val() : null;
                 }
-                break;
-
-            case 'textarea':
-                value = $element.val();
-                break;
-        }
-
-        // 处理数组字段
-        if (isArrayField) {
-            if (!formData[fieldName]) formData[fieldName] = [];
-            if (value !== undefined && value !== null) {
-                if (Array.isArray(value)) {
-                    formData[fieldName] = [...formData[fieldName], ...value];
+            } else if (type === 'radio') {
+                // 仅在 checked 时读取值；避免覆盖其他同名 radio
+                if ($el.is(':checked')) value = $el.val();
+                else return;
+            } else {
+                // 其他 input，特殊插件处理
+                if (plugin === 'datepicker' || $el.parent().hasClass('input-daterange')) {
+                    value = formatDateToYMD($el.datepicker('getDate'));
+                } else if (plugin === 'asColorPicker') {
+                    value = $el.asColorPicker('val');
                 } else {
-                    formData[fieldName].push(value);
+                    value = $el.val();
                 }
             }
+        } else if (tag === 'select') {
+            value = $el.prop('multiple') ? ($el.val() || []) : $el.val();
+        } else if (tag === 'textarea') {
+            value = $el.val();
+        }
+
+        // 将值写入 formData（注意 radio 与其他覆盖逻辑）
+        if (isArray) {
+            if (!formData[base]) formData[base] = [];
+            if (value !== undefined && value !== null) {
+                formData[base].push(...(Array.isArray(value) ? value : [value]));
+            }
         } else if (value !== undefined) {
-            // 避免覆盖已设置的值（如radio按钮）
-            if (formData[fieldName] === undefined || type !== 'radio' || value !== null) {
-                formData[fieldName] = value;
+            // 保持原逻辑：避免 radio 被未选覆盖（radio 在未选时直接 return）
+            if (formData[base] === undefined || type !== 'radio' || value !== null) {
+                formData[base] = value;
             }
         }
     });
 
-    // 去除空值
+    // removeEmpty 过滤空字符串 / null / undefined / 空数组
     if (settings.removeEmpty) {
-        return Object.fromEntries(
-            Object.entries(formData).filter(([_, value]) => {
-                if (Array.isArray(value)) {
-                    return value.length > 0;
-                }
-                return value !== "" && value !== null && value !== undefined;
-            })
-        );
+        return Object.fromEntries(Object.entries(formData).filter(([_, v]) => {
+            if (Array.isArray(v)) return v.length > 0;
+            return v !== "" && v !== null && v !== undefined;
+        }));
     }
 
     return formData;
 }
 
+/* -----------------------
+   jQuery hide/show/toggle 拦截（保留原有行为）
+   ----------------------- */
 
-/**
- * 格式化日期为 Y-m-d 格式
- */
-function formatDateToYMD(date) {
-    if (!date) {
-        return '';
+(function ($) {
+    const origHide = $.fn.hide;
+    const origShow = $.fn.show;
+    const origToggle = $.fn.toggle;
+
+    // 仅在实际状态变化时修改属性（减少 DOM 写入）
+    function setDataHiddenIfChanged($els, hidden) {
+        const attrVal = hidden ? 'true' : null;
+        $els.each(function () {
+            const cur = this.getAttribute('data-hidden');
+            if (cur !== attrVal) {
+                if (attrVal === null) this.removeAttribute('data-hidden');
+                else this.setAttribute('data-hidden', 'true');
+            }
+        });
     }
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
+    // hide -> 执行原 hide 后标记为隐藏
+    $.fn.hide = function () {
+        const res = origHide.apply(this, arguments);
+        // 被隐藏 -> data-hidden = 'true'
+        setDataHiddenIfChanged(this, true);
+        return res;
+    };
 
-/**
- * 从嵌套对象中获取值
- * @param {Object} obj - 源对象
- * @param {string} path - 属性路径，支持点号分隔
- * @returns {*} 属性值或 undefined
- */
-function getObjectValue(obj, path) {
-    if (!obj || !path) return undefined;
+    // show -> 执行原 show 后移除标记
+    $.fn.show = function () {
+        const res = origShow.apply(this, arguments);
+        // 被显示 -> 移除 data-hidden
+        setDataHiddenIfChanged(this, false);
+        return res;
+    };
 
-    // 处理点号分隔的路径
-    const keys = path.split(".");
-    let current = obj;
-
-    for (let i = 0; i < keys.length; i++) {
-        if (current === null || current === undefined) {
-            return undefined;
+    // toggle 需要处理两种情况：传入布尔或不传
+    $.fn.toggle = function (state) {
+        if (typeof state === 'boolean') {
+            // 如果有布尔参数，原生方法会按 state 显示/隐藏
+            const res = origToggle.call(this, state);
+            // state === true -> show -> hidden = false
+            setDataHiddenIfChanged(this, !state);
+            return res;
         }
-        current = current[keys[i]];
-    }
 
-    return current;
-}
-
-/**
- * 设置元素值
- * @param {jQuery} $element - jQuery元素对象
- * @param {*} value - 要设置的值
- */
-function setElementValue($element, value) {
-    const type = $element.attr("type");
-    const tagName = $element.prop("tagName").toLowerCase();
-
-    switch (tagName) {
-        case "input":
-            switch (type) {
-                case "radio":
-                    $element.filter(`[value="${value}"]`).click();
-                    break;
-                case "checkbox":
-                    if (Array.isArray(value)) {
-                        $element.each(function() {
-                            const $this = $(this);
-                            const isChecked = value.includes($this.val());
-                            if ($this.is(':checked') !== isChecked) {
-                                $this.click();
-                            }
-                        });
-                    } else {
-                        const shouldBeChecked = value === true || value === 1 || value === "1";
-                        if ($element.is(':checked') !== shouldBeChecked) {
-                            $element.click();
-                        }
-                    }
-                    break;
-                default:
-                    // 特殊处理 datepicker 元素
-                    if ($element.attr("data-plugin") === "datepicker" || $element.parent().attr("data-plugin") === "datepicker" || $element.parent().hasClass("input-daterange")) {
-                        $element.datepicker("setDate", new Date(value));
-                        return;
-                    }
-                    
-                    // 特殊处理 asColorPicker 元素
-                    if ($element.attr("data-plugin") === "asColorPicker") {
-                        $element.asColorPicker('val', value);
-                        return;
-                    }
-
-                    $element.val(value);
-            }
-            break;
-
-        case "select":
-            if ($element.attr("data-plugin") === "multiSelect") {
-                $element.multiSelect('select', value);
-            }else if ($element.attr("data-plugin") === "selectpicker") {
-                $element.selectpicker("val", value);
-                $element.selectpicker("refresh");
-            } else {
-                $element.val(value);
-            }
-            break;
-
-        case "textarea":
-            $element.val(value);
-            break;
-    }
-}
+        // 无参数：调用原始 toggle，然后依据最终可见性标记
+        const res = origToggle.apply(this, arguments);
+        // 逐项检查最终是否可见（避免计算样式多次：一次查询 .is(':visible')）
+        this.each(function () {
+            const $el = $(this);
+            // :visible 计算开销可接受（仅在 toggle 时），并能反映 CSS/display/class 的最终结果
+            const isVisible = $el.is(':visible');
+            setDataHiddenIfChanged($el, !isVisible);
+        });
+        return res;
+    };
+})(jQuery);
 
