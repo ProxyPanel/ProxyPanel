@@ -21,7 +21,7 @@
                         <x-admin.form.input name="username" :label="trans('model.user.username')" required />
                         <x-admin.form.input name="password" type="password" :label="trans('model.user.password')" :placeholder="isset($user) ? trans('common.stay_unchanged') : trans('common.random_generate')" attribute="autocomplete=new-password" />
                         <x-admin.form.select name="level" :label="trans('model.common.level')" :options="$levels" />
-                        <x-admin.form.select name="group" :label="trans('model.user_group.attribute')" :options="$userGroups" :placeholder="trans('common.none')" />
+                        <x-admin.form.select name="user_group_id" :label="trans('model.user_group.attribute')" :options="$userGroups" :placeholder="trans('common.none')" />
                         @isset($user)
                             <x-admin.form.skeleton name="credit" :label="trans('model.user.credit')">
                                 <div class="input-group">

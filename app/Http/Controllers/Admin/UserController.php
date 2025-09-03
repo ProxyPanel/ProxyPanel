@@ -92,7 +92,6 @@ class UserController extends Controller
         $data['port'] = $data['port'] ?? Helpers::getPort();
         $data['passwd'] = $data['passwd'] ?? Str::random();
         $data['vmess_id'] = $data['vmess_id'] ?: Str::uuid();
-        Arr::forget($data, 'uuid');
         $data['transfer_enable'] *= GiB;
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark'] ?? '');
@@ -217,13 +216,15 @@ class UserController extends Controller
     public function update(UserUpdateRequest $request, User $user): JsonResponse
     {
         $data = $request->validated();
+        Arr::forget($data, ['roles', 'password']);
         $data['passwd'] = $request->input('passwd') ?? Str::random();
         $data['vmess_id'] = $data['vmess_id'] ?: Str::uuid();
-        Arr::forget($data, ['roles', 'uuid', 'password']);
         $data['transfer_enable'] *= GiB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
-        $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+        if ($data['remark']) {
+            $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
+        }
 
         // 只有超级管理员才能赋予超级管理员
         $roles = $request->input('roles');
