@@ -85,7 +85,7 @@ class NodeStatusDetection extends Command
             // 使用DDNS的node先通过gethostbyname获取ipv4地址
             foreach ($node->ips() as $ip) {
                 if ($node->detection_type) {
-                    $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
+                    $status = NetworkDetection::networkStatus($ip, $node->port ?? 22);
 
                     if ($node->detection_type !== 1 && $status['icmp'] !== 1) {
                         $data[$node_id][$ip]['icmp'] = trans("admin.network_status.{$status['icmp']}");
@@ -136,7 +136,7 @@ class NodeStatusDetection extends Command
 
             foreach ($ips as $ip) {
                 if ($node->detection_type) {
-                    $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
+                    $status = NetworkDetection::networkStatus($ip, $node->port ?? 22);
 
                     if (($node->detection_type === 1 && $status['tcp'] === 1) || ($node->detection_type === 2 && $status['icmp'] === 1) || ($status['tcp'] === 1 && $status['icmp'] === 1)) {
                         $reachableIPs++;

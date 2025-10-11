@@ -19,12 +19,16 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         if ($this->app->isLocal() && config('app.debug')) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
             $this->app->register(\Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
             $this->app->register(\Barryvdh\Debugbar\ServiceProvider::class);
+
+            if (class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
+                $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+                $this->app->register(TelescopeServiceProvider::class);
+            }
         }
-        if (File::exists(base_path().'/.env') && Schema::hasTable('config') && DB::table('config')->exists()) {
+
+        if (Schema::hasTable('config') && File::exists(base_path().'/.env') && DB::table('config')->exists()) {
             $this->app->register(SettingServiceProvider::class);
         }
     }

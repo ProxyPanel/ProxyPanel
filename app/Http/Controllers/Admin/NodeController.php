@@ -244,7 +244,7 @@ class NodeController extends Controller
     public function checkNode(Node $node): JsonResponse
     { // 节点IP阻断检测
         foreach ($node->ips() as $ip) {
-            $status = (new NetworkDetection)->networkStatus($ip, $node->port ?? 22);
+            $status = NetworkDetection::networkStatus($ip, $n->port ?? 22);
             $data[$ip] = [trans("admin.network_status.{$status['icmp']}"), trans("admin.network_status.{$status['tcp']}")];
         }
 

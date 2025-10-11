@@ -32,7 +32,7 @@ class Avatar
 
     public static function getQQAvatar(string $qq): ?string
     {
-        self::$basicRequest = Http::timeout(15)->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+        self::$basicRequest = Http::timeout(5)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36');
         $ret = null;
         $source = 1;
 
@@ -77,7 +77,7 @@ class Avatar
     {
         // 'https://api.sretna.cn/kind/ar.php','https://api.qjqq.cn/api/MiYouShe',
         // 'https://api.uomg.com/api/rand.avatar?sort=%E5%8A%A8%E6%BC%AB%E5%A5%B3&format=images','https://api.uomg.com/api/rand.avatar?sort=%E5%8A%A8%E6%BC%AB%E7%94%B7&format=images',
-        // 'https://zt.sanzhixiongnet.cn/api.php','https://api.vvhan.com/api/avatar/dm',
+        // 'https://zt.sanzhixiongnet.cn/api.php'
         $apiUrls = [
             'https://www.loliapi.com/acg/pp/',
             'https://api.dicebear.com/9.x/thumbs/svg?seed='.$username.'&radius=50',

@@ -90,9 +90,15 @@ return [
         'baidu_ak' => env('BAIDU_APP_AK'),
         'ipinfo_token' => env('IPINFO_ACCESS_TOKEN'),
         'IP2Location_key' => env('IP2LOCATION_API_KEY'),
+        'ipApiCom_acess_key' => env('IP_API_ACCESS_KEY'),
         'ip-api_key' => env('IP_API_KEY'),
         'ipdata_key' => env('IPDATA_API_KEY'),
         'bjjii_key' => env('BJJII_KEY'),
+    ],
+
+    'probe' => [
+        'domestic' => env('PROBE_SERVERS_DOMESTIC'),
+        'foreign' => env('PROBE_SERVERS_FOREIGN'),
     ],
 
     'currency' => [
