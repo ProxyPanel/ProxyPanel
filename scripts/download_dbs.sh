@@ -15,8 +15,8 @@ declare -Ag docs
 
 # 设置数据库信息
 docs[geo_lite_name]="GeoLite2-City.mmdb"
-docs[geo_lite_version]=$(get_tag "PrxyHunter/GeoLite2")
-docs[geo_lite_url]="https://github.com/PrxyHunter/GeoLite2/releases/download/${docs[geo_lite_version]}/GeoLite2-City.mmdb"
+docs[geo_lite_version]=$(get_tag "P3TERX/GeoLite.mmdb")
+docs[geo_lite_url]="https://github.com/P3TERX/GeoLite.mmdb/releases/download/${docs[geo_lite_version]}/GeoLite2-City.mmdb"
 
 docs[ip2location_name]="IP2LOCATION-LITE-DB11.IPV6.BIN"
 docs[ip2location_version]=$(get_tag "renfei/ip2location")
