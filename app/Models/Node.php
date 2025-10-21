@@ -132,9 +132,14 @@ class Node extends Model
             ->get();
     }
 
-    public function refresh_geo(): bool
+    public function refresh_geo(): array
     {
         $ip = $this->ips();
+        $geo = explode(',', $this->geo ?? '');
+        $ret = ['original' => [
+            isset($geo[0]) ? (float) trim($geo[0]) : null,
+            isset($geo[1]) ? (float) trim($geo[1]) : null,
+        ]];
         if ($ip !== []) {
             $data = IP::getIPGeo($ip[0]); // 复数IP都以第一个为准
 
@@ -142,12 +147,11 @@ class Node extends Model
                 self::withoutEvents(function () use ($data) {
                     $this->update(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
                 });
-
-                return true;
+                $ret['update'] = [$data['latitude'] ?? null, $data['longitude'] ?? null];
             }
         }
 
-        return false;
+        return $ret;
     }
 
     public function ips(int $type = 4): array

@@ -3,7 +3,9 @@
  */
 
 /* 辅助：替换路由模板中的 PLACEHOLDER */
-const jsRoute = (template, id) => template.replace("PLACEHOLDER", id);
+const jsRoute = (template, id) => template.replace(id ? "PLACEHOLDER" : "/PLACEHOLDER", id || "");
+
+
 
 /* -----------------------
    小工具 / 辅助函数
@@ -43,51 +45,37 @@ function buildErrorHtml(errors) {
  * @param {function} options.complete - 请求完成后回调(无论成功失败)
  */
 function ajaxRequest(options) {
-    const s = {
+    // 简化对象合并
+    const settings = Object.assign({
         method: "GET",
         dataType: "json",
-        data: {},
-        // keep provided callbacks if any
-        beforeSend: undefined,
-        complete: undefined,
-        success: undefined,
-        error: undefined,
-        ...options
-    };
+        data: {}
+    }, options);
 
     // CSRF 自动注入（只在写方法上）
-    if (["POST", "PUT", "DELETE", "PATCH"].includes(s.method.toUpperCase()) &&
+    if (["POST", "PUT", "DELETE", "PATCH"].includes(settings.method.toUpperCase()) &&
         typeof CSRF_TOKEN !== "undefined" &&
-        !(s.data && s.data._token)) {
-        s.data = {...(s.data || {}), _token: CSRF_TOKEN};
+        !(settings.data && settings.data._token)) {
+        settings.data = Object.assign({}, settings.data || {}, { _token: CSRF_TOKEN });
     }
 
     // loading 包装（如果提供 loadingSelector）
-    if (s.loadingSelector) {
-        const origBefore = s.beforeSend;
-        const origComplete = s.complete;
+    if (settings.loadingSelector) {
+        const origBefore = settings.beforeSend;
+        const origComplete = settings.complete;
 
-        s.beforeSend = function (xhr, settings) {
-            try { $(s.loadingSelector).show(); } catch (e) { /* ignore */ }
-            if (typeof origBefore === "function") origBefore.call(this, xhr, settings);
+        settings.beforeSend = function (xhr, opts) {
+            try { $(settings.loadingSelector).show(); } catch (e) { /* ignore */ }
+            if (origBefore) origBefore.call(this, xhr, opts);
         };
 
-        s.complete = function (xhr, status) {
-            try { $(s.loadingSelector).hide(); } catch (e) { /* ignore */ }
-            if (typeof origComplete === "function") origComplete.call(this, xhr, status);
+        settings.complete = function (xhr, status) {
+            try { $(settings.loadingSelector).hide(); } catch (e) { /* ignore */ }
+            if (origComplete) origComplete.call(this, xhr, status);
         };
     }
 
-    return $.ajax({
-        url: s.url,
-        method: s.method,
-        data: s.data,
-        dataType: s.dataType,
-        beforeSend: s.beforeSend,
-        success: s.success,
-        error: s.error,
-        complete: s.complete
-    });
+    return $.ajax(settings);
 }
 
 /**
@@ -159,13 +147,29 @@ function showConfirm(options) {
  * @param {function} options.callback - 关闭后回调
  */
 function showMessage(options = {}) {
+    // 确认按钮显示逻辑：手动设置 > 自动关闭时隐藏 > 默认显示
+    const showConfirmButton = options.showConfirmButton !== undefined 
+        ? options.showConfirmButton 
+        : false;
+
+    const explicitAutoClose = options.autoClose;
+    const hasTimer = options.timer !== undefined;
+    const disableAutoClose = showConfirmButton === true;
+    
+    const isAutoClose = explicitAutoClose !== undefined 
+        ? explicitAutoClose 
+        : (hasTimer ? true : (!disableAutoClose));
+    
+    const timerValue = hasTimer 
+        ? options.timer 
+        : (isAutoClose ? 1500 : null);
+
     const alertOptions = {
         title: options.title || options.message,
         icon: options.icon || "info",
         html: options.html,
-        showConfirmButton: options.showConfirmButton !== undefined ? options.showConfirmButton : !options.autoClose,
-        // 如果没有明确要求显示按钮并且 autoClose 不为 false，则设置默认 timer
-        ...(options.autoClose !== false && options.showConfirmButton !== true && {timer: options.timer || 1500}),
+        showConfirmButton: showConfirmButton,
+        ...(timerValue && isAutoClose && {timer: timerValue}),
         ...(options.title && options.message && !options.html && {text: options.message})
     };
 
@@ -190,7 +194,7 @@ function showMessage(options = {}) {
  * @param {function} options.onError - 自定义错误处理回调
  */
 function handleErrors(xhr, options = {}) {
-    const settings = {validation: 'field', default: 'swal', ...options};
+    const settings = Object.assign({validation: 'field', default: 'swal'}, options);
 
     if (typeof settings.onError === "function") {
         return settings.onError(xhr);
@@ -249,23 +253,30 @@ function handleErrors(xhr, options = {}) {
 
     // 其它错误
     const errorMessage = xhr.responseJSON?.message || xhr.statusText || (typeof TRANS !== "undefined" ? TRANS.request_failed : "Request failed");
-
+    
+    // 提取公共的 showMessage 调用
+    const showMessageOptions = {title: errorMessage, icon: "error"};
+    
     switch (settings.default) {
         case 'element':
-            settings.element && $(settings.element).html(errorMessage).show();
+            if (settings.element) {
+                $(settings.element).html(errorMessage).show();
+            } else {
+                showMessage(showMessageOptions);
+            }
             break;
 
         case 'field':
             if (settings.form) {
-                showMessage({title: errorMessage, icon: "error"});
+                showMessage(showMessageOptions);
             } else {
-                showMessage({title: errorMessage, icon: "error"});
+                showMessage(showMessageOptions);
             }
             break;
 
         case 'swal':
         default:
-            showMessage({title: errorMessage, icon: "error"});
+            showMessage(showMessageOptions);
             break;
     }
 
@@ -288,11 +299,11 @@ function handleErrors(xhr, options = {}) {
  * @returns {Object} 原始响应
  */
 function handleResponse(response, options = {}) {
-    const settings = {reload: true, showMessage: true, ...options};
+    const settings = Object.assign({reload: true, showMessage: true}, options);
 
     if (response?.status === "success") {
         const successCallback = () => {
-            if (typeof settings.onSuccess === "function") {
+            if (settings.onSuccess) {
                 settings.onSuccess(response);
             } else if (settings.redirectUrl) {
                 window.location.href = settings.redirectUrl;
@@ -313,7 +324,7 @@ function handleResponse(response, options = {}) {
         }
     } else {
         const errorCallback = () => {
-            if (typeof settings.onError === "function") settings.onError(response);
+            if (settings.onError) settings.onError(response);
         };
 
         if (settings.showMessage) {
@@ -323,7 +334,7 @@ function handleResponse(response, options = {}) {
                 showConfirmButton: true,
                 callback: errorCallback
             });
-        } else if (typeof settings.onError === "function") {
+        } else if (settings.onError) {
             settings.onError(response);
         }
     }
@@ -359,7 +370,7 @@ function initAutoSubmitSelects(formSelector = "form:not(.modal-body form)", excl
     });
 
     // 仅绑定在指定表单内的 select
-    $(`${formSelector}`).find("select").not(excludeSelector).on("change", function () {
+    $(formSelector).find("select").not(excludeSelector).on("change", function () {
         $(this).closest("form").trigger("submit");
     });
 }
@@ -376,12 +387,11 @@ function initAutoSubmitSelects(formSelector = "form:not(.modal-body form)", excl
  * @returns {boolean} 是否复制成功
  */
 function copyToClipboard(text, options = {}) {
-    const settings = {
+    const settings = Object.assign({
         showMessage: true,
         successMessage: typeof TRANS !== "undefined" ? TRANS.copy.success : "Copy successful",
-        errorMessage: typeof TRANS !== "undefined" ? TRANS.copy.failed : "Copy failed, please copy manually",
-        ...options
-    };
+        errorMessage: typeof TRANS !== "undefined" ? TRANS.copy.failed : "Copy failed, please copy manually"
+    }, options);
 
     if (navigator.clipboard && window.isSecureContext) {
         navigator.clipboard.writeText(text).then(() => {
@@ -454,9 +464,9 @@ function confirmDelete(url, name, attribute, options = {}) {
         icon: options.icon || "warning",
         text: text,
         html: options.html,
-        onConfirm: function () {
+        onConfirm: () => {
             ajaxDelete(url, {}, {
-                success: function (response) {
+                success: (response) => {
                     handleResponse(response, {
                         reload: options.reload !== false,
                         redirectUrl: options.redirectUrl,

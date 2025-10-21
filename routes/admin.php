@@ -67,9 +67,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::prefix('node')->name('node.')->controller(NodeController::class)->group(function () {
         Route::get('clone/{node}', 'clone')->name('clone'); // 节点流量监控
         Route::get('monitor/{node}', 'nodeMonitor')->name('monitor'); // 节点流量监控
-        Route::post('check/{node}', 'checkNode')->name('check'); // 节点阻断检测
-        Route::get('refreshGeo/{id}', 'refreshGeo')->name('geo'); // 更新节点
-        Route::post('reload/{id}', 'reload')->name('reload'); // 更新节点
+        Route::post('check/{node?}', 'checkNode')->name('check'); // 节点阻断检测
+        Route::post('refreshGeo/{node?}', 'refreshGeo')->name('geo'); // 更新节点地理位置
+        Route::post('reload/{node?}', 'reload')->name('reload'); // 重载节点
         Route::resource('auth', NodeAuthController::class)->except(['create', 'show', 'edit']); // 节点授权相关
         Route::resource('cert', CertController::class)->except('show'); // 节点域名tls相关
     });

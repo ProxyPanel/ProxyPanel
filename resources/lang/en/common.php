@@ -31,6 +31,7 @@ return [
         'failed' => 'Copy failed, please copy manually',
         'success' => 'Copied successfully',
     ],
+    'completed_item' => ':attribute completed',
     'create' => 'Create',
     'created_at' => 'Created At',
     'customize' => 'Customize',

@@ -284,7 +284,6 @@ return [
             'key_placeholder' => '私钥（VNET-V2Ray支持自动签发）',
             'pem_placeholder' => '证书（VNET-V2Ray支持自动签发）',
         ],
-        'connection_test' => '连通性测试',
         'counts' => '共 <code>:num</code> 个节点',
         'info' => [
             'additional_ports_hint' => '需在服务端配置<span class="red-700">additional_ports</span>',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => '刷新全部地理位置',
         'reload' => '重载服务',
         'reload_all' => '重载全部服务',
+        'connection_test' => '连通性测试',
+        'connection_test_all' => '测试全部连通性',
         'reload_confirm' => '确认重载节点服务？',
         'traffic_monitor' => '流量统计',
     ],

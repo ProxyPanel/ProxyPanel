@@ -284,7 +284,6 @@ return [
             'key_placeholder' => 'Privater Schlüssel (VNET-V2Ray unterstützt automatische Ausstellung)',
             'pem_placeholder' => 'Zertifikat (VNET-V2Ray unterstützt automatische Ausstellung)',
         ],
-        'connection_test' => 'Verbindungstest',
         'counts' => 'Insgesamt <code>:num</code> Knoten',
         'info' => [
             'additional_ports_hint' => 'Erfordert serverseitige Konfiguration von <span class="red-700">additional_ports</span>',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => 'Alle Geolokalionen aktualisieren',
         'reload' => 'Service neu laden',
         'reload_all' => 'Alle Services neu laden',
+        'connection_test' => 'Konnektivitätstest',
+        'connection_test_all' => 'Gesamte Konnektivität testen',
         'reload_confirm' => 'Knoten-Service-Neuladung bestätigen?',
         'traffic_monitor' => 'Datenverkehr-Statistiken',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ Administrator-Konto kann nicht gelöscht werden',
         'bulk_account_quantity' => 'Generierungsanzahl',
-        'connection_test' => 'Verbindungstest',
+        'connection_test' => 'Konnektivität prüfen',
         'counts' => 'Insgesamt <code>:num</code> Konten',
         'group' => [
             'counts' => 'Insgesamt <code>:num</code> Gruppen',

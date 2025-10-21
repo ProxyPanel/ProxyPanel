@@ -31,6 +31,7 @@ return [
         'failed' => 'Sao chép thất bại, vui lòng sao chép thủ công',
         'success' => 'Đã sao chép',
     ],
+    'completed_item' => ':attribute đã hoàn thành',
     'create' => 'Tạo',
     'created_at' => 'Thời gian tạo',
     'customize' => 'Tùy chỉnh',

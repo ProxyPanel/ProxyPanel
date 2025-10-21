@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\NodeActions;
 use App\Helpers\DataChart;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
+use App\Jobs\Node\CheckNodeIp;
 use App\Jobs\VNet\reloadNode;
 use App\Models\Country;
 use App\Models\Label;
@@ -13,7 +15,6 @@ use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
-use App\Utils\NetworkDetection;
 use Arr;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -241,58 +242,95 @@ class NodeController extends Controller
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
 
-    public function checkNode(Node $node): JsonResponse
-    { // 节点IP阻断检测
-        foreach ($node->ips() as $ip) {
-            $status = NetworkDetection::networkStatus($ip, $n->port ?? 22);
-            $data[$ip] = [trans("admin.network_status.{$status['icmp']}"), trans("admin.network_status.{$status['tcp']}")];
-        }
+    public function checkNode(?Node $node = null): JsonResponse
+    {
+        // 获取节点集合并预加载IP信息
+        $fields = ['id', 'name', 'is_ddns', 'server', 'ip', 'ipv6', 'port'];
+        $nodes = ($node ? collect([$node]) : Node::whereStatus(1)->select($fields)->get())->map(function ($n) {
+            $n->ips = $n->ips();
 
-        return response()->json(['status' => 'success', 'title' => '['.$node->name.'] '.trans('admin.node.connection_test'), 'message' => $data ?? []]);
+            return $n;
+        });
+
+        // 构建节点列表信息
+        $nodeList = $nodes->mapWithKeys(function ($n) {
+            return [$n->id => ['name' => $n->name, 'ips' => $n->ips]];
+        })->toArray();
+
+        // 立即发送节点列表信息给前端
+        broadcast(new NodeActions('check', ['nodeList' => $nodeList], $node?->id));
+
+        // 异步分发检测任务，提高响应速度
+        $nodes->each(function ($n) use ($node) {
+            dispatch(new CheckNodeIp($n->id, $n->ips, $n->port ?? 22, $node?->id));
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('common.success_item', [
+                'attribute' => $node ? trans('admin.node.connection_test') : trans('admin.node.connection_test_all'),
+            ]),
+        ]);
     }
 
-    public function refreshGeo(?int $id = null): JsonResponse
-    { // 刷新节点地理位置
-        $ret = false;
-        if ($id) {
-            $node = Node::findOrFail($id);
-            $ret = $node->refresh_geo();
-        } else {
-            foreach (Node::whereStatus(1)->get() as $node) {
-                $result = $node->refresh_geo();
-                if ($result && ! $ret) {
-                    $ret = true;
+    public function refreshGeo(?Node $node = null): JsonResponse
+    {
+        $nodes = $node ? collect([$node]) : Node::whereStatus(1)->get();
+
+        // 发送节点列表信息
+        broadcast(new NodeActions('geo', ['nodeList' => $nodes->pluck('name', 'id')], $node?->id));
+
+        // 异步处理地理位置刷新
+        $nodes->each(function ($n) use ($node) {
+            dispatch(static function () use ($n, $node) {
+                $ret = ['nodeId' => $n->id];
+                try {
+                    $ret += $n->refresh_geo();
+                } catch (Exception $e) {
+                    Log::error("节点 [{$n->id}] 刷新地理位置失败: ".$e->getMessage());
+                    $ret += ['error' => $e->getMessage()];
                 }
-            }
-        }
 
-        if ($ret) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
-        }
+                broadcast(new NodeActions('geo', $ret, $node?->id));
+            });
+        });
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('common.success_item', [
+                'attribute' => $node ? trans('admin.node.refresh_geo') : trans('admin.node.refresh_geo_all'),
+            ]),
+        ]);
     }
 
-    public function reload(?int $id = null): JsonResponse
-    { // 重载节点
-        $ret = false;
-        if ($id) {
-            $node = Node::findOrFail($id);
-            $ret = (new reloadNode($node))->handle();
-        } else {
-            foreach (Node::whereStatus(1)->whereType(4)->get() as $node) {
-                $result = (new reloadNode($node))->handle();
-                if ($result && ! $ret) {
-                    $ret = true;
+    public function reload(?Node $node = null): JsonResponse
+    {
+        $nodes = $node ? collect([$node]) : Node::whereStatus(1)->whereType(4)->get();
+
+        // 发送节点列表信息
+        broadcast(new NodeActions('reload', ['nodeList' => $nodes->pluck('name', 'id')], $node?->id));
+
+        // 异步处理节点重载
+        $nodes->each(function ($n) use ($node) {
+            dispatch(static function () use ($n, $node) {
+                $ret = ['nodeId' => $n->id];
+                try {
+                    $ret += (new reloadNode($n))->handle();
+                } catch (Exception $e) {
+                    Log::error("节点 [{$n->id}] 重载失败: ".$e->getMessage());
+                    $ret += ['error' => $e->getMessage()];
                 }
-            }
-        }
 
-        if ($ret) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.node.reload')])]);
-        }
+                broadcast(new NodeActions('reload', $ret, $node?->id));
+            });
+        });
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('admin.node.reload')])]);
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('common.success_item', [
+                'attribute' => $node ? trans('admin.node.reload') : trans('admin.node.reload_all'),
+            ]),
+        ]);
     }
 
     public function nodeMonitor(Node $node): View
