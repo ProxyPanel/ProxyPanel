@@ -31,6 +31,7 @@ return [
         'failed' => '复制失败，请手动执行',
         'success' => '复制成功',
     ],
+    'completed_item' => ':attribute完成',
     'create' => '创建',
     'created_at' => '创建日期',
     'customize' => '自定义',

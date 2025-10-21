@@ -31,6 +31,7 @@ return [
         'failed' => 'کپی ناموفق، لطفاً به صورت دستی انجام دهید',
         'success' => 'کپی موفق',
     ],
+    'completed_item' => ':attribute تکمیل شد',
     'create' => 'ایجاد',
     'created_at' => 'تاریخ ایجاد',
     'customize' => 'سفارشی‌سازی',

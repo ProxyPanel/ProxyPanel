@@ -2,6 +2,7 @@
 
 namespace App\Utils\Library;
 
+use App\Events\PaymentStatusUpdated;
 use App\Models\Payment;
 use App\Models\PaymentCallback;
 use App\Notifications\PaymentReceived;
@@ -84,6 +85,7 @@ class PaymentHelper
             $ret = $payment->order->complete();
             if ($ret) {
                 $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount_tag));
+                broadcast(new PaymentStatusUpdated($tradeNo, 'success', trans('common.success_item', ['attribute' => trans('user.pay')]))); // 触发支付状态更新事件
             }
 
             return $ret;

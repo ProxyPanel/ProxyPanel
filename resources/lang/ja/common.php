@@ -31,6 +31,7 @@ return [
         'failed' => 'コピーに失敗しました。手動でコピーしてください',
         'success' => 'コピーしました',
     ],
+    'completed_item' => ':attribute が完了しました',
     'create' => '作成',
     'created_at' => '作成日時',
     'customize' => 'カスタマイズ',

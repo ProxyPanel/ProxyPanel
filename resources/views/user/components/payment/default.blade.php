@@ -38,59 +38,103 @@
     </div>
 @endsection
 @section('javascript')
+    @vite(['resources/js/app.js'])
     @if ($payment->qr_code && $payment->url)
         <script src="/assets/custom/easy.qrcode.min.js"></script>
         <script>
-            // Options
-            const options = {
+            // Create QRCode Object
+            new QRCode(document.getElementById("qrcode"), {
                 text: @json($payment->url),
                 backgroundImage: '{{ asset($pay_type_icon) }}',
                 autoColor: true
-            };
-
-            // Create QRCode Object
-            new QRCode(document.getElementById("qrcode"), options);
+            });
         </script>
     @endif
 
     <script>
-        // 检查支付单状态
-        let pollingInterval = window.setInterval(function() {
-            ajaxGet('{{ route('orderStatus') }}', {
-                trade_no: '{{ $payment->trade_no }}'
-            }, {
-                success: function(ret) {
-                    if (ret.status === "success" || ret.status === "error") {
-                        window.clearInterval(pollingInterval);
+        @if (config('broadcasting.default') !== 'null')
+            let pollingStarted = false
+            let pollingInterval = null
 
-                        if (ret.status === "success") {
-                            showMessage({
-                                title: ret.message,
-                                icon: "success",
-                                showConfirmButton: false,
-                                callback: function() {
-                                    window.location.href = '{{ route('invoice.index') }}';
-                                }
-                            });
-                        } else if (ret.status === "error") {
-                            showMessage({
-                                title: ret.message,
-                                icon: "error",
-                                showConfirmButton: false,
-                                callback: function() {
-                                    window.location.href = '{{ route('invoice.index') }}';
-                                }
-                            });
-                        }
-                    }
+            function clearAll() {
+                if (pollingInterval) {
+                    clearInterval(pollingInterval);
+                    pollingInterval = null
                 }
-            });
-        }, 3000);
-
-        window.addEventListener('beforeunload', function() {
-            if (pollingInterval) {
-                window.clearInterval(pollingInterval);
             }
-        });
+
+            function disconnectEcho() {
+                try {
+                    if (typeof Echo !== 'undefined') {
+                        Echo.leave(`payment-status.{{ $payment->trade_no }}`)
+                        Echo.connector?.disconnect?.()
+                    }
+                } catch (e) {
+                    console.error('关闭 Echo 失败:', e)
+                }
+            }
+
+            function onFinal(status, message) {
+                clearAll()
+                disconnectEcho()
+                showMessage({
+                    title: message,
+                    icon: status === 'success' ? 'success' : 'error',
+                    showConfirmButton: false,
+                    callback: () => window.location.href = '{{ route('invoice.index') }}'
+                })
+            }
+
+            function startPolling() {
+                if (pollingStarted) return
+                pollingStarted = true
+                disconnectEcho()
+
+                pollingInterval = setInterval(() => {
+                    ajaxGet('{{ route('orderStatus') }}', {
+                        trade_no: '{{ $payment->trade_no }}'
+                    }, {
+                        success: ret => {
+                            if (['success', 'error'].includes(ret.status)) {
+                                onFinal(ret.status, ret.message)
+                            }
+                        },
+                        error: () => onFinal('error', "{{ trans('common.request_failed') }}")
+                    })
+                }, 3000)
+            }
+
+            function setupPaymentListener() {
+                if (typeof Echo === 'undefined' || typeof Pusher === 'undefined') {
+                    startPolling()
+                    return
+                }
+                try {
+                    const conn = Echo.connector?.pusher?.connection || Echo.connector?.socket
+                    if (conn) {
+                        conn.bind?.('state_change', s => {
+                            if (['disconnected', 'failed', 'unavailable'].includes(s.current)) startPolling()
+                        })
+                        conn.on?.('disconnect', () => startPolling())
+                        conn.on?.('error', () => startPolling())
+                    }
+
+                    Echo.channel('payment-status.{{ $payment->trade_no }}')
+                        .listen('.payment.status.updated', (e) => {
+                            if (['success', 'error'].includes(e.status)) {
+                                onFinal(e.status, e.message)
+                            }
+                        })
+
+                } catch (e) {
+                    console.error('Echo 初始化失败:', e)
+                    startPolling()
+                }
+            }
+
+            window.addEventListener('load', setupPaymentListener)
+        @else
+            startPolling()
+        @endif
     </script>
 @endsection

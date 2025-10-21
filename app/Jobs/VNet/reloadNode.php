@@ -33,25 +33,27 @@ class reloadNode implements ShouldQueue
         }
     }
 
-    public function handle(): bool
+    public function handle(): array
     {
         foreach ($this->nodes as $node) {
             $data = $node->getSSRConfig();
 
             if ($node->is_ddns) {
+                $result = ['list' => $node->server];
                 if (! $this->send($node->server.':'.$node->push_port, $node->auth->secret, $data)) {
-                    $result = false;
+                    $result['error'] = [$node->server];
                 }
             } else { // 多IP支持
-                foreach ($node->ips() as $ip) {
+                $result = ['list' => $node->ips()];
+                foreach ($result['list'] as $ip) {
                     if (! $this->send($ip.':'.$node->push_port, $node->auth->secret, $data)) {
-                        $result = false;
+                        $result['error'][] = $ip;
                     }
                 }
             }
         }
 
-        return $result ?? true;
+        return $result ?? [];
     }
 
     public function send(string $host, string $secret, array $data): bool

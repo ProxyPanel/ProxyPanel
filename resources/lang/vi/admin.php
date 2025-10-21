@@ -284,7 +284,6 @@ return [
             'key_placeholder' => 'Khóa riêng (VNET-V2Ray hỗ trợ tự động cấp phát)',
             'pem_placeholder' => 'Chứng chỉ (VNET-V2Ray hỗ trợ tự động cấp phát)',
         ],
-        'connection_test' => 'Kiểm tra kết nối',
         'counts' => 'Tổng <code>:num</code> nút',
         'info' => [
             'additional_ports_hint' => 'Cần cài đặt <span class="red-700">additional_ports</span> phía máy chủ',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => 'Cập nhật tất cả thông tin vị trí địa lý',
         'reload' => 'Reload dịch vụ',
         'reload_all' => 'Reload tất cả dịch vụ',
+        'connection_test' => 'Kiểm tra khả năng kết nối',
+        'connection_test_all' => 'Kiểm tra toàn bộ khả năng kết nối',
         'reload_confirm' => 'Xác nhận reload dịch vụ nút?',
         'traffic_monitor' => 'Thống kê lưu lượng',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ Không thể xóa tài khoản quản trị viên',
         'bulk_account_quantity' => 'Số lượng tạo',
-        'connection_test' => 'Kiểm tra kết nối',
+        'connection_test' => 'Kiểm tra khả năng kết nối',
         'counts' => 'Tổng <code>:num</code> tài khoản',
         'group' => [
             'counts' => 'Tổng <code>:num</code> nhóm',

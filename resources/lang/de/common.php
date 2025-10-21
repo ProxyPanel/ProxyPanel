@@ -31,6 +31,7 @@ return [
         'failed' => 'Kopieren fehlgeschlagen, bitte manuell ausführen',
         'success' => 'Erfolgreich kopiert',
     ],
+    'completed_item' => ':attribute abgeschlossen',
     'create' => 'Erstellen',
     'created_at' => 'Erstellt am',
     'customize' => 'Anpassen',

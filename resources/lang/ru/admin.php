@@ -284,7 +284,6 @@ return [
             'key_placeholder' => 'Приватный ключ (VNET-V2Ray поддерживает автовыпуск)',
             'pem_placeholder' => 'Сертификат (VNET-V2Ray поддерживает автовыпуск)',
         ],
-        'connection_test' => 'Тест подключения',
         'counts' => 'Всего <code>:num</code> узлов',
         'info' => [
             'additional_ports_hint' => 'Требуется настройка <span class="red-700">additional_ports</span> на сервере',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => 'Обновить все геолокации',
         'reload' => 'Перезагрузить сервис',
         'reload_all' => 'Перезагрузить все сервисы',
+        'connection_test' => 'Тест связности',
+        'connection_test_all' => 'Проверить всю связность',
         'reload_confirm' => 'Подтвердить перезагрузку сервиса узла?',
         'traffic_monitor' => 'Статистика трафика',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ Аккаунты администраторов нельзя удалять',
         'bulk_account_quantity' => 'Количество для генерации',
-        'connection_test' => 'Тест подключения',
+        'connection_test' => 'Проверить связность',
         'counts' => 'Всего <code>:num</code> аккаунтов',
         'group' => [
             'counts' => 'Всего <code>:num</code> групп',

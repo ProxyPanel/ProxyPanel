@@ -284,7 +284,6 @@ return [
             'key_placeholder' => '개인키(VNET-V2Ray는 자동 발급 지원)',
             'pem_placeholder' => '인증서(VNET-V2Ray는 자동 발급 지원)',
         ],
-        'connection_test' => '연결 테스트',
         'counts' => '총 <code>:num</code>개의 노드',
         'info' => [
             'additional_ports_hint' => '서버 측에서 <span class="red-700">additional_ports</span> 설정 필요',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => '모든 지리 위치 정보 업데이트',
         'reload' => '서비스 재로드',
         'reload_all' => '모든 서비스 재로드',
+        'connection_test' => '연결성 테스트',
+        'connection_test_all' => '전체 연결성 테스트',
         'reload_confirm' => '노드 서비스 재로드를 확인하시겠습니까?',
         'traffic_monitor' => '트래픽 통계',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ 관리자 계정은 삭제할 수 없습니다',
         'bulk_account_quantity' => '생성 수량',
-        'connection_test' => '연결 테스트',
+        'connection_test' => '연결성 확인',
         'counts' => '총 <code>:num</code>개의 계정',
         'group' => [
             'counts' => '총 <code>:num</code>개의 그룹',

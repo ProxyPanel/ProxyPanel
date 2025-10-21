@@ -284,7 +284,6 @@ return [
             'key_placeholder' => 'Private key (auto-issued for VNET-V2Ray)',
             'pem_placeholder' => 'Certificate (auto-issued for VNET-V2Ray)',
         ],
-        'connection_test' => 'Connectivity test',
         'counts' => 'Total <code>:num</code> nodes',
         'info' => [
             'additional_ports_hint' => 'If enabled, please configure server-side <span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span> settings.',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => 'Refresh all geolocations',
         'reload' => 'Reload service',
         'reload_all' => 'Reload all services',
+        'connection_test' => 'Connectivity test',
+        'connection_test_all' => 'Test All Connectivity',
         'reload_confirm' => 'Confirm node service reload?',
         'traffic_monitor' => 'Traffic statistics',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ Admin accounts cannot be deleted',
         'bulk_account_quantity' => 'Generate quantity',
-        'connection_test' => 'Connection test',
+        'connection_test' => 'Check Connectivity',
         'counts' => 'Total <code>:num</code> accounts',
         'group' => [
             'counts' => 'Total <code>:num</code> groups',

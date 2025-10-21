@@ -20,14 +20,19 @@
                     <div class="btn-group">
                         @can('admin.node.reload')
                             @if ($nodeList->where('type', 4)->count())
-                                <button class="btn btn-info" type="button" onclick="reload(0)">
+                                <button class="btn btn-info" type="button" onclick="reload()">
                                     <i class="icon wb-reload" id="reload_0" aria-hidden="true"></i> {{ trans('admin.node.reload_all') }}
                                 </button>
                             @endif
                         @endcan
                         @can('admin.node.geo')
-                            <button class="btn btn-outline-default" type="button" onclick="refreshGeo(0)">
+                            <button class="btn btn-outline-default" type="button" onclick="handleNodeAction('geo')">
                                 <i class="icon wb-map" id="geo_0" aria-hidden="true"></i> {{ trans('admin.node.refresh_geo_all') }}
+                            </button>
+                        @endcan
+                        @can('admin.node.check')
+                            <button class="btn btn-outline-primary" type="button" onclick="handleNodeAction('check')">
+                                <i class="icon wb-signal" id="check_all_nodes" aria-hidden="true"></i> {{ trans('admin.node.connection_test_all') }}
                             </button>
                         @endcan
                         @can('admin.node.create')
@@ -105,17 +110,17 @@
                                     @endcan
                                     <hr />
                                     @can('admin.node.geo')
-                                        <x-ui.dropdown-item id="geo{{ $node->id }}" url="javascript:refreshGeo('{{ $node->id }}')" icon="wb-map"
+                                        <x-ui.dropdown-item id="geo_{{ $node->id }}" url="javascript:handleNodeAction('geo', '{{ $node->id }}')" icon="wb-map"
                                                             :text="trans('admin.node.refresh_geo')" />
                                     @endcan
                                     @can('admin.node.check')
-                                        <x-ui.dropdown-item id="node_{{ $node->id }}" url="javascript:checkNode('{{ $node->id }}')" icon="wb-signal"
-                                                            :text="trans('admin.node.connection_test')" />
+                                        <x-ui.dropdown-item id="node_{{ $node->id }}" url="javascript:handleNodeAction('check', '{{ $node->id }}')"
+                                                            icon="wb-signal" :text="trans('admin.node.connection_test')" />
                                     @endcan
                                     @if ($node->type === 4)
                                         @can('admin.node.reload')
                                             <hr />
-                                            <x-ui.dropdown-item id="reload_{{ $node->id }}" url="javascript:reload('{{ $node->id }}')" icon="wb-reload"
+                                            <x-ui.dropdown-item id="reload_{{ $node->id }}" url="javascript:reload({{ $node->id }})" icon="wb-reload"
                                                                 :text="trans('admin.node.reload')" />
                                         @endcan
                                     @endif
@@ -166,12 +171,12 @@
                                         @endcan
                                         <hr />
                                         @can('admin.node.geo')
-                                            <x-ui.dropdown-item id="geo_{{ $childNode->id }}" url="javascript:refreshGeo('{{ $childNode->id }}')" icon="wb-map"
-                                                                :text="trans('admin.node.refresh_geo')" />
+                                            <x-ui.dropdown-item id="geo_{{ $childNode->id }}" url="javascript:handleNodeAction('geo', '{{ $childNode->id }}')"
+                                                                icon="wb-map" :text="trans('admin.node.refresh_geo')" />
                                         @endcan
                                         @can('admin.node.check')
-                                            <x-ui.dropdown-item id="node_{{ $childNode->id }}" url="javascript:checkNode('{{ $childNode->id }}')" icon="wb-signal"
-                                                                :text="trans('admin.node.connection_test')" />
+                                            <x-ui.dropdown-item id="node_{{ $childNode->id }}" url="javascript:handleNodeAction('check', '{{ $childNode->id }}')"
+                                                                icon="wb-signal" :text="trans('admin.node.connection_test')" />
                                         @endcan
                                     </x-ui.dropdown>
                                 @endcan
@@ -182,75 +187,475 @@
             </x-slot:tbody>
         </x-admin.table-panel>
     </div>
+
+    <!-- 节点检测结果模态框 -->
+    <x-ui.modal id="nodeCheckModal" :title="trans('admin.node.connection_test')" size="lg">
+    </x-ui.modal>
+
+    <!-- 节点刷新地理位置结果模态框 -->
+    <x-ui.modal id="nodeGeoRefreshModal" :title="trans('admin.node.refresh_geo')" size="lg">
+    </x-ui.modal>
+
+    <!-- 节点重载结果模态框 -->
+    <x-ui.modal id="nodeReloadModal" :title="trans('admin.node.reload')" size="lg">
+    </x-ui.modal>
 @endsection
 @push('javascript')
+    @vite(['resources/js/app.js'])
     <script>
-        @can('admin.node.check')
-            function checkNode(id) { // 节点连通性测试
-                const $element = $(`#node_${id}`);
+        // 全局状态
+        const state = {
+            actionType: null, // 'check' | 'geo' | 'reload'
+            actionId: null, // 当前操作针对的节点 id（null/'' 表示批量）
+            channel: null,
+            results: {}, // 按 nodeId 存储节点信息与已收到的数据
+            finished: {}, // 标记 nodeId 是否完成
+            spinnerFallbacks: {}, // 防止无限 spinner 的后备定时器
+            errorDisplayed: false
+        };
 
-                ajaxPost(jsRoute('{{ route('admin.node.check', 'PLACEHOLDER') }}', id), {}, {
-                    beforeSend: function() {
-                        $element.removeClass("wb-signal").addClass("wb-loop icon-spin");
-                    },
-                    success: function(ret) {
-                        if (ret.status === "success") {
-                            let str = "";
-                            for (let i in ret.message) {
-                                str += "<tr><td>" + i + "</td><td>" + ret.message[i][0] + "</td><td>" + ret.message[i][1] +
-                                    "</td></tr>";
-                            }
-                            showMessage({
-                                title: ret.title,
-                                html: "<table class=\"my-20\"><thead class=\"thead-default\"><tr><th> IP </th><th> ICMP </th> <th> TCP </th></thead><tbody>" +
-                                    str + "</tbody></table>",
-                                autoClose: false
-                            });
-                        } else {
-                            showMessage({
-                                title: ret.title,
-                                message: ret.message,
-                                icon: "error"
-                            });
-                        }
-                    },
-                    complete: function() {
-                        $element.removeClass("wb-loop icon-spin").addClass("wb-signal");
+        const networkStatus = @json(trans('admin.network_status'));
+
+        // Reverb 简化管理（保留必须的健壮性）
+        const Reverb = {
+            get conn() {
+                return Echo?.connector?.pusher?.connection || Echo?.connector?.socket || null;
+            },
+            isConnected() {
+                const c = this.conn;
+                if (!c) return false;
+                const s = c.state?.current ?? c.readyState;
+                return s === 'connected' || s === 'open' || s === 1;
+            },
+            handleError(msg) {
+                if (!state.errorDisplayed && !this.isConnected()) {
+                    showMessage({
+                        title: '{{ trans('common.error') }}',
+                        message: msg,
+                        icon: 'error',
+                        showConfirmButton: true
+                    });
+                    state.errorDisplayed = true;
+                }
+            },
+            clearError() {
+                state.errorDisplayed = false;
+            },
+            cleanupChannel() {
+                if (state.channel) {
+                    try {
+                        state.channel.stopListening('.node.check.result');
+                        state.channel.stopListening('.node.geo.refresh.result');
+                        state.channel.stopListening('.node.reload.result');
+                    } catch (e) {
+                        /* ignore */
                     }
-                });
+                    state.channel = null;
+                }
+            },
+            setup(channelName, type, eventName, handler) {
+                // 只在真正需要切换时 cleanup（外层调用已控制）
+                if (!this.conn) {
+                    this.handleError('WebSocket is not available. Please make sure the Reverb server is running and properly configured.');
+                    return false;
+                }
+
+                try {
+                    // 订阅频道并监听事件
+                    state.channel = Echo.channel(channelName);
+                    state.channel.listen(eventName, handler);
+                    // 连接事件绑定：连接成功后清除 error 标记
+                    const c = this.conn;
+                    if (c?.bind) {
+                        c.bind && c.bind('connected', () => this.clearError());
+                        c.bind && c.bind('disconnected', () => this.handleError('WebSocket connection lost.'));
+                    }
+                    return true;
+                } catch (e) {
+                    // 只有在确实不是已连接时才提示
+                    if (!this.isConnected()) {
+                        this.handleError('Broadcasting is not set-up or connection failed. Error: ' + (e && e.message || e));
+                        return false;
+                    }
+                    return true;
+                }
             }
-        @endcan
+        };
+
+        // 配置表：保留原按钮 id 规则 & 原模态结构
+        const ACTION_CFG = {
+            check: {
+                icon: 'wb-signal',
+                routeTpl: '{{ route('admin.node.check', 'PLACEHOLDER') }}',
+                event: '.node.actions',
+                modal: '#nodeCheckModal',
+                btnSelector: (id) => id ? $(`#node_${id}`) : $('#check_all_nodes'),
+                buildUI: buildCheckUI,
+                updateUI: updateCheckUI,
+                isNodeDone: function(node) {
+                    // node.ips 是 array，node.data 是按 ip 存放结果
+                    if (!Array.isArray(node.ips)) return !!node.data; // 没有 ip 列表的认为收到数据就算
+                    const got = Object.keys(node.data || {}).length;
+                    return got >= node.ips.length;
+                },
+                successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.connection_test')]) }}'
+            },
+            geo: {
+                icon: 'wb-map',
+                routeTpl: '{{ route('admin.node.geo', 'PLACEHOLDER') }}',
+                event: '.node.actions',
+                modal: '#nodeGeoRefreshModal',
+                btnSelector: (id) => id ? $(`#geo_${id}`) : $('#geo_0'),
+                buildUI: buildGeoUI,
+                updateUI: updateGeoUI,
+                isNodeDone: function(node) {
+                    return !!(node.data && Object.keys(node.data).length > 0);
+                },
+                successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.refresh_geo')]) }}'
+            },
+            reload: {
+                icon: 'wb-reload',
+                routeTpl: '{{ route('admin.node.reload', 'PLACEHOLDER') }}',
+                event: '.node.actions',
+                modal: '#nodeReloadModal',
+                btnSelector: (id) => id ? $(`#reload_${id}`) : $(`#reload_0`),
+                buildUI: buildReloadUI,
+                updateUI: updateReloadUI,
+                isNodeDone: function(node) {
+                    // 重载有 list 或 error 认为完成
+                    return !!(node.data && (Array.isArray(node.data.list) || Array.isArray(node.data.error) || node.data.list || node.data.error));
+                },
+                successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.reload')]) }}'
+            }
+        };
+
+        // 清理（仅用于开始新操作时）
+        function cleanupPreviousConnection() {
+            state.results = {};
+            state.finished = {};
+            state.actionType = null;
+            state.actionId = null;
+            Reverb.cleanupChannel?.();
+            // 不清理模态内容，这样用户关闭/打开 modal 不会影响正在进行的内容
+        }
+
+        // 统一设置 spinner（显示/隐藏）
+        function setSpinner($el, iconClass, on) {
+            if (!$el || !$el.length) return;
+            if (on) {
+                $el.removeClass(iconClass).addClass('wb-loop icon-spin');
+            } else {
+                $el.removeClass('wb-loop icon-spin').addClass(iconClass);
+            }
+        }
+
+        // 启动后备定时器（防止 spinner 卡住）
+        function startSpinnerFallback(key, $el, iconClass) {
+            clearSpinnerFallback(key);
+            state.spinnerFallbacks[key] = setTimeout(() => {
+                setSpinner($el, iconClass, false);
+                toastr.warning('{{ trans('A Timeout Occurred') }}');
+                delete state.spinnerFallbacks[key];
+            }, 120000); // 2 分钟兜底
+        }
+
+        function clearSpinnerFallback(key) {
+            if (state.spinnerFallbacks[key]) {
+                clearTimeout(state.spinnerFallbacks[key]);
+                delete state.spinnerFallbacks[key];
+            }
+        }
+
+        // 通用操作入口
+        function handleNodeAction(type, id) {
+            const cfg = ACTION_CFG[type];
+            if (!cfg) return;
+
+            const $btn = cfg.btnSelector(id);
+            const channelName = id ? `node.${type}.${id}` : `node.${type}.all`;
+            const routeTpl = cfg.routeTpl;
+
+            // 如果相同操作正在进行并且已有结果缓存，则仅打开 modal（不重复发起）
+            if (state.actionType === type && String(state.actionId) === String(id) && Object.keys(state.results).length > 0) {
+                $(cfg.modal).modal('show');
+                return;
+            }
+
+            // 开始新操作：清理之前的连接/缓存（这是你希望的行为）
+            cleanupPreviousConnection();
+            state.actionType = type;
+            state.actionId = id;
+            state.results = {};
+            state.finished = {};
+
+            // 启动 spinner（保持加载直到我们检测到完成）
+            setSpinner($btn, cfg.icon, true);
+            // 启动后备定时器
+            const fallbackKey = `${type}_${id ?? 'all'}`;
+            startSpinnerFallback(fallbackKey, $btn, cfg.icon);
+
+            // 订阅广播事件
+            const ok = Reverb.setup(channelName, type, cfg.event, (e) => handleResult(e.data || e, type, id, $btn));
+            if (!ok) {
+                // 订阅失败：恢复按钮状态
+                setSpinner($btn, cfg.icon, false);
+                clearSpinnerFallback(fallbackKey);
+                return;
+            }
+
+            // 触发后端接口（Ajax）
+            ajaxPost(jsRoute(routeTpl, id), {}, {
+                beforeSend: function() {
+                    // spinner 已经设置
+                },
+                success: function(ret) {
+                    // 不在此处处理最终结果，交由广播处理（避免 race）
+                },
+                error: function(xhr, status, error) {
+                    if (!Reverb.isConnected()) {
+                        Reverb.handleError('WebSocket is not available. Please make sure the Reverb server is running.');
+                    } else {
+                        showMessage({
+                            title: '{{ trans('common.error') }}',
+                            message: `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`,
+                            icon: 'error',
+                            showConfirmButton: true
+                        });
+                    }
+                    // 出错时恢复 spinner
+                    setSpinner($btn, cfg.icon, false);
+                    clearSpinnerFallback(fallbackKey);
+                }
+            });
+        }
+
+        // 处理广播数据的统一入口
+        function handleResult(e, type, id, $btn) {
+            const cfg = ACTION_CFG[type];
+            if (!cfg) return;
+
+            // 如果包含 nodeList：构建初始 UI 框架
+            if (e.nodeList) {
+                Object.keys(e.nodeList).forEach(nodeId => {
+                    const nodeInfo = e.nodeList[nodeId];
+                    state.results[nodeId] = {
+                        name: (typeof nodeInfo === 'string') ? nodeInfo : (nodeInfo.name || ''),
+                        ips: (nodeInfo.ips && Array.isArray(nodeInfo.ips)) ? nodeInfo.ips : (nodeInfo.ips || []),
+                        data: {}
+                    };
+                });
+                // 构建并显示 modal
+                cfg.buildUI();
+                return;
+            }
+
+            // 处理详细数据
+            try {
+                const nodeId = e.nodeId;
+                if (!nodeId || !state.results[nodeId]) return;
+
+                if (type === 'check' && (e.icmp !== undefined || e.tcp !== undefined)) {
+                    if (!state.results[nodeId].data[e.ip]) {
+                        state.results[nodeId].data[e.ip] = {};
+                    }
+                    state.results[nodeId].data[e.ip] = {
+                        icmp: e.icmp,
+                        tcp: e.tcp
+                    };
+                    cfg.updateUI(nodeId, e);
+                } else if (type === 'geo' && e) {
+                    state.results[nodeId].data = e;
+                    cfg.updateUI(nodeId, e);
+                } else if (type === 'reload' && e) {
+                    state.results[nodeId].data = e;
+                    cfg.updateUI(nodeId, e);
+                }
+
+                // 检查是否所有节点都完成
+                const allDone = Object.keys(state.results).length > 0 &&
+                    Object.keys(state.results).every(nodeId => cfg.isNodeDone(state.results[nodeId]));
+
+                if (allDone) {
+                    const fallbackKey = `${type}_${id ?? 'all'}`;
+                    setSpinner($btn, cfg.icon, false);
+                    clearSpinnerFallback(fallbackKey);
+                    toastr.success(cfg.successMsg);
+                }
+            } catch (err) {
+                console.error('handleResult error', err);
+            }
+        }
+
+        // check UI
+        function buildCheckUI() {
+            $('#nodeCheckModal').modal('show');
+            const body = document.querySelector('#nodeCheckModal .modal-body');
+            let html = '<div class="row">';
+            const nodeIds = Object.keys(state.results);
+            const columnClass = nodeIds.length > 1 ? 'col-md-6' : 'col-12';
+
+            nodeIds.forEach(nodeId => {
+                const node = state.results[nodeId];
+                html += `
+                    <div class="${columnClass}" data-node-id="${nodeId}">
+                        <h5>${node.name}</h5>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('user.attribute.ip') }}</th>
+                                    <th>ICMP</th>
+                                    <th>TCP</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+                if (Array.isArray(node.ips)) {
+                    node.ips.forEach(ip => {
+                        html += `
+                            <tr data-ip="${ip}">
+                                <td>${ip}</td>
+                                <td><i class="wb-loop icon-spin"></i></td>
+                                <td><i class="wb-loop icon-spin"></i></td>
+                            </tr>`;
+                    });
+                }
+                html += `</tbody></table></div>`;
+            });
+            html += '</div>';
+            body.innerHTML = html;
+        }
+
+        function updateCheckUI(nodeId, data) {
+            try {
+                // 使用 data-* 属性选择器定位元素
+                const row = document.querySelector(`#nodeCheckModal div[data-node-id="${nodeId}"] tr[data-ip="${data.ip}"]`);
+                if (!row) return;
+
+                // 使用 nth-child 选择器定位 td 元素
+                const icmpEl = row.querySelector('td:nth-child(2)');
+                const tcpEl = row.querySelector('td:nth-child(3)');
+
+                if (icmpEl) icmpEl.innerHTML = networkStatus[data.icmp] || networkStatus[4];
+                if (tcpEl) tcpEl.innerHTML = networkStatus[data.tcp] || networkStatus[4];
+            } catch (e) {}
+        }
+
+        // geo UI
+        function buildGeoUI() {
+            $('#nodeGeoRefreshModal').modal('show');
+            const body = document.querySelector('#nodeGeoRefreshModal .modal-body');
+            let html = `<table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('validation.attributes.name') }}</th>
+                                    <th>{{ trans('common.status.attribute') }}</th>
+                                    <th>{{ trans('validation.attributes.message') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            Object.keys(state.results).forEach(nodeId => {
+                const node = state.results[nodeId];
+                html += `
+                    <tr data-node-id="${nodeId}">
+                        <td>${node.name}</td>
+                        <td><i class="wb-loop icon-spin"></i></td>
+                        <td><i class="wb-loop icon-spin"></i></td>
+                    </tr>`;
+            });
+            html += '</tbody></table></div>';
+            body.innerHTML = html;
+        }
+
+        function updateGeoUI(nodeId, data) {
+            try {
+                const row = document.querySelector(`#nodeGeoRefreshModal tr[data-node-id="${nodeId}"]`);
+                if (!row) return;
+
+                const statusEl = row.querySelector('td:nth-child(2)');
+                const infoEl = row.querySelector('td:nth-child(3)');
+                if (!statusEl || !infoEl) return;
+
+                let status = '❌';
+                let info = data.error || '-';
+
+                if (!data.error && Array.isArray(data.original) && Array.isArray(data.update)) {
+                    const filteredOriginal = data.original.filter(v => v !== null);
+                    const filteredUpdate = data.update.filter(v => v !== null);
+                    const isSame = filteredOriginal.length === filteredUpdate.length &&
+                        filteredOriginal.every((val, idx) => {
+                            const n1 = typeof val === 'number' ? val : parseFloat(val);
+                            const n2 = typeof filteredUpdate[idx] === 'number' ? filteredUpdate[idx] : parseFloat(filteredUpdate[idx]);
+                            if (!isNaN(n1) && !isNaN(n2)) return Math.abs(n1 - n2) < 1e-2;
+                            return val === filteredUpdate[idx];
+                        });
+                    status = '✔️';
+                    info = isSame ? '{{ trans('Not Modified') }}' :
+                        `{{ trans('common.update') }}: [${filteredOriginal.join(', ') || '-'}] => [${filteredUpdate.join(', ') || '-'}]`;
+                }
+
+                statusEl.innerHTML = status;
+                infoEl.innerHTML = info;
+            } catch (e) {}
+        }
+
+        // reload UI
+        function buildReloadUI() {
+            $('#nodeReloadModal').modal('show');
+            const body = document.querySelector('#nodeReloadModal .modal-body');
+            let html = `<table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ trans('validation.attributes.name') }}</th>
+                            <th>{{ trans('common.status.attribute') }}</th>
+                            <th>{{ trans('validation.attributes.message') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            Object.keys(state.results).forEach(nodeId => {
+                const node = state.results[nodeId];
+                html += `<tr data-node-id="${nodeId}">
+                <td>${node.name}</td>
+                <td><i class="wb-loop icon-spin"></i></td>
+                <td><i class="wb-loop icon-spin"></i></td>
+            </tr>`;
+            });
+            html += '</tbody></table>';
+            body.innerHTML = html;
+        }
+
+        function updateReloadUI(nodeId, data) {
+            try {
+                const row = document.querySelector(`#nodeReloadModal tr[data-node-id="${nodeId}"]`);
+                if (!row) return;
+
+                const statusEl = row.querySelector('td:nth-child(2)');
+                const infoEl = row.querySelector('td:nth-child(3)');
+
+                if (!statusEl || !infoEl) return;
+
+                // 处理状态显示
+                let status = '❌'; // 默认失败状态
+                let info = '';
+
+                if (!data.error || (Array.isArray(data.error) && data.error.length === 0)) {
+                    status = '✔️';
+                } else if (Array.isArray(data.error) && data.error.length > 0) {
+                    // 有错误信息
+                    info = `{{ trans('common.error') }}: ${data.error.join(', ')}`;
+                }
+
+                statusEl.innerHTML = status;
+                infoEl.innerHTML = info;
+            } catch (e) {}
+        }
 
         @can('admin.node.reload')
-            function reload(id) { // 发送节点重载请求
-                const $element = $(`#reload_${id}`);
-
+            function reload(id = null) {
                 showConfirm({
                     text: '{{ trans('admin.node.reload_confirm') }}',
                     onConfirm: function() {
-                        ajaxPost(jsRoute('{{ route('admin.node.reload', 'PLACEHOLDER') }}', id), {}, {
-                            beforeSend: function() {
-                                $element.removeClass("wb-reload").addClass("wb-loop icon-spin");
-                            },
-                            complete: function() {
-                                $element.removeClass("wb-loop icon-spin").addClass("wb-reload");
-                            }
-                        });
-                    }
-                });
-            }
-        @endcan
-
-        @can('admin.node.geo')
-            function refreshGeo(id) { // 刷新节点地理信息
-                const $element = $(`#geo_${id}`);
-
-                ajaxGet(jsRoute('{{ route('admin.node.geo', 'PLACEHOLDER') }}', id), {}, {
-                    beforeSend: function() {
-                        $element.removeClass("wb-map").addClass("wb-loop icon-spin");
-                    },
-                    complete: function() {
-                        $element.removeClass("wb-loop icon-spin").addClass("wb-map");
+                        handleNodeAction('reload', id);
                     }
                 });
             }

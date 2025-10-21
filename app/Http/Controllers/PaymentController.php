@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PaymentStatusUpdated;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
@@ -53,10 +54,16 @@ class PaymentController extends Controller
         $payment = Payment::whereTradeNo($request->input('trade_no'))->first();
         if ($payment) {
             if ($payment->status === 1) {
+                // 触发支付成功事件
+                broadcast(new PaymentStatusUpdated($payment->trade_no, 'success', trans('common.success_item', ['attribute' => trans('user.pay')])));
+
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.pay')])]);
             }
 
             if ($payment->status === -1) {
+                // 触发支付失败事件
+                broadcast(new PaymentStatusUpdated($payment->trade_no, 'error', trans('user.payment.order_creation.order_timeout')));
+
                 return response()->json(['status' => 'error', 'message' => trans('user.payment.order_creation.order_timeout')]);
             }
 

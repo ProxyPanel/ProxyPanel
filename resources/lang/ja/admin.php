@@ -284,7 +284,6 @@ return [
             'key_placeholder' => '秘密鍵（VNET-V2Rayは自動発行対応）',
             'pem_placeholder' => '証明書（VNET-V2Rayは自動発行対応）',
         ],
-        'connection_test' => '接続テスト',
         'counts' => '合計 <code>:num</code> 個のノード',
         'info' => [
             'additional_ports_hint' => 'サーバー側で<span class="red-700">additional_ports</span>の設定が必要',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => '全地理位置情報更新',
         'reload' => 'サービス再読み込み',
         'reload_all' => '全サービス再読み込み',
+        'connection_test' => '接続性テスト',
+        'connection_test_all' => '全接続性のテスト',
         'reload_confirm' => 'ノードサービスの再読み込みを確認しますか？',
         'traffic_monitor' => 'トラフィック統計',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ 管理者アカウントは削除できません',
         'bulk_account_quantity' => '生成数量',
-        'connection_test' => '接続テスト',
+        'connection_test' => '接続性の確認',
         'counts' => '合計 <code>:num</code> 個のアカウント',
         'group' => [
             'counts' => '合計 <code>:num</code> 個のグループ',

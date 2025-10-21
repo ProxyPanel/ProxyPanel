@@ -31,6 +31,7 @@ return [
         'failed' => '복사에 실패했습니다. 수동으로 복사하세요',
         'success' => '복사했습니다',
     ],
+    'completed_item' => ':attribute 완료됨',
     'create' => '생성',
     'created_at' => '생성일시',
     'customize' => '사용자 정의',

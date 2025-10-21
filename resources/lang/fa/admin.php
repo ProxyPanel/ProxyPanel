@@ -284,7 +284,6 @@ return [
             'key_placeholder' => 'کلید خصوصی (صدور خودکار برای VNET-V2Ray)',
             'pem_placeholder' => 'گواهی (صدور خودکار برای VNET-V2Ray)',
         ],
-        'connection_test' => 'تست اتصال',
         'counts' => 'مجموع <code>:num</code> نود',
         'info' => [
             'additional_ports_hint' => 'اگر فعال شود، لطفاً تنظیمات <span class="red-700"><a href="javascript:showTnc();">additional_ports</a></span> سمت سرور را پیکربندی کنید.',
@@ -336,6 +335,8 @@ return [
         'refresh_geo_all' => 'تازه‌سازی همه موقعیت‌های جغرافیایی',
         'reload' => 'بارگیری مجدد سرویس',
         'reload_all' => 'بارگیری مجدد همه سرویس‌ها',
+        'connection_test' => 'آزمون اتصال‌پذیری',
+        'connection_test_all' => 'آزمون تمام اتصال‌پذیری‌ها',
         'reload_confirm' => 'تأیید بارگیری مجدد سرویس نود؟',
         'traffic_monitor' => 'آمار ترافیک',
     ],
@@ -679,7 +680,7 @@ return [
     'user' => [
         'admin_deletion' => '⚠️ حساب‌های ادمین قابل حذف نیستند',
         'bulk_account_quantity' => 'تعداد تولید',
-        'connection_test' => 'تست اتصال',
+        'connection_test' => 'بررسی اتصال‌پذیری',
         'counts' => 'مجموع <code>:num</code> حساب',
         'group' => [
             'counts' => 'مجموع <code>:num</code> گروه',
