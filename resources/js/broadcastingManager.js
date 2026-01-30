@@ -8,7 +8,7 @@ class BroadcastingManager {
         this.channels = new Map();
         this.pollingIntervals = new Map();
         this.errorDisplayed = false;
-        this.connectionState = 'unknown';
+        this.connectionState = "unknown";
     }
 
     /**
@@ -16,7 +16,7 @@ class BroadcastingManager {
      * @returns {boolean}
      */
     isEchoAvailable() {
-        return typeof Echo !== 'undefined' && Echo !== null;
+        return typeof Echo !== "undefined" && Echo !== null;
     }
 
     /**
@@ -25,12 +25,12 @@ class BroadcastingManager {
      */
     isConnected() {
         if (!this.isEchoAvailable()) return false;
-        
+
         const conn = this.getConnection();
         if (!conn) return false;
-        
+
         const state = conn.state?.current ?? conn.readyState;
-        return state === 'connected' || state === 'open' || state === 1;
+        return state === "connected" || state === "open" || state === 1;
     }
 
     /**
@@ -39,21 +39,23 @@ class BroadcastingManager {
      */
     getConnection() {
         if (!this.isEchoAvailable()) return null;
-        return Echo.connector?.pusher?.connection || Echo.connector?.socket || null;
+        return (
+            Echo.connector?.pusher?.connection || Echo.connector?.socket || null
+        );
     }
 
     /**
      * 显示错误信息
-     * @param {string} message 
+     * @param {string} message
      */
     handleError(message) {
         if (!this.errorDisplayed && !this.isConnected()) {
-            if (typeof showMessage !== 'undefined') {
+            if (typeof showMessage !== "undefined") {
                 showMessage({
-                    title: i18n('broadcast.error'),
+                    title: i18n("broadcast.error"),
                     message: message,
-                    icon: 'error',
-                    showConfirmButton: true
+                    icon: "error",
+                    showConfirmButton: true,
                 });
             } else {
                 console.error(message);
@@ -77,36 +79,39 @@ class BroadcastingManager {
      * @returns {boolean} 是否订阅成功
      */
     subscribe(channelName, event, handler) {
-        // 清理同名频道（如果存在）
+        // 清理同名频道（如果存在）- 确保彻底清除旧监听器
         this.unsubscribe(channelName);
-        
+
         if (!this.isEchoAvailable()) {
-            this.handleError(i18n('broadcast.websocket_unavailable'));
+            this.handleError(i18n("broadcast.websocket_unavailable"));
             return false;
         }
 
         try {
+            // 创建新频道并监听事件
             const channel = Echo.channel(channelName);
             channel.listen(event, handler);
             this.channels.set(channelName, channel);
-            
+
             // 绑定连接状态事件
             const conn = this.getConnection();
             if (conn?.bind) {
-                conn.bind('connected', () => {
-                    this.connectionState = 'connected';
+                conn.bind("connected", () => {
+                    this.connectionState = "connected";
                     this.clearError();
                 });
-                conn.bind('disconnected', () => {
-                    this.connectionState = 'disconnected';
-                    this.handleError(i18n('broadcast.websocket_disconnected'));
+                conn.bind("disconnected", () => {
+                    this.connectionState = "disconnected";
+                    this.handleError(i18n("broadcast.websocket_disconnected"));
                 });
             }
-            
+
             return true;
         } catch (e) {
             if (!this.isConnected()) {
-                this.handleError(`${i18n('broadcast.setup_failed')}: ${e?.message || e}`);
+                this.handleError(
+                    `${i18n("broadcast.setup_failed")}: ${e?.message || e}`,
+                );
             }
             return false;
         }
@@ -114,19 +119,54 @@ class BroadcastingManager {
 
     /**
      * 取消订阅频道
-     * @param {string} channelName 
+     * @param {string} channelName
      */
     unsubscribe(channelName) {
         if (this.channels.has(channelName)) {
             try {
-                const channel = this.channels.get(channelName);
-                channel.stopListening();
-                Echo.leave(channelName);
+                // Laravel Echo 官方推荐方式：直接调用 Echo.leave()
+                // 它会自动清除频道对象、所有监听器和内部缓存
+                if (typeof Echo.leave === "function") {
+                    Echo.leave(channelName);
+                }
             } catch (e) {
-                // 忽略错误
+                console.warn(`Failed to unsubscribe from ${channelName}:`, e);
             }
+
             this.channels.delete(channelName);
         }
+    }
+
+    /**
+     * 处理 AJAX 请求的错误 - 统一错误处理逻辑
+     * @param {string} title - 错误标题
+     * @param {string} message - 错误消息
+     */
+    handleAjaxError(title = null, message = null) {
+        if (!this.isConnected()) {
+            this.handleError(i18n("broadcast.websocket_unavailable"));
+        } else if (message || title) {
+            if (typeof showMessage !== "undefined") {
+                showMessage({
+                    title: title || i18n("common.error"),
+                    message: message,
+                    icon: "error",
+                    showConfirmButton: true,
+                });
+            } else {
+                console.error(title, message);
+            }
+        }
+    }
+
+    /**
+     * 生成频道名称
+     * @param {string} type - 频道类型
+     * @param {string|number} id - 资源 ID（可选）
+     * @returns {string} 频道名称
+     */
+    getChannelName(type, id = null) {
+        return id ? `${type}.${id}` : `${type}.all`;
     }
 
     /**
@@ -154,7 +194,7 @@ class BroadcastingManager {
 
     /**
      * 停止轮询
-     * @param {string} intervalId 
+     * @param {string} intervalId
      */
     stopPolling(intervalId) {
         if (this.pollingIntervals.has(intervalId)) {
@@ -182,10 +222,10 @@ class BroadcastingManager {
                 Echo.connector?.disconnect?.();
             }
         } catch (e) {
-            console.error(i18n('broadcast.disconnect_failed'), e);
+            console.error(i18n("broadcast.disconnect_failed"), e);
         }
     }
-    
+
     /**
      * 等待连接建立
      * @param {number} timeout - 超时时间（毫秒）
@@ -197,7 +237,7 @@ class BroadcastingManager {
                 resolve(true);
                 return;
             }
-            
+
             const startTime = Date.now();
             const checkConnection = () => {
                 if (this.isConnected()) {
@@ -208,7 +248,7 @@ class BroadcastingManager {
                     setTimeout(checkConnection, 100);
                 }
             };
-            
+
             checkConnection();
         });
     }

@@ -35,28 +35,32 @@ class ReloadNode implements ShouldQueue
 
     public function handle(): array
     {
+        $result = ['error' => [], 'success' => []];
+
         foreach ($this->nodes as $node) {
             $data = $node->getSSRConfig();
 
             if ($node->is_ddns) {
-                $result = ['list' => $node->server];
                 if (! $this->send($node->server.':'.$node->push_port, $node->auth->secret, $data)) {
-                    $result['error'] = [$node->server];
+                    $result['error'][] = $node->server;
+                } else {
+                    $result['success'][] = $node->server;
                 }
             } else { // 多IP支持
-                $result = ['list' => $node->ips()];
-                foreach ($result['list'] as $ip) {
+                foreach ($node->ips() as $ip) {
                     if (! $this->send($ip.':'.$node->push_port, $node->auth->secret, $data)) {
                         $result['error'][] = $ip;
+                    } else {
+                        $result['success'][] = $ip;
                     }
                 }
             }
         }
 
-        return $result ?? [];
+        return $result;
     }
 
-    public function send(string $host, string $secret, array $data): bool
+    private function send(string $host, string $secret, array $data): bool
     {
         try {
             $response = Http::baseUrl($host)->timeout(15)->withHeader('secret', $secret)->post('api/v2/node/reload', $data);

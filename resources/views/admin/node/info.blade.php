@@ -11,6 +11,32 @@
         .bootstrap-select .dropdown-menu {
             max-height: 50vh !important;
         }
+
+        .list-icons>li {
+            border-bottom: 1px solid #e4eaec !important;
+            padding: 5px 8px;
+        }
+
+        .list-icons>li:last-of-type {
+            border-bottom: none !important;
+        }
+
+        .sub-container {
+            border-left: 2px solid #e9ecef;
+        }
+
+        .sub-container>li {
+            padding: 8px 10px;
+            border-bottom: 1px dashed #e9ecef !important;
+            font-size: 0.9em;
+        }
+
+        .operation-message {
+            max-width: 60%;
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+        }
     </style>
 @endsection
 @section('content')
@@ -84,7 +110,13 @@
                         </div>
                         <!-- 代理 设置部分 -->
                         <div class="proxy-config">
-                            <x-admin.form.radio-group name="type" :label="trans('model.common.type')" :options="[0 => 'Shadowsocks', 1 => 'ShadowsocksR', 2 => 'V2Ray', 3 => 'Trojan', 4 => 'VNET']" />
+                            <x-admin.form.radio-group name="type" :label="trans('model.common.type')" :options="[
+                                0 => 'Shadowsocks',
+                                1 => 'ShadowsocksR',
+                                2 => 'V2Ray',
+                                3 => 'Trojan',
+                                4 => 'VNET',
+                            ]" />
                             <hr />
                             <!-- SS/SSR 设置部分 -->
                             <div class="ss-setting">
@@ -93,6 +125,14 @@
                                 {{--                                <x-admin.form.select name="plugin" :label="trans('model.node.plugin')" :options="['none'=>'None', 'kcptun'=>'Kcptun', 'v2ray-plugin' => 'V2ray-plugin', 'cloak'=> 'Cloak', 'shadow-tls' => 'Shadow-tls']" /> --}}
                                 {{--                                <x-admin.form.textarea name="plugin_opts" :label="trans('model.node.plugin_opts')" /> --}}
 
+                                <x-admin.form.input name="passwd" :label="trans('model.node.service_password')" />
+                                <x-admin.form.input name="single" type="checkbox" :label="trans('model.node.single')"
+                                                    attribute="data-plugin=switchery onchange=switchSetting('single')" />
+                                <div class="single-setting">
+                                    <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" :help="trans('admin.node.info.single_hint')" />
+                                </div>
+
+                                <hr />
                                 <div class="ssr-setting">
                                     <x-admin.form.select name="protocol" :label="trans('model.node.protocol')" :options="$protocols" />
                                     <x-admin.form.textarea name="protocol_param" :label="trans('model.node.protocol_param')" />
@@ -103,15 +143,7 @@
                                             {!! trans('admin.node.proxy_info_hint') !!}
                                         </div>
                                     </x-admin.form.skeleton>
-                                </div>
-
-                                <hr />
-                                <x-admin.form.input name="single" type="checkbox" :label="trans('model.node.single')"
-                                                    attribute="data-plugin=switchery onchange=switchSetting('single')" :help="trans('admin.node.info.single_hint')" />
-
-                                <div class="single-setting">
-                                    <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" :help="trans('admin.node.info.single_hint')" />
-                                    <x-admin.form.input name="passwd" :label="trans('model.node.single_passwd')" />
+                                    <hr />
                                 </div>
                             </div>
 
@@ -131,7 +163,7 @@
                                     'kcp' => 'mKCP',
                                     'ws' => 'WebSocket',
                                     'httpupgrade' => 'HTTPUpgrade',
-                                    'xhttp' => 'xHTTP   ',
+                                    'xhttp' => 'xHTTP',
                                     'h2' => 'HTTP/2',
                                     'quic' => 'QUIC',
                                     'domainsocket' => 'DomainSocket',
@@ -174,6 +206,10 @@
             </x-admin.form.container>
         </x-ui.panel>
     </div>
+
+    <!-- 节点结果模态框 -->
+    <x-ui.modal id="nodeModal" :title="isset($node) ? trans('admin.node.create_operations') : trans('admin.node.update_operations')" size="lg">
+    </x-ui.modal>
 @endsection
 @section('javascript')
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
@@ -186,8 +222,36 @@
     <script src="/assets/global/js/Plugin/bootstrap-datepicker.js"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/js/Plugin/switchery.js"></script>
+    @vite(['resources/js/app.js'])
     <script>
+        window.i18n.extend({
+            'broadcast': {
+                'error': '{{ trans('common.error') }}',
+                'websocket_unavailable': '{{ trans('common.broadcast.websocket_unavailable') }}',
+                'websocket_disconnected': '{{ trans('common.broadcast.websocket_disconnected') }}',
+                'setup_failed': '{{ trans('common.broadcast.setup_failed') }}',
+                'disconnect_failed': '{{ trans('common.broadcast.disconnect_failed') }}'
+            }
+        });
+
         const string = "{{ strtolower(Str::random()) }}";
+
+        // 使用 broadcastingManager 管理广播连接
+        const operationNames = {
+            'save_node_info': '{{ trans('admin.node.operation.save_node_info') }}',
+            'create_auth': '{{ trans('admin.node.operation.create_auth') }}',
+            'sync_labels': '{{ trans('admin.node.operation.sync_labels') }}',
+            'handle_ddns': '{{ trans('admin.node.operation.handle_ddns') }}',
+            'reload_node': '{{ trans('admin.node.operation.reload_node') }}',
+            'refresh_geo': '{{ trans('admin.node.operation.refresh_geo') }}'
+        };
+
+        // 子操作名称映射
+        const subOperationNames = {
+            'store': '{{ trans('admin.node.operation.store_domain_record') }}',
+            'destroy': '{{ trans('admin.node.operation.delete_domain_record') }}',
+            'unchanged': '{{ trans('admin.node.operation.unchanged') }}',
+        };
 
         function calculateNextNextRenewalDate() {
             const nextRenewalDate = $("#next_renewal_date").val();
@@ -261,6 +325,7 @@
                 relay_node_id: '',
                 type: 1
             };
+
             @isset($node)
                 // 反向解析节点数据以适配表单字段
                 const node = @json($node);
@@ -276,6 +341,9 @@
                     nodeData.subscription_term_value = value;
                     nodeData.subscription_term_unit = unit;
                 }
+                setupBroadcastChannel('update', node.id);
+            @else
+                setupBroadcastChannel('create');
             @endisset
 
             // 自动填充表单
@@ -293,8 +361,142 @@
             $("#obfs").on("changed.bs.select", toggleObfsParam);
             $("#relay_node_id").on("changed.bs.select", toggleRelayConfig);
             $("#v2_net").on("changed.bs.select", updateV2RaySettings);
-            $(document).on("change", "#next_renewal_date, #subscription_term_value, #subscription_term_unit", calculateNextNextRenewalDate);
+            $(document).on("change", "#next_renewal_date, #subscription_term_value, #subscription_term_unit",
+                calculateNextNextRenewalDate);
         }
+
+        // 建立广播频道连接
+        function setupBroadcastChannel(actionType, nodeId = null) {
+            // 使用 broadcastingManager 订阅频道
+            window.broadcastingManager.subscribe(
+                window.broadcastingManager.getChannelName(`node.${actionType}`, nodeId),
+                '.node.actions',
+                (e) => handleEditProgress(e.data || e)
+            );
+        }
+
+        // 处理编辑进度更新
+        function handleEditProgress(data) {
+            if (data.list) {
+                showOperationList(data.list);
+            } else if (data.operation) {
+                updateOperationStatus(data);
+            }
+        }
+
+        // 显示操作清单
+        function showOperationList(operationList) {
+            $('#nodeModal').modal('show');
+            let html = '<ul class="list-icons">';
+
+            operationList.forEach(operation => {
+                const opName = operationNames[operation] || operation;
+
+                html += `
+                    <li class="d-flex justify-content-between align-items-center" data-operation="${operation}">
+                        <i class="wb-loop icon-spin"></i>
+                        <div class="flex-grow-1">
+                            ${opName}
+                        </div>
+                        <div class="operation-message text-muted small"></div>
+                    </li>
+                    <ul class="sub-container list-icons"></ul>
+                `;
+            });
+
+            $('#nodeModal .modal-body').html(html + '</ul>');
+        }
+
+        function getStatusIcon(status) {
+            return status === 1 ? `<i class="icon wb-check text-success"></i>` :
+                `<i class="icon wb-close text-danger"></i>`;
+        }
+
+        // 更新操作状态
+        function updateOperationStatus(data) {
+            const $operationItem = $(`#nodeModal [data-operation="${data.operation}"]`);
+            if (!$operationItem.length) return;
+            if (!data.sub_operation || data.sub_operation === 'list' || data.sub_operation === 'unchanged') {
+                $operationItem.find('i:first').replaceWith(getStatusIcon(data.status));
+            }
+
+            // 处理子操作（如 DDNS 操作、IP列表等）
+            if (data.sub_operation) {
+                handleSubOperation($operationItem, data);
+            } else if (data.message) {
+                $operationItem.find(".operation-message").text(data.message);
+            }
+
+            // 检查是否所有操作都已完成
+            showCompletionButton();
+        }
+
+        function handleSubOperation($operationItem, data) {
+            // 查找或创建子操作容器
+            let $container = $operationItem.nextAll(`.sub-container`).first();
+
+            if ($container.length === 0) return;
+
+            // 特殊处理 DDNS 操作中的 IP 列表预显示
+            if (data.add || data.delete) {
+                data.add?.forEach(ip => {
+                    createSubOperationItem($container, 'store', ip);
+                });
+
+                data.delete?.forEach(ip => {
+                    createSubOperationItem($container, 'destroy', ip);
+                });
+            } else {
+                const subOpKey = `${data.sub_operation}_${data.data || ''}`;
+                // 更新或创建子操作项
+                let $item = $container.find(`[data-sub-operation="${subOpKey}"]`);
+                $item.find('i:first').replaceWith(getStatusIcon(data.status));
+                if (data.message) {
+                    $item.find('.operation-message').text(data.message);
+                }
+            }
+        }
+
+        // 创建或更新子操作项的辅助函数
+        function createSubOperationItem($container, operation, data) {
+            let key = operation + '_' + data;
+            let $item = $container.find(`[data-sub-operation="${key}"]`);
+            const opName = subOperationNames[operation] || operation;
+            const displayText = data ? `${opName} (${data})` : opName;
+
+            if ($item.length) return;
+
+            $item = $(`
+                    <li class="d-flex justify-content-between align-items-center" data-sub-operation="${key}">
+                        <i class="wb-loop icon-spin"></i>
+                        <div class="flex-grow-1">
+                            ${displayText}
+                        </div>
+                        <div class="operation-message text-muted small"></div>
+                    </li>
+                `);
+            $container.append($item);
+        }
+
+        // 显示完成确认按钮
+        function showCompletionButton() {
+            const $modal = $('#nodeModal');
+            if ($modal.find(".icon-spin").length !== 0 || $modal.find(".modal-footer").length > 0) return;
+
+            $modal.find(".modal-content").append(`
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">{{ trans('common.confirm') }}</button>
+                </div>`);
+        }
+
+        // 同时绑定模态框关闭事件
+        $(document).on("hidden.bs.modal", '#nodeModal', function() {
+            @isset($node)
+                location.reload();
+            @else
+                window.location.href = '{{ route('admin.node.index') }}';
+            @endisset
+        });
 
         function switchSetting(id) {
             const check = document.getElementById(id).checked;
@@ -381,6 +583,14 @@
 
         // ajax同步提交
         function Submit() {
+            // 防止重复提交
+            const $submitBtn = $('.form-horizontal button[type="submit"]');
+            if ($submitBtn.hasClass('disabled')) {
+                return false;
+            }
+
+            // 禁用提交按钮以防止重复提交
+            $submitBtn.addClass('disabled').prop('disabled', true);
             // 收集表单数据
             const data = collectFormData('.form-horizontal');
 
@@ -395,14 +605,33 @@
                 method: '{{ isset($node) ? 'PUT' : 'POST' }}',
                 data: data,
                 success: function(ret) {
-                    handleResponse(ret, {
-                        redirectUrl: '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}'
-                    });
+                    // 成功消息处理在广播中完成
+                    if (ret.status !== 'success') {
+                        // 隐藏可能已经显示的 modal
+                        $('#nodeModal').modal('hide');
+
+                        handleResponse(ret, {
+                            redirectUrl: '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}',
+                        });
+                    }
                 },
                 error: function(xhr) {
-                    handleErrors(xhr, {
-                        form: '.form-horizontal'
-                    });
+                    // 隐藏可能已经显示的 modal
+                    $('#nodeModal').modal('hide');
+
+                    // 处理验证错误
+                    if (!window.broadcastingManager.isConnected()) {
+                        // 广播连接错误
+                        window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
+                    } else {
+                        // 其他错误
+                        handleErrors(xhr, {
+                            form: '.form-horizontal'
+                        });
+                    }
+                },
+                complete: function() {
+                    $submitBtn.removeClass('disabled').prop('disabled', false);
                 }
             });
 

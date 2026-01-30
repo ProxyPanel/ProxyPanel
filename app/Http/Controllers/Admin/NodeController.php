@@ -7,7 +7,6 @@ use App\Helpers\DataChart;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
-use App\Jobs\Node\CheckNodeIp;
 use App\Jobs\VNet\ReloadNode;
 use App\Models\Country;
 use App\Models\Label;
@@ -15,6 +14,7 @@ use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
+use App\Utils\NetworkDetection;
 use Arr;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -68,19 +68,38 @@ class NodeController extends Controller
 
     public function store(NodeRequest $request): JsonResponse
     { // 添加节点
+        // 获取验证后的数据
+        $validatedData = $request->validated();
+
+        // 构建操作清单
+        $operationList = ['save_node_info', 'create_auth', 'sync_labels', 'refresh_geo'];
+
+        // 根据节点配置添加相应的操作项
+        if (! ($validatedData['is_ddns'] ?? false) && ($validatedData['server'] ?? false) && sysConfig('ddns_mode')) {
+            $operationList[] = 'handle_ddns';
+        }
+
+        // 发送操作清单
+        broadcast(new NodeActions('create', ['list' => $operationList]));
+
         try {
-            if ($node = Node::create($this->nodeStore($request->validated()))) {
+            // 保存节点信息
+            if ($node = Node::create($this->nodeStore($validatedData))) {
+                broadcast(new NodeActions('create', ['operation' => 'save_node_info', 'status' => 1]));
                 if ($request->has('labels')) { // 生成节点标签
                     $node->labels()->attach($request->input('labels'));
                 }
+                broadcast(new NodeActions('create', ['operation' => 'sync_labels', 'status' => 1]));
 
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            broadcast(new NodeActions('create', ['status' => 0, 'message' => $e->getMessage()]));
 
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
         }
+        broadcast(new NodeActions('create', ['status' => 0]));
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
     }
@@ -211,33 +230,77 @@ class NodeController extends Controller
 
     public function update(NodeRequest $request, Node $node): JsonResponse
     { // 编辑节点
+        // 获取验证后的数据
+        $validatedData = $request->validated();
+
+        // 构建操作清单
+        $operationList = ['save_node_info', 'sync_labels', 'refresh_geo']; // 操作清单
+
+        if (! ($validatedData['is_ddns'] ?? $node->is_ddns) && ($validatedData['server'] ?? $node->server) && sysConfig('ddns_mode')) { // 检查是否有DDNS相关变更
+            $operationList[] = 'handle_ddns';
+        }
+
+        if ((int) ($validatedData['type'] ?? $node->type) === 4) { // 检查是否是VNET节点（可能需要重新加载）
+            $operationList[] = 'reload_node';
+        }
+
+        // 发送操作清单
+        broadcast(new NodeActions('update', ['list' => $operationList], $node->id));
+
         try {
-            if ($node->update($this->nodeStore($request->validated()))) {
-                // 更新节点标签
+            // 先尝试更新节点信息
+            if ($node->update($this->nodeStore($validatedData))) {
+                broadcast(new NodeActions('update', ['operation' => 'save_node_info', 'status' => 1], $node->id));
+
+                // 如果没有字段变更，强制触发更新以确保 observer 被调用
+                if (empty($node->getChanges())) {
+                    $node->touch();
+                }
+
+                // 同步节点标签
                 $node->labels()->sync($request->input('labels'));
+                broadcast(new NodeActions('update', ['operation' => 'sync_labels', 'status' => 1], $node->id));
 
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            broadcast(new NodeActions('update', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
         }
+        broadcast(new NodeActions('update', ['status' => 0], $node->id));
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
     }
 
     public function destroy(Node $node): JsonResponse
     { // 删除节点
+        // 发送操作清单给前端
+        $operationList = ['delete_node'];
+
+        // 根据节点配置添加相应的操作项
+        if ($node->server && sysConfig('ddns_mode')) {
+            $operationList[] = 'handle_ddns';
+        }
+
+        broadcast(new NodeActions('delete', ['list' => $operationList], $node->id));
+
         try {
+            // 删除节点
             if ($node->delete()) {
+                broadcast(new NodeActions('delete', ['operation' => 'delete_node', 'status' => 1], $node->id));
+
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
             }
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            broadcast(new NodeActions('delete', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
         }
+
+        broadcast(new NodeActions('delete', ['status' => 0], $node->id));
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
     }
@@ -247,22 +310,35 @@ class NodeController extends Controller
         // 获取节点集合并预加载IP信息
         $fields = ['id', 'name', 'is_ddns', 'server', 'ip', 'ipv6', 'port'];
         $nodes = ($node ? collect([$node]) : Node::whereStatus(1)->select($fields)->get())->map(function ($n) {
-            $n->ips = $n->ips();
-
-            return $n;
+            return ['node' => $n, 'ips' => $n->ips()];
         });
 
         // 构建节点列表信息
-        $nodeList = $nodes->mapWithKeys(function ($n) {
-            return [$n->id => ['name' => $n->name, 'ips' => $n->ips]];
+        $nodeList = $nodes->mapWithKeys(function ($item) {
+            return [$item['node']->id => ['name' => $item['node']->name, 'ips' => $item['ips']]];
         })->toArray();
 
         // 立即发送节点列表信息给前端
-        broadcast(new NodeActions('check', ['nodeList' => $nodeList], $node?->id));
+        broadcast(new NodeActions('check', ['list' => $nodeList], $node?->id));
 
         // 异步分发检测任务，提高响应速度
-        $nodes->each(function ($n) use ($node) {
-            dispatch(new CheckNodeIp($n->id, $n->ips, $n->port ?? 22, $node?->id));
+        $nodes->each(function ($item) use ($node) {
+            dispatch(static function () use ($item, $node) {
+                foreach ($item['ips'] as $ip) {
+                    $ret = ['ip' => $ip, 'icmp' => 4, 'tcp' => 4, 'node_id' => $item['node']->id, 'status' => 1];
+                    try {
+                        $status = NetworkDetection::networkStatus($ip, $item['node']->port ?? 22);
+                        $ret['icmp'] = $status['icmp'];
+                        $ret['tcp'] = $status['tcp'];
+                    } catch (Exception $e) {
+                        Log::error("节点 [{$item['node']->id}] IP [$ip] 检测失败: ".$e->getMessage());
+                        $ret += ['message' => $e->getMessage()];
+                        $ret['status'] = 0;
+                    }
+
+                    broadcast(new NodeActions('check', $ret, $node?->id));
+                }
+            });
         });
 
         return response()->json([
@@ -278,17 +354,18 @@ class NodeController extends Controller
         $nodes = $node ? collect([$node]) : Node::whereStatus(1)->get();
 
         // 发送节点列表信息
-        broadcast(new NodeActions('geo', ['nodeList' => $nodes->pluck('name', 'id')], $node?->id));
+        broadcast(new NodeActions('geo', ['list' => $nodes->pluck('name', 'id')], $node?->id));
 
         // 异步处理地理位置刷新
         $nodes->each(function ($n) use ($node) {
             dispatch(static function () use ($n, $node) {
-                $ret = ['nodeId' => $n->id];
+                $ret = ['node_id' => $n->id, 'status' => 1];
                 try {
                     $ret += $n->refresh_geo();
                 } catch (Exception $e) {
                     Log::error("节点 [{$n->id}] 刷新地理位置失败: ".$e->getMessage());
-                    $ret += ['error' => $e->getMessage()];
+                    $ret += ['message' => $e->getMessage()];
+                    $ret['status'] = 0;
                 }
 
                 broadcast(new NodeActions('geo', $ret, $node?->id));
@@ -308,17 +385,21 @@ class NodeController extends Controller
         $nodes = $node ? collect([$node]) : Node::whereStatus(1)->whereType(4)->get();
 
         // 发送节点列表信息
-        broadcast(new NodeActions('reload', ['nodeList' => $nodes->pluck('name', 'id')], $node?->id));
+        broadcast(new NodeActions('reload', ['list' => $nodes->pluck('name', 'id')], $node?->id));
 
         // 异步处理节点重载
         $nodes->each(function ($n) use ($node) {
             dispatch(static function () use ($n, $node) {
-                $ret = ['nodeId' => $n->id];
+                $ret = ['node_id' => $n->id, 'status' => 1];
                 try {
-                    $ret += (new ReloadNode($n))->handle();
+                    $ret = array_merge($ret, (new ReloadNode($n))->handle());
+                    if (count($ret['error'] ?? [])) {
+                        $ret['status'] = 0;
+                    }
                 } catch (Exception $e) {
                     Log::error("节点 [{$n->id}] 重载失败: ".$e->getMessage());
-                    $ret += ['error' => $e->getMessage()];
+                    $ret['message'] = $e->getMessage();
+                    $ret['status'] = 0;
                 }
 
                 broadcast(new NodeActions('reload', $ret, $node?->id));

@@ -144,9 +144,7 @@ class Node extends Model
             $data = IP::getIPGeo($ip[0]); // 复数IP都以第一个为准
 
             if ($data) {
-                self::withoutEvents(function () use ($data) {
-                    $this->update(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
-                });
+                $this->updateQuietly(['geo' => ($data['latitude'] ?? null).','.($data['longitude'] ?? null)]);
                 $ret['update'] = [$data['latitude'] ?? null, $data['longitude'] ?? null];
             }
         }
@@ -167,7 +165,7 @@ class Node extends Model
             $ip = $type === 4 ? $this->ip : $this->ipv6; // check the multiple existing of ip
         }
 
-        return array_map('trim', explode(',', $ip));
+        return $ip ? array_map('trim', explode(',', $ip)) : [];
     }
 
     public function getSSRConfig(): array

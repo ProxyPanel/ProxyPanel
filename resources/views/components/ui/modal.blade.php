@@ -10,7 +10,7 @@
     'focus' => true,
 ])
 
-<div class="modal fade" id="{{ $id }}" role="dialog" aria-hidden="true" aria-labelledby="{{ $labelledby ?? $id }}" tabindex="-1"
+<div class="modal fade" id="{{ $id }}" role="dialog" aria-labelledby="{{ $labelledby ?? $id }}" tabindex="-1"
      @if (!$backdrop) data-backdrop="static" @endif @if (!$keyboard) data-keyboard="false" @endif
      @if ($focus) data-focus-on="input:first" @endif>
     <div class="modal-dialog modal-simple @if ($size) modal-{{ $size }} @endif modal-{{ $position }}">

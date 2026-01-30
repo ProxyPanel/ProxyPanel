@@ -1,4 +1,38 @@
 @extends('admin.table_layouts')
+@push('css')
+    <style>
+        .modal-body {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .list-icons>li {
+            border-bottom: 1px solid #e4eaec !important;
+            padding: 5px 8px;
+        }
+
+        .list-icons>li:last-of-type {
+            border-bottom: none !important;
+        }
+
+        .sub-container {
+            border-left: 2px solid #e9ecef;
+        }
+
+        .sub-container>li {
+            padding: 8px 10px;
+            border-bottom: 1px dashed #e9ecef !important;
+            font-size: 0.9em;
+        }
+
+        .operation-message {
+            max-width: 60%;
+            word-wrap: break-word;
+            word-break: break-all;
+            white-space: normal;
+        }
+    </style>
+@endpush
 @section('content')
     <div class="page-content container-fluid">
         <x-admin.table-panel :title="trans('admin.menu.node.list')" :theads="[
@@ -21,18 +55,18 @@
                         @can('admin.node.reload')
                             @if ($nodeList->where('type', 4)->count())
                                 <button class="btn btn-info" type="button" onclick="reload()">
-                                    <i class="icon wb-reload" id="reload_0" aria-hidden="true"></i> {{ trans('admin.node.reload_all') }}
+                                    <i class="icon wb-reload" id="reload_all" aria-hidden="true"></i> {{ trans('admin.node.reload_all') }}
                                 </button>
                             @endif
                         @endcan
                         @can('admin.node.geo')
                             <button class="btn btn-outline-default" type="button" onclick="handleNodeAction('geo')">
-                                <i class="icon wb-map" id="geo_0" aria-hidden="true"></i> {{ trans('admin.node.refresh_geo_all') }}
+                                <i class="icon wb-map" id="geo_all" aria-hidden="true"></i> {{ trans('admin.node.refresh_geo_all') }}
                             </button>
                         @endcan
                         @can('admin.node.check')
                             <button class="btn btn-outline-primary" type="button" onclick="handleNodeAction('check')">
-                                <i class="icon wb-signal" id="check_all_nodes" aria-hidden="true"></i> {{ trans('admin.node.connection_test_all') }}
+                                <i class="icon wb-signal" id="check_all" aria-hidden="true"></i> {{ trans('admin.node.connection_test_all') }}
                             </button>
                         @endcan
                         @can('admin.node.create')
@@ -103,7 +137,7 @@
                                         <x-ui.dropdown-item :url="route('admin.node.clone', $node)" icon="wb-copy" :text="trans('admin.clone')" />
                                     @endcan
                                     @can('admin.node.destroy')
-                                        <x-ui.dropdown-item color="red-700" url="javascript:(0)" attribute="data-action=delete" icon="wb-trash" :text="trans('common.delete')" />
+                                        <x-ui.dropdown-item color="red-700" url="javascript:destroy('{{ $node->id }}')" icon="wb-trash" :text="trans('common.delete')" />
                                     @endcan
                                     @can('admin.node.monitor')
                                         <x-ui.dropdown-item :url="route('admin.node.monitor', $node)" icon="wb-stats-bars" :text="trans('admin.node.traffic_monitor')" />
@@ -164,7 +198,7 @@
                                             <x-ui.dropdown-item :url="route('admin.node.clone', $childNode)" icon="wb-copy" :text="trans('admin.clone')" />
                                         @endcan
                                         @can('admin.node.destroy')
-                                            <x-ui.dropdown-item color="red-700" url="javascript:(0)" attribute="data-action=delete" icon="wb-trash" :text="trans('common.delete')" />
+                                            <x-ui.dropdown-item color="red-700" url="javascript:destroy('{{ $childNode->id }}')" icon="wb-trash" :text="trans('common.delete')" />
                                         @endcan
                                         @can('admin.node.monitor')
                                             <x-ui.dropdown-item :url="route('admin.node.monitor', $childNode)" icon="wb-stats-bars" :text="trans('admin.node.traffic_monitor')" />
@@ -199,238 +233,243 @@
     <!-- 节点重载结果模态框 -->
     <x-ui.modal id="nodeReloadModal" :title="trans('admin.node.reload')" size="lg">
     </x-ui.modal>
+
+    <!-- 节点删除结果模态框 -->
+    <x-ui.modal id="nodeDeleteModal" :title="trans('admin.node.delete_operations')" size="lg">
+    </x-ui.modal>
 @endsection
 @push('javascript')
     @vite(['resources/js/app.js'])
     <script>
+        // 国际化配置
         window.i18n.extend({
-            'broadcast': {
-                'error': '{{ trans('common.error') }}',
-                'websocket_unavailable': '{{ trans('common.broadcast.websocket_unavailable') }}',
-                'websocket_disconnected': '{{ trans('common.broadcast.websocket_disconnected') }}',
-                'setup_failed': '{{ trans('common.broadcast.setup_failed') }}',
-                'disconnect_failed': '{{ trans('common.broadcast.disconnect_failed') }}'
+            "broadcast": {
+                "error": '{{ trans('common.error') }}',
+                "websocket_unavailable": '{{ trans('common.broadcast.websocket_unavailable') }}',
+                "websocket_disconnected": '{{ trans('common.broadcast.websocket_disconnected') }}',
+                "setup_failed": '{{ trans('common.broadcast.setup_failed') }}',
+                "disconnect_failed": '{{ trans('common.broadcast.disconnect_failed') }}'
             }
         });
-        // 全局状态
-        const state = {
-            actionType: null, // 'check' | 'geo' | 'reload'
-            actionId: null, // 当前操作针对的节点 id（null/'' 表示批量）
-            results: {}, // 按 nodeId 存储节点信息与已收到的数据
-            finished: {}, // 标记 nodeId 是否完成
-            spinnerFallbacks: {} // 防止无限 spinner 的后备定时器
+
+        // 操作上下文管理 - 记录当前正在进行中的操作
+        const actionContexts = {
+            check: null,
+            geo: null,
+            reload: null,
+            delete: null
         };
 
+        // 网络状态映射
         const networkStatus = @json(trans('admin.network_status'));
 
-        // 配置表：保留原按钮 id 规则 & 原模态结构
+        // 操作名称映射
+        const operationNames = {
+            "handle_ddns": '{{ trans('admin.node.operation.handle_ddns') }}',
+            "delete_node": '{{ trans('admin.node.operation.delete_node') }}'
+        };
+
+        // 子操作名称映射
+        const subOperationNames = {
+            "destroy": '{{ trans('admin.node.operation.delete_domain_record') }}'
+        };
+
+        // 操作配置表
         const ACTION_CFG = {
             check: {
-                icon: 'wb-signal',
+                icon: "wb-signal",
                 routeTpl: '{{ route('admin.node.check', 'PLACEHOLDER') }}',
-                event: '.node.actions',
-                modal: '#nodeCheckModal',
-                btnSelector: (id) => id ? $(`#node_${id}`) : $('#check_all_nodes'),
+                modal: "#nodeCheckModal",
+                btnSelector: (id) => id ? $(`#node_${id}`) : $("#check_all"),
                 buildUI: buildCheckUI,
                 updateUI: updateCheckUI,
-                isNodeDone: function(node) {
-                    // node.ips 是 array，node.data 是按 ip 存放结果
-                    if (!Array.isArray(node.ips)) return !!node.data; // 没有 ip 列表的认为收到数据就算
-                    const got = Object.keys(node.data || {}).length;
-                    return got >= node.ips.length;
-                },
                 successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.connection_test')]) }}'
             },
             geo: {
-                icon: 'wb-map',
+                icon: "wb-map",
                 routeTpl: '{{ route('admin.node.geo', 'PLACEHOLDER') }}',
-                event: '.node.actions',
-                modal: '#nodeGeoRefreshModal',
-                btnSelector: (id) => id ? $(`#geo_${id}`) : $('#geo_0'),
-                buildUI: buildGeoUI,
-                updateUI: updateGeoUI,
-                isNodeDone: function(node) {
-                    return !!(node.data && Object.keys(node.data).length > 0);
-                },
+                modal: "#nodeGeoRefreshModal",
+                btnSelector: (id) => id ? $(`#geo_${id}`) : $("#geo_all"),
+                buildUI: buildNodeTableUI,
+                updateUI: updateNodeOperationUI,
                 successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.refresh_geo')]) }}'
             },
             reload: {
-                icon: 'wb-reload',
+                icon: "wb-reload",
                 routeTpl: '{{ route('admin.node.reload', 'PLACEHOLDER') }}',
-                event: '.node.actions',
-                modal: '#nodeReloadModal',
-                btnSelector: (id) => id ? $(`#reload_${id}`) : $(`#reload_0`),
-                buildUI: buildReloadUI,
-                updateUI: updateReloadUI,
-                isNodeDone: function(node) {
-                    // 重载有 list 或 error 认为完成
-                    return !!(node.data && (Array.isArray(node.data.list) || Array.isArray(node.data.error) || node.data.list || node.data.error));
-                },
+                modal: "#nodeReloadModal",
+                btnSelector: (id) => id ? $(`#reload_${id}`) : $("#reload_all"),
+                buildUI: buildNodeTableUI,
+                updateUI: updateNodeOperationUI,
                 successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.reload')]) }}'
+            },
+            delete: {
+                icon: "wb-trash",
+                routeTpl: '{{ route('admin.node.destroy', 'PLACEHOLDER') }}',
+                modal: "#nodeDeleteModal",
+                btnSelector: () => {},
+                buildUI: buildDeleteUI,
+                updateUI: updateDeleteUI,
+                successMsg: '{{ trans('common.completed_item', ['attribute' => trans('admin.node.delete_operations')]) }}'
             }
         };
 
-        // 统一设置 spinner（显示/隐藏）
-        function setSpinner($el, iconClass, on) {
-            if (!$el || !$el.length) return;
-            if (on) {
-                $el.removeClass(iconClass).addClass('wb-loop icon-spin');
-            } else {
-                $el.removeClass('wb-loop icon-spin').addClass(iconClass);
-            }
+        // 统一设置 spinner
+        function setSpinner($el, iconClass, on = false) {
+            if (!$el?.length) return;
+            $el.removeClass(`${iconClass} wb-loop icon-spin`);
+            $el.addClass(on ? "wb-loop icon-spin" : iconClass);
         }
 
-        // 启动后备定时器（防止 spinner 卡住）
-        function startSpinnerFallback(key, $el, iconClass) {
-            clearSpinnerFallback(key);
-            state.spinnerFallbacks[key] = setTimeout(() => {
-                setSpinner($el, iconClass, false);
-                toastr.warning('{{ trans('A Timeout Occurred') }}');
-                delete state.spinnerFallbacks[key];
-            }, 120000); // 2 分钟兜底
-        }
-
-        function clearSpinnerFallback(key) {
-            if (state.spinnerFallbacks[key]) {
-                clearTimeout(state.spinnerFallbacks[key]);
-                delete state.spinnerFallbacks[key];
-            }
+        // 清理函数
+        function cleanupActionContext(type) {
+            const context = actionContexts[type];
+            if (!context) return;
+            window.broadcastingManager.unsubscribe(context.channel);
+            actionContexts[type] = null;
         }
 
         // 通用操作入口
         function handleNodeAction(type, id) {
             const cfg = ACTION_CFG[type];
-            if (!cfg) return;
-
             const $btn = cfg.btnSelector(id);
-            const channelName = id ? `node.${type}.${id}` : `node.${type}.all`;
-            const routeTpl = cfg.routeTpl;
+            const channel = window.broadcastingManager.getChannelName(`node.${type}`, id);
 
-            // 如果相同操作正在进行并且已有结果缓存，则仅打开 modal（不重复发起）
-            if (state.actionType === type && String(state.actionId) === String(id) && Object.keys(state.results).length > 0) {
-                $(cfg.modal).modal('show');
+            // 如果已有操作在进行中，直接显示 modal（不重新发起请求）
+            if (actionContexts[type]) {
+                $(cfg.modal).modal("show");
                 return;
             }
 
-            // 开始新操作：清理之前的连接/缓存
-            state.actionType = type;
-            state.actionId = id;
-            state.results = {};
-            state.finished = {};
+            // 记录当前操作上下文
+            actionContexts[type] = {
+                actionId: id,
+                channel: channel,
+                $btn: $btn
+            };
 
-            // 启动 spinner（保持加载直到我们检测到完成）
             setSpinner($btn, cfg.icon, true);
-            // 启动后备定时器
-            const fallbackKey = `${type}_${id ?? 'all'}`;
-            startSpinnerFallback(fallbackKey, $btn, cfg.icon);
 
-            // 使用统一的广播管理器订阅频道
-            const success = window.broadcastingManager.subscribe(
-                channelName,
-                cfg.event,
-                (e) => handleResult(e.data || e, type, id, $btn)
-            );
+            // 订阅广播频道
+            const success = window.broadcastingManager.subscribe(channel, ".node.actions", (e) => handleResult(type, id, e.data || e));
 
             if (!success) {
-                // 订阅失败：恢复按钮状态
-                setSpinner($btn, cfg.icon, false);
-                clearSpinnerFallback(fallbackKey);
+                setSpinner($btn, cfg.icon);
+                actionContexts[type] = null;
                 return;
             }
 
-            // 触发后端接口（Ajax）
-            ajaxPost(jsRoute(routeTpl, id), {}, {
-                beforeSend: function() {
-                    // spinner 已经设置
-                },
-                success: function(ret) {
-                    // 不在此处处理最终结果，交由广播处理（避免 race）
-                },
-                error: function(xhr, status, error) {
-                    if (!window.broadcastingManager.isConnected()) {
-                        window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
-                    } else {
-                        showMessage({
-                            title: '{{ trans('common.error') }}',
-                            message: `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`,
-                            icon: 'error',
-                            showConfirmButton: true
-                        });
-                    }
-                    // 出错时恢复 spinner
-                    setSpinner($btn, cfg.icon, false);
-                    clearSpinnerFallback(fallbackKey);
+            const routeUrl = jsRoute(cfg.routeTpl, id);
+
+            // AJAX 调用
+            const ajaxOptions = {
+                success: () => {},
+                error: (xhr, status, error) => {
+                    window.broadcastingManager.handleAjaxError(
+                        '{{ trans('common.error') }}',
+                        `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`
+                    );
+                    setSpinner($btn, cfg.icon);
+                    cleanupActionContext(type);
                 }
-            });
+            };
+
+            if (type === "delete") {
+                ajaxDelete(routeUrl, {}, ajaxOptions);
+            } else {
+                ajaxPost(routeUrl, {}, ajaxOptions);
+            }
         }
 
-        // 处理广播数据的统一入口
-        function handleResult(e, type, id, $btn) {
+        // 处理广播数据
+        function handleResult(type, id, e) {
             const cfg = ACTION_CFG[type];
-            if (!cfg) return;
+            const context = actionContexts[type];
 
-            // 如果包含 nodeList：构建初始 UI 框架
-            if (e.nodeList) {
-                Object.keys(e.nodeList).forEach(nodeId => {
-                    const nodeInfo = e.nodeList[nodeId];
-                    state.results[nodeId] = {
-                        name: (typeof nodeInfo === 'string') ? nodeInfo : (nodeInfo.name || ''),
-                        ips: (nodeInfo.ips && Array.isArray(nodeInfo.ips)) ? nodeInfo.ips : (nodeInfo.ips || []),
-                        data: {}
-                    };
-                });
-                // 构建并显示 modal
-                cfg.buildUI();
-                return;
-            }
+            if (!cfg || !context) return;
 
-            // 处理详细数据
-            try {
-                const nodeId = e.nodeId;
-                if (!nodeId || !state.results[nodeId]) return;
+            if (e.list) {
+                cfg.buildUI(e, type);
+            } else {
+                cfg.updateUI(e.node_id || context.actionId, e, type);
 
-                if (type === 'check' && (e.icmp !== undefined || e.tcp !== undefined)) {
-                    if (!state.results[nodeId].data[e.ip]) {
-                        state.results[nodeId].data[e.ip] = {};
+                // 检查是否所有操作都完成
+                const modal = $(cfg.modal);
+                if (modal.find(".icon-spin").length === 0) {
+                    setSpinner(context.$btn, cfg.icon);
+
+                    if (cfg.successMsg) {
+                        toastr.success(cfg.successMsg);
                     }
-                    state.results[nodeId].data[e.ip] = {
-                        icmp: e.icmp,
-                        tcp: e.tcp
-                    };
-                    cfg.updateUI(nodeId, e);
-                } else if (type === 'geo' && e) {
-                    state.results[nodeId].data = e;
-                    cfg.updateUI(nodeId, e);
-                } else if (type === 'reload' && e) {
-                    state.results[nodeId].data = e;
-                    cfg.updateUI(nodeId, e);
                 }
-
-                // 检查是否所有节点都完成
-                const allDone = Object.keys(state.results).length > 0 &&
-                    Object.keys(state.results).every(nodeId => cfg.isNodeDone(state.results[nodeId]));
-
-                if (allDone) {
-                    const fallbackKey = `${type}_${id ?? 'all'}`;
-                    setSpinner($btn, cfg.icon, false);
-                    clearSpinnerFallback(fallbackKey);
-                    toastr.success(cfg.successMsg);
-                }
-            } catch (err) {
-                console.error('handleResult error', err);
             }
+        }
+
+        function getStatusIcon(status) {
+            return status === 1 ? `<i class="icon wb-check text-success"></i>` : `<i class="icon wb-close text-danger"></i>`;
+        }
+
+        // 通用UI构建函数
+        function buildNodeTableUI(e, type) {
+            const modalSelector = ACTION_CFG[type]?.modal;
+            $(modalSelector).modal("show");
+
+            let html = `<table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('validation.attributes.name') }}</th>
+                                    <th>{{ trans('common.status.attribute') }}</th>
+                                    <th>{{ trans('validation.attributes.message') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+            Object.entries(e.list).forEach(([nodeId, nodeName]) => {
+                html += `<tr data-node-id="${nodeId}">
+                            <td>${nodeName}</td>
+                            <td><i class="wb-loop icon-spin"></i></td>
+                            <td></td>
+                        </tr>`;
+            });
+
+            document.querySelector(`${modalSelector} .modal-body`).innerHTML = html + "</tbody></table>";
+        }
+
+        // 通用节点操作UI更新函数
+        function updateNodeOperationUI(nodeId, data, type) {
+            const modalSelector = ACTION_CFG[type]?.modal;
+            const row = document.querySelector(`${modalSelector} tr[data-node-id="${nodeId}"]`);
+            if (!row) return;
+
+            // 默认处理方式（适用于reload等简单操作）
+            let info = data.message || "";
+
+            // 特殊处理geo操作
+            if (type === "geo" && data.status === 1 && data.original && data.update) {
+                info = JSON.stringify(data.original) !== JSON.stringify(data.update) ?
+                    `{{ trans('common.update') }}: [${data.original.join(", ")}] => [${data.update.join(", ")}]` : '{{ trans('Not Modified') }}';
+            } else if (type === "reload") {
+                if (info.message) {
+                    info = info.message;
+                } else {
+                    info = '{{ trans('common.success_item', ['attribute' => trans('admin.node.operation.reload_node')]) }}: ' + data?.success.join(', ');
+                    if (data.error && data.error.length > 0) {
+                        info += ' | {{ trans('common.failed') }}: ' + data.error.join(', ');
+                    }
+                }
+            }
+
+            row.querySelector("td:nth-child(2)").innerHTML = getStatusIcon(data.status);
+            row.querySelector("td:nth-child(3)").innerHTML = info;
         }
 
         // check UI
-        function buildCheckUI() {
-            $('#nodeCheckModal').modal('show');
-            const body = document.querySelector('#nodeCheckModal .modal-body');
-            let html = '<div class="row">';
-            const nodeIds = Object.keys(state.results);
-            const columnClass = nodeIds.length > 1 ? 'col-md-6' : 'col-12';
+        function buildCheckUI(e) {
+            $("#nodeCheckModal").modal("show");
+            let html = `<div class="row">`;
+            const columnClass = Object.keys(e.list).length > 1 ? "col-md-6" : "col-12";
 
-            nodeIds.forEach(nodeId => {
-                const node = state.results[nodeId];
+            Object.entries(e.list).forEach(([nodeId, node]) => {
                 html += `
                     <div class="${columnClass}" data-node-id="${nodeId}">
                         <h5>${node.name}</h5>
@@ -443,157 +482,174 @@
                                 </tr>
                             </thead>
                             <tbody>`;
-                if (Array.isArray(node.ips)) {
-                    node.ips.forEach(ip => {
-                        html += `
-                            <tr data-ip="${ip}">
-                                <td>${ip}</td>
-                                <td><i class="wb-loop icon-spin"></i></td>
-                                <td><i class="wb-loop icon-spin"></i></td>
-                            </tr>`;
-                    });
-                }
+
+                node.ips.forEach(ip => {
+                    html += `
+                        <tr data-ip="${ip}">
+                            <td>${ip}</td>
+                            <td><i class="wb-loop icon-spin"></i></td>
+                            <td><i class="wb-loop icon-spin"></i></td>
+                        </tr>`;
+                });
+
                 html += `</tbody></table></div>`;
             });
-            html += '</div>';
-            body.innerHTML = html;
+            document.querySelector("#nodeCheckModal .modal-body").innerHTML = html + "</div>";
         }
 
         function updateCheckUI(nodeId, data) {
-            try {
-                // 使用 data-* 属性选择器定位元素
-                const row = document.querySelector(`#nodeCheckModal div[data-node-id="${nodeId}"] tr[data-ip="${data.ip}"]`);
-                if (!row) return;
+            const row = document.querySelector(`#nodeCheckModal div[data-node-id="${nodeId}"] tr[data-ip="${data.ip}"]`);
+            if (!row) return;
 
-                // 使用 nth-child 选择器定位 td 元素
-                const icmpEl = row.querySelector('td:nth-child(2)');
-                const tcpEl = row.querySelector('td:nth-child(3)');
-
-                if (icmpEl) icmpEl.innerHTML = networkStatus[data.icmp] || networkStatus[4];
-                if (tcpEl) tcpEl.innerHTML = networkStatus[data.tcp] || networkStatus[4];
-            } catch (e) {}
+            row.querySelector("td:nth-child(2)").innerHTML = networkStatus[data.icmp] || networkStatus[4];
+            row.querySelector("td:nth-child(3)").innerHTML = networkStatus[data.tcp] || networkStatus[4];
         }
 
-        // geo UI
-        function buildGeoUI() {
-            $('#nodeGeoRefreshModal').modal('show');
-            const body = document.querySelector('#nodeGeoRefreshModal .modal-body');
-            let html = `<table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>{{ trans('validation.attributes.name') }}</th>
-                                    <th>{{ trans('common.status.attribute') }}</th>
-                                    <th>{{ trans('validation.attributes.message') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>`;
+        // delete UI
+        function buildDeleteUI(e) {
+            $("#nodeDeleteModal").modal("show");
+            let html = '<ul class="list-icons">';
 
-            Object.keys(state.results).forEach(nodeId => {
-                const node = state.results[nodeId];
+            // e.list 是数组形式: ['delete_node', 'handle_ddns']
+            e.list.forEach(operation => {
+                const operationName = operationNames[operation] || operation;
                 html += `
-                    <tr data-node-id="${nodeId}">
-                        <td>${node.name}</td>
-                        <td><i class="wb-loop icon-spin"></i></td>
-                        <td><i class="wb-loop icon-spin"></i></td>
-                    </tr>`;
+                    <li class="d-flex justify-content-between align-items-center" data-operation="${operation}">
+                        <i class="wb-loop icon-spin"></i>
+                        <div class="flex-grow-1">
+                            ${operationName}
+                        </div>
+                        <div class="operation-message text-muted small"></div>
+                    </li>
+                    <ul class="sub-container list-icons"></ul>`;
             });
-            html += '</tbody></table></div>';
-            body.innerHTML = html;
+
+            document.querySelector("#nodeDeleteModal .modal-body").innerHTML = html + '</ul>';
         }
 
-        function updateGeoUI(nodeId, data) {
-            try {
-                const row = document.querySelector(`#nodeGeoRefreshModal tr[data-node-id="${nodeId}"]`);
-                if (!row) return;
+        function updateDeleteUI(nodeId, data) {
+            if (!data.operation) return;
 
-                const statusEl = row.querySelector('td:nth-child(2)');
-                const infoEl = row.querySelector('td:nth-child(3)');
-                if (!statusEl || !infoEl) return;
+            const $operationItem = $(`#nodeDeleteModal [data-operation="${data.operation}"]`);
+            if (!$operationItem.length) return;
 
-                let status = '❌';
-                let info = data.error || '-';
+            if (!data.sub_operation || data.sub_operation === 'list') {
+                $operationItem.find('i:first').replaceWith(getStatusIcon(data.status));
+            }
 
-                if (!data.error && Array.isArray(data.original) && Array.isArray(data.update)) {
-                    const filteredOriginal = data.original.filter(v => v !== null);
-                    const filteredUpdate = data.update.filter(v => v !== null);
-                    const isSame = filteredOriginal.length === filteredUpdate.length &&
-                        filteredOriginal.every((val, idx) => {
-                            const n1 = typeof val === 'number' ? val : parseFloat(val);
-                            const n2 = typeof filteredUpdate[idx] === 'number' ? filteredUpdate[idx] : parseFloat(filteredUpdate[idx]);
-                            if (!isNaN(n1) && !isNaN(n2)) return Math.abs(n1 - n2) < 1e-2;
-                            return val === filteredUpdate[idx];
-                        });
-                    status = '✔️';
-                    info = isSame ? '{{ trans('Not Modified') }}' :
-                        `{{ trans('common.update') }}: [${filteredOriginal.join(', ') || '-'}] => [${filteredUpdate.join(', ') || '-'}]`;
+            // 处理子操作（如 DDNS 操作）
+            if (data.sub_operation) {
+                handleDeleteSubOperation($operationItem, data);
+            } else if (data.message) {
+                $operationItem.find(".operation-message").text(data.message);
+            }
+
+            // 所有操作完成后显示按钮
+            showDeleteCompletionButton();
+        }
+
+        // 处理删除操作的子操作
+        function handleDeleteSubOperation($operationItem, data) {
+            // 查找或创建子操作容器
+            let $container = $operationItem.nextAll(`.sub-container`).first();
+
+            if ($container.length === 0) return;
+
+            // 特殊处理 DDNS 操作中的 IP 列表预显示
+            if (data.delete) {
+                data.delete.forEach(ip => {
+                    createSubOperationItem($container, 'destroy', ip);
+                });
+            } else {
+                const subOpKey = `${data.sub_operation}_${data.data || ''}`;
+                // 更新或创建子操作项
+                let $item = $container.find(`[data-sub-operation="${subOpKey}"]`);
+                $item.find('i:first').replaceWith(getStatusIcon(data.status));
+                if (data.message) {
+                    $item.find('.operation-message').text(data.message);
                 }
-
-                statusEl.innerHTML = status;
-                infoEl.innerHTML = info;
-            } catch (e) {}
+            }
         }
 
-        // reload UI
-        function buildReloadUI() {
-            $('#nodeReloadModal').modal('show');
-            const body = document.querySelector('#nodeReloadModal .modal-body');
-            let html = `<table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>{{ trans('validation.attributes.name') }}</th>
-                            <th>{{ trans('common.status.attribute') }}</th>
-                            <th>{{ trans('validation.attributes.message') }}</th>
-                        </tr>
-                    </thead>
-                    <tbody>`;
+        // 创建删除操作的子操作项
+        function createSubOperationItem($container, operation, data) {
+            let key = operation + '_' + data;
+            let $item = $container.find(`[data-sub-operation="${key}"]`);
+            const opName = subOperationNames[operation] || operation;
+            const displayText = data ? `${opName} (${data})` : opName;
 
-            Object.keys(state.results).forEach(nodeId => {
-                const node = state.results[nodeId];
-                html += `<tr data-node-id="${nodeId}">
-                <td>${node.name}</td>
-                <td><i class="wb-loop icon-spin"></i></td>
-                <td><i class="wb-loop icon-spin"></i></td>
-            </tr>`;
-            });
-            html += '</tbody></table>';
-            body.innerHTML = html;
+            if ($item.length) return;
+
+            $item = $(`
+                <li class="d-flex justify-content-between align-items-center" data-sub-operation="${key}">
+                    <i class="wb-loop icon-spin"></i>
+                    <div class="flex-grow-1">
+                        ${displayText}
+                    </div>
+                    <div class="operation-message text-muted small"></div>
+                </li>
+            `);
+            $container.append($item);
         }
 
-        function updateReloadUI(nodeId, data) {
-            try {
-                const row = document.querySelector(`#nodeReloadModal tr[data-node-id="${nodeId}"]`);
-                if (!row) return;
+        // 显示删除完成确认按钮
+        function showDeleteCompletionButton() {
+            const $modal = $("#nodeDeleteModal");
+            if ($modal.find(".icon-spin").length !== 0 || $modal.find(".modal-footer").length > 0) return;
 
-                const statusEl = row.querySelector('td:nth-child(2)');
-                const infoEl = row.querySelector('td:nth-child(3)');
-
-                if (!statusEl || !infoEl) return;
-
-                // 处理状态显示
-                let status = '❌'; // 默认失败状态
-                let info = '';
-
-                if (!data.error || (Array.isArray(data.error) && data.error.length === 0)) {
-                    status = '✔️';
-                } else if (Array.isArray(data.error) && data.error.length > 0) {
-                    // 有错误信息
-                    info = `{{ trans('common.error') }}: ${data.error.join(', ')}`;
-                }
-
-                statusEl.innerHTML = status;
-                infoEl.innerHTML = info;
-            } catch (e) {}
+            $modal.find(".modal-content").append(`
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">{{ trans('common.confirm') }}</button>
+                </div>`);
         }
 
         @can('admin.node.reload')
             function reload(id = null) {
+                if (actionContexts['reload']) {
+                    $(ACTION_CFG['reload'].modal).modal("show");
+                } else {
+                    showConfirm({
+                        title: '{{ trans('admin.node.reload_confirm') }}',
+                        onConfirm: () => handleNodeAction("reload", id)
+                    });
+                }
+            }
+        @endcan
+
+        @can('admin.node.destroy')
+            function destroy(id = null) {
+                const nodeName = $(`tr:has(td:first-child:contains('${id}')) td:nth-child(3)`).text().trim() || id || "";
+
                 showConfirm({
-                    text: '{{ trans('admin.node.reload_confirm') }}',
-                    onConfirm: function() {
-                        handleNodeAction('reload', id);
-                    }
+                    title: '{{ trans('common.warning') }}',
+                    text: i18n("confirm.delete")
+                        .replace("{attribute}", '{{ trans('model.node.attribute') }}')
+                        .replace("{name}", nodeName),
+                    icon: "warning",
+                    onConfirm: () => handleNodeAction("delete", id)
                 });
             }
         @endcan
+
+        // 检测、地理位置、重载 modal 的通用处理
+        Object.keys(ACTION_CFG).forEach(type => {
+            const modalSelector = ACTION_CFG[type].modal;
+            $(document).on("hidden.bs.modal", modalSelector, function() {
+                const context = actionContexts[type];
+                const modalBody = document.querySelector(`${modalSelector} .modal-body`);
+                const isLoading = modalBody && modalBody.querySelectorAll('.icon-spin').length > 0;
+
+                if (!isLoading && context) {
+                    cleanupActionContext(type);
+                    // 清空 modal 内容
+                    if (modalBody) {
+                        modalBody.innerHTML = '';
+                    }
+                    if (type === 'delete') {
+                        location.reload();
+                    }
+                }
+            });
+        });
     </script>
 @endpush

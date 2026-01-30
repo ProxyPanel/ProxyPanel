@@ -120,12 +120,6 @@ function showConfirm(options) {
         ...options
     };
 
-    alertOptions.title = alertOptions.title || i18n('confirm_title');
-
-    if (!alertOptions.html && !alertOptions.text) {
-        alertOptions.text = i18n('confirm_action');
-    }
-
     showAlert(alertOptions).then((result) => {
         if (result.value && typeof onConfirm === "function") {
             onConfirm(result);
@@ -227,7 +221,7 @@ function handleErrors(xhr, options = {}) {
                     }
                 } else {
                     // 如果没有提供 form，回退到 swal 显示
-                    showMessage({title: xhr.responseJSON.message || i18n('operation_failed'), html: buildErrorHtml(errors), icon: "error"});
+                    showMessage({title: xhr.responseJSON.message, html: buildErrorHtml(errors), icon: "error"});
                 }
                 break;
 
@@ -235,14 +229,14 @@ function handleErrors(xhr, options = {}) {
                 if (settings.element) {
                     $(settings.element).html(buildErrorHtml(errors)).show();
                 } else {
-                    showMessage({title: xhr.responseJSON.message || i18n('operation_failed'), html: buildErrorHtml(errors), icon: "error"});
+                    showMessage({title: xhr.responseJSON.message, html: buildErrorHtml(errors), icon: "error"});
                 }
                 break;
 
             case 'swal':
             default:
                 showMessage({
-                    title: xhr.responseJSON.message || i18n('operation_failed'),
+                    title: xhr.responseJSON.message,
                     html: buildErrorHtml(errors),
                     icon: "error"
                 });
@@ -252,7 +246,7 @@ function handleErrors(xhr, options = {}) {
     }
 
     // 其它错误
-    const errorMessage = xhr.responseJSON?.message || xhr.statusText || i18n('request_failed');
+    const errorMessage = xhr.responseJSON?.message || xhr.statusText;
     
     // 提取公共的 showMessage 调用
     const showMessageOptions = {title: errorMessage, icon: "error"};
@@ -314,7 +308,7 @@ function handleResponse(response, options = {}) {
 
         if (settings.showMessage) {
             showMessage({
-                title: response.message || i18n('operation_success'),
+                title: response.message,
                 icon: "success",
                 showConfirmButton: false,
                 callback: successCallback
@@ -329,7 +323,7 @@ function handleResponse(response, options = {}) {
 
         if (settings.showMessage) {
             showMessage({
-                title: response.message || i18n('operation_failed'),
+                html: response.message,
                 icon: "error",
                 showConfirmButton: true,
                 callback: errorCallback

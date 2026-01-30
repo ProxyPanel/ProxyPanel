@@ -263,7 +263,7 @@
 
             function VNetInfo(id) { // 节点连通性测试
                 const $triggerElement = $(`#vent_${id}`);
-                const channelName = `user.check.${id}`;
+                const channelName = window.broadcastingManager.getChannelName('user.check', id);
 
                 // 清理之前的连接
                 window.broadcastingManager.unsubscribe(channelName);
@@ -294,16 +294,10 @@
                         // 不在此处处理最终结果，交由广播处理（避免 race）
                     },
                     error: function(xhr, status, error) {
-                        if (!window.broadcastingManager.isConnected()) {
-                            window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
-                        } else {
-                            showMessage({
-                                title: '{{ trans('common.error') }}',
-                                message: `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`,
-                                icon: 'error',
-                                showConfirmButton: true
-                            });
-                        }
+                        window.broadcastingManager.handleAjaxError(
+                            '{{ trans('common.error') }}',
+                            `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`
+                        );
                         // 出错时恢复 spinner
                         $triggerElement.removeClass("wb-loop icon-spin").addClass("wb-link-broken");
                     },
