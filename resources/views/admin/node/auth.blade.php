@@ -28,8 +28,7 @@
                         <td><span class="badge badge-lg badge-info"> {{ $auth->secret }} </span></td>
                         <td>
                             <div class="btn-group">
-                                <button class="btn btn-primary"
-                                        onclick="showDeployModal({{ $auth->node->id }}, {{ $auth->node->type }}, '{{ $auth->key }}', '{{ $auth->node->type_label }}', '{{ $auth->node->host }}')">
+                                <button class="btn btn-primary" onclick="showDeployModal({{ $auth->node->id }}, '{{ $auth->node->type_label }}')">
                                     <i class="icon wb-code" aria-hidden="true"></i> {{ trans('admin.node.auth.deploy.attribute') }}
                                 </button>
                                 @can('admin.node.auth.update')
@@ -55,7 +54,12 @@
         <x-slot:title>
             <span id="deployModalTitle"></span>
         </x-slot:title>
-        <div id="deployModalBody"></div>
+        <div id="deployModalBody">
+            <div class="text-center" id="loadingSpinner" style="display: none;">
+                <i class="icon wb-loop icon-spin"></i> {{ trans('common.loading') }}
+            </div>
+            <div id="deployContent"></div>
+        </div>
     </x-ui.modal>
 @endsection
 @push('javascript')
@@ -89,177 +93,87 @@
         @endcan
 
         // 显示部署教程模态框
-        function showDeployModal(nodeId, nodeType, nodeKey, typeLabel, nodeHost) {
+        function showDeployModal(nodeId, typeLabel) {
             // 设置模态框标题
-            $('#deployModalTitle').text(`{{ trans('admin.node.auth.deploy.title', ['type_label' => '${typeLabel}']) }}`);
+            $('#deployModalTitle').text(jsRoute('{{ trans('admin.node.auth.deploy.title', ['type_label' => 'PLACEHOLDER']) }}', typeLabel));
 
-            const webApi = '{{ sysConfig('web_api_url') ?: sysConfig('website_url') }}';
+            // 显示加载动画
+            $('#loadingSpinner').show();
+            $('#deployContent').html('');
 
-            // 定义节点配置
-            const nodeConfigs = {
-                1: { // 默认节点 (VNET)
-                    name: 'VNET',
-                    scriptUrl: 'https://bit.ly/3828OP1',
-                    commands: {
-                        update: '{{ trans('admin.node.auth.deploy.same') }}',
-                        uninstall: 'curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove',
-                        start: 'systemctl start vnet',
-                        stop: 'systemctl stop vnet',
-                        restart: 'systemctl restart vnet',
-                        status: 'systemctl status vnet',
-                        recent_logs: 'journalctl -x -n 300 --no-pager -u vnet',
-                        real_time_logs: 'journalctl -u vnet -f'
+            // 从后端获取部署配置
+            $.ajax({
+                url: jsRoute('{{ route('admin.node.deployment', 'PLACEHOLDER') }}', nodeId),
+                type: 'GET',
+                success: function(response) {
+                    if (response.status) {
+                        renderDeploymentConfig(response.data);
+                    } else {
+                        $('#deployContent').html('<div class="alert alert-danger">{{ trans('common.error') }}</div>');
                     }
                 },
-                2: { // V2Ray 节点
-                    scripts: [{
-                            name: 'VNET-V2Ray',
-                            scriptUrl: 'https://bit.ly/3oO3HZy',
-                            commands: {
-                                update: '{{ trans('admin.node.auth.deploy.same') }}',
-                                uninstall: 'curl -L -s https://bit.ly/3oO3HZy | bash -s -- --remove',
-                                start: 'systemctl start vnet-v2ray',
-                                stop: 'systemctl stop vnet-v2ray',
-                                status: 'systemctl status vnet-v2ray',
-                                recent_logs: 'journalctl -x -n 300 --no-pager -u vnet-v2ray',
-                                real_time_logs: 'journalctl -u vnet-v2ray -f'
-                            }
-                        },
-                        {
-                            name: 'V2Ray-Poseidon',
-                            scriptUrl: 'https://bit.ly/2HswWko',
-                            commands: {
-                                update: 'curl -L -s https://bit.ly/2HswWko | bash',
-                                uninstall: 'curl -L -s https://mrw.so/5IHPR4 | bash',
-                                start: 'systemctl start v2ray',
-                                stop: 'systemctl stop v2ray',
-                                status: 'systemctl status v2ray',
-                                recent_logs: 'journalctl -x -n 300 --no-pager -u v2ray',
-                                real_time_logs: 'journalctl -u v2ray -f'
-                            }
-                        }
-                    ]
+                error: function() {
+                    $('#deployContent').html('<div class="alert alert-danger">{{ trans('common.error') }}</div>');
                 },
-                3: { // Trojan 节点
-                    name: 'Trojan-Poseidon',
-                    scriptUrl: 'https://mrw.so/6cMfGy',
-                    requireHost: true,
-                    commands: {
-                        update: 'curl -L -s https://mrw.so/6cMfGy | bash',
-                        uninstall: 'curl -L -s https://mrw.so/5ulpvu | bash',
-                        start: 'systemctl start trojanp',
-                        stop: 'systemctl stop trojanp',
-                        status: 'systemctl status trojanp',
-                        recent_logs: 'journalctl -x -n 300 --no-pager -u trojanp',
-                        real_time_logs: 'journalctl -u trojanp -f'
-                    }
+                complete: function() {
+                    $('#loadingSpinner').hide();
                 }
-            };
+            });
 
+            $('#deployModal').modal('show');
+        }
+
+        // 渲染部署配置
+        function renderDeploymentConfig(config) {
             let content = '';
 
-            if (nodeType === 2) {
-                // V2Ray 节点(特殊处理，有两个脚本)
-                const config = nodeConfigs[2];
-                config.scripts.forEach(script => {
-                    content += `
-                        <div class="alert alert-info text-break">
-                            <div class="text-center red-700 mb-5">${script.name}</div>
-                            (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \\<br>
-                            && curl -L -s ${script.scriptUrl} \\<br>
-                            | WEB_API="${webApi}" \\<br>
-                            NODE_ID=${nodeId} \\<br>
-                            NODE_KEY=${nodeKey} \\<br>
-                            ${script.name.includes('Trojan') && nodeHost ? `NODE_HOST=${nodeHost} \\<br>` : ''}
-                            bash
-                            <br><br>
-                            <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                            {{ trans('admin.node.auth.deploy.update') }}: ${script.commands.update}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.uninstall') }}: ${script.commands.uninstall}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.start') }}: ${script.commands.start}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.stop') }}: ${script.commands.stop}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.status') }}: ${script.commands.status}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.recent_logs') }}: ${script.commands.recent_logs}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.real_time_logs') }}: ${script.commands.real_time_logs}
-                        </div>
-                    `;
-                });
-            } else if (nodeType === 3) {
-                // Trojan 节点
-                const config = nodeConfigs[3];
-                if (!nodeHost) {
-                    let url = jsRoute('{{ route('admin.node.edit', 'PLACEHOLDER') }}', nodeId)
-                    content = `<h3>{!! trans('admin.node.auth.deploy.trojan_hint', ['url' => '${url}']) !!}</h3>`;
-                } else {
-                    content = `
-                        <div class="alert alert-info text-break">
-                            <div class="text-center red-700 mb-5">${config.name}</div>
-                            (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \\<br>
-                            && curl -L -s ${config.scriptUrl} \\<br>
-                            | WEB_API="${webApi}" \\<br>
-                            NODE_ID=${nodeId} \\<br>
-                            NODE_KEY=${nodeKey} \\<br>
-                            NODE_HOST=${nodeHost} \\<br>
-                            bash
-                            <br><br>
-                            <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                            {{ trans('admin.node.auth.deploy.update') }}: ${config.commands.update}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.uninstall') }}: ${config.commands.uninstall}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.start') }}: ${config.commands.start}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.stop') }}: ${config.commands.stop}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.status') }}: ${config.commands.status}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.recent_logs') }}: ${config.commands.recent_logs}
-                            <br>
-                            {{ trans('admin.node.auth.deploy.real_time_logs') }}: ${config.commands.real_time_logs}
-                        </div>
-                    `;
-                }
+            if (config.requires_host) {
+                content = `<h3>{!! trans('admin.node.auth.deploy.trojan_hint', ['url' => '${config.edit_url}']) !!}</h3>`;
             } else {
-                // 默认节点 (VNET)
-                const config = nodeConfigs[1];
-                content = `
-                    <div class="alert alert-info text-break">
-                        <div class="text-center red-700 mb-5">${config.name}</div>
-                        (yum install curl 2> /dev/null || apt install curl 2> /dev/null) \\<br>
-                        && curl -L -s ${config.scriptUrl} \\<br>
-                        | WEB_API="${webApi}" \\<br>
-                        NODE_ID=${nodeId} \\<br>
-                        NODE_KEY=${nodeKey} \\<br>
-                        bash
-                        <br><br>
-                        <div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>
-                        {{ trans('admin.node.auth.deploy.update') }}: ${config.commands.update}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.uninstall') }}: ${config.commands.uninstall}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.start') }}: ${config.commands.start}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.stop') }}: ${config.commands.stop}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.restart') }}: ${config.commands.restart}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.status') }}: ${config.commands.status}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.recent_logs') }}: ${config.commands.recent_logs}
-                        <br>
-                        {{ trans('admin.node.auth.deploy.real_time_logs') }}: ${config.commands.real_time_logs}
-                    </div>
-                `;
+                config.forEach(script => {
+                    content += `
+                            <div class="alert alert-info text-break">
+                                <div class="text-center red-700 mb-5">${script.name}</div>
+                                ${formatCommand(script?.commands?.install)}
+                                ${script.commands ? `<div class="text-center red-700 mb-5">{{ trans('admin.node.auth.deploy.command') }}</div>${renderCommands(script.commands)}`: ''}
+                            </div>
+                        `;
+                });
             }
 
-            $('#deployModalBody').html(content);
-            $('#deployModal').modal('show');
+            $('#deployContent').html(content);
+        }
+
+        // 动态渲染命令列表
+        function renderCommands(commands) {
+            let commandsHtml = '';
+            const commandLabels = {
+                update: '{{ trans('admin.node.auth.deploy.update') }}',
+                uninstall: '{{ trans('admin.node.auth.deploy.uninstall') }}',
+                start: '{{ trans('admin.node.auth.deploy.start') }}',
+                stop: '{{ trans('admin.node.auth.deploy.stop') }}',
+                restart: '{{ trans('admin.node.auth.deploy.restart') }}',
+                status: '{{ trans('admin.node.auth.deploy.status') }}',
+                recent_logs: '{{ trans('admin.node.auth.deploy.recent_logs') }}',
+                real_time_logs: '{{ trans('admin.node.auth.deploy.real_time_logs') }}'
+            };
+
+            for (const [command, value] of Object.entries(commands)) {
+                if (commandLabels[command] && value) {
+                    commandsHtml += `${commandLabels[command]}: ${value}<br>`;
+                }
+            }
+
+            return commandsHtml;
+        }
+
+        // 格式化命令显示
+        function formatCommand(command) {
+            if (!command) {
+                return ''
+            }
+            // 使用 <pre> 标签保持原始格式
+            return `<pre class="p-0 border-0">${command}</pre>`;
         }
     </script>
 @endpush

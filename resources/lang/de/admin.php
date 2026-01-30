@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ WebSocket-Übertragung sollte nicht "none"-Verschlüsselung verwenden',
             'v2_net_hint' => '⚠️ WebSocket-Übertragung erfordert TLS-Aktivierung',
             'v2_tls_provider_hint' => 'Backend-Unterschiede Erklärung:',
+            'ports' => 'Der Client wählt zufällig einen Port für die erste Verbindung und springt regelmäßig zu einem anderen Port.<br/> Formatvorlage: <code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => 'Knoten Erstellungsoperationen',
         'update_operations' => 'Knoten Aktualisierungsoperationen',

@@ -155,4 +155,5 @@ return [
     'updated_at' => 'Last Updated',
     'view' => 'View',
     'warning' => 'Warning',
+    'loading' => 'Loading...',
 ];

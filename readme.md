@@ -2,7 +2,7 @@
 
 `We are looking for translators to help us translate this project into other languages 😊`
 
-Support but not limited to: Shadowsocks, ShadowsocksR, ShadowsocksRR, V2Ray, Trojan, VNET
+Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,VNET,Hysteria2
 
 ---
 

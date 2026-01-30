@@ -55,7 +55,6 @@
                         <x-admin.form.input name="ipv6" :label="trans('model.node.ipv6')" :placeholder="trans('admin.node.info.ipv6_placeholder')" :help="trans('admin.node.info.ipv6_hint')" />
                         <x-admin.form.input name="push_port" type="number" :label="trans('model.node.push_port')" :help="trans('admin.node.info.push_port_hint')" />
                         <x-admin.form.input name="traffic_rate" type="number" :label="trans('model.node.data_rate')" step="0.01" required :help="trans('admin.node.info.data_rate_hint')" />
-
                         <x-admin.form.select name="level" :label="trans('model.common.level')" :options="$levels" :help="trans('admin.node.info.level_hint')" />
                         <x-admin.form.select name="rule_group_id" :label="trans('model.rule_group.attribute')" :options="$ruleGroups" :placeholder="trans('common.none')" />
                         <x-admin.form.input-group name="speed_limit" type="number" :label="trans('model.node.traffic_limit')" append="Mbps" required />
@@ -69,7 +68,6 @@
                                 </option>
                             @endforeach
                         </x-admin.form.select>
-
                         <!-- 节点 细则部分 -->
                         <x-admin.form.input-group name="next_renewal_date" attribute="data-plugin=datepicker" :label="trans('model.node.next_renewal_date')" />
                         <x-admin.form.skeleton name="subscription_term_value" :label="trans('model.node.subscription_term')">
@@ -85,7 +83,6 @@
                         <x-admin.form.input name="renewal_cost" type="number" :label="trans('model.node.renewal_cost')" step="0.01" />
                         <x-admin.form.textarea name="description" :label="trans('model.common.description')" />
                     </div>
-
                     <div class="col-lg-6">
                         <h4 class="example-title">{{ trans('admin.node.info.extend') }}</h4>
                         <x-admin.form.radio-group name="is_display" :label="trans('model.node.display')" :options="[
@@ -100,23 +97,15 @@
                             2 => trans('admin.node.info.detection.icmp'),
                             3 => trans('admin.node.info.detection.all'),
                         ]" :help="trans('admin.node.info.detection.hint')" />
-
                         <!-- 中转 设置部分 -->
                         <x-admin.form.select name="relay_node_id" :label="trans('model.node.transfer')" :options="$nodes" :placeholder="trans('common.none')" />
-
                         <hr />
                         <div class="relay-config">
                             <x-admin.form.input name="port" type="number" :label="trans('model.node.relay_port')" />
                         </div>
                         <!-- 代理 设置部分 -->
                         <div class="proxy-config">
-                            <x-admin.form.radio-group name="type" :label="trans('model.common.type')" :options="[
-                                0 => 'Shadowsocks',
-                                1 => 'ShadowsocksR',
-                                2 => 'V2Ray',
-                                3 => 'Trojan',
-                                4 => 'VNET',
-                            ]" />
+                            <x-admin.form.radio-group name="type" :label="trans('model.common.type')" :options="config('common.proxy_protocols')" />
                             <hr />
                             <!-- SS/SSR 设置部分 -->
                             <div class="ss-setting">
@@ -124,14 +113,12 @@
                                 <!-- TODO: Supporting SS plugin -->
                                 {{--                                <x-admin.form.select name="plugin" :label="trans('model.node.plugin')" :options="['none'=>'None', 'kcptun'=>'Kcptun', 'v2ray-plugin' => 'V2ray-plugin', 'cloak'=> 'Cloak', 'shadow-tls' => 'Shadow-tls']" /> --}}
                                 {{--                                <x-admin.form.textarea name="plugin_opts" :label="trans('model.node.plugin_opts')" /> --}}
-
                                 <x-admin.form.input name="passwd" :label="trans('model.node.service_password')" />
                                 <x-admin.form.input name="single" type="checkbox" :label="trans('model.node.single')"
                                                     attribute="data-plugin=switchery onchange=switchSetting('single')" />
                                 <div class="single-setting">
                                     <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" :help="trans('admin.node.info.single_hint')" />
                                 </div>
-
                                 <hr />
                                 <div class="ssr-setting">
                                     <x-admin.form.select name="protocol" :label="trans('model.node.protocol')" :options="$protocols" />
@@ -146,7 +133,6 @@
                                     <hr />
                                 </div>
                             </div>
-
                             <!-- V2ray TODO: Supporting new feature -->
                             <div class="v2ray-setting">
                                 <x-admin.form.input name="v2_alter_id" :label="trans('model.node.v2_alter_id')" />
@@ -187,16 +173,26 @@
                                 {{--                                <x-admin.form.input name="mux" type="checkbox" :label="trans('model.node.mux')" attribute="data-plugin=switchery onchange=switchSetting('mux')" --}}
                                 {{--                                                    :help="trans('admin.node.info.mux')" /> --}}
                             </div>
-
                             <!-- Trojan 设置部分 -->
                             <div class="trojan-setting">
                                 <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" />
+                                <x-admin.form.input name="allow_insecure" type="checkbox" :label="trans('model.node.allow_insecure')" attribute="data-plugin=switchery" />
+                            </div>
+                            <!-- Hysteria2 设置部分 -->
+                            <div class="hy2-setting">
+                                <x-admin.form.input name="port" type="number" :label="trans('model.node.service_port')" />
+                                <x-admin.form.input name="ports" :label="trans('model.node.ports')" :help="trans('admin.node.info.ports')" />
+                                <x-admin.form.select name="obfs" :label="trans('model.node.obfs')" :placeholder="trans('admin.node.info.v2_cover.none')" :options="['salamander' => 'Salamander']" />
+                                <x-admin.form.input name="obfs_param" :label="trans('model.node.obfs_param')" :placeholder="trans('model.node.service_password')" />
+                                <x-admin.form.input name="upload_mbps" type="number" :label="trans('model.node.upload_mbps')" append="Mbps" />
+                                <x-admin.form.input name="download_mbps" type="number" :label="trans('model.node.download_mbps')" append="Mbps" />
+
+                                <x-admin.form.input name="ignore_client_bandwidth" type="checkbox" :label="trans('model.node.ignore_client_bandwidth')" attribute="data-plugin=switchery" />
+                                <x-admin.form.input name="allow_insecure" type="checkbox" :label="trans('model.node.allow_insecure')" attribute="data-plugin=switchery" />
                             </div>
                         </div>
-
                         <x-admin.form.input name="is_udp" type="checkbox" :label="trans('model.node.udp')" attribute="data-plugin=switchery" />
                         <x-admin.form.input name="status" type="checkbox" :label="trans('common.status.attribute')" attribute="data-plugin=switchery" />
-
                         <div class="col-12 form-actions text-right">
                             <a class="btn btn-secondary" href="{{ route('admin.node.index') }}">{{ trans('common.back') }}</a>
                             <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
@@ -206,7 +202,6 @@
             </x-admin.form.container>
         </x-ui.panel>
     </div>
-
     <!-- 节点结果模态框 -->
     <x-ui.modal id="nodeModal" :title="isset($node) ? trans('admin.node.create_operations') : trans('admin.node.update_operations')" size="lg">
     </x-ui.modal>
@@ -266,16 +261,13 @@
 
             const currentDate = new Date(nextRenewalDate);
             const originalDay = currentDate.getDate();
-
             if (termUnit === "months") {
                 // 获取当前月份和年份
                 let targetMonth = currentDate.getMonth() + termValue;
                 let targetYear = currentDate.getFullYear() + Math.floor(targetMonth / 12);
                 targetMonth = targetMonth % 12;
-
                 // 先将日期设置为目标月的同一天
                 currentDate.setFullYear(targetYear, targetMonth, originalDay);
-
                 // 检查是否因月份天数不同而被自动调整
                 if (currentDate.getMonth() !== targetMonth) {
                     // 如果被调整，说明目标月份的天数比原始日期少
@@ -292,7 +284,6 @@
                     currentDate[`get${adjustments[termUnit]}`]() + termValue
                 );
             }
-
             // 显示计算结果（如果需要）
             if ($("#next_next_renewal_date").length) {
                 nextNextRenewalDate.val(currentDate.toISOString().split("T")[0]);
@@ -302,10 +293,6 @@
         $(document).ready(function() {
             // 初始化UI元素
             initializeUI();
-
-            // 绑定事件
-            bindEvents();
-
             // 准备节点数据
             let nodeData = {
                 is_ddns: 0,
@@ -325,7 +312,6 @@
                 relay_node_id: '',
                 type: 1
             };
-
             @isset($node)
                 // 反向解析节点数据以适配表单字段
                 const node = @json($node);
@@ -334,7 +320,6 @@
                     ...node,
                     v2_tls: node.type === 2 ? (node?.v2_tls === 'tls' ? 1 : 0) : undefined,
                 };
-
                 // 处理订阅期限字段
                 if (node.subscription_term) {
                     const [value, unit] = node.subscription_term.split(" ");
@@ -345,7 +330,8 @@
             @else
                 setupBroadcastChannel('create');
             @endisset
-
+            // 绑定事件
+            bindEvents();
             // 自动填充表单
             autoPopulateForm(nodeData);
             calculateNextNextRenewalDate();
@@ -358,7 +344,7 @@
 
         function bindEvents() {
             $("input:radio[name='type']").on("change", updateServiceType);
-            $("#obfs").on("changed.bs.select", toggleObfsParam);
+            $("select[name='obfs']").on("changed.bs.select", toggleObfsParam);
             $("#relay_node_id").on("changed.bs.select", toggleRelayConfig);
             $("#v2_net").on("changed.bs.select", updateV2RaySettings);
             $(document).on("change", "#next_renewal_date, #subscription_term_value, #subscription_term_unit",
@@ -419,14 +405,12 @@
             if (!data.sub_operation || data.sub_operation === 'list' || data.sub_operation === 'unchanged') {
                 $operationItem.find('i:first').replaceWith(getStatusIcon(data.status));
             }
-
             // 处理子操作（如 DDNS 操作、IP列表等）
             if (data.sub_operation) {
                 handleSubOperation($operationItem, data);
             } else if (data.message) {
                 $operationItem.find(".operation-message").text(data.message);
             }
-
             // 检查是否所有操作都已完成
             showCompletionButton();
         }
@@ -521,16 +505,19 @@
                 1: [".ss-setting", ".ssr-setting"],
                 2: [".v2ray-setting", "#v2_port"],
                 3: [".trojan-setting", "#trojan_port"],
-                4: [".ss-setting", ".ssr-setting"]
+                4: [".ss-setting", ".ssr-setting"],
+                5: [".hy2-setting", "#hy2_port"]
             };
-            $(".ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting").hide();
+            $(".ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting, .hy2-setting").hide();
             Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(",")).hide());
             (settingsMap[type] || []).forEach(selector => $(selector).show());
         }
 
         function toggleObfsParam() {
-            const $obfsParam = $("#obfs_param");
-            const show = $("#obfs").val() !== "plain";
+            const $obfsSelect = $(this);
+            const $parentContainer = $obfsSelect.closest('.ssr-setting, .hy2-setting');
+            const $obfsParam = $parentContainer.find('[name="obfs_param"]').first();
+            const show = $obfsSelect.val() && $obfsSelect.val() !== "plain";
             $obfsParam.closest('.form-group').toggle(show);
             if (!show) $obfsParam.val("");
         }
@@ -588,17 +575,14 @@
             if ($submitBtn.hasClass('disabled')) {
                 return false;
             }
-
             // 禁用提交按钮以防止重复提交
             $submitBtn.addClass('disabled').prop('disabled', true);
             // 收集表单数据
             const data = collectFormData('.form-horizontal');
-
             // 拼接 subscription_term
             const termValue = $("#subscription_term_value").val();
             const termUnit = $("#subscription_term_unit").val();
             data["subscription_term"] = termValue ? `${termValue} ${termUnit}` : null;
-
             // 发送 AJAX 请求
             ajaxRequest({
                 url: '{{ isset($node) ? route('admin.node.update', $node['id']) : route('admin.node.store') }}',
@@ -609,7 +593,6 @@
                     if (ret.status !== 'success') {
                         // 隐藏可能已经显示的 modal
                         $('#nodeModal').modal('hide');
-
                         handleResponse(ret, {
                             redirectUrl: '{{ route('admin.node.index') . (Request::getQueryString() ? '?' . Request::getQueryString() : '') }}',
                         });
@@ -618,17 +601,10 @@
                 error: function(xhr) {
                     // 隐藏可能已经显示的 modal
                     $('#nodeModal').modal('hide');
-
                     // 处理验证错误
-                    if (!window.broadcastingManager.isConnected()) {
-                        // 广播连接错误
-                        window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
-                    } else {
-                        // 其他错误
-                        handleErrors(xhr, {
-                            form: '.form-horizontal'
-                        });
-                    }
+                    handleErrors(xhr, {
+                        form: '.form-horizontal'
+                    });
                 },
                 complete: function() {
                     $submitBtn.removeClass('disabled').prop('disabled', false);

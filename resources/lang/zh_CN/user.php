@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => '自定义订阅',
         'error' => '订阅地址更新失败',
+        'protocol_only' => '仅包含 :protocol 节点',
         'exchange_warning' => '<p>更换订阅地址将导致</p><ol class="text-left"><li>旧地址立即失效；</li><li>节点连接密码被更改；</li></ol>',
         'info' => [
             'download' => '已用下行',
@@ -227,11 +228,7 @@ return [
             'upload' => '已用上行',
         ],
         'link' => '订阅链接',
-        'ss_only' => '仅SS订阅',
-        'ssr_only' => 'SSR订阅（含SS）',
         'tips' => '警告：此链接仅限个人使用，传播将导致封号',
-        'trojan_only' => '仅Trojan订阅',
-        'v2ray_only' => '仅V2Ray订阅',
         'page' => [
             'get_link' => '获取链接',
             'connect' => '连接&使用',

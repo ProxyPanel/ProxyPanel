@@ -38,7 +38,7 @@ class Surge implements Client
 
         $webName = sysConfig('website_name');
         header("content-disposition:attachment;filename*=UTF-8''".rawurlencode($webName).'.conf');
-        $proxyProfiles = Protocols\Surge::build($servers);
+        $proxyProfiles = Formatters\Surge::build($servers);
 
         if (sysConfig('is_custom_subscribe')) {
             $upload = formatBytes($user->u);

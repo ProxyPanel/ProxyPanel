@@ -69,6 +69,11 @@ return [
         'network_type' => 'Loại mạng',
     ],
     'node' => [
+        'allow_insecure' => 'Cho phép không an toàn',
+        'upload_mbps' => 'Băng thông tải lên máy chủ',
+        'download_mbps' => 'Băng thông tải xuống máy chủ',
+        'ignore_client_bandwidth' => 'Bỏ qua băng thông khách hàng',
+        'ports' => 'Nhảy cổng',
         'attribute' => 'Nút',
         'client_limit' => 'Giới hạn thiết bị',
         'country' => 'Quốc gia·Khu vực',

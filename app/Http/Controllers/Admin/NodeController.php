@@ -137,7 +137,18 @@ class NodeController extends Controller
                 break;
             case 3:
                 $profile = [
-                    'allow_insecure' => false,
+                    'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
+                ];
+                break;
+            case 5: // Hysteria2
+                $profile = [
+                    'obfs' => $info['obfs'] ?? null,
+                    'obfs_param' => $info['obfs_param'] ?? null,
+                    'upload_mbps' => $info['upload_mbps'] ?? null,
+                    'download_mbps' => $info['download_mbps'] ?? null,
+                    'ignore_client_bandwidth' => (bool) ($info['ignore_client_bandwidth'] ?? false),
+                    'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
+                    'ports' => $info['ports'] ?? null,
                 ];
                 break;
             case 1:

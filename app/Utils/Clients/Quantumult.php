@@ -9,8 +9,8 @@
 namespace App\Utils\Clients;
 
 use App\Models\User;
-use App\Utils\Clients\Protocols\QuantumultX;
-use App\Utils\Clients\Protocols\URLSchemes;
+use App\Utils\Clients\Formatters\QuantumultX;
+use App\Utils\Clients\Formatters\URLSchemes;
 use App\Utils\Library\Templates\Client;
 
 class Quantumult implements Client
@@ -24,8 +24,8 @@ class Quantumult implements Client
             header("Subscription-Userinfo: upload=$user->u; download=$user->d; total=$user->transfer_enable; expire=".strtotime($user->expired_at));
         }
 
-        if (str_contains($target, 'quantumult%20x')) {
-            return QuantumultX::build($servers, true);
+        if (str_contains($target, 'quantumult%20x') || str_contains($target, 'quantumult x')) {
+            return QuantumultX::build($servers);
         }
 
         return URLSchemes::build($servers);

@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ WebSocket転送でnone暗号化は使用禁止',
             'v2_net_hint' => '⚠️ WebSocket転送にはTLS有効化が必要',
             'v2_tls_provider_hint' => 'バックエンド差異説明：',
+            'ports' => 'クライアントは初期接続用にランダムにポートを選択し、定期的に別のポートにジャンプします。<br/> 書式例: <code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => 'ノード作成操作',
         'update_operations' => 'ノード作成操作',

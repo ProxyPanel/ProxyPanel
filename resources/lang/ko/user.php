@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => '사용자 정의 구독',
         'error' => '구독 주소 업데이트에 실패했습니다',
+        'protocol_only' => ':protocol 노드만 포함',
         'exchange_warning' => '<p>구독 주소 변경으로 인해</p><ol class="text-left"><li>기존 주소는 즉시 무효가 됩니다</li><li>노드 연결 비밀번호가 변경됩니다</li></ol>',
         'info' => [
             'download' => '사용한 다운로드',
@@ -227,11 +228,7 @@ return [
             'upload' => '사용한 업로드',
         ],
         'link' => '구독 링크',
-        'ss_only' => 'SS 전용 구독',
-        'ssr_only' => 'SSR 구독(SS 포함)',
         'tips' => '경고: 이 링크는 개인 사용 전용입니다. 공유하면 계정 정지의 원인이 됩니다',
-        'trojan_only' => 'Trojan 전용 구독',
-        'v2ray_only' => 'V2Ray 전용 구독',
         'page' => [
             'get_link' => '링크 받기',
             'connect' => '연결·사용',

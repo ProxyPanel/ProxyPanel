@@ -73,6 +73,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('reload/{node?}', 'reload')->name('reload'); // 重载节点
         Route::resource('auth', NodeAuthController::class)->except(['create', 'show', 'edit']); // 节点授权相关
         Route::resource('cert', CertController::class)->except('show'); // 节点域名tls相关
+        Route::get('/deployment/{node}', [NodeAuthController::class, 'getDeploymentConfig'])->name('deployment'); // 获取节点部署配置
     });
 
     Route::resource('rule', RuleController::class)->except('create', 'edit', 'show'); // 节点审计规则管理

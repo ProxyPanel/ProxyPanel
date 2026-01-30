@@ -69,6 +69,11 @@ return [
         'network_type' => '网络类型',
     ],
     'node' => [
+        'allow_insecure' => '允许不安全连接',
+        'upload_mbps' => '服务器上传带宽',
+        'download_mbps' => '服务器下载带宽',
+        'ignore_client_bandwidth' => '忽略客户端带宽设置',
+        'ports' => '端口跳跃',
         'attribute' => '节点',
         'client_limit' => '设备限制',
         'country' => '国家/地区',

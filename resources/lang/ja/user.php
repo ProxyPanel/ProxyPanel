@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => 'カスタムサブスクリプション',
         'error' => 'サブスクリプションアドレスの更新に失敗しました',
+        'protocol_only' => ':protocol ノードのみを含む',
         'exchange_warning' => '<p>サブスクリプションアドレスの変更により</p><ol class="text-left"><li>旧アドレスは即座に無効になります</li><li>ノード接続パスワードが変更されます</li></ol>',
         'info' => [
             'download' => '使用済みダウンロード',
@@ -227,11 +228,7 @@ return [
             'upload' => '使用済みアップロード',
         ],
         'link' => 'サブスクリプションリンク',
-        'ss_only' => 'SS専用サブスクリプション',
-        'ssr_only' => 'SSRサブスクリプション（SS含む）',
         'tips' => '警告：このリンクは個人使用限定です。共有するとアカウント停止の原因となります',
-        'trojan_only' => 'Trojan専用サブスクリプション',
-        'v2ray_only' => 'V2Ray専用サブスクリプション',
         'page' => [
             'get_link' => 'リンク取得',
             'connect' => '接続・使用',

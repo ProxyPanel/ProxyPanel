@@ -69,6 +69,11 @@ return [
         'network_type' => 'ネットワークタイプ',
     ],
     'node' => [
+        'allow_insecure' => '安全でない接続を許可',
+        'upload_mbps' => 'サーバー上り帯域',
+        'download_mbps' => 'サーバーダウンロード帯域',
+        'ignore_client_bandwidth' => 'クライアント帯域を無視',
+        'ports' => 'ポートホッピング',
         'attribute' => 'ノード',
         'client_limit' => 'デバイス制限',
         'country' => '国・地域',

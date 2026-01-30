@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => 'Custom Subscription',
         'error' => 'Subscription update failed',
+        'protocol_only' => 'Contains :protocol nodes only',
         'exchange_warning' => '<p>Changing your subscription link will:</p><ol class="text-left"><li>Immediately disable the old link;</li><li>Regenerate your connection password;</li></ol>',
         'info' => [
             'download' => 'Download Used',
@@ -227,11 +228,7 @@ return [
             'upload' => 'Upload Used',
         ],
         'link' => 'Subscription Link',
-        'ss_only' => 'SS Only',
-        'ssr_only' => 'SSR (Includes SS)',
         'tips' => 'Warning: This link is for personal use only. Sharing may result in account suspension.',
-        'trojan_only' => 'Trojan Only',
-        'v2ray_only' => 'V2Ray Only',
         'page' => [
             'get_link' => 'Get link',
             'connect' => 'Connect & Use',

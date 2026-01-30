@@ -29,8 +29,6 @@ class NodeController extends Controller
 
     public function show(Request $request, Node $node, ProxyService $proxyServer): JsonResponse
     { // 节点详细信息
-        $server = $proxyServer->getProxyConfig($node);
-
-        return response()->json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
+        return response()->json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($node, $request->input('type') !== 'text')]);
     }
 }

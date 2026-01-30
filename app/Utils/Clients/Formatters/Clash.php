@@ -1,30 +1,37 @@
 <?php
 
-namespace App\Utils\Clients\Protocols;
+namespace App\Utils\Clients\Formatters;
 
-use App\Utils\Library\Templates\Protocol;
+use App\Utils\Library\Templates\Formatter;
 
-class Clash implements Protocol
+class Clash implements Formatter
 {
+    // https://clash.wiki/configuration/outbound.html
     public static function build(array $servers): array
     {
         $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
 
-        $names = [];
-        $proxies = [];
-
         foreach ($servers as $server) {
             if (in_array($server['type'], $validTypes, true)) {
-                $names[] = $server['name'];
-                $proxies[] = call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
+                $proxy = call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
+                if ($proxy) {
+                    $ids[] = $server['id'];
+                    $proxies[] = $proxy;
+                }
             }
         }
 
-        return ['name' => $names, 'proxies' => $proxies];
+        return ['ids' => $ids ?? [], 'proxies' => $proxies ?? []];
     }
 
-    public static function buildShadowsocks(array $server): array
+    public static function buildShadowsocks(array $server): ?array
     {
+        $supportedMethods = ['aes-128-gcm', 'aes-192-gcm', 'aes-256-gcm', 'chacha20-ietf-poly1305', 'xchacha20-ietf-poly1305', 'aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'rc4-md5', 'chacha20-ietf', 'xchacha20', 'aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr'];
+
+        if (! in_array($server['method'], $supportedMethods, true)) {
+            return null;
+        }
+
         return [
             'name' => $server['name'],
             'type' => 'ss',
@@ -36,8 +43,18 @@ class Clash implements Protocol
         ];
     }
 
-    public static function buildShadowsocksr(array $server): array
+    public static function buildShadowsocksr(array $server): ?array
     {
+        $supportedMethods = ['aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'rc4-md5', 'chacha20-ietf', 'xchacha20', 'none'];
+
+        $supportedObfuscations = ['plain', 'http_simple', 'http_post', 'random_head', 'tls1.2_ticket_auth', 'tls1.2_ticket_fastauth'];
+
+        $supportedProtocols = ['origin', 'auth_sha1_v4', 'auth_aes128_md5', 'auth_aes128_sha1', 'auth_chain_a', 'auth_chain_b'];
+
+        if (! in_array($server['method'], $supportedMethods, true) || ! in_array($server['obfs'], $supportedObfuscations, true) || ! in_array($server['protocol'], $supportedProtocols, true)) {
+            return null;
+        }
+
         return [
             'name' => $server['name'],
             'type' => 'ssr',
@@ -53,8 +70,15 @@ class Clash implements Protocol
         ];
     }
 
-    public static function buildVmess(array $server): array
+    public static function buildVmess(array $server): ?array
     {
+        $supportedMethods = ['auto', 'aes-128-gcm', 'chacha20-poly1305', 'none'];
+
+        $supportedNetworks = ['ws', 'h2', 'http', 'grpc'];
+
+        if (! in_array($server['method'], $supportedMethods, true) || ($server['v2_net'] && ! in_array($server['v2_net'], $supportedNetworks, true))) {
+            return null;
+        }
         $array = [
             'name' => $server['name'],
             'type' => 'vmess',
@@ -102,6 +126,15 @@ class Clash implements Protocol
             $array['sni'] = $server['sni'];
         }
 
+        if (isset($server['allow_insecure'])) {
+            $array['skip-cert-verify'] = $server['allow_insecure'];
+        }
+
         return $array;
+    }
+
+    public static function buildHysteria2(array $server): array|string|null
+    {
+        return null;
     }
 }

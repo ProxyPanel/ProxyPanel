@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => 'Đăng ký tùy chỉnh',
         'error' => 'Cập nhật địa chỉ đăng ký thất bại',
+        'protocol_only' => 'Chỉ chứa nút :protocol',
         'exchange_warning' => '<p>Do thay đổi địa chỉ đăng ký</p><ol class="text-left"><li>Địa chỉ cũ sẽ vô hiệu ngay lập tức</li><li>Mật khẩu kết nối nút sẽ thay đổi</li></ol>',
         'info' => [
             'download' => 'Đã tải xuống',
@@ -227,11 +228,7 @@ return [
             'upload' => 'Đã tải lên',
         ],
         'link' => 'Link đăng ký',
-        'ss_only' => 'Đăng ký chuyên dụng SS',
-        'ssr_only' => 'Đăng ký SSR (bao gồm SS)',
         'tips' => 'Cảnh báo: Link này chỉ dành cho sử dụng cá nhân, chia sẻ sẽ dẫn đến cấm tài khoản',
-        'trojan_only' => 'Đăng ký chuyên dụng Trojan',
-        'v2ray_only' => 'Đăng ký chuyên dụng V2Ray',
         'page' => [
             'get_link' => 'Lấy link',
             'connect' => 'Kết nối·Sử dụng',

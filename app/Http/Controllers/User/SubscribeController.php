@@ -8,12 +8,15 @@ use App\Models\UserSubscribeLog;
 use App\Services\ProxyService;
 use App\Services\UserService;
 use App\Utils\IP;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class SubscribeController extends Controller
 {
-    private static ?int $subType;
+    private static ?int $subType = null;
+
+    private ?string $target;
 
     private ProxyService $proxyServer;
 
@@ -22,7 +25,7 @@ class SubscribeController extends Controller
         $this->proxyServer = $proxyServer;
     }
 
-    public function index(Request $request, string $code)
+    public function index(Request $request, string $code): RedirectResponse|View
     {
         // 检查订阅码格式
         if (! preg_match('/^[0-9A-Za-z]+$/', $code)) {
@@ -42,9 +45,16 @@ class SubscribeController extends Controller
         ]);
     }
 
-    public function getSubscribeByCode(Request $request, string $code): RedirectResponse|string
+    public function getSubscribeByCode(Request $request, string $code): string
     { // 通过订阅码获取订阅信息
-        self::$subType = is_numeric($request->input('type')) ? (int) $request->input('type') : null;
+        if (is_numeric($request->input('type'))) {
+            self::$subType = (int) $request->input('type');
+        }
+
+        $this->target = strtolower($request->userAgent());
+        if ($request->has('target')) {
+            $this->target = strtolower($request->input('target')).'/'.$this->target;
+        }
 
         // 检查订阅码格式
         if (! preg_match('/^[0-9A-Za-z]+$/', $code)) {
@@ -97,20 +107,18 @@ class SubscribeController extends Controller
         $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode([
             'Host' => $request->getHost(),
             'User-Agent' => $request->userAgent(),
-        ]));
+        ], JSON_THROW_ON_ERROR));
 
         // 返回订阅内容
-        return $this->proxyServer->getProxyText(
-            strtolower($request->input('target') ?? ($request->userAgent() ?? '')),
-            self::$subType
-        );
+        return $this->proxyServer->buildClientConfig($this->target, self::$subType);
     }
 
     private function failed(string $text): string
     { // 抛出错误的节点信息，用于兼容防止客户端订阅失败
-        $this->proxyServer->failedProxyReturn($text, self::$subType ?? 1);
+        $this->proxyServer->failedProxyReturn($text, self::$subType ?? 0);
 
-        return '';
+        // 返回错误配置而不是空字符串，以确保客户端收到有效内容
+        return $this->proxyServer->buildClientConfig($this->target, self::$subType);
     }
 
     private function subscribeLog(int $subscribeId, ?string $ip, string $headers): void

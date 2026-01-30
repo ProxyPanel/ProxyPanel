@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Utils\Clients\Protocols;
+namespace App\Utils\Clients\Formatters;
 
-use App\Utils\Library\Templates\Protocol;
+use App\Utils\Library\Templates\Formatter;
 
-class URLSchemes implements Protocol
+class URLSchemes implements Formatter
 {
     public static function build(array $servers, bool $isEncode = true): string
     {
-        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
         $url = '';
 
         foreach ($servers as $server) {
@@ -64,13 +64,35 @@ class URLSchemes implements Protocol
     }
 
     public static function buildTrojan(array $server): string
-    {
+    { // https://p4gefau1t.github.io/trojan-go/developer/url/
         $name = rawurlencode($server['name']);
+        $passwd = rawurlencode($server['passwd']);
         $query = '';
         if (array_key_exists('sni', $server)) {
             $query = "?sni={$server['sni']}";
         }
 
-        return "trojan://{$server['passwd']}@{$server['host']}:{$server['port']}$query#$name".PHP_EOL;
+        return "trojan://$passwd@{$server['host']}:{$server['port']}$query#$name".PHP_EOL;
+    }
+
+    public static function buildHysteria2(array $server): string
+    { // https://hysteria.network/zh/docs/developers/URI-Scheme/
+        $name = rawurlencode($server['name']);
+        $passwd = rawurlencode($server['passwd']);
+        $params = [
+            'sni' => $server['host'],
+            'insecure' => $server['allow_insecure'] ? 1 : 0,
+        ];
+
+        if (isset($server['obfs']) && $server['obfs']) {
+            $params['obfs'] = $server['obfs'];
+            $params['obfs-password'] = $server['obfs_param'];
+        }
+
+        $query = empty($params) ? '' : '/?'.http_build_query($params);
+
+        $port = $server['ports'] ?? $server['port'];
+
+        return "hysteria2://$passwd@{$server['host']}:$port$query#$name".PHP_EOL;
     }
 }

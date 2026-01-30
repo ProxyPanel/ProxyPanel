@@ -219,6 +219,7 @@ return [
     'subscribe' => [
         'custom' => 'Benutzerdefiniertes Abonnement',
         'error' => 'Abonnement-Adresse-Update fehlgeschlagen',
+        'protocol_only' => 'Enthält nur :protocol Knoten',
         'exchange_warning' => '<p>Wechsel der Abonnement-Adresse führt zu</p><ol class="text-left"><li>Sofortige Ungültigkeit der alten Adresse;</li><li>Änderung des Knoten-Verbindungspassworts;</li></ol>',
         'info' => [
             'download' => 'Verwendeter Download',
@@ -227,11 +228,7 @@ return [
             'upload' => 'Verwendeter Upload',
         ],
         'link' => 'Abonnement-Link',
-        'ss_only' => 'Nur SS-Abonnement',
-        'ssr_only' => 'SSR-Abonnement (inkl. SS)',
         'tips' => 'Warnung: Dieser Link ist nur für den persönlichen Gebrauch, Verbreitung führt zur Kontosperrung',
-        'trojan_only' => 'Nur Trojan-Abonnement',
-        'v2ray_only' => 'Nur V2Ray-Abonnement',
         'page' => [
             'get_link' => 'Link abrufen',
             'connect' => 'Verbinden & Nutzen',

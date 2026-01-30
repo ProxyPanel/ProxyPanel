@@ -191,14 +191,7 @@ class Node extends Model
     protected function typeLabel(): Attribute
     {
         return Attribute::make(
-            get: fn () => match ($this->type) {
-                0 => 'Shadowsocks',
-                1 => 'ShadowsocksR',
-                2 => 'V2Ray',
-                3 => 'Trojan',
-                4 => 'VNet',
-                default => 'UnKnown',
-            },
+            get: fn () => config('common.proxy_protocols')[$this->type] ?? 'UnKnown',
         );
     }
 

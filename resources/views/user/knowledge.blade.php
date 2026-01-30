@@ -58,22 +58,10 @@
                                                                                     {{ __('user.subscribe.custom') }}
                                                                                 </button>
                                                                                 <div class="dropdown-menu" role="menu" aria-labelledby="sublink">
-                                                                                    @if (in_array('ss', $subType, true))
+                                                                                    @foreach ($subType as $type => $protocol)
                                                                                         <a class="dropdown-item" role="menuitem"
-                                                                                           onclick="linkManager('0')">{{ __('user.subscribe.ss_only') }}</a>
-                                                                                    @endif
-                                                                                    @if (in_array('ssr', $subType, true))
-                                                                                        <a class="dropdown-item" role="menuitem"
-                                                                                           onclick="linkManager('1')">{{ __('user.subscribe.ssr_only') }}</a>
-                                                                                    @endif
-                                                                                    @if (in_array('v2', $subType, true))
-                                                                                        <a class="dropdown-item" role="menuitem"
-                                                                                           onclick="linkManager('2')">{{ __('user.subscribe.v2ray_only') }}</a>
-                                                                                    @endif
-                                                                                    @if (in_array('trojan', $subType, true))
-                                                                                        <a class="dropdown-item" role="menuitem"
-                                                                                           onclick="linkManager('3')">{{ __('user.subscribe.trojan_only') }}</a>
-                                                                                    @endif
+                                                                                           onclick="linkManager('{{ $type }}')">{{ __('user.subscribe.protocol_only', ['protocol' => $protocol]) }}</a>
+                                                                                    @endforeach
                                                                                 </div>
                                                                             </div>
                                                                         @endif
@@ -95,9 +83,9 @@
                                             @foreach ($articles as $article)
                                                 <div class="panel">
                                                     <div class="panel-heading" id="article_Q{{ $article->id }}">
-                                                        <a class="panel-title collapsed" data-toggle="collapse" href="#article_A{{ $article->id }}"
-                                                           role="tab" aria-controls="article_A{{ $article->id }}" aria-expanded="false"
-                                                           style="display: flex;" onclick="getArticle('{{ $article->id }}')">
+                                                        <a class="panel-title collapsed" data-toggle="collapse" href="#article_A{{ $article->id }}" role="tab"
+                                                           aria-controls="article_A{{ $article->id }}" aria-expanded="false" style="display: flex;"
+                                                           onclick="getArticle('{{ $article->id }}')">
                                                             @if ($article->logo)
                                                                 <img class="mr-5" src="{{ asset($article->logo) }}" alt=""
                                                                      style="height: 36px; align-self: center" loading="lazy" />

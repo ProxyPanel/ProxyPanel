@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Client\AuthController;
 use App\Http\Controllers\Api\Client\ClientController;
 use App\Http\Controllers\Api\WebApi\CoreController;
+use App\Http\Controllers\Api\WebApi\Hysteria2Controller;
 use App\Http\Controllers\Api\WebApi\SSController;
 use App\Http\Controllers\Api\WebApi\SSRController;
 use App\Http\Controllers\Api\WebApi\TrojanController;
@@ -50,6 +51,11 @@ Route::domain(sysConfig('web_api_url') ?: sysConfig('website_url'))->middleware(
     Route::prefix('trojan/v1')->controller(TrojanController::class)->group(function () {
         Route::get('node/{node}', 'getNodeInfo'); // 获取节点信息
         Route::get('userList/{node}', 'getUserList'); // 获取节点可用的用户列表
+    });
+
+    // Hysteria2后端WEBAPI V1版
+    Route::prefix('hysteria2/v1')->controller(Hysteria2Controller::class)->withoutMiddleware('webApi')->group(function () {
+        Route::post('auth/{node}', 'authenticate')->name('api.hysteria2.auth'); // Hysteria2 HTTP验证端点
     });
 });
 

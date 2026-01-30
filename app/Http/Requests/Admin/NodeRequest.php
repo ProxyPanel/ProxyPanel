@@ -8,7 +8,7 @@ class NodeRequest extends FormRequest
 {
     public function rules(): array
     {
-        return [
+        $rules = [
             'is_ddns' => 'required|boolean',
             'name' => 'required|string',
             'server' => 'required_if:is_ddns,1|nullable|ends_with:'.implode(',', config('domains')),
@@ -29,16 +29,16 @@ class NodeRequest extends FormRequest
             'sort' => 'required|numeric|between:0,255',
             'is_udp' => 'required|boolean',
             'status' => 'required|boolean',
-            'type' => 'required|numeric|between:0,4',
+            'type' => 'required|numeric|between:0,5',
             'method' => 'required_if:type,0,1,4|exists:ss_config,name',
             'protocol' => 'required_if:type,1,4|exists:ss_config,name',
             'protocol_param' => 'nullable|string',
-            'obfs' => 'required_if:type,1,4|exists:ss_config,name',
+            'obfs' => 'required_if:type,1,4',
             'obfs_param' => 'nullable|string',
             'is_display' => 'required|numeric|between:0,3',
             'detection_type' => 'required|numeric|between:0,3',
             'single' => 'required_if:type,0,1,4|boolean',
-            'port' => 'nullable|numeric|between:1,65535|different:push_port|required_if:single,1|required_if:type,2|required_if:type,3',
+            'port' => 'nullable|numeric|between:1,65535|different:push_port|required_if:single,1|required_if:type,2,3,5',
             'passwd' => 'exclude_unless:type,1,type,4|required_if:single,1|string|nullable',
             'v2_alter_id' => 'nullable|numeric|between:0,65535',
             'v2_method' => 'required_if:type,2',
@@ -50,7 +50,19 @@ class NodeRequest extends FormRequest
             'v2_tls' => 'required_if:type,2|boolean',
             'tls_provider' => 'nullable|json',
             'relay_node_id' => 'nullable|exists:node,id',
+            'upload_mbps' => 'nullable|numeric|min:0',
+            'download_mbps' => 'nullable|numeric|min:0',
+            'ignore_client_bandwidth' => 'nullable|boolean',
+            'allow_insecure' => 'nullable|boolean',
+            'ports' => 'nullable|string',
         ];
+
+        // 对于 Hysteria2 (type=5)，当 obfs 不为 'none' 时，obfs_param 是必填的
+        if ($this->type === '5' && ! empty($this->obfs)) {
+            $rules['obfs_param'] = 'required|string';
+        }
+
+        return $rules;
     }
 
     public function messages(): array

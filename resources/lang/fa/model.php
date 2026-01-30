@@ -69,6 +69,11 @@ return [
         'network_type' => 'نوع شبکه',
     ],
     'node' => [
+        'allow_insecure' => 'اجازه اتصال ناامن',
+        'upload_mbps' => 'پهنای باند آپلود سرور',
+        'download_mbps' => 'پهنای باند دانلود سرور',
+        'ignore_client_bandwidth' => 'نادیده گرفتن پهنای باند کلاینت',
+        'ports' => 'پرش پورت',
         'attribute' => 'نود',
         'client_limit' => 'محدودیت دستگاه',
         'country' => 'کشور/منطقه',

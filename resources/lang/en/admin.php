@@ -277,7 +277,7 @@ return [
             ],
             'empty' => 'No pending nodes',
             'generating_all' => 'Generate keys for all nodes?',
-            'reset_auth' => 'Reset authorization key',
+            'reset_auth' => 'Reset Authorization Key',
         ],
         'cert' => [
             'counts' => 'Total <code>:num</code> SSL certificates',
@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ Do not use "none" encryption for WebSocket',
             'v2_net_hint' => '⚠️ WebSocket requires TLS',
             'v2_tls_provider_hint' => 'Different backends have different configurations:',
+            'ports' => 'Client will randomly select a port for initial connection and periodically hop to another port.<br/> Format reference: <code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => 'Node Creation Operations',
         'update_operations' => 'Node Update Operations',

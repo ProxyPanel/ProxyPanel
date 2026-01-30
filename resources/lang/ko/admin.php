@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ WebSocket 전송에서 none 암호화 사용 금지',
             'v2_net_hint' => '⚠️ WebSocket 전송에는 TLS 활성화 필요',
             'v2_tls_provider_hint' => '백엔드 차이 설명:',
+            'ports' => '클라이언트는 초기 연결을 위해 랜덤하게 포트를 선택하고 정기적으로 다른 포트로 점프합니다.<br/> 포맷 예시: <code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => '노드 생성 작업',
         'update_operations' => '노드 업데이트 작업',

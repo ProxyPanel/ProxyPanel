@@ -4,8 +4,6 @@
  * Developed based on
  * https://clash.wiki/configuration/configuration-reference.html
  * https://docs.gtk.pw/contents/urlscheme.html#%E4%B8%8B%E8%BD%BD%E9%85%8D%E7%BD%AE
- * https://opensource.clash.wiki/Dreamacro/clash/
- * https://stash.wiki/get-started
  */
 
 namespace App\Utils\Clients;
@@ -41,14 +39,22 @@ class Clash implements Client
 
         $config = Yaml::parseFile(base_path().$file_path);
 
-        $proxyProfiles = Protocols\Clash::build($servers);
+        // 按照核心区分配置
+        if (str_contains($target, 'clashforwindows') || str_contains($target, 'clashforandroid') || str_contains($target, 'clashx')) {
+            $proxyProfiles = Formatters\Clash::build($servers);
+        } elseif (str_contains($target, 'stash')) {
+            $proxyProfiles = Formatters\Stash::build($servers);
+        } else {
+            $proxyProfiles = Formatters\ClashMeta::build($servers);
+        }
 
         $config['proxies'] = array_merge($config['proxies'] ?: [], $proxyProfiles['proxies']);
+        $names = array_column($config['proxies'], 'name');
         foreach ($config['proxy-groups'] as $k => $v) {
             if (! is_array($config['proxy-groups'][$k]['proxies'])) {
                 continue;
             }
-            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $proxyProfiles['name']);
+            $config['proxy-groups'][$k]['proxies'] = array_merge($config['proxy-groups'][$k]['proxies'], $names);
         }
 
         array_unshift($config['rules'], 'DOMAIN,'.$_SERVER['HTTP_HOST'].',DIRECT'); // Set current sub-domain to be direct

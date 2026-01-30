@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Utils\Clients\Protocols;
+namespace App\Utils\Clients\Formatters;
 
-use App\Utils\Library\Templates\Protocol;
+use App\Utils\Library\Templates\Formatter;
 
-class QuantumultX implements Protocol
+class QuantumultX implements Formatter
 {
-    public static function build(array $servers, bool $isEncode = false): string
+    // https://github.com/crossutility/Quantumult-X
+    public static function build(array $servers, bool $isEncode = true): string
     {
         $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
         $url = '';
@@ -95,13 +96,18 @@ class QuantumultX implements Protocol
             "password={$server['passwd']}",
             'over-tls=true',
             $server['host'] ? "tls-host={$server['host']}" : '',
-            // Tips: allowInsecure=false = tls-verification=true
-            // $server['allow_insecure'] ? 'tls-verification=false' : 'tls-verification=true',
+            $server['allow_insecure'] ? 'tls-verification=false' : 'tls-verification=true',
             'fast-open=true',
             "udp-relay={$server['udp']}",
             "tag={$server['name']}",
         ]);
 
         return implode(',', $config).PHP_EOL;
+    }
+
+    public static function buildHysteria2(array $server): ?string
+    {
+        // TODO: QuantumultX does not support Hysteria2 currently.
+        return null;
     }
 }

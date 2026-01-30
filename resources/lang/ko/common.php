@@ -155,4 +155,5 @@ return [
     'updated_at' => '업데이트일시',
     'view' => '보기',
     'warning' => '경고',
+    'loading' => '로딩 중...',
 ];

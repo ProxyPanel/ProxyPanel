@@ -81,4 +81,13 @@ return [
         'telegram' => env('CONTACT_TELEGRAM', null),
         'qq' => env('CONTACT_QQ', null),
     ],
+
+    'proxy_protocols' => [
+        0 => 'Shadowsocks',
+        1 => 'ShadowsocksR',
+        2 => 'V2Ray',
+        3 => 'Trojan',
+        4 => 'VNET',
+        5 => 'Hysteria2',
+    ],
 ];

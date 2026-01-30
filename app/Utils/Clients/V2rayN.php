@@ -3,7 +3,7 @@
 namespace App\Utils\Clients;
 
 use App\Models\User;
-use App\Utils\Clients\Protocols\URLSchemes;
+use App\Utils\Clients\Formatters\URLSchemes;
 use App\Utils\Library\Templates\Client;
 
 class V2rayN implements Client

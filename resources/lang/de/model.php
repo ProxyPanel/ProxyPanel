@@ -69,6 +69,11 @@ return [
         'network_type' => 'Netzwerktyp',
     ],
     'node' => [
+        'allow_insecure' => 'Unsichere Verbindungen zulassen',
+        'upload_mbps' => 'Server Upload-Bandbreite',
+        'download_mbps' => 'Server Download-Bandbreite',
+        'ignore_client_bandwidth' => 'Client-Bandbreite ignorieren',
+        'ports' => 'Port Hopping',
         'attribute' => 'Knoten',
         'client_limit' => 'Client-Limit',
         'country' => 'Standort',

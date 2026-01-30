@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\NodeAuth;
+use App\Services\NodeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Str;
@@ -59,5 +60,10 @@ class NodeAuthController extends Controller
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+    }
+
+    public function getDeploymentConfig(Node $node): JsonResponse
+    {
+        return response()->json(['status' => 'success', 'data' => (new NodeService)->getNodeDeploymentConfig($node)]);
     }
 }

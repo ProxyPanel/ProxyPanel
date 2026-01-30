@@ -72,8 +72,9 @@ class CoreController extends Controller
             return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
 
+        $rate = $node->traffic_rate;
+
         foreach ($validator->validated() as $input) { // 处理用户流量数据
-            $rate = $node->traffic_rate;
             $u = $input['upload'] * $rate;
             $d = $input['download'] * $rate;
 

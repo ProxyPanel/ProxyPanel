@@ -4,98 +4,120 @@ namespace App\Services;
 
 use App\Models\Node;
 use App\Models\User;
-use App\Utils\Clients\Protocols\Text;
-use App\Utils\Clients\Protocols\URLSchemes;
+use App\Utils\Clients\Formatters\Text;
+use App\Utils\Clients\Formatters\URLSchemes;
 use Arr;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use ReflectionClass;
-use RuntimeException;
 
+/**
+ * 订阅代理服务
+ * 提供代理配置的生成、管理和格式化功能.
+ */
 class ProxyService
 {
-    private static array $servers;
+    private static array $servers = [];
 
-    private ?User $user;
+    private User $user;
 
     public function __construct(?User $user = null)
     {
         $this->user = $user ?? auth()->user();
     }
 
-    public function getProxyText(string $target, ?int $type = null): string
-    {
-        if (empty($this->getServers())) {
-            $servers = $this->getNodeList($type);
-            if (empty($servers)) {
-                $this->failedProxyReturn(trans('errors.subscribe.none'), $type);
-            } else {
-                if (sysConfig('rand_subscribe')) {// 打乱数组
-                    $servers = Arr::shuffle($servers);
-                }
+    public function buildClientConfig(?string $target = null, ?int $type = null): string
+    { // 构建客户端配置
+        $servers = $this->getServers($type);
 
-                $max = (int) sysConfig('subscribe_max');
-                if ($max && count($servers) > $max) { // 订阅数量限制
-                    $servers = Arr::random($servers, $max);
-                }
+        // 尝试匹配特定客户端
+        $classes = glob(app_path('Utils/Clients').'/*.php');
 
-                $this->setServers($servers);
+        foreach ($classes as $file) {
+            $className = 'App\\Utils\\Clients\\'.basename($file, '.php');
+
+            if (! class_exists($className)) {
+                continue;
+            }
+
+            $reflection = new ReflectionClass($className);
+
+            if (! $reflection->hasConstant('AGENT')) {
+                continue;
+            }
+
+            $agents = $reflection->getConstant('AGENT');
+            if (! is_array($agents)) {
+                continue;
+            }
+
+            foreach ($agents as $agent) {
+                if (str_contains($target ?? '', $agent)) {
+                    return (new $className)->getConfig($servers, $this->user, $target);
+                }
             }
         }
 
-        return $this->getClientConfig($target);
+        // 默认返回 URL 方案
+        return URLSchemes::build($servers);
     }
 
-    public function getServers(): array
+    private function getServers(?int $type): array
     {
-        return self::$servers ?? [];
+        if (empty(self::$servers)) {
+            $servers = $this->fetchAvailableNodes($type);
+
+            if (empty($servers)) {
+                $this->failedProxyReturn(trans('errors.subscribe.none'), $type);
+            } else {
+                self::$servers = $servers;
+            }
+        }
+
+        return self::$servers;
     }
 
-    public function getNodeList(?int $type = null, bool $isConfig = true): array|Collection
-    {
-        $query = $this->getUser()->nodes()->whereIn('is_display', [2, 3]); // 获取这个账号可用节点
+    public function fetchAvailableNodes(?int $type = null, bool $withConfigs = true): array|Collection
+    { // 获取用户可用的节点列表
+        $query = $this->user->nodes()
+            ->whereIn('is_display', [2, 3]) // 获取这个账号可用节点
+            ->with(['labels', 'country', 'relayNode']); // 预加载关联关系以避免N+1查询
 
-        if ($type === 1) {
+        if ($type === 1 || $type === 4) {
             $query->whereIn('type', [1, 4]);
         } elseif ($type !== null) {
             $query->whereType($type);
         }
 
-        $nodes = $query->orderByDesc('node.sort')->orderBy('node.id')->get();
+        // 根据配置决定是否随机排序，并应用数量限制
+        if (sysConfig('rand_subscribe')) {
+            $query->inRandomOrder();
+        } else {
+            $query->orderByDesc('node.sort')->orderBy('node.id');
+        }
 
-        if ($isConfig) {
-            $servers = [];
+        // 限制最大订阅数量
+        $max = (int) sysConfig('subscribe_max');
+        if ($max) {
+            $query->limit($max);
+        }
+
+        $nodes = $query->get();
+
+        if ($withConfigs) {
+            $configs = [];
             foreach ($nodes as $node) {
-                $servers[] = $this->getProxyConfig($node);
+                $configs[] = $this->generateNodeConfig($node);
             }
 
-            return $servers;
+            return $configs;
         }
 
         return $nodes;
     }
 
-    private function getUser(): User
-    {
-        if (! $this->user || ! $this->user->exists) {
-            $user = auth()->user();
-            if (! $user) {
-                throw new RuntimeException('User not authenticated');
-            }
-            $this->setUser($user);
-        }
-
-        return $this->user;
-    }
-
-    public function setUser(User $user): void
-    {
-        $this->user = $user;
-    }
-
-    public function getProxyConfig(Node $node): array
-    { // 提取节点信息
-        $user = $this->getUser();
+    public function generateNodeConfig(Node $node): array
+    { // 生成节点的完整配置
         $config = [
             'id' => $node->id,
             'name' => $node->name,
@@ -107,135 +129,106 @@ class ProxyService
             'udp' => $node->is_udp,
         ];
 
-        // 如果是中转节点，递归处理父节点配置
+        // 如果是中转节点，处理父节点配置
         if ($node->relay_node_id) {
-            $parent = $this->getProxyConfig($node->relayNode);
-            $config += Arr::except($parent, ['id', 'name', 'host', 'group', 'udp']);
-            if ($parent['type'] === 'trojan') {
-                $config['sni'] = $parent['host'];
+            $parentConfig = $this->generateNodeConfig($node->relayNode);
+            $config = array_merge($config, Arr::except($parentConfig, ['id', 'name', 'host', 'group', 'udp']));
+
+            if ($parentConfig['type'] === 'trojan') {
+                $config['sni'] = $parentConfig['host'];
             }
+
             $config['port'] = $node->port;
 
             return $config;
         }
 
         // 按节点类型生成特定配置
-        return array_merge($config, $this->generateProtocolConfig($node, $user));
-    }
-
-    private function generateProtocolConfig(Node $node, User $user): array
-    {
         return match ($node->type) {
             0 => [ // Shadowsocks
                 'type' => 'shadowsocks',
-                'port' => $node->port ?: $user->port,
-                'passwd' => $user->passwd,
+                'port' => $node->port ?: $this->user->port,
+                'passwd' => $this->user->passwd,
                 ...$node->profile,
             ],
             2 => [ // Vmess
                 'type' => 'vmess',
                 'port' => $node->port,
-                'uuid' => $user->vmess_id,
+                'uuid' => $this->user->vmess_id,
                 ...$node->profile,
             ],
             3 => [ // Trojan
                 'type' => 'trojan',
                 'port' => $node->port,
-                'passwd' => $user->passwd,
-                'sni' => '',
+                'passwd' => $this->user->passwd,
                 ...$node->profile,
             ],
-            default => $this->generateSSRConfig($node, $user), // 1, 4 => SSR
-        };
+            5 => [ // Hysteria2
+                'type' => 'hysteria2',
+                'port' => $node->port,
+                'passwd' => $this->user->port.':'.$this->user->passwd,
+                ...$node->profile,
+            ],
+            default => array_merge(
+                [ // 1, 4 => SSR
+                    'type' => 'shadowsocksr',
+                    ...$node->profile,
+                ],
+                ($node->profile['passwd'] ?? false) && $node->port
+                    ? [ // 单端口使用中转的端口
+                        'port' => $node->port,
+                        'protocol_param' => $this->user->port.':'.$this->user->passwd,
+                    ]
+                    : [
+                        'port' => $this->user->port,
+                        'passwd' => $this->user->passwd,
+                    ],
+                $node->type === 1
+                    ? [
+                        'method' => $this->user->method,
+                        'protocol' => $this->user->protocol,
+                        'obfs' => $this->user->obfs,
+                    ]
+                    : []
+            ),
+        } + $config;
     }
 
-    private function generateSSRConfig(Node $node, User $user): array
-    {
-        $config = [
-            'type' => 'shadowsocksr',
-            ...$node->profile,
-        ];
-
-        if ($node->profile['passwd'] && $node->port) {
-            // 单端口使用中转的端口
-            $config['port'] = $node->port;
-            $config['protocol_param'] = $user->port.':'.$user->passwd;
-        } else {
-            $config['port'] = $user->port;
-            $config['passwd'] = $user->passwd;
-            if ($node->type === 1) {
-                $config['method'] = $user->method;
-                $config['protocol'] = $user->protocol;
-                $config['obfs'] = $user->obfs;
-            }
-        }
-
-        return $config;
-    }
-
-    public function failedProxyReturn(string $text, ?int $type = 0): void
-    {
-        $types = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+    public function failedProxyReturn(string $message, int $type = 0): void
+    { // 设置错误代理返回（用于兼容客户端）
+        $types = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
 
         $addition = match ($type) {
-            0 => ['method' => 'none', 'passwd' => 'error'],
             1 => ['method' => 'none', 'passwd' => 'error', 'obfs' => 'origin', 'obfs_param' => '', 'protocol' => 'plain', 'protocol_param' => ''],
             2 => ['uuid' => '0', 'v2_alter_id' => 0, 'method' => 'auto'],
-            3 => ['passwd' => 'error']
+            3 => ['passwd' => 'error'],
+            5 => ['passwd' => 'error', 'sni' => 'error', 'insecure' => false],
+            default => ['method' => 'none', 'passwd' => 'error'],
         };
 
-        $this->setServers([['name' => $text, 'type' => $types[$type], 'host' => sysConfig('website_url'), 'port' => 0, 'udp' => 0, ...$addition]]);
+        // 确保$type在有效范围内
+        $typeIndex = $type > 5 ? 0 : $type;
+
+        self::$servers = [['id' => 0, 'name' => $message, 'type' => $types[$typeIndex], 'host' => sysConfig('website_url'), 'port' => 0, 'udp' => 0, ...$addition]];
     }
 
-    private function setServers(array $servers): void
-    {
-        self::$servers = $servers;
-    }
-
-    private function getClientConfig(string $target): string
-    {
-        $classes = glob(app_path('Utils/Clients').'/*.php');
-        foreach ($classes as $file) {
-            $class = 'App\\Utils\\Clients\\'.basename($file, '.php');
-            $ref = new ReflectionClass($class);
-
-            $agents = $ref->getConstant('AGENT');
-            if (! is_array($agents)) {
-                continue;
-            }
-
-            foreach ($agents as $agent) {
-                if (str_contains($target, $agent)) {
-                    return (new $class)->getConfig($this->getServers(), $this->getUser(), $target);
-                }
-            }
-        }
-
-        return URLSchemes::build($this->getServers()); // Default return
-    }
-
-    public function getProxyCode(string $target, ?int $type = null): ?string
-    {// 客户端用代理信息
-        $servers = $this->getNodeList($type);
-        if (empty($servers)) {
-            return null;
-        }
-
-        $this->setServers($servers);
-
-        return $this->getClientConfig($target);
-    }
-
-    public function getUserProxyConfig(array $server, bool $is_url): string
-    { // 用户显示用代理信息
-        $type = $is_url ? new URLSchemes : new Text;
+    public function getUserProxyConfig(Node $node, bool $isUrlFormat = false): string
+    { // 获取用户显示用代理信息
+        $server = $this->generateNodeConfig($node);
+        $type = $isUrlFormat ? new URLSchemes : new Text;
 
         return match ($server['type']) {
             'shadowsocks' => $type->buildShadowsocks($server),
             'shadowsocksr' => $type->buildShadowsocksr($server),
             'vmess' => $type->buildVmess($server),
             'trojan' => $type->buildTrojan($server),
+            'hysteria2' => $type->buildHysteria2($server),
             default => throw new Exception('Unsupported proxy type: '.$server['type']),
         };
+    }
+
+    public function setUser(User $user): void
+    { // 设置用户
+        $this->user = $user;
     }
 }

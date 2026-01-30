@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ WebSocket传输勿用none加密',
             'v2_net_hint' => '⚠️ WebSocket传输需启用TLS',
             'v2_tls_provider_hint' => '后端差异说明：',
+            'ports' => '客户端将随机选择一个端口进行初始连接，并定期随机跳跃到另一个端口。<br/> 格式参考：<code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => '节点创建操作',
         'update_operations' => '节点更新操作',

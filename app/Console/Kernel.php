@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('userExpireWarning')->dailyAt('20:30');
         $schedule->command('task:auto')->everyMinute();
         $schedule->command('task:monthly')->monthly();
+        $schedule->command('hysteria2:sync')->everyMinute();
     }
 
     /**

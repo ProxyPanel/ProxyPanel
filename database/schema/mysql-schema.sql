@@ -275,7 +275,7 @@ DROP TABLE IF EXISTS `node`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `node` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '服务类型：1-Shadowsocks(R)、2-V2ray、3-Trojan、4-VNet',
+  `type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '服务类型：1-Shadowsocks(R)、2-V2ray、3-Trojan、4-VNet、5-Hysteria2',
   `name` varchar(128) NOT NULL COMMENT '名称',
   `country_code` char(5) NOT NULL DEFAULT 'un' COMMENT '国家代码',
   `server` varchar(255) DEFAULT NULL COMMENT '服务器域名地址',

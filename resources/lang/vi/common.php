@@ -155,4 +155,5 @@ return [
     'updated_at' => 'Thời gian cập nhật',
     'view' => 'Xem',
     'warning' => 'Cảnh báo',
+    'loading' => 'Đang tải...',
 ];

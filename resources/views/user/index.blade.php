@@ -168,25 +168,18 @@
                                     <i class="icon wb-link-intact"></i>{{ trans('user.subscribe.link') }}
                                 </h3>
                                 @if ($subscribe['status'])
-                                    <div class="card-body">
+                                    <div class="card-body p-lg-0">
                                         @if (count($subType) > 1)
                                             <div class="form-group row">
                                                 <label class="col-md-auto col-form-label" for="subType">{{ trans('common.customize') }}</label>
                                                 <div class="col">
                                                     <select class="form-control" id="subType" name="subType" data-plugin="selectpicker"
                                                             data-style="btn-outline btn-primary" title="{{ trans('common.all') }}">
-                                                        @if (in_array('ss', $subType, true))
-                                                            <option value="0">{{ trans('user.subscribe.ss_only') }}</option>
-                                                        @endif
-                                                        @if (in_array('ssr', $subType, true))
-                                                            <option value="1">{{ trans('user.subscribe.ssr_only') }}</option>
-                                                        @endif
-                                                        @if (in_array('v2', $subType, true))
-                                                            <option value="2">{{ trans('user.subscribe.v2ray_only') }}</option>
-                                                        @endif
-                                                        @if (in_array('trojan', $subType, true))
-                                                            <option value="3">{{ trans('user.subscribe.trojan_only') }}</option>
-                                                        @endif
+                                                        @foreach ($subType as $type => $protocol)
+                                                            <option value="{{ $type }}">
+                                                                {{ trans('user.subscribe.protocol_only', ['protocol' => $protocol]) }}
+                                                            </option>
+                                                        @endforeach
                                                     </select>
                                                 </div>
                                             </div>

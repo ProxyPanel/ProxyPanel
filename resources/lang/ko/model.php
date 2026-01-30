@@ -69,6 +69,11 @@ return [
         'network_type' => '네트워크 유형',
     ],
     'node' => [
+        'allow_insecure' => '안전하지 않은 연결 허용',
+        'upload_mbps' => '서버 업로드 대역폭',
+        'download_mbps' => '서버 다운로드 대역폭',
+        'ignore_client_bandwidth' => '클라이언트 대역폭 무시',
+        'ports' => '포트 호핑',
         'attribute' => '노드',
         'client_limit' => '기기 제한',
         'country' => '국가·지역',

@@ -155,4 +155,5 @@ return [
     'updated_at' => '更新日時',
     'view' => '表示',
     'warning' => '警告',
+    'loading' => '読み込み中...',
 ];

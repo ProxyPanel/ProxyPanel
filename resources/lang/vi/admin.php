@@ -328,6 +328,7 @@ return [
             'v2_method_hint' => '⚠️ Cấm sử dụng mã hóa none với truyền tải WebSocket',
             'v2_net_hint' => '⚠️ Truyền tải WebSocket cần bật TLS',
             'v2_tls_provider_hint' => 'Giải thích khác biệt backend:',
+            'ports' => 'Client sẽ chọn ngẫu nhiên một cổng để kết nối ban đầu và định kỳ chuyển sang cổng khác.<br/> Tham khảo định dạng: <code>1234,5000-6000,7044</code>',
         ],
         'create_operations' => 'Thao tác tạo nút',
         'update_operations' => 'Thao tác cập nhật nút',

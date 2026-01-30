@@ -298,9 +298,9 @@ class UserController extends Controller
     public function exportProxyConfig(Request $request, User $user, ProxyService $proxyService): JsonResponse
     {
         $proxyService->setUser($user);
-        $server = $proxyService->getProxyConfig(Node::findOrFail($request->input('id')));
+        $node = Node::findOrFail($request->input('id'));
 
-        return response()->json(['status' => 'success', 'data' => $proxyService->getUserProxyConfig($server, $request->input('type') !== 'text'), 'title' => $server['type']]);
+        return response()->json(['status' => 'success', 'data' => $proxyService->getUserProxyConfig($node, $request->input('type') !== 'text')]);
     }
 
     public function oauth(Request $request): View

@@ -155,4 +155,5 @@ return [
     'updated_at' => 'Zuletzt aktualisiert',
     'view' => 'Anzeigen',
     'warning' => 'Warnung',
+    'loading' => 'Laden...',
 ];

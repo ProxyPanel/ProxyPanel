@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Utils\Clients\Protocols;
+namespace App\Utils\Clients\Formatters;
 
-use App\Utils\Library\Templates\Protocol;
+use App\Utils\Library\Templates\Formatter;
 
-class Text implements Protocol
+class Text implements Formatter
 {
     public static function buildShadowsocks(array $server): string
     {
@@ -24,5 +24,12 @@ class Text implements Protocol
     public static function buildTrojan(array $server): string
     {
         return '服务器：'.$server['host'].PHP_EOL.'端口：'.$server['port'].PHP_EOL.'密码：'.$server['passwd'].PHP_EOL.'SNI：'.$server['sni'].PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
+    }
+
+    public static function buildHysteria2(array $server): string
+    {
+        return '服务器：'.$server['host'].PHP_EOL.'端口：'.$server['port'].PHP_EOL.(isset($server['ports']) ? '端口跳跃：'.$server['ports'].PHP_EOL : '').'密码：'.$server['passwd'].PHP_EOL.(isset($server['obfs']) ? '混淆：'
+                .$server['obfs'].PHP_EOL.'混淆密码：'.$server['obfs_param'].PHP_EOL : '').'SNI：'
+            .$server['host'].PHP_EOL.'允许不安全：'.($server['allow_insecure'] ? '是' : '否').PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
     }
 }
