@@ -24,7 +24,7 @@ class NodeController extends Controller
         // 提取节点地理位置信息用于地图显示
         $nodesGeo = $nodes->pluck('name', 'geo');
 
-        return view('user.nodeList', compact('nodesGeo', 'nodes'));
+        return view('user.services', compact('nodesGeo', 'nodes'));
     }
 
     public function show(Request $request, Node $node, ProxyService $proxyServer): JsonResponse

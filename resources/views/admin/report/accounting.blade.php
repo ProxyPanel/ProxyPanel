@@ -34,7 +34,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.umd.min.js"></script>
     <script type="text/javascript">
         function label_callbacks(tail) {
             return {

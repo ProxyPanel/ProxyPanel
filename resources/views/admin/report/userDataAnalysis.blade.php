@@ -19,7 +19,7 @@
         </div>
         @if (count($data) > 2)
             <div class="card card-shadow">
-                <div class="card-block p-30">
+                <div class="card-block p-lg-30 p-10">
                     <div class="row pb-20">
                         <div class="col-md-4 col-sm-6">
                             <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.hourly_traffic') }}</div>
@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="card card-shadow">
-                <div class="card-block p-30">
+                <div class="card-block p-lg-30 p-10">
                     <div class="row pb-20">
                         <div class="col-md-4 col-sm-6">
                             <div class="blue-grey-700 font-size-26 font-weight-500">{{ trans('admin.report.daily_traffic') }}</div>
@@ -75,7 +75,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.umd.min.js"></script>
     <script src="/assets/global/vendor/chart-js/chartjs-plugin-datalabels.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
@@ -146,6 +146,7 @@
 
         const createBarChart = (elementId, labels, datasets, labelTail, unit = "MiB") => {
             const optimizedDatasets = optimizeDatasets(datasets);
+            const isMobile = window.innerWidth <= 768;
             new Chart(document.getElementById(elementId), {
                 type: "bar",
                 data: {
@@ -154,23 +155,35 @@
                 },
                 plugins: [ChartDataLabels],
                 options: {
+                    aspectRatio: isMobile ? 0.8 : 2,
                     parsing: {
                         xAxisKey: "time",
                         yAxisKey: "total"
                     },
                     scales: {
                         x: {
-                            stacked: true
+                            stacked: true,
+                            ticks: {
+                                font: {
+                                    size: isMobile ? 10 : 12,
+                                },
+                            }
                         },
                         y: {
-                            stacked: true
+                            stacked: true,
+                            grace: '10%', // 在 Y 轴最大值上方自动留出 20% 空间，防止数值贴边
+                            ticks: {
+                                font: {
+                                    size: isMobile ? 10 : 12,
+                                }
+                            }
                         }
                     },
-                    responsive: true,
                     plugins: {
                         legend: {
+                            display: !isMobile, // 移动端隐藏图例
                             labels: {
-                                padding: 10,
+                                padding: 15,
                                 usePointStyle: true,
                                 pointStyle: "circle",
                                 font: {
@@ -180,27 +193,33 @@
                         },
                         tooltip: {
                             mode: "index",
-                            intersect: false,
+                            intersect: true,
+                            filter: (item) => item.raw.total > 0.01,
+                            itemSort: (a, b) => b.raw.total - a.raw.total,
+                            bodyFont: {
+                                size: isMobile ? 10 : 14,
+                            },
                             callbacks: {
-                                title: context => `${context[0].label} ${labelTail}`,
-                                label: context => {
-                                    const dataset = context.dataset;
-                                    const value = dataset.data[context.dataIndex]?.total || context.parsed.y;
-                                    return `${dataset.label || ""}: ${value.toFixed(2)} ${unit}`;
-                                }
+                                label: (ctx) => ` ${ctx.dataset.label}: ${ctx.raw.total.toFixed(2)} ${unit}`
                             }
                         },
                         datalabels: {
-                            display: true,
-                            align: "end",
+                            display: (ctx) => {
+                                // 仅顶层显示 & 数值大于0
+                                if (ctx.datasetIndex !== ctx.chart.data.datasets.length - 1) return false;
+                                const total = ctx.chart.data.datasets.reduce((sum, ds) =>
+                                    sum + (ds.data[ctx.dataIndex]?.total || 0), 0);
+                                return total > 0;
+                            },
+                            align: "top",
                             anchor: "end",
-                            formatter: (value, context) => {
-                                if (context.datasetIndex === context.chart.data.datasets.length - 1) {
-                                    let total = context.chart.data.datasets.reduce((sum, dataset) => sum + dataset.data[context.dataIndex].total,
-                                        0);
-                                    return total.toFixed(2) + unit;
-                                }
-                                return null;
+                            font: {
+                                size: isMobile ? 10 : 14,
+                            },
+                            formatter: (value, ctx) => {
+                                const total = ctx.chart.data.datasets.reduce((sum, ds) =>
+                                    sum + (ds.data[ctx.dataIndex]?.total || 0), 0);
+                                return total.toFixed(1) + unit;
                             }
                         }
                     }

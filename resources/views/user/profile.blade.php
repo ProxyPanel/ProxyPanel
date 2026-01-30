@@ -54,9 +54,9 @@
                                     </span>
                                     <span>
                                         @if (in_array($provider, $auth, true))
-                                            <span class="text-danger">{{ trans('user.oauth.rebind') }}</span>
+                                            <span class="text-danger"><i class="fa-solid fa-arrows-rotate"></i> {{ trans('user.oauth.rebind') }}</span>
                                         @else
-                                            <span class="text-muted">{{ trans('user.oauth.not_bind') }}</span>
+                                            <span class="text-muted"><i class="fa-solid fa-link"></i> {{ trans('user.oauth.not_bind') }}</span>
                                         @endif
                                         @if ($provider === 'telegram')
                                             <script async src="https://telegram.org/js/telegram-widget.js?22" data-telegram-login="{{ config('services.telegram.bot') }}" data-size="medium"
@@ -65,8 +65,8 @@
                                     </span>
                                 </a>
                                 @if (in_array($provider, $auth, true))
-                                    <a class="col-2 btn btn-danger btn-block my-auto"
-                                       href="{{ route('oauth.unbind', ['provider' => $provider]) }}">{{ trans('user.oauth.unbind') }}</a>
+                                    <a class="col-2 btn btn-danger btn-block my-auto" href="{{ route('oauth.unbind', ['provider' => $provider]) }}"><i
+                                           class="fa-solid fa-link-slash"></i> {{ trans('user.oauth.unbind') }}</a>
                                 @endif
                             @endforeach
                         </div>

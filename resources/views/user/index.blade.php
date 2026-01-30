@@ -3,14 +3,28 @@
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/aspieprogress/asPieProgress.min.css" rel="stylesheet">
+    <style>
+        .panel-info .announcement-content {
+            overflow-y: auto !important;
+        }
+
+        .pie-container {
+            width: var(--min-size, 100px);
+            margin: 0 auto;
+        }
+
+        .list-group-dividered .list-group-item:last-child {
+            border-bottom: none;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="page-content container-fluid">
-        <div class="row" data-plugin="matchHeight" data-by-row="true">
+        <div class="row">
             @if (Session::has('successMsg'))
                 <x-alert class="col-md-12" :message="Session::pull('successMsg')" />
             @endif
-            <div class="col-xxl-3 col-xl-4 col-lg-5 col-md-6 col-12">
+            <div class="col-xxl-3 col-xl-4 col-lg-5 col-12">
                 <div class="card card-shadow">
                     <div class="card-block p-20">
                         <button class="btn btn-floating btn-sm btn-pure" type="button">
@@ -62,7 +76,7 @@
                 <div class="card card-shadow">
                     <div class="card-block p-20">
                         <div class="row">
-                            <div class="col-lg-7 col-md-12 col-sm-7">
+                            <div class="col-sm-7">
                                 <button class="btn btn-floating btn-sm btn-pure" type="button">
                                     <i class="wb-stats-bars cyan-500"></i>
                                 </button>
@@ -84,10 +98,13 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-lg-5 col-md-12 col-sm-5">
-                                <div class="w-only-xs-p50 w-only-sm-p75 w-only-md-p50" data-plugin="pieProgress" data-valuemax="100" data-barcolor="#96A3FA"
-                                     data-size="100" data-barsize="10" data-goal="{{ $unusedPercent }}" role="progressbar" aria-valuenow="{{ $unusedPercent }}">
-                                    <span class="pie-progress-number blue-grey-700 font-size-20">{{ $unusedPercent }}%</span>
+
+                            <div class="col-sm-5 d-flex align-items-center justify-content-center">
+                                <div class="pie-container">
+                                    <div data-plugin="pieProgress" data-valuemax="100" data-barcolor="#96A3FA" data-size="100" data-barsize="10"
+                                         data-goal="{{ $unusedPercent }}" role="progressbar" aria-valuenow="{{ $unusedPercent }}">
+                                        <span class="pie-progress-number blue-grey-700 font-size-20">{{ $unusedPercent }}%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -118,27 +135,31 @@
                                 <i class="wb-globe purple-500"></i>
                             </button>
                             <span class="font-weight-400 mb-10">{{ trans('user.account.last_login') }}</span>
-                            <ul class="list-group list-group-dividered px-20 mb-0">
-                                <li class="list-group-item px-0">
-                                    <i class="icon wb-time"></i>{{ ucfirst(trans('validation.attributes.time')) }}:
-                                    {{ date_format($userLoginLog->created_at, 'Y/m/d H:i') }}
+                            <ul class="list-group list-group-dividered">
+                                <li class="list-group-item">
+                                    <i class="icon wb-time"></i> {{ ucfirst(trans('validation.attributes.time')) }}
+                                    <span class="float-right">{{ date_format($userLoginLog->created_at, 'Y/m/d H:i') }}</span>
                                 </li>
-                                <li class="list-group-item px-0">
-                                    <i class="icon wb-code"></i>{{ trans('user.attribute.ip') }}: {{ $userLoginLog->ip }}
+                                <li class="list-group-item">
+                                    <i class="icon wb-code"></i> {{ trans('user.attribute.ip') }}
+                                    <span class="float-right">{{ $userLoginLog->ip }}</span>
                                 </li>
-                                <li class="list-group-item px-0">
-                                    <i class="icon wb-cloud"></i>{{ trans('user.attribute.isp') }}: {{ $userLoginLog->isp }}
+                                <li class="list-group-item">
+                                    <i class="icon wb-cloud"></i> {{ trans('user.attribute.isp') }}
+                                    <span class="float-right">{{ $userLoginLog->isp }}</span>
                                 </li>
-                                <li class="list-group-item px-0">
-                                    <i class="icon wb-map"></i>{{ trans('user.attribute.address') }}:
-                                    {{ $userLoginLog->country . ' ' . $userLoginLog->province . ' ' . $userLoginLog->city . ' ' . $userLoginLog->area }}
+                                <li class="list-group-item">
+                                    <i class="icon wb-map"></i> {{ trans('user.attribute.address') }}
+                                    <span class="float-right">
+                                        {{ $userLoginLog->country . ' ' . $userLoginLog->province . ' ' . $userLoginLog->city . ' ' . $userLoginLog->area }}
+                                    </span>
                                 </li>
                             </ul>
                         </div>
                     </div>
                 @endif
             </div>
-            <div class="col-xxl-9 col-xl-8 col-lg-7 col-md-6 col-12">
+            <div class="col-xxl-9 col-xl-8 col-lg-7 col-12">
                 <div class="row" data-plugin="matchHeight" data-by-row="true">
                     <div class="col-xl-4 mb-30">
                         <div class="card card-shadow h-full">
@@ -206,8 +227,10 @@
                             <div class="card-block text-center">
                                 <i class="font-size-40 wb-wrench"></i>
                                 <h4 class="card-title">{{ trans('user.clients') }}</h4>
-                                <p class="card-text">{{ trans('common.download') . ' & ' . trans('user.tutorials') }}</p>
-                                <a class="btn btn-primary mb-10" href="{{ route('knowledge.index') }}">{{ trans('common.goto') }}</a>
+                                <div class="card-body">
+                                    <p>{{ trans('common.download') . ' & ' . trans('user.tutorials') }}</p>
+                                    <a class="btn btn-primary mb-10" href="{{ route('knowledge.index') }}">{{ trans('common.goto') }}</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -243,8 +266,8 @@
                         </div>
                     @endif
                 </div>
-                <div class="row" data-plugin="matchHeight" data-by-row="true">
-                    <div class="col-xxl-6 mb-30">
+                <div class="row">
+                    <div class="col-xxl-6 mb-30 mb-xl-0">
                         <div class="panel panel-info panel-line h-full">
                             <div class="panel-heading">
                                 <h2 class="panel-title">
@@ -255,20 +278,17 @@
                                     {{ $announcements->links() }}
                                 </div>
                             </div>
-                            <div class="panel-body" data-show-on-hover="false" data-direction="vertical" data-skin="scrollable-shadow"
-                                 data-plugin="scrollable">
-                                <div data-role="container">
-                                    <div class="pb-10" data-role="content">
-                                        @forelse($announcements as $announcement)
-                                            <h2 class="text-center">{!! $announcement->title !!}</h2>
-                                            <p class="text-right"><small>{{ trans('common.updated_at') }}
-                                                    <code>{{ $announcement->updated_at }}</code></small></p>
-                                            {!! $announcement->content !!}
-                                        @empty
-                                            <p class="text-center font-size-40">{{ trans('user.home.empty_announcement') }}</p>
-                                        @endforelse
+                            <div class="panel-body">
+                                @forelse($announcements as $announcement)
+                                    <h2 class="text-center">{!! $announcement->title !!}</h2>
+                                    <p class="text-right"><small>{{ trans('common.updated_at') }}
+                                            <code>{{ $announcement->updated_at }}</code></small></p>
+                                    <div class="announcement-content">
+                                        {!! $announcement->content !!}
                                     </div>
-                                </div>
+                                @empty
+                                    <p class="text-center font-size-40">{{ trans('user.home.empty_announcement') }}</p>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -312,7 +332,7 @@
 @section('javascript')
     <script src="/assets/global/vendor/aspieprogress/jquery-asPieProgress.min.js"></script>
     <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js"></script>
-    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.umd.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/aspieprogress.js"></script>
     <script src="/assets/global/js/Plugin/matchheight.js"></script>
@@ -412,13 +432,13 @@
             };
         }
 
-        new Chart(document.getElementById("dailyChart"), {
+        let dailyChartInstance = new Chart(document.getElementById("dailyChart"), {
             type: "line",
             data: datasets(@json($dayHours), @json($trafficHourly)),
             options: common_options(@json(trans_choice('common.hour', 2)))
         });
 
-        new Chart(document.getElementById("monthlyChart"), {
+        let monthlyChartInstance = new Chart(document.getElementById("monthlyChart"), {
             type: "line",
             data: datasets(@json($monthDays), @json($trafficDaily)),
             options: common_options(@json(trans_choice('common.days.attribute', 2)))
@@ -460,5 +480,43 @@
                 window.location.reload();
             }
         }
+
+        function syncAnnouncementHeight() {
+            // 获取右侧面板的总高度
+            const rightPanelHeight = $(".panel-primary .panel-body").outerHeight();
+            if (rightPanelHeight > 0) {
+                $('.panel-info .announcement-content').css({
+                    'max-height': rightPanelHeight - 20 + 'px',
+                });
+            }
+        }
+
+        function syncPieSize() {
+            const $container = $(".pie-container");
+            const $parent = $container.parent();
+            if ($parent.length) {
+                let minSize = Math.min($parent.width(), $parent.height());
+                $container.css('--min-size', minSize + 'px');
+
+                // 仅在必要时重绘插件，避免动画闪烁
+                const $pie = $('[data-plugin="pieProgress"]');
+                if ($pie.data('asPieProgress')) {
+                    $pie.asPieProgress('update');
+                }
+            }
+        }
+
+        $(document).ready(function() {
+            syncAnnouncementHeight();
+            syncPieSize();
+        });
+
+        // 窗口缩放时重新计算
+        $(window).on('resize', function() {
+            if (dailyChartInstance) dailyChartInstance.resize();
+            if (monthlyChartInstance) monthlyChartInstance.resize();
+            syncPieSize();
+            syncAnnouncementHeight();
+        });
     </script>
 @endsection

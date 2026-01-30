@@ -41,7 +41,7 @@ class ShopController extends Controller
         // 计算数据增加天数
         $dataPlusDays = $user->reset_time ?? $user->expired_at;
 
-        return view('user.services', [
+        return view('user.shop', [
             'chargeGoodsList' => Goods::type(3)->orderBy('price')->get(),
             'goodsList' => $goodsList,
             'renewTraffic' => $renewPrice ? Helpers::getPriceTag($renewPrice) : 0,

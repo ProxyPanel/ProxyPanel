@@ -84,7 +84,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.umd.min.js"></script>
     <script src="/assets/global/vendor/chart-js/chartjs-plugin-datalabels.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>

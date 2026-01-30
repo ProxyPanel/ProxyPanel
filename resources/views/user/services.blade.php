@@ -1,255 +1,244 @@
 @extends('user.layouts')
 @section('css')
-    <link href="assets/global/vendor/ionrangeslider/ionrangeslider.min.css" rel="stylesheet">
+    <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/webui-popover/webui-popover.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/jvectormap/jquery-jvectormap.min.css" rel="stylesheet">
+    <style>
+        .flag-icon-rounded {
+            border-radius: 50%;
+            background-size: cover;
+            height: 100%;
+            width: auto;
+            aspect-ratio: 1 / 1;
+        }
+    </style>
 @endsection
 @section('content')
-    <div class="page-content">
+    <div class="page-content container-fluid">
         <div class="row">
-            <div class="col-xxl-2 col-lg-3">
-                <div class="card card-shadow">
-                    <div class="card-block p-20">
-                        <button class="btn btn-floating btn-sm btn-pure" type="button">
-                            <i class="icon wb-payment green-500"></i>
-                        </button>
-                        <span class="font-weight-400">{{ trans('user.account.credit') }}</span>
-                        <div class="content-text text-center mb-0">
-                            <span class="font-size-40 font-weight-100">{{ auth()->user()->credit_tag }}</span>
-                            <br />
-                            <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{ trans('user.recharge') }}</button>
-                        </div>
+            <div class="col-md-9">
+                <div class="card card-inverse card-shadow bg-white map">
+                    <div class="card-block h-450">
+                        <div class="h-p100" id="world-map"></div>
                     </div>
                 </div>
-                @if ($renewTraffic)
-                    <div class="card card-shadow">
-                        <div class="card-block p-20">
-                            <button class="btn btn-floating btn-sm btn-pure" type="button">
-                                <i class="icon wb-payment green-500"></i>
-                            </button>
-                            <span class="font-weight-400">{{ trans('user.reset_data.action') }}</span>
-                            <div class="content-text text-center mb-0">
-                                <span class="font-size-20 font-weight-100">{!! trans('user.reset_data.cost', ['amount' => $renewTraffic]) !!}</span>
-                                <br />
-                                <button class="btn btn-danger mt-10" onclick="resetTraffic()">{{ trans('common.reset') }}</button>
+            </div>
+            <div class="col-md-3">
+                <div class="row map">
+                    <div class="col-md-12">
+                        <div class="card card-block p-20 bg-indigo-500">
+                            <div class="counter counter-lg counter-inverse">
+                                <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.level') }}</div>
+                                <div class="counter-number-group">
+                                    <span class="counter-icon"><i class="icon wb-user-circle" aria-hidden="true"></i></span>
+                                    <span class="counter-number ml-10">{{ auth()->user()->level }}</span>
+                                </div>
+                                <div class="counter-label text-uppercase font-size-16">{{ auth()->user()->level_name }}</div>
                             </div>
                         </div>
                     </div>
-                @endif
-            </div>
-            <div class="col-xxl-10 col-lg-9">
-                <div class="panel">
-                    <div class="panel-heading p-20">
-                        <h1 class="panel-title cyan-700">
-                            <i class="icon wb-shopping-cart"></i>{{ trans('user.menu.shop') }}
-                        </h1>
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            @foreach ($goodsList as $goods)
-                                <div class="col-md-6 col-xl-4 col-xxl-3">
-                                    <div class="position-relative">
-                                        @if ($goods->limit_num)
-                                            <div class="ribbon ribbon-badge ribbon-danger ribbon-reverse">
-                                                <span class="ribbon-inner">{{ trans('user.shop.limited') }}</span>
-                                            </div>
-                                        @elseif($goods->is_hot)
-                                            <div class="ribbon ribbon-badge ribbon-danger ribbon-reverse">
-                                                <span class="ribbon-inner">{{ trans('user.shop.hot') }}</span>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    <div class="pricing-list text-left">
-                                        <div class="pricing-header text-white" style="background-color: {{ $goods->color }}">
-                                            <div class="pricing-title font-size-20">{{ $goods->name }}</div>
-                                            <div class="pricing-price text-white @if ($goods->type === 1) text-center @endif">
-                                                <span class="pricing-amount">{{ $goods->price_tag }}</span>
-                                                @if ($goods->type === 2)
-                                                    <span class="pricing-period">/ {{ $goods->days . trans_choice('common.days.attribute', 1) }}</span>
-                                                @endif
-                                            </div>
-                                            @if ($goods->description)
-                                                <p class="px-30 pb-25 text-center">{{ $goods->description }}</p>
-                                            @endif
-                                        </div>
-                                        <ul class="pricing-features">
-                                            <li>
-                                                <strong>{{ $goods->traffic_label }}</strong>{{ trans('user.attribute.data') }}
-                                                {!! $goods->type === 1 ? "<code> $dataPlusDays </code>" . trans_choice('common.days.attribute', 1) : '/' . ucfirst(trans('validation.attributes.month')) !!}
-                                            </li>
-                                            <li>
-                                                {!! trans('user.service.node_count', ['num' => $goods->node_count]) !!}
-                                            </li>
-                                            <li>
-                                                {{ trans('user.account.speed_limit') }}
-                                                <strong> {{ $goods->speed_limit ? $goods->speed_limit . ' Mbps' : trans('user.service.unlimited') }} </strong>
-                                            </li>
-                                            {!! $goods->info !!}
-                                        </ul>
-                                        <div class="pricing-footer text-center bg-blue-grey-100">
-                                            <a class="btn btn-lg btn-primary" href="{{ route('shop.show', $goods) }}"> {{ trans('user.shop.buy') }}</a>
-                                        </div>
+                    @if (auth()->user()->user_group_id)
+                        <div class="col-md-12">
+                            <div class="card card-block p-30 bg-indigo-500">
+                                <div class="counter counter-lg counter-inverse">
+                                    <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.group') }}</div>
+                                    <div class="counter-number-group">
+                                        <span class="counter-icon"><i class="icon wb-globe" aria-hidden="true"></i></span>
+                                        <span class="counter-number ml-10">{{ auth()->user()->userGroup->name }}</span>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
+                        </div>
+                    @endif
+                    <div class="col-md-12">
+                        <div class="card card-block p-30 bg-indigo-500">
+                            <div class="counter counter-lg counter-inverse">
+                                <div class="counter-label text-uppercase font-size-16">{{ trans('user.account.speed_limit') }}</div>
+                                <div class="counter-number-group">
+                                    <span class="counter-icon"><i class="icon wb-signal" aria-hidden="true"></i></span>
+                                    <span class="counter-number ml-10">{{ auth()->user()->speed_limit ?: trans('common.unlimited') }}</span>
+                                </div>
+                                <div class="counter-label font-size-16">Mbps</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="modal fade" id="charge_modal" role="dialog" aria-labelledby="charge_modal" aria-hidden="true" tabindex="-1">
-        <div class="modal-dialog modal-simple modal-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
-                        <span aria-hidden="true">×</span></button>
-                    <h4 class="modal-title">{{ trans('user.recharge_credit') }}</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-danger" id="charge_msg" style="display: none;"></div>
-                    <form action="#" method="post">
-                        @if (sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                            <div class="mb-15 w-p50">
-                                <select class="form-control" id="charge_type" name="charge_type">
-                                    @if (sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                                        <option value="1">{{ trans('user.shop.pay_online') }}</option>
+            @foreach ($nodes as $node)
+                <div class="col-xxl-3 col-xl-4 col-sm-6">
+                    <div class="card card-inverse card-shadow bg-white node-card">
+                        <div class="card-block p-30 row">
+                            <div class="col-3">
+                                <i class="fi fi-{{ $node->country_code }} flag-icon-rounded" aria-hidden="true"></i>
+                            </div>
+                            <div class="col-9 text-break text-right">
+                                <p class="font-size-20 blue-600">
+                                    <span class="float-left badge badge-round badge-default">{{ $node->level_table->name }}</span>
+                                    @if ($node->offline && !$node->relay_node_id)
+                                        <i class="red-600 icon wb-warning" data-content="{{ trans('user.node.unstable') }}" data-trigger="hover"
+                                           data-toggle="popover" data-placement="top"></i>
                                     @endif
-                                    <option value="2">{{ trans('admin.coupon.type.charge') }}</option>
-                                </select>
-                            </div>
-                        @endif
-                        @if (sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                            <div class="form-group row charge_credit">
-                                <label class="offset-md-1 col-md-2 col-form-label" for="amount">{{ trans('user.shop.change_amount') }}</label>
-                                <div class="col-md-8">
-                                    <input id="amount" name="amount" data-plugin="ionRangeSlider" data-min=1 data-max=300 data-from=40
-                                           data-prefix="{{ array_column(config('common.currency'), 'symbol', 'code')[session('currency') ?? sysConfig('standard_currency')] }}"
-                                           type="text" />
+                                    @if ($node->traffic_rate !== 1.0)
+                                        <i class="green-600 icon wb-info-circle" data-content="{{ trans('user.node.rate', ['ratio' => $node->traffic_rate]) }}"
+                                           data-trigger="hover" data-toggle="popover" data-placement="top"></i>
+                                    @endif
+                                    {{ $node->name }}
+                                </p>
+                                <blockquote>
+                                    @foreach ($node->label_names->take(3) as $label_name)
+                                        <span class="badge badge-lg badge-round badge-info">{{ $label_name }}</span>
+                                    @endforeach
+                                    @if ($node->label_names->count() > 3)
+                                        <i class="icon wb-more-horizontal" data-content="{{ $node->label_names->join(', ') }}" data-trigger="hover"
+                                           data-toggle="popover" data-placement="top"></i>
+                                    @endif
+                                    <br>
+                                    {{ $node->description }}
+                                </blockquote>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','code')">
+                                        <i class="fa-solid fa-code" id="code{{ $node->id }}"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','qrcode')">
+                                        <i class="fa-solid fa-qrcode" id="qrcode{{ $node->id }}"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','text')">
+                                        <i class="fa-solid fa-list" id="text{{ $node->id }}"></i>
+                                    </button>
                                 </div>
                             </div>
-                        @endif
-                        <div class="form-group row" id="charge_coupon_code">
-                            <label class="offset-md-2 col-md-2 col-form-label" for="charge_coupon"> {{ trans('admin.coupon.type.charge') }} </label>
-                            <div class="col-md-6">
-                                <input class="form-control round" id="charge_coupon" name="charge_coupon" type="text"
-                                       placeholder="{{ trans('user.coupon.input') }}">
-                            </div>
                         </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <div class="charge_credit">
-                        @include('user.components.purchase')
                     </div>
-                    <button class="btn btn-primary" id="change_btn" type="button" onclick="pay()">{{ trans('user.recharge') }}</button>
                 </div>
-            </div>
+            @endforeach
         </div>
     </div>
 @endsection
 @section('javascript')
-    <script src="assets/global/vendor/ionrangeslider/ion.rangeSlider.min.js"></script>
-    <script src="assets/global/js/Plugin/ionrangeslider.js"></script>
-    <script>
-        function itemControl(value) {
-            const control = value === 1;
-            $('.charge_credit').toggle(control);
-            $('#change_btn').toggle(!control);
-            $('#charge_coupon_code').toggle(!control);
-        }
+    <script src="/assets/global/vendor/matchheight/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/matchheight.js" type="text/javascript"></script>
+    <script src="/assets/custom/easy.qrcode.min.js" type="text/javascript"></script>
+    <script src="/assets/global/js/Plugin/webui-popover.js" type="text/javascript"></script>
+    <script src="/assets/global/vendor/jvectormap/jquery-jvectormap.min.js"></script>
+    <script src="/assets/custom/maps/jquery-jvectormap-world-mill-cn.js"></script>
 
-        $(document).ready(function() {
-            let which_selected = 2;
-            @if (sysConfig('is_onlinePay') || sysConfig('alipay_qrcode') || sysConfig('wechat_qrcode'))
-                which_selected = 1;
-            @endif
-
-            itemControl(which_selected);
-            $('#charge_type').val(which_selected);
+    <script type="text/javascript">
+        $(function() {
+            $("#world-map").vectorMap({
+                map: "world_mill",
+                scaleColors: ["#C8EEFF", "#0071A4"],
+                normalizeFunction: "polynomial",
+                zoomAnimate: true,
+                hoverOpacity: 0.7,
+                hoverColor: false,
+                regionStyle: {
+                    initial: {
+                        fill: "#3E8EF7"
+                    },
+                    hover: {
+                        fill: "#589FFC"
+                    },
+                    selected: {
+                        fill: "#0B69E3"
+                    },
+                    selectedHover: {
+                        fill: "#589FFC"
+                    }
+                },
+                markerStyle: {
+                    initial: {
+                        r: 3,
+                        fill: "#FF4C52",
+                        "stroke-width": 0
+                    },
+                    hover: {
+                        r: 6,
+                        stroke: "#FF4C52",
+                        "stroke-width": 0
+                    }
+                },
+                backgroundColor: "#fff",
+                markers: [
+                    @foreach ($nodesGeo as $geo => $name)
+                        {
+                            latLng: [{{ $geo }}],
+                            name: '{{ $name }}'
+                        },
+                    @endforeach
+                ]
+            });
+            $(".node-card").matchHeight();
+            $(".map").matchHeight();
         });
 
-        // 切换充值方式
-        $('#charge_type').change(function() {
-            itemControl(parseInt($(this).val()));
-        });
+        function getInfo(id, type) {
+            const oldClass = $(`#${type}${id}`).attr("class");
+            const iconElement = $(`#${type}${id}`);
 
-        // 重置流量
-        function resetTraffic() {
-            showConfirm({
-                title: '{{ trans('user.reset_data.action') }}',
-                text: '{{ trans('user.reset_data.cost_tips', ['amount' => $renewTraffic]) }}',
-                onConfirm: function() {
-                    ajaxPost('{{ route('shop.resetTraffic') }}');
+            ajaxPost(jsRoute('{{ route('node.show', 'PLACEHOLDER') }}', id), {
+                type: type
+            }, {
+                beforeSend: function() {
+                    iconElement.removeClass().addClass("icon wb-loop icon-spin");
+                },
+                success: function(ret) {
+                    if (ret.status === "success") {
+                        switch (type) {
+                            case "code":
+                                swal.fire({
+                                    html: "<textarea class=\"form-control\" rows=\"8\" readonly=\"readonly\">" + ret.data + "</textarea>" +
+                                        "<a href=\"" + ret.data + '" class="btn btn-block btn-danger mt-4">{{ trans('common.open') }}' +
+                                        ret.title + "</a>",
+                                    showConfirmButton: false
+                                });
+                                break;
+                            case "qrcode":
+                                swal.fire({
+                                    title: '{{ trans('user.scan_qrcode') }}',
+                                    html: '<div id="qrcode"></div><button class="btn btn-block btn-outline-primary mt-4" onclick="Download()"> <i class="icon wb-download"></i> {{ trans('common.download') }}</button>',
+                                    onBeforeOpen: () => {
+                                        new QRCode(document.getElementById("qrcode"), {
+                                            text: ret.data
+                                        });
+                                    },
+                                    showConfirmButton: false
+                                });
+                                break;
+                            case "text":
+                                swal.fire({
+                                    title: '{{ trans('user.node.info') }}',
+                                    html: "<textarea class=\"form-control\" rows=\"12\" readonly=\"readonly\">" + ret.data + "</textarea>",
+                                    showConfirmButton: false
+                                });
+                                break;
+                            default:
+                                swal.fire({
+                                    title: ret.title,
+                                    text: ret.data,
+                                    icon: "error"
+                                });
+                        }
+                    }
+                },
+                complete: function() {
+                    iconElement.removeClass().addClass(oldClass);
                 }
             });
         }
 
-        // 充值
-        function pay(method, pay_type) {
-            const paymentType = parseInt($('#charge_type').val() ?? 2);
-            const charge_coupon = $('#charge_coupon').val().trim();
-            const amount = parseInt($('#amount').val());
-            if (paymentType === 1) {
-                if (amount <= 0) {
-                    showMessage({
-                        title: '{{ trans('common.error') }}',
-                        text: '{{ trans('user.payment.error') }}',
-                        icon: 'warning',
-                        showConfirmButton: false,
-                    });
-                    return false;
-                }
+        function Download() {
+            const canvas = document.getElementsByTagName("canvas")[0];
+            canvas.toBlob((blob) => {
+                let link = document.createElement("a");
+                link.download = "qr.png";
 
-                ajaxPost('{{ route('purchase') }}', {
-                    amount: amount,
-                    method: method,
-                    pay_type: pay_type
-                }, {
-                    beforeSend: function() {
-                        $('#charge_msg').show().html('{{ trans('user.payment.creating') }}');
-                    },
-                    success: function(ret) {
-                        $('#charge_msg').show().html(ret.message);
-                        if (ret.status === 'fail') {
-                            return false;
-                        } else {
-                            if (ret.data) {
-                                window.location.href = jsRoute('{{ route('orderDetail', 'PLACEHOLDER') }}', ret.data);
-                            } else if (ret.url) {
-                                window.location.href = ret.url;
-                            }
-                        }
-                    },
-                    error: function() {
-                        $('#charge_msg').show().html("{{ trans('user.error_response') }}");
-                    },
-                });
-            } else if (paymentType === 2) {
-                if (charge_coupon === '') {
-                    $('#charge_msg').show().html("{{ trans('validation.required', ['attribute' => trans('model.coupon.attribute')]) }}");
-                    $('#charge_coupon').focus();
-                    return false;
-                }
-
-                ajaxPost('{{ route('shop.coupon.redeem') }}', {
-                    coupon_sn: charge_coupon
-                }, {
-                    beforeSend: function() {
-                        $('#charge_msg').show().html("{{ trans('user.recharging') }}");
-                    },
-                    success: function(ret) {
-                        if (ret.status === 'fail') {
-                            $('#charge_msg').show().html(ret.message);
-                            return false;
-                        }
-
-                        $('#charge_modal').modal('hide');
-                        window.location.reload();
-                    },
-                    error: function() {
-                        $('#charge_msg').show().html("{{ trans('user.error_response') }}");
-                    },
-                });
-            }
+                let reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onload = () => {
+                    link.href = reader.result;
+                    link.click();
+                };
+            }, "image/png");
         }
     </script>
 @endsection

@@ -11,7 +11,7 @@
     <div class="page-content container-fluid">
         @if ($knowledge->isNotEmpty())
             <div class="row">
-                <div class="offset-xxl-1 col-xxl-2 col-xl-3 offset-lg-0 col-lg-4 offset-sm-2 col-sm-8">
+                <div class="offset-xxl-1 col-xxl-2 col-xl-3 col-lg-4 col-12">
                     <div class="panel">
                         <div class="list-group" role="tablist">
                             @foreach ($knowledge as $category => $articles)
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xxl-8 col-xl-9 col-lg-8 col-md-12">
+                <div class="col-xxl-8 col-xl-9 col-lg-8 col-12">
                     <div class="panel">
                         <div class="panel-heading progress" id="loading_article" style="display: none;">
                             <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"

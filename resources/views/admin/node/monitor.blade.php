@@ -22,7 +22,7 @@
     </div>
 @endsection
 @section('javascript')
-    <script src="/assets/global/vendor/chart-js/chart.min.js"></script>
+    <script src="/assets/global/vendor/chart-js/chart.umd.min.js"></script>
     <script>
         function common_options(tail) {
             return {
