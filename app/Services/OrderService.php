@@ -12,27 +12,27 @@ use Log;
 
 class OrderService
 {
-    public static User $user;
+    private User $user;
 
-    public static ?Goods $goods;
+    private ?Goods $goods;
 
-    public static ?Payment $payment;
+    private ?Payment $payment;
 
     public function __construct(private readonly Order $order)
     { // 获取需要的信息
-        self::$user = $order->user;
-        self::$goods = $order->goods;
-        self::$payment = $order->payment;
+        $this->user = $order->user;
+        $this->goods = $order->goods;
+        $this->payment = $order->payment;
     }
 
     public function receivedPayment(): bool
     { // 支付成功后处理
-        $payment = self::$payment;
+        $payment = $this->payment;
         if ($payment && $payment->status !== 1) {// 是否为余额购买套餐
             $payment->complete();
         }
 
-        $goods = self::$goods;
+        $goods = $this->goods;
         if ($goods === null) {
             $ret = $this->chargeCredit();
         } else {
@@ -41,12 +41,12 @@ class OrderService
                     $ret = $this->activatePackage();
                     break;
                 case 2: // 套餐
-                    if (Order::userActivePlan(self::$user->id)->where('id', '<>', $this->order->id)->exists()) {// 判断套餐是否直接激活
+                    if (Order::userActivePlan($this->user->id)->where('id', '<>', $this->order->id)->exists()) {// 判断套餐是否直接激活
                         $ret = $this->order->prepay();
                     } else {
                         $ret = $this->activatePlan();
                     }
-                    $this->setCommissionExpense(self::$user); // 返利
+                    $this->setCommissionExpense($this->user); // 返利
                     break;
                 default:
                     Log::emergency('【处理订单】出现错误-未知套餐类型');
@@ -58,11 +58,11 @@ class OrderService
 
     private function chargeCredit(): bool
     { // 余额充值
-        $credit = self::$user->credit;
-        $ret = self::$user->updateCredit($this->order->origin_amount);
+        $credit = $this->user->credit;
+        $ret = $this->user->updateCredit($this->order->origin_amount);
         // 余额变动记录日志
         if ($ret) {
-            Helpers::addUserCreditLog($this->order->user_id, $this->order->id, $credit, self::$user->credit, $this->order->amount, 'The user topped up the balance.');
+            Helpers::addUserCreditLog($this->order->user_id, $this->order->id, $credit, $this->user->credit, $this->order->amount, 'The user topped up the balance.');
         }
 
         return $ret;
@@ -70,8 +70,8 @@ class OrderService
 
     private function activatePackage(): bool
     { // 激活流量包
-        if (self::$user->incrementData(self::$goods->traffic * MiB)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, self::$user->transfer_enable - self::$goods->traffic * MiB, self::$user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]));
+        if ($this->user->incrementData($this->goods->traffic * MiB)) {
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, $this->user->transfer_enable - $this->goods->traffic * MiB, $this->user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]));
         }
 
         return false;
@@ -79,23 +79,23 @@ class OrderService
 
     public function activatePlan(): bool
     { // 激活套餐
-        $this->order->refresh()->update(['expired_at' => date('Y-m-d H:i:s', strtotime(self::$goods->days.' days'))]);
-        $oldData = self::$user->transfer_enable;
+        $this->order->refresh()->updateQuietly(['expired_at' => date('Y-m-d H:i:s', strtotime($this->goods->days.' days')), 'status' => 2]);
+        $oldData = $this->user->transfer_enable;
         $updateData = [
-            'invite_num' => self::$user->invite_num + (self::$goods->invite_num ?: 0),
-            'level' => self::$goods->level,
-            'speed_limit' => self::$goods->speed_limit,
+            'invite_num' => $this->user->invite_num + ($this->goods->invite_num ?: 0),
+            'level' => $this->goods->level,
+            'speed_limit' => $this->goods->speed_limit,
             'enable' => 1,
             ...$this->resetTimeAndData(),
         ];
 
         // 无端口用户 添加端口
-        if (empty(self::$user->port)) {
+        if (empty($this->user->port)) {
             $updateData['port'] = Helpers::getPort();
         }
 
-        if (self::$user->update($updateData)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, self::$user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]), $this->order->id);
+        if ($this->user->update($updateData)) {
+            return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, $this->user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]), $this->order->id);
         }
 
         return false;
@@ -108,7 +108,7 @@ class OrderService
         }
 
         // 账号流量重置日期
-        $nextResetTime = now()->addDays(self::$goods->period)->toDateString();
+        $nextResetTime = now()->addDays($this->goods->period)->toDateString();
         if ($nextResetTime >= $expired_at) {
             $nextResetTime = null;
         }
@@ -116,7 +116,7 @@ class OrderService
         return [
             'u' => 0,
             'd' => 0,
-            'transfer_enable' => self::$goods->traffic * MiB,
+            'transfer_enable' => $this->goods->traffic * MiB,
             'expired_at' => $expired_at,
             'reset_time' => $nextResetTime,
         ];
@@ -124,7 +124,7 @@ class OrderService
 
     private function getFinallyExpiredTime(): string
     { // 推算最新的到期时间
-        $orders = self::$user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
+        $orders = $this->user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
         $current = $orders->where('status', '==', 2)->first();
 
         return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->toDateString();
@@ -160,7 +160,7 @@ class OrderService
     { // 刷新账号有效时间
         $data = ['expired_at' => $this->getFinallyExpiredTime()];
 
-        if ($data['expired_at'] < now()->toDateString()) {
+        if ($data['expired_at'] <= now()->toDateString()) {
             $data += [
                 'u' => 0,
                 'd' => 0,
@@ -172,13 +172,6 @@ class OrderService
             ];
         }
 
-        return self::$user->update($data);
-    }
-
-    public function activatePrepaidPlan(): bool
-    { // 激活预支付套餐
-        $this->order->complete();
-
-        return $this->activatePlan();
+        return $this->user->update($data);
     }
 }

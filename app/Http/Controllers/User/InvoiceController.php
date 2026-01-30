@@ -26,23 +26,12 @@ class InvoiceController extends Controller
     public function activate(): JsonResponse
     { // 激活套餐
         $activePlan = Order::userActivePlan()->first();
-        if ($activePlan) {
-            if ($activePlan->expired()) { // 关闭先前套餐后，新套餐自动运行
-                if (Order::userActivePlan()->exists()) {
-                    return response()->json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
-                }
-
-                return response()->json(['status' => 'success', 'message' => trans('common.close')]);
+        if ($activePlan && $activePlan->expired()) { // 关闭先前套餐后，新套餐自动运行
+            if (Order::userActivePlan()->exists()) {
+                return response()->json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
             }
-        } else {
-            $prepaidPlan = Order::userPrepay()->first();
-            if ($prepaidPlan) { // 关闭先前套餐后，新套餐自动运行
-                if ($prepaidPlan->complete()) {
-                    return response()->json(['status' => 'success', 'message' => trans('common.active_item', ['attribute' => trans('common.success')])]);
-                }
 
-                return response()->json(['status' => 'success', 'message' => trans('common.close')]);
-            }
+            return response()->json(['status' => 'success', 'message' => trans('common.close')]);
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);

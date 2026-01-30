@@ -16,57 +16,74 @@ class OrderObserver
     public function updated(Order $order): void
     {
         $changes = $order->getChanges();
-        // 套餐订单-流量包订单互联
-        if (Arr::has($changes, 'is_expire') && $changes['is_expire'] === 1 && $order->goods->type === 2) {
-            $user = $order->user;
-            $user->update([ // 清理全部流量,重置重置日期和等级
-                'u' => 0,
-                'd' => 0,
-                'transfer_enable' => 0,
-                'reset_time' => null,
-                'level' => 0,
-                'enable' => 0,
-            ]);
-            Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, trans('[Service Timer] Service Expiration'), $order->id);
 
-            Order::userActivePackage($order->user_id)->update(['is_expire' => 1]); // 过期生效中的加油包
-            $this->activatePrepaidPlan($order->user_id); // 激活预支付套餐
+        // 套餐订单-流量包订单互联：订单过期时直接处理
+        if (Arr::has($changes, 'is_expire') && $changes['is_expire'] === 1 && $order->goods && $order->goods->type === 2) {
+            $user = $order->user;
+            $oldTransferEnable = $user->transfer_enable;
+
+            // 过期加油包
+            Order::userActivePackage($order->user_id)->update(['is_expire' => 1]);
+
+            // 检查是否有预支付订单
+            $prepaidOrder = Order::userPrepay($order->user_id)->first();
+
+            if ($prepaidOrder) {
+                (new OrderService($prepaidOrder))->activatePlan();
+            } else {
+                // 无预支付订单：仅清理用户
+                $user->update([
+                    'u' => 0,
+                    'd' => 0,
+                    'transfer_enable' => 0,
+                    'reset_time' => null,
+                    'level' => 0,
+                    'enable' => 0,
+                ]);
+
+                Helpers::addUserTrafficModifyLog($user->id, $oldTransferEnable, 0, trans('[Service Timer] Service Expiration'), $order->id);
+            }
         }
 
         if (Arr::has($changes, 'status')) {
-            if ($changes['status'] === -1) { // 本地订单-在线订单 关闭互联
-                if ($order->payment) {
-                    $order->payment->close(); // 关闭在线订单
-                }
+            $originalStatus = $order->getOriginal('status');
 
-                if ($order->coupon) { // 退回优惠券
-                    $this->returnCoupon($order, $order->coupon);
-                }
+            switch ($changes['status']) {
+                case -1: // 订单关闭
+                    if ($order->payment) {
+                        $order->payment->close();
+                    }
 
-                if ($order->goods && $order->goods->type === 2 && $order->getOriginal('status') === 2 && Order::userPrepay($order->user_id)->exists()) { // 下一个套餐
-                    $this->activatePrepaidPlan($order->user_id);
-                } else {
-                    (new OrderService($order))->refreshAccountExpiration();
-                }
-            } elseif ($changes['status'] === 1) { // 待确认支付 通知管理
-                Notification::send(User::find(1), new PaymentConfirm($order));
-            } elseif ($changes['status'] === 2 && $order->getOriginal('status') !== 3) { // 本地订单-在线订单 支付成功互联
-                (new OrderService($order))->receivedPayment();
-            } elseif ($changes['status'] === 3) {
-                if (Order::userActivePlan($order->user_id)->doesntExist()) {
-                    $this->activatePrepaidPlan($order->user_id);
-                } else {
-                    (new OrderService($order))->refreshAccountExpiration();
-                }
+                    if ($order->coupon) {
+                        $this->returnCoupon($order, $order->coupon);
+                    }
+
+                    if ($order->goods && $order->goods->type === 2 && $originalStatus === 2 && Order::userPrepay($order->user_id)->exists()) {
+                        $prepaidOrder = Order::userPrepay($order->user_id)->first();
+                        (new OrderService($prepaidOrder))->activatePlan();
+                    } else {
+                        (new OrderService($order))->refreshAccountExpiration();
+                    }
+                    break;
+                case 1: // 待确认支付
+                    Notification::send(User::find(1), new PaymentConfirm($order));
+                    break;
+                case 2: // 支付成功
+                    if ($originalStatus !== 3) {
+                        (new OrderService($order))->receivedPayment();
+                    }
+                    break;
+                case 3: // 预支付订单
+                    if (Order::userActivePlan($order->user_id)->doesntExist()) {
+                        $prepaidOrder = Order::userPrepay($order->user_id)->first();
+                        if ($prepaidOrder) {
+                            (new OrderService($prepaidOrder))->activatePlan();
+                        }
+                    } else {
+                        (new OrderService($order))->refreshAccountExpiration();
+                    }
+                    break;
             }
-        }
-    }
-
-    private function activatePrepaidPlan(int $user_id): void
-    { // 激活[预支付订单]
-        $prepaidOrder = Order::userPrepay($user_id)->first(); // 检查该订单对应用户是否有预支付套餐
-        if ($prepaidOrder) {
-            (new OrderService($prepaidOrder))->activatePrepaidPlan(); // 激活预支付套餐
         }
     }
 

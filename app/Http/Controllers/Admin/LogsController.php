@@ -223,7 +223,7 @@ class LogsController extends Controller
             });
         });
 
-        return view('admin.logs.userTraffic', ['userTrafficLogs' => $query->latest()->paginate(15)->appends($request->except('page'))]);
+        return view('admin.logs.userTraffic', ['userTrafficLogs' => $query->orderByDesc('id')->paginate(15)->appends($request->except('page'))]);
     }
 
     public function userOnlineIPList(Request $request): View

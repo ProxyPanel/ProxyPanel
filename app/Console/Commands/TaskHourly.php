@@ -34,14 +34,14 @@ class TaskHourly extends Command
         $end = strtotime($created_at);
         $start = $end - 3599;
         $data_anomaly_notification = sysConfig('data_anomaly_notification');
-        $traffic_abuse_threshold = (int) sysConfig('traffic_abuse_limit') * GiB;
+        $traffic_abuse_threshold = (int) sysConfig('traffic_abuse_limit', 20) * GiB;
         User::activeUser()->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
             $query->whereBetween('log_time', [$start, $end]);
         })->with([
             'dataFlowLogs' => function ($query) use ($start, $end) {
                 $query->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(sysConfig('tasks_chunk'), function ($users) use ($traffic_abuse_threshold, $created_at, $data_anomaly_notification) {
+        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($traffic_abuse_threshold, $created_at, $data_anomaly_notification) {
             foreach ($users as $user) {
                 $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
@@ -97,7 +97,7 @@ class TaskHourly extends Command
             'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
                 $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(sysConfig('tasks_chunk'), function ($nodes) use ($created_at) {
+        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
                 $node->hourlyDataFlows()->create(['u' => $node->u_sum, 'd' => $node->d_sum, 'created_at' => $created_at]);
             }

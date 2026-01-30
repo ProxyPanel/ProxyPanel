@@ -34,9 +34,7 @@ class UserController extends Controller
             'remainDays' => $userService->getRemainingDays(),
             'resetDays' => $userService->getResetDays(),
             'unusedPercent' => $userService->getUnusedTrafficPercent(),
-            'announcements' => cache()->remember('announcements_'.app()->getLocale(), 300, function () {
-                return Article::type(2)->lang()->latest()->simplePaginate(1); // 公告缓存 5 分钟
-            }), // 公告
+            'announcements' => Article::type(2)->lang()->latest()->simplePaginate(1), // 公告
             'isTrafficWarning' => $userService->isTrafficWarning(), // 流量异常判断
             'paying_user' => $userService->isActivePaying(), // 付费用户判断
             'user' => $user->only(['sub_url', 'unused_traffic', 'expiration_date', 'ban_time']),

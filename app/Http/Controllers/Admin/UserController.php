@@ -223,7 +223,7 @@ class UserController extends Controller
         $data['transfer_enable'] *= GiB;
         $data['enable'] = $data['status'] < 0 ? 0 : $data['enable'];
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
-        if ($data['remark']) {
+        if (! empty($data['remark'])) {
             $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark']);
         }
 
@@ -253,7 +253,7 @@ class UserController extends Controller
                 $data['password'] = $password;
             }
 
-            if ($user->transfer_enable !== $data['transfer_enable']) {
+            if ($user->transfer_enable !== (int) $data['transfer_enable']) {
                 Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $data['transfer_enable'], trans('Manually edit in dashboard.'));
             }
 

@@ -24,43 +24,61 @@ class UserObserver
     public function updated(User $user): void
     {
         $changes = $user->getChanges();
-        $enableChange = Arr::has($changes, ['enable']);
-        if (($user->enable === 1 || $enableChange) && Arr::hasAny($changes, ['level', 'user_group_id', 'enable', 'port', 'passwd', 'speed_limit'])) {
-            $allowNodes = $user->nodes()->whereType(4)->get();
-            if (Arr::hasAny($changes, ['level', 'user_group_id'])) {
-                $oldAllowNodes = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(4)->get();
-                if ($enableChange) {
-                    if ($user->enable === 0 && $oldAllowNodes->isNotEmpty()) {
-                        DelUser::dispatch($user->id, $oldAllowNodes);
-                    } elseif ($user->enable === 1 && $allowNodes->isNotEmpty()) {
-                        AddUser::dispatch($user->id, $allowNodes);
+        $enableChanged = Arr::has($changes, 'enable');
+        $permissionFieldsChanged = Arr::hasAny($changes, ['level', 'user_group_id']);
+        $configFieldsChanged = Arr::hasAny($changes, ['port', 'passwd', 'speed_limit']);
+
+        // 如果enable状态发生变化，或者用户当前已启用且权限或配置字段发生变化
+        if ($enableChanged || ($user->enable === 1 && ($permissionFieldsChanged || $configFieldsChanged))) {
+            // 获取当前允许的节点
+            $currentAllowedNodes = $user->nodes()->whereType(4)->get();
+
+            if ($permissionFieldsChanged) {
+                $oldAllowedNodes = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(4)->get();
+                if ($enableChanged) {
+                    if ($user->enable) {
+                        // 用户被启用，添加到所有当前允许的节点
+                        if ($currentAllowedNodes->isNotEmpty()) {
+                            AddUser::dispatch($user->id, $currentAllowedNodes);
+                        }
+                    } elseif ($oldAllowedNodes->isNotEmpty()) {
+                        DelUser::dispatch($user->id, $oldAllowedNodes);
                     }
                 } else {
-                    $old = $oldAllowNodes->diff($allowNodes); // old 有 allow 没有
-                    $new = $allowNodes->diff($oldAllowNodes); // allow 有 old 没有
-                    if ($old->isNotEmpty()) {
-                        DelUser::dispatch($user->id, $old);
+                    // 计算差异
+                    $nodesToRemove = $oldAllowedNodes->diff($currentAllowedNodes); // 用户失去权限的节点
+                    $nodesToAdd = $currentAllowedNodes->diff($oldAllowedNodes); // 用户新增权限的节点
+
+                    // 处理节点移除
+                    if ($nodesToRemove->isNotEmpty()) {
+                        DelUser::dispatch($user->id, $nodesToRemove);
                     }
-                    if ($new->isNotEmpty()) {
-                        AddUser::dispatch($user->id, $new);
+
+                    // 处理节点添加
+                    if ($nodesToAdd->isNotEmpty()) {
+                        AddUser::dispatch($user->id, $nodesToAdd);
                     }
-                    if (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {
-                        $same = $allowNodes->intersect($oldAllowNodes); // 共有部分
-                        if ($same->isNotEmpty()) {
-                            EditUser::dispatch($user, $same);
+
+                    // 处理节点更新（权限未变但配置变了）
+                    if ($configFieldsChanged && $currentAllowedNodes->isNotEmpty()) {
+                        $nodesToUpdate = $currentAllowedNodes->intersect($oldAllowedNodes); // 权限未变但可能需要更新配置的节点
+                        if ($nodesToUpdate->isNotEmpty()) {
+                            EditUser::dispatch($user, $nodesToUpdate);
                         }
                     }
                 }
-            } elseif ($allowNodes->isNotEmpty()) {
-                if ($enableChange) {
-                    if ($user->enable === 1) { // TODO: 由于vnet未正确使用enable字段，临时解决方案
-                        AddUser::dispatch($user->id, $allowNodes);
-                    } else {
-                        DelUser::dispatch($user->id, $allowNodes);
-                    }
-                } elseif (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {
-                    EditUser::dispatch($user, $allowNodes);
+            } elseif ($enableChanged && $currentAllowedNodes->isNotEmpty()) {
+                // 启用状态变化处理
+                if ($user->enable) {
+                    // 用户被启用，添加到所有允许的节点
+                    AddUser::dispatch($user->id, $currentAllowedNodes);
+                } else {
+                    // 用户被禁用，从所有允许的节点中移除
+                    DelUser::dispatch($user->id, $currentAllowedNodes);
                 }
+            } elseif ($configFieldsChanged && $currentAllowedNodes->isNotEmpty()) {
+                // 仅配置变化，更新所有允许的节点
+                EditUser::dispatch($user, $currentAllowedNodes);
             }
         }
 

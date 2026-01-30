@@ -146,9 +146,9 @@ class NodeController extends Controller
                     'method' => $info['method'],
                     'protocol' => $info['protocol'],
                     'obfs' => $info['obfs'],
-                    'obfs_param' => $info['obfs_param'],
-                    'protocol_param' => $info['protocol_param'],
-                    'passwd' => $info['passwd'],
+                    'obfs_param' => $info['obfs_param'] ?? null,
+                    'protocol_param' => $info['protocol_param'] ?? null,
+                    'passwd' => $info['passwd'] ?? null,
                 ];
                 break;
         }

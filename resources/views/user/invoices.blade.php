@@ -79,16 +79,18 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script>
-        function closePlan() {
-            showConfirm({
-                title: '{{ trans('user.invoice.active_prepaid_question') }}',
-                html: `{!! trans('user.invoice.active_prepaid_tips') !!}`,
-                icon: 'warning',
-                onConfirm: function() {
-                    ajaxPost('{{ route('invoice.activate') }}');
-                }
-            });
-        }
+        @if ($prepaidPlan)
+            function closePlan() {
+                showConfirm({
+                    title: '{{ trans('user.invoice.active_prepaid_question') }}',
+                    html: `{!! trans('user.invoice.active_prepaid_tips') !!}`,
+                    icon: 'warning',
+                    onConfirm: function() {
+                        ajaxPost('{{ route('invoice.activate') }}');
+                    }
+                });
+            }
+        @endif
 
         function closeOrder(id) {
             showConfirm({

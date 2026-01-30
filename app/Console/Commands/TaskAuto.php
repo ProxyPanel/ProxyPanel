@@ -50,7 +50,7 @@ class TaskAuto extends Command
             $query->recentUnPay(); // 关闭超时未支付本地订单
         })->orWhere(function (Builder $query) {
             $query->whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.confirmation_orders')))); // 关闭未处理的人工支付订单
-        })->chunk(sysConfig('tasks_chunk'), function ($orders) {
+        })->chunkById((int) sysConfig('tasks_chunk', 3000), function ($orders) {
             $orders->each->close();
         });
     }
@@ -78,7 +78,7 @@ class TaskAuto extends Command
             $query->whereStatus(1); // 获取有订阅且未被封禁用户
         })->whereHas('subscribeLogs', function (Builder $query) {
             $query->whereDate('request_time', '>=', now()->subDay()); //    ->distinct()->count('request_ip');
-        }, '>=', sysConfig('subscribe_rate_limit'))->chunk(sysConfig('tasks_chunk'), function ($users) use ($banMsg, $dirtyWorks) {
+        }, '>=', sysConfig('subscribe_rate_limit'))->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($banMsg, $dirtyWorks) {
             foreach ($users as $user) {
                 $user->subscribe->update($dirtyWorks);
                 $user->banedLogs()->create($banMsg); // 记录封禁日志
@@ -88,7 +88,7 @@ class TaskAuto extends Command
 
     private function unblockSubscribes(): void
     {
-        UserSubscribe::whereStatus(0)->where('ban_time', '<=', time())->chunk(sysConfig('tasks_chunk'), function ($subscribes) {
+        UserSubscribe::whereStatus(0)->where('ban_time', '<=', time())->chunkById((int) sysConfig('tasks_chunk', 3000), function ($subscribes) {
             $subscribes->each->update(['status' => 1, 'ban_time' => null, 'ban_desc' => null]);
         });
     }
@@ -96,7 +96,7 @@ class TaskAuto extends Command
     private function blockUsers(): void
     { // 封禁账号
         // 禁用流量超限用户
-        User::activeUser()->whereRaw('u + d >= transfer_enable')->chunk(sysConfig('tasks_chunk'), function ($users) {
+        User::activeUser()->whereRaw('u + d >= transfer_enable')->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) {
             $users->each(function ($user) {
                 $user->update(['enable' => 0]);
                 $user->banedLogs()->create(['description' => __('[Auto Task] Blocked service: Run out of traffic')]);
@@ -110,7 +110,7 @@ class TaskAuto extends Command
             $userService = new UserService;
 
             User::activeUser()->whereBanTime(null)->where('t', '>=', strtotime('-5 minutes')) // 只检测最近5分钟有流量使用的用户
-                ->chunk(sysConfig('tasks_chunk'), function ($users) use ($userService, $ban_time, $trafficBanTime) {
+                ->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($userService, $ban_time, $trafficBanTime) {
                     $users->each(function ($user) use ($userService, $ban_time, $trafficBanTime) {
                         $userService->setUser($user);
                         if ($userService->isTrafficWarning()) {
@@ -125,7 +125,7 @@ class TaskAuto extends Command
     private function unblockUsers(): void
     { // 解封账号
         // 解封被临时封禁的账号
-        User::bannedUser()->where('ban_time', '<', time())->chunk(sysConfig('tasks_chunk'), function ($users) {
+        User::bannedUser()->where('ban_time', '<', time())->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) {
             $users->each(function ($user) {
                 $user->update(['enable' => 1, 'ban_time' => null]);
                 $user->banedLogs()->create(['description' => __('[Auto Task] Unblocked Service: Account ban expired')]);
@@ -133,7 +133,7 @@ class TaskAuto extends Command
         });
 
         // 可用流量大于已用流量也解封（比如：邀请返利加了流量）
-        User::bannedUser()->whereBanTime(null)->where('expired_at', '>=', date('Y-m-d'))->whereRaw('u + d < transfer_enable')->chunk(sysConfig('tasks_chunk'), function ($users) {
+        User::bannedUser()->whereBanTime(null)->where('expired_at', '>=', date('Y-m-d'))->whereRaw('u + d < transfer_enable')->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) {
             $users->each(function ($user) {
                 $user->update(['enable' => 1]);
                 $user->banedLogs()->create(['description' => __('[Auto Task] Unblocked Service: Account has available data traffic')]);

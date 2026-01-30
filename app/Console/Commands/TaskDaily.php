@@ -60,7 +60,7 @@ class TaskDaily extends Command
         }
 
         User::activeUser()->where('expired_at', '<', date('Y-m-d')) // 过期
-            ->chunk(sysConfig('tasks_chunk'), function ($users) use ($banMsg, $dirtyWorks) {
+            ->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($banMsg, $dirtyWorks) {
                 $users->each(function ($user) use ($banMsg, $dirtyWorks) {
                     $user->update($dirtyWorks);
                     Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, 0, $banMsg);
@@ -74,7 +74,7 @@ class TaskDaily extends Command
         $closeTicketsHours = (time() - strtotime(sysConfig('tasks_close.tickets'))) / 3600;
         Ticket::whereStatus(1)->with('reply')->whereHas('reply', function ($query) {
             $query->where('admin_id', '<>', null);
-        })->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.tickets'))))->chunk(sysConfig('tasks_chunk'), function ($tickets) use ($closeTicketsHours) {
+        })->where('updated_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.tickets'))))->chunkById((int) sysConfig('tasks_chunk', 3000), function ($tickets) use ($closeTicketsHours) {
             $tickets->each(function ($ticket) use ($closeTicketsHours) {
                 if ($ticket->close()) {
                     $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('ticket.edit', $ticket),
@@ -91,7 +91,7 @@ class TaskDaily extends Command
             $query->activePlan();
         })->with(['orders' => function ($query) {
             $query->activePlan();
-        }])->chunk(sysConfig('tasks_chunk'), function ($users) {
+        }])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) {
             $users->each(function ($user) {
                 $user->orders()->activePackage()->update(['is_expire' => 1]); // 过期生效中的加油包
                 $order = $user->orders->first(); // 取出用户正在使用的套餐
@@ -126,7 +126,7 @@ class TaskDaily extends Command
             'dataFlowLogs' => function ($query) use ($start, $end) {
                 $query->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(sysConfig('tasks_chunk'), function ($users) use ($created_at) {
+        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($created_at) {
             foreach ($users as $user) {
                 $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
 
@@ -174,7 +174,7 @@ class TaskDaily extends Command
             'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
                 $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
             },
-        ])->chunk(sysConfig('tasks_chunk'), function ($nodes) use ($created_at) {
+        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($nodes) use ($created_at) {
             foreach ($nodes as $node) {
                 $node->dailyDataFlows()->create([
                     'u' => $node->u_sum,
