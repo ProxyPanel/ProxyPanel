@@ -290,3 +290,28 @@ function collectFormData(formSelector, options = {}) {
     };
 })(jQuery);
 
+/**
+ * 从URL查询参数中提取数据并填充表单
+ * @param {Object} options - 配置选项
+ * @param {string} options.formSelector - 表单选择器，默认为 'form'
+ * @param {Array} options.skipFields - 跳过的字段名
+ */
+function populateFormFromQueryParams(options = {}) {
+    // 将URL查询参数转换为对象
+    const urlParams = new URLSearchParams(window.location.search);
+    const data = {};
+
+    for (const [key, value] of urlParams.entries()) {
+        if (key.endsWith('[]')) {
+            if (!data.hasOwnProperty(key)) {
+                data[key] = [];
+            }
+            data[key].push(value);
+        } else {
+            data[key] = value;
+        }
+    }
+    
+    // 使用现有的 autoPopulateForm 函数填充表单
+    autoPopulateForm(data, options);
+}

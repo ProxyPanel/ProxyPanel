@@ -79,59 +79,35 @@ class ReportController extends Controller
 
             // 处理今天的数据
             if ($hourlyDate->isToday() || $endDate->isToday()) {
-                $todayHoursFlow = $user->hourlyDataFlows()
-                    ->whereNotNull('node_id')
-                    ->whereDate('created_at', $currentTime)
-                    ->with('node:id,name')
-                    ->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')
-                    ->get();
+                $todayHoursFlow = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get();
 
-                $currentHourFlow = $user->dataFlowLogs()
-                    ->where('log_time', '>=', $currentTime->startOfHour()->timestamp)
-                    ->with('node:id,name')
-                    ->groupBy('node_id')
-                    ->selectRaw('node_id, ? as hour, sum(u + d) as total', [$currentTime->hour])
-                    ->get();
+                $currentHourFlow = $user->dataFlowLogs()->where('log_time', '>=', $currentTime->startOfHour()->timestamp)->with('node:id,name')->groupBy('node_id')->selectRaw('node_id, ? as hour, sum(u + d) as total', [$currentTime->hour])->get();
 
-                $todayData = $todayHoursFlow->concat($currentHourFlow)
-                    ->groupBy('node_id')
-                    ->map(function ($items) use ($mapFlow) {
-                        $hourlyData = $items->mapWithKeys(fn ($item) => [$item->hour => $mapFlow($item)]);
-                        $totalFlow = $items->sum('total');
+                $todayData = $todayHoursFlow->concat($currentHourFlow)->groupBy('node_id')->map(function ($items) use ($mapFlow) {
+                    $hourlyData = $items->mapWithKeys(fn ($item) => [$item->hour => $mapFlow($item)]);
+                    $totalFlow = $items->sum('total');
 
-                        return [
-                            'hourly' => $hourlyData,
-                            'daily' => $mapFlow((object) [
-                                'node_id' => $items->first()->node_id,
-                                'node' => $items->first()->node,
-                                'created_at' => Carbon::today(),
-                                'total' => $totalFlow,
-                            ], 'date'),
-                        ];
-                    });
+                    return [
+                        'hourly' => $hourlyData,
+                        'daily' => $mapFlow((object) [
+                            'node_id' => $items->first()->node_id,
+                            'node' => $items->first()->node,
+                            'created_at' => Carbon::today(),
+                            'total' => $totalFlow,
+                        ], 'date'),
+                    ];
+                });
             }
 
             // 处理小时数据
             if ($todayData && $hourlyDate->isToday()) {
                 $hourlyFlows = $todayData->flatMap(fn ($item) => $item['hourly'])->values();
             } else {
-                $hourlyFlows = $user->hourlyDataFlows()
-                    ->whereNotNull('node_id')
-                    ->whereDate('created_at', $hourlyDate)
-                    ->with('node:id,name')
-                    ->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')
-                    ->get()
-                    ->map(fn ($item) => $mapFlow($item));
+                $hourlyFlows = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $hourlyDate)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => $mapFlow($item));
             }
 
             // 处理每日数据
-            $dailyFlows = $user->dailyDataFlows()
-                ->whereNotNull('node_id')
-                ->whereBetween('created_at', [$startDate, $endDate])
-                ->with('node:id,name')
-                ->selectRaw('node_id, DATE_FORMAT(created_at, "%m-%d") as date, u + d as total')
-                ->get()
-                ->map(fn ($item) => $mapFlow($item, 'date'));
+            $dailyFlows = $user->dailyDataFlows()->whereNotNull('node_id')->whereBetween('created_at', [$startDate, $endDate])->with('node:id,name')->selectRaw('node_id, DATE_FORMAT(created_at, "%m-%d") as date, u + d as total')->get()->map(fn ($item) => $mapFlow($item, 'date'));
 
             if ($todayData && $endDate->isToday()) {
                 $dailyFlows = $dailyFlows->concat($todayData->map(fn ($item) => $item['daily']));
@@ -143,10 +119,7 @@ class ReportController extends Controller
                 'nodes' => $hourlyFlows->concat($dailyFlows)->pluck('name', 'id')->unique()->toArray(),
                 'hourlyFlows' => $hourlyFlows->toArray(),
                 'dailyFlows' => $dailyFlows->toArray(),
-                'hour_dates' => UserHourlyDataFlow::selectRaw('DISTINCT DATE(created_at) as date')
-                    ->orderByDesc('date')
-                    ->pluck('date')
-                    ->toArray(),
+                'hour_dates' => UserHourlyDataFlow::selectRaw('DISTINCT DATE(created_at) as date')->orderByDesc('date')->pluck('date')->toArray(),
             ];
         }
 
@@ -258,7 +231,7 @@ class ReportController extends Controller
         $nodeId = $request->input('node_id');
         $nodes = Node::orderBy('name')->pluck('name', 'id');
 
-        // Fetch flows
+        // 获取流量数据
         $flows = NodeDailyDataFlow::whereNodeId($nodeId)->selectRaw('DATE(created_at) as date, sum(u + d) as total')->groupBy('date')->get()->keyBy('date');
 
         $dailyFlows = $flows->filter(fn ($flow) => $flow->date >= now()->subMonthNoOverflow()->startOfMonth()->toDateString())->pluck('total', 'date');
@@ -276,7 +249,6 @@ class ReportController extends Controller
         $trafficData = NodeDailyDataFlow::where('node_id', $nodeId)->where('created_at', '>=', $thirtyDaysAgo)->selectRaw('SUM(u + d) as total, COUNT(*) as dataCounts')->first();
 
         $total30Days = $trafficData->total ?? 0;
-
         $daysWithData = max($trafficData->dataCounts ?? 0, 1);
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 

@@ -201,7 +201,7 @@
         });
 
         $(document).ready(function() {
-            $('#node_id').val({{ Request::query('node_id') }});
+            populateFormFromQueryParams();
         });
     </script>
 @endsection

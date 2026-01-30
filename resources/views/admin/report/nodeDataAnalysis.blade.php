@@ -341,13 +341,7 @@
             window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
         };
 
-        const resetSearchForm = () => {
-            window.location.href = window.location.href.split("?")[0];
-        };
-
         document.addEventListener("DOMContentLoaded", () => {
-            initCharts();
-
             const hourDateSelect = document.getElementById("hour_date");
             if (hourDateSelect) {
                 hourDateSelect.addEventListener("change", (event) => handleFormSubmit(event, event.target.form));
@@ -356,8 +350,14 @@
 
             $(".input-daterange").datepicker({
                 startDate: nodeData.start_date,
-                endDate: new Date()
+                endDate: new Date(),
+                language: document.documentElement.lang || 'en',
+                autoclose: true,
+                todayHighlight: true
             });
+
+            populateFormFromQueryParams();
+            initCharts();
         });
     </script>
 @endsection

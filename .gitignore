@@ -22,3 +22,7 @@ _ide_helper_models.php
 composer.lock
 .prettierrc
 package-lock.json
+/.junie
+/public/build
+/.lingma
+.tongyiignore

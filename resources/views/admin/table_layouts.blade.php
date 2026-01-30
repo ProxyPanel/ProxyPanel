@@ -23,6 +23,10 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script>
+        $(document).ready(function() {
+            populateFormFromQueryParams();
+        });
+
         $("form:not(.modal-body form)").on("submit", function() {
             $(this).find("input:not([type=\"submit\"]), select").filter(function() {
                 return this.value === "";
@@ -36,29 +40,6 @@
         $("select").not(".modal-body select").on("change", function() {
             $(this).closest("form").trigger("submit");
         });
-
-        function autoInitSelectpickers() {
-            $('select[data-plugin="selectpicker"]').each(function() {
-                const $select = $(this);
-                const fieldName = $select.attr('name').replace('[]', ''); // 处理多选字段
-                const queryValue = getUrlParameter(fieldName);
-
-                if (queryValue) {
-                    $select.selectpicker("val", queryValue);
-                }
-            });
-        }
-
-        // 获取 URL 参数的辅助函数
-        function getUrlParameter(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        $(document).ready(function() {
-            autoInitSelectpickers();
-        });
-
 
         // 使用事件委托处理所有删除按钮点击
         document.addEventListener('click', function(e) {

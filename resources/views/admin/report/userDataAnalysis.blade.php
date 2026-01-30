@@ -8,7 +8,7 @@
         <div class="card card-shadow">
             <div class="card-block p-30">
                 <form class="form-row" onsubmit="handleFormSubmit(event, this);">
-                    <x-admin.filter.input class="col-md-1 col-sm-4" name="uid" type="number" :placeholder="trans('model.user.id')" />
+                    <x-admin.filter.input class="col-lg-1 col-md-2 col-sm-4" name="uid" type="number" :placeholder="trans('model.user.id')" />
                     <x-admin.filter.input class="col-xxl-2 col-md-3 col-sm-4" name="username" :placeholder="trans('model.user.username')" />
                     <div class="form-group col-xxl-1 col-md-3 col-4 btn-group">
                         <button class="btn btn-primary" type="submit">{{ trans('common.search') }}</button>
@@ -220,10 +220,6 @@
             window.location.href = `${window.location.pathname}?${urlParams.toString()}`;
         };
 
-        const resetSearchForm = () => {
-            window.location.href = window.location.href.split("?")[0];
-        };
-
         const initCharts = () => {
             if (userData && Object.keys(userData).length > 2) {
                 const nodeColorMap = generateNodeColorMap(userData.nodes);
@@ -241,13 +237,14 @@
 
             $(".input-daterange").datepicker({
                 startDate: userData.start_date,
-                endDate: new Date()
+                endDate: new Date(),
+                language: document.documentElement.lang || 'en',
+                autoclose: true,
+                todayHighlight: true
             });
 
+            populateFormFromQueryParams();
             initCharts();
         });
-
-        window.handleFormSubmit = handleFormSubmit;
-        window.resetSearchForm = resetSearchForm;
     </script>
 @endsection
