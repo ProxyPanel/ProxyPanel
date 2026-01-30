@@ -97,6 +97,7 @@
                     <div class="panel-body">
                         @yield('content')
                     </div>
+                    @yield('footer')
                 </div>
             </div>
             @yield('modal')

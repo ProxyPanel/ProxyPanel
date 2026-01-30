@@ -59,10 +59,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer card-footer-transparent">
-                        <nav class="Page navigation float-right">
-                            {{ $referralUserList->appends(Arr::except(Request::query(), 'user_page'))->links() }}
-                        </nav>
+                    <div class="card-footer card-footer-transparent d-flex justify-content-end">
+                        {{ $referralUserList->appends(Arr::except(Request::query(), 'user_page'))->links() }}
                     </div>
                 </div>
             </div>
@@ -106,17 +104,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="panel-footer">
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6">
-                                {{ trans('user.referral.total', ['amount' => $canAmount, 'total' => $referralLogList->total(), 'money' => $referral_money]) }}
-                            </div>
-                            <div class="col-md-6 col-sm-6">
-                                <nav class="Page navigation float-right">
-                                    {{ $referralLogList->appends(Arr::except(Request::query(), 'log_page'))->links() }}
-                                </nav>
-                            </div>
+                    <div class="panel-footer d-flex flex-column flex-xxl-row justify-content-between align-items-center">
+                        <div class="mb-3 mb-xxl-0">
+                            {{ trans('user.referral.total', ['amount' => $canAmount, 'total' => $referralLogList->total(), 'money' => $referral_money]) }}
                         </div>
+                        {{ $referralLogList->appends(Arr::except(Request::query(), 'log_page'))->links() }}
                     </div>
                 </div>
                 <!-- 提现记录 -->
@@ -146,10 +138,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer card-footer-transparent">
-                        <nav class="Page navigation float-right">
-                            {{ $referralApplyList->appends(Arr::except(Request::query(), 'apply_page'))->links() }}
-                        </nav>
+                    <div class="card-footer card-footer-transparent d-flex justify-content-end">
+                        {{ $referralApplyList->appends(Arr::except(Request::query(), 'apply_page'))->links() }}
                     </div>
                 </div>
             </div>

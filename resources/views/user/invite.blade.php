@@ -63,17 +63,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="card-footer card-footer-transparent">
-                        <div class="row">
-                            <div class="col-md-4">
-                                {!! trans('user.invite.counts', ['num' => $inviteList->total()]) !!}
-                            </div>
-                            <div class="col-md-8">
-                                <nav class="Page navigation float-right">
-                                    {{ $inviteList->links() }}
-                                </nav>
-                            </div>
+                    <div class="card-footer card-footer-transparent d-flex flex-column flex-lg-row justify-content-between align-items-center">
+                        <div class="mb-5 mb-lg-0">
+                            {!! trans('user.invite.counts', ['num' => $inviteList->total()]) !!}
                         </div>
+                        {{ $inviteList->links() }}
                     </div>
                 </div>
             </div>

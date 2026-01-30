@@ -178,6 +178,110 @@
             });
         }
         @endauth
+
+        function adjustPagination() {
+            const paginations = document.querySelectorAll('.pagination');
+
+            paginations.forEach(pagination => {
+                const allItems = Array.from(pagination.querySelectorAll('.page-item'));
+                // 1. 清理动态省略号并恢复显示以进行测量
+                pagination.querySelectorAll('.dynamic-dot').forEach(el => el.remove());
+                allItems.forEach(item => item.style.display = '');
+
+                const totalWidthNeeded = pagination.scrollWidth;
+
+                // 2. 寻找第一个宽度限制容器
+                let parent = pagination.parentElement;
+                while (parent && parent.tagName !== 'HTML' && parent.clientWidth === totalWidthNeeded) {
+                    // 如果父容器 clientWidth 明显小于当前 pagination 宽度，说明它就是那个限制框
+                    parent = parent.parentElement;
+                }
+                let limitWidth = parent.clientWidth;
+
+                // 如果宽度足够（给 60px 缓冲），不需要调整
+                if (totalWidthNeeded + 60 < limitWidth) return;
+
+                // 3. 更加精准的估算容量
+                // 取最后一页的宽度作为基准（通常三位数页码最宽，最具代表性）
+                const itemWidth = (allItems[allItems.length - 2] || allItems[0]).offsetWidth || 40;
+
+                // 计算最大可用槽位：(容器宽 / 单个宽) - 预留给省略号的 2 个位置
+                let maxSlots = Math.max(5, Math.floor(limitWidth / itemWidth) - 2);
+
+                // 4. 筛选页码（排除 Prev/Next）
+                const numItems = allItems.filter(item => {
+                    const text = item.textContent.trim();
+                    // 排除上一页/下一页图标，只留数字
+                    return !isNaN(text) && text !== '' && !item.querySelector('[rel="prev"]') && !item.querySelector('[rel="next"]');
+                });
+
+                const activeItem = pagination.querySelector('.active');
+                const firstPage = numItems[0];
+                const lastPage = numItems[numItems.length - 1];
+                const prevBtn = allItems[0];
+                const nextBtn = allItems[allItems.length - 1];
+
+                // 5. 构建必须显示的权重集合 (Set)
+                let visibleSet = new Set([prevBtn, nextBtn, firstPage, lastPage, activeItem]);
+
+                // 6. 权重填充：按距离 Active 远近填充剩余槽位
+                let remaining = maxSlots - visibleSet.size;
+                if (remaining > 0) {
+                    const activeIdx = allItems.indexOf(activeItem);
+                    const sortedNums = [...numItems]
+                        .filter(item => !visibleSet.has(item))
+                        .sort((a, b) => {
+                            const distA = Math.abs(allItems.indexOf(a) - activeIdx);
+                            const distB = Math.abs(allItems.indexOf(b) - activeIdx);
+                            if (distA === distB) return allItems.indexOf(a) - allItems.indexOf(b); // 距离相等时，左侧优先
+                            return distA - distB;
+                        });
+
+                    for (let i = 0; i < remaining && i < sortedNums.length; i++) {
+                        visibleSet.add(sortedNums[i]);
+                    }
+                }
+
+                // 7. 执行显示/隐藏
+                allItems.forEach(item => {
+                    item.style.display = visibleSet.has(item) ? '' : 'none';
+                });
+
+                // 8. 补齐省略号 (检查索引断层)
+                const finalVisible = allItems.filter(item => item.style.display !== 'none');
+                for (let i = 0; i < finalVisible.length - 1; i++) {
+                    const currIdx = allItems.indexOf(finalVisible[i]);
+                    const nextIdx = allItems.indexOf(finalVisible[i + 1]);
+
+                    if (nextIdx - currIdx > 1) {
+                        let nativeDot = null;
+                        for (let j = currIdx + 1; j < nextIdx; j++) {
+                            if (allItems[j].textContent.includes('...')) {
+                                nativeDot = allItems[j];
+                                break;
+                            }
+                        }
+
+                        if (nativeDot) {
+                            nativeDot.style.display = '';
+                        } else {
+                            // 正确插入 HTML 节点的方法
+                            finalVisible[i + 1].insertAdjacentHTML('beforebegin',
+                                `<li class="page-item disabled dynamic-dot" aria-disabled="true"><span class="page-link">...</span></li>`);
+                        }
+                    }
+                }
+            });
+        }
+
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(adjustPagination, 100);
+        });
+
+        // 在 DOM 加载完成后执行一次
+        document.addEventListener('DOMContentLoaded', adjustPagination);
     </script>
     @yield('layout_javascript')
 </body>

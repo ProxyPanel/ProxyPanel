@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrap();
+        Paginator::useBootstrapFour();
 
         // 检测是否强制跳转https
         if (config('session.secure')) {

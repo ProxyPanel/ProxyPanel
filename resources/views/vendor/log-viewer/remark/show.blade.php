@@ -193,17 +193,11 @@
                         </table>
                     </div>
                 </div>
-                <div class="panel-footer">
-                    <div class="row">
-                        <div class="col-sm-4">
-                            {!! trans('admin.logs.counts', ['num' => $entries->total()]) !!}
-                        </div>
-                        <div class="col-sm-8">
-                            <nav class="Page navigation float-right">
-                                {{ $entries->links() }}
-                            </nav>
-                        </div>
+                <div class="panel-footer d-flex flex-column flex-lg-row justify-content-between align-items-center">
+                    <div class="mb-3 mb-lg-0">
+                        {!! trans('admin.logs.counts', ['num' => $entries->total()]) !!}
                     </div>
+                    {{ $entries->links() }}
                 </div>
             </div>
         </div>

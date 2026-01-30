@@ -5,7 +5,7 @@
 @section('content')
     <div class="page-content container-fluid">
         <div class="row">
-            <div class="col-lg-8 order-lg-1 order-2">
+            <div class="col-xxl-9 col-lg-8 order-lg-1 order-2">
                 <div class="panel panel-bordered">
                     <div class="panel-heading p-20">
                         <h1 class="panel-title cyan-600">
@@ -53,18 +53,12 @@
                             </table>
                         </div>
                     </div>
-                    <div class="panel-footer">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <nav class="Page navigation float-right">
-                                    {{ $tickets->links() }}
-                                </nav>
-                            </div>
-                        </div>
+                    <div class="panel-footer d-flex justify-content-end">
+                        {{ $tickets->links() }}
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4 order-lg-2 order-1">
+            <div class="col-xxl-3 col-lg-4 order-lg-2 order-1">
                 <div class="panel panel-bordered">
                     <div class="panel-heading p-20">
                         <h3 class="panel-title cyan-600">

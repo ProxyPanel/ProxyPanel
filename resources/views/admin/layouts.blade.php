@@ -3,6 +3,25 @@
 @section('layout_css')
     <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/toastr/toastr.min.css" rel="stylesheet">
+    <style>
+        @media (max-width: 768px) {
+            .pagination .page-link {
+                padding: .429rem .786rem;
+                font-size: .858rem;
+                line-height: 1.5
+            }
+
+            .pagination .page-item:first-child .page-link {
+                border-top-left-radius: .143rem;
+                border-bottom-left-radius: .143rem
+            }
+
+            .pagination .page-item:last-child .page-link {
+                border-top-right-radius: .143rem;
+                border-bottom-right-radius: .143rem
+            }
+        }
+    </style>
     @yield('css')
 @endsection
 @section('body_class', 'dashboard')

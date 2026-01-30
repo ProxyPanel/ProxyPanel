@@ -63,14 +63,8 @@
                     </tbody>
                 </table>
             </div>
-            <div class="panel-footer">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="Page navigation float-right">
-                            {{ $orderList->links() }}
-                        </nav>
-                    </div>
-                </div>
+            <div class="panel-footer d-flex justify-content-end">
+                {{ $orderList->links() }}
             </div>
         </div>
     </div>

@@ -13,14 +13,20 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($inviteList as $invite)
+                        @forelse ($inviteList as $invite)
                             <tr>
                                 <td>
                                     <a href="{{ route('register', ['code' => $invite->code]) }}" target="_blank">{{ $invite->code }}</a>
                                 </td>
                                 <td> {{ $invite->dateline }} </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td class="text-center" colspan="2">
+                                    <span class="badge badge-secondary">{{ trans('common.none') }}</span>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 @endif
             @else
@@ -28,12 +34,14 @@
             @endif
         </table>
     </div>
+@endsection
+@section('footer')
     @if (sysConfig('is_invite_register') && sysConfig('is_free_code'))
-        <div class="mt-20">
-            <a class="btn btn-danger btn-lg float-left" href="{{ route('login') }}">{{ trans('common.back') }}</a>
-            <nav class="Page navigation float-right">
-                {{ $inviteList->links() }}
-            </nav>
+        <div class="panel-footer d-flex justify-content-between">
+            <div>
+                <a class="btn btn-danger" href="{{ route('login') }}">{{ trans('common.back') }}</a>
+            </div>
+            {{ $inviteList->links() }}
         </div>
     @endif
 @endsection

@@ -58,13 +58,19 @@
     </div>
 
     @if ($count && $pagination)
-        <div class="panel-footer">
-            <div class="row">
-                <div class="col-sm-4">{!! $count !!}</div>
-                <div class="col-sm-8">
-                    <nav class="Page navigation float-right">{!! $pagination !!}</nav>
-                </div>
+        <div class="panel-footer d-flex flex-column flex-lg-row justify-content-between align-items-center">
+            <div class="mb-3 mb-lg-0">
+                {!! $count !!}
             </div>
+            {!! $pagination !!}
+        </div>
+    @elseif($count)
+        <div class="panel-footer d-flex justify-content-start">
+            {!! $count !!}
+        </div>
+    @elseif($pagination)
+        <div class="panel-footer d-flex justify-content-end">
+            {!! $pagination !!}
         </div>
     @endif
 </div>
