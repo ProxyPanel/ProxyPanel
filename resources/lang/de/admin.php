@@ -665,6 +665,13 @@ return [
         'self_send' => 'Sie können kein Ticket für sich selbst erstellen!',
         'send_to' => 'Bitte Zielbenutzer-Informationen eingeben',
         'user_info' => 'Benutzerinformationen',
+        'analysis_title' => 'Datenanalyse',
+        'processed_30days' => '30-Tage-Ticket-Volumen',
+        'first_response_30days' => '30-Tage-Erstantwortzeit',
+        'avg_processing_time_30days' => '30-Tage-durchschnittliche Bearbeitungszeit',
+        'today_new' => 'Heutige neue Tickets',
+        'pending_tickets' => 'Ausstehende Tickets',
+        'total_tickets' => 'Gesamte Tickets',
     ],
     'times' => 'Mal',
     'tools' => [

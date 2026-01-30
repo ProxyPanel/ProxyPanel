@@ -49,14 +49,14 @@ if (! function_exists('formatBytes')) {
 
 // 秒转时间
 if (! function_exists('formatTime')) {
-    function formatTime(?int $seconds): string
+    function formatTime(?int $seconds, int $parts = -1): string
     {
         if (! $seconds) {
             return '-';
         }
         $interval = CarbonInterval::seconds($seconds);
 
-        return $interval->cascade()->forHumans();
+        return $interval->cascade()->forHumans(['parts' => $parts]);
     }
 }
 

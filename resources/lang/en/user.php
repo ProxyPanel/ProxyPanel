@@ -268,6 +268,7 @@ return [
         'reply' => 'Respond',
         'reply_confirm' => 'Confirm response?',
         'reply_placeholder' => 'Enter response...',
+        'response_time_avg' => 'Recent Average Waiting Time',
         'service_hours' => 'Support Availability',
         'service_tips' => 'Kindly use <code>only one</code> contact method when reaching out to support. Multiple submissions may delay our response.',
         'submit_tips' => 'Submit ticket?',

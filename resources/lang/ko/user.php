@@ -268,6 +268,7 @@ return [
         'reply' => '답변',
         'reply_confirm' => '답변을 확인하시겠습니까?',
         'reply_placeholder' => '무언가 작성해 주세요',
+        'response_time_avg' => '최근 평균 대기 시간',
         'service_hours' => '지원 시간',
         'service_tips' => '<code>하나</code>의 연락 방법으로 고객지원에 문의하세요. 중복 제출은 처리 지연을 초래할 수 있습니다.',
         'submit_tips' => '티켓을 제출하시겠습니까?',

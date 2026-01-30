@@ -51,7 +51,7 @@
             </h4>
         </x-slot:header>
 
-        <ul class="list-group list-group-dividered px-20 mb-0">
+        <ul class="list-group list-group-dividered list-group-full">
             <h5>{{ trans('admin.node.info.basic') }}</h5>
             <dl class="dl-horizontal row">
                 <dt class="col-sm-3">{{ trans('model.user.nickname') }}</dt>

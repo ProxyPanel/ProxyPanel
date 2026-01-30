@@ -14,6 +14,7 @@ class TicketController extends Controller
     { // 工单
         return view('user.tickets', [
             'tickets' => auth()->user()->tickets()->latest()->paginate(10)->appends($request->except('page')),
+            'responseStats' => Ticket::getAvgFirstResponseData(),
         ]);
     }
 

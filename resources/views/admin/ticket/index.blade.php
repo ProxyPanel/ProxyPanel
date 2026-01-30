@@ -1,58 +1,125 @@
 @extends('admin.table_layouts')
 @section('content')
     <div class="page-content container-fluid">
-        <x-admin.table-panel :title="trans('admin.menu.customer_service.ticket')" :theads="['#', trans('model.user.username'), ucfirst(trans('validation.attributes.title')), trans('common.status.attribute'), trans('common.action')]" :count="trans('admin.ticket.counts', ['num' => $ticketList->total()])" :pagination="$ticketList->links()">
-            @can('admin.ticket.store')
-                <x-slot:actions>
-                    <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
-                        <span>
-                            <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('user.ticket.new') }}
-                        </span>
-                    </button>
-                </x-slot:actions>
-            @endcan
-            <x-slot:filters>
-                <x-admin.filter.input class="col-lg-3 col-sm-6" name="username" :placeholder="trans('model.user.username')" />
-            </x-slot:filters>
-            <x-slot:tbody>
-                @foreach ($ticketList as $ticket)
-                    <tr>
-                        <td> {{ $ticket->id }} </td>
-                        <td>
-                            @if (!$ticket->user)
-                                【{{ trans('common.deleted_item', ['attribute' => trans('common.account')]) }}】
-                            @else
-                                @can('admin.user.index')
-                                    <a href="{{ route('admin.user.index', ['id' => $ticket->user->id]) }}" target="_blank">{{ $ticket->user->username }}</a>
-                                @else
-                                    {{ $ticket->user->username }}
-                                @endcan
-                            @endif
-                        </td>
-
-                        <td>
-                            {{ $ticket->title }}
-                        </td>
-                        <td>
-                            {!! $ticket->status_label !!}
-                        </td>
-                        <td>
-                            @can('admin.ticket.edit')
-                                <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="{{ route('admin.ticket.edit', $ticket) }}">
-                                    <span>
-                                        @if ($ticket->status === 2)
-                                            <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{ trans('common.view') }}
+        <div class="row">
+            <div class="col-xxl-9 col-lg-8 order-lg-1 order-2">
+                <x-admin.table-panel :title="trans('admin.menu.customer_service.ticket')" :theads="[
+                    '#',
+                    trans('model.user.username'),
+                    ucfirst(trans('validation.attributes.title')),
+                    trans('common.status.attribute'),
+                    trans('common.action'),
+                ]" :count="trans('admin.ticket.counts', ['num' => $ticketList->total()])" :pagination="$ticketList->links()">
+                    @can('admin.ticket.store')
+                        <x-slot:actions>
+                            <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
+                                <span>
+                                    <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('user.ticket.new') }}
+                                </span>
+                            </button>
+                        </x-slot:actions>
+                    @endcan
+                    <x-slot:filters>
+                        <x-admin.filter.input class="col-lg-3 col-sm-6" name="username" :placeholder="trans('model.user.username')" />
+                    </x-slot:filters>
+                    <x-slot:tbody>
+                        @foreach ($ticketList as $ticket)
+                            <tr>
+                                <td> {{ $ticket->id }} </td>
+                                <td>
+                                    @if (!$ticket->user)
+                                        【{{ trans('common.deleted_item', ['attribute' => trans('common.account')]) }}】
+                                    @else
+                                        @can('admin.user.index')
+                                            <a href="{{ route('admin.user.index', ['id' => $ticket->user->id]) }}" target="_blank">{{ $ticket->user->username }}</a>
                                         @else
-                                            <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{ trans('common.open') }}
-                                        @endif
+                                            {{ $ticket->user->username }}
+                                        @endcan
+                                    @endif
+                                </td>
+
+                                <td>
+                                    {{ $ticket->title }}
+                                </td>
+                                <td>
+                                    {!! $ticket->status_label !!}
+                                </td>
+                                <td>
+                                    @can('admin.ticket.edit')
+                                        <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="{{ route('admin.ticket.edit', $ticket) }}">
+                                            <span>
+                                                @if ($ticket->status === 2)
+                                                    <i class="icon wb-eye" aria-hidden="true" style="left: 40%"> </i>{{ trans('common.view') }}
+                                                @else
+                                                    <i class="icon wb-check" aria-hidden="true" style="left: 40%"> </i>{{ trans('common.open') }}
+                                                @endif
+                                            </span>
+                                        </a>
+                                    @endcan
+                                </td>
+                            </tr>
+                        @endforeach
+                    </x-slot:tbody>
+                </x-admin.table-panel>
+            </div>
+            <div class="col-xxl-3 col-lg-4 order-lg-2 order-1">
+                <div class="panel panel-bordered">
+                    <div class="panel-heading">
+                        <h3 class="panel-title cyan-600">
+                            <i class="icon wb-stats-bars"></i> {{ trans('admin.ticket.analysis_title') }}
+                        </h3>
+                    </div>
+                    <div class="panel-body pt-0">
+                        <ul class="list-group list-group-dividered list-group-full">
+                            <li class="list-group-item">
+                                <i class="icon wb-inbox"></i>
+                                {{ trans('admin.ticket.processed_30days') }}
+                                <span class="font-weight-bold float-right">
+                                    {{ $responseStats['count'] }}
+                                </span>
+                            </li>
+                            @if ($responseStats['avg_time'])
+                                <li class="list-group-item">
+                                    <i class="icon wb-time"></i>
+                                    {{ trans('admin.ticket.first_response_30days') }}
+                                    <span class="text-success font-weight-bold float-right">{{ formatTime($responseStats['avg_time']) }}</span>
+                                </li>
+                            @endif
+                            @if ($avgCloseTime > 0)
+                                <li class="list-group-item">
+                                    <i class="icon wb-check"></i>
+                                    {{ trans('admin.ticket.avg_processing_time_30days') }}
+                                    <span class="text-success font-weight-bold float-right">
+                                        {{ formatTime($avgCloseTime) }}
                                     </span>
-                                </a>
-                            @endcan
-                        </td>
-                    </tr>
-                @endforeach
-            </x-slot:tbody>
-        </x-admin.table-panel>
+                                </li>
+                            @endif
+                            <li class="list-group-item">
+                                <i class="icon wb-chat-text blue-700"></i>
+                                {{ trans('admin.ticket.today_new') }}
+                                <span class="font-weight-bold float-right">
+                                    <span class="text-info">{{ $todayTicketCount }}</span>
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="icon wb-chat-working red-700"></i>
+                                {{ trans('admin.ticket.pending_tickets') }}
+                                <span class="font-weight-bold text-danger float-right">
+                                    {{ $ticketStats['pending'] }}
+                                </span>
+                            </li>
+                            <li class="list-group-item">
+                                <i class="icon wb-chat green-700"></i>
+                                {{ trans('admin.ticket.total_tickets') }}
+                                <span class="font-weight-bold text-primary float-right">
+                                    {{ $ticketStats['total'] }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     @can('admin.ticket.store')

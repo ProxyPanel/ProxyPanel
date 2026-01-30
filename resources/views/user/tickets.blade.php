@@ -72,30 +72,31 @@
                         </h3>
                     </div>
                     <div class="panel-body pt-0">
-                        <ul class="list-group list-group-dividered list-group-full vertical-align-middle">
+                        <ul class="list-group list-group-dividered list-group-full">
                             <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-lg-5 col-4">
-                                        <button class="btn btn-pure ti-time blue-700"></button>
-                                        {{ trans('user.ticket.online_hour') }}
-                                    </div>
-                                    <div class="col-lg-7 col-8 text-right">
-                                        {{ trans('common.days.work') }} 23:00 - {{ trans('common.days.next') }} 11:00
-                                        <br>
-                                        {{ trans('common.days.weekend') }} 21:00 - {{ trans('common.days.next') }} 12:00
-                                    </div>
-                                </div>
+                                <i class="icon ti-time blue-700"></i>
+                                {{ trans('user.ticket.online_hour') }}
+                                <span class="float-right">
+                                    {{ trans('common.days.work') }} 23:00 - {{ trans('common.days.next') }} 11:00
+                                    <br>
+                                    {{ trans('common.days.weekend') }} 21:00 - {{ trans('common.days.next') }} 12:00
+                                </span>
                             </li>
                             <li class="list-group-item">
-                                <div class="row">
-                                    <div class="col-2">
-                                        <button class="btn btn-pure ti-info-alt red-700"></button>
-                                    </div>
-                                    <div class="col-10">
-                                        {!! trans('user.ticket.service_tips') !!}
-                                    </div>
-                                </div>
+                                <i class="icon ti-info-alt red-700"></i>
+                                <span class="float-right">
+                                    {!! trans('user.ticket.service_tips') !!}
+                                </span>
                             </li>
+                            @if ($responseStats['avg_time'])
+                                <li class="list-group-item">
+                                    <i class="icon wb-time blue-700"></i>
+                                    {{ trans('user.ticket.response_time_avg') }}
+                                    <span class="float-right font-weight-bold text-success">
+                                        {{ formatTime($responseStats['avg_time'], 2) }}
+                                    </span>
+                                </li>
+                            @endif
                         </ul>
                     </div>
                 </div>

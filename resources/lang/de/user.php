@@ -268,6 +268,7 @@ return [
         'reply' => 'Antworten',
         'reply_confirm' => 'Antwort bestätigen?',
         'reply_placeholder' => 'Etwas sagen?',
+        'response_time_avg' => 'Aktuelle durchschnittliche Wartezeit',
         'service_hours' => 'Kundensupport-Zeiten',
         'service_tips' => 'Bitte über <code>eine</code> Kontaktmethode Kundensupport kontaktieren, mehrfache Einreichungen vermeiden um Bearbeitungsfortschritt nicht zu beeinträchtigen.',
         'submit_tips' => 'Ticket-Einreichung bestätigen?',

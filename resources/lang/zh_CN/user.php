@@ -268,6 +268,7 @@ return [
         'reply' => '回复',
         'reply_confirm' => '确认回复？',
         'reply_placeholder' => '说点什么吧？',
+        'response_time_avg' => '近期平均等待时长',
         'service_hours' => '客服时间',
         'service_tips' => '请通过 <code>一种</code> 联系方式联系客服，避免重复提交，以免影响处理进度。',
         'submit_tips' => '确认提交工单？',

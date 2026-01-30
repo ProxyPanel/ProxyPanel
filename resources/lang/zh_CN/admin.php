@@ -665,6 +665,13 @@ return [
         'self_send' => '不能给自己创建工单！',
         'send_to' => '请填入目标用户信息',
         'user_info' => '用户信息',
+        'analysis_title' => '数据分析',
+        'processed_30days' => '30 天工单处理量',
+        'first_response_30days' => '30 天工单首次响应时效',
+        'avg_processing_time_30days' => '30 天平均处理时长',
+        'today_new' => '今日新增工单',
+        'pending_tickets' => '待处理工单',
+        'total_tickets' => '工单总数',
     ],
     'times' => '次',
     'tools' => [

@@ -665,6 +665,13 @@ return [
         'self_send' => 'Không thể tạo ticket cho chính mình!',
         'send_to' => 'Vui lòng nhập thông tin người dùng mục tiêu',
         'user_info' => 'Thông tin người dùng',
+        'analysis_title' => 'Phân tích dữ liệu',
+        'processed_30days' => 'Tổng số ticket xử lý 30 ngày',
+        'first_response_30days' => 'Thời gian phản hồi đầu tiên 30 ngày',
+        'avg_processing_time_30days' => 'Thời gian xử lý trung bình 30 ngày',
+        'today_new' => 'Ticket mới hôm nay',
+        'pending_tickets' => 'Ticket đang chờ',
+        'total_tickets' => 'Tổng số ticket',
     ],
     'times' => 'lần',
     'tools' => [

@@ -268,6 +268,7 @@ return [
         'reply' => '返信',
         'reply_confirm' => '返信を確認しますか？',
         'reply_placeholder' => '何かお書きください',
+        'response_time_avg' => '最近の平均待ち時間',
         'service_hours' => 'サポート時間',
         'service_tips' => '<code>一つ</code> の連絡方法でカスタマーサポートにお問い合わせください。重複提出は処理の遅延を招く可能性があります。',
         'submit_tips' => 'チケットを提出しますか？',

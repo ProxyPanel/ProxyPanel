@@ -665,6 +665,13 @@ return [
         'self_send' => 'You cannot create a ticket for yourself!',
         'send_to' => 'Please provide target user details',
         'user_info' => 'User Information',
+        'analysis_title' => 'Data Analysis',
+        'processed_30days' => '30-Day Ticket Volume',
+        'first_response_30days' => '30-Day First Response Time',
+        'avg_processing_time_30days' => '30-Day Average Processing Time',
+        'today_new' => 'Today\'s New Tickets',
+        'pending_tickets' => 'Pending Tickets',
+        'total_tickets' => 'Total Tickets',
     ],
     'times' => 'times',
     'tools' => [

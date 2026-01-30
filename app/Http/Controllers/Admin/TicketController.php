@@ -17,7 +17,7 @@ class TicketController extends Controller
     { // 工单列表
         $query = Ticket::where(function ($query) {
             $query->where('admin_id', auth()->id())->orWhereNull('admin_id');
-        })->with('user');
+        })->with('user:id,username');
 
         $request->whenFilled('username', function ($username) use ($query) {
             $query->whereHas('user', function ($query) use ($username) {
@@ -25,7 +25,13 @@ class TicketController extends Controller
             });
         });
 
-        return view('admin.ticket.index', ['ticketList' => $query->orderBy('status')->latest()->paginate(10)->appends($request->except('page'))]);
+        return view('admin.ticket.index', [
+            'ticketList' => $query->orderBy('status')->latest()->paginate(10)->appends($request->except('page')),
+            'responseStats' => Ticket::getAvgFirstResponseData(),
+            'ticketStats' => Ticket::getTicketStatusStats(),
+            'todayTicketCount' => Ticket::getTodayTicketCount(),
+            'avgCloseTime' => Ticket::getAvgCloseTime(),
+        ]);
     }
 
     public function store(TicketRequest $request): JsonResponse

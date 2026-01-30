@@ -268,6 +268,7 @@ return [
         'reply' => 'Trả lời',
         'reply_confirm' => 'Xác nhận trả lời?',
         'reply_placeholder' => 'Vui lòng viết gì đó',
+        'response_time_avg' => 'Thời gian chờ trung bình gần đây',
         'service_hours' => 'Giờ hỗ trợ',
         'service_tips' => 'Vui lòng liên hệ hỗ trợ khách hàng qua <code>một</code> phương thức liên hệ, gửi trùng lặp có thể làm chậm quá trình xử lý.',
         'submit_tips' => 'Gửi ticket?',

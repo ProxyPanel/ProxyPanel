@@ -665,6 +665,13 @@ return [
         'self_send' => '自分にチケットを作成することはできません！',
         'send_to' => '対象ユーザー情報を入力してください',
         'user_info' => 'ユーザー情報',
+        'analysis_title' => 'データ分析',
+        'processed_30days' => '30日間チケット処理量',
+        'first_response_30days' => '30日間初回対応時間',
+        'avg_processing_time_30days' => '30日間平均処理時間',
+        'today_new' => '本日の新規チケット',
+        'pending_tickets' => '保留中のチケット',
+        'total_tickets' => 'チケット総数',
     ],
     'times' => '回',
     'tools' => [

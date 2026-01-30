@@ -665,6 +665,13 @@ return [
         'self_send' => '자신에게 티켓을 생성할 수 없습니다!',
         'send_to' => '대상 사용자 정보를 입력하세요',
         'user_info' => '사용자 정보',
+        'analysis_title' => '데이터 분석',
+        'processed_30days' => '30일 티켓 처리량',
+        'first_response_30days' => '30일 최초 응답 시간',
+        'avg_processing_time_30days' => '30일 평균 처리 시간',
+        'today_new' => '오늘의 신규 티켓',
+        'pending_tickets' => '대기 중인 티켓',
+        'total_tickets' => '총 티켓 수',
     ],
     'times' => '회',
     'tools' => [
