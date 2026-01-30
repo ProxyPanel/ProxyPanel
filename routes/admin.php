@@ -58,6 +58,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('ticket', TicketController::class)->except('create', 'show');
     Route::resource('article', ArticleController::class);
+
     Route::prefix('marketing')->name('marketing.')->controller(MarketingController::class)->group(function () {
         Route::get('/', 'index')->name('index'); // 营销消息列表
         Route::match(['get', 'post'], '{type}/create', 'create')->name('create'); // 推送消息
@@ -65,7 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::resource('node', NodeController::class)->except('show');
     Route::prefix('node')->name('node.')->controller(NodeController::class)->group(function () {
-        Route::get('clone/{node}', 'clone')->name('clone'); // 节点流量监控
+        Route::get('clone/{node}', 'clone')->name('clone'); // 克隆节点
         Route::get('monitor/{node}', 'nodeMonitor')->name('monitor'); // 节点流量监控
         Route::post('check/{node?}', 'checkNode')->name('check'); // 节点阻断检测
         Route::post('refreshGeo/{node?}', 'refreshGeo')->name('geo'); // 更新节点地理位置
@@ -90,6 +91,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/', 'generate')->name('create'); // 生成邀请码
         Route::get('/export', 'export')->name('export'); // 导出邀请码
     });
+
     Route::prefix('aff')->name('aff.')->controller(AffiliateController::class)->group(function () {
         Route::get('/', 'index')->name('index'); // 提现申请列表
         Route::get('rebate', 'rebate')->name('rebate'); // 返利流水记录
@@ -99,8 +101,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::controller(LogsController::class)->group(function () {
         Route::get('order', 'orderList')->name('order'); // 订单列表
-        Route::post('order/edit', 'changeOrderStatus')->name('order.edit'); // 订单列表
+        Route::post('order/edit', 'changeOrderStatus')->name('order.edit'); // 订单状态修改
     });
+
     Route::prefix('report')->name('report.')->controller(ReportController::class)->group(function () {
         Route::get('accounting', 'accounting')->name('accounting'); // 流水账簿
         Route::get('user/analysis', 'userAnalysis')->name('userAnalysis'); // 用户流量分析
@@ -117,6 +120,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('onlineIPMonitor', 'onlineIPMonitor')->name('online'); // 在线IP监控
         Route::get('notification', 'notificationLog')->name('notify'); // 邮件发送日志
     });
+
     Route::get('payment/callbackList', [LogsController::class, 'callbackList'])->name('payment.callback'); // 支付回调日志
 
     // 工具相关
@@ -129,11 +133,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::prefix('config')->name('config.')->group(function () {
-        Route::resource('country', CountryController::class)->only('store', 'update', 'destroy'); // 等级配置
+        Route::resource('country', CountryController::class)->only('store', 'update', 'destroy'); // 国家配置
         Route::resource('filter', EmailFilterController::class)->only('index', 'store', 'destroy'); // 邮箱过滤
         Route::resource('label', LabelController::class)->only('store', 'update', 'destroy'); // 标签配置
         Route::resource('level', LevelController::class)->only('store', 'update', 'destroy'); // 等级配置
-        Route::resource('ss', SsConfigController::class)->only('store', 'update', 'destroy'); // ss配置
+        Route::resource('ss', SsConfigController::class)->only('store', 'update', 'destroy'); // SS配置
         Route::resource('category', CategoryController::class)->only('store', 'update', 'destroy'); // 商品分类配置
     });
 
@@ -147,5 +151,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('sendTestNotification', 'sendTestNotification')->name('test.notify'); // 推送通知测试
         Route::get('config', 'common')->name('config.index'); // 系统通用配置
     });
+
     Route::get('epayInfo', [EPay::class, 'queryInfo'])->name('test.epay'); // 易支付信息
 });

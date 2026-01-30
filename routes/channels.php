@@ -15,11 +15,13 @@ use Illuminate\Support\Facades\Broadcast;
 |
 */
 
+// 支付状态更新频道
 Broadcast::channel('payment-status.{tradeNo}', static function ($user, $tradeNo) {
     // 检查订单是否属于该用户
     return $user->id === Payment::whereTradeNo($tradeNo)->first()?->user->id;
 });
 
+// 节点相关操作频道
 Broadcast::channel('node.{type}.{nodeId}', static function ($user, $type, $nodeId) {
     // 验证用户权限和节点访问权限
     if (! $user->can("admin.node.$type")) {

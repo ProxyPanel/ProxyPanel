@@ -8,34 +8,34 @@ use App\Http\Controllers\Api\WebApi\SSRController;
 use App\Http\Controllers\Api\WebApi\TrojanController;
 use App\Http\Controllers\Api\WebApi\V2RayController;
 
-Route::domain(sysConfig('web_api_url') ?: sysConfig('website_url'))->middleware('webApi')->group(function () { // 后端WEBAPI
-    Route::prefix('{prefix}')->controller(CoreController::class)->group(function () { // core function of web api
-        foreach (
-            [
-                Route::post('nodeStatus/{node}', 'setNodeStatus'), // 上报节点心跳信息
-                Route::post('nodeOnline/{node}', 'setNodeOnline'), // 上报节点在线人数
-                Route::post('userTraffic/{node}', 'setUserTraffic'), // 上报用户流量日志
-                Route::get('nodeRule/{node}', 'getNodeRule'), // 获取节点的审计规则
-                Route::post('trigger/{node}', 'addRuleLog'), // 上报用户触发的审计规则记录
-            ] as $route
-        ) {
+// 后端WEBAPI
+Route::domain(sysConfig('web_api_url') ?: sysConfig('website_url'))->middleware('webApi')->group(function () {
+    // 核心功能路由
+    Route::prefix('{prefix}')->controller(CoreController::class)->group(function () {
+        foreach ([
+            Route::post('nodeStatus/{node}', 'setNodeStatus'), // 上报节点心跳信息
+            Route::post('nodeOnline/{node}', 'setNodeOnline'), // 上报节点在线人数
+            Route::post('userTraffic/{node}', 'setUserTraffic'), // 上报用户流量日志
+            Route::get('nodeRule/{node}', 'getNodeRule'), // 获取节点的审计规则
+            Route::post('trigger/{node}', 'addRuleLog'), // 上报用户触发的审计规则记录
+        ] as $route) {
             $route->where('prefix', 'ss/v1|ssr/v1|web/v1|vnet/v2|v2ray/v1|trojan/v1');
         }
     });
 
-    Route::prefix('ss/v1')->controller(SSController::class)->group(function () { // ss后端WEBAPI V1版
+    // SS后端WEBAPI V1版
+    Route::prefix('ss/v1')->controller(SSController::class)->group(function () {
         Route::get('node/{node}', 'getNodeInfo'); // 获取节点信息
         Route::get('userList/{node}', 'getUserList'); // 获取节点可用的用户列表
     });
 
-    Route::prefix('{prefix}')->controller(SSRController::class)->group(function () { // SSR后端WEBAPI V1版
-        foreach (
-            [
-                Route::get('node/{node}', 'getNodeInfo'), // 获取节点信息
-                Route::get('userList/{node}', 'getUserList'), // 获取节点可用的用户列表
-            ] as $route
-        ) {
-            $route->where('prefix', 'ssr/v1|web/v1|vnet/v2'); // VNet后端WEBAPI web/v1 vnet/v2 需要移除
+    // SSR后端WEBAPI V1版
+    Route::prefix('{prefix}')->controller(SSRController::class)->group(function () {
+        foreach ([
+            Route::get('node/{node}', 'getNodeInfo'), // 获取节点信息
+            Route::get('userList/{node}', 'getUserList'), // 获取节点可用的用户列表
+        ] as $route) {
+            $route->where('prefix', 'ssr/v1|web/v1|vnet/v2'); // SSR/VNet后端WEBAPI
         }
     });
 
@@ -53,17 +53,21 @@ Route::domain(sysConfig('web_api_url') ?: sysConfig('website_url'))->middleware(
     });
 });
 
-Route::prefix('v1')->group(function () { // 客户端API
+// 客户端API
+Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('login', 'login'); // 登录
         Route::post('register', 'register'); // 注册
         Route::get('logout', 'logout'); // 登出
     });
+
     Route::controller(ClientController::class)->group(function () {
         Route::get('getconfig', 'getConfig'); // 获取配置文件
         Route::get('version/update', 'checkClientVersion'); // 检查更新
         Route::get('shop', 'shop'); // 获取商品列表
-        Route::middleware('auth.client')->group(function () { // 用户验证
+
+        // 用户验证
+        Route::middleware('auth.client')->group(function () {
             Route::get('getclash', 'downloadProxies'); // 下载节点配置
             Route::get('getuserinfo', 'getUserInfo'); // 获取用户信息
             Route::post('doCheckIn', 'checkIn'); // 签到

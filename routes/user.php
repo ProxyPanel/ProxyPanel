@@ -10,8 +10,10 @@ use App\Http\Controllers\User\ShopController;
 use App\Http\Controllers\User\TicketController;
 use App\Http\Controllers\UserController;
 use App\Utils\Avatar;
+use App\Utils\Helpers;
 use App\Utils\Payments\Manual;
 use App\Utils\Payments\Stripe;
+use Illuminate\Support\Str;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('/', 'index')->name('home'); // 用户首页
@@ -78,7 +80,10 @@ Route::prefix('pay')->group(function () {
     Route::get('/stripe/{session_id}', [Stripe::class, 'redirectPage'])->name('stripe.checkout'); // Stripe Checkout page
 });
 
-Route::get('create/string', [Str::class, 'random'])->name('createStr'); // 生成随机密码
-Route::get('create/uuid', [Str::class, 'uuid'])->name('createUUID'); // 生成UUID
-Route::get('get/avatar', [Avatar::class, 'get'])->name('getAvatar'); // 获取随机头像
-Route::get('get/port', [Helpers::class, 'getPort'])->name('getPort'); // 获取端口
+// 工具类路由
+Route::prefix('tools')->group(function () {
+    Route::get('create/string', [Str::class, 'random'])->name('createStr'); // 生成随机密码
+    Route::get('create/uuid', [Str::class, 'uuid'])->name('createUUID'); // 生成UUID
+    Route::get('get/avatar', [Avatar::class, 'get'])->name('getAvatar'); // 获取随机头像
+    Route::get('get/port', [Helpers::class, 'getPort'])->name('getPort'); // 获取端口
+});
