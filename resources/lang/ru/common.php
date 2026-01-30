@@ -19,6 +19,12 @@ return [
         'custom' => 'Настроить',
         'node_status' => 'Статус узла',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket недоступен. Пожалуйста, убедитесь, что сервер Reverb запущен и правильно настроен.',
+        'websocket_disconnected' => 'Соединение WebSocket было разорвано.',
+        'setup_failed' => 'Настройка вещания не удалась или ошибка подключения',
+        'disconnect_failed' => 'Не удалось отключить соединение Echo',
+    ],
     'cancel' => 'Отмена',
     'change' => 'Изменить',
     'close' => 'Закрыть',

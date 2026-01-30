@@ -15,7 +15,7 @@ use Illuminate\Queue\SerializesModels;
 use Log;
 use Throwable;
 
-class reloadNode implements ShouldQueue
+class ReloadNode implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

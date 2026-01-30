@@ -2,7 +2,6 @@
 @section('css')
     <link href="/assets/global/vendor/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/toastr/toastr.min.css" rel="stylesheet">
     <style>
         #swal2-content {
             display: grid !important;
@@ -22,9 +21,7 @@
     <script src="/assets/global/vendor/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-table/extensions/mobile/bootstrap-table-mobile.min.js"></script>
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
-    <script src="/assets/global/vendor/toastr/toastr.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
-    <script src="/assets/global/js/Plugin/toastr.js"></script>
     <script>
         $("form:not(.modal-body form)").on("submit", function() {
             $(this).find("input:not([type=\"submit\"]), select").filter(function() {

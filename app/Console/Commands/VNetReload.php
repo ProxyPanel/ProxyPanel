@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Jobs\VNet\reloadNode;
+use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
 use Illuminate\Console\Command;
 use Log;
@@ -19,7 +19,7 @@ class VNetReload extends Command
 
         $nodes = Node::whereStatus(1)->whereType(4)->get();
         if ($nodes->isNotEmpty()) {
-            reloadNode::dispatchSync($nodes);
+            ReloadNode::dispatchSync($nodes);
         }
 
         $jobTime = round(microtime(true) - $startTime, 4);

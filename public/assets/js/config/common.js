@@ -115,15 +115,15 @@ function showConfirm(options) {
         icon: "question",
         allowEnterKey: false,
         showCancelButton: true,
-        cancelButtonText: typeof TRANS !== "undefined" ? TRANS.btn.close : "Cancel",
-        confirmButtonText: typeof TRANS !== "undefined" ? TRANS.btn.confirm : "Confirm",
+        cancelButtonText: i18n('btn.close'),
+        confirmButtonText: i18n('btn.confirm'),
         ...options
     };
 
-    alertOptions.title = alertOptions.title || (typeof TRANS !== "undefined" ? TRANS.confirm_title : "Confirm");
+    alertOptions.title = alertOptions.title || i18n('confirm_title');
 
     if (!alertOptions.html && !alertOptions.text) {
-        alertOptions.text = typeof TRANS !== "undefined" ? TRANS.confirm_action : "Are you sure you want to perform this action?";
+        alertOptions.text = i18n('confirm_action');
     }
 
     showAlert(alertOptions).then((result) => {
@@ -227,7 +227,7 @@ function handleErrors(xhr, options = {}) {
                     }
                 } else {
                     // 如果没有提供 form，回退到 swal 显示
-                    showMessage({title: xhr.responseJSON.message || (typeof TRANS !== "undefined" ? TRANS.operation_failed : "Operation failed"), html: buildErrorHtml(errors), icon: "error"});
+                    showMessage({title: xhr.responseJSON.message || i18n('operation_failed'), html: buildErrorHtml(errors), icon: "error"});
                 }
                 break;
 
@@ -235,14 +235,14 @@ function handleErrors(xhr, options = {}) {
                 if (settings.element) {
                     $(settings.element).html(buildErrorHtml(errors)).show();
                 } else {
-                    showMessage({title: xhr.responseJSON.message || (typeof TRANS !== "undefined" ? TRANS.operation_failed : "Operation failed"), html: buildErrorHtml(errors), icon: "error"});
+                    showMessage({title: xhr.responseJSON.message || i18n('operation_failed'), html: buildErrorHtml(errors), icon: "error"});
                 }
                 break;
 
             case 'swal':
             default:
                 showMessage({
-                    title: xhr.responseJSON.message || (typeof TRANS !== "undefined" ? TRANS.operation_failed : "Operation failed"),
+                    title: xhr.responseJSON.message || i18n('operation_failed'),
                     html: buildErrorHtml(errors),
                     icon: "error"
                 });
@@ -252,7 +252,7 @@ function handleErrors(xhr, options = {}) {
     }
 
     // 其它错误
-    const errorMessage = xhr.responseJSON?.message || xhr.statusText || (typeof TRANS !== "undefined" ? TRANS.request_failed : "Request failed");
+    const errorMessage = xhr.responseJSON?.message || xhr.statusText || i18n('request_failed');
     
     // 提取公共的 showMessage 调用
     const showMessageOptions = {title: errorMessage, icon: "error"};
@@ -314,7 +314,7 @@ function handleResponse(response, options = {}) {
 
         if (settings.showMessage) {
             showMessage({
-                title: response.message || (typeof TRANS !== "undefined" ? TRANS.operation_success : "Operation successful"),
+                title: response.message || i18n('operation_success'),
                 icon: "success",
                 showConfirmButton: false,
                 callback: successCallback
@@ -329,7 +329,7 @@ function handleResponse(response, options = {}) {
 
         if (settings.showMessage) {
             showMessage({
-                title: response.message || (typeof TRANS !== "undefined" ? TRANS.operation_failed : "Operation failed"),
+                title: response.message || i18n('operation_failed'),
                 icon: "error",
                 showConfirmButton: true,
                 callback: errorCallback
@@ -389,8 +389,8 @@ function initAutoSubmitSelects(formSelector = "form:not(.modal-body form)", excl
 function copyToClipboard(text, options = {}) {
     const settings = Object.assign({
         showMessage: true,
-        successMessage: typeof TRANS !== "undefined" ? TRANS.copy.success : "Copy successful",
-        errorMessage: typeof TRANS !== "undefined" ? TRANS.copy.failed : "Copy failed, please copy manually"
+        successMessage: i18n('copy.success'),
+        errorMessage: i18n('copy.failed')
     }, options);
 
     if (navigator.clipboard && window.isSecureContext) {
@@ -449,14 +449,12 @@ function copyToClipboard(text, options = {}) {
  */
 function confirmDelete(url, name, attribute, options = {}) {
     const defaults = {
-        titleMessage: typeof TRANS !== "undefined" ? TRANS.warning : "Warning",
+        titleMessage: i18n('warning'),
     };
 
     let text = options.text;
-    if (!text && typeof TRANS !== "undefined" && TRANS.confirm?.delete) {
-        text = TRANS.confirm.delete.replace("{attribute}", attribute || "").replace("{name}", name || "");
-    } else if (!text) {
-        text = typeof TRANS !== "undefined" ? (TRANS.confirm_delete || "Are you sure you want to delete {attribute} [{name}]?").replace("{attribute}", attribute || "").replace("{name}", name || "") : `Are you sure you want to delete ${attribute || ""} [${name || ""}]?`;
+    if (!text && !options.html) {
+        text = i18n('confirm.delete').replace("{attribute}", attribute || "").replace("{name}", name || "");
     }
 
     showConfirm({

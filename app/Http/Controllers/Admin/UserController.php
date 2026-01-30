@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\UserVNetTasks;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
 use App\Http\Requests\Admin\UserUpdateRequest;
-use App\Jobs\VNet\getUser;
+use App\Jobs\VNet\GetUser;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\Order;
@@ -325,13 +326,36 @@ class UserController extends Controller
 
     public function VNetInfo(User $user): JsonResponse
     {
-        $nodes = $user->nodes()->whereType(4)->get(['node.id', 'node.name']);
-        $nodeList = (new getUser)->existsinVNet($user);
+        // 获取用户关联的 VNet 节点
+        $nodes = $user->nodes()->whereType(4)->get();
 
+        // 立即发送节点列表信息给前端
+        broadcast(new UserVNetTasks('check', ['nodeList' => $nodes->pluck('name', 'id')->toArray()], $user->id));
+
+        // 创建 GetUser 实例
+        $getUser = new GetUser;
+
+        // 异步检查用户在各节点的可用性
         foreach ($nodes as $node) {
-            $node->avaliable = in_array($node->id, $nodeList, true) ? '✔️' : '❌';
+            dispatch(static function () use ($user, $node, $getUser) {
+                $ret = ['nodeId' => $node->id, 'available' => false];
+                try {
+                    // 发送请求检查用户是否在该节点上
+                    $userList = $getUser->list($node);
+
+                    if ($userList && is_array($userList)) {
+                        // 检查用户是否在返回的列表中
+                        $ret['available'] = in_array($user->id, $userList, true);
+                    }
+                } catch (Exception $e) {
+                    Log::warning('【用户列表】获取失败（推送地址：'.($node->server ?: $node->ips()[0]).':'.$node->push_port.'）：'.$e->getMessage());
+                }
+
+                // 广播检查结果
+                broadcast(new UserVNetTasks('check', $ret, $user->id));
+            });
         }
 
-        return response()->json(['status' => 'success', 'data' => $nodes]);
+        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.user.connection_test')])]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Observers;
 
-use App\Jobs\VNet\addUser;
-use App\Jobs\VNet\delUser;
-use App\Jobs\VNet\editUser;
+use App\Jobs\VNet\AddUser;
+use App\Jobs\VNet\DelUser;
+use App\Jobs\VNet\EditUser;
 use App\Models\User;
 use App\Utils\Helpers;
 use Arr;
@@ -17,7 +17,7 @@ class UserObserver
 
         $allowNodes = $user->nodes()->whereType(4)->get();
         if ($allowNodes->isNotEmpty()) {
-            addUser::dispatch($user->id, $allowNodes);
+            AddUser::dispatch($user->id, $allowNodes);
         }
     }
 
@@ -31,35 +31,35 @@ class UserObserver
                 $oldAllowNodes = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(4)->get();
                 if ($enableChange) {
                     if ($user->enable === 0 && $oldAllowNodes->isNotEmpty()) {
-                        delUser::dispatch($user->id, $oldAllowNodes);
+                        DelUser::dispatch($user->id, $oldAllowNodes);
                     } elseif ($user->enable === 1 && $allowNodes->isNotEmpty()) {
-                        addUser::dispatch($user->id, $allowNodes);
+                        AddUser::dispatch($user->id, $allowNodes);
                     }
                 } else {
                     $old = $oldAllowNodes->diff($allowNodes); // old 有 allow 没有
                     $new = $allowNodes->diff($oldAllowNodes); // allow 有 old 没有
                     if ($old->isNotEmpty()) {
-                        delUser::dispatch($user->id, $old);
+                        DelUser::dispatch($user->id, $old);
                     }
                     if ($new->isNotEmpty()) {
-                        addUser::dispatch($user->id, $new);
+                        AddUser::dispatch($user->id, $new);
                     }
                     if (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {
                         $same = $allowNodes->intersect($oldAllowNodes); // 共有部分
                         if ($same->isNotEmpty()) {
-                            editUser::dispatch($user, $same);
+                            EditUser::dispatch($user, $same);
                         }
                     }
                 }
             } elseif ($allowNodes->isNotEmpty()) {
                 if ($enableChange) {
                     if ($user->enable === 1) { // TODO: 由于vnet未正确使用enable字段，临时解决方案
-                        addUser::dispatch($user->id, $allowNodes);
+                        AddUser::dispatch($user->id, $allowNodes);
                     } else {
-                        delUser::dispatch($user->id, $allowNodes);
+                        DelUser::dispatch($user->id, $allowNodes);
                     }
                 } elseif (Arr::hasAny($changes, ['port', 'passwd', 'speed_limit'])) {
-                    editUser::dispatch($user, $allowNodes);
+                    EditUser::dispatch($user, $allowNodes);
                 }
             }
         }
@@ -73,7 +73,7 @@ class UserObserver
     {
         $allowNodes = $user->nodes()->whereType(4)->get();
         if ($allowNodes->isNotEmpty()) {
-            delUser::dispatch($user->id, $allowNodes);
+            DelUser::dispatch($user->id, $allowNodes);
         }
     }
 }

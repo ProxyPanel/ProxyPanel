@@ -3,7 +3,6 @@
     <link href="/assets/global/vendor/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/switchery/switchery.min.css" rel="stylesheet">
     <link href="/assets/global/vendor/dropify/dropify.min.css" rel="stylesheet">
-    <link href="/assets/global/vendor/toastr/toastr.min.css" rel="stylesheet">
     <style>
         .hr-text::after {
             content: attr(data-content);
@@ -415,12 +414,10 @@
     <script src="/assets/global/vendor/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="/assets/global/vendor/switchery/switchery.min.js"></script>
     <script src="/assets/global/vendor/dropify/dropify.min.js"></script>
-    <script src="/assets/global/vendor/toastr/toastr.min.js"></script>
     <script src="/assets/global/js/Plugin/bootstrap-select.js"></script>
     <script src="/assets/global/js/Plugin/switchery.js"></script>
     <script src="/assets/global/js/Plugin/responsive-tabs.js"></script>
     <script src="/assets/global/js/Plugin/tabs.js"></script>
-    <script src="/assets/global/js/Plugin/toastr.js"></script>
     <script src="/assets/custom/jump-tab.js"></script>
     <script src="/assets/global/js/Plugin/dropify.js"></script>
     <script>

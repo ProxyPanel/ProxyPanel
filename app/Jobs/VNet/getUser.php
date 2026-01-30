@@ -3,27 +3,13 @@
 namespace App\Jobs\VNet;
 
 use App\Models\Node;
-use App\Models\User;
 use Arr;
 use Exception;
 use Http;
 use Log;
 
-class getUser
+class GetUser
 {
-    public function existsinVNet(User $user): array
-    {
-        $nodeList = [];
-        foreach ($user->nodes()->whereType(4)->get() as $node) {
-            $list = $this->list($node);
-            if ($list && in_array($user->id, $list, true)) {
-                $nodeList[] = $node->id;
-            }
-        }
-
-        return $nodeList;
-    }
-
     public function list(Node $node, string $mode = 'uid'): false|array
     {
         $list = $this->send(($node->server ?: $node->ips()[0]).':'.$node->push_port, $node->auth->secret);

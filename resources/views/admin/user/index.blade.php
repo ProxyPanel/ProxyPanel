@@ -123,9 +123,23 @@
             </x-slot:tbody>
         </x-admin.table-panel>
     </div>
+
+    <!-- 用户VNet检测结果模态框 -->
+    <x-ui.modal id="userVNetCheckModal" :title="trans('admin.user.connection_test')" size="lg">
+    </x-ui.modal>
 @endsection
 @push('javascript')
+    @vite(['resources/js/app.js'])
     <script>
+        window.i18n.extend({
+            'broadcast': {
+                'error': '{{ trans('common.error') }}',
+                'websocket_unavailable': '{{ trans('common.broadcast.websocket_unavailable') }}',
+                'websocket_disconnected': '{{ trans('common.broadcast.websocket_disconnected') }}',
+                'setup_failed': '{{ trans('common.broadcast.setup_failed') }}',
+                'disconnect_failed': '{{ trans('common.broadcast.disconnect_failed') }}'
+            }
+        });
         @can('admin.user.batch')
             function batchAddUsers() { // 批量生成账号
                 showConfirm({
@@ -173,37 +187,128 @@
         @endcan
 
         @can('admin.user.VNetInfo')
+            // 全局状态
+            const userVNetState = {
+                results: {} // 按 nodeId 存储节点信息与已收到的数据
+            };
+
+            // 构建并显示模态框
+            function buildVNetCheckUI() {
+                const body = document.querySelector('#userVNetCheckModal .modal-body');
+                let html = `<table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('model.node.attribute') }}</th>
+                                    <th>{{ trans('common.status.attribute') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+                Object.keys(userVNetState.results).forEach(nodeId => {
+                    const node = userVNetState.results[nodeId];
+                    html += `
+                    <tr data-node-id="${nodeId}">
+                        <td>${node.name}</td>
+                        <td><i class="wb-loop icon-spin"></i></td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+                body.innerHTML = html;
+            }
+
+            // 更新模态框中的节点状态
+            function updateVNetCheckUI(nodeId, available) {
+                try {
+                    const row = document.querySelector(`#userVNetCheckModal tr[data-node-id="${nodeId}"]`);
+                    if (!row) return;
+
+                    const statusEl = row.querySelector('td:nth-child(2)');
+                    if (statusEl) {
+                        statusEl.innerHTML = available ? '✔️' : '❌';
+                    }
+                } catch (e) {}
+            }
+
+            // 处理广播数据
+            function handleVNetResult(e) {
+                // 如果包含 nodeList：构建初始 UI 框架
+                if (e.data && e.data.nodeList) {
+                    $('#userVNetCheckModal').modal('show');
+                    userVNetState.results = {};
+
+                    Object.keys(e.data.nodeList).forEach(nodeId => {
+                        const nodeName = e.data.nodeList[nodeId];
+                        userVNetState.results[nodeId] = {
+                            name: nodeName,
+                            available: null // 检查中
+                        };
+                    });
+
+                    // 构建并显示 modal
+                    buildVNetCheckUI();
+                    return;
+                }
+
+                // 处理详细数据
+                try {
+                    const nodeId = e.data.nodeId;
+                    if (!nodeId || !userVNetState.results[nodeId]) return;
+
+                    userVNetState.results[nodeId].available = e.data.available;
+                    updateVNetCheckUI(nodeId, e.data.available);
+                } catch (err) {
+                    console.error('handleVNetResult error', err);
+                }
+            }
+
             function VNetInfo(id) { // 节点连通性测试
                 const $triggerElement = $(`#vent_${id}`);
+                const channelName = `user.check.${id}`;
 
+                // 清理之前的连接
+                window.broadcastingManager.unsubscribe(channelName);
+                userVNetState.results = {};
+
+                // 启动 spinner
+                $triggerElement.removeClass("wb-link-broken").addClass("wb-loop icon-spin");
+
+                // 使用统一的广播管理器订阅频道
+                const success = window.broadcastingManager.subscribe(
+                    channelName,
+                    '.user.vnet.tasks',
+                    (e) => handleVNetResult(e)
+                );
+
+                if (!success) {
+                    // 订阅失败：恢复按钮状态
+                    $triggerElement.removeClass("wb-loop icon-spin").addClass("wb-link-broken");
+                    return;
+                }
+
+                // 触发后端接口（Ajax）
                 ajaxPost(jsRoute('{{ route('admin.user.VNetInfo', 'PLACEHOLDER') }}', id), {}, {
+                    beforeSend: function() {
+                        // spinner 已经设置
+                    },
                     success: function(ret) {
-                        if (ret.status === "success") {
-                            let str = "";
-                            for (let i in ret.data) {
-                                str += "<tr><td>" + ret.data[i]["id"] + "</td><td>" + ret.data[i]["name"] + "</td><td>" +
-                                    ret.data[i]["avaliable"] + "</td></tr>";
-                            }
-                            showMessage({
-                                title: ret.title,
-                                html: '<table class="my-20"><thead class="thead-default"><tr><th> ID </th><th> {{ trans('model.node.attribute') }} </th> <th> {{ trans('common.status.attribute') }} </th></thead><tbody>' +
-                                    str + "</tbody></table>",
-                                icon: "info",
-                                showConfirmButton: false
-                            });
+                        // 不在此处处理最终结果，交由广播处理（避免 race）
+                    },
+                    error: function(xhr, status, error) {
+                        if (!window.broadcastingManager.isConnected()) {
+                            window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
                         } else {
                             showMessage({
-                                title: ret.title,
-                                message: ret.data,
-                                icon: "error"
+                                title: '{{ trans('common.error') }}',
+                                message: `{{ trans('common.request_failed') }} ${error}: ${xhr?.responseJSON?.exception}`,
+                                icon: 'error',
+                                showConfirmButton: true
                             });
                         }
-                    },
-                    beforeSend: function() {
-                        $triggerElement.removeClass("wb-link-broken").addClass("wb-loop icon-spin");
+                        // 出错时恢复 spinner
+                        $triggerElement.removeClass("wb-loop icon-spin").addClass("wb-link-broken");
                     },
                     complete: function() {
-                        $triggerElement.removeClass("wb-loop icon-spin").addClass("wb-link-broken");
+                        // 不在这里恢复按钮状态，而是等所有广播完成后再恢复
                     }
                 });
             }

@@ -52,31 +52,21 @@
     @endif
 
     <script>
+        window.i18n.extend({
+            'broadcast': {
+                'error': '{{ trans('common.error') }}',
+                'websocket_unavailable': '{{ trans('common.broadcast.websocket_unavailable') }}',
+                'websocket_disconnected': '{{ trans('common.broadcast.websocket_disconnected') }}',
+                'setup_failed': '{{ trans('common.broadcast.setup_failed') }}',
+                'disconnect_failed': '{{ trans('common.broadcast.disconnect_failed') }}'
+            }
+        });
         @if (config('broadcasting.default') !== 'null')
             let pollingStarted = false
-            let pollingInterval = null
-
-            function clearAll() {
-                if (pollingInterval) {
-                    clearInterval(pollingInterval);
-                    pollingInterval = null
-                }
-            }
-
-            function disconnectEcho() {
-                try {
-                    if (typeof Echo !== 'undefined') {
-                        Echo.leave(`payment-status.{{ $payment->trade_no }}`)
-                        Echo.connector?.disconnect?.()
-                    }
-                } catch (e) {
-                    console.error('关闭 Echo 失败:', e)
-                }
-            }
 
             function onFinal(status, message) {
-                clearAll()
-                disconnectEcho()
+                window.broadcastingManager.stopPolling('payment-status'); // 停止轮询
+                window.broadcastingManager.disconnect(); // 断开连接
                 showMessage({
                     title: message,
                     icon: status === 'success' ? 'success' : 'error',
@@ -88,9 +78,10 @@
             function startPolling() {
                 if (pollingStarted) return
                 pollingStarted = true
-                disconnectEcho()
+                window.broadcastingManager.disconnect(); // 断开连接
 
-                pollingInterval = setInterval(() => {
+                // 使用统一的广播管理器启动轮询
+                window.broadcastingManager.startPolling('payment-status', () => {
                     ajaxGet('{{ route('orderStatus') }}', {
                         trade_no: '{{ $payment->trade_no }}'
                     }, {
@@ -105,26 +96,27 @@
             }
 
             function setupPaymentListener() {
-                if (typeof Echo === 'undefined' || typeof Pusher === 'undefined') {
+                // 使用统一的广播管理器检查 Echo 是否可用
+                if (!window.broadcastingManager.isEchoAvailable()) {
                     startPolling()
                     return
                 }
-                try {
-                    const conn = Echo.connector?.pusher?.connection || Echo.connector?.socket
-                    if (conn) {
-                        conn.bind?.('state_change', s => {
-                            if (['disconnected', 'failed', 'unavailable'].includes(s.current)) startPolling()
-                        })
-                        conn.on?.('disconnect', () => startPolling())
-                        conn.on?.('error', () => startPolling())
-                    }
 
-                    Echo.channel('payment-status.{{ $payment->trade_no }}')
-                        .listen('.payment.status.updated', (e) => {
+                try {
+                    // 使用统一的广播管理器订阅频道
+                    const success = window.broadcastingManager.subscribe(
+                        'payment-status.{{ $payment->trade_no }}',
+                        '.payment.status.updated',
+                        (e) => {
                             if (['success', 'error'].includes(e.status)) {
                                 onFinal(e.status, e.message)
                             }
-                        })
+                        }
+                    );
+
+                    if (!success) {
+                        startPolling()
+                    }
 
                 } catch (e) {
                     console.error('Echo 初始化失败:', e)

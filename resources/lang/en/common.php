@@ -19,6 +19,12 @@ return [
         'custom' => 'Customize',
         'node_status' => 'Node Status',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket is unavailable. Please ensure the Reverb server is running and configured correctly.',
+        'websocket_disconnected' => 'WebSocket connection has been disconnected.',
+        'setup_failed' => 'Broadcast setup failed or connection error',
+        'disconnect_failed' => 'Failed to disconnect Echo connection',
+    ],
     'cancel' => 'Cancel',
     'change' => 'Change',
     'close' => 'Close',

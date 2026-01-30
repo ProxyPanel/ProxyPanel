@@ -19,6 +19,12 @@ return [
         'custom' => 'カスタム',
         'node_status' => 'ノード状態',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocketが利用できません。Reverbサーバーが実行中で、正しく設定されていることを確認してください。',
+        'websocket_disconnected' => 'WebSocket接続が切断されました。',
+        'setup_failed' => 'ブロードキャストの設定に失敗したか、接続エラーが発生しました',
+        'disconnect_failed' => 'Echo接続の切断に失敗しました',
+    ],
     'cancel' => 'キャンセル',
     'change' => '変更',
     'close' => '閉じる',

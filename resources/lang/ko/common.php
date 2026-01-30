@@ -19,6 +19,12 @@ return [
         'custom' => '사용자 정의',
         'node_status' => '노드 상태',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket을 사용할 수 없습니다. Reverb 서버가 실행 중이고 올바르게 구성되었는지 확인하세요.',
+        'websocket_disconnected' => 'WebSocket 연결이 끊어졌습니다.',
+        'setup_failed' => '방송 설정 실패 또는 연결 오류',
+        'disconnect_failed' => 'Echo 연결 종료 실패',
+    ],
     'cancel' => '취소',
     'change' => '변경',
     'close' => '닫기',

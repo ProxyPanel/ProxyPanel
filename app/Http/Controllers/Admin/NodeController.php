@@ -8,7 +8,7 @@ use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
 use App\Jobs\Node\CheckNodeIp;
-use App\Jobs\VNet\reloadNode;
+use App\Jobs\VNet\ReloadNode;
 use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
@@ -315,7 +315,7 @@ class NodeController extends Controller
             dispatch(static function () use ($n, $node) {
                 $ret = ['nodeId' => $n->id];
                 try {
-                    $ret += (new reloadNode($n))->handle();
+                    $ret += (new ReloadNode($n))->handle();
                 } catch (Exception $e) {
                     Log::error("节点 [{$n->id}] 重载失败: ".$e->getMessage());
                     $ret += ['error' => $e->getMessage()];

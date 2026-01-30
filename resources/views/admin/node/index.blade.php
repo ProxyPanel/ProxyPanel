@@ -203,84 +203,25 @@
 @push('javascript')
     @vite(['resources/js/app.js'])
     <script>
+        window.i18n.extend({
+            'broadcast': {
+                'error': '{{ trans('common.error') }}',
+                'websocket_unavailable': '{{ trans('common.broadcast.websocket_unavailable') }}',
+                'websocket_disconnected': '{{ trans('common.broadcast.websocket_disconnected') }}',
+                'setup_failed': '{{ trans('common.broadcast.setup_failed') }}',
+                'disconnect_failed': '{{ trans('common.broadcast.disconnect_failed') }}'
+            }
+        });
         // 全局状态
         const state = {
             actionType: null, // 'check' | 'geo' | 'reload'
             actionId: null, // 当前操作针对的节点 id（null/'' 表示批量）
-            channel: null,
             results: {}, // 按 nodeId 存储节点信息与已收到的数据
             finished: {}, // 标记 nodeId 是否完成
-            spinnerFallbacks: {}, // 防止无限 spinner 的后备定时器
-            errorDisplayed: false
+            spinnerFallbacks: {} // 防止无限 spinner 的后备定时器
         };
 
         const networkStatus = @json(trans('admin.network_status'));
-
-        // Reverb 简化管理（保留必须的健壮性）
-        const Reverb = {
-            get conn() {
-                return Echo?.connector?.pusher?.connection || Echo?.connector?.socket || null;
-            },
-            isConnected() {
-                const c = this.conn;
-                if (!c) return false;
-                const s = c.state?.current ?? c.readyState;
-                return s === 'connected' || s === 'open' || s === 1;
-            },
-            handleError(msg) {
-                if (!state.errorDisplayed && !this.isConnected()) {
-                    showMessage({
-                        title: '{{ trans('common.error') }}',
-                        message: msg,
-                        icon: 'error',
-                        showConfirmButton: true
-                    });
-                    state.errorDisplayed = true;
-                }
-            },
-            clearError() {
-                state.errorDisplayed = false;
-            },
-            cleanupChannel() {
-                if (state.channel) {
-                    try {
-                        state.channel.stopListening('.node.check.result');
-                        state.channel.stopListening('.node.geo.refresh.result');
-                        state.channel.stopListening('.node.reload.result');
-                    } catch (e) {
-                        /* ignore */
-                    }
-                    state.channel = null;
-                }
-            },
-            setup(channelName, type, eventName, handler) {
-                // 只在真正需要切换时 cleanup（外层调用已控制）
-                if (!this.conn) {
-                    this.handleError('WebSocket is not available. Please make sure the Reverb server is running and properly configured.');
-                    return false;
-                }
-
-                try {
-                    // 订阅频道并监听事件
-                    state.channel = Echo.channel(channelName);
-                    state.channel.listen(eventName, handler);
-                    // 连接事件绑定：连接成功后清除 error 标记
-                    const c = this.conn;
-                    if (c?.bind) {
-                        c.bind && c.bind('connected', () => this.clearError());
-                        c.bind && c.bind('disconnected', () => this.handleError('WebSocket connection lost.'));
-                    }
-                    return true;
-                } catch (e) {
-                    // 只有在确实不是已连接时才提示
-                    if (!this.isConnected()) {
-                        this.handleError('Broadcasting is not set-up or connection failed. Error: ' + (e && e.message || e));
-                        return false;
-                    }
-                    return true;
-                }
-            }
-        };
 
         // 配置表：保留原按钮 id 规则 & 原模态结构
         const ACTION_CFG = {
@@ -329,16 +270,6 @@
             }
         };
 
-        // 清理（仅用于开始新操作时）
-        function cleanupPreviousConnection() {
-            state.results = {};
-            state.finished = {};
-            state.actionType = null;
-            state.actionId = null;
-            Reverb.cleanupChannel?.();
-            // 不清理模态内容，这样用户关闭/打开 modal 不会影响正在进行的内容
-        }
-
         // 统一设置 spinner（显示/隐藏）
         function setSpinner($el, iconClass, on) {
             if (!$el || !$el.length) return;
@@ -381,8 +312,7 @@
                 return;
             }
 
-            // 开始新操作：清理之前的连接/缓存（这是你希望的行为）
-            cleanupPreviousConnection();
+            // 开始新操作：清理之前的连接/缓存
             state.actionType = type;
             state.actionId = id;
             state.results = {};
@@ -394,9 +324,14 @@
             const fallbackKey = `${type}_${id ?? 'all'}`;
             startSpinnerFallback(fallbackKey, $btn, cfg.icon);
 
-            // 订阅广播事件
-            const ok = Reverb.setup(channelName, type, cfg.event, (e) => handleResult(e.data || e, type, id, $btn));
-            if (!ok) {
+            // 使用统一的广播管理器订阅频道
+            const success = window.broadcastingManager.subscribe(
+                channelName,
+                cfg.event,
+                (e) => handleResult(e.data || e, type, id, $btn)
+            );
+
+            if (!success) {
                 // 订阅失败：恢复按钮状态
                 setSpinner($btn, cfg.icon, false);
                 clearSpinnerFallback(fallbackKey);
@@ -412,8 +347,8 @@
                     // 不在此处处理最终结果，交由广播处理（避免 race）
                 },
                 error: function(xhr, status, error) {
-                    if (!Reverb.isConnected()) {
-                        Reverb.handleError('WebSocket is not available. Please make sure the Reverb server is running.');
+                    if (!window.broadcastingManager.isConnected()) {
+                        window.broadcastingManager.handleError(i18n('broadcast.websocket_unavailable'));
                     } else {
                         showMessage({
                             title: '{{ trans('common.error') }}',

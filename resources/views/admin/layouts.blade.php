@@ -2,6 +2,7 @@
 @section('title', sysConfig('website_name'))
 @section('layout_css')
     <link href="/assets/global/fonts/font-awesome/css/all.min.css" rel="stylesheet">
+    <link href="/assets/global/vendor/toastr/toastr.min.css" rel="stylesheet">
     @yield('css')
 @endsection
 @section('body_class', 'dashboard')
@@ -364,23 +365,27 @@
 @endsection
 @section('layout_javascript')
     <script src="/assets/custom/sweetalert2/sweetalert2.all.min.js"></script>
+    <script src="/assets/global/vendor/toastr/toastr.min.js"></script>
+    <script src="/assets/global/js/Plugin/toastr.js"></script>
     <script>
         // 全局变量，用于common.js
         const CSRF_TOKEN = '{{ csrf_token() }}';
-        const TRANS = {
-            warning: '{{ trans('common.warning') }}',
-            confirm: {
-                delete: '{{ trans('admin.confirm.delete', ['attribute' => '{attribute}', 'name' => '{name}']) }}'
+
+        // 页面特定的翻译文本
+        window.i18n.extend({
+            'warning': '{{ trans('common.warning') }}',
+            'confirm': {
+                'delete': '{{ trans('admin.confirm.delete', ['attribute' => '{attribute}', 'name' => '{name}']) }}'
             },
-            btn: {
-                close: '{{ trans('common.close') }}',
-                confirm: '{{ trans('common.confirm') }}'
+            'btn': {
+                'close': '{{ trans('common.close') }}',
+                'confirm': '{{ trans('common.confirm') }}'
             },
-            copy: {
-                success: '{{ trans('common.copy.success') }}',
-                failed: '{{ trans('common.copy.failed') }}'
+            'copy': {
+                'success': '{{ trans('common.copy.success') }}',
+                'failed': '{{ trans('common.copy.failed') }}'
             }
-        };
+        });
 
         const $buoop = {
             required: {

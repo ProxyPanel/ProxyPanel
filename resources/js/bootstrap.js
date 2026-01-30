@@ -8,6 +8,7 @@ import axios from "axios";
 import Echo from "laravel-echo";
 
 import Pusher from "pusher-js";
+import broadcastingManager from "./broadcastingManager";
 
 window.axios = axios;
 
@@ -25,3 +26,5 @@ window.Echo = new Echo({
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
     enabledTransports: ["ws", "wss"],
 });
+
+window.broadcastingManager = broadcastingManager;

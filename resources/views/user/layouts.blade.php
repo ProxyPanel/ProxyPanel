@@ -162,17 +162,20 @@
     <script>
         // 全局变量，用于common.js
         const CSRF_TOKEN = '{{ csrf_token() }}';
-        const TRANS = {
-            warning: '{{ trans('common.warning') }}',
-            btn: {
-                close: '{{ trans('common.close') }}',
-                confirm: '{{ trans('common.confirm') }}'
+
+        // 页面特定的翻译文本
+        window.i18n.extend({
+            'warning': '{{ trans('common.warning') }}',
+            'btn': {
+                'close': '{{ trans('common.close') }}',
+                'confirm': '{{ trans('common.confirm') }}'
             },
-            copy: {
-                success: '{{ trans('common.copy.success') }}',
-                failed: '{{ trans('common.copy.failed') }}'
+            'copy': {
+                'success': '{{ trans('common.copy.success') }}',
+                'failed': '{{ trans('common.copy.failed') }}'
             }
-        };
+        });
+
         const $buoop = {
             required: {
                 e: 11,

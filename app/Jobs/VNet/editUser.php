@@ -16,7 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Log;
 use Throwable;
 
-class editUser implements ShouldQueue
+class EditUser implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -47,7 +47,7 @@ class editUser implements ShouldQueue
     public function handle(): void
     {
         foreach ($this->nodes as $node) {
-            $list = (new getUser)->list($node);
+            $list = (new GetUser)->list($node);
             if ($list && in_array($this->data['uid'], $list, true)) { // 如果用户已存在节点内，则执行修改；否则为添加
                 if ($node->is_ddns) {
                     $this->send($node->server.':'.$node->push_port, $node->auth->secret);
@@ -57,7 +57,7 @@ class editUser implements ShouldQueue
                     }
                 }
             } else {
-                addUser::dispatch($this->data['uid'], $node);
+                AddUser::dispatch($this->data['uid'], $node);
             }
         }
     }

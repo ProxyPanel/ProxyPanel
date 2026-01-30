@@ -14,12 +14,13 @@
     <link href="{{ asset('favicon.ico') }}" rel="shortcut icon apple-touch-icon">
     <!-- 样式表/Stylesheets -->
     <link href="/assets/bundle/app.min.css" rel="stylesheet">
+    <link href="https://fonts.loli.net" rel="preconnect" crossorigin>
+    <link href="https://gstatic.loli.net" rel="preconnect" crossorigin>
+    <link href="https://cdn.jsdelivr.net" rel="preconnect" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/flag-icons@7/css/flag-icons.min.css" rel="stylesheet">
     @yield('layout_css')
     <!-- 字体/Fonts -->
     <link href="/assets/global/fonts/web-icons/web-icons.min.css" rel="stylesheet">
-    <link href="https://fonts.loli.net" rel="preconnect">
-    <link href="https://gstatic.loli.net" rel="preconnect" crossorigin>
     <link href="https://fonts.loli.net/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
           rel="stylesheet">
     <!-- Scripts -->
@@ -66,6 +67,30 @@
     <script src="/assets/global/js/Plugin/asscrollable.js"></script>
     <script src="/assets/global/js/Plugin/slidepanel.js"></script>
     <script>
+        // 初始化国际化管理器
+        window.i18n = function(key, fallback) {
+            const keys = key.split('.');
+            let value = window.i18n.translations || {};
+
+            for (let i = 0; i < keys.length; i++) {
+                if (value && typeof value === 'object' && value.hasOwnProperty(keys[i])) {
+                    value = value[keys[i]];
+                } else {
+                    return fallback || key;
+                }
+            }
+
+            return value || fallback || key;
+        };
+
+        // 初始化空的翻译对象
+        window.i18n.translations = {};
+
+        // 扩展翻译文本的方法
+        window.i18n.extend = function(additionalTranslations) {
+            window.i18n.translations = Object.assign({}, window.i18n.translations, additionalTranslations);
+        };
+
         // Create and append link element to load the font CSS asynchronously
         const link = document.createElement("link");
         link.rel = 'stylesheet';

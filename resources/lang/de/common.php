@@ -19,6 +19,12 @@ return [
         'custom' => 'Anpassen',
         'node_status' => 'Knoten-Status',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket ist nicht verfügbar. Bitte stellen Sie sicher, dass der Reverb-Server läuft und korrekt konfiguriert ist.',
+        'websocket_disconnected' => 'WebSocket-Verbindung wurde getrennt.',
+        'setup_failed' => 'Broadcast-Einrichtung fehlgeschlagen oder Verbindungsfehler',
+        'disconnect_failed' => 'Echo-Verbindung konnte nicht geschlossen werden',
+    ],
     'cancel' => 'Abbrechen',
     'change' => 'Ändern',
     'close' => 'Schließen',

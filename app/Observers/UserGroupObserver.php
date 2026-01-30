@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Jobs\VNet\reloadNode;
+use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
 use App\Models\UserGroup;
 use Arr;
@@ -13,7 +13,7 @@ class UserGroupObserver
     {
         $nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
         if ($nodes->isNotEmpty()) {
-            reloadNode::dispatch($nodes);
+            ReloadNode::dispatch($nodes);
         }
     }
 
@@ -25,7 +25,7 @@ class UserGroupObserver
                 ->whereIn('id', array_diff($userGroup->nodes ?? [], $userGroup->getOriginal('nodes') ?? []))
                 ->get();
             if ($nodes->isNotEmpty()) {
-                reloadNode::dispatch($nodes);
+                ReloadNode::dispatch($nodes);
             }
         }
     }

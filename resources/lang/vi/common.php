@@ -19,6 +19,12 @@ return [
         'custom' => 'Tùy chỉnh',
         'node_status' => 'Trạng thái nút',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket không khả dụng. Vui lòng đảm bảo máy chủ Reverb đang chạy và được cấu hình đúng.',
+        'websocket_disconnected' => 'Kết nối WebSocket đã bị ngắt.',
+        'setup_failed' => 'Thiết lập phát sóng thất bại hoặc lỗi kết nối',
+        'disconnect_failed' => 'Không thể ngắt kết nối Echo',
+    ],
     'cancel' => 'Hủy',
     'change' => 'Thay đổi',
     'close' => 'Đóng',

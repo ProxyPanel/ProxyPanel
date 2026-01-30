@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Jobs\VNet\reloadNode;
+use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
 use App\Utils\DDNS;
 use Arr;
@@ -79,7 +79,7 @@ class NodeObserver
         }
 
         if ((int) $node->type === 4) {
-            reloadNode::dispatch($node);
+            ReloadNode::dispatch($node);
         }
     }
 

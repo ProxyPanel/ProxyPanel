@@ -19,6 +19,12 @@ return [
         'custom' => '自定义',
         'node_status' => '节点状态',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket不可用。请确保Reverb服务器正在运行且配置正确。',
+        'websocket_disconnected' => 'WebSocket连接已断开。',
+        'setup_failed' => '广播设置失败或连接错误',
+        'disconnect_failed' => '关闭 Echo 连接失败',
+    ],
     'cancel' => '取消',
     'change' => '更换',
     'close' => '关闭',

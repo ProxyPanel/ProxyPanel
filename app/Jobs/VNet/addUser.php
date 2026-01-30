@@ -16,7 +16,7 @@ use Illuminate\Queue\SerializesModels;
 use Log;
 use Throwable;
 
-class addUser implements ShouldQueue
+class AddUser implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;

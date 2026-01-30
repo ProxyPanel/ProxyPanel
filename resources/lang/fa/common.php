@@ -19,6 +19,12 @@ return [
         'custom' => 'سفارشی',
         'node_status' => 'وضعیت نود',
     ],
+    'broadcast' => [
+        'websocket_unavailable' => 'WebSocket در دسترس نیست. لطفاً اطمینان حاصل کنید که سرور Reverb در حال اجرا بوده و به درستی پیکربندی شده است.',
+        'websocket_disconnected' => 'اتصال WebSocket قطع شده است.',
+        'setup_failed' => 'راه‌اندازی پخش زنده ناموفق بود یا خطای اتصال رخ داده است',
+        'disconnect_failed' => 'قطع اتصال Echo ناموفق بود',
+    ],
     'cancel' => 'لغو',
     'change' => 'تغییر',
     'close' => 'بستن',
