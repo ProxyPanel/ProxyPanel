@@ -247,7 +247,7 @@ return [
             'unbind' => 'Konto-Verknüpfung lösen',
             'web_url' => 'Neueste :web_name Adresse abrufen',
         ],
-        'get_url' => ':web_name neueste Adresse',
+        'get_url' => ':web_name neueste Adresse: :url',
         'params_missing' => 'Parameter fehlerhaft, bitte mit E-Mail-Adresse senden',
         'ticket_missing' => 'Ticket existiert nicht',
         'ticket_reply' => 'Ticket #:id wurde beantwortet',

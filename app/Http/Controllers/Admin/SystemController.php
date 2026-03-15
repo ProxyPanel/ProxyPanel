@@ -243,11 +243,15 @@ class SystemController extends Controller
             $value /= 100;
         }
 
-        // 设置TG机器人
+        // 设置 TG 机器人
         if ($name === 'telegram_token' && $value) {
             $telegramService = new TelegramService($value);
             $telegramService->getMe();
-            $telegramService->setWebhook(rtrim(sysConfig('website_url'), '/').'/api/telegram/webhook?access_token='.md5($value));
+
+            $telegramService->setWebhook([
+                'url' => route('telegram.webhook'),
+                'secret_token' => hash('sha256', explode(':', $value)[1]),
+            ]);
         }
 
         // 更新配置

@@ -247,7 +247,7 @@ return [
             'unbind' => 'アカウント連携解除',
             'web_url' => ':web_name 最新URLを取得',
         ],
-        'get_url' => ':web_name 最新URL',
+        'get_url' => ':web_name の最新リンク：:url',
         'params_missing' => 'パラメータエラー。メールアドレスを含めて送信してください',
         'ticket_missing' => 'チケットが存在しません',
         'ticket_reply' => 'チケット #:id に返信がありました',

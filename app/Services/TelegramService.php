@@ -6,11 +6,11 @@ use Illuminate\Support\Facades\Http;
 
 class TelegramService
 {
-    private static string $api;
+    private string $api;
 
     public function __construct(?string $token = null)
     {
-        self::$api = 'https://api.telegram.org/bot'.($token ?? sysConfig('telegram_token')).'/';
+        $this->api = 'https://api.telegram.org/bot'.($token ?? sysConfig('telegram_token')).'/';
     }
 
     public function sendMessage(int $chatId, string $text, string $parseMode = ''): array
@@ -22,15 +22,22 @@ class TelegramService
         ]);
     }
 
-    private function request(string $method, array $params = []): array
+    private function request(string $method, array $params = [], bool $usePost = false): array
     {
-        $response = Http::get(self::$api.$method.'?'.http_build_query($params));
+        $http = Http::timeout(30);
+
+        if ($usePost) {
+            $response = $http->post($this->api.$method, $params);
+        } else {
+            $response = $http->get($this->api.$method.'?'.http_build_query($params));
+        }
+
         $data = $response->json();
         if ($response->ok()) {
             return $data;
         }
 
-        abort(500, "来自TG的错误：$data");
+        abort(500, '来自 TG 的错误：'.json_encode($data));
     }
 
     public function getMe(): array
@@ -38,8 +45,8 @@ class TelegramService
         return $this->request('getMe');
     }
 
-    public function setWebhook(string $url): array
+    public function setWebhook(array $config): array
     {
-        return $this->request('setWebhook', ['url' => $url]);
+        return $this->request('setWebhook', $config, true);
     }
 }

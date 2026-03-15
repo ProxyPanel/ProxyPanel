@@ -176,7 +176,7 @@ class TelegramController extends Controller
     {
         $msg = $this->msg;
         $telegramService = new TelegramService;
-        $telegramService->sendMessage($msg->chat_id, trans('user.telegram.get_url', ['get_url' => sysConfig('website_name')]).': '.sysConfig('website_url'), 'markdown');
+        $telegramService->sendMessage($msg->chat_id, trans('user.telegram.get_url', ['web_name' => sysConfig('website_name'), 'url' => sysConfig('website_url')]), 'markdown');
     }
 
     private function unbind(): void

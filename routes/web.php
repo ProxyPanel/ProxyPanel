@@ -21,7 +21,7 @@ if (config('app.key') && config('settings')) {
 }
 
 // API Webhook 路由
-Route::post('api/telegram/webhook', [TelegramController::class, 'webhook'])->middleware('telegram'); // Telegram webhook
+Route::post('api/telegram/webhook', [TelegramController::class, 'webhook'])->middleware('telegram')->name('telegram.webhook'); // Telegram webhook
 Route::get('api/wechat/verify', [WeChatChannel::class, 'verify'])->name('wechat.verify'); // 微信回调验证
 Route::get('/message/{type}/{msg_id}/show', [MessageController::class, 'index'])->name('message.show'); // 消息展示
 

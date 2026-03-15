@@ -247,7 +247,7 @@ return [
             'unbind' => 'قطع پیوند حساب',
             'web_url' => 'بازیابی آخرین لینک دسترسی :web_name',
         ],
-        'get_url' => 'آخرین URL :web_name',
+        'get_url' => ':web_name آخرین نشانی: :url',
         'params_missing' => 'پارامترهای نامعتبر. آدرس ایمیل را شامل کنید',
         'ticket_missing' => 'تیکت یافت نشد',
         'ticket_reply' => 'تیکت #:id پاسخ جدیدی دارد',

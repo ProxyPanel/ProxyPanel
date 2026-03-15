@@ -247,7 +247,7 @@ return [
             'unbind' => '계정 연동 해제',
             'web_url' => ':web_name 최신 URL 받기',
         ],
-        'get_url' => ':web_name 최신 URL',
+        'get_url' => ':web_name 최신 주소: :url',
         'params_missing' => '매개변수 오류. 이메일 주소를 포함하여 발송하세요',
         'ticket_missing' => '티켓이 존재하지 않습니다',
         'ticket_reply' => '티켓 #:id에 답변이 있었습니다',

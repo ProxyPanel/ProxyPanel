@@ -247,7 +247,7 @@ return [
             'unbind' => '解绑账号',
             'web_url' => '获取:web_name最新网址',
         ],
-        'get_url' => ':web_name 最新网址',
+        'get_url' => ':web_name 最新网址：:url',
         'params_missing' => '参数有误，请携带邮箱地址发送',
         'ticket_missing' => '工单不存在',
         'ticket_reply' => '工单 #:id 已回复',

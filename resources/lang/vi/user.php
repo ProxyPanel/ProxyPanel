@@ -247,7 +247,7 @@ return [
             'unbind' => 'Hủy liên kết tài khoản',
             'web_url' => 'Lấy URL mới nhất :web_name',
         ],
-        'get_url' => 'URL mới nhất :web_name',
+        'get_url' => ':web_name URL mới nhất: :url',
         'params_missing' => 'Lỗi tham số, vui lòng gửi kèm địa chỉ email',
         'ticket_missing' => 'Ticket không tồn tại',
         'ticket_reply' => 'Ticket #:id có trả lời',

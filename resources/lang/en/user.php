@@ -247,7 +247,7 @@ return [
             'unbind' => 'Unlink account',
             'web_url' => 'Retrieve the latest :web_name access link',
         ],
-        'get_url' => ':web_name latest URL',
+        'get_url' => ':web_name latest URL: :url',
         'params_missing' => 'Invalid parameters. Include email address',
         'ticket_missing' => 'Ticket not found',
         'ticket_reply' => 'Ticket #:id has a new reply',
