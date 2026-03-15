@@ -47,6 +47,10 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket): View
     { // 回复工单
+        if ($ticket->user_id !== auth()->id()) {
+            abort(404, trans('http-statuses.404'));
+        }
+
         $replyList = $ticket->reply()
             ->with('ticket:id,status', 'admin:id,username,qq', 'user:id,username,qq')
             ->oldest()
@@ -57,6 +61,10 @@ class TicketController extends Controller
 
     public function reply(Request $request, Ticket $ticket): JsonResponse
     {
+        if ($ticket->user_id !== auth()->id()) {
+            return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
+        }
+
         $validatedData = $request->validate([
             'content' => 'required|string|max:300',
         ]);
@@ -84,6 +92,10 @@ class TicketController extends Controller
 
     public function close(Ticket $ticket): JsonResponse
     { // 关闭工单
+        if ($ticket->user_id !== auth()->id()) {
+            return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
+        }
+
         if ($ticket->close()) {
             return response()->json([
                 'status' => 'success',

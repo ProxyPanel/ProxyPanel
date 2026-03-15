@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 use Log;
 use ReflectionException;
 use Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
@@ -78,6 +79,12 @@ class Handler extends ExceptionHandler
                     }
 
                     return Response::view('auth.error', ['message' => trans('http-statuses.401')], 401);
+                case $exception instanceof AccessDeniedHttpException: // 捕获权限拒绝异常
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('http-statuses.401')], 401);
+                    }
+
+                    return Response::view('auth.error', ['message' => trans('http-statuses.401')], 401);
                 case $exception instanceof TokenMismatchException: // 捕获CSRF异常
                     if ($request->ajax() || $request->wantsJson()) {
                         return Response::json(['status' => 'fail', 'message' => trans('http-statuses.419')], 419);
@@ -114,6 +121,12 @@ class Handler extends ExceptionHandler
                     }
 
                     return Response::view('auth.error', ['message' => $exception->getMessage()], 408);
+                default:
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()], 400);
+                    }
+
+                    return Response::view('auth.error', ['message' => $exception->getMessage()], 400);
             }
         }
 

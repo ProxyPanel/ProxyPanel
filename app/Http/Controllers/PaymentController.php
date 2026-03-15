@@ -185,6 +185,10 @@ class PaymentController extends Controller
 
     public function close(Order $order): JsonResponse
     {
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
+        }
+
         if (! $order->close()) {
             return response()->json(['status' => 'fail', 'message' => trans('common.failed_action_item', ['action' => trans('common.close'), 'attribute' => trans('model.order.attribute')])]);
         }

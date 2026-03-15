@@ -246,7 +246,7 @@ function handleErrors(xhr, options = {}) {
     }
 
     // 其它错误
-    const errorMessage = xhr.responseJSON?.message || xhr.statusText;
+    const errorMessage = xhr.responseJSON?.message || xhr?.message || xhr.statusText;
     
     // 提取公共的 showMessage 调用
     const showMessageOptions = {title: errorMessage, icon: "error"};
