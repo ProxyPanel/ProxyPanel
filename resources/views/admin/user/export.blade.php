@@ -96,7 +96,7 @@
                                 swal.fire({
                                     title: '{{ trans('user.scan_qrcode') }}',
                                     html: '<div id="qrcode"></div><button class="btn btn-block btn-outline-primary mt-4" onclick="Download()"> <i class="icon wb-download"></i> {{ trans('common.download') }}</button>',
-                                    onBeforeOpen: () => {
+                                    willOpen: () => {
                                         new QRCode(document.getElementById("qrcode"), {
                                             text: ret.data
                                         });

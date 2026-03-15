@@ -51,7 +51,7 @@ class PaymentController extends Controller
 
     public static function getStatus(Request $request): JsonResponse
     {
-        $payment = Payment::whereTradeNo($request->input('trade_no'))->first();
+        $payment = Payment::uid()->whereTradeNo($request->input('trade_no'))->first();
         if ($payment) {
             if ($payment->status === 1) {
                 // 触发支付成功事件

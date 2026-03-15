@@ -29,6 +29,11 @@ class NodeController extends Controller
 
     public function show(Request $request, Node $node, ProxyService $proxyServer): JsonResponse
     { // 节点详细信息
+        // 验证用户是否有权限访问该节点
+        if (! auth()->user()->nodes()->where('node.id', $node->id)->exists()) {
+            return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
+        }
+
         return response()->json(['status' => 'success', 'data' => $proxyServer->getUserProxyConfig($node, $request->input('type') !== 'text')]);
     }
 }
