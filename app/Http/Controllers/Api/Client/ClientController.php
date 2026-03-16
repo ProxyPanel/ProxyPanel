@@ -176,11 +176,11 @@ class ClientController extends Controller
         return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
 
-    public function proxyCheck(Request $request, ProxyService $proxyService): JsonResponse
+    public function proxyCheck(Request $request): JsonResponse
     {
         $md5 = $request->get('md5', '');
 
-        $proxy = $proxyService->buildClientConfig('clash');
+        $proxy = (new ProxyService())->buildClientConfig('clash');
         if (strtolower(md5(json_encode($proxy))) === strtolower($md5)) {
             return $this->succeed(false);
         }
@@ -188,16 +188,17 @@ class ClientController extends Controller
         return $this->succeed(true, ['md5' => strtolower(md5(json_encode($proxy)))]);
     }
 
-    public function downloadProxies(Request $request, ProxyService $proxyService): string
+    public function downloadProxies(Request $request): string
     {
         $flag = strtolower($request->input('flag') ?? ($request->userAgent() ?? ''));
 
-        return $proxyService->buildClientConfig($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
+        return (new ProxyService())->buildClientConfig($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
     }
 
-    public function getProxyList(ProxyService $proxyService): JsonResponse
+    public function getProxyList(): JsonResponse
     {
         $servers = [];
+        $proxyService = new ProxyService();
         foreach ($proxyService->fetchAvailableNodes(null, false)->load('latestOnlineLog') as $node) {
             $server = $proxyService->generateNodeConfig($node);
             if ($server['type'] === 'shadowsocks' || $server['type'] === 'shadowsocksr') {

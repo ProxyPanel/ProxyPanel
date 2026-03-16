@@ -18,11 +18,11 @@ class SubscribeController extends Controller
 
     private ?string $target;
 
-    private ProxyService $proxyServer;
+    private ProxyService $proxyService;
 
-    public function __construct(ProxyService $proxyServer)
+    public function __construct(ProxyService $proxyService)
     {
-        $this->proxyServer = $proxyServer;
+        $this->proxyService = $proxyService;
     }
 
     public function index(Request $request, string $code): RedirectResponse|View
@@ -100,7 +100,7 @@ class SubscribeController extends Controller
         }
 
         // 设置用户并更新订阅信息
-        $this->proxyServer->setUser($user);
+        $this->proxyService->setUser($user);
         $subscribe->increment('times'); // 更新访问次数
 
         // 记录订阅日志
@@ -110,15 +110,15 @@ class SubscribeController extends Controller
         ], JSON_THROW_ON_ERROR));
 
         // 返回订阅内容
-        return $this->proxyServer->buildClientConfig($this->target, self::$subType);
+        return $this->proxyService->buildClientConfig($this->target, self::$subType);
     }
 
     private function failed(string $text): string
     { // 抛出错误的节点信息，用于兼容防止客户端订阅失败
-        $this->proxyServer->failedProxyReturn($text, self::$subType ?? 0);
+        $this->proxyService->failedProxyReturn($text, self::$subType ?? 0);
 
         // 返回错误配置而不是空字符串，以确保客户端收到有效内容
-        return $this->proxyServer->buildClientConfig($this->target, self::$subType);
+        return $this->proxyService->buildClientConfig($this->target, self::$subType);
     }
 
     private function subscribeLog(int $subscribeId, ?string $ip, string $headers): void
