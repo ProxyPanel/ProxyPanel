@@ -85,7 +85,9 @@ class Google implements DNS
 
     private function sendRequest(string $action, array $parameters = [], string $type = 'A'): array|bool
     {
-        $client = Http::timeout(15)->retry(3, 1000)->withToken($this->token)->baseUrl($this->apiEndpoint)->withQueryParameters(['api-version' => '2018-05-01'])->asJson();
+        // 注意：这里曾经带着 Azure 风格的 api-version=2018-05-01 查询参数（显然是从 Azure 驱动抄来的），
+        // Google Cloud DNS 的 REST API 并不需要该参数，会原样丢弃，已移除。
+        $client = Http::timeout(15)->retry(3, 1000)->withToken($this->token)->baseUrl($this->apiEndpoint)->asJson();
 
         $response = match ($action) {
             'ListZones' => $client->get('managedZones'),

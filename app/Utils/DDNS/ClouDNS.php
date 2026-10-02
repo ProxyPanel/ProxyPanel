@@ -58,7 +58,7 @@ class ClouDNS implements DNS
         if ($response->successful()) {
             $data = $response->json();
             if (isset($data['status']) && $data['status'] === 'Failed') {
-                Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['statusDescription'] ?? 'Unknown error');
+                Log::error('['.self::LABEL." — $action] 返回错误信息: ".($data['statusDescription'] ?? 'Unknown error'));
             } else {
                 return $data;
             }

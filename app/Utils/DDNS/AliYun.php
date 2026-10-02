@@ -86,7 +86,7 @@ class AliYun implements DNS
                 return $data;
             }
 
-            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['Message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".($data['Message'] ?? 'Unknown error'));
         } else {
             Log::error('['.self::LABEL." — $action] 请求失败");
         }

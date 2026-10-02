@@ -97,12 +97,8 @@ class CurrencyExchangeTest extends TestCase
                 'response' => '{"exchangeRateJson":[{"transCur":"AED","baseCur":"AUD","rateData":0.41397204},{"transCur":"TJS","baseCur":"CNY","rateData":0.75934168},{"transCur":"TMT","baseCur":"CNY","rateData":2.0464021},{"transCur":"TND","baseCur":"CNY","rateData":2.45719918},{"transCur":"TOP","baseCur":"CNY","rateData":2.99489085},{"transCur":"UGX","baseCur":"CNY","rateData":0.00204028},{"transCur":"USD","baseCur":"CNY","rateData":7.1399},{"transCur":"UYU","baseCur":"CNY","rateData":0.17892278},{"transCur":"UZS","baseCur":"CNY","rateData":0.00058941}],"curDate":"2025-09-11"}',
                 'expected' => 7.13,
             ]],
-            'baidu' => [[
-                'name' => 'baidu',
-                'endpoint' => 'https://finance.pae.baidu.com/vapi/async/v1*',
-                'response' => '{"DispExt":null,"QueryDispInfo":null,"ResultCode":0,"ResultNum":2,"QueryID":"162386106721317024","Result":[{"ClickNeed":"1","Degree":"0","DisplayData":{"StdCls":"2","StdStg":"5293","StdStl":"2","resultData":{"extData":{"OriginQuery":"","resourceid":"5293","tplt":"exrate"},"tplData":{"StdCls":"2","StdStg":"5293","StdStl":"2","card_order":"1","content1":"1美元=7.12270000人民币","content2":"1人民币=0.14039700美元","money1":"美元","money1_num":"1","money1_rev":"1","money2":"人民币","money2_num":"7.12270000","money2_rev":"0.140397","pk":[],"sigma_use":"1","strong_use":"1","templateName":"exrate","template_type":"1","text":"更新时间：2025-09-11 15:23 数据仅供参考"}},"strategy":{"ctplOrPhp":"1","hilightWord":"","precharge":"0","tempName":"unitstatic"}},"RecoverCacheTime":"0","Sort":"1","SrcID":"5293","SubResNum":"0","SubResult":[],"SuppInfo":"汇率换算","Title":"汇率换算","Weight":"3"}]}',
-                'expected' => 7.13,
-            ]],
+            // 注：原 'baidu' 数据集已删除——finance.pae.baidu.com 现在对非浏览器请求直接返回
+            // 403 hit risk，该来源已从 CurrencyExchange::$apis 中移除。
         ];
     }
 
@@ -174,7 +170,7 @@ class CurrencyExchangeTest extends TestCase
         $base = 'USD';
 
         $services = ['exchangerateApi', 'k780', 'it120', 'fixer', 'currencyData', 'exchangeRatesData',
-            'jsdelivrFile', 'duckduckgo', 'wise', 'xRates', 'valutafx', 'unionpay', 'baidu'];
+            'jsdelivrFile', 'duckduckgo', 'wise', 'xRates', 'valutafx', 'unionpay'];
 
         $successfulRequests = 0;
         $failedRequests = 0;

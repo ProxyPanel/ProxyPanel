@@ -66,7 +66,7 @@ class DigitalOcean implements DNS
         }
 
         if ($data) {
-            Log::error('['.self::LABEL." — $action] 返回错误信息: ".$data['message'] ?? 'Unknown error');
+            Log::error('['.self::LABEL." — $action] 返回错误信息: ".($data['message'] ?? 'Unknown error'));
         } else {
             Log::error('['.self::LABEL." — $action] 请求失败");
         }

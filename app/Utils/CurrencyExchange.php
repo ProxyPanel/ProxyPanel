@@ -10,7 +10,13 @@ use Log;
 
 class CurrencyExchange
 {
-    private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'wsj', 'xRates', 'valutafx', 'baidu', 'unionpay', 'jsdelivrFile', 'it120', 'k780'];
+    /**
+     * 可用的汇率来源，按顺序尝试.
+     *
+     * 曾经包含两个实际不存在的来源：'wsj'（类里没有对应方法）与 'baidu'
+     * （finance.pae.baidu.com 现在直接返回 403 hit risk）—— 已移除，勿再加回。
+     */
+    private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'xRates', 'valutafx', 'unionpay', 'jsdelivrFile', 'it120', 'k780'];
 
     private static ?PendingRequest $basicRequest;
 
@@ -74,7 +80,7 @@ class CurrencyExchange
                     return $data['rates'][$target];
                 }
             }
-            Log::error('[CurrencyExchange]exchangerateApi exchange failed with following message: '.$data['error-type'] ?? '');
+            Log::error('[CurrencyExchange]exchangerateApi exchange failed with following message: '.($data['error-type'] ?? ''));
 
             return null;
         });
@@ -250,16 +256,5 @@ class CurrencyExchange
         }
 
         return null;
-    }
-
-    private static function baidu(string $base, string $target): ?float
-    {
-        return self::callApi("https://finance.pae.baidu.com/vapi/async/v1?from_money=$base&to_money=$target&srcid=5293", static function ($data) {
-            if ($data['ResultCode'] === 0) {
-                return $data['Result'][0]['DisplayData']['resultData']['tplData']['money2_num'] ?? null;
-            }
-
-            return null;
-        });
     }
 }
