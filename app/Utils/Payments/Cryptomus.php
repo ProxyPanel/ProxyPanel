@@ -66,7 +66,7 @@ class Cryptomus implements Gateway
         }
 
         if (! isset($result['result']['url'])) {
-            Log::alert('【Cryptomus】创建订单错误：未获取到支付链接'.var_export($result, true));
+            Log::alert('【Cryptomus】创建订单错误：未获取到支付链接'.PaymentHelper::loggable($result));
         }
 
         return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
@@ -80,7 +80,7 @@ class Cryptomus implements Gateway
             return $response->json();
         }
 
-        Log::alert('【Cryptomus】创建订单失败：'.var_export($response->json(), true));
+        Log::alert('【Cryptomus】创建订单失败：'.PaymentHelper::loggable($response->json()));
 
         return ['status' => 'fail', 'message' => '获取失败！请检查配置信息'];
     }
@@ -104,7 +104,7 @@ class Cryptomus implements Gateway
             exit(200);
         }
 
-        Log::error('【Cryptomus】交易失败：'.var_export($request->all(), true));
+        Log::error('【Cryptomus】交易失败：'.PaymentHelper::loggable($request->all()));
 
         exit(500);
     }

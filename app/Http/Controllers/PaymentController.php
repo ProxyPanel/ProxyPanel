@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Payment;
 use App\Services\CouponService;
 use App\Utils\Helpers;
+use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
 use App\Utils\Payments\PaymentManager;
 use Exception;
@@ -26,7 +27,14 @@ class PaymentController extends Controller
     {
         self::$method = $request->query('method') ?: $request->input('method');
 
-        Log::notice('[{method}] '.trans('admin.menu.log.payment_callback').': {body}', ['method' => self::$method, 'body' => var_export($request->all(), true)]);
+        // 先落档再分发（未知 method 与验签失败也要留记录）；留档失败不能挡住履约
+        try {
+            $callback = PaymentHelper::createPaymentCallback($request);
+
+            Log::notice('[{method}] '.trans('admin.menu.log.payment_callback').' #{id}', ['method' => self::$method, 'id' => $callback->id]);
+        } catch (Exception $e) {
+            Log::error('['.self::$method.'] '.trans('admin.menu.log.payment_callback').': '.$e->getMessage());
+        }
 
         return self::getClient()->notify($request);
     }
@@ -151,7 +159,28 @@ class PaymentController extends Controller
         }
 
         // 生成订单
+        $reserved = false;
+
+        // 重复提交只挡同一件东西：键带内容指纹，换商品或换用户都不受影响
+        $createKey = 'order_create_'.auth()->id().'_'.md5(serialize([self::$method, $goods_id, $credit, $coupon_sn, $pay_type]));
+
         try {
+            // 用认领键而不是事务行锁：purchase() 要外呼网关，锁不能跨在外部调用上
+            if (! cache()->add($createKey, 1, 10)) {
+                return response()->json(['status' => 'fail', 'message' => trans('auth.error.repeat_request')]);
+            }
+
+            // 券的可使用次数在建单前用条件递减占住；usable_times 为空是不限，不占也不减
+            if ($coupon !== null && $coupon->usable_times > 0) {
+                $reserved = (bool) Coupon::whereKey($coupon->id)->where('usable_times', '>', 0)->decrement('usable_times');
+
+                if (! $reserved) {
+                    cache()->forget($createKey);
+
+                    return response()->json(['status' => 'fail', 'message' => trans('user.coupon.error.run_out')]);
+                }
+            }
+
             $newOrder = Order::create([
                 'sn' => date('ymdHis').random_int(100000, 999999),
                 'user_id' => auth()->id(),
@@ -163,20 +192,27 @@ class PaymentController extends Controller
                 'pay_way' => self::$method,
             ]);
 
-            // 使用优惠券，减少可使用次数
             if ($coupon !== null) {
-                if ($coupon->usable_times > 0) {
-                    $coupon->decrement('usable_times');
-                }
-
                 Helpers::addCouponLog('Coupon used in order.', $coupon->id, $goods_id, $newOrder->id);
             }
 
             $request->merge(['id' => $newOrder->id, 'type' => $pay_type, 'amount' => $amount]);
 
             // 生成支付单
-            return self::getClient()->purchase($request);
+            $purchased = self::getClient()->purchase($request);
+
+            if (($purchased->getData(true)['status'] ?? null) !== 'success') {
+                cache()->forget($createKey); // 支付单没生成就不该把用户锁在门外
+            }
+
+            return $purchased;
         } catch (Exception $e) {
+            cache()->forget($createKey);
+
+            if ($reserved && ! isset($newOrder)) {
+                Coupon::whereKey($coupon->id)->increment('usable_times'); // 单没建起来就把次数还回去
+            }
+
             Log::emergency(trans('common.failed_action_item', ['action' => trans('common.create'), 'attribute' => trans('model.order.attribute')]).': '.$e->getMessage());
         }
 

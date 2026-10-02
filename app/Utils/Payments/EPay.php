@@ -61,9 +61,9 @@ class EPay implements Gateway
                 exit('SUCCESS');
             }
 
-            Log::error('【易支付】验签失败：'.var_export($request->all(), true));
+            Log::error('【易支付】验签失败：'.PaymentHelper::loggable($request->all()));
         } else {
-            Log::error('【易支付】交易失败：'.var_export($request->all(), true));
+            Log::error('【易支付】交易失败：'.PaymentHelper::loggable($request->all()));
         }
 
         exit('FAIL');

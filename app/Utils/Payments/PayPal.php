@@ -57,7 +57,7 @@ class PayPal implements Gateway
 
         $response = self::$provider->createOrder($data);
         if (isset($response['id']) && $response['id'] != null) {
-            Log::error('【Paypal】处理错误：'.var_export($response, true));
+            Log::error('【Paypal】处理错误：'.PaymentHelper::loggable($response));
 
             return response()->json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
         }

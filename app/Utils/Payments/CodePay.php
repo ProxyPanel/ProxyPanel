@@ -56,9 +56,9 @@ class CodePay implements Gateway
                 exit('success');
             }
 
-            Log::error('【码支付】验签失败：'.var_export($request->all(), true));
+            Log::error('【码支付】验签失败：'.PaymentHelper::loggable($request->all()));
         } else {
-            Log::error('【码支付】交易失败：'.var_export($request->all(), true));
+            Log::error('【码支付】交易失败：'.PaymentHelper::loggable($request->all()));
         }
         exit('fail');
     }

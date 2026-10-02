@@ -67,7 +67,7 @@ class PayBeaver implements Gateway
         }
 
         if (! isset($result['data']['pay_url'])) {
-            Log::alert('【海狸支付】创建订单错误：未获取到支付链接'.var_export($result, true));
+            Log::alert('【海狸支付】创建订单错误：未获取到支付链接'.PaymentHelper::loggable($result));
         }
 
         return Response::json(['status' => 'fail', 'message' => trans('user.payment.order_creation.failed')]);
@@ -83,7 +83,7 @@ class PayBeaver implements Gateway
             return $response->json();
         }
 
-        Log::alert('【海狸支付】创建订单失败：'.var_export($response->json(), true));
+        Log::alert('【海狸支付】创建订单失败：'.PaymentHelper::loggable($response->json()));
 
         return ['status' => 'fail', 'message' => '获取失败！请检查配置信息'];
     }
@@ -108,7 +108,7 @@ class PayBeaver implements Gateway
             exit(json_encode(['status' => 200]));
         }
 
-        Log::error('【海狸支付】交易失败：'.var_export($request->all(), true));
+        Log::error('【海狸支付】交易失败：'.PaymentHelper::loggable($request->all()));
 
         exit(json_encode(['status' => 500]));
     }

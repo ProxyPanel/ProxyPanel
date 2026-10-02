@@ -73,7 +73,7 @@ class THeadPay implements Gateway
                     exit(200);
                 }
             } else {
-                Log::error('【平头哥支付】交易失败：订单信息-'.var_export($request->all(), true));
+                Log::error('【平头哥支付】交易失败：订单信息-'.PaymentHelper::loggable($request->all()));
             }
         }
 

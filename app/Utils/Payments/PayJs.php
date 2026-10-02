@@ -47,7 +47,6 @@ class PayJs implements Gateway
         // 获取收款二维码内容
         $payment->update(['qr_code' => 1, 'url' => $result]);
 
-        // $this->addPamentCallback($payment->trade_no, null, $payment->amount * 100);
         return response()->json(['status' => 'success', 'data' => $payment->trade_no, 'message' => trans('user.payment.order_creation.success')]);
     }
 
@@ -60,7 +59,7 @@ class PayJs implements Gateway
                 exit('success');
             }
         } else {
-            Log::error('【PayJs】交易失败：'.var_export($data, true));
+            Log::error('【PayJs】交易失败：'.PaymentHelper::loggable($data));
         }
         exit('fail');
     }

@@ -74,7 +74,7 @@ class F2FPay implements Gateway
                 exit('success');
             }
 
-            Log::notice('【支付宝当面付】异步验证失败：'.var_export($request->all(), true));
+            Log::notice('【支付宝当面付】异步验证失败：'.PaymentHelper::loggable($request->all()));
         } catch (Exception $e) {
             Log::alert('【支付宝当面付】回调信息错误: '.$e->getMessage());
             exit;
@@ -96,12 +96,12 @@ class F2FPay implements Gateway
                 if (PaymentHelper::paymentReceived($result['out_trade_no'])) {
                     return true;
                 }
-                Log::error('【支付宝当面付】收单交易订单结算失败：'.var_export($result, true));
+                Log::error('【支付宝当面付】收单交易订单结算失败：'.PaymentHelper::loggable($result));
 
                 return false;
             }
         } else {
-            Log::error('【支付宝当面付】收单交易查询失败：'.var_export($result, true));
+            Log::error('【支付宝当面付】收单交易查询失败：'.PaymentHelper::loggable($result));
         }
 
         return false;
