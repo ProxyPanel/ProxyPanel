@@ -7,8 +7,12 @@ use Cache;
 use Exception;
 use GeoIp2\Database\Reader;
 use GeoIp2\Exception\AddressNotFoundException;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use Http;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Pool;
+use Illuminate\Http\Client\Response;
+use InvalidArgumentException;
 use IP2Location\Database;
 use ipip\db\City;
 use Log;
@@ -17,9 +21,19 @@ use XdbSearcher;
 
 class IP
 {
-    private const CACHE_TAG = 'IP_INFO'; // 公共常量 / 默认键
+    /**
+     * 缓存键前缀.
+     *
+     * 不能用 Cache::tags()：只有 redis/memcached/array 这些驱动支持打标签，
+     * 而 file（config 里的默认值）、database 会直接抛 BadMethodCallException，
+     * 一旦踩上就是所有调用 IP 查询的地方（登录、后台列表、中间件）全部 500。
+     */
+    public const CACHE_PREFIX = 'ip_geo:';
 
-    private static ?PendingRequest $basicRequest = null;
+    /** 单个查询的超时（秒）：并发之后整体耗时由最慢的一个决定，所以不要设大 */
+    private const TIMEOUT = 5;
+
+    private const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36';
 
     public static function getClientIP(): ?string
     { // 获取访客真实IP
@@ -35,7 +49,7 @@ class IP
         if ($checker !== null) {
             $result = self::IPLookup($ip, [$checker]);
         } else {
-            $cached = Cache::tags(self::CACHE_TAG)->get($ip);
+            $cached = Cache::get(self::CACHE_PREFIX.$ip);
             if ($cached && ! empty(array_filter($cached))) {
                 return $cached;
             }
@@ -43,10 +57,10 @@ class IP
             $isIpv4 = self::isIpv4($ip);
             if (app()->getLocale() === 'zh_CN') {
                 $checkers = $isIpv4
-                    ? ['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'vore', 'juHe', 'ip2Region', 'IPDB', 'ipwhois', 'pconline']
-                    : ['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'vore', 'ip2Region'];
+                    ? ['ipApi', 'Baidu', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'vore', 'juHe', 'ip2Region', 'IPDB', 'ipwhois', 'pconline']
+                    : ['ipApi', 'Baidu', 'ipGeoLocation', 'vore', 'ip2Region'];
             } else {
-                $checkers = ['ipApi', 'IPSB', 'ipinfo', 'ip234', 'ipGeoLocation', 'dbIP', 'IP2Online', 'ipdata', 'ipApiIS', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom', 'ipApiIO', 'freeipapi'];
+                $checkers = ['ipApi', 'IPSB', 'ipinfo', 'ip234', 'ipGeoLocation', 'dbIP', 'IP2Online', 'ipdata', 'ipApiIS', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom', 'freeipapi'];
             }
 
             $result = self::IPLookup($ip, $checkers);
@@ -54,7 +68,7 @@ class IP
 
         if ($result !== null) {
             $result['address'] = implode(' ', Arr::except(array_filter($result), ['isp', 'latitude', 'longitude']));
-            Cache::tags(self::CACHE_TAG)->put($ip, $result, Day);
+            Cache::put(self::CACHE_PREFIX.$ip, $result, Day);
         }
 
         return $result;
@@ -62,13 +76,18 @@ class IP
 
     private static function IPLookup(string $ip, array $checkers): ?array
     {
+        // 先把名单里的 HTTP provider 并发发出去，再按优先级取第一个成功的结果：
+        // 逐个串行时最坏要等所有超时之和，并发之后只等最慢的那一个。
+        $responses = self::concurrentResponses($ip, $checkers);
+
         foreach ($checkers as $checker) {
             if (! method_exists(self::class, $checker)) {
                 continue;
             }
 
             try {
-                $result = call_user_func([self::class, $checker], $ip);
+                // 只有拿到并发响应的 provider 才多传一个参数；离线库（ip2Region/IPDB/ip2Location/GeoIP2）保持原签名
+                $result = call_user_func_array([self::class, $checker], isset($responses[$checker]) ? [$ip, $responses[$checker]] : [$ip]);
                 if (is_array($result) && ! empty(array_filter($result))) {
                     return $result;
                 }
@@ -78,6 +97,137 @@ class IP
         }
 
         return null;
+    }
+
+    /**
+     * 并发预取名单里的 HTTP provider.
+     *
+     * @return array<string, Response> provider 名 => 响应；没配 key 的与传输层失败的都不在其中
+     */
+    private static function concurrentResponses(string $ip, array $checkers): array
+    {
+        $requests = array_intersect_key(self::requests($ip), array_flip($checkers));
+
+        if (count($requests) < 2) { // 只有一个候选时并发没有意义，让它自己老老实实发一次
+            return [];
+        }
+
+        try {
+            $responses = Http::pool(function (Pool $pool) use ($requests) {
+                foreach ($requests as $name => $request) {
+                    // 请求定义必须在真的要发时才调用惰性客户端：pool 里注册了却从未发送的通道，
+                    // 会让 Http::pool() 在收集结果时对 null promise 调用 wait() 而报错
+                    $request(static fn (): PendingRequest => self::withDefaults($pool->as($name)));
+                }
+            });
+        } catch (Exception $e) {
+            // 任何一个请求在传输层炸掉都会带走整批结果，此时退回逐个获取（慢，但不会丢数据）
+            Log::warning('IP并发查询失败，退回逐个获取: '.$e->getMessage());
+
+            return [];
+        }
+
+        // 传输失败的通道拿到的是异常对象：换成 500 响应，让 provider 直接判失败，
+        // 否则它会带着 retry(2) 再把死掉的地址打一遍
+        return array_map(static fn ($response): Response => $response instanceof Response ? $response : new Response(new Psr7Response(500)), $responses);
+    }
+
+    /**
+     * provider 名 => 请求定义.
+     *
+     * 参数是「惰性客户端」：顺序执行时给出统一的 HTTP 客户端，并发时给出 pool 里的通道。
+     * 返回 null 表示这次不该发请求（例如没配 key），此时 provider 自己的老门会拦住它。
+     *
+     * 返回值不强标注：顺序执行时是 Response（send() 会断言），并发时是 Guzzle 的 Promise，
+     * 由 Pool 自己持有并等待。
+     *
+     * @return array<string, callable(callable(): PendingRequest): mixed>
+     */
+    private static function requests(string $ip): array
+    {
+        return [
+            'ipApi' => static function (callable $client) use ($ip) {
+                $lang = str_replace('_', '-', app()->getLocale());
+                $key = config('services.ip.ip-api_key');
+                $host = empty($key) ? 'https://demo.ip-api.com' : 'https://pro.ip-api.com';
+
+                return $client()->withHeader('Origin', 'https://members.ip-api.com')->get("$host/json/$ip?fields=582361&key=$key&lang=$lang");
+            },
+            'Baidu' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.baidu_ak');
+                if (empty($key)) {
+                    return null;
+                }
+
+                return $client()->get("https://api.map.baidu.com/location/ip?ak=$key&ip=$ip&coor=gcj02");
+            },
+            'ipGeoLocation' => static function (callable $client) use ($ip) {
+                $lang = config('common.language.'.app()->getLocale().'.1');
+
+                return $client()->withHeader('Origin', 'https://ipgeolocation.io')
+                    ->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=$lang");
+            },
+            'TaoBao' => static fn (callable $client) => $client()->post("https://ip.taobao.com/outGetIpInfo?ip=$ip&accessKey=alibaba-inc"),
+            'speedtest' => static fn (callable $client) => $client()->withHeaders(['Clientectype' => 65, 'Encrypt' => 'true'])->get('https://api-v3.speedtest.cn/ip', ['data' => base64_encode(openssl_encrypt(json_encode(['ip' => $ip], JSON_THROW_ON_ERROR), 'AES-128-CBC', '5ECC5D62140EC099', OPENSSL_RAW_DATA, 'E63EA892A702EEAA'))]),
+            'juHe' => static fn (callable $client) => $client()->asForm()->post('https://apis.juhe.cn/ip/Example/query.php', ['IP' => $ip]),
+            // ip.sb 自 2024 起明确拒绝 POST（响应体里会写明 "API no longer supports POST requests"），必须用 GET
+            'IPSB' => static fn (callable $client) => $client()->get("https://api.ip.sb/geoip/$ip"),
+            'ipinfo' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.ipinfo_token');
+                if (empty($key)) {
+                    return null;
+                }
+
+                return $client()->acceptJson()->get("https://ipinfo.io/$ip?token=$key");
+            },
+            'ip234' => static fn (callable $client) => $client()->get("https://ip234.in/search_ip?ip=$ip"),
+            'dbIP' => static fn (callable $client) => $client()->acceptJson()->get("https://api.db-ip.com/v2/free/$ip"),
+            'IP2Online' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.IP2Location_key');
+
+                return empty($key)
+                    ? $client()->acceptJson()->get("https://api.ip2location.io/?ip=$ip")
+                    : $client()->acceptJson()->get("https://api.ip2location.io/?key=$key&ip=$ip");
+            },
+            'ipdata' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.ipdata_key');
+                $fields = 'ip,city,region,country_name,latitude,longitude,asn';
+
+                return empty($key)
+                    ? $client()->withHeader('Referer', 'https://ipdata.co/')->get("https://api.ipdata.co/$ip?api-key=dfaeafd1e8192e29db79905207d07059a81161c04fce90b040866b22&fields=$fields")
+                    : $client()->get("https://api.ipdata.co/$ip?api-key=$key&fields=$fields");
+            },
+            'ipApiCo' => static fn (callable $client) => $client()->get("https://ipapi.co/$ip/json/"),
+            'ipApiCom' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.ipApiCom_acess_key');
+                if (empty($key)) {
+                    return null;
+                }
+
+                return $client()->get("https://api.ipapi.com/api/$ip?access_key=$key");
+            },
+            'vore' => static fn (callable $client) => $client()->get("https://api.vore.top/api/IPdata?ip=$ip"),
+            'bjjii' => static function (callable $client) use ($ip) {
+                $key = config('services.ip.bjjii_key');
+                if (empty($key)) {
+                    return null;
+                }
+
+                return $client()->get("https://api.bjjii.com/api/ip/query?key=$key&ip=$ip");
+            },
+            'pconline' => static fn (callable $client) => $client()->get("https://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true"),
+            'ipApiIS' => static fn (callable $client) => $client()->get("https://api.ipapi.is/?ip=$ip"),
+            'freeipapi' => static fn (callable $client) => $client()->get("https://free.freeipapi.com/api/json/$ip"),
+            'ipwhois' => static fn (callable $client) => $client()->get("https://ipwhois.app/json/$ip?format=json"),
+        ];
+    }
+
+    /** 按名字取出请求定义并立即发送（顺序执行路径） */
+    private static function send(string $name, string $ip): Response
+    {
+        $request = self::requests($ip)[$name] ?? throw new InvalidArgumentException("未定义的IP请求: $name");
+
+        return $request(static fn (): PendingRequest => self::http());
     }
 
     private static function isIpv4(string $ip): bool
@@ -90,7 +240,7 @@ class IP
         if ($checker !== null) {
             $ret = self::IPLookup($ip, [$checker]);
         } else {
-            $ret = self::IPLookup($ip, ['IPSB', 'ipApi', 'ipw', 'ipinfo', 'IP2Online', 'speedtest', 'bjjii', 'Baidu', 'ip234', 'ipdata', 'ipGeoLocation', 'ipApiIS', 'ipApiCo', 'ipApiCom', 'ip2Location', 'ipApiIO', 'ipwhois', 'freeipapi']);
+            $ret = self::IPLookup($ip, ['IPSB', 'ipApi', 'ipinfo', 'IP2Online', 'speedtest', 'bjjii', 'Baidu', 'ip234', 'ipdata', 'ipGeoLocation', 'ipApiIS', 'ipApiCo', 'ipApiCom', 'ip2Location', 'ipwhois', 'freeipapi']);
         }
 
         if (is_array($ret)) {
@@ -102,24 +252,24 @@ class IP
 
     private static function http(): PendingRequest
     { // 统一的HTTP客户端方法
-        if (! self::$basicRequest) {
-            self::$basicRequest = Http::timeout(5)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36');
-        }
-
-        return self::$basicRequest;
+        // 每次都新建：PendingRequest 是可变的，共用一个实例会让前面的 provider 留下的
+        // 请求头 / 选项（Origin、Referer、asForm、acceptJson…）污染后面的 provider。
+        return self::withDefaults(Http::timeout(self::TIMEOUT));
     }
 
-    private static function ipApi(string $ip): ?array
-    { // 开发依据: https://ip-api.com/docs/api:json
-        $client = self::http()->withHeader('Origin', 'https://members.ip-api.com');
-        $lang = str_replace('_', '-', app()->getLocale());
-        $key = config('services.ip.ip-api_key');
+    /**
+     * 统一的请求默认值，顺序执行与并发（pool）两条路径共用.
+     *
+     * 注意 retry(2) 只在顺序执行时生效：Http::pool() 走的是 async 通道，不经过重试包装。
+     */
+    private static function withDefaults(PendingRequest $request): PendingRequest
+    {
+        return $request->timeout(self::TIMEOUT)->retry(2)->withOptions(['http_errors' => false])->withoutVerifying()->withUserAgent(self::USER_AGENT);
+    }
 
-        if (empty($key)) {
-            $response = $client->get("https://demo.ip-api.com/json/$ip?fields=582361&key=$key&lang=$lang");
-        } else {
-            $response = $client->get("https://pro.ip-api.com/json/$ip?fields=582361&key=$key&lang=$lang");
-        }
+    private static function ipApi(string $ip, ?Response $response = null): ?array
+    { // 开发依据: https://ip-api.com/docs/api:json
+        $response ??= self::send(__FUNCTION__, $ip);
 
         if ($response->ok()) {
             $data = $response->json();
@@ -142,15 +292,13 @@ class IP
         return null;
     }
 
-    private static function Baidu(string $ip): ?array
+    private static function Baidu(string $ip, ?Response $response = null): ?array
     { // 通过api.map.baidu.com查询IP地址的详细信息，依据 http://lbsyun.baidu.com/index.php?title=webapi/ip-api 开发
-        $client = self::http();
-        $key = config('services.ip.baidu_ak');
-        if (empty($key)) {
+        if (empty(config('services.ip.baidu_ak'))) { // 没配 key 直接跳过；requests() 里同样要判断，那里是给并发路径用的
             return null;
         }
 
-        $response = $client->get("https://api.map.baidu.com/location/ip?ak=$key&ip=$ip&coor=gcj02");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【百度IP库】解析异常：'.$ip);
 
@@ -177,46 +325,9 @@ class IP
         return null;
     }
 
-    private static function baiduBce(string $ip): ?array
-    { // 依据 https://qifu.baidu.com/?activeId=SEARCH_IP_ADDRESS&ip=&_frm=aladdin
-        $client = self::http();
-        $isIpv4 = self::isIpv4($ip);
-        $url = $isIpv4
-            ? "https://qifu-api.baidubce.com/ip/geo/v1/district?ip=$ip"
-            : "https://qifu-api.baidubce.com/ip/geo/v1/ipv6/district?ip=$ip";
-
-        $response = $client->get($url);
-        if (! $response->ok()) {
-            Log::error('【baiduBce】查询无效：'.$ip.var_export($response->json(), true));
-
-            return null;
-        }
-
-        $data = $response->json();
-        if ($data && $data['code'] === 'Success' && $data['ip'] === $ip) {
-            $ipData = $data['data'] ?? null;
-            if ($ipData) {
-                return [
-                    'country' => $ipData['country'] ?? null,
-                    'region' => $ipData['prov'] ?? null,
-                    'city' => $ipData['city'] ?? null,
-                    'isp' => $ipData['isp'] ?: $ipData['owner'] ?? null,
-                    'area' => $ipData['district'] ?? null,
-                ];
-            }
-        }
-
-        Log::error('【baiduBce】IP查询失败：'.($data['msg'] ?? 'unknown'));
-
-        return null;
-    }
-
-    private static function ipGeoLocation(string $ip): ?array
+    private static function ipGeoLocation(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://ipgeolocation.io/documentation.html
-        $client = self::http();
-        $lang = config('common.language.'.app()->getLocale().'.1');
-        $response = $client->withHeader('Origin', 'https://ipgeolocation.io')
-            ->get("https://api.ipgeolocation.io/ipgeo?ip=$ip&fields=country_name,state_prov,district,city,isp,latitude,longitude&lang=$lang");
+        $response ??= self::send(__FUNCTION__, $ip);
 
         if (! $response->ok()) {
             Log::error('【ipGeoLocation】查询无效：'.$ip.var_export($response->json(), true));
@@ -242,10 +353,9 @@ class IP
         return null;
     }
 
-    private static function TaoBao(string $ip): ?array
+    private static function TaoBao(string $ip, ?Response $response = null): ?array
     { // 通过ip.taobao.com查询IP地址的详细信息 依据 https://ip.taobao.com/instructions 开发
-        $client = self::http();
-        $response = $client->post("https://ip.taobao.com/outGetIpInfo?ip=$ip&accessKey=alibaba-inc");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【淘宝IP库】解析异常：'.$ip);
 
@@ -271,11 +381,9 @@ class IP
         return null;
     }
 
-    private static function speedtest(string $ip): ?array
-    {
-        $client = self::http();
-        $response = $client->withHeaders(['Clientectype' => 65, 'Encrypt' => 'true'])->get('https://api-v3.speedtest.cn/ip', ['data' => base64_encode(openssl_encrypt(json_encode(['ip' => $ip], JSON_THROW_ON_ERROR), 'AES-128-CBC', '5ECC5D62140EC099', OPENSSL_RAW_DATA, 'E63EA892A702EEAA'
-        ))]);
+    private static function speedtest(string $ip, ?Response $response = null): ?array
+    { // 开发依据: https://api-v3.speedtest.cn/ 共用 https://www.speedtest.cn/ 的查询接口
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【speedtest】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -283,35 +391,40 @@ class IP
         }
 
         $data = $response->json();
-        if ($data['code'] === 0 && $data["'msg'"] === 'ok') {
-            $ipData = json_decode(openssl_decrypt(base64_decode($data['data']), 'AES-128-CBC', '5ECC5D62140EC099', OPENSSL_RAW_DATA, 'E63EA892A702EEAA'), true, 512, JSON_THROW_ON_ERROR);
+        // 注意是 $data['msg']：这里曾经写成 $data["'msg'"]（带引号的键名），导致该 provider 永远取不到数据
+        if (($data['code'] ?? null) !== 0 || ($data['msg'] ?? null) !== 'ok') {
+            Log::error('【speedtest】IP查询失败：'.($data['msg'] ?? 'unknown'));
 
-            if ($ipData['ip'] !== $ip) {
-                Log::error('【speedtest】IP不一致，查询IP:'.$ip.' 返回IP:'.$ipData['ip'] ?? 'null');
-
-                return null;
-            }
-
-            return [
-                'country' => $ipData['country'] ?? null,
-                'region' => $ipData['province'] ?? null,
-                'city' => $ipData['city'] ?? null,
-                'isp' => $ipData['isp'] ?: $ipData['operator'] ?? null,
-                'area' => $ipData['district'] ?? null,
-                'latitude' => $ipData['lat'] ?? null,
-                'longitude' => $ipData['lon'] ?? null,
-            ];
+            return null;
         }
 
-        Log::error('【speedtest】IP查询失败');
+        $ipData = $data['data'] ?? null;
+        // 带 Encrypt 头时返回 AES-128-CBC 加密的 base64，否则直接是明文对象（两种都要支持）
+        if (is_string($ipData)) {
+            $plain = openssl_decrypt(base64_decode($ipData), 'AES-128-CBC', '5ECC5D62140EC099', OPENSSL_RAW_DATA, 'E63EA892A702EEAA');
+            $ipData = $plain === false ? null : json_decode($plain, true);
+        }
 
-        return null;
+        if (! is_array($ipData) || ($ipData['ip'] ?? null) !== $ip) {
+            Log::error('【speedtest】IP不一致，查询IP:'.$ip.' 返回IP:'.($ipData['ip'] ?? 'null'));
+
+            return null;
+        }
+
+        return [
+            'country' => $ipData['country'] ?? null,
+            'region' => $ipData['province'] ?? null,
+            'city' => $ipData['city'] ?? null,
+            'isp' => $ipData['isp'] ?: $ipData['operator'] ?? null,
+            'area' => $ipData['district'] ?? null,
+            'latitude' => $ipData['lat'] ?? null,
+            'longitude' => $ipData['lng'] ?? ($ipData['lon'] ?? null),
+        ];
     }
 
-    private static function juHe(string $ip): ?array
+    private static function juHe(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://www.juhe.cn/docs/api/id/1
-        $client = self::http();
-        $response = $client->asForm()->post('https://apis.juhe.cn/ip/Example/query.php', ['IP' => $ip]);
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【juHe】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -347,6 +460,12 @@ class IP
 
         if (! empty($data)) {
             $location = explode('|', $data);
+            // 随包这份 xdb 少了官方的「区域」段（国家|区域|省份|城市|ISP），按段数补位才能对齐省/市
+            if (count($location) === 4) {
+                array_splice($location, 1, 0, [null]);
+            }
+            // 库里的未知字段写的是字面量 0，归一成 null
+            $location = array_map(static fn (?string $field): ?string => $field === null || $field === '' || $field === '0' ? null : $field, $location);
 
             return [
                 'country' => $location[0] ?? null,
@@ -374,11 +493,10 @@ class IP
         ];
     }
 
-    private static function IPSB(string $ip): ?array
+    private static function IPSB(string $ip, ?Response $response = null): ?array
     { // 通过api.ip.sb查询IP地址的详细信息
-        $client = self::http();
         try {
-            $response = $client->post("https://api.ip.sb/geoip/$ip");
+            $response ??= self::send(__FUNCTION__, $ip);
             if (! $response->ok()) {
                 Log::warning('[IPSB] 解析'.$ip.'异常: '.$response->body());
 
@@ -404,15 +522,13 @@ class IP
         return null;
     }
 
-    private static function ipinfo(string $ip): ?array
+    private static function ipinfo(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://ipinfo.io/account/home
-        $client = self::http();
-        $key = config('services.ip.ipinfo_token');
-        if (empty($key)) {
+        if (empty(config('services.ip.ipinfo_token'))) { // 没配 token 直接跳过；requests() 里同样要判断
             return null;
         }
 
-        $response = $client->acceptJson()->get("https://ipinfo.io/$ip?token=$key");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ipinfo】解析异常：'.$ip);
 
@@ -437,10 +553,9 @@ class IP
         return null;
     }
 
-    private static function ip234(string $ip): ?array
+    private static function ip234(string $ip, ?Response $response = null): ?array
     {
-        $client = self::http();
-        $response = $client->get("https://ip234.in/search_ip?ip=$ip");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ip234】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -467,10 +582,9 @@ class IP
         return null;
     }
 
-    private static function dbIP(string $ip): ?array
+    private static function dbIP(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://db-ip.com/api/doc.php
-        $client = self::http();
-        $response = $client->acceptJson()->get("https://api.db-ip.com/v2/free/$ip");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【dbIP】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -491,15 +605,9 @@ class IP
         return null;
     }
 
-    private static function IP2Online(string $ip): ?array
+    private static function IP2Online(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://www.ip2location.io/ip2location-documentation
-        $client = self::http();
-        $key = config('services.ip.IP2Location_key');
-        if (empty($key)) {
-            $response = $client->acceptJson()->get("https://api.ip2location.io/?ip=$ip");
-        } else {
-            $response = $client->acceptJson()->get("https://api.ip2location.io/?key=$key&ip=$ip");
-        }
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【IP2Online】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -522,15 +630,9 @@ class IP
         return null;
     }
 
-    private static function ipdata(string $ip): ?array
+    private static function ipdata(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://docs.ipdata.co/docs
-        $client = self::http();
-        $key = config('services.ip.ipdata_key');
-        if (empty($key)) {
-            $response = $client->withHeader('Referer', 'https://ipdata.co/')->get("https://api.ipdata.co/$ip?api-key=dfaeafd1e8192e29db79905207d07059a81161c04fce90b040866b22&fields=ip,city,region,country_name,latitude,longitude,asn");
-        } else {
-            $response = $client->get("https://api.ipdata.co/$ip?api-key=$key&fields=ip,city,region,country_name,latitude,longitude,asn");
-        }
+        $response ??= self::send(__FUNCTION__, $ip);
 
         if (! $response->ok()) {
             Log::error('【ipdata】查询无效：'.$ip.var_export($response->json(), true));
@@ -554,10 +656,9 @@ class IP
         return null;
     }
 
-    private static function ipApiCo(string $ip): ?array
+    private static function ipApiCo(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://ipapi.co/api/
-        $client = self::http();
-        $response = $client->get("https://ipapi.co/$ip/json/");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ipApiCo】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -629,15 +730,13 @@ class IP
         return null;
     }
 
-    private static function ipApiCom(string $ip): ?array
+    private static function ipApiCom(string $ip, ?Response $response = null): ?array
     {
-        $client = self::http();
-        $key = config('services.ip.ipApiCom_acess_key');
-        if (empty($key)) {
+        if (empty(config('services.ip.ipApiCom_acess_key'))) { // 没配 key 直接跳过；requests() 里同样要判断
             return null;
         }
 
-        $response = $client->get("https://api.ipapi.com/api/$ip?access_key=$key");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ipApiCom】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -660,10 +759,9 @@ class IP
         return null;
     }
 
-    private static function vore(string $ip): ?array
+    private static function vore(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://api.vore.top/
-        $client = self::http();
-        $response = $client->get("https://api.vore.top/api/IPdata?ip=$ip");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【vore】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -688,43 +786,13 @@ class IP
         return null;
     }
 
-    private static function ipw(string $ip): ?array
-    { // 开发依据: https://ipw.cn/ip/ https://ipw.cn/ipv6/
-        $client = self::http();
-        $response = $client->withHeader('Referer', 'https://ipw.cn/')->get('https://rest.ipw.cn/api/aw/v1/ip'.(self::isIpv4($ip) ? 'v4' : 'v6')."?ip=$ip&warning=please-direct-use-please-use-ipplus360.com");
-        if (! $response->ok()) {
-            Log::error('【ipw】查询无效：'.$ip.var_export($response->json(), true));
-
-            return null;
-        }
-
-        $data = $response->json();
-        if ($data && $data['code'] === 'Success' && $data['ip'] === $ip) {
-            $ipData = $data['data'];
-            if ($ipData) {
-                return [
-                    'country' => $ipData['country'] ?? null,
-                    'region' => $ipData['prov'] ?? null,
-                    'city' => $ipData['city'] ?? null,
-                    'isp' => $ipData['isp'] ?? null,
-                    'area' => $ipData['district'] ?? null,
-                    'latitude' => $ipData['lat'] ?? null,
-                    'longitude' => $ipData['lng'] ?? null,
-                ];
-            }
-        }
-
-        return null;
-    }
-
-    private static function bjjii(string $ip): ?array
+    private static function bjjii(string $ip, ?Response $response = null): ?array
     { // 开发依据: https://api.bjjii.com/doc/77
-        $client = self::http();
-        $key = config('services.ip.bjjii_key');
-        if (empty($key)) {
+        if (empty(config('services.ip.bjjii_key'))) { // 没配 key 直接跳过；requests() 里同样要判断
             return null;
         }
-        $response = $client->get("https://api.bjjii.com/api/ip/query?key=$key&ip=$ip");
+
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【bjjii】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -751,11 +819,10 @@ class IP
         return null;
     }
 
-    private static function pconline(string $ip): ?array
+    private static function pconline(string $ip, ?Response $response = null): ?array
     { // ipv4 only
-        $client = self::http();
+        $response ??= self::send(__FUNCTION__, $ip);
 
-        $response = $client->get("https://whois.pconline.com.cn/ipJson.jsp?ip=$ip&json=true");
         $data = json_decode(mb_convert_encoding($response->body(), 'UTF-8', 'GBK'), true, 512, JSON_THROW_ON_ERROR);
         if (! $response->ok()) {
             Log::error('【pconline】查询无效：'.$ip.var_export($data, true));
@@ -778,40 +845,9 @@ class IP
         return null;
     }
 
-    private static function ipApiIO(string $ip): ?array
-    { // 开发依据: https://ip-api.io/
-        $client = self::http();
-        $response = $client->get("https://ip-api.io/api/v1/ip/$ip");
-        if (! $response->ok()) {
-            Log::error('【ipApiIO】查询无效：'.$ip.var_export($response->json(), true));
-
-            return null;
-        }
-
-        $data = $response->json();
-        if ($data && $data['ip'] === $ip) {
-            $ipData = $data['location'];
-
-            if ($ipData) {
-                return [
-                    'country' => $ipData['country'] ?? null,
-                    'region' => null,
-                    'city' => $ipData['city'] ?? null,
-                    'isp' => null,
-                    'area' => null,
-                    'latitude' => $ipData['latitude'] ?? null,
-                    'longitude' => $ipData['longitude'] ?? null,
-                ];
-            }
-        }
-
-        return null;
-    }
-
-    private static function ipApiIS(string $ip): ?array
+    private static function ipApiIS(string $ip, ?Response $response = null): ?array
     {
-        $client = self::http();
-        $response = $client->get("https://api.ipapi.is/?ip=$ip");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ipApiIS】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -838,10 +874,9 @@ class IP
         return null;
     }
 
-    private static function freeipapi(string $ip): ?array
+    private static function freeipapi(string $ip, ?Response $response = null): ?array
     {
-        $client = self::http();
-        $response = $client->get("https://free.freeipapi.com/api/json/$ip");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【freeipapi】查询无效：'.$ip.var_export($response->json(), true));
 
@@ -864,10 +899,9 @@ class IP
         return null;
     }
 
-    private static function ipwhois(string $ip): ?array
+    private static function ipwhois(string $ip, ?Response $response = null): ?array
     {
-        $client = self::http();
-        $response = $client->get("https://ipwhois.app/json/$ip?format=json");
+        $response ??= self::send(__FUNCTION__, $ip);
         if (! $response->ok()) {
             Log::error('【ipwhois】查询无效：'.$ip.var_export($response->json(), true));
 

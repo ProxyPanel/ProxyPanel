@@ -180,12 +180,10 @@ class AuthController extends Controller
                 return redirect()->back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha.required'));
             }
 
-            $verifyCode = VerifyCode::whereAddress($data['username'])->whereCode($verify_code)->whereStatus(0)->first();
-            if (! $verifyCode) {
+            // 激活码一次性：抢不到这条条件更新就说明已被用过
+            if (! VerifyCode::whereAddress($data['username'])->whereCode($verify_code)->where('status', 0)->update(['status' => 1])) {
                 return redirect()->back()->withInput($request->except('verify_code'))->withErrors(trans('auth.captcha.error.timeout'));
             }
-
-            $verifyCode->update(['status' => 1]);
         }
 
         // 是否校验验证码
@@ -194,10 +192,13 @@ class AuthController extends Controller
             return $captcha;
         }
 
-        // 24小时内同IP注册限制
-        if (sysConfig('register_ip_limit') && cache()->has($cacheKey)) {
-            $registerTimes = cache()->get($cacheKey);
-            if ($registerTimes >= sysConfig('register_ip_limit')) {
+        // 24小时内同IP注册限制：建号之前占额，没建成再退回
+        $registerLimit = (int) sysConfig('register_ip_limit');
+        if ($registerLimit) {
+            cache()->add($cacheKey, 0, Day); // 键得先存在，increment 才有基数可加
+            if (cache()->increment($cacheKey) > $registerLimit) {
+                cache()->decrement($cacheKey); // 只有成功建号才占名额
+
                 return redirect()->back()->withInput($request->except('code'))->withErrors(trans('auth.register.error.throttle'));
             }
         }
@@ -212,23 +213,38 @@ class AuthController extends Controller
         $affArr = $this->getAff($invite_code, $aff);
         $inviter_id = $affArr['inviter_id'];
 
+        // 邀请码在建号之前认领，一个码只换一个账号
+        $usedCodeId = 0;
+        if ($affArr['code_id'] && sysConfig('is_invite_register')) {
+            if (! Invite::whereKey($affArr['code_id'])->where('status', 0)->update(['status' => 1])) {
+                if ($registerLimit) {
+                    cache()->decrement($cacheKey);
+                }
+
+                return redirect()->back()->withInput($request->except('code'))->withErrors(trans('auth.invite.unavailable'));
+            }
+
+            $usedCodeId = $affArr['code_id'];
+        }
+
         $transfer_enable = MiB * ((int) sysConfig('default_traffic') + ($inviter_id ? (int) sysConfig('referral_traffic') : 0));
 
         // 创建新用户
         if (! $user = Helpers::addUser($data['username'], $data['password'], $transfer_enable, (int) sysConfig('default_days'), $inviter_id, $data['nickname'])) { // 注册失败，抛出异常
+            if ($registerLimit) {
+                cache()->decrement($cacheKey);
+            }
+
+            if ($usedCodeId) {
+                Invite::whereKey($usedCodeId)->update(['status' => 0]); // 号没建成就把码还回去
+            }
+
             return redirect()->back()->withInput()->withErrors(trans('auth.register.failed'));
         }
 
-        // 注册次数+1
-        if (cache()->has($cacheKey)) {
-            cache()->increment($cacheKey);
-        } else {
-            cache()->put($cacheKey, 1, Day); // 24小时
-        }
-
         // 更新邀请码
-        if ($affArr['code_id'] && sysConfig('is_invite_register')) {
-            Invite::find($affArr['code_id'])?->update(['invitee_id' => $user->id, 'status' => 1]);
+        if ($usedCodeId) {
+            Invite::whereKey($usedCodeId)->update(['invitee_id' => $user->id]);
         }
 
         // 清除邀请人Cookie
@@ -237,7 +253,7 @@ class AuthController extends Controller
         // 注册后发送激活码
         if ((int) sysConfig('is_activate_account') === 2) {
             // 生成激活账号的地址
-            $token = $this->addVerifyUrl($user->id, $user->username);
+            $token = $this->addVerifyUrl($user->id);
             $activeUserUrl = route('activeAccount', $token);
 
             $user->notifyNow(new AccountActivation($activeUserUrl));
@@ -339,12 +355,21 @@ class AuthController extends Controller
         return $uid && User::whereId($uid)->exists() ? $uid : null;
     }
 
-    private function addVerifyUrl(int $uid, string $email): string
+    private function addVerifyUrl(int $uid): string
     { // 生成申请的请求地址
-        return Verify::create([
+        // 令牌明文只出现在邮件链接里，库里落哈希
+        $token = Str::random(48);
+        Verify::create([
             'user_id' => $uid,
-            'token' => md5(sysConfig('website_name').$email.microtime()),
-        ])->token;
+            'token' => Verify::hashToken($token),
+        ]);
+
+        return $token;
+    }
+
+    private function findVerify(string $token): ?Verify
+    { // 按令牌取校验记录（含关联用户）
+        return Verify::type(1)->with('user')->whereToken(Verify::hashToken($token))->first();
     }
 
     public function resetPassword(Request $request): RedirectResponse|View
@@ -377,7 +402,7 @@ class AuthController extends Controller
             }
 
             // 生成取回密码的地址
-            $token = $this->addVerifyUrl($user->id, $username);
+            $token = $this->addVerifyUrl($user->id);
 
             // 发送邮件
             $resetUrl = route('resettingPasswd', $token);
@@ -397,57 +422,52 @@ class AuthController extends Controller
             return redirect()->route('login');
         }
 
-        if ($request->isMethod('POST')) {
-            $validator = Validator::make($request->all(), [
-                'password' => 'required|min:6|confirmed',
-            ]);
-
-            if ($validator->fails()) {
-                return redirect()->back()->withInput()->withErrors($validator->errors());
-            }
-
-            $password = $request->input('password');
-            // 校验账号
-            $verify = Verify::type(1)->whereToken($token)->firstOrFail();
-            $user = $verify->user;
-            if (! $verify) {
-                return redirect()->route('login');
-            }
-
-            if ($user->status === -1) {
-                return redirect()->back()->withErrors(trans('auth.error.account_baned'));
-            }
-
-            if ($verify->status === 1) {
-                return redirect()->back()->withErrors(trans('auth.error.url_timeout'));
-            }
-
-            if (Hash::check($password, $verify->user->password)) {
-                return redirect()->back()->withErrors(trans('auth.password.reset.error.same'));
-            }
-
-            // 更新密码
-            if (! $user->update(['password' => $password])) {
-                return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('auth.password.reset.attribute')]));
-            }
-
-            // 置为已使用
-            $verify->update(['status' => 1]);
-
-            return redirect()->route('login')->with('successMsg', trans('auth.password.reset.success'));
-        }
-
-        $verify = Verify::type(1)->whereToken($token)->first();
+        $verify = $this->findVerify($token);
         if (! $verify) {
             return redirect()->route('login');
         }
 
-        if (time() - strtotime($verify->created_at) >= 1800) {
-            // 置为已失效
-            $verify->update(['status' => 2]);
+        // 已使用或超时的链接一律作废
+        if (! $verify->usable()) {
+            $verify->invalidate();
+
+            return redirect()->route('login')->withErrors(trans('auth.error.url_timeout'));
         }
 
-        return view('auth.reset', ['verify' => Verify::type(1)->whereToken($token)->first()]); // 重新获取一遍verify
+        $user = $verify->user;
+
+        if (! $request->isMethod('POST')) {
+            return view('auth.reset', compact('verify'));
+        }
+
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withInput()->withErrors($validator->errors());
+        }
+
+        if ($user->status === -1) {
+            return redirect()->back()->withErrors(trans('auth.error.account_baned'));
+        }
+
+        $password = $request->input('password');
+        if (Hash::check($password, $user->password)) {
+            return redirect()->back()->withErrors(trans('auth.password.reset.error.same'));
+        }
+
+        // 先原子认领令牌，再写密码
+        if (! $verify->claim()) {
+            return redirect()->route('login')->withErrors(trans('auth.error.url_timeout'));
+        }
+
+        // 更新密码
+        if (! $user->update(['password' => $password])) {
+            return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('auth.password.reset.attribute')]));
+        }
+
+        return redirect()->route('login')->with('successMsg', trans('auth.password.reset.success'));
     }
 
     public function activeUser(Request $request): RedirectResponse|View
@@ -486,7 +506,7 @@ class AuthController extends Controller
             }
 
             // 生成激活账号的地址
-            $token = $this->addVerifyUrl($user->id, $username);
+            $token = $this->addVerifyUrl($user->id);
 
             // 发送邮件
             $activeUserUrl = route('activeAccount', $token);
@@ -503,13 +523,21 @@ class AuthController extends Controller
 
     public function active(string $token): RedirectResponse|View
     { // 激活账号
-        $verify = Verify::type(1)->with('user')->whereToken($token)->firstOrFail();
-        $user = $verify->user;
+        $verify = $this->findVerify($token);
         if (! $verify) {
             return redirect()->route('login');
         }
 
-        if (empty($user) || $verify->status > 0) {
+        if (! $verify->usable()) {
+            $verify->invalidate();
+
+            session()->flash('errorMsg', trans('auth.error.url_timeout'));
+
+            return view('auth.active');
+        }
+
+        $user = $verify->user;
+        if (! $user) {
             session()->flash('errorMsg', trans('auth.error.url_timeout'));
 
             return view('auth.active');
@@ -521,11 +549,9 @@ class AuthController extends Controller
             return view('auth.active');
         }
 
-        if (time() - strtotime($verify->created_at) >= 1800) {
+        // 先原子认领令牌，再改账号状态
+        if (! $verify->claim()) {
             session()->flash('errorMsg', trans('auth.error.url_timeout'));
-
-            // 置为已失效
-            $verify->update(['status' => 2]);
 
             return view('auth.active');
         }
@@ -536,9 +562,6 @@ class AuthController extends Controller
 
             return redirect()->back();
         }
-
-        // 置为已使用
-        $verify->update(['status' => 1]);
 
         // 账号激活后给邀请人送流量
         $inviter = $user->inviter;

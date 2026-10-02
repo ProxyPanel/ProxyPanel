@@ -7,6 +7,7 @@ namespace Tests\Unit\Utils;
 use App\Utils\IP;
 use Exception;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
@@ -44,17 +45,6 @@ class IPTest extends TestCase
                     'longitude' => '123.46466579069178',
                 ],
             ]],
-            'baiduBce' => [[
-                'name' => 'baiduBce',
-                'endpoint' => 'https://qifu-api.baidubce.com/ip/geo/v1/district*',
-                'response' => '{"code":"Success","data":{"continent":"亚洲","country":"中国","zipcode":"110000","owner":"中国联通","isp":"中国联通","adcode":"210100","prov":"辽宁省","city":"沈阳市","district":""},"ip":"8.8.8.8"}',
-                'expected' => [
-                    'country' => '中国',
-                    'region' => '辽宁省',
-                    'city' => '沈阳市',
-                    'isp' => '中国联通',
-                ],
-            ]],
             'ipGeoLocation' => [[
                 'name' => 'ipGeoLocation',
                 'endpoint' => 'https://api.ipgeolocation.io/ipgeo?ip=*',
@@ -83,7 +73,9 @@ class IPTest extends TestCase
             'speedtest' => [[
                 'name' => 'speedtest',
                 'endpoint' => 'https://api-v3.speedtest.cn/ip*',
-                'response' => '{"code":0,"data":"1z41bLnGrmhViAP9vBtxaTvcnepxEF7nyynwu4VDL1s6YCnSK48PoPFgNf6lDQQ3GV9cmRtDJTrLLrU16eItDnmB+8+3stMtsFBhaLaRH1ece5b+D4lR73Cy1FvaxFXmIfGuPxIOjV/g4Mh4F7GuvEy1gm5/tj9gm4egANOyl3vkzMFvp9tB1ET9PUhaP29DTMQOwxCV4CendJn2LdwF6tP6elucLUoy3xweFC4h2w20oha/GcOiQAxKLB+h6aslydvXqDAzvMmeXRV6e0CQ6A==","\'msg\'":"ok"}',
+                // 注意 msg 这个键：真实接口返回的是 msg，provider 曾经按 "'msg'"（带引号）取值，
+                // 导致线上永远拿不到数据；这里过去照着 bug 写成了 '\'msg\''，已改回真实键名。
+                'response' => '{"code":0,"data":"1z41bLnGrmhViAP9vBtxaTvcnepxEF7nyynwu4VDL1s6YCnSK48PoPFgNf6lDQQ3GV9cmRtDJTrLLrU16eItDnmB+8+3stMtsFBhaLaRH1ece5b+D4lR73Cy1FvaxFXmIfGuPxIOjV/g4Mh4F7GuvEy1gm5/tj9gm4egANOyl3vkzMFvp9tB1ET9PUhaP29DTMQOwxCV4CendJn2LdwF6tP6elucLUoy3xweFC4h2w20oha/GcOiQAxKLB+h6aslydvXqDAzvMmeXRV6e0CQ6A==","msg":"ok"}',
                 'expected' => [
                     'country' => '中国',
                     'region' => '辽宁',
@@ -137,8 +129,9 @@ class IPTest extends TestCase
             ]],
             'ipinfo' => [[
                 'name' => 'ipinfo',
+                'config' => ['services.ip.ipinfo_token' => 'fake_ipinfo_token'],
                 'endpoint' => 'https://ipinfo.io*',
-                'response' => '{"input":"103.250.104.0","data":{"ip":"8.8.8.8","city":"Shenyang","region":"Liaoning","country":"CN","loc":"41.7922,123.4328","org":"AS4837 CHINA UNICOM China169 Backbone","postal":"110000","timezone":"Asia/Shanghai"}}',
+                'response' => '{"ip":"8.8.8.8","city":"Shenyang","region":"Liaoning","country":"CN","loc":"41.7922,123.4328","org":"AS4837 CHINA UNICOM China169 Backbone","postal":"110000","timezone":"Asia/Shanghai"}',
                 'expected' => [
                     'country' => 'CN',
                     'region' => 'Liaoning',
@@ -253,34 +246,6 @@ class IPTest extends TestCase
                     'isp' => '联通',
                 ],
             ]],
-            'ipw_v4' => [[
-                'name' => 'ipw',
-                'endpoint' => 'https://rest.ipw.cn/api/aw/v1/ipv4*',
-                'response' => '{"code":"Success","data":{"continent":"亚洲","country":"中国","zipcode":"110000","timezone":"UTC+8","accuracy":"城市","owner":"中国联通","isp":"中国联通","source":"数据挖掘","areacode":"CN","adcode":"210100","asnumber":"4837","lat":"41.800551","lng":"123.420011","radius":"109.2745","prov":"辽宁省","city":"沈阳市","district":""},"charge":false,"msg":"查询成功","ip":"8.8.8.8","coordsys":"WGS84"}',
-                'expected' => [
-                    'country' => '中国',
-                    'region' => '辽宁省',
-                    'city' => '沈阳市',
-                    'isp' => '中国联通',
-                    'latitude' => '41.800551',
-                    'longitude' => '123.420011',
-                ],
-            ]],
-            'ipw_v6' => [[
-                'name' => 'ipw',
-                'ip' => '2408:8207:1850:2a60::4c8',
-                'endpoint' => 'https://rest.ipw.cn/api/aw/v1/ipv6*',
-                'response' => '{"code":"Success","data":{"continent":"亚洲","country":"日本","zipcode":"167-0033","timezone":"UTC+9","accuracy":"城市","owner":"亚马逊","isp":"亚马逊","source":"数据挖掘","areacode":"JP","adcode":"","asnumber":"16509","lat":"35.713914","lng":"139.616508","radius":"","prov":"东京都","city":"Suginami","district":"","currency_code":"JPY","currency_name":"日元"},"charge":false,"msg":"查询成功","ip":"2408:8207:1850:2a60::4c8","coordsys":"WGS84"}',
-                'expected' => [
-                    'country' => '日本',
-                    'region' => '东京都',
-                    'city' => 'Suginami',
-                    'isp' => '亚马逊',
-                    'latitude' => '35.713914',
-                    'longitude' => '139.616508',
-                    'address' => '日本 东京都 Suginami',
-                ],
-            ]],
             'bjjii' => [[
                 'name' => 'bjjii',
                 'config' => ['services.ip.bjjii_key' => 'fake_acess_key'],
@@ -296,21 +261,12 @@ class IPTest extends TestCase
             ]],
             'pconline' => [[
                 'name' => 'pconline',
+                'charset' => 'GBK',
                 'endpoint' => 'https://whois.pconline.com.cn/*',
                 'response' => '{"ip":"8.8.8.8","pro":"辽宁省","proCode":"210000","city":"沈阳市","cityCode":"210100","region":"","regionCode":"0","addr":"辽宁省沈阳市 联通","regionNames":"","err":""}',
                 'expected' => [
                     'region' => '辽宁省',
                     'city' => '沈阳市',
-                ],
-            ]],
-            'ipApiIO' => [[
-                'name' => 'ipApiIO',
-                'endpoint' => 'https://ip-api.io/api/v1/ip/*',
-                'response' => '{"ip":"8.8.8.8","suspicious_factors":{"is_proxy":false,"is_tor_node":false,"is_spam":false,"is_crawler":false,"is_datacenter":false,"is_vpn":false,"is_threat":false},"location":{"country":"China","country_code":"CN","city":null,"latitude":34.7732,"longitude":113.722,"zip":null,"timezone":"Asia/Shanghai","local_time":"2025-09-07T14:37:47+08:00","local_time_unix":1757227067,"is_daylight_savings":false}}',
-                'expected' => [
-                    'country' => 'China',
-                    'latitude' => 34.7732,
-                    'longitude' => 113.722,
                 ],
             ]],
             'ipApiIS' => [[
@@ -361,6 +317,14 @@ class IPTest extends TestCase
         $this->assertFalse(IP::getIPInfo('::1'));
     }
 
+    /** provider 按真实字符集解码，伪造报文必须同编码，否则测的是另一条路径 */
+    private static function encoded(array $case): string
+    {
+        return ($case['charset'] ?? null) === 'GBK'
+            ? mb_convert_encoding($case['response'], 'GBK', 'UTF-8')
+            : $case['response'];
+    }
+
     public function test_get_client_ip_is_string_or_null(): void
     {
         $ip = IP::getClientIP();
@@ -381,7 +345,7 @@ class IPTest extends TestCase
         }
         // 模拟HTTP响应
         if (isset($case['response'])) {
-            $fakeResponses[$case['endpoint']] = Http::response($case['response']);
+            $fakeResponses[$case['endpoint']] = Http::response(self::encoded($case));
         }
         $fakeResponses['*'] = Http::response([], 500);
 
@@ -396,6 +360,39 @@ class IPTest extends TestCase
         }
     }
 
+    /**
+     * 完整名单查询应当并发发出所有 HTTP provider，再按优先级取第一个成功的结果：
+     * 串行失败轮询时，排在前面的 ipApi 一成功，后面的 Baidu 根本不会被请求。
+     */
+    public function test_full_lookup_fires_providers_concurrently_and_keeps_priority(): void
+    {
+        App::setLocale('zh_CN');
+        config(['services.ip.baidu_ak' => 'fake_baidu_ak']);
+        $ip = '11.22.33.44';
+        Cache::forget(IP::CACHE_PREFIX.$ip);
+
+        Http::fake([
+            '*ip-api.com/json/*' => Http::response([
+                'status' => 'success',
+                'query' => $ip,
+                'country' => 'from-ipApi',
+                'regionName' => 'Region',
+                'city' => 'City',
+            ]),
+            'https://api.map.baidu.com/*' => Http::response([
+                'status' => 0,
+                'address' => 'CN|辽宁省|沈阳市|None|联通|100|65|0',
+                'content' => ['address_detail' => ['province' => '辽宁省', 'city' => '沈阳市', 'street' => ''], 'point' => ['x' => 1, 'y' => 2]],
+            ]),
+            '*' => Http::response([], 500),
+        ]);
+
+        $result = IP::getIPInfo($ip);
+
+        $this->assertSame('from-ipApi', $result['country'], '优先级更高的 ipApi 应当胜出');
+        Http::assertSent(static fn (Request $request): bool => str_contains($request->url(), 'api.map.baidu.com'));
+    }
+
     public function test_get_ip_info_caches_result_and_prevents_http_calls(): void
     {
         $ip = '9.9.9.9';
@@ -407,8 +404,8 @@ class IPTest extends TestCase
             'longitude' => 4.56,
         ];
 
-        // 将结果写入缓存
-        Cache::tags('IP_INFO')->put($ip, $cached, now()->addMinutes(10));
+        // 将结果写入缓存（缓存的键格式见 IP::CACHE_PREFIX：不用 tags，file/database 驱动不支持打标签）
+        Cache::put(IP::CACHE_PREFIX.$ip, $cached, now()->addMinutes(10));
 
         // 伪造 HTTP，如果有请求发生将返回 500（测试应从缓存直接返回）
         Http::fake(['*' => Http::response([], 500)]);
@@ -426,8 +423,10 @@ class IPTest extends TestCase
         $ip = '5.6.7.8';
 
         Http::fake([
-            'http://ip-api.com/*' => Http::response([
+            // provider 走的是 https 的 demo/pro 域名，且要求回显 query 才认这条结果
+            '*ip-api.com/json/*' => Http::response([
                 'status' => 'success',
+                'query' => $ip,
                 'country' => 'GeoTest',
                 'lat' => 11.11,
                 'lon' => 22.22,
@@ -455,7 +454,7 @@ class IPTest extends TestCase
 
         // 强制 HTTP 全部失败，确保使用本地数据库驱动（已在测试环境通过 eval 注入本地驱动 mock）
         Http::fake(['*' => Http::response([], 500)]);
-        Cache::tags('IP_INFO')->forget($ip);
+        Cache::forget(IP::CACHE_PREFIX.$ip);
 
         $result = IP::getIPInfo($ip);
 
@@ -517,7 +516,7 @@ class IPTest extends TestCase
     {
         $testIp = '8.8.8.8'; // 使用一个公共的IP地址进行测试
 
-        $checkers = ['ipApi', 'Baidu', 'baiduBce', 'ipw', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'vore', 'juHe', 'ip2Region', 'IPDB', 'IPSB', 'ipinfo', 'ip234', 'dbIP', 'IP2Online', 'ipdata', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom', 'pconline', 'ipApiIO', 'ipApiIS', 'freeipapi', 'ipwhois'];
+        $checkers = ['ipApi', 'Baidu', 'ipGeoLocation', 'TaoBao', 'speedtest', 'bjjii', 'vore', 'juHe', 'ip2Region', 'IPDB', 'IPSB', 'ipinfo', 'ip234', 'dbIP', 'IP2Online', 'ipdata', 'ipApiCo', 'ip2Location', 'GeoIP2', 'ipApiCom', 'pconline', 'ipApiIS', 'freeipapi', 'ipwhois'];
 
         $successfulRequests = 0;
         $failedRequests = 0;
@@ -527,7 +526,7 @@ class IPTest extends TestCase
         foreach ($checkers as $checker) {
             try {
                 // 清除之前的缓存
-                Cache::tags('IP_INFO')->forget($testIp);
+                Cache::forget(IP::CACHE_PREFIX.$testIp);
 
                 // 执行实际的API请求
                 $result = IP::getIPInfo($testIp, $checker);
@@ -593,7 +592,7 @@ class IPTest extends TestCase
 
         // 清理 HTTP 假造与缓存
         Http::fake([]);
-        Cache::tags('IP_INFO')->flush();
+        Cache::flush();
 
         // 重置 basicRequest
         $ref = new ReflectionClass(IP::class);

@@ -46,7 +46,12 @@ return [
     |
     */
 
+    // 保持 null：它按 created_at 全局判过期，填上会当场作废部署前签发的所有令牌
     'expiration' => null,
+
+    // 客户端 API token 的有效期，单位分钟：签发时写进 expires_at，只影响新签发的令牌；
+    // 填 0 或留空即不签过期令牌
+    'client_token_ttl' => ($minutes = (int) env('SANCTUM_TOKEN_EXPIRATION', 0)) > 0 ? $minutes : null,
 
     /*
     |--------------------------------------------------------------------------

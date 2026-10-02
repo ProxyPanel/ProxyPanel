@@ -16,6 +16,7 @@ use Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -115,18 +116,29 @@ class Handler extends ExceptionHandler
                     return Response::view('auth.error',
                         ['message' => trans('http-statuses.500').', '.trans('errors.visit').'<a href="'.route('log-viewer::dashboard').'" target="_blank">'.trans('errors.log').'</a>'],
                         500);
-                case $exception instanceof ConnectionException:
+                case $exception instanceof TooManyRequestsHttpException: // 捕获限流
+                    $seconds = (int) ($exception->getHeaders()['Retry-After'] ?? 60);
+
                     if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()], 408);
+                        return Response::json(['status' => 'fail', 'message' => trans('auth.throttle', ['seconds' => $seconds])], 429);
                     }
 
-                    return Response::view('auth.error', ['message' => $exception->getMessage()], 408);
+                    return Response::view('auth.error', ['message' => trans('auth.throttle', ['seconds' => $seconds])], 429);
+                case $exception instanceof ConnectionException:
+                    // auth.error 直出 $message，原文只进日志
+                    Log::warning(trans('http-statuses.408').': '.$exception->getMessage());
+
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return Response::json(['status' => 'fail', 'message' => trans('http-statuses.408')], 408);
+                    }
+
+                    return Response::view('auth.error', ['message' => trans('http-statuses.408')], 408);
                 default:
                     if ($request->ajax() || $request->wantsJson()) {
-                        return Response::json(['status' => 'fail', 'message' => $exception->getMessage()], 400);
+                        return Response::json(['status' => 'fail', 'message' => trans('http-statuses.400')], 400);
                     }
 
-                    return Response::view('auth.error', ['message' => $exception->getMessage()], 400);
+                    return Response::view('auth.error', ['message' => trans('http-statuses.400')], 400);
             }
         }
 

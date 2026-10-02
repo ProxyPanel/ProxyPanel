@@ -168,7 +168,8 @@ return [
     |
     */
 
-    'secure' => env('FORCE_HTTPS', true),
+    // FORCE_HTTPS 是旧名（update.sh 会改名），两个都认才不会静默退回默认值
+    'secure' => env('SESSION_SECURE_COOKIE', env('FORCE_HTTPS', true)),
 
     /*
     |--------------------------------------------------------------------------

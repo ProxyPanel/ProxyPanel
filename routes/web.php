@@ -17,7 +17,9 @@ if (config('app.key') && config('settings')) {
     });
 
     // 支付回调路由
-    Route::domain(sysConfig('payment_callback_url') ?: sysConfig('website_url'))->match(['get', 'post'], 'callback/notify', [PaymentController::class, 'notify'])->name('payment.notify'); // 支付回调
+    Route::domain(sysConfig('payment_callback_url') ?: sysConfig('website_url'))->match(['get', 'post'], 'callback/notify', [PaymentController::class, 'notify'])
+        ->middleware('throttle:payment-callback')
+        ->name('payment.notify'); // 支付回调
 }
 
 // API Webhook 路由
@@ -40,19 +42,19 @@ Route::middleware(['isForbidden', 'affiliate', 'isMaintenance'])->group(function
     Route::controller(AuthController::class)->group(function () {
         Route::get('lang/{locale}', 'switchLang')->name('lang')->withoutMiddleware('isMaintenance'); // 语言切换
         Route::get('login', 'showLoginForm')->middleware('isSecurity')->name('login'); // 登录页面
-        Route::post('login', 'login')->middleware('isSecurity'); // 登录
+        Route::post('login', 'login')->middleware(['isSecurity', 'throttle:login']); // 登录
         Route::get('logout', 'logout')->name('logout'); // 退出
         Route::get('register', 'showRegistrationForm')->name('register'); // 注册
-        Route::post('register', 'register'); // 注册
-        Route::match(['get', 'post'], 'reset', 'resetPassword')->name('resetPasswd'); // 重设密码
-        Route::match(['get', 'post'], 'reset/{token}', 'reset')->name('resettingPasswd'); // 重设密码
-        Route::match(['get', 'post'], 'activeUser', 'activeUser')->name('active'); // 激活账号
-        Route::get('active/{token}', 'active')->name('activeAccount'); // 激活账号
-        Route::post('send', 'sendCode')->name('sendVerificationCode'); // 发送注册验证码
+        Route::post('register', 'register')->middleware('throttle:register'); // 注册
+        Route::match(['get', 'post'], 'reset', 'resetPassword')->middleware('throttle:mail-actions')->name('resetPasswd'); // 重设密码
+        Route::match(['get', 'post'], 'reset/{token}', 'reset')->middleware('throttle:verify-token')->name('resettingPasswd'); // 重设密码
+        Route::match(['get', 'post'], 'activeUser', 'activeUser')->middleware('throttle:mail-actions')->name('active'); // 激活账号
+        Route::get('active/{token}', 'active')->middleware('throttle:verify-token')->name('activeAccount'); // 激活账号
+        Route::post('send', 'sendCode')->middleware('throttle:mail-actions')->name('sendVerificationCode'); // 发送注册验证码
         Route::get('free', 'free')->name('freeInvitationCode'); // 免费邀请码
     });
 });
 
 // 管理员登录路由
 Route::get('admin/login', [AuthController::class, 'showLoginForm'])->name('admin.login')->middleware('isForbidden', 'isSecurity'); // 管理员登录页面
-Route::post('admin/login', [AuthController::class, 'login'])->middleware('isSecurity')->name('admin.login.post'); // 管理员登录
+Route::post('admin/login', [AuthController::class, 'login'])->middleware(['isSecurity', 'throttle:login'])->name('admin.login.post'); // 管理员登录
