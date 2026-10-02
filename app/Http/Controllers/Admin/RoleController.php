@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RoleRequest;
 use Exception;
@@ -14,6 +15,8 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     {
         // 预加载角色权限，但只选择需要的字段
@@ -34,10 +37,8 @@ class RoleController extends Controller
 
     public function store(RoleRequest $request): RedirectResponse
     {
-        try {
-            $role = Role::create($request->only(['name', 'description']));
-
-            if ($role) {
+        return $this->redirectAction('common.add', 'model.role.attribute', function () use ($request) {
+            if ($role = Role::create($request->only(['name', 'description']))) {
                 $permissions = $request->input('permissions') ?? [];
                 if (! empty($permissions)) {
                     $role->givePermissionTo($permissions);
@@ -45,13 +46,9 @@ class RoleController extends Controller
 
                 return redirect()->route('admin.role.edit', $role)->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
-        }
-
-        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
+            return null;
+        });
     }
 
     public function create(): View
@@ -78,19 +75,15 @@ class RoleController extends Controller
             return redirect()->back()->withInput()->withErrors(trans('admin.role.modify_admin_error'));
         }
 
-        try {
+        return $this->redirectAction('common.edit', 'model.role.attribute', function () use ($request, $role) {
             if ($role->update($request->only(['name', 'description']))) {
                 $role->syncPermissions($request->input('permissions', []));
 
                 return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
-        }
-
-        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
+            return null;
+        });
     }
 
     public function destroy(Role $role): JsonResponse
@@ -104,7 +97,7 @@ class RoleController extends Controller
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
         }
 
         return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);

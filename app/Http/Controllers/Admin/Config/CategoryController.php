@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Config;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\GoodsCategory;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Log;
 use Validator;
 
 class CategoryController extends Controller
 {
+    use ActionResponse;
+
     public function store(Request $request): JsonResponse
     { // 添加分类
         $validator = Validator::make($request->all(), [
@@ -29,11 +30,7 @@ class CategoryController extends Controller
             $data['sort'] = 0;
         }
 
-        if (GoodsCategory::create($data)) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+        return $this->actionResponse('common.add', 'model.goods.category', fn () => GoodsCategory::create($data));
     }
 
     public function update(Request $request, GoodsCategory $category): JsonResponse
@@ -47,11 +44,7 @@ class CategoryController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        if ($category->update($validator->validated())) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+        return $this->actionResponse('common.edit', 'model.goods.category', fn () => $category->update($validator->validated()));
     }
 
     public function destroy(GoodsCategory $category): JsonResponse
@@ -61,16 +54,6 @@ class CategoryController extends Controller
             return response()->json(['status' => 'fail', 'message' => trans('common.exists_error', ['attribute' => trans('model.goods.category')])]);
         }
 
-        try {
-            if ($category->delete()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.goods.category')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->actionResponse('common.delete', 'model.goods.category', fn () => $category->delete());
     }
 }

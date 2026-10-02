@@ -64,7 +64,8 @@
                         <td> {{ $article->created_at }} </td>
                         <td>
                             @canany(['admin.article.show', 'admin.article.edit', 'admin.article.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.article.show')
                                         <a class="btn btn-outline-success" href="{{ route('admin.article.show', $article) }}">
                                             <i class="icon wb-eye" aria-hidden="true"></i></a>
@@ -77,7 +78,7 @@
                                         <a class="btn btn-outline-danger" data-action="delete" href="javascript:(0)">
                                             <i class="icon wb-close" aria-hidden="true"></i></a>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

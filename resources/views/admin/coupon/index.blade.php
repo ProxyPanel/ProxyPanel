@@ -16,14 +16,15 @@
         ]" :count="trans('admin.coupon.counts', ['num' => $couponList->total()])" :pagination="$couponList->links()" :delete-config="['url' => route('admin.coupon.destroy', 'PLACEHOLDER'), 'attribute' => trans('model.coupon.attribute')]">
             @canany(['admin.coupon.export', 'admin.coupon.create'])
                 <x-slot:actions>
-                    <div class="btn-group">
+                    <x-admin.row-actions>
+
                         @can('admin.coupon.export')
                             <button class="btn btn-info" onclick="exportCoupon()"><i class="icon wb-code"></i>{{ trans('admin.massive_export') }}</button>
                         @endcan
                         @can('admin.coupon.create')
                             <a class="btn btn-primary" href="{{ route('admin.coupon.create') }}"><i class="icon wb-plus"></i> {{ trans('common.add') }}</a>
                         @endcan
-                    </div>
+                    </x-admin.row-actions>
                 </x-slot:actions>
             @endcanany
             <x-slot:filters>
@@ -57,7 +58,8 @@
                             </span>
                         </td>
                         <td>
-                            <div class="btn-group">
+                            <x-admin.row-actions>
+
                                 @can('admin.coupon.show')
                                     <a class="btn btn-info" href="{{ route('admin.coupon.show', $coupon) }}" target="_blank">
                                         <i class="icon wb-eye"></i>
@@ -70,7 +72,7 @@
                                         </button>
                                     @endcan
                                 @endif
-                            </div>
+                            </x-admin.row-actions>
                         </td>
                     </tr>
                 @endforeach

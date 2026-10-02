@@ -12,11 +12,11 @@
                 ]" :count="trans('admin.ticket.counts', ['num' => $ticketList->total()])" :pagination="$ticketList->links()">
                     @can('admin.ticket.store')
                         <x-slot:actions>
-                            <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
+                            <x-ui.modal-trigger target="add_ticket_modal" class="btn btn-primary btn-animate btn-animate-side">
                                 <span>
                                     <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('user.ticket.new') }}
                                 </span>
-                            </button>
+                            </x-ui.modal-trigger>
                         </x-slot:actions>
                     @endcan
                     <x-slot:filters>
@@ -42,7 +42,7 @@
                                     {{ $ticket->title }}
                                 </td>
                                 <td>
-                                    {!! $ticket->status_label !!}
+                                    <x-badge :badge="$ticket->status_badge" />
                                 </td>
                                 <td>
                                     @can('admin.ticket.edit')
@@ -63,13 +63,7 @@
                 </x-admin.table-panel>
             </div>
             <div class="col-xxl-3 col-lg-4 order-lg-2 order-1">
-                <div class="panel panel-bordered">
-                    <div class="panel-heading">
-                        <h3 class="panel-title cyan-600">
-                            <i class="icon wb-stats-bars"></i> {{ trans('admin.ticket.analysis_title') }}
-                        </h3>
-                    </div>
-                    <div class="panel-body pt-0">
+                <x-ui.panel :bordered="true" :title="trans('admin.ticket.analysis_title')" :title_level="3" title_class="cyan-600" icon="wb-stats-bars" body_class="pt-0">
                         <ul class="list-group list-group-dividered list-group-full">
                             <li class="list-group-item">
                                 <i class="icon wb-inbox"></i>
@@ -116,8 +110,7 @@
                                 </span>
                             </li>
                         </ul>
-                    </div>
-                </div>
+                </x-ui.panel>
             </div>
         </div>
     </div>

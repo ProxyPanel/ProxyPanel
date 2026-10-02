@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
+use Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ToolsController extends Controller
@@ -140,7 +141,8 @@ class ToolsController extends Controller
             }
 
             $save_path = realpath(storage_path('uploads'));
-            $new_name = md5($file->getClientOriginalExtension()).'.json';
+            // 并发导入要错开文件名，只按扩展名取会互相覆盖
+            $new_name = Str::random(8).time().'.json';
 
             try {
                 $file->move($save_path, $new_name);
@@ -186,7 +188,8 @@ class ToolsController extends Controller
                 DB::rollBack();
                 Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
 
-                return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]).', '.$e->getMessage());
+                // 原文只进日志：错误袋由 components/alert.blade.php 以 {!! !!} 渲染
+                return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]));
             }
 
             return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.import')]));

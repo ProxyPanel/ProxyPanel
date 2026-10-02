@@ -51,7 +51,8 @@
         ]" :count="trans('admin.node.counts', ['num' => $nodeList->total()])" :pagination="$nodeList->links()" :delete-config="['url' => route('admin.node.destroy', 'PLACEHOLDER'), 'attribute' => trans('model.node.attribute'), 'nameColumn' => 2]">
             @canany(['admin.node.reload', 'admin.node.geo', 'admin.node.create'])
                 <x-slot:actions>
-                    <div class="btn-group">
+                    <x-admin.row-actions>
+
                         @can('admin.node.reload')
                             @if ($nodeList->where('type', 4)->count())
                                 <button class="btn btn-info" type="button" onclick="reload()">
@@ -74,7 +75,7 @@
                                 <i class="icon wb-plus"></i> {{ trans('common.add') }}
                             </a>
                         @endcan
-                    </div>
+                    </x-admin.row-actions>
                 </x-slot:actions>
             @endcan
             <x-slot:tbody>

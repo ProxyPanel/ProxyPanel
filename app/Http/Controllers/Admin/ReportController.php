@@ -14,11 +14,30 @@ use App\Models\UserHourlyDataFlow;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use DB;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
+    /**
+     * 按「整天」过滤 datetime 列.
+     *
+     * whereDate() 会把列包进 DATE()，created_at 上的索引因此完全用不上：
+     * 20 万行的 node_hourly_data_flow 会退化成全表扫描（EXPLAIN type=ALL），
+     * 换成半开区间后走 idx_*_created 的范围扫描（type=range，扫描行数降两个数量级），
+     * 语义与 DATE(col) = ? 完全一致。
+     *
+     * 参数用 Illuminate\Contracts\Database\Eloquent\Builder 而非 Eloquent\Builder：
+     * 调用方传进来的既有查询构造器，也有 HasMany 这类关联（关联只实现契约，不继承构造器）。
+     */
+    private static function whereDay(Builder $query, string $column, $day): Builder
+    {
+        $start = Carbon::parse($day)->startOfDay();
+
+        return $query->where($column, '>=', $start)->where($column, '<', $start->copy()->addDay());
+    }
+
     public function accounting(): View
     {
         $completedOrders = Order::where('status', '>=', 2)->has('goods')->selectRaw('DATE(created_at) as date, sum(amount)/100 as total')->groupBy('date')->get();
@@ -79,7 +98,7 @@ class ReportController extends Controller
 
             // 处理今天的数据
             if ($hourlyDate->isToday() || $endDate->isToday()) {
-                $todayHoursFlow = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get();
+                $todayHoursFlow = static::whereDay($user->hourlyDataFlows()->whereNotNull('node_id'), 'created_at', $currentTime)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get();
 
                 $currentHourFlow = $user->dataFlowLogs()->where('log_time', '>=', $currentTime->startOfHour()->timestamp)->with('node:id,name')->groupBy('node_id')->selectRaw('node_id, ? as hour, sum(u + d) as total', [$currentTime->hour])->get();
 
@@ -103,7 +122,7 @@ class ReportController extends Controller
             if ($todayData && $hourlyDate->isToday()) {
                 $hourlyFlows = $todayData->flatMap(fn ($item) => $item['hourly'])->values();
             } else {
-                $hourlyFlows = $user->hourlyDataFlows()->whereNotNull('node_id')->whereDate('created_at', $hourlyDate)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => $mapFlow($item));
+                $hourlyFlows = static::whereDay($user->hourlyDataFlows()->whereNotNull('node_id'), 'created_at', $hourlyDate)->with('node:id,name')->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => $mapFlow($item));
             }
 
             // 处理每日数据
@@ -153,14 +172,14 @@ class ReportController extends Controller
             'start_date' => Carbon::parse(NodeDailyDataFlow::orderBy('created_at')->value('created_at'))->toDateString(), // 数据库里最早的日期
         ];
 
-        $hoursFlow = $hourlyQuery->whereDate('created_at', $hour_date)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
+        $hoursFlow = static::whereDay($hourlyQuery, 'created_at', $hour_date)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
             'id' => $item->node_id,
             'name' => $nodes[$item->node_id],
             'time' => (int) $item->hour,
             'total' => round($item->total / GiB, 2),
         ])->toArray(); // 各线路小时消耗流量
 
-        $daysFlow = $dailyQuery->whereNotNull('node_id')->whereDate('created_at', '>=', $startDate)->whereDate('created_at', '<=', $endDate)->selectRaw('node_id, DATE_FORMAT(created_at, "%m-%d") as date, u + d as total')->get()->map(fn ($item) => [
+        $daysFlow = $dailyQuery->whereNotNull('node_id')->where('created_at', '>=', Carbon::parse($startDate)->startOfDay())->where('created_at', '<=', Carbon::parse($endDate)->endOfDay())->selectRaw('node_id, DATE_FORMAT(created_at, "%m-%d") as date, u + d as total')->get()->map(fn ($item) => [
             'id' => $item->node_id,
             'name' => $nodes[$item->node_id],
             'time' => $item->date,
@@ -194,7 +213,7 @@ class ReportController extends Controller
                 $todayHourlyQuery->whereIn('node_id', $nodeId);
             }
 
-            $hoursFlowToday = $todayHourlyQuery->whereDate('created_at', $currentTime)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
+            $hoursFlowToday = static::whereDay($todayHourlyQuery, 'created_at', $currentTime)->selectRaw('node_id, HOUR(created_at) as hour, u + d as total')->get()->map(fn ($item) => [
                 'id' => $item->node_id,
                 'name' => $nodes[$item->node_id],
                 'time' => (int) $item->hour,
@@ -243,13 +262,17 @@ class ReportController extends Controller
         $currentDays = (int) date('j');
         $lastDays = (int) date('t', strtotime('-1 months'));
 
-        $todayFlow = NodeHourlyDataFlow::whereDate('created_at', today())->when($nodeId, fn ($query) => $query->whereNodeId($nodeId))->sum(DB::raw('u + d')) / GiB;
+        $todayFlow = static::whereDay(NodeHourlyDataFlow::query(), 'created_at', today())->when($nodeId, fn ($query) => $query->whereNodeId($nodeId))->sum(DB::raw('u + d')) / GiB;
 
         $thirtyDaysAgo = now()->subDays(30);
-        $trafficData = NodeDailyDataFlow::where('node_id', $nodeId)->where('created_at', '>=', $thirtyDaysAgo)->selectRaw('SUM(u + d) as total, COUNT(*) as dataCounts')->first();
 
-        $total30Days = $trafficData->total ?? 0;
-        $daysWithData = max($trafficData->dataCounts ?? 0, 1);
+        // 近 30 天的合计与有数据天数直接取自上面那次 groupBy('date') 的结果：
+        // 同一张表、同一批行再补一次 SUM/COUNT 只是把这份工作重复做一遍。
+        // 该表现在每个 (节点, 日期) 只有一行，所以日期数就是原来的 COUNT(*)。
+        $recent30d = $flows->filter(fn ($flow) => Carbon::parse($flow->date)->gte($thirtyDaysAgo));
+
+        $total30Days = (int) $recent30d->sum('total');
+        $daysWithData = max($recent30d->count(), 1);
         $months = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
         $data = [

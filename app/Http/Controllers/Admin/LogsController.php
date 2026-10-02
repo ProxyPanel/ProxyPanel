@@ -16,6 +16,7 @@ use App\Models\UserDataFlowLog;
 use App\Models\UserDataModifyLog;
 use App\Utils\IP;
 use App\Utils\Payments\PaymentManager;
+use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -69,18 +70,24 @@ class LogsController extends Controller
 
     public function changeOrderStatus(Request $request): JsonResponse
     {
-        $order = Order::findOrFail($request->input('oid'));
         $status = (int) $request->input('status');
 
-        if ($order->status === 3 && $status === 2 && $order->goods->type === 2 && Order::userActivePlan($order->user_id)->exists()) {
-            return response()->json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]); // 防止预支付订单假激活
-        }
+        // 行锁内重取状态再判：0→2 触发的 receivedPayment() 只能走一次
+        $changed = DB::transaction(function () use ($request, $status): bool {
+            $order = Order::whereKey($request->input('oid'))->lockForUpdate()->firstOrFail();
 
-        if ($order->update(['is_expire' => 0, 'expired_at' => null, 'status' => $status])) {
+            if ($order->status === 3 && $status === 2 && $order->goods->type === 2 && Order::userActivePlan($order->user_id)->exists()) {
+                return false; // 防止预支付订单假激活
+            }
+
+            return $order->update(['is_expire' => 0, 'expired_at' => null, 'status' => $status]);
+        });
+
+        if ($changed) {
             return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return response()->json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]);
     }
 
     public function trafficLog(Request $request): View
@@ -264,12 +271,15 @@ class LogsController extends Controller
     { // 回调日志
         $query = PaymentCallback::query();
 
-        foreach (['trade_no', 'out_trade_no', 'status'] as $field) {
+        foreach (['trade_no', 'out_trade_no', 'method', 'status'] as $field) {
             $request->whenFilled($field, function ($value) use ($query, $field) {
                 $query->where($field, $value);
             });
         }
 
-        return view('admin.logs.callback', ['callbackLogs' => $query->latest()->paginate(10)->appends($request->except('page'))]);
+        return view('admin.logs.callback', [
+            'callbackLogs' => $query->with('payment.order')->latest()->paginate(10)->appends($request->except('page')),
+            'methods' => PaymentManager::getLabels(true),
+        ]);
     }
 }

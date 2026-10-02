@@ -8,26 +8,20 @@
     <div class="page-content container-fluid">
         <div class="row">
             <div class="col-md-10 offset-md-1">
-                <div class="panel">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            @if ($article->logo)
-                                <img class="mr-10" src="{{ asset($article->logo) }}" alt="logo" style="height: 32px" />
-                            @endif
-                            {{ $article->title }}
-                            @if ($article->category)
-                                <sub class="ml-20">{{ $article->category }}</sub>
-                            @endif
-                        </h3>
-                        <div class="panel-actions"><code>{{ $article->created_at }}</code></div>
-                    </div>
-                    <div class="panel-body pt-0 pb-60">
-                        <div style="padding: 10px;">{!! $article->content !!}</div>
-                        <div class="panel-footer text-right">
-                            <a class="btn btn-primary" href="{{ route('admin.article.index') }}">{{ trans('common.back') }}</a>
-                        </div>
-                    </div>
-                </div>
+                <x-ui.panel :title_level="3" body_class="pt-0 pb-60" footer_class="text-right" :footer_in_body="true">
+                    <x-slot:heading>
+                        @if ($article->logo)
+                            <img class="mr-10" src="{{ asset($article->logo) }}" alt="logo" style="height: 32px" />
+                        @endif
+                        {{ $article->title }}
+                        @if ($article->category)
+                            <sub class="ml-20">{{ $article->category }}</sub>
+                        @endif
+                    </x-slot:heading>
+                    <x-slot:actions><code>{{ $article->created_at }}</code></x-slot:actions>
+                    <div style="padding: 10px;">{!! $article->content !!}</div>
+                    <x-slot:footer><a class="btn btn-primary" href="{{ route('admin.article.index') }}">{{ trans('common.back') }}</a></x-slot:footer>
+                </x-ui.panel>
             </div>
         </div>
     </div>

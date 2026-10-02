@@ -28,9 +28,9 @@
                                     <p class="form-control"> {{ $user->credit }} </p>
                                     @can('admin.user.updateCredit')
                                         <div class="input-group-append">
-                                            <button class="btn btn-danger" data-toggle="modal" data-target="#handle_user_credit" type="button">
+                                            <x-ui.modal-trigger target="handle_user_credit" class="btn btn-danger" type="button">
                                                 {{ trans('user.recharge') }}
-                                            </button>
+                                            </x-ui.modal-trigger>
                                         </div>
                                     @endcan
                                 </div>
@@ -85,30 +85,20 @@
     @isset($user)
         @can('admin.user.updateCredit')
             <!-- 余额充值 -->
-            <div class="modal fade" id="handle_user_credit" role="dialog" aria-hidden="true" tabindex="-1">
-                <div class="modal-dialog modal-simple modal-center">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <h4 class="modal-title">{{ trans('admin.goods.type.top_up') }}</h4>
-                        </div>
-                        <form class="modal-body" method="post">
+            <x-ui.modal id="handle_user_credit" :title="trans('admin.goods.type.top_up')" :focus="false" :scroll="false" :form="true">
+                <form class="modal-body" method="post">
                             <div class="alert alert-danger" id="msg" style="display: none;"></div>
                             <div class="form-group row">
                                 <label class="col-md-2 col-sm-3 col-form-label" for="amount"> {{ trans('user.shop.change_amount') }} </label>
                                 <input class="col-sm-4 form-control" id="amount" name="amount" type="number"
                                        placeholder="{{ trans('admin.user.info.recharge_placeholder') }}" step="0.01" />
                             </div>
-                        </form>
-                        <div class="modal-footer">
-                            <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.close') }}</button>
-                            <button class="btn btn-primary" type="button" onclick="handleUserCredit()">{{ trans('user.recharge') }}</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </form>
+                <x-slot:footer>
+                    <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.close') }}</button>
+                    <button class="btn btn-primary" type="button" onclick="handleUserCredit()">{{ trans('user.recharge') }}</button>
+                </x-slot:footer>
+            </x-ui.modal>
         @endcan
     @endisset
 @endsection

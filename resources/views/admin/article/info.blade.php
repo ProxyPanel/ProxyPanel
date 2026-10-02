@@ -38,10 +38,11 @@
                 </x-admin.form.skeleton>
                 <x-admin.form.textarea name="content" :label="ucfirst(trans('validation.attributes.content'))" label_grid="col-xxl-1 col-lg-2" input_grid="col-lg-10" />
                 <div class="form-actions text-right">
-                    <div class="btn-group">
+                    <x-admin.row-actions>
+
                         <a class="btn btn-danger" href="{{ route('admin.article.index') }}">{{ trans('common.back') }}</a>
                         <button class="btn btn-success" type="submit">{{ trans('common.submit') }}</button>
-                    </div>
+                    </x-admin.row-actions>
                 </div>
             </x-admin.form.container>
         </x-ui.panel>

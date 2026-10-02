@@ -39,9 +39,10 @@
                                 <td>{{ $order->amount_tag }}</td>
                                 <td>{{ $order->created_at }}</td>
                                 <td>{{ empty($order->goods) || $order->goods_id === null || $order->status === 3 ? '' : $order->expired_at }}</td>
-                                <td>{!! $order->status_label !!}</td>
+                                <td><x-badge :badge="$order->status_badge" /></td>
                                 <td>
-                                    <div class="btn-group">
+                                    <x-admin.row-actions>
+
                                         @if ($order->status === 0 && $order->pay_way !== 1)
                                             @if ($order->payment)
                                                 @if ($order->payment->qr_code)
@@ -56,7 +57,7 @@
                                             <button class="btn btn-primary" onClick="window.location.reload();">
                                                 <i class="icon wb-refresh" aria-hidden="true"></i></button>
                                         @endif
-                                    </div>
+                                    </x-admin.row-actions>
                                 </td>
                             </tr>
                         @endforeach

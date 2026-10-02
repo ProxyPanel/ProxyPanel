@@ -2,6 +2,7 @@
 
 namespace App\Utils;
 
+use App\Jobs\RecordUserLogin;
 use App\Models\CouponLog;
 use App\Models\Marketing;
 use App\Models\NotificationLog;
@@ -9,9 +10,7 @@ use App\Models\SsConfig;
 use App\Models\User;
 use App\Models\UserCreditLog;
 use App\Models\UserDataModifyLog;
-use App\Models\UserLoginLog;
 use App\Models\UserSubscribe;
-use Log;
 use RuntimeException;
 use Str;
 
@@ -209,32 +208,15 @@ class Helpers
     /**
      * 用户登录后操作.
      *
-     * @param  User  $user  用户ID
+     * 只派发队列任务，不在这里写库：IP 归属地查询要走外网，直接放在登录请求里
+     * 会把响应时间拖到几秒甚至几十秒（详见 App\Jobs\RecordUserLogin）。
+     *
+     * @param  User  $user  用户
      * @param  string  $ip  IP地址
      */
     public static function userLoginAction(User $user, string $ip): void
     {
-        $ipLocation = IP::getIPInfo($ip);
-
-        $logData = [
-            'user_id' => $user->id,
-            'ip' => $ip,
-            'country' => $ipLocation['country'] ?? '',
-            'province' => $ipLocation['region'] ?? '',
-            'city' => $ipLocation['city'] ?? '',
-            'county' => '', // 未使用的字段
-            'isp' => $ipLocation['isp'] ?? '',
-            'area' => $ipLocation['area'] ?? '',
-        ];
-
-        // 记录错误日志仅在 IP 信息无效时
-        if (! $ipLocation) {
-            Log::warning(trans('errors.get_ip').'：'.$ip);
-        }
-
-        // 批量插入日志记录并更新用户登录时间
-        UserLoginLog::create($logData);
-        $user->update(['last_login' => time()]);
+        RecordUserLogin::dispatch($user->id, $ip);
     }
 
     public static function getPriceTag(int|float $amount): string

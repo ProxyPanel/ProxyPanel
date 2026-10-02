@@ -22,6 +22,7 @@ use App\Notifications\Custom;
 use App\Services\TelegramService;
 use App\Utils\DDNS;
 use App\Utils\Payments\PaymentManager;
+use App\Utils\Upload;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -92,7 +93,8 @@ class SystemController extends Controller
             'pushPlus' => ['pushplus_token'],
             'serverChan' => ['server_chan_key'],
             'telegram' => ['telegram_token'],
-            'tgChat' => ['tg_chat_token'],
+            // TgChat 走 Telegram 官方 Bot API：机器人令牌复用 telegram_token，tg_chat_token 是接收消息的 chat_id
+            'tgChat' => ['telegram_token', 'tg_chat_token'],
             'weChat' => ['wechat_cid', 'wechat_aid', 'wechat_secret', 'wechat_token', 'wechat_encodingAESKey'],
         ];
 
@@ -151,14 +153,18 @@ class SystemController extends Controller
             }
 
             if ($logoType && $file) {
-                $validator = validator()->make($request->all(), [$logoType => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+                $validator = validator()->make($request->all(), [$logoType => 'image|mimes:jpeg,png,jpg,gif,bmp,webp|max:2048']);
 
                 if ($validator->fails()) {
                     return redirect()->route('admin.system.index', '#other')->withErrors($validator->errors());
                 }
 
-                $fileName = $file->getClientOriginalName();
-                $file->move('uploads/logo', $fileName);
+                // 名字由文件内容推断，不用客户端传来的原始名
+                if (! $fileName = Upload::imageName($file)) {
+                    return redirect()->route('admin.system.index', '#other')
+                        ->withErrors(trans('common.failed_item', ['attribute' => trans('model.config.'.$logoType)]));
+                }
+                $file->move(public_path('uploads/logo'), $fileName);
 
                 $configKey = $logoType;
                 if (Config::findOrNew($configKey)->update(['value' => 'uploads/logo/'.$fileName])) {
@@ -183,14 +189,18 @@ class SystemController extends Controller
             }
 
             if ($qrcodeType && $file) {
-                $validator = validator()->make($request->all(), [$qrcodeType => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048']);
+                $validator = validator()->make($request->all(), [$qrcodeType => 'image|mimes:jpeg,png,jpg,gif,bmp,webp|max:2048']);
 
                 if ($validator->fails()) {
                     return redirect()->route('admin.system.index', '#payment')->withErrors($validator->errors());
                 }
 
-                $fileName = $file->getClientOriginalName();
-                $file->move('uploads/images', $fileName);
+                // 名字由文件内容推断，不用客户端传来的原始名
+                if (! $fileName = Upload::imageName($file)) {
+                    return redirect()->route('admin.system.index', '#payment')
+                        ->withErrors(trans('common.failed_item', ['attribute' => trans('model.config.'.$qrcodeType)]));
+                }
+                $file->move(public_path('uploads/images'), $fileName);
 
                 $configKey = $qrcodeType;
                 if (Config::findOrNew($configKey)->update(['value' => 'uploads/images/'.$fileName])) {
@@ -241,6 +251,11 @@ class SystemController extends Controller
         // 如果是返利比例，则需要除100
         if ($name === 'referral_percent') {
             $value /= 100;
+        }
+
+        // Telegram 的 chat_id 必须是整数：旧版中继 token 存进去后每条通知都会 400 chat not found
+        if ($value !== null && $name === 'tg_chat_token' && ! TgChatChannel::isValidChatId((string) $value)) {
+            return response()->json(['status' => 'fail', 'message' => trans('admin.system.notification.invalid_chat_id')]);
         }
 
         // 设置 TG 机器人

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CertRequest;
 use App\Models\NodeCertificate;
-use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Log;
 
 class CertController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     {
         return view('admin.node.cert.index', ['certs' => NodeCertificate::orderBy('id')->paginate()->appends(request('page'))]);
@@ -48,16 +49,6 @@ class CertController extends Controller
 
     public function destroy(NodeCertificate $cert): JsonResponse
     {
-        try {
-            if ($cert->delete()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node_cert.attribute')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->actionResponse('common.delete', 'model.node_cert.attribute', fn () => $cert->delete());
     }
 }

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Config;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Label;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Log;
 use Validator;
 
 class LabelController extends Controller
 {
+    use ActionResponse;
+
     public function store(Request $request): JsonResponse
     { // 添加标签
         $validator = Validator::make($request->all(), [
@@ -23,17 +24,7 @@ class LabelController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        try {
-            if (Label::create($validator->validated())) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.label')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+        return $this->actionResponse('common.add', 'model.node.label', fn () => Label::create($validator->validated()));
     }
 
     public function update(Request $request, Label $label): JsonResponse
@@ -47,35 +38,17 @@ class LabelController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->errors()->all()]);
         }
 
-        try {
-            if ($label->update($validator->validated())) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.label')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+        return $this->actionResponse('common.edit', 'model.node.label', fn () => $label->update($validator->validated()));
     }
 
     public function destroy(Label $label): JsonResponse
     { // 删除标签
-        try {
+        return $this->actionResponse('common.delete', 'model.node.label', function () use ($label) {
             // 先从所有节点中移除该标签
             $label->nodes()->detach();
 
             // 然后删除标签
-            if ($label->delete()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.label')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+            return $label->delete();
+        });
     }
 }

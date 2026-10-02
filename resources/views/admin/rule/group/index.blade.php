@@ -14,10 +14,11 @@
                     <tr>
                         <td> {{ $ruleGroup->id }} </td>
                         <td> {{ $ruleGroup->name }} </td>
-                        <td> {!! $ruleGroup->type_label !!} </td>
+                        <td> <x-badge :badge="$ruleGroup->type_badge" /> </td>
                         <td>
                             @canany(['admin.rule.group.edit', 'admin.rule.group.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.rule.group.edit')
                                         <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.rule.group.edit', $ruleGroup) }}">
                                             <i class="icon wb-edit"></i> {{ trans('common.edit') }}
@@ -28,7 +29,7 @@
                                             <i class="icon wb-trash"></i> {{ trans('common.delete') }}
                                         </button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

@@ -22,14 +22,15 @@
                             <div class="input-group">
                                 <input class="form-control" id="mt-target-1" type="text" value="{{ $aff_link }}" />
                             </div>
-                            <div class="btn-group float-right pt-4">
+                            <x-admin.row-actions class="float-right pt-4">
+
                                 <button class="btn btn-outline-primary" onclick="Download()">
                                     <i class="icon wb-download"></i> {{ trans('common.download') }}
                                 </button>
                                 <button class="btn btn-info mt-clipboard">
                                     <i class="icon wb-copy"></i> {{ trans('common.copy.attribute') }}
                                 </button>
-                            </div>
+                            </x-admin.row-actions>
                         </div>
                     </div>
                 </div>
@@ -98,7 +99,7 @@
                                         <td> {{ $referralLog->amount_tag }} </td>
                                         <td> {{ $referralLog->commission_tag }} </td>
                                         <td> {{ $referralLog->created_at }} </td>
-                                        <td>{!! $referralLog->status_label !!}</td>
+                                        <td><x-badge :badge="$referralLog->status_badge" /></td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -131,7 +132,7 @@
                                         <td> {{ $referralApply->created_at }} </td>
                                         <td> {{ $referralApply->amount_tag }} </td>
                                         <td>
-                                            {!! $referralApply->status_label !!}
+                                            <x-badge :badge="$referralApply->status_badge" />
                                         </td>
                                     </tr>
                                 @endforeach

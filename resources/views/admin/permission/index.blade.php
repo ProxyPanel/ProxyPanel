@@ -21,7 +21,8 @@
                         <td>{{ $permission->name }}</td>
                         <td>
                             @canany(['admin.permission.edit', 'admin.permission.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.permission.edit')
                                         <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.permission.edit', $permission) }}">
                                             <i class="icon wb-edit"></i></a>
@@ -30,7 +31,7 @@
                                         <button class="btn btn-sm btn-outline-danger" data-action="delete">
                                             <i class="icon wb-trash"></i></button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

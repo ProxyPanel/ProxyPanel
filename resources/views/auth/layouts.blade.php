@@ -85,12 +85,7 @@
                                 <i class="font-size-20 wb-globe" aria-hidden="true"></i>
                             </button>
                             <div class="dropdown-menu dropdown-menu-bullet" role="menu" aria-labelledby="language">
-                                @foreach (config('common.language') as $key => $value)
-                                    <a class="dropdown-item" href="{{ route('lang', ['locale' => $key]) }}" role="menuitem">
-                                        <i class="fi fi-{{ $value[1] }}" aria-hidden="true"></i>
-                                        <span style="padding: inherit;">{{ $value[0] }}</span>
-                                    </a>
-                                @endforeach
+                                <x-lang.items />
                             </div>
                         </div>
                     </div>

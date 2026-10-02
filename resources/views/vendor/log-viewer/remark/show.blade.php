@@ -41,9 +41,9 @@
                         <a class="btn btn-sm btn-success" href="{{ route('log-viewer::logs.download', [$log->date]) }}">
                             <i class="fa-solid fa-download"></i> @lang('Download')
                         </a>
-                        <button class="btn btn-sm btn-danger" data-target="#deleteLogModal" data-toggle="modal" type="button">
+                        <x-ui.modal-trigger target="deleteLogModal" class="btn btn-sm btn-danger" type="button">
                             <i class="fa-solid fa-trash"></i> @lang('Delete')
-                        </button>
+                        </x-ui.modal-trigger>
                     </div>
                 </div>
                 <div class="panel-body">

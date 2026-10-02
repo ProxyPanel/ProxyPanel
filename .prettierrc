@@ -1,0 +1,19 @@
+{
+  "endOfLine": "auto",
+  "plugins": [
+    "@shufo/prettier-plugin-blade"
+  ],
+  "overrides": [
+    {
+      "files": "*.blade.php",
+      "options": {
+        "parser": "blade",
+        "tabWidth": 4,
+        "printWidth": 160,
+        "wrapAttributes": "aligned-multiple",
+        "singleQuote": true,
+        "sortHtmlAttributes": "code-guide"
+      }
+    }
+  ]
+}

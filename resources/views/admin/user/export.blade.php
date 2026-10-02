@@ -40,7 +40,8 @@
                         <td>{{ $node->ip }}</td>
                         <td>
                             @can('admin.user.exportProxy')
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','code')">
                                         <i class="fa-solid fa-code" id="code{{ $node->id }}"></i>
                                     </button>
@@ -50,7 +51,7 @@
                                     <button class="btn btn-sm btn-outline-info" onclick="getInfo('{{ $node->id }}','text')">
                                         <i class="fa-solid fa-list" id="text{{ $node->id }}"></i>
                                     </button>
-                                </div>
+                                </x-admin.row-actions>
                             @endcan
                         </td>
                     </tr>

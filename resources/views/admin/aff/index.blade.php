@@ -52,7 +52,8 @@
                         <td> {{ $apply->created_at === $apply->updated_at ? '' : $apply->updated_at }} </td>
                         <td>
                             @canany(['admin.aff.setStatus', 'admin.aff.detail'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.aff.setStatus')
                                         @if ($apply->status === 0)
                                             <a class="btn btn-sm btn-success" href="javascript:setStatus('{{ $apply->id }}','1')">
@@ -78,7 +79,7 @@
                                         <a class="btn btn-sm btn-default" href="{{ route('admin.aff.detail', $apply->id) }}">
                                             <i class="icon wb-search"></i></a>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

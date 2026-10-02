@@ -27,7 +27,8 @@
                         <td><span class="badge badge-lg badge-info"> {{ $auth->key }} </span></td>
                         <td><span class="badge badge-lg badge-info"> {{ $auth->secret }} </span></td>
                         <td>
-                            <div class="btn-group">
+                            <x-admin.row-actions>
+
                                 <button class="btn btn-primary" onclick="showDeployModal({{ $auth->node->id }}, '{{ $auth->node->type_label }}')">
                                     <i class="icon wb-code" aria-hidden="true"></i> {{ trans('admin.node.auth.deploy.attribute') }}
                                 </button>
@@ -41,7 +42,7 @@
                                         <i class="icon wb-trash" aria-hidden="true"></i> {{ trans('common.delete') }}
                                     </button>
                                 @endcan
-                            </div>
+                            </x-admin.row-actions>
                         </td>
                     </tr>
                 @endforeach

@@ -9,8 +9,6 @@ use Illuminate\Support\ServiceProvider;
 use Schema;
 use URL;
 
-use function config;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**

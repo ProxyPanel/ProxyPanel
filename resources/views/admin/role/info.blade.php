@@ -27,10 +27,11 @@
                 <x-admin.form.input name="name" :label="trans('model.role.name')" :help="trans('admin.role.name_hint')" required />
                 <x-admin.form.input name="description" :label="trans('model.common.description')" :help="trans('admin.role.description_hint')" required />
                 <x-admin.form.skeleton name="nodes" :label="trans('model.role.permissions')" input_grid="col-xl-9 col-sm-8">
-                    <div class="btn-group mb-20">
+                    <x-admin.row-actions class="mb-20">
+
                         <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
                         <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
-                    </div>
+                    </x-admin.row-actions>
                     <select class="form-control mx-auto w-p100" id="permissions" name="permissions[]" data-plugin="multiSelect" multiple>
                         @foreach ($permissions as $key => $description)
                             <option value="{{ $key }}">{{ $description . ' - ' . $key }}</option>

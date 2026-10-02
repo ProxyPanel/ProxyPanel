@@ -8,25 +8,31 @@
     'keyboard' => true,
     'form' => false,
     'focus' => true,
+    'simple' => true,
+    'scroll' => true,
 ])
 
 <div class="modal fade" id="{{ $id }}" role="dialog" aria-labelledby="{{ $labelledby ?? $id }}" tabindex="-1"
      @if (!$backdrop) data-backdrop="static" @endif @if (!$keyboard) data-keyboard="false" @endif
      @if ($focus) data-focus-on="input:first" @endif>
-    <div class="modal-dialog modal-simple @if ($size) modal-{{ $size }} @endif modal-{{ $position }}">
-        <div class="modal-content" style="max-height: 80vh; overflow: auto;">
-            @if ($title || isset($header))
+    <div class="modal-dialog{{ $simple ? ' modal-simple' : '' }}{{ $size ? ' modal-'.$size : '' }} modal-{{ $position }}">
+        <div class="modal-content" @if ($scroll)style="max-height: 80vh; overflow: auto;"@endif>
+            @if ($title || isset($header) || isset($heading))
                 <div class="modal-header">
                     <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
                         <span aria-hidden="true">×</span>
                     </button>
-                    @if (isset($header))
+                    @isset($heading)
+                        <h4 class="modal-title">
+                            {!! $heading !!}
+                        </h4>
+                    @elseif (isset($header))
                         {{ $header }}
                     @elseif ($title)
                         <h4 class="modal-title">
                             {{ $title }}
                         </h4>
-                    @endif
+                    @endisset
                 </div>
             @endif
 

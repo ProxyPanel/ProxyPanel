@@ -11,14 +11,15 @@
         ]"
                              :count="trans('user.invite.counts', ['num' => $inviteList->total()])" :pagination="$inviteList->links()">
             <x-slot:actions>
-                <div class="btn-group">
+                <x-admin.row-actions>
+
                     @can('admin.invite.create')
                         <button class="btn btn-primary btn-animate btn-animate-side" type="button" onclick="makeInvite()">
                             <i class="icon wb-plus"></i> {{ trans('common.generate_item', ['attribute' => trans('user.invite.attribute')]) }}
                         </button>
                     @endcan
                     <button class="btn btn-info" onclick="exportInvite()">{{ trans('admin.massive_export') }}</button>
-                </div>
+                </x-admin.row-actions>
             </x-slot:actions>
             <x-slot:body>
                 <x-alert type="info" :message="trans('user.invite.tips', ['num' => 10, 'days' => sysConfig('user_invite_days')])" />
@@ -36,7 +37,7 @@
                             {{ $invite->inviter_id === null ? trans('admin.system_generate') : $invite->inviter->username ?? '【' . trans('common.deleted_item', ['attribute' => trans('common.account')]) . '】' }}
                         </td>
                         <td>
-                            {!! $invite->status_label !!}
+                            <x-badge :badge="$invite->status_badge" />
                         </td>
                         <td>
                             {{ $invite->status === 1 ? $invite->invitee->username ?? '【' . trans('common.deleted_item', ['attribute' => trans('common.account')]) . '】' : '' }}

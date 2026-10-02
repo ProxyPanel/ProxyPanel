@@ -46,12 +46,7 @@
                             <span class="icon font-size-16 wb-globe"></span>
                         </a>
                         <div class="dropdown-menu" role="menu">
-                            @foreach (config('common.language') as $key => $value)
-                                <a class="dropdown-item" href="{{ route('lang', ['locale' => $key]) }}" role="menuitem">
-                                    <i class="fi fi-{{ $value[1] }}" aria-hidden="true"></i>
-                                    <span style="padding: inherit;">{{ $value[0] }}</span>
-                                </a>
-                            @endforeach
+                            <x-lang.items />
                         </div>
                     </li>
                     <li class="nav-item dropdown">

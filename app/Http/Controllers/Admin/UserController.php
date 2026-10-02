@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\UserVNetTasks;
+use App\Helpers\ActionResponse;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UserStoreRequest;
@@ -29,7 +30,7 @@ use Str;
 
 class UserController extends Controller
 {
-    use ProxyConfig;
+    use ActionResponse, ProxyConfig;
 
     public function index(Request $request): View
     {
@@ -101,7 +102,8 @@ class UserController extends Controller
         $user = User::create($data);
 
         $roles = $request->input('roles');
-        try {
+
+        return $this->actionResponse('common.add', 'model.user.attribute', function () use ($roles, $user, $data) {
             $editor = auth()->user();
             if ($roles && ($editor->can('give roles') || (in_array('Super Admin', $roles, true) && $editor->hasRole('Super Admin')))) {
                 // 编辑用户权限, 只有超级管理员才有赋予超级管理的权限
@@ -111,15 +113,11 @@ class UserController extends Controller
             if ($user) {
                 Helpers::addUserTrafficModifyLog($user->id, 0, $data['transfer_enable'], trans('Manually add in dashboard.'));
 
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+                return true;
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+            return false;
+        });
     }
 
     public function create(): View
@@ -161,33 +159,19 @@ class UserController extends Controller
             return response()->json(['status' => 'fail', 'message' => trans('admin.user.admin_deletion')]);
         }
 
-        try {
-            if ($user->delete()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->actionResponse('common.delete', 'model.user.attribute', fn () => $user->delete());
     }
 
     public function batchAddUsers(): JsonResponse
     {
-        try {
+        return $this->actionResponse('common.generate', 'model.user.attribute', function () {
             for ($i = 0; $i < (int) request('amount', 1); $i++) {
                 $user = Helpers::addUser(Str::random(8).'@auto.generate', Str::random(), MiB * sysConfig('default_traffic'), (int) sysConfig('default_days'));
                 Helpers::addUserTrafficModifyLog($user->id, 0, $user->transfer_enable, trans('Batch generate user accounts in dashboard.'));
             }
 
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.generate'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')]).', '.$e->getMessage()]);
-        }
+            return true;
+        });
     }
 
     public function switchToUser(User $user): JsonResponse
@@ -201,17 +185,7 @@ class UserController extends Controller
 
     public function resetTraffic(User $user): JsonResponse
     {
-        try {
-            if ($user->update(['u' => 0, 'd' => 0])) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.reset'), 'attribute' => trans('model.user.usable_traffic')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.reset').', '.$e->getMessage()])]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.reset')])]);
+        return $this->actionResponse('common.reset', 'model.user.usable_traffic', fn () => $user->update(['u' => 0, 'd' => 0]));
     }
 
     public function update(UserUpdateRequest $request, User $user): JsonResponse
@@ -229,7 +203,8 @@ class UserController extends Controller
 
         // 只有超级管理员才能赋予超级管理员
         $roles = $request->input('roles');
-        try {
+
+        return $this->actionResponse('common.edit', 'model.user.attribute', function () use ($request, $roles, $user, $data) {
             if (isset($roles)) {
                 $editor = auth()->user();
                 if ($editor->can('give roles') || $editor->hasRole('Super Admin')
@@ -258,15 +233,11 @@ class UserController extends Controller
             }
 
             if ($user->update($data)) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+                return true;
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.user.attribute')]).': '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit').', '.$e->getMessage()])]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+            return false;
+        });
     }
 
     public function handleUserCredit(Request $request, User $user): JsonResponse

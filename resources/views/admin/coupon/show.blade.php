@@ -11,14 +11,10 @@
 @endsection
 @section('content')
     <div class="page-content container">
-        <div class="panel">
-            <div class="panel-heading">
-                <h1 class="panel-title">{{ trans('admin.coupon.info_title') }}</h1>
-                <div class="panel-actions">
-                    <a class="btn btn-danger" href="{{ route('admin.coupon.index') }}">{{ trans('common.back') }}</a>
-                </div>
-            </div>
-            <div class="panel-body">
+        <x-ui.panel :title="trans('admin.coupon.info_title')" :title_level="1" body_class="">
+            <x-slot:actions>
+                <a class="btn btn-danger" href="{{ route('admin.coupon.index') }}">{{ trans('common.back') }}</a>
+            </x-slot:actions>
                 <div class="form-group row">
                     <label class="col-md-2 col-form-label" for="name">{{ trans('model.coupon.name') }}</label>
                     <div class="col-md-10">
@@ -199,8 +195,7 @@
                         <span class="form-control"> {{ $coupon->end_time }} </span>
                     </div>
                 </div>
-            </div>
-        </div>
+        </x-ui.panel>
     </div>
 @endsection
 @section('javascript')

@@ -29,9 +29,9 @@
                 <div class="tab-content py-15">
                     <div class="tab-pane active" id="method" role="tabpanel">
                         @can('admin.config.ss.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
+                            <x-ui.modal-trigger target="add_config_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -48,7 +48,8 @@
                                             @if ($method->is_default)
                                                 <span class='badge badge-lg badge-default'>{{ trans('common.default') }}</span>
                                             @else
-                                                <div class="btn-group">
+                                                <x-admin.row-actions>
+
                                                     @can('admin.config.ss.update')
                                                         <button class="btn btn-primary" onclick="setDefault('{{ $method->id }}')">
                                                             {{ trans('admin.setting.common.set_default') }}
@@ -59,7 +60,7 @@
                                                             <i class="icon wb-trash"></i>
                                                         </button>
                                                     @endcan
-                                                </div>
+                                                </x-admin.row-actions>
                                             @endif
                                         </td>
                                     </tr>
@@ -69,9 +70,9 @@
                     </div>
                     <div class="tab-pane" id="protocol" role="tabpanel">
                         @can('admin.config.ss.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
+                            <x-ui.modal-trigger target="add_config_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -88,7 +89,8 @@
                                             @if ($protocol->is_default)
                                                 <span class="badge badge-lg badge-default">{{ trans('common.default') }}</span>
                                             @else
-                                                <div class="btn-group">
+                                                <x-admin.row-actions>
+
                                                     @can('admin.config.ss.update')
                                                         <button class="btn btn-primary" onclick="setDefault('{{ $protocol->id }}')">
                                                             {{ trans('admin.setting.common.set_default') }}
@@ -99,7 +101,7 @@
                                                             <i class="icon wb-trash"></i>
                                                         </button>
                                                     @endcan
-                                                </div>
+                                                </x-admin.row-actions>
                                             @endif
                                         </td>
                                     </tr>
@@ -109,9 +111,9 @@
                     </div>
                     <div class="tab-pane" id="obfs" role="tabpanel">
                         @can('admin.config.ss.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_config_modal">
+                            <x-ui.modal-trigger target="add_config_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -128,7 +130,8 @@
                                             @if ($obfs->is_default)
                                                 <span class="badge badge-lg badge-default">{{ trans('common.default') }}</span>
                                             @else
-                                                <div class="btn-group">
+                                                <x-admin.row-actions>
+
                                                     @can('admin.config.ss.update')
                                                         <button class="btn btn-primary" onclick="setDefault('{{ $obfs->id }}')">
                                                             {{ trans('admin.setting.common.set_default') }}
@@ -139,7 +142,7 @@
                                                             <i class="icon wb-trash"></i>
                                                         </button>
                                                     @endcan
-                                                </div>
+                                                </x-admin.row-actions>
                                             @endif
                                         </td>
                                     </tr>
@@ -149,9 +152,9 @@
                     </div>
                     <div class="tab-pane" id="level" role="tabpanel">
                         @can('admin.config.level.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_level_modal">
+                            <x-ui.modal-trigger target="add_level_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -173,7 +176,8 @@
                                                    value="{{ $level->name }}" />
                                         </td>
                                         <td>
-                                            <div class="btn-group">
+                                            <x-admin.row-actions>
+
                                                 @can('admin.config.level.update')
                                                     <button class="btn btn-primary" type="button" onclick="updateLevel('{{ $level->id }}')">
                                                         <i class="icon wb-edit" aria-hidden="true"></i></button>
@@ -182,7 +186,7 @@
                                                     <button class="btn btn-danger" type="button" onclick="delLevel('{{ $level->id }}','{{ $level->name }}')">
                                                         <i class="icon wb-trash"></i></button>
                                                 @endcan
-                                            </div>
+                                            </x-admin.row-actions>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -191,9 +195,9 @@
                     </div>
                     <div class="tab-pane" id="category" role="tabpanel">
                         @can('admin.config.category.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_category_modal">
+                            <x-ui.modal-trigger target="add_category_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -215,7 +219,8 @@
                                                    value="{{ $category->sort }}" />
                                         </td>
                                         <td>
-                                            <div class="btn-group">
+                                            <x-admin.row-actions>
+
                                                 @can('admin.config.category.update')
                                                     <button class="btn btn-primary" type="button" onclick="updateCategory('{{ $category->id }}')">
                                                         <i class="icon wb-edit" aria-hidden="true"></i></button>
@@ -225,7 +230,7 @@
                                                             onclick="delCategory('{{ $category->id }}','{{ $category->name }}')">
                                                         <i class="icon wb-trash"></i></button>
                                                 @endcan
-                                            </div>
+                                            </x-admin.row-actions>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -234,9 +239,9 @@
                     </div>
                     <div class="tab-pane" id="country" role="tabpanel">
                         @can('admin.config.country.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_country_modal">
+                            <x-ui.modal-trigger target="add_country_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -261,7 +266,8 @@
                                                    value="{{ $country->name }}" />
                                         </td>
                                         <td>
-                                            <div class="btn-group">
+                                            <x-admin.row-actions>
+
                                                 @can('admin.config.country.update')
                                                     <button class="btn btn-primary" type="button" onclick="updateCountry('{{ $country->code }}')">
                                                         <i class="icon wb-edit" aria-hidden="true"></i></button>
@@ -271,7 +277,7 @@
                                                             onclick="delCountry('{{ $country->code }}','{{ $country->name }}')">
                                                         <i class="icon wb-trash"></i></button>
                                                 @endcan
-                                            </div>
+                                            </x-admin.row-actions>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -280,9 +286,9 @@
                     </div>
                     <div class="tab-pane" id="label" role="tabpanel">
                         @can('admin.config.label.store')
-                            <button class="btn btn-primary float-right mb-10" data-toggle="modal" data-target="#add_label_modal">
+                            <x-ui.modal-trigger target="add_label_modal" class="btn btn-primary float-right mb-10">
                                 <i class="icon wb-plus"></i>
-                            </button>
+                            </x-ui.modal-trigger>
                         @endcan
                         <table class="text-md-center" data-toggle="table" data-height="700" data-mobile-responsive="true">
                             <thead class="thead-default">
@@ -306,7 +312,8 @@
                                                    value="{{ $label->sort }}" />
                                         </td>
                                         <td>
-                                            <div class="btn-group">
+                                            <x-admin.row-actions>
+
                                                 @can('admin.config.label.update')
                                                     <button class="btn btn-primary" type="button" onclick="updateLabel('{{ $label->id }}')">
                                                         <i class="icon wb-edit" aria-hidden="true"></i></button>
@@ -315,7 +322,7 @@
                                                     <button class="btn btn-danger" type="button" onclick="delLabel('{{ $label->id }}','{{ $label->name }}')">
                                                         <i class="icon wb-trash"></i></button>
                                                 @endcan
-                                            </div>
+                                            </x-admin.row-actions>
                                         </td>
                                     </tr>
                                 @endforeach

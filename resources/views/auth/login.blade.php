@@ -9,16 +9,8 @@
         @if (Session::has('successMsg'))
             <x-alert :message="Session::pull('successMsg')" />
         @endif
-        <div class="form-group form-material floating" data-plugin="formMaterial">
-            <input class="form-control" name="username" type="text" value="{{ old('username') }}" required />
-            <label class="floating-label" for="username">
-                {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username') }}
-            </label>
-        </div>
-        <div class="form-group form-material floating" data-plugin="formMaterial">
-            <input class="form-control" name="password" type="password" value="{{ old('password') }}" autocomplete required />
-            <label class="floating-label" for="password">{{ ucfirst(trans('validation.attributes.password')) }}</label>
-        </div>
+        <x-form.floating-row name="username" type="text" :value="old('username')" :label="sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username')" />
+        <x-form.floating-row name="password" type="password" :value="old('password')" autocomplete="" :label="ucfirst(trans('validation.attributes.password'))" />
         @yield('captcha', view('auth.captcha'))
         <div class="form-group clearfix">
             <div class="checkbox-custom checkbox-inline checkbox-primary checkbox-lg float-left">

@@ -19,10 +19,11 @@
             <x-admin.form.container :route="isset($group) ? route('admin.user.group.update', $group['id']) : route('admin.user.group.store')" :method="isset($group) ? 'PUT' : 'POST'">
                 <x-admin.form.input name="name" :label="trans('model.user_group.name')" required />
                 <x-admin.form.skeleton name="nodes" :label="trans('model.user_group.nodes')" input_grid="col-md-8">
-                    <div class="btn-group mb-20">
+                    <x-admin.row-actions class="mb-20">
+
                         <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
                         <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
-                    </div>
+                    </x-admin.row-actions>
                     <select class="form-control" id="nodes" name="nodes[]" data-plugin="multiSelect" multiple>
                         @foreach ($nodes as $id => $name)
                             <option value="{{ $id }}">{{ $id . ' - ' . $name }}</option>

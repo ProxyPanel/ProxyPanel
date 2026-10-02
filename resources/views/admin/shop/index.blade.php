@@ -70,7 +70,8 @@
                         </td>
                         <td>
                             @canany(['admin.goods.edit', 'admin.goods.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.goods.edit')
                                         <a class="btn btn-primary" href="{{ route('admin.goods.edit', $goods) }}">
                                             <i class="icon wb-edit"></i>
@@ -81,7 +82,7 @@
                                             <i class="icon wb-trash"></i>
                                         </button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

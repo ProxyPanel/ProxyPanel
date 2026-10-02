@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RuleGroupRequest;
 use App\Models\Rule;
 use App\Models\RuleGroup;
-use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Log;
 
 class RuleGroupController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     {
         return view('admin.rule.group.index', ['ruleGroups' => RuleGroup::paginate(15)->appends(request('page'))]);
@@ -21,10 +22,8 @@ class RuleGroupController extends Controller
 
     public function store(RuleGroupRequest $request): RedirectResponse
     {
-        try {
-            $group = RuleGroup::create($request->only('name', 'type'));
-
-            if ($group) {
+        return $this->redirectAction('common.add', 'model.rule_group.attribute', function () use ($request) {
+            if ($group = RuleGroup::create($request->only('name', 'type'))) {
                 $rules = $request->input('rules');
                 if (! empty($rules)) {
                     $group->rules()->attach($rules);
@@ -32,13 +31,9 @@ class RuleGroupController extends Controller
 
                 return redirect(route('admin.rule.group.edit', $group))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage());
-        }
-
-        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
+            return null;
+        });
     }
 
     public function create(): View
@@ -58,33 +53,19 @@ class RuleGroupController extends Controller
 
     public function update(RuleGroupRequest $request, RuleGroup $group): RedirectResponse
     {
-        try {
+        return $this->redirectAction('common.edit', 'model.rule_group.attribute', function () use ($request, $group) {
             if ($group->update($request->only(['name', 'type']))) {
                 $group->rules()->sync($request->input('rules', []));
 
                 return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
             }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage());
-        }
-
-        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.edit')]));
+            return null;
+        });
     }
 
     public function destroy(RuleGroup $group): JsonResponse
     {
-        try {
-            if ($group->delete()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
-            }
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.rule_group.attribute')]).': '.$e->getMessage());
-
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->actionResponse('common.delete', 'model.rule_group.attribute', fn () => $group->delete());
     }
 }

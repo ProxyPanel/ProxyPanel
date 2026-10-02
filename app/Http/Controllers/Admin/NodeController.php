@@ -56,7 +56,9 @@ class NodeController extends Controller
             $node->transfer = formatBytes($dailyTransfer + $hourlyTransfer); // 已产生流量
 
             $node_info = $node->latestHeartbeat; // 近期负载
-            $node->isOnline = ! empty($node_info?->load);
+            // 判定依据是「近期有没有心跳」：latestHeartbeat 已经按 recently_heartbeat 过滤过时间窗口。
+            // 不能再看 load 是否为空——Hysteria2 侧拿不到 CPU/内存/磁盘，load 恒为 'N/A'。
+            $node->isOnline = ! is_null($node_info);
             $node->load = $node_info?->load ?? false;
             $node->uptime = formatTime($node_info?->uptime);
 
@@ -97,7 +99,7 @@ class NodeController extends Controller
             Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
             broadcast(new NodeActions('create', ['status' => 0, 'message' => $e->getMessage()]));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
         }
         broadcast(new NodeActions('create', ['status' => 0]));
 
@@ -278,7 +280,7 @@ class NodeController extends Controller
             Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
             broadcast(new NodeActions('update', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
         }
         broadcast(new NodeActions('update', ['status' => 0], $node->id));
 
@@ -308,7 +310,7 @@ class NodeController extends Controller
             Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
             broadcast(new NodeActions('delete', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
         }
 
         broadcast(new NodeActions('delete', ['status' => 0], $node->id));

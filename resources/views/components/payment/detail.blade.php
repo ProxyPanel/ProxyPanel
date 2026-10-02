@@ -53,7 +53,7 @@
                                     </li>
                                 @endif
                                 <li class="list-group-item">
-                                    {{ trans('common.status.attribute') }}: {!! $order->status_label !!}
+                                    {{ trans('common.status.attribute') }}: <x-badge :badge="$order->status_badge" />
                                 </li>
                             </ul>
                         </div>

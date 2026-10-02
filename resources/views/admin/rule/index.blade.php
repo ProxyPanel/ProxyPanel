@@ -4,9 +4,9 @@
         <x-admin.table-panel :title="trans('admin.menu.rule.list')" :theads="['#', trans('model.rule.attribute'), trans('model.rule.name'), trans('model.rule.pattern'), trans('common.action')]" :count="trans('admin.rule.counts', ['num' => $rules->total()])" :pagination="$rules->links()" :delete-config="['url' => route('admin.rule.destroy', 'PLACEHOLDER'), 'attribute' => trans('model.rule.attribute'), 'nameColumn' => 2]">
             @can('admin.rule.store')
                 <x-slot:actions>
-                    <button class="btn btn-outline-primary" data-toggle="modal" data-target="#add">
+                    <x-ui.modal-trigger target="add" class="btn btn-outline-primary">
                         <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('common.add') }}
-                    </button>
+                    </x-ui.modal-trigger>
                 </x-slot:actions>
             @endcan
             <x-slot:filters>
@@ -21,7 +21,7 @@
                 @foreach ($rules as $rule)
                     <tr>
                         <td> {{ $rule->id }} </td>
-                        <td> {!! $rule->type_label !!} </td>
+                        <td> {{ $rule->type_label }} </td>
                         <td>
                             <input class="form-control" id="name_{{ $rule->id }}" name="name" type="text" value="{{ $rule->name }}" />
                         </td>
@@ -30,7 +30,8 @@
                         </td>
                         <td>
                             @canany(['admin.rule.update', 'admin.rule.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.rule.update')
                                         <button class="btn btn-sm btn-outline-primary" onclick="editRule('{{ $rule->id }}')">
                                             <i class="icon wb-edit"></i></button>
@@ -39,7 +40,7 @@
                                         <button class="btn btn-sm btn-outline-danger" data-action="delete">
                                             <i class="icon wb-trash"></i></button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

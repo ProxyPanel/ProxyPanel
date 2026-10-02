@@ -5,9 +5,9 @@
                              :delete-config="['url' => route('admin.config.filter.destroy', 'PLACEHOLDER'), 'attribute' => trans('admin.setting.email.tail'), 'nameColumn' => 2]">
             @can('admin.config.filter.store')
                 <x-slot:actions>
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#add_email_suffix">
+                    <x-ui.modal-trigger target="add_email_suffix" class="btn btn-primary">
                         {{ trans('admin.action.add_item', ['attribute' => trans('admin.setting.email.tail')]) }}
-                    </button>
+                    </x-ui.modal-trigger>
                 </x-slot:actions>
             @endcan
             <x-slot:tbody>

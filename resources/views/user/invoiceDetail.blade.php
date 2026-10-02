@@ -67,7 +67,7 @@
                                 <td> 1</td>
                                 <td>{{ $order->coupon->name ?? trans('common.none') }}</td>
                                 <td> {{ $order->amount_tag }} </td>
-                                <td> {!! $order->status_label !!} </td>
+                                <td> <x-badge :badge="$order->status_badge" /> </td>
                             </tr>
                         </tbody>
                     </table>

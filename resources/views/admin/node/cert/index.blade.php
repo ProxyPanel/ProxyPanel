@@ -30,7 +30,8 @@
                         <td> {{ $cert->to }} </td>
                         <td>
                             @canany(['admin.node.cert.edit', 'admin.node.cert.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.node.cert.edit')
                                         <a class="btn btn-primary" href="{{ route('admin.node.cert.edit', $cert) }}">
                                             <i class="icon wb-edit" aria-hidden="true"></i>
@@ -41,7 +42,7 @@
                                             <i class="icon wb-trash" aria-hidden="true"></i>
                                         </button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

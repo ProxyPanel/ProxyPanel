@@ -42,7 +42,7 @@
                         <td> {{ $referralLog->commission }} </td>
                         <td> {{ $referralLog->created_at }} </td>
                         <td> {{ $referralLog->updated_at }} </td>
-                        <td> {!! $referralLog->status_label !!} </td>
+                        <td> <x-badge :badge="$referralLog->status_badge" /> </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

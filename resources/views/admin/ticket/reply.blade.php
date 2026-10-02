@@ -3,16 +3,17 @@
     <div class="page-content">
         <x-ui.panel type="bordered" title-class="cyan-600" icon="wb-help-circle" :title="$ticket->title">
             <x-slot:actions>
-                <div class="btn-group">
-                    <button class="btn icon-1x btn-info btn-icon wb-user-circle" data-target="#userInfo" data-toggle="modal" type="button">
-                        {{ trans('admin.ticket.user_info') }}</button>
+                <x-admin.row-actions>
+
+                    <x-ui.modal-trigger target="userInfo" class="btn icon-1x btn-info btn-icon wb-user-circle" type="button">
+                        {{ trans('admin.ticket.user_info') }}</x-ui.modal-trigger>
                     <a class="btn btn-default" href="{{ route('admin.ticket.index') }}">{{ trans('common.back') }}</a>
                     @if ($ticket->status !== 2)
                         @can('admin.ticket.destroy')
                             <button class="btn btn-danger" onclick="closeTicket()"> {{ trans('common.close') }} </button>
                         @endcan
                     @endif
-                </div>
+                </x-admin.row-actions>
             </x-slot:actions>
 
             <div class="chat-box">
@@ -45,11 +46,9 @@
     </div>
 
     <x-ui.modal id="userInfo" position="sidebar" :title="trans('admin.ticket.user_info')">
-        <x-slot:header>
-            <h4 class="modal-title">
-                <i class="wb-user" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
-            </h4>
-        </x-slot:header>
+        <x-slot:heading>
+            <i class="wb-user" aria-hidden="true"></i> {{ trans('admin.ticket.user_info') }}
+        </x-slot:heading>
 
         <ul class="list-group list-group-dividered list-group-full">
             <h5>{{ trans('admin.node.info.basic') }}</h5>

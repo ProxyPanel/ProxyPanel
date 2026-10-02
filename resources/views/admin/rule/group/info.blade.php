@@ -24,10 +24,11 @@
                     '0' => trans('admin.rule.group.type.on'),
                 ]" />
                 <x-admin.form.skeleton name="rules" :label="trans('model.rule_group.rules')" input_grid="col-xl-9 col-sm-8">
-                    <div class="btn-group mb-20">
+                    <x-admin.row-actions class="mb-20">
+
                         <button class="btn btn-primary" id="select-all" type="button">{{ trans('admin.select_all') }}</button>
                         <button class="btn btn-danger" id="deselect-all" type="button">{{ trans('admin.clear') }}</button>
-                    </div>
+                    </x-admin.row-actions>
                     <select class="form-control" id="rules" name="rules[]" data-plugin="multiSelect" multiple>
                         @foreach ($rules as $id => $name)
                             <option value="{{ $id }}">{{ $id . ' - ' . $name }}</option>

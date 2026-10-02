@@ -23,14 +23,7 @@
                             <i class="fi fi-{{ config('common.language.' . app()->getLocale())[1] }}"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="langDropdown">
-                            @foreach (config('common.language') as $key => $value)
-                                @if ($key !== app()->getLocale())
-                                    <a class="dropdown-item" href="{{ route('lang', ['locale' => $key]) }}">
-                                        <i class="fi fi-{{ $value[1] }} mr-2" aria-hidden="true"></i>
-                                        {{ $value[0] }}
-                                    </a>
-                                @endif
-                            @endforeach
+                            <x-lang.items :skip_current="true" :plain="true" />
                         </div>
                     </div>
                 </div>

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticleRequest;
 use App\Models\Article;
 use App\Services\ArticleService;
+use App\Utils\Upload;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -13,10 +15,11 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Log;
-use Str;
 
 class ArticleController extends Controller
 {
+    use ActionResponse;
+
     public function index(Request $request): View
     { // 文章列表
         $articles = Article::query();
@@ -49,17 +52,16 @@ class ArticleController extends Controller
         } catch (Exception $e) {
             Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.article.attribute')]).': '.$e->getMessage());
 
-            return redirect()->back()->withInput()->withErrors($e->getMessage());
+            // 原文只进日志：错误袋由 components/alert.blade.php 以 {!! !!} 渲染
+            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('model.article.attribute')]));
         }
 
         return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('common.add')]));
     }
 
     public function fileUpload(UploadedFile $file): string|bool
-    {
-        $fileName = Str::random(8).time().'.'.$file->getClientOriginalExtension();
-
-        return $file->storeAs('public', $fileName) ? 'upload/'.$fileName : false;
+    { // 图片上传
+        return Upload::image($file) ?? false;
     }
 
     public function create(): View
@@ -104,14 +106,10 @@ class ArticleController extends Controller
 
     public function destroy(Article $article): JsonResponse
     { // 删除文章
-        try {
+        return $this->actionResponse('common.delete', 'model.article.attribute', function () use ($article) {
             $article->delete();
-        } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.article.attribute')]).', '.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')]).', '.$e->getMessage()]);
-        }
-
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+            return true;
+        });
     }
 }

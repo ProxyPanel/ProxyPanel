@@ -12,7 +12,7 @@
                         <div class="content-text text-center mb-0">
                             <span class="font-size-40 font-weight-100">{{ auth()->user()->credit_tag }}</span>
                             <br />
-                            <button class="btn btn-danger float-right mr-15" data-toggle="modal" data-target="#charge_modal">{{ trans('user.recharge') }}</button>
+                            <x-ui.modal-trigger target="charge_modal" class="btn btn-danger float-right mr-15">{{ trans('user.recharge') }}</x-ui.modal-trigger>
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,7 @@
                                                 {!! trans('user.service.node_count', ['num' => $goods->node_count]) !!}
                                             </li>
                                             <li>
-                                                {!! trans('user.service.country_count', ['num' => $goods->node_countries->count()]) !!}
+                                                {!! trans('user.service.country_count', ['num' => $goods->node_countries]) !!}
                                             </li>
                                             <li>
                                                 {{ trans('user.account.speed_limit') }}

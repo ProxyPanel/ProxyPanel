@@ -52,14 +52,8 @@
                     </div>
                 </div>
             @endif
-            <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input class="form-control" name="password" type="password" required />
-                <label class="floating-label" for="password">{{ ucfirst(trans('validation.attributes.password')) }}</label>
-            </div>
-            <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input class="form-control" name="password_confirmation" type="password" required />
-                <label class="floating-label" for="password_confirmation">{{ ucfirst(trans('validation.attributes.password_confirmation')) }}</label>
-            </div>
+            <x-form.floating-row name="password" type="password" :label="ucfirst(trans('validation.attributes.password'))" />
+            <x-form.floating-row name="password_confirmation" type="password" :label="ucfirst(trans('validation.attributes.password_confirmation'))" />
             @if (sysConfig('is_invite_register'))
                 <div class="form-group form-material floating" data-plugin="formMaterial">
                     <input class="form-control" name="code" type="text" value="{{ old('code') ?: Request::query('code') }}"
@@ -81,13 +75,13 @@
                 <div class="checkbox-custom checkbox-primary">
                     <input id="term" name="term" type="checkbox" {{ old('term') ? 'checked' : '' }} />
                     <label for="term">{{ trans('auth.accept_term') }}
-                        <button class="btn btn-xs btn-primary" data-target="#tos" data-toggle="modal" type="button">
+                        <x-ui.modal-trigger target="tos" class="btn btn-xs btn-primary" type="button">
                             {{ trans('auth.tos') }}
-                        </button>
+                        </x-ui.modal-trigger>
                         &
-                        <button class="btn btn-xs btn-primary" data-target="#aup" data-toggle="modal" type="button">
+                        <x-ui.modal-trigger target="aup" class="btn btn-xs btn-primary" type="button">
                             {{ trans('auth.aup') }}
-                        </button>
+                        </x-ui.modal-trigger>
                     </label>
                 </div>
             </div>

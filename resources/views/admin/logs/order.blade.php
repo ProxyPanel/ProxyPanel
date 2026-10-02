@@ -57,7 +57,7 @@
                             {{ $order->pay_way_label }}
                         </td>
                         <td>
-                            {!! $order->status_label !!}
+                            <x-badge :badge="$order->status_badge" />
                         </td>
                         <td> {{ $order->is_expire ? trans('common.status.expire') : $order->expired_at }} </td>
                         <td> {{ $order->created_at }} </td>
@@ -65,13 +65,13 @@
                             <td>
                                 <x-ui.dropdown>
                                     @if ($order->status !== -1)
-                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', -1)" icon="wb-close" :text="trans('admin.set_to', ['attribute' => $order->statusTags(-1, 0, false)])" />
+                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', -1)" icon="wb-close" :text="trans('admin.set_to', ['attribute' => $order->statusText(-1, false)])" />
                                     @endif
                                     @if ($order->status !== 2)
-                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', 2)" icon="wb-check" :text="trans('admin.set_to', ['attribute' => $order->statusTags(2, 0, false)])" />
+                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', 2)" icon="wb-check" :text="trans('admin.set_to', ['attribute' => $order->statusText(2, false)])" />
                                     @endif
                                     @if ($order->status !== 3)
-                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', 3)" icon="wb-check-circle" :text="trans('admin.set_to', ['attribute' => $order->statusTags(3, 0, false)])" />
+                                        <x-ui.dropdown-item url="javascript:changeStatus('{{ $order->id }}', 3)" icon="wb-check-circle" :text="trans('admin.set_to', ['attribute' => $order->statusText(3, false)])" />
                                     @endif
                                 </x-ui.dropdown>
                             </td>

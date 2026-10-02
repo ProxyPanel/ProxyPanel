@@ -19,11 +19,14 @@ class RuleGroup extends Model
         return $this->belongsToMany(Rule::class);
     }
 
-    public function getTypeLabelAttribute(): string
+    /**
+     * 审计组类型的语义值：徽标样式交给 x-badge。
+     */
+    public function getTypeBadgeAttribute(): array
     {
         return match ($this->type) {
-            0 => '<span class="badge badge-primary">'.trans('admin.rule.group.type.on').'</span>',
-            1 => '<span class="badge badge-danger">'.trans('admin.rule.group.type.off').'</span>',
+            0 => ['type' => 'primary', 'text' => trans('admin.rule.group.type.on')],
+            1 => ['type' => 'danger', 'text' => trans('admin.rule.group.type.off')],
         };
     }
 }

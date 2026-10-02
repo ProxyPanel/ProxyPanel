@@ -235,7 +235,8 @@
                                         <i class="wb-bell mr-10 yellow-600"></i>{{ trans('user.home.chat_group') }}
                                     </h4>
                                     @if ($paying_user)
-                                        <div class="btn-group">
+                                        <x-admin.row-actions>
+
                                             @if (config('common.contact.qq'))
                                                 <a class="card-link btn btn-sm btn-pill-left btn-info" href="{{ config('common.contact.qq') }}" target="_blank"
                                                    rel="noopener">
@@ -248,7 +249,7 @@
                                                     TG{{ trans('user.home.chat_group') }}
                                                     <i class="fa-brands fa-telegram"></i></a>
                                             @endif
-                                        </div>
+                                        </x-admin.row-actions>
                                     @else
                                         <p class="card-link btn btn-sm btn-primary">
                                             <i class="wb-lock mr-5"></i>{{ trans('user.purchase.to_unlock') }}

@@ -12,11 +12,11 @@
                             <i class="icon wb-user-circle"></i>{{ trans('user.menu.tickets') }}
                         </h1>
                         <div class="panel-actions">
-                            <button class="btn btn-primary btn-animate btn-animate-side" data-toggle="modal" data-target="#add_ticket_modal">
+                            <x-ui.modal-trigger target="add_ticket_modal" class="btn btn-primary btn-animate btn-animate-side">
                                 <span>
                                     <i class="icon wb-plus" aria-hidden="true"></i> {{ trans('user.ticket.new') }}
                                 </span>
-                            </button>
+                            </x-ui.modal-trigger>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -35,7 +35,7 @@
                                         <tr>
                                             <td>{{ $ticket->id }}</td>
                                             <td>{{ $ticket->title }}</td>
-                                            <td>{!! $ticket->status_label !!}</td>
+                                            <td><x-badge :badge="$ticket->status_badge" /></td>
                                             <td>
                                                 <a class="btn btn-animate btn-animate-vertical btn-outline-info" href="{{ route('ticket.edit', $ticket) }}">
                                                     <span>

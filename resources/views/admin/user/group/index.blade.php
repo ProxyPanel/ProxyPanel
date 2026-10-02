@@ -15,7 +15,8 @@
                         <td> {{ $group->name }} </td>
                         <td>
                             @canany(['admin.user.group.edit', 'admin.user.group.destroy'])
-                                <div class="btn-group">
+                                <x-admin.row-actions>
+
                                     @can('admin.user.group.edit')
                                         <a class="btn btn-primary" href="{{ route('admin.user.group.edit', $group) }}">
                                             <i class="icon wb-edit" aria-hidden="true"></i>
@@ -26,7 +27,7 @@
                                             <i class="icon wb-trash" aria-hidden="true"></i>
                                         </button>
                                     @endcan
-                                </div>
+                                </x-admin.row-actions>
                             @endcanany
                         </td>
                     </tr>

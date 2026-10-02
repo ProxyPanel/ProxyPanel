@@ -51,7 +51,7 @@
                                         </td>
                                         <td> {{ $invite->dateline }} </td>
                                         <td>
-                                            {!! $invite->status_label !!}
+                                            <x-badge :badge="$invite->status_badge" />
                                         </td>
                                         <td>
                                             @if ($invite->status === 1)

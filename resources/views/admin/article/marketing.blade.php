@@ -17,12 +17,12 @@
         ]" :count="trans('admin.marketing.counts', ['num' => $marketingMessages->total()])" :pagination="$marketingMessages->links()">
             <x-slot:actions>
                 @can('admin.marketing.email')
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#send_email_modal" type="button">
-                        <i class="fa-solid fa-envelope"></i> {{ trans('admin.marketing.email_send') }}</button>
+                    <x-ui.modal-trigger target="send_email_modal" class="btn btn-primary" type="button">
+                        <i class="fa-solid fa-envelope"></i> {{ trans('admin.marketing.email_send') }}</x-ui.modal-trigger>
                 @endcan
                 @can('admin.marketing.push')
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#send_push_modal" type="button" disabled>
-                        <i class="fa-solid fa-bell"></i> {{ trans('admin.marketing.push_send') }}</button>
+                    <x-ui.modal-trigger target="send_push_modal" class="btn btn-primary" type="button" disabled>
+                        <i class="fa-solid fa-bell"></i> {{ trans('admin.marketing.push_send') }}</x-ui.modal-trigger>
                 @endcan
             </x-slot:actions>
             <x-slot:filters>
@@ -54,19 +54,11 @@
     </div>
 
     @can('admin.marketing.email')
-        <div class="modal fade" id="send_email_modal" data-focus-on="input:first" data-backdrop="static" data-keyboard="false" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">
-                            <i class="icon fa-solid fa-envelopes-bulk"></i>{{ trans('admin.marketing.email_send') }}
-                        </h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-info">
+        <x-ui.modal id="send_email_modal" size="lg" :backdrop="false" :keyboard="false" :simple="false" :scroll="false">
+            <x-slot:heading>
+                <i class="icon fa-solid fa-envelopes-bulk"></i>{{ trans('admin.marketing.email_send') }}
+            </x-slot:heading>
+                    <div class="alert alert-info">
                             <p class="font-size-18">
                                 <i class="icon fa-solid fa-users-viewfinder"></i> {{ trans('admin.marketing.email.targeted_users_count') }}
                                 <code class="ml-5" id="statistics"></code>
@@ -207,28 +199,16 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.cancel') }}</button>
-                        <button class="btn btn-primary" type="button" onclick="sendEmail()">{{ trans('common.send') }}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <x-slot:footer>
+                <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.cancel') }}</button>
+                <button class="btn btn-primary" type="button" onclick="sendEmail()">{{ trans('common.send') }}</button>
+            </x-slot:footer>
+        </x-ui.modal>
     @endcan
 
     @can('admin.marketing.push')
-        <div class="modal fade" id="send_push_modal" data-focus-on="input:first" data-backdrop="static" data-keyboard="false" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-center">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button class="close" data-dismiss="modal" type="button" aria-label="{{ trans('common.close') }}">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                        <h4 class="modal-title">{{ trans('admin.marketing.push_send') }}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="alert alert-danger" id="msg" style="display: none;"></div>
+        <x-ui.modal id="send_push_modal" :title="trans('admin.marketing.push_send')" size="lg" :backdrop="false" :keyboard="false" :simple="false" :scroll="false">
+                    <div class="alert alert-danger" id="msg" style="display: none;"></div>
                         <form class="form-horizontal" action="#" method="post">
                             <div class="form-body">
                                 <div class="form-group">
@@ -249,14 +229,11 @@
                                 </div>
                             </div>
                         </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.cancel') }}</button>
-                        <button class="btn btn-primary disabled" type="button" onclick="sendPush()">{{ trans('common.send') }}</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <x-slot:footer>
+                <button class="btn btn-danger mr-auto" data-dismiss="modal">{{ trans('common.cancel') }}</button>
+                <button class="btn btn-primary disabled" type="button" onclick="sendPush()">{{ trans('common.send') }}</button>
+            </x-slot:footer>
+        </x-ui.modal>
     @endcan
 @endsection
 @push('javascript')

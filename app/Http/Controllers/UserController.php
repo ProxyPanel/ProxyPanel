@@ -53,20 +53,21 @@ class UserController extends Controller
             return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.disable')]);
         }
 
-        // 已签到过，验证是否有效
-        if (cache()->has('userCheckIn_'.$user->id)) {
+        // 认领式签到：add 成功的那一次才发流量
+        if (! cache()->add('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') * Minute)) {
             return response()->json(['status' => 'success', 'title' => trans('common.success'), 'message' => trans('user.home.attendance.done')]);
         }
 
         $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
+        $before = $user->transfer_enable;
 
         if (! $user->incrementData($traffic)) {
+            cache()->forget('userCheckIn_'.$user->id); // 发失败要让人能重签
+
             return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
         }
 
-        Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
-
-        cache()->put('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') ? sysConfig('checkin_interval') * Minute : Day); // 多久后可以再签到
+        Helpers::addUserTrafficModifyLog($user->id, $before, $user->transfer_enable, trans('user.home.attendance.attribute'));
 
         return response()->json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }
@@ -148,7 +149,8 @@ class UserController extends Controller
 
             Log::error(trans('user.subscribe.error').'：'.$e->getMessage());
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.change')]).$e->getMessage()]);
+            // 原文只进日志：这条 message 前端按 HTML 插入
+            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.change')])]);
         }
     }
 

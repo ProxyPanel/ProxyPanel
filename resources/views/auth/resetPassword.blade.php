@@ -13,12 +13,7 @@
             <div class="form-title">
                 {{ trans('auth.password.reset.attribute') }}
             </div>
-            <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input class="form-control" name="username" type="text" value="{{ old('username') }}" autofocus required />
-                <label class="floating-label" for="username">
-                    {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username') }}
-                </label>
-            </div>
+            <x-form.floating-row name="username" type="text" :value="old('username')" :label="sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username')" />
         @else
             <x-alert type="danger" :message="trans('auth.password.reset.error.disabled')" />
         @endif

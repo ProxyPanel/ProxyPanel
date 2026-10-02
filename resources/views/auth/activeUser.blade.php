@@ -13,12 +13,7 @@
             <div class="form-title">
                 <span class="form-title">{{ trans('common.active_item', ['attribute' => trans('common.account')]) }}</span>
             </div>
-            <div class="form-group form-material floating" data-plugin="formMaterial">
-                <input class="form-control" name="username" type="text" value="{{ Request::query('username') }}" required />
-                <label class="floating-label" for="username">
-                    {{ sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username') }}
-                </label>
-            </div>
+            <x-form.floating-row name="username" type="text" :value="Request::query('username')" :label="sysConfig('username_type') === 'email' || sysConfig('username_type') === null ? ucfirst(trans('validation.attributes.email')) : trans('model.user.username')" />
         @else
             <x-alert type="danger" :message="trans('auth.active.error.disable')" />
         @endif
