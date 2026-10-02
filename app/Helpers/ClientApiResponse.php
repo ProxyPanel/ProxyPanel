@@ -26,7 +26,7 @@ trait ClientApiResponse
         return $this->jsonResponse(1, $codeResponse, $data, $addition);
     }
 
-    private function jsonResponse(int $status, array $codeResponse, array|bool|null $data = null, ?array $addition = null): JsonResponse
+    private function jsonResponse(int $status, array $codeResponse, array|string|bool|null $data = null, ?array $addition = null): JsonResponse
     {
         [$code, $message] = $codeResponse;
         $code = $code > 1000 ? (int) ($code / 1000) : $code;
@@ -47,8 +47,11 @@ trait ClientApiResponse
         return response()->json($result, $code, ['content-type' => 'application/json']);
     }
 
+    /**
+     * 失败响应：$data 原样下发（可以是校验错误列表）。
+     */
     public function failed(array $codeResponse = ResponseEnum::HTTP_ERROR, array|string|null $data = null): JsonResponse
     {
-        return $this->jsonResponse(0, $codeResponse, is_array($data) ? $data[0] : $data);
+        return $this->jsonResponse(0, $codeResponse, $data);
     }
 }

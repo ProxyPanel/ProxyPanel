@@ -62,8 +62,8 @@ Route::domain(sysConfig('web_api_url') ?: sysConfig('website_url'))->middleware(
 // 客户端API
 Route::prefix('v1')->group(function () {
     Route::controller(AuthController::class)->group(function () {
-        Route::post('login', 'login'); // 登录
-        Route::post('register', 'register'); // 注册
+        Route::post('login', 'login')->middleware('throttle:client-auth'); // 登录
+        Route::post('register', 'register')->middleware('throttle:client-auth'); // 注册
         Route::get('logout', 'logout'); // 登出
     });
 

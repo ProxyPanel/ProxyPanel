@@ -157,21 +157,21 @@ class ClientController extends Controller
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.disable')]);
         }
 
-        // 已签到过，验证是否有效
-        if (Cache::has('userCheckIn_'.$user->id)) {
+        // 认领式签到：add 成功的那一次才发流量
+        $ttl = sysConfig('checkin_interval') * Minute;
+        if (! Cache::add('userCheckIn_'.$user->id, '1', $ttl)) {
             return response()->json(['ret' => 0, 'title' => trans('common.success'), 'msg' => trans('user.home.attendance.done')]);
         }
 
         $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
+        $before = $user->transfer_enable;
 
         if (! $user->incrementData($traffic)) {
+            Cache::forget('userCheckIn_'.$user->id); // 发失败要让人能重签
+
             return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.failed')]);
         }
-        Helpers::addUserTrafficModifyLog($user->id, $user->transfer_enable, $user->transfer_enable + $traffic, trans('user.home.attendance.attribute'));
-
-        // 多久后可以再签到
-        $ttl = sysConfig('checkin_interval') ? sysConfig('checkin_interval') * Minute : Day;
-        Cache::put('userCheckIn_'.$user->id, '1', $ttl);
+        Helpers::addUserTrafficModifyLog($user->id, $before, $user->transfer_enable, trans('user.home.attendance.attribute'));
 
         return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
     }

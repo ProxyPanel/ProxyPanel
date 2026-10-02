@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Client;
 
 use App\Helpers\ClientApiResponse;
 use App\Helpers\ResponseEnum;
+use App\Models\User;
 use App\Services\UserService;
 use App\Utils\Helpers;
 use Illuminate\Http\JsonResponse;
@@ -44,13 +45,31 @@ class AuthController extends Controller
             $userService->setUser($user);
 
             return $this->succeed([
-                'token' => $user->createToken('client')->plainTextToken,
-                'expire_in' => time() + config('session.lifetime') * Minute,
+                'token' => $this->issueToken($user),
+                'expire_in' => $this->tokenExpireIn(),
                 'user' => $userService->getProfile(),
             ], null, ResponseEnum::USER_SERVICE_REGISTER_SUCCESS);
         }
 
         return $this->failed(ResponseEnum::USER_SERVICE_REGISTER_ERROR);
+    }
+
+    /**
+     * 签发客户端 token，并按 config('sanctum.client_token_ttl') 写 expires_at；留空即不过期。
+     */
+    private function issueToken(User $user): string
+    {
+        $minutes = config('sanctum.client_token_ttl');
+
+        return $user->createToken('client', ['*'], $minutes ? now()->addMinutes($minutes) : null)->plainTextToken;
+    }
+
+    /**
+     * 告知客户端的到期时刻；未配置 TTL 时回落到会话时长，是建议轮换的软时刻。
+     */
+    private function tokenExpireIn(): int
+    {
+        return time() + (config('sanctum.client_token_ttl') ?: config('session.lifetime')) * Minute;
     }
 
     public function login(Request $request): JsonResponse
@@ -83,8 +102,8 @@ class AuthController extends Controller
             }
 
             return $this->succeed([
-                'token' => $user->createToken('client')->plainTextToken,
-                'expire_in' => time() + config('session.lifetime') * Minute,
+                'token' => $this->issueToken($user),
+                'expire_in' => $this->tokenExpireIn(),
                 'user' => (new UserService)->getProfile(),
             ], null, ResponseEnum::USER_SERVICE_LOGIN_SUCCESS);
         }
