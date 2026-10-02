@@ -9,6 +9,7 @@ import Echo from "laravel-echo";
 
 import Pusher from "pusher-js";
 import broadcastingManager from "./broadcastingManager";
+import normalizeReverbPath from "./reverbPath";
 
 window.axios = axios;
 
@@ -22,7 +23,8 @@ window.Echo = new Echo({
     wsHost: import.meta.env.VITE_REVERB_HOST || window.location.hostname,
     wsPort: import.meta.env.VITE_REVERB_PORT || 80,
     wssPort: import.meta.env.VITE_REVERB_PORT || 443,
-    wsPath: import.meta.env.VITE_REVERB_PATH ?? "",
+    // 规范形式 /casting；pusher-js 会拼成 wsPath + '/app/{key}'，尾斜杠必须去掉
+    wsPath: normalizeReverbPath(import.meta.env.VITE_REVERB_PATH),
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? "https") === "https",
     enabledTransports: ["ws", "wss"],
 });

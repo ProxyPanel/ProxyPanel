@@ -31,7 +31,9 @@ return [
         'reverb' => [
             'host' => env('REVERB_SERVER_HOST', '0.0.0.0'),
             'port' => env('REVERB_SERVER_PORT', 8080),
-            'path' => env('REVERB_SERVER_PATH', ''),
+            // 服务端路由前缀，.env 里由 REVERB_PATH 派生。这里统一归一化为 /casting 形式：
+            // Symfony 的 addPrefix 会自行 trim，但带尾斜杠会让日志/健康检查地址出现 //。
+            'path' => reverb_prefix(env('REVERB_SERVER_PATH')),
             'hostname' => env('REVERB_HOST'),
             'options' => [
                 'tls' => [],

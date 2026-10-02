@@ -211,8 +211,10 @@ set_permissions() {
         mkdir -p /home/www
         chown www:www /home/www
     fi
-    chmod -R 755 storage bootstrap/cache public/assets
-    chown -R www:www storage bootstrap/cache public/assets
+    # 后台上传落在这两个目录（都不在版本控制里），不先建好交给 www 则首次上传会失败
+    mkdir -p public/upload public/uploads
+    chmod -R 755 storage bootstrap/cache public/assets public/upload public/uploads
+    chown -R www:www storage bootstrap/cache public/assets public/upload public/uploads
 }
 
 # ===============================================
@@ -267,6 +269,30 @@ EOF
     fi
 }
 
+# 读取 .env 中某个键的取值（去掉引号与首尾空白）。重复定义时取最后一处，与 phpdotenv 的
+# 「最后一处生效」一致。重装时用它保留已有的部署参数，避免把可用的配置改回默认值。
+env_value() {
+    local value
+    value=$(grep -E "^${1}=" .env 2>/dev/null | tail -n 1 | cut -d '=' -f2-)
+    value=$(printf '%s' "$value" | tr -d "\"'" | tr -d '\r')
+    value=$(printf '%s' "$value" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+    printf '%s' "$value"
+}
+
+# Reverb 子路径前缀归一化：前导 /、结尾不带 /（如 /casting），空值表示不使用子路径。
+# .env 里的 REVERB_PATH 是子路径部署的唯一开关（单一来源），VITE_REVERB_PATH 与 REVERB_SERVER_PATH
+# 都由它派生；三处消费者各自归一化：浏览器 wsPath 不能带尾斜杠（resources/js/reverbPath.js），
+# 后端签名要带尾斜杠（app/helpers.php 的 reverb_client_path），Reverb 服务端要前导斜杠无尾斜杠（reverb_prefix）。
+reverb_normalize_path() {
+    local path
+    path=$(printf '%s' "$1" | tr -d "\"'" | tr -d '\r' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' -e 's#^/*##' -e 's#/*$##')
+
+    if [ -n "$path" ]; then
+        printf '/%s\n' "$path"
+    fi
+}
+
 configure_reverb() {
     # 尝试加载 .env 文件，如果存在
     if [ -f ".env" ]; then
@@ -277,6 +303,17 @@ configure_reverb() {
     # 检查 .env 文件中是否已存在 Reverb 配置
     if ! grep -q "REVERB_APP_KEY" .env || [ -z "$(grep "REVERB_APP_KEY=" .env | cut -d '=' -f2)" ]; then
         print_message "Adding Reverb configuration to .env file..." "正在向 .env 文件添加 Reverb 配置..."
+
+        # 保留已有的部署参数：重装不该把子路径部署改回独立端口，也不该清掉 REVERB_HOST
+        # 或把 REVERB_SCHEME 从 https 降回 http——那会让 VITE_REVERB_SCHEME 一起降级，
+        # 浏览器改成明文连接；REVERB_HOST 被清空后后端更会拼出 http://:80 直接报错。
+        REVERB_PATH=$(reverb_normalize_path "$(env_value REVERB_PATH)")
+        REVERB_HOST=$(env_value REVERB_HOST)
+        REVERB_SCHEME=$(env_value REVERB_SCHEME)
+
+        if [ -z "$REVERB_SCHEME" ]; then
+            REVERB_SCHEME=http
+        fi
 
         REVERB_APP_KEY=$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 32)
         REVERB_APP_SECRET=$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 32)
@@ -301,9 +338,10 @@ configure_reverb() {
         echo "REVERB_APP_ID=$REVERB_APP_ID" >> .env
         echo "REVERB_APP_KEY=$REVERB_APP_KEY" >> .env
         echo "REVERB_APP_SECRET=$REVERB_APP_SECRET" >> .env
-        echo "REVERB_SCHEME=http" >> .env
-        echo "REVERB_HOST=" .env
-        echo "REVERB_PATH=" .env
+        echo "REVERB_SCHEME=$REVERB_SCHEME" >> .env
+        echo "REVERB_HOST=$REVERB_HOST" >> .env
+        # REVERB_PATH 是子路径部署的唯一来源，下面两行都由它派生，不要再单独编辑
+        echo "REVERB_PATH=$REVERB_PATH" >> .env
         echo "VITE_REVERB_APP_KEY=\"\${REVERB_APP_KEY}\"" >> .env
         echo "VITE_REVERB_HOST=\"\${REVERB_HOST}\"" >> .env
         echo "VITE_REVERB_PORT=\"\${REVERB_PORT}\"" >> .env
@@ -311,6 +349,10 @@ configure_reverb() {
         echo "VITE_REVERB_PATH=\"\${REVERB_PATH}\"" >> .env
         echo "REVERB_SERVER_PATH=\"\${REVERB_PATH}\"" >> .env
         print_message "Reverb configuration added to .env file." "Reverb 配置已添加到 .env 文件。"
+
+        if [ -n "$REVERB_PATH" ]; then
+            print_message "Reverb sub-path ${REVERB_PATH} detected: have nginx forward it unchanged, then run 'php artisan reverb:check'." "检测到 Reverb 子路径 ${REVERB_PATH}：请让 nginx 原样转发该前缀，部署后用 php artisan reverb:check 验证。"
+        fi
     else
         print_message "Reverb configuration already exists in .env file." "Reverb 配置已存在于 .env 文件中。"
     fi
