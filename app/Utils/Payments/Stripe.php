@@ -17,9 +17,20 @@ use UnexpectedValueException;
 
 class Stripe implements Gateway
 {
+    /**
+     * 固定请求使用的 Stripe API 版本.
+     *
+     * 必须显式固定：stripe-php 会把「自己的内置默认版本」作为 Stripe-Version 头随每个请求发出
+     * （Stripe::$apiVersion 的初值就是 Util\ApiVersion::CURRENT），所以升级 SDK 等于把所有支付
+     * 请求切到未经验证的新 API 版本上——v15.10.0 发的是 2024-06-20，v21.3.2 发的是 2026-08-26.dahlia。
+     * 固定为升级前的值，上线行为与升级前逐字节一致；要换版本请先拿沙箱 key 验证完整支付链路。
+     */
+    private const API_VERSION = '2024-06-20';
+
     public function __construct()
     {
         \Stripe\Stripe::setApiKey(sysConfig('stripe_secret_key'));
+        \Stripe\Stripe::setApiVersion(self::API_VERSION);
     }
 
     public static function metadata(): array
