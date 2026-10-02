@@ -44,12 +44,15 @@ class ReferralApply extends Model
         return Attribute::make(get: fn () => Helpers::getPriceTag($this->amount));
     }
 
-    protected function statusLabel(): Attribute
+    /**
+     * 提现申请的语义状态：已提现一项原本就是纯文本无徽标，用 type => null 保留该差异。
+     */
+    protected function statusBadge(): Attribute
     {
         return Attribute::make(get: fn () => match ($this->status) {
-            1 => '<span class="badge badge-sm badge-info">'.trans('common.status.pending').'</span>',
-            2 => trans('common.status.withdrawn'),
-            default => '<span class="badge badge-sm badge-warning">'.trans('common.status.applying').'</span>',
+            1 => ['type' => 'info', 'size' => 'sm', 'text' => trans('common.status.pending')],
+            2 => ['type' => null, 'text' => trans('common.status.withdrawn')],
+            default => ['type' => 'warning', 'size' => 'sm', 'text' => trans('common.status.applying')],
         });
     }
 }

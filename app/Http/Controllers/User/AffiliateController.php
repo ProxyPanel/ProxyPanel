@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
+use App\Models\User;
 use App\Utils\Helpers;
+use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -56,15 +58,31 @@ class AffiliateController extends Controller
             ]);
         }
 
-        $ref = new ReferralApply;
-        $ref->user_id = auth()->id();
-        $ref->before = $commission;
-        $ref->amount = $commission;
-        $ref->link_logs = $referrals->pluck('id')->toArray();
-        if ($ref->save()) {
+        $applied = DB::transaction(function (): bool {
+            // 在审判据与建单共用一把用户行锁：一笔返利日志只该被一笔申请引用
+            User::whereKey(auth()->id())->lockForUpdate()->first();
+
+            if (ReferralApply::uid()->whereIn('status', [0, 1])->exists()) {
+                return false;
+            }
+
+            // 锁内重取在审申请与返利日志
+            $referrals = ReferralLog::uid()->whereStatus(0)->get();
+            $commission = $referrals->sum('commission');
+
+            $ref = new ReferralApply;
+            $ref->user_id = auth()->id();
+            $ref->before = $commission;
+            $ref->amount = $commission;
+            $ref->link_logs = $referrals->pluck('id')->toArray();
+
+            return (bool) $ref->save();
+        });
+
+        if ($applied) {
             return response()->json(['status' => 'success', 'title' => trans('common.success_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.wait')]);
         }
 
-        return response()->json(['status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.error')]);
+        return response()->json(['status' => 'fail', 'title' => trans('common.failed_item', ['attribute' => trans('common.request')]), 'message' => trans('user.referral.msg.applied')]);
     }
 }

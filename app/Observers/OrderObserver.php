@@ -89,9 +89,12 @@ class OrderObserver
 
     private function returnCoupon(Order $order, Coupon $coupon): void
     { // 退回优惠券
-        if ($coupon->type !== 3 && ! $coupon->isExpired()) {
-            Helpers::addCouponLog('Order canceled, coupon reinstated.', $order->coupon_id, $order->goods_id, $order->id);
-            $coupon->update(['usable_times' => $coupon->usable_times + 1, 'status' => 0]);
+        if ($coupon->type === 3 || $coupon->isExpired()) {
+            return;
         }
+
+        // 在库里加回去：并发关闭同一张券的多笔回退都要落
+        $coupon->increment('usable_times', 1, ['status' => 0]);
+        Helpers::addCouponLog('Order canceled, coupon reinstated.', $order->coupon_id, $order->goods_id, $order->id);
     }
 }

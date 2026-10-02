@@ -26,11 +26,12 @@ class Coupon extends Model
         return $query->whereType($type);
     }
 
-    public function used(): bool
+    /**
+     * 原子认领这张券，与 Verify::claim() 同一约定；只有先抢到的一次返回 true.
+     */
+    public function claim(): bool
     {
-        $this->status = 1;
-
-        return $this->save();
+        return static::where('id', $this->id)->where('status', 0)->update(['status' => 1]) > 0;
     }
 
     public function expired(): bool

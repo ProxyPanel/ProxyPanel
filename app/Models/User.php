@@ -34,7 +34,7 @@ class User extends Authenticatable
 
     protected $table = 'user';
 
-    protected $casts = ['credit' => money::class, 'speed_limit' => data_rate::class, 'expired_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
+    protected $casts = ['credit' => money::class, 'speed_limit' => data_rate::class, 'expired_at' => 'date:Y-m-d', 'expire_warned_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
 
     protected $guarded = [];
 
@@ -153,6 +153,12 @@ class User extends Authenticatable
         return $this->belongsTo(UserGroup::class);
     }
 
+    /** 用户等级信息（user.level → level.level），需要成批展示等级名时用 with('levelInfo') 预加载 */
+    public function levelInfo(): BelongsTo
+    {
+        return $this->belongsTo(Level::class, 'level', 'level');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
@@ -184,8 +190,10 @@ class User extends Authenticatable
     }
 
     public function getTelegramUserIdAttribute(): ?string
-    {
-        $telegram = $this->userAuths()->whereType('telegram')->first();
+    { // 优先复用已预加载的 userAuths，避免通知循环里每个用户各发一条查询
+        $telegram = $this->relationLoaded('userAuths')
+            ? $this->userAuths->firstWhere('type', 'telegram')
+            : $this->userAuths()->whereType('telegram')->first();
 
         return $telegram->identifier ?? null;
     }
@@ -265,8 +273,10 @@ class User extends Authenticatable
     }
 
     public function getLevelNameAttribute(): string
-    {
-        return Level::where('level', $this->level)->value('name');
+    { // 优先复用已预加载的 levelInfo，避免成批渲染用户时每行一次查询
+        $level = $this->relationLoaded('levelInfo') ? $this->levelInfo : $this->levelInfo()->first();
+
+        return $level->name ?? ''; // 等级行被删时兜底，string 返回类型不接受 null
     }
 
     public function setPasswordAttribute(string $password): string
@@ -295,10 +305,8 @@ class User extends Authenticatable
     }
 
     public function incrementData(int $data): bool
-    { // 添加用户流量
-        $this->transfer_enable += $data;
-
-        return $this->save();
+    { // 添加用户流量：库里自增，并发两笔都要落
+        return $data === 0 || $this->increment('transfer_enable', $data) > 0;
     }
 
     public function routeNotificationForTelegram()

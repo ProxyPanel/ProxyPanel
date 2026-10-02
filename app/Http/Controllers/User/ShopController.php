@@ -7,8 +7,10 @@ use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Node;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\CouponService;
 use App\Utils\Helpers;
+use DB;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,14 +26,13 @@ class ShopController extends Controller
         // 获取可用商品列表
         $goodsList = Goods::whereStatus(1)->where('type', '<=', 2)->orderByDesc('type')->orderByDesc('sort')->get();
 
-        // 获取用户节点信息
-        $nodes = $user->userGroup ? $user->userGroup->nodes() : Node::query();
+        // 获取用户可见的所有节点
+        $allNodes = ($user->userGroup ? $user->userGroup->nodes() : Node::query())->where('status', 1)->get();
 
-        // 为每个商品计算节点数量和国家
-        $goodsList->each(function ($goods) use ($nodes) {
-            $filteredNodes = $nodes->where('level', '<=', $goods->level)->where('status', 1);
+        $goodsList->each(function ($goods) use ($allNodes) {
+            $filteredNodes = $allNodes->where('level', '<=', $goods->level);
             $goods->node_count = $filteredNodes->count();
-            $goods->node_countries = $filteredNodes->pluck('country_code')->unique();
+            $goods->node_countries = $filteredNodes->pluck('country_code')->unique()->count();
         });
 
         // 获取续费订单和价格
@@ -51,21 +52,29 @@ class ShopController extends Controller
 
     public function resetTraffic(): JsonResponse
     { // 重置流量
-        $user = auth()->user();
         $order = Order::userActivePlan()->firstOrFail();
         $renewCost = $order->goods->renew;
 
-        // 检查余额是否足够
-        if ($user->credit < $renewCost) {
+        // 判余额、扣费、清零共用一把用户行锁，扣费排在清零之前
+        $paid = DB::transaction(function () use ($renewCost): bool {
+            $locked = User::whereKey(auth()->id())->lockForUpdate()->first();
+
+            if ($locked->credit < $renewCost) {
+                return false;
+            }
+
+            $creditBefore = $locked->credit;
+            $locked->updateCredit(-$renewCost);
+
+            Helpers::addUserCreditLog($locked->id, null, $creditBefore, $locked->credit, -1 * $renewCost, 'The user manually reset the data.');
+            $locked->update(['u' => 0, 'd' => 0]);
+
+            return true;
+        });
+
+        if (! $paid) {
             return response()->json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
         }
-
-        // 重置用户流量
-        $user->update(['u' => 0, 'd' => 0]);
-
-        // 记录余额操作日志并扣费
-        Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit - $renewCost, -1 * $renewCost, 'The user manually reset the data.');
-        $user->updateCredit(-$renewCost);
 
         return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
     }

@@ -36,13 +36,16 @@ class Invite extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function getStatusLabelAttribute(): string
+    /**
+     * 邀请码状态的语义值：徽标样式交给 x-badge。
+     */
+    public function getStatusBadgeAttribute(): array
     {
         return match ($this->status) {
-            0 => '<span class="badge badge-success">'.trans('common.status.unused').'</span>',
-            1 => '<span class="badge badge-danger">'.trans('common.status.used').'</span>',
-            2 => '<span class="badge badge-default">'.trans('common.status.expire').'</span>',
-            default => '<span class="badge badge-default"> '.trans('common.status.unknown').' </span>',
+            0 => ['type' => 'success', 'text' => trans('common.status.unused')],
+            1 => ['type' => 'danger', 'text' => trans('common.status.used')],
+            2 => ['type' => 'default', 'text' => trans('common.status.expire')],
+            default => ['type' => 'default', 'text' => trans('common.status.unknown')],
         };
     }
 }

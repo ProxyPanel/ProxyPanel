@@ -48,13 +48,16 @@ class Ticket extends Model
         return $this->save();
     }
 
-    public function getStatusLabelAttribute(): string
+    /**
+     * 工单状态的语义值：只给类型与文案，徽标样式由 x-badge 决定。
+     */
+    public function getStatusBadgeAttribute(): array
     {
         return match ($this->status) {
-            0 => '<span class="badge badge-lg badge-success">'.trans('common.status.pending').'</span>',
-            1 => '<span class="badge badge-lg badge-danger">'.trans('common.status.reply').'</span>',
-            2 => '<span class="badge badge-lg badge-default">'.trans('common.status.closed').'</span>',
-            default => '<span class="badge badge-lg badge-default">'.trans('common.status.unknown').'</span>',
+            0 => ['type' => 'success', 'size' => 'lg', 'text' => trans('common.status.pending')],
+            1 => ['type' => 'danger', 'size' => 'lg', 'text' => trans('common.status.reply')],
+            2 => ['type' => 'default', 'size' => 'lg', 'text' => trans('common.status.closed')],
+            default => ['type' => 'default', 'size' => 'lg', 'text' => trans('common.status.unknown')],
         };
     }
 

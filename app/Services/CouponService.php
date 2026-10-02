@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Utils\Helpers;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Response;
 
@@ -103,7 +104,8 @@ class CouponService
             }
         }
 
-        if (isset($coupon->limit['used']) && $user->orders()->whereCouponId($coupon->id)->count() >= $coupon->limit['used']) {
+        // used 留空或 0 都是「不限」（后台承诺见 admin.zero_unlimited_hint），所以必须带 >0 才去比已用次数
+        if (isset($coupon->limit['used']) && $coupon->limit['used'] > 0 && $user->orders()->whereCouponId($coupon->id)->count() >= $coupon->limit['used']) {
             return $this->failedReturn(trans('user.coupon.error.unmet'),
                 trans_choice('user.coupon.error.overused', $coupon->limit['used'], ['times' => $coupon->limit['used']]));
         }
@@ -119,21 +121,30 @@ class CouponService
     public function charge(): bool
     {
         $user = $this->user;
-        $coupon = Coupon::whereSn($this->code)->whereType(3)->first();
-        if ($coupon && $coupon->status === 0) {
-            try {
-                $user->updateCredit($coupon->value); // 余额充值
-                Helpers::addUserCreditLog($user->id, null, $user->credit, $user->credit + $coupon->value, $coupon->value, 'Recharge using a recharge voucher.'); // 写入用户余额变动日志
+        $coupon = Coupon::whereSn($this->code)->whereType(3)->whereStatus(0)->first();
 
-                $coupon->used(); // 更改卡券状态
-                Helpers::addCouponLog('Used for credit recharge.', $coupon->id); // 写入卡券使用日志
-
-                return true;
-            } catch (Exception $exception) {
-                Log::emergency(trans('common.error_action_item', ['action' => trans('common.apply'), 'attribute' => trans('model.coupon.attribute')]).': '.$exception->getMessage());
-            }
+        if (! $coupon) {
+            return false;
         }
 
-        return false;
+        $creditBefore = $user->credit;
+
+        try {
+            DB::transaction(function () use ($coupon, $user, $creditBefore): void {
+                // 认领与充值同进同退：任一步失败整笔回滚
+                if (! $coupon->claim() || ! $user->updateCredit($coupon->value)) {
+                    throw new Exception('券码核销未生效');
+                }
+
+                Helpers::addUserCreditLog($user->id, null, $creditBefore, $user->credit, $coupon->value, 'Recharge using a recharge voucher.'); // 写入用户余额变动日志
+                Helpers::addCouponLog('Used for credit recharge.', $coupon->id); // 写入卡券使用日志
+            });
+        } catch (Exception $exception) {
+            Log::emergency(trans('common.error_action_item', ['action' => trans('common.apply'), 'attribute' => trans('model.coupon.attribute')]).': '.$exception->getMessage());
+
+            return false;
+        }
+
+        return true;
     }
 }

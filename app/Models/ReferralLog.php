@@ -55,13 +55,16 @@ class ReferralLog extends Model
         );
     }
 
-    protected function statusLabel(): Attribute
+    /**
+     * 返利记录的语义状态：徽标样式交给 x-badge。
+     */
+    protected function statusBadge(): Attribute
     {
         return Attribute::make(
             get: fn () => match ($this->status) {
-                1 => '<span class="badge badge-sm badge-info">'.trans('common.status.applying').'</span>',
-                2 => '<span class="badge badge-sm badge-default">'.trans('common.status.withdrawn').'</span>',
-                default => '<span class="badge badge-sm badge-success">'.trans('common.status.withdrawal_pending').'</span>',
+                1 => ['type' => 'info', 'size' => 'sm', 'text' => trans('common.status.applying')],
+                2 => ['type' => 'default', 'size' => 'sm', 'text' => trans('common.status.withdrawn')],
+                default => ['type' => 'success', 'size' => 'sm', 'text' => trans('common.status.withdrawal_pending')],
             },
         );
     }

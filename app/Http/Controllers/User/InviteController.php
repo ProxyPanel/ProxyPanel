@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use App\Models\Order;
+use App\Models\User;
 use Exception;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -33,25 +34,26 @@ class InviteController extends Controller
     { // 生成邀请码
         $user = auth()->user();
 
-        // 检查用户是否还有邀请码配额
-        if ($user->invite_num <= 0) {
-            return response()->json(['status' => 'fail', 'message' => trans('user.invite.generate_failed')]);
-        }
-
         try {
+            // 名额用条件递减占住；invite_num 是 unsigned，超发会被静默截成 0
+            if (! User::whereKey($user->id)->where('invite_num', '>', 0)->decrement('invite_num')) {
+                return response()->json(['status' => 'fail', 'message' => trans('user.invite.generate_failed')]);
+            }
+
             $invite = $user->invites()->create([
                 'code' => strtoupper(Str::random(12)), // 简化邀请码生成逻辑
                 'dateline' => now()->addDays((int) sysConfig('user_invite_days')),
             ]);
 
             if ($invite) {
-                $user->decrement('invite_num');
-
                 return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
             }
+
+            $user->increment('invite_num'); // 码没生成就把占掉的名额还回去
         } catch (Exception $e) {
             // 记录异常但不暴露给用户
             Log::error('Failed to generate invite code: '.$e->getMessage());
+            $user->increment('invite_num');
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')])]);

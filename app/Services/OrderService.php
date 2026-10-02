@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\ReferralLog;
 use App\Models\User;
 use App\Utils\Helpers;
+use Illuminate\Database\Eloquent\Collection;
 use Log;
 
 class OrderService
@@ -81,8 +82,9 @@ class OrderService
     { // 激活套餐
         $this->order->refresh()->updateQuietly(['expired_at' => date('Y-m-d H:i:s', strtotime($this->goods->days.' days')), 'status' => 2]);
         $oldData = $this->user->transfer_enable;
+        // 套餐送的邀请名额走库里自增，不并进下面那次 update
+        $inviteBonus = (int) ($this->goods->invite_num ?: 0);
         $updateData = [
-            'invite_num' => $this->user->invite_num + ($this->goods->invite_num ?: 0),
             'level' => $this->goods->level,
             'speed_limit' => $this->goods->speed_limit,
             'enable' => 1,
@@ -95,6 +97,10 @@ class OrderService
         }
 
         if ($this->user->update($updateData)) {
+            if ($inviteBonus > 0) {
+                $this->user->increment('invite_num', $inviteBonus);
+            }
+
             return Helpers::addUserTrafficModifyLog($this->order->user_id, $oldData, $this->user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]), $this->order->id);
         }
 
@@ -107,27 +113,65 @@ class OrderService
             $expired_at = $this->getFinallyExpiredTime();
         }
 
-        // 账号流量重置日期
-        $nextResetTime = now()->addDays($this->goods->period)->toDateString();
-        if ($nextResetTime >= $expired_at) {
-            $nextResetTime = null;
-        }
-
         return [
             'u' => 0,
             'd' => 0,
             'transfer_enable' => $this->goods->traffic * MiB,
             'expired_at' => $expired_at,
-            'reset_time' => $nextResetTime,
+            'reset_time' => self::calculateResetTime($expired_at, $this->goods->period),
         ];
+    }
+
+    /**
+     * 由「账号到期日」与「重置周期」推算下一次流量重置日期.
+     *
+     * 商品的 period 是「每 N 天自动重置流量」，留空（套餐允许）或 0 表示不自动重置。
+     * 这一点很容易写错：曾经 period 为空时会被当成「0 天」算出今天的日期，而
+     * TaskDaily::resetUserTraffic() 的判定是 reset_time <= 今天，于是这类用户的流量
+     * 每天都会被清零（且重置后算出的还是今天，永远退出不了这个循环）。
+     *
+     * 这里只做日期推算，不碰数据库，便于单测（本项目的 Laravel 测试需要可达的数据库才能启动）。
+     */
+    public static function calculateResetTime(?string $expired_at, ?int $period): ?string
+    {
+        if (! $period) { // 无重置周期 / 周期为 0：不自动重置
+            return null;
+        }
+
+        $nextResetTime = now()->addDays($period)->toDateString();
+
+        // 重置日落在到期日当天或之后时无效：TaskDaily 只在 expired_at > 今天 时重置，用户永远等不到那次重置
+        if (! $expired_at || $nextResetTime >= $expired_at) {
+            return null;
+        }
+
+        return $nextResetTime;
     }
 
     private function getFinallyExpiredTime(): string
     { // 推算最新的到期时间
         $orders = $this->user->orders()->whereIn('status', [2, 3])->whereIsExpire(0)->isPlan()->get();
-        $current = $orders->where('status', '==', 2)->first();
 
-        return ($current->expired_at ?? now())->addDays($orders->except($current->id ?? 0)->sum('goods.days'))->toDateString();
+        return self::calculateExpiredAt($orders);
+    }
+
+    /**
+     * 由「生效/预支付」的套餐订单推算账号最新到期时间.
+     *
+     * 起点是当前生效订单自己的到期日（没有则从今天），再加上其余订单的天数。
+     * 这里只做集合运算，不碰数据库，便于单测（本项目的 Laravel 测试需要可达的数据库才能启动）。
+     *
+     * @param  Collection  $orders  状态为 2（已生效）或 3（预支付）的套餐订单，需预加载 goods
+     */
+    public static function calculateExpiredAt(Collection $orders): string
+    {
+        $current = $orders->firstWhere('status', 2);
+
+        // 排除当前生效订单本身：它的到期日已含自己的天数，再累加就是重复计算
+        $days = $orders->reject(static fn (Order $order): bool => $order->is($current))->sum('goods.days');
+
+        // copy() 才不被 addDays() 改写模型的 expired_at 属性
+        return ($current?->expired_at?->copy() ?? now())->addDays($days)->toDateString();
     }
 
     private function setCommissionExpense(User $user): void

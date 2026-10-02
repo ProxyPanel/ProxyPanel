@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CouponRequest extends FormRequest
 {
@@ -10,7 +11,8 @@ class CouponRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
-            'sn' => 'exclude_unless:type,3|unique:coupon',
+            // 券码按 sn 核销，有效行之间必须唯一；软删的行不算占用
+            'sn' => ['nullable', 'string', 'max:50', Rule::unique('coupon', 'sn')->whereNull('deleted_at')],
             'logo' => 'nullable|image',
             'type' => 'required|numeric|between:1,3',
             'priority' => 'nullable|numeric|min:0|max:255',

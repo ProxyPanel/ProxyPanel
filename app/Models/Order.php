@@ -7,6 +7,7 @@ use App\Observers\OrderObserver;
 use App\Utils\Helpers;
 use App\Utils\Payments\PaymentManager;
 use Auth;
+use DB;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -101,7 +102,12 @@ class Order extends Model
 
     public function close(): bool
     { // 关闭订单
-        return $this->update(['status' => -1]);
+        // 行锁内判状态：只有真的翻到 -1 的那一次触发 observer，重复关闭幂等
+        return (bool) DB::transaction(function (): bool {
+            $locked = static::whereKey($this->id)->lockForUpdate()->first();
+
+            return $locked !== null && ((int) $locked->status === -1 || $locked->update(['status' => -1]));
+        });
     }
 
     public function paid(): bool
@@ -124,13 +130,29 @@ class Order extends Model
         return $this->update(['is_expire' => 1]);
     }
 
-    public function getStatusLabelAttribute(): string
-    { // 订单状态
-        return $this->statusTags($this->status, $this->is_expire);
+    /**
+     * 订单状态的语义值：徽标样式交给 x-badge。
+     */
+    public function getStatusBadgeAttribute(): array
+    {
+        return $this->statusBadgeData($this->status, $this->is_expire);
     }
 
-    public function statusTags(int $status, bool $expire, bool $isHtml = true): string
+    /**
+     * 只要文案的场合（后台「设为某状态」的下拉项）。
+     */
+    public function statusText(int $status, bool $expire): string
     {
+        return $this->statusBadgeData($status, $expire)['text'];
+    }
+
+    /**
+     * @return array{type: string, text: string} 状态对应的语义类型与文案
+     */
+    public function statusBadgeData(int $status, bool $expire): array
+    {
+        $tag = 0;
+
         switch ($status) {
             case -1:
                 $label = trans('common.order.status.canceled');
@@ -152,6 +174,7 @@ class Order extends Model
                     $tag = 3;
                     $label = trans('common.order.status.ongoing');
                 }
+
                 break;
             case 3:
                 $tag = 2;
@@ -162,11 +185,7 @@ class Order extends Model
                 $label = trans('common.status.unknown');
         }
 
-        if ($isHtml) {
-            $label = '<span class="badge badge-'.['default', 'danger', 'info', 'success', 'warning'][$tag ?? 0].'">'.$label.'</span>';
-        }
-
-        return $label;
+        return ['type' => ['default', 'danger', 'info', 'success', 'warning'][$tag], 'text' => $label];
     }
 
     public function getOriginAmountTagAttribute(): string
@@ -198,7 +217,8 @@ class Order extends Model
     // 支付图标
     public function getPayTypeIconAttribute(): string
     {
-        return '/assets/images/payment/'.config('common.payment.icon')[$this->pay_type] ?? 'coin.png';
+        // 括号不能省：'.' 的优先级高于 '??'，否则路径永远非 null，'coin.png' 兜底不会生效
+        return '/assets/images/payment/'.(config('common.payment.icon')[$this->pay_type] ?? 'coin.png');
     }
 
     // 支付方式
