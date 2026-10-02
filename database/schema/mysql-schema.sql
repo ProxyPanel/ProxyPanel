@@ -14,22 +14,22 @@ CREATE TABLE `article` (
   `language` char(5) NOT NULL DEFAULT 'zh_CN' COMMENT '语言',
   `category` varchar(255) DEFAULT NULL COMMENT '分组名',
   `logo` varchar(255) DEFAULT NULL COMMENT 'LOGO',
-  `content` text COMMENT '内容',
+  `content` text DEFAULT NULL COMMENT '内容',
   `sort` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '排序',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `config` (
   `name` varchar(255) NOT NULL COMMENT '配置名',
-  `value` text COMMENT '配置值',
+  `value` text DEFAULT NULL COMMENT '配置值',
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='系统配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='系统配置';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `country`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -38,7 +38,7 @@ CREATE TABLE `country` (
   `code` char(2) NOT NULL COMMENT 'ISO国家代码',
   `name` varchar(10) NOT NULL COMMENT '名称',
   PRIMARY KEY (`code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='国家代码';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='国家代码';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `coupon`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -51,7 +51,7 @@ CREATE TABLE `coupon` (
   `type` tinyint(1) unsigned NOT NULL DEFAULT 1 COMMENT '类型：1-抵用券、2-折扣券、3-充值券',
   `usable_times` smallint(5) unsigned DEFAULT NULL COMMENT '可使用次数',
   `value` int(10) unsigned NOT NULL COMMENT '折扣金额(元)/折扣力度',
-  `limit` json DEFAULT NULL COMMENT '使用限制',
+  `limit` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '使用限制' CHECK (json_valid(`limit`)),
   `priority` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '使用权重, 高者优先',
   `start_time` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '有效期开始',
   `end_time` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '有效期结束',
@@ -59,8 +59,9 @@ CREATE TABLE `coupon` (
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='优惠券';
+  PRIMARY KEY (`id`),
+  KEY `idx_coupon_status_end` (`status`,`end_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='优惠券';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `coupon_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -79,7 +80,7 @@ CREATE TABLE `coupon_log` (
   CONSTRAINT `coupon_log_coupon_id_foreign` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE SET NULL,
   CONSTRAINT `coupon_log_goods_id_foreign` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`id`) ON DELETE SET NULL,
   CONSTRAINT `coupon_log_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='优惠券使用日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='优惠券使用日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `email_filter`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -90,20 +91,22 @@ CREATE TABLE `email_filter` (
   `words` varchar(50) NOT NULL COMMENT '敏感词',
   PRIMARY KEY (`id`),
   KEY `email_filter_words_type_index` (`words`,`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='敏感词';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='敏感词';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `failed_jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `failed_jobs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) DEFAULT NULL,
   `connection` text NOT NULL,
   `queue` text NOT NULL,
   `payload` longtext NOT NULL,
   `exception` longtext NOT NULL,
-  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `failed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `goods`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -121,7 +124,7 @@ CREATE TABLE `goods` (
   `period` int(10) unsigned DEFAULT NULL COMMENT '流量自动重置周期',
   `info` varchar(255) DEFAULT NULL COMMENT '商品信息',
   `description` varchar(255) DEFAULT NULL COMMENT '商品描述',
-  `days` int(10) unsigned NOT NULL DEFAULT '30' COMMENT '有效期',
+  `days` int(10) unsigned NOT NULL DEFAULT 30 COMMENT '有效期',
   `invite_num` int(10) unsigned DEFAULT NULL COMMENT '赠送邀请码数',
   `limit_num` int(10) unsigned DEFAULT NULL COMMENT '限购数量，默认为null不限购',
   `speed_limit` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '商品限速',
@@ -133,7 +136,7 @@ CREATE TABLE `goods` (
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   `deleted_at` timestamp NULL DEFAULT NULL COMMENT '删除时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='商品信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='商品信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `goods_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -146,7 +149,7 @@ CREATE TABLE `goods_category` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `invite`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -165,9 +168,10 @@ CREATE TABLE `invite` (
   UNIQUE KEY `invite_code_unique` (`code`),
   KEY `invite_inviter_id_foreign` (`inviter_id`),
   KEY `invite_invitee_id_foreign` (`invitee_id`),
+  KEY `idx_invite_status_dateline` (`status`,`dateline`),
   CONSTRAINT `invite_invitee_id_foreign` FOREIGN KEY (`invitee_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `invite_inviter_id_foreign` FOREIGN KEY (`inviter_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='邀请码表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='邀请码表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `jobs`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -182,7 +186,7 @@ CREATE TABLE `jobs` (
   `created_at` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_queue_index` (`queue`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `label`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -192,7 +196,7 @@ CREATE TABLE `label` (
   `name` varchar(255) NOT NULL COMMENT '名称',
   `sort` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '排序值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='标签';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='标签';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `label_node`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -203,11 +207,10 @@ CREATE TABLE `label_node` (
   `label_id` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '标签ID',
   PRIMARY KEY (`id`),
   UNIQUE KEY `node_label_node_id_label_id_unique` (`node_id`,`label_id`),
-  KEY `idx_node_label` (`node_id`,`label_id`),
   KEY `node_label_label_id_foreign` (`label_id`),
   CONSTRAINT `node_label_label_id_foreign` FOREIGN KEY (`label_id`) REFERENCES `label` (`id`) ON DELETE CASCADE,
   CONSTRAINT `node_label_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点标签';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='节点标签';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `level`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -218,7 +221,7 @@ CREATE TABLE `level` (
   `name` varchar(100) NOT NULL COMMENT '等级名称',
   PRIMARY KEY (`id`),
   UNIQUE KEY `level_level_unique` (`level`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='等级表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='等级表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `marketing`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -234,7 +237,7 @@ CREATE TABLE `marketing` (
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -244,7 +247,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model_has_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -256,7 +259,7 @@ CREATE TABLE `model_has_permissions` (
   PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
   KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`),
   CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `model_has_roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -268,7 +271,7 @@ CREATE TABLE `model_has_roles` (
   PRIMARY KEY (`role_id`,`model_id`,`model_type`),
   KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`),
   CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -279,21 +282,22 @@ CREATE TABLE `node` (
   `name` varchar(128) NOT NULL COMMENT '名称',
   `country_code` char(5) NOT NULL DEFAULT 'un' COMMENT '国家代码',
   `server` varchar(255) DEFAULT NULL COMMENT '服务器域名地址',
-  `ip` text COMMENT '服务器IPV4地址',
-  `ipv6` text COMMENT '服务器IPV6地址',
+  `ip` text DEFAULT NULL COMMENT '服务器IPV4地址',
+  `ipv6` text DEFAULT NULL COMMENT '服务器IPV6地址',
   `level` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '等级：0-无等级，全部可见',
   `rule_group_id` int(10) unsigned DEFAULT NULL COMMENT '从属规则分组ID',
   `speed_limit` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '节点限速，为0表示不限速，单位Byte',
   `client_limit` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT '设备数限制',
+  `details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '节点信息' CHECK (json_valid(`details`)),
   `description` varchar(255) DEFAULT NULL COMMENT '节点简单描述',
-  `profile` json NOT NULL COMMENT '节点设置选项',
+  `profile` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '节点设置选项' CHECK (json_valid(`profile`)),
   `geo` varchar(255) DEFAULT NULL COMMENT '节点地理位置',
-  `traffic_rate` double(6,2) unsigned NOT NULL DEFAULT '1.00' COMMENT '流量比率',
-  `is_display` tinyint(4) NOT NULL DEFAULT '3' COMMENT '节点显示模式：0-不显示、1-只页面、2-只订阅、3-都可',
+  `traffic_rate` double(6,2) unsigned NOT NULL DEFAULT 1.00 COMMENT '流量比率',
+  `is_display` tinyint(4) NOT NULL DEFAULT 3 COMMENT '节点显示模式：0-不显示、1-只页面、2-只订阅、3-都可',
   `is_ddns` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否使用DDNS：0-否、1-是',
   `relay_node_id` int(10) unsigned DEFAULT NULL COMMENT '中转节点对接母节点, 默认NULL',
   `is_udp` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否启用UDP：0-不启用、1-启用',
-  `push_port` smallint(5) unsigned NOT NULL DEFAULT '1000' COMMENT '消息推送端口',
+  `push_port` smallint(5) unsigned NOT NULL DEFAULT 1000 COMMENT '消息推送端口',
   `detection_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '节点检测: 0-关闭、1-只检测TCP、2-只检测ICMP、3-检测全部',
   `port` smallint(5) unsigned DEFAULT NULL COMMENT '单端口的端口号或连接端口号',
   `sort` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '排序值，值越大越靠前显示',
@@ -304,7 +308,7 @@ CREATE TABLE `node` (
   KEY `node_type_index` (`type`),
   KEY `node_rule_group_id_foreign` (`rule_group_id`),
   CONSTRAINT `node_rule_group_id_foreign` FOREIGN KEY (`rule_group_id`) REFERENCES `rule_group` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='节点信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_auth`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -319,7 +323,7 @@ CREATE TABLE `node_auth` (
   PRIMARY KEY (`id`),
   KEY `node_auth_node_id_foreign` (`node_id`),
   CONSTRAINT `node_auth_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点授权密钥表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='节点授权密钥表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_certificate`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -327,29 +331,28 @@ DROP TABLE IF EXISTS `node_certificate`;
 CREATE TABLE `node_certificate` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `domain` varchar(255) NOT NULL COMMENT '域名',
-  `key` text COMMENT '域名证书KEY',
-  `pem` text COMMENT '域名证书PEM',
+  `key` text DEFAULT NULL COMMENT '域名证书KEY',
+  `pem` text DEFAULT NULL COMMENT '域名证书PEM',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `node_certificate_domain_unique` (`domain`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='域名证书';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='域名证书';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_daily_data_flow`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `node_daily_data_flow` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `node_id` int(10) unsigned NOT NULL COMMENT '节点ID',
+  `node_id` int(10) unsigned DEFAULT NULL,
   `u` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '上传流量',
   `d` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '下载流量',
-  `total` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '总流量',
-  `traffic` varchar(255) DEFAULT NULL COMMENT '总流量（带单位）',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `node_daily_data_flow_node_id_index` (`node_id`),
+  KEY `idx_node_daily_created` (`created_at`),
   CONSTRAINT `node_daily_data_flow_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_heartbeat`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -362,8 +365,9 @@ CREATE TABLE `node_heartbeat` (
   `log_time` int(10) unsigned NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   KEY `node_heartbeat_node_id_index` (`node_id`),
+  KEY `idx_node_heartbeat_time` (`log_time`),
   CONSTRAINT `node_heartbeat_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点心跳信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='节点心跳信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_hourly_data_flow`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -373,13 +377,12 @@ CREATE TABLE `node_hourly_data_flow` (
   `node_id` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '节点ID',
   `u` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '上传流量',
   `d` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '下载流量',
-  `total` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '总流量',
-  `traffic` varchar(255) DEFAULT NULL COMMENT '总流量（带单位）',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `node_hourly_data_flow_node_id_index` (`node_id`),
+  KEY `idx_node_hourly_created` (`created_at`),
   CONSTRAINT `node_hourly_data_flow_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_online_ip`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -390,15 +393,16 @@ CREATE TABLE `node_online_ip` (
   `user_id` int(10) unsigned DEFAULT NULL COMMENT '用户ID',
   `port` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT '端口',
   `type` char(3) NOT NULL DEFAULT 'tcp' COMMENT '类型：all、tcp、udp',
-  `ip` text COMMENT '连接IP：每个IP用,号隔开',
+  `ip` text DEFAULT NULL COMMENT '连接IP：每个IP用,号隔开',
   `created_at` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '上报时间',
   PRIMARY KEY (`id`),
   KEY `node_online_ip_node_id_index` (`node_id`),
   KEY `node_online_ip_user_id_index` (`user_id`),
   KEY `node_online_ip_port_index` (`port`),
+  KEY `idx_node_online_ip_created` (`created_at`),
   CONSTRAINT `node_online_ip_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE,
   CONSTRAINT `node_online_ip_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_online_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -410,8 +414,9 @@ CREATE TABLE `node_online_log` (
   `log_time` int(10) unsigned NOT NULL COMMENT '记录时间',
   PRIMARY KEY (`id`),
   KEY `node_online_log_node_id_index` (`node_id`),
+  KEY `idx_node_online_log_time` (`log_time`),
   CONSTRAINT `node_online_log_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='节点在线信息';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='节点在线信息';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `node_user_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -425,7 +430,7 @@ CREATE TABLE `node_user_group` (
   KEY `node_user_group_node_id_foreign` (`node_id`),
   CONSTRAINT `node_user_group_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE,
   CONSTRAINT `node_user_group_user_group_id_foreign` FOREIGN KEY (`user_group_id`) REFERENCES `user_group` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `notification_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -438,11 +443,11 @@ CREATE TABLE `notification_log` (
   `title` varchar(255) NOT NULL COMMENT '标题',
   `content` text NOT NULL COMMENT '内容',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：-1发送失败、0-等待发送、1-发送成功',
-  `error` text COMMENT '发送失败抛出的异常信息',
+  `error` text DEFAULT NULL COMMENT '发送失败抛出的异常信息',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='通知投递记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='通知投递记录';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `notifications`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -458,7 +463,7 @@ CREATE TABLE `notifications` (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `notifications_notifiable_type_notifiable_id_index` (`notifiable_type`,`notifiable_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -479,13 +484,15 @@ CREATE TABLE `order` (
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
-  KEY `idx_order_search` (`user_id`,`goods_id`,`is_expire`,`status`),
   KEY `order_goods_id_foreign` (`goods_id`),
   KEY `order_coupon_id_foreign` (`coupon_id`),
+  KEY `idx_order_status_created` (`status`,`created_at`),
+  KEY `idx_order_user_status` (`user_id`,`status`,`is_expire`,`goods_id`),
+  KEY `idx_order_expired_plan` (`status`,`is_expire`,`expired_at`),
   CONSTRAINT `order_coupon_id_foreign` FOREIGN KEY (`coupon_id`) REFERENCES `coupon` (`id`) ON DELETE SET NULL,
   CONSTRAINT `order_goods_id_foreign` FOREIGN KEY (`goods_id`) REFERENCES `goods` (`id`) ON DELETE SET NULL,
   CONSTRAINT `order_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单信息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='订单信息表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `payment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -496,31 +503,37 @@ CREATE TABLE `payment` (
   `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
   `order_id` int(10) unsigned NOT NULL COMMENT '本地订单ID',
   `amount` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '金额，单位分',
-  `qr_code` text COMMENT '支付二维码',
-  `url` text COMMENT '支付链接',
+  `qr_code` text DEFAULT NULL COMMENT '支付二维码',
+  `url` text DEFAULT NULL COMMENT '支付链接',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '支付状态：-1-支付失败、0-等待支付、1-支付成功',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `payment_trade_no_unique` (`trade_no`),
   KEY `payment_user_id_order_id_index` (`user_id`,`order_id`),
   KEY `payment_order_id_foreign` (`order_id`),
   CONSTRAINT `payment_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE CASCADE,
   CONSTRAINT `payment_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `payment_callback`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `payment_callback` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `trade_no` varchar(64) NOT NULL COMMENT '本地订单号',
-  `out_trade_no` varchar(64) NOT NULL COMMENT '外部订单号（支付平台）',
-  `amount` int(10) unsigned NOT NULL COMMENT '交易金额，单位分',
-  `status` tinyint(1) NOT NULL COMMENT '交易状态：0-失败、1-成功',
+  `method` varchar(32) NOT NULL DEFAULT '' COMMENT '支付方式',
+  `trade_no` varchar(64) DEFAULT NULL COMMENT '本地支付单号（payment.trade_no）',
+  `out_trade_no` varchar(64) DEFAULT NULL COMMENT '支付平台交易号',
+  `payload` text DEFAULT NULL COMMENT '回调报文，已脱敏',
+  `ip` varchar(45) DEFAULT NULL COMMENT '回调来源IP',
+  `amount` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '交易金额，单位分',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '履约状态：0-未履约、1-已履约',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='支付回调日志';
+  PRIMARY KEY (`id`),
+  KEY `idx_payment_callback_trade_no` (`trade_no`),
+  KEY `idx_payment_callback_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='支付回调日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -533,7 +546,7 @@ CREATE TABLE `permissions` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `personal_access_tokens`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -544,14 +557,15 @@ CREATE TABLE `personal_access_tokens` (
   `tokenable_id` bigint(20) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   `token` varchar(64) NOT NULL,
-  `abilities` text,
+  `abilities` text DEFAULT NULL,
+  `expires_at` timestamp NULL DEFAULT NULL,
   `last_used_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
   KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `referral_apply`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -562,14 +576,14 @@ CREATE TABLE `referral_apply` (
   `before` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '操作前可提现金额，单位分',
   `after` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '操作后可提现金额，单位分',
   `amount` int(10) unsigned NOT NULL COMMENT '本次提现金额，单位分',
-  `link_logs` json NOT NULL COMMENT '关联返利日志ID，例如：1,3,4',
+  `link_logs` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '关联返利日志ID，例如：1,3,4' CHECK (json_valid(`link_logs`)),
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：-1-驳回、0-待审核、1-审核通过待打款、2-已打款',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   KEY `referral_apply_user_id_foreign` (`user_id`),
   CONSTRAINT `referral_apply_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='提现申请';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='提现申请';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `referral_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -591,7 +605,7 @@ CREATE TABLE `referral_log` (
   CONSTRAINT `referral_log_invitee_id_foreign` FOREIGN KEY (`invitee_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `referral_log_inviter_id_foreign` FOREIGN KEY (`inviter_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   CONSTRAINT `referral_log_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消费返利日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='消费返利日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `role_has_permissions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -603,7 +617,7 @@ CREATE TABLE `role_has_permissions` (
   KEY `role_has_permissions_role_id_foreign` (`role_id`),
   CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
   CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `roles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -616,7 +630,7 @@ CREATE TABLE `roles` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rule`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -627,7 +641,7 @@ CREATE TABLE `rule` (
   `name` varchar(100) NOT NULL COMMENT '规则描述',
   `pattern` text NOT NULL COMMENT '规则值',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='审计规则';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='审计规则';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rule_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -639,7 +653,7 @@ CREATE TABLE `rule_group` (
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='审计规则分组';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='审计规则分组';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rule_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -655,10 +669,11 @@ CREATE TABLE `rule_log` (
   KEY `idx` (`user_id`,`node_id`,`rule_id`),
   KEY `rule_log_node_id_foreign` (`node_id`),
   KEY `rule_log_rule_id_foreign` (`rule_id`),
+  KEY `idx_rule_log_created` (`created_at`),
   CONSTRAINT `rule_log_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE SET NULL,
   CONSTRAINT `rule_log_rule_id_foreign` FOREIGN KEY (`rule_id`) REFERENCES `rule` (`id`) ON DELETE SET NULL,
   CONSTRAINT `rule_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='触发审计规则日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='触发审计规则日志表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `rule_rule_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -672,7 +687,7 @@ CREATE TABLE `rule_rule_group` (
   KEY `rule_rule_group_rule_id_foreign` (`rule_id`),
   CONSTRAINT `rule_rule_group_rule_group_id_foreign` FOREIGN KEY (`rule_group_id`) REFERENCES `rule_group` (`id`) ON DELETE CASCADE,
   CONSTRAINT `rule_rule_group_rule_id_foreign` FOREIGN KEY (`rule_id`) REFERENCES `rule` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ss_config`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -685,7 +700,7 @@ CREATE TABLE `ss_config` (
   `sort` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '排序：值越大排越前',
   PRIMARY KEY (`id`),
   KEY `ss_config_type_index` (`type`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ticket`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -704,7 +719,7 @@ CREATE TABLE `ticket` (
   KEY `ticket_admin_id_foreign` (`admin_id`),
   CONSTRAINT `ticket_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `ticket_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `ticket_reply`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -724,7 +739,7 @@ CREATE TABLE `ticket_reply` (
   CONSTRAINT `ticket_reply_admin_id_foreign` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `ticket_reply_ticket_id_foreign` FOREIGN KEY (`ticket_id`) REFERENCES `ticket` (`id`) ON DELETE CASCADE,
   CONSTRAINT `ticket_reply_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -737,7 +752,7 @@ CREATE TABLE `user` (
   `port` smallint(5) unsigned NOT NULL DEFAULT 0 COMMENT '代理端口',
   `passwd` varchar(16) NOT NULL COMMENT '代理密码',
   `vmess_id` char(36) NOT NULL,
-  `transfer_enable` bigint(20) unsigned NOT NULL DEFAULT '1099511627776' COMMENT '可用流量，单位字节，默认1TiB',
+  `transfer_enable` bigint(20) unsigned NOT NULL DEFAULT 1099511627776 COMMENT '可用流量，单位字节，默认1TiB',
   `u` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '已上传流量，单位字节',
   `d` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '已下载流量，单位字节',
   `t` int(10) unsigned DEFAULT NULL COMMENT '最后使用时间',
@@ -752,8 +767,9 @@ CREATE TABLE `user` (
   `qq` varchar(20) DEFAULT NULL COMMENT 'QQ',
   `credit` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '余额，单位分',
   `expired_at` date NOT NULL DEFAULT '2099-01-01' COMMENT '过期时间',
+  `expire_warned_at` date DEFAULT NULL COMMENT '最后一次到期提醒的日期',
   `ban_time` int(10) unsigned DEFAULT NULL COMMENT '封禁到期时间',
-  `remark` text COMMENT '备注',
+  `remark` text DEFAULT NULL COMMENT '备注',
   `level` tinyint(3) unsigned NOT NULL DEFAULT 0 COMMENT '等级，默认0级',
   `user_group_id` int(10) unsigned DEFAULT NULL COMMENT '所属分组',
   `reg_ip` varchar(45) NOT NULL DEFAULT '127.0.0.1' COMMENT '注册IP',
@@ -770,9 +786,10 @@ CREATE TABLE `user` (
   KEY `idx_search` (`enable`,`status`,`port`),
   KEY `user_inviter_id_foreign` (`inviter_id`),
   KEY `user_user_group_id_foreign` (`user_group_id`),
+  KEY `idx_user_expire_warning` (`enable`,`expired_at`),
   CONSTRAINT `user_inviter_id_foreign` FOREIGN KEY (`inviter_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `user_user_group_id_foreign` FOREIGN KEY (`user_group_id`) REFERENCES `user_group` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_baned_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -788,7 +805,7 @@ CREATE TABLE `user_baned_log` (
   PRIMARY KEY (`id`),
   KEY `user_baned_log_user_id_foreign` (`user_id`),
   CONSTRAINT `user_baned_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户封禁日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户封禁日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_credit_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -807,7 +824,7 @@ CREATE TABLE `user_credit_log` (
   KEY `user_credit_log_order_id_foreign` (`order_id`),
   CONSTRAINT `user_credit_log_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE SET NULL,
   CONSTRAINT `user_credit_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_daily_data_flow`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -818,15 +835,14 @@ CREATE TABLE `user_daily_data_flow` (
   `node_id` int(10) unsigned DEFAULT NULL COMMENT '节点ID，null表示统计全部节点',
   `u` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '上传流量',
   `d` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '下载流量',
-  `total` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '总流量',
-  `traffic` varchar(255) DEFAULT NULL COMMENT '总流量（带单位）',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_node` (`user_id`,`node_id`),
   KEY `user_daily_data_flow_node_id_foreign` (`node_id`),
+  KEY `idx_user_daily_created` (`created_at`),
   CONSTRAINT `user_daily_data_flow_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_daily_data_flow_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_data_modify_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -844,7 +860,7 @@ CREATE TABLE `user_data_modify_log` (
   KEY `user_data_modify_log_order_id_foreign` (`order_id`),
   CONSTRAINT `user_data_modify_log_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `order` (`id`) ON DELETE SET NULL,
   CONSTRAINT `user_data_modify_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户流量变动日志';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户流量变动日志';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -853,7 +869,7 @@ CREATE TABLE `user_group` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL COMMENT '分组名称',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户分组控制表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='用户分组控制表';
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_hourly_data_flow`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -864,15 +880,14 @@ CREATE TABLE `user_hourly_data_flow` (
   `node_id` int(10) unsigned DEFAULT NULL COMMENT '节点ID，null表示统计全部节点',
   `u` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '上传流量',
   `d` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '下载流量',
-  `total` bigint(20) unsigned NOT NULL DEFAULT 0 COMMENT '总流量',
-  `traffic` varchar(255) DEFAULT NULL COMMENT '总流量（带单位）',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   KEY `idx_user_node` (`user_id`,`node_id`),
   KEY `user_hourly_data_flow_node_id_foreign` (`node_id`),
+  KEY `idx_user_hourly_created` (`created_at`),
   CONSTRAINT `user_hourly_data_flow_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_hourly_data_flow_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_login_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -891,7 +906,7 @@ CREATE TABLE `user_login_log` (
   PRIMARY KEY (`id`),
   KEY `user_login_log_user_id_foreign` (`user_id`),
   CONSTRAINT `user_login_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_oauth`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -899,7 +914,7 @@ DROP TABLE IF EXISTS `user_oauth`;
 CREATE TABLE `user_oauth` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
-  `type` varchar(10) NOT NULL COMMENT '登录类型',
+  `type` varchar(20) NOT NULL,
   `identifier` varchar(128) NOT NULL COMMENT '手机号/邮箱/第三方的唯一标识',
   `credential` varchar(128) DEFAULT NULL COMMENT '密码/Token凭证',
   `created_at` datetime NOT NULL COMMENT '创建时间',
@@ -908,7 +923,7 @@ CREATE TABLE `user_oauth` (
   UNIQUE KEY `user_oauth_user_id_type_unique` (`user_id`,`type`),
   UNIQUE KEY `user_oauth_identifier_unique` (`identifier`),
   CONSTRAINT `user_oauth_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_subscribe`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -920,15 +935,15 @@ CREATE TABLE `user_subscribe` (
   `times` int(10) unsigned NOT NULL DEFAULT 0 COMMENT '地址请求次数',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态：0-禁用、1-启用',
   `ban_time` int(10) unsigned DEFAULT NULL COMMENT '封禁时间',
-  `ban_desc` text COMMENT '封禁理由',
+  `ban_desc` text DEFAULT NULL COMMENT '封禁理由',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_subscribe_code_unique` (`code`),
   KEY `user_id` (`user_id`,`status`),
-  KEY `user_subscribe_code_index` (`code`),
+  KEY `idx_user_subscribe_ban` (`status`,`ban_time`),
   CONSTRAINT `user_subscribe_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_subscribe_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -938,11 +953,12 @@ CREATE TABLE `user_subscribe_log` (
   `user_subscribe_id` int(10) unsigned NOT NULL COMMENT '对应user_subscribe的id',
   `request_ip` varchar(45) DEFAULT NULL COMMENT '请求IP',
   `request_time` datetime NOT NULL COMMENT '请求时间',
-  `request_header` text COMMENT '请求头部信息',
+  `request_header` text DEFAULT NULL COMMENT '请求头部信息',
   PRIMARY KEY (`id`),
-  KEY `user_subscribe_log_user_subscribe_id_index` (`user_subscribe_id`),
+  KEY `idx_user_subscribe_log_time` (`request_time`),
+  KEY `idx_subscribe_log_sub_time` (`user_subscribe_id`,`request_time`),
   CONSTRAINT `user_subscribe_log_user_subscribe_id_foreign` FOREIGN KEY (`user_subscribe_id`) REFERENCES `user_subscribe` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `user_traffic_log`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -959,9 +975,10 @@ CREATE TABLE `user_traffic_log` (
   PRIMARY KEY (`id`),
   KEY `idx_user_node_time` (`user_id`,`node_id`,`log_time`),
   KEY `user_traffic_log_node_id_foreign` (`node_id`),
+  KEY `idx_user_traffic_log_time` (`log_time`),
   CONSTRAINT `user_traffic_log_node_id_foreign` FOREIGN KEY (`node_id`) REFERENCES `node` (`id`) ON DELETE CASCADE,
   CONSTRAINT `user_traffic_log_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `verify`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -970,14 +987,15 @@ CREATE TABLE `verify` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `type` tinyint(1) unsigned NOT NULL DEFAULT 1 COMMENT '激活类型：1-自行激活、2-管理员激活',
   `user_id` int(10) unsigned NOT NULL COMMENT '用户ID',
-  `token` varchar(32) NOT NULL COMMENT '校验token',
+  `token` varchar(64) NOT NULL COMMENT '校验token的sha256哈希',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
   PRIMARY KEY (`id`),
   KEY `verify_user_id_foreign` (`user_id`),
+  KEY `idx_verify_token` (`token`),
   CONSTRAINT `verify_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `verify_code`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -989,8 +1007,9 @@ CREATE TABLE `verify_code` (
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态：0-未使用、1-已使用、2-已失效',
   `created_at` datetime NOT NULL COMMENT '创建时间',
   `updated_at` datetime NOT NULL COMMENT '最后更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='注册激活验证码';
+  PRIMARY KEY (`id`),
+  KEY `idx_verify_code_status_created` (`status`,`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='注册激活验证码';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -999,84 +1018,103 @@ CREATE TABLE `verify_code` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-INSERT INTO `migrations` VALUES (1,'2019_12_14_000001_create_personal_access_tokens_table',1);
-INSERT INTO `migrations` VALUES (2,'2020_08_21_145711_create_article_table',1);
-INSERT INTO `migrations` VALUES (3,'2020_08_21_145711_create_config_table',1);
-INSERT INTO `migrations` VALUES (4,'2020_08_21_145711_create_country_table',1);
-INSERT INTO `migrations` VALUES (5,'2020_08_21_145711_create_coupon_log_table',1);
-INSERT INTO `migrations` VALUES (6,'2020_08_21_145711_create_coupon_table',1);
-INSERT INTO `migrations` VALUES (7,'2020_08_21_145711_create_email_filter_table',1);
-INSERT INTO `migrations` VALUES (8,'2020_08_21_145711_create_failed_jobs_table',1);
-INSERT INTO `migrations` VALUES (9,'2020_08_21_145711_create_goods_table',1);
-INSERT INTO `migrations` VALUES (10,'2020_08_21_145711_create_invite_table',1);
-INSERT INTO `migrations` VALUES (11,'2020_08_21_145711_create_jobs_table',1);
-INSERT INTO `migrations` VALUES (12,'2020_08_21_145711_create_label_table',1);
-INSERT INTO `migrations` VALUES (13,'2020_08_21_145711_create_level_table',1);
-INSERT INTO `migrations` VALUES (14,'2020_08_21_145711_create_marketing_table',1);
-INSERT INTO `migrations` VALUES (15,'2020_08_21_145711_create_node_auth_table',1);
-INSERT INTO `migrations` VALUES (16,'2020_08_21_145711_create_node_certificate_table',1);
-INSERT INTO `migrations` VALUES (17,'2020_08_21_145711_create_node_daily_data_flow_table',1);
-INSERT INTO `migrations` VALUES (18,'2020_08_21_145711_create_node_hourly_data_flow_table',1);
-INSERT INTO `migrations` VALUES (19,'2020_08_21_145711_create_node_label_table',1);
-INSERT INTO `migrations` VALUES (20,'2020_08_21_145711_create_node_rule_table',1);
-INSERT INTO `migrations` VALUES (21,'2020_08_21_145711_create_notification_log_table',1);
-INSERT INTO `migrations` VALUES (22,'2020_08_21_145711_create_order_table',1);
-INSERT INTO `migrations` VALUES (23,'2020_08_21_145711_create_payment_callback_table',1);
-INSERT INTO `migrations` VALUES (24,'2020_08_21_145711_create_payment_table',1);
-INSERT INTO `migrations` VALUES (25,'2020_08_21_145711_create_referral_apply_table',1);
-INSERT INTO `migrations` VALUES (26,'2020_08_21_145711_create_referral_log_table',1);
-INSERT INTO `migrations` VALUES (27,'2020_08_21_145711_create_rule_group_node_table',1);
-INSERT INTO `migrations` VALUES (28,'2020_08_21_145711_create_rule_group_table',1);
-INSERT INTO `migrations` VALUES (29,'2020_08_21_145711_create_rule_log_table',1);
-INSERT INTO `migrations` VALUES (30,'2020_08_21_145711_create_rule_table',1);
-INSERT INTO `migrations` VALUES (31,'2020_08_21_145711_create_ss_config_table',1);
-INSERT INTO `migrations` VALUES (32,'2020_08_21_145711_create_ss_node_info_table',1);
-INSERT INTO `migrations` VALUES (33,'2020_08_21_145711_create_ss_node_ip_table',1);
-INSERT INTO `migrations` VALUES (34,'2020_08_21_145711_create_ss_node_online_log_table',1);
-INSERT INTO `migrations` VALUES (35,'2020_08_21_145711_create_ss_node_table',1);
-INSERT INTO `migrations` VALUES (36,'2020_08_21_145711_create_ticket_reply_table',1);
-INSERT INTO `migrations` VALUES (37,'2020_08_21_145711_create_ticket_table',1);
-INSERT INTO `migrations` VALUES (38,'2020_08_21_145711_create_user_baned_log_table',1);
-INSERT INTO `migrations` VALUES (39,'2020_08_21_145711_create_user_credit_log_table',1);
-INSERT INTO `migrations` VALUES (40,'2020_08_21_145711_create_user_daily_data_flow_table',1);
-INSERT INTO `migrations` VALUES (41,'2020_08_21_145711_create_user_data_modify_log_table',1);
-INSERT INTO `migrations` VALUES (42,'2020_08_21_145711_create_user_group_table',1);
-INSERT INTO `migrations` VALUES (43,'2020_08_21_145711_create_user_hourly_data_flow_table',1);
-INSERT INTO `migrations` VALUES (44,'2020_08_21_145711_create_user_login_log_table',1);
-INSERT INTO `migrations` VALUES (45,'2020_08_21_145711_create_user_subscribe_log_table',1);
-INSERT INTO `migrations` VALUES (46,'2020_08_21_145711_create_user_subscribe_table',1);
-INSERT INTO `migrations` VALUES (47,'2020_08_21_145711_create_user_table',1);
-INSERT INTO `migrations` VALUES (48,'2020_08_21_145711_create_user_traffic_log_table',1);
-INSERT INTO `migrations` VALUES (49,'2020_08_21_145711_create_verify_code_table',1);
-INSERT INTO `migrations` VALUES (50,'2020_08_21_145711_create_verify_table',1);
-INSERT INTO `migrations` VALUES (51,'2020_09_24_184434_add_strip_config',1);
-INSERT INTO `migrations` VALUES (52,'2020_10_11_000217_add_ddns_to_config_table',1);
-INSERT INTO `migrations` VALUES (53,'2020_11_06_145018_create_permission_tables',1);
-INSERT INTO `migrations` VALUES (54,'2020_11_10_075555_improve_table',1);
-INSERT INTO `migrations` VALUES (55,'2020_12_07_120247_permission_data',1);
-INSERT INTO `migrations` VALUES (56,'2020_12_24_074739_table_improvement',1);
-INSERT INTO `migrations` VALUES (57,'2021_01_04_094946_drop_node_ping',1);
-INSERT INTO `migrations` VALUES (58,'2021_01_04_172833_add-paybeaver-payment',1);
-INSERT INTO `migrations` VALUES (59,'2021_01_15_065207_create_notifications_table',1);
-INSERT INTO `migrations` VALUES (60,'2021_01_27_080544_config_clean',1);
-INSERT INTO `migrations` VALUES (61,'2021_03_17_041036_add_aff_code_config',1);
-INSERT INTO `migrations` VALUES (62,'2021_04_25_095012_ddns_node',1);
-INSERT INTO `migrations` VALUES (63,'2021_05_16_215434_add_theadpay_payment',1);
-INSERT INTO `migrations` VALUES (64,'2021_06_16_115448_oauth',1);
-INSERT INTO `migrations` VALUES (65,'2021_06_23_103914_append_telegram_id_to_user_table',1);
-INSERT INTO `migrations` VALUES (66,'2021_06_27_174304_append_v2_sni_to_node_table',1);
-INSERT INTO `migrations` VALUES (67,'2021_07_13_190753_rm_telegram_in_user_table',1);
-INSERT INTO `migrations` VALUES (68,'2021_07_23_151321_append_speed_limit_goods_table',1);
-INSERT INTO `migrations` VALUES (69,'2021_07_24_214642_create_goods_category_table',1);
-INSERT INTO `migrations` VALUES (70,'2021_07_25_124022_drop_v2_port',1);
-INSERT INTO `migrations` VALUES (71,'2021_08_26_231620_more_notification',1);
-INSERT INTO `migrations` VALUES (72,'2021_10_08_222109_add_payment_confirm_notification',1);
-INSERT INTO `migrations` VALUES (73,'2021_11_25_211107_change_log_permission',1);
-INSERT INTO `migrations` VALUES (74,'2022_01_16_160308_add_msgid_notification_log',1);
-INSERT INTO `migrations` VALUES (75,'2022_01_22_231856_improve_node_table',1);
-INSERT INTO `migrations` VALUES (76,'2022_08_04_001832_add_more_notifications',1);
-INSERT INTO `migrations` VALUES (77,'2022_08_07_012002_modify_node_for_view',1);
-INSERT INTO `migrations` VALUES (78,'2022_08_25_204229_improve_coupon',1);
-INSERT INTO `migrations` VALUES (79,'2022_12_01_223612_add_options_to_article',1);
-INSERT INTO `migrations` VALUES (80,'2023_01_04_210048_currency_internationalization',1);
-INSERT INTO `migrations` VALUES (81,'2023_04_22_005731_change_subscribe_desc',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (1,'2019_12_14_000001_create_personal_access_tokens_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (2,'2020_08_21_145711_create_article_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (3,'2020_08_21_145711_create_config_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (4,'2020_08_21_145711_create_country_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (5,'2020_08_21_145711_create_coupon_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (6,'2020_08_21_145711_create_coupon_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (7,'2020_08_21_145711_create_email_filter_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (8,'2020_08_21_145711_create_failed_jobs_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (9,'2020_08_21_145711_create_goods_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (10,'2020_08_21_145711_create_invite_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (11,'2020_08_21_145711_create_jobs_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (12,'2020_08_21_145711_create_label_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (13,'2020_08_21_145711_create_level_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (14,'2020_08_21_145711_create_marketing_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (15,'2020_08_21_145711_create_node_auth_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (16,'2020_08_21_145711_create_node_certificate_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (17,'2020_08_21_145711_create_node_daily_data_flow_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2020_08_21_145711_create_node_hourly_data_flow_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2020_08_21_145711_create_node_label_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2020_08_21_145711_create_node_rule_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2020_08_21_145711_create_notification_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2020_08_21_145711_create_order_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2020_08_21_145711_create_payment_callback_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2020_08_21_145711_create_payment_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2020_08_21_145711_create_referral_apply_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2020_08_21_145711_create_referral_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (27,'2020_08_21_145711_create_rule_group_node_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (28,'2020_08_21_145711_create_rule_group_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (29,'2020_08_21_145711_create_rule_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (30,'2020_08_21_145711_create_rule_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (31,'2020_08_21_145711_create_ss_config_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (32,'2020_08_21_145711_create_ss_node_info_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (33,'2020_08_21_145711_create_ss_node_ip_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (34,'2020_08_21_145711_create_ss_node_online_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (35,'2020_08_21_145711_create_ss_node_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (36,'2020_08_21_145711_create_ticket_reply_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (37,'2020_08_21_145711_create_ticket_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (38,'2020_08_21_145711_create_user_baned_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (39,'2020_08_21_145711_create_user_credit_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (40,'2020_08_21_145711_create_user_daily_data_flow_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (41,'2020_08_21_145711_create_user_data_modify_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (42,'2020_08_21_145711_create_user_group_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (43,'2020_08_21_145711_create_user_hourly_data_flow_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (44,'2020_08_21_145711_create_user_login_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (45,'2020_08_21_145711_create_user_subscribe_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (46,'2020_08_21_145711_create_user_subscribe_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (47,'2020_08_21_145711_create_user_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (48,'2020_08_21_145711_create_user_traffic_log_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (49,'2020_08_21_145711_create_verify_code_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (50,'2020_08_21_145711_create_verify_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (51,'2020_09_24_184434_add_strip_config',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (52,'2020_10_11_000217_add_ddns_to_config_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (53,'2020_11_06_145018_create_permission_tables',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (54,'2020_11_10_075555_improve_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (55,'2020_12_07_120247_permission_data',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (56,'2020_12_24_074739_table_improvement',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (57,'2021_01_04_094946_drop_node_ping',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (58,'2021_01_04_172833_add-paybeaver-payment',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (59,'2021_01_15_065207_create_notifications_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (60,'2021_01_27_080544_config_clean',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (61,'2021_03_17_041036_add_aff_code_config',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (62,'2021_04_25_095012_ddns_node',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (63,'2021_05_16_215434_add_theadpay_payment',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (64,'2021_06_16_115448_oauth',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (65,'2021_06_23_103914_append_telegram_id_to_user_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (66,'2021_06_27_174304_append_v2_sni_to_node_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (67,'2021_07_13_190753_rm_telegram_in_user_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (68,'2021_07_23_151321_append_speed_limit_goods_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (69,'2021_07_24_214642_create_goods_category_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (70,'2021_07_25_124022_drop_v2_port',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (71,'2021_08_26_231620_more_notification',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (72,'2021_10_08_222109_add_payment_confirm_notification',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (73,'2021_11_25_211107_change_log_permission',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (74,'2022_01_16_160308_add_msgid_notification_log',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (75,'2022_01_22_231856_improve_node_table',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (76,'2022_08_04_001832_add_more_notifications',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (77,'2022_08_07_012002_modify_node_for_view',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (78,'2022_08_25_204229_improve_coupon',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (79,'2022_12_01_223612_add_options_to_article',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (80,'2023_01_04_210048_currency_internationalization',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (81,'2023_04_22_005731_change_subscribe_desc',1);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (82,'2023_05_11_012354_update_failed_jobs',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (83,'2023_06_04_224713_update_paypal',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (84,'2023_07_08_162803_clean_up_unnecessary_info',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (85,'2024_04_24_215344_update_oauth_type',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (86,'2024_05_24_234032_site_data_flow',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (87,'2024_07_14_233110_update_oauth_accounts_status',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (88,'2024_08_03_225932_node_details',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (89,'2025_04_21_215352_add_cryptomus',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (90,'2025_04_26_232606_modified_system',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (91,'2026_09_14_000000_user_expire_warning',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (92,'2026_09_14_120000_add_log_cleanup_indexes',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (93,'2026_09_14_130000_add_order_status_index',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (94,'2026_09_14_140000_clean_up_redundant_indexes',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (95,'2026_09_14_150000_add_scheduled_task_indexes',2);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (96,'2026_09_29_100000_verify_token_hash',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (97,'2026_09_29_110000_add_expires_at_to_personal_access_tokens',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (98,'2026_09_30_100000_payment_callback_ledger',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (99,'2026_09_30_110000_add_payment_callbacks_retention_config',3);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (100,'2026_10_01_100000_unique_payment_trade_no',4);
