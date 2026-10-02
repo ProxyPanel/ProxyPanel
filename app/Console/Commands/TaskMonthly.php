@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\NotificationLog;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\PaymentCallback;
 use App\Models\User;
 use App\Models\UserBanedLog;
 use App\Models\UserLoginLog;
@@ -47,6 +48,9 @@ class TaskMonthly extends Command
             UserLoginLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.login_logs'))))->delete(); // 清除用户登陆日志
 
             Payment::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.payments'))))->delete(); // 清理在线支付日志
+
+            // 老库可能没有这个键，默认值要留着
+            PaymentCallback::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.payment_callbacks', '-6 months'))))->delete(); // 清理支付回调日志
 
             UserBanedLog::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.user_baned_logs'))))->delete(); // 清理用户封禁日志
 

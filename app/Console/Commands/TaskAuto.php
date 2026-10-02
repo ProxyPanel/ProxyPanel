@@ -8,6 +8,7 @@ use App\Models\Invite;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\UserSubscribe;
+use App\Models\Verify;
 use App\Models\VerifyCode;
 use App\Services\UserService;
 use Illuminate\Console\Command;
@@ -46,10 +47,14 @@ class TaskAuto extends Command
 
     private function orderTimer(): void
     {
+        // 两个条件必须整体括起来：chunkById 追加的 id > ? 是顶层 AND，而 AND 的优先级高于 OR，
+        // 只分别括住每一支的话 id > ? 只会作用到后一支，分页条件对第一支（超时未支付订单）形同失效，
+        // 那一支每轮都会被重新选中，一旦 close() 没能改掉 status 就会死循环。
         Order::where(function (Builder $query) {
-            $query->recentUnPay(); // 关闭超时未支付本地订单
-        })->orWhere(function (Builder $query) {
-            $query->whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.confirmation_orders')))); // 关闭未处理的人工支付订单
+            $query->recentUnPay() // 关闭超时未支付本地订单
+                ->orWhere(function (Builder $query) {
+                    $query->whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.confirmation_orders')))); // 关闭未处理的人工支付订单
+                });
         })->chunkById((int) sysConfig('tasks_chunk', 3000), function ($orders) {
             $orders->each->close();
         });
@@ -59,6 +64,9 @@ class TaskAuto extends Command
     { // 注册验证码自动置无效 & 优惠券无效化
         // 注册验证码过时 置无效
         VerifyCode::recentUnused()->update(['status' => 2]);
+
+        // 激活/改密令牌：超时未用的置失效，不可用的行按保留期删掉
+        Verify::cleanup();
 
         // 优惠券过时 置无效
         Coupon::withTrashed()->where('status', '<>', 2)->where('end_time', '<=', time())->update(['status' => 2]);
@@ -74,10 +82,15 @@ class TaskAuto extends Command
         $dirtyWorks = ['status' => 0, 'ban_time' => $ban_time, 'ban_desc' => 'Subscription link receive abnormal access and banned by the system'];
         $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
 
+        // 注意这里不能用 whereDate()：它编译成 date(request_time) >= ?，列被函数包裹后索引直接失效，
+        // 而这是每分钟一次的相关子查询。改成与日期零点比较，语义完全相同（date(x) >= 'Y-m-d'
+        // 等价于 x >= 'Y-m-d 00:00:00'），索引才用得上。
+        $dayAgo = now()->subDay()->startOfDay();
+
         User::activeUser()->with(['subscribe', 'subscribeLogs'])->whereHas('subscribe', function (Builder $query) {
             $query->whereStatus(1); // 获取有订阅且未被封禁用户
-        })->whereHas('subscribeLogs', function (Builder $query) {
-            $query->whereDate('request_time', '>=', now()->subDay()); //    ->distinct()->count('request_ip');
+        })->whereHas('subscribeLogs', function (Builder $query) use ($dayAgo) {
+            $query->where('request_time', '>=', $dayAgo); //    ->distinct()->count('request_ip');
         }, '>=', sysConfig('subscribe_rate_limit'))->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($banMsg, $dirtyWorks) {
             foreach ($users as $user) {
                 $user->subscribe->update($dirtyWorks);

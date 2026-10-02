@@ -183,7 +183,7 @@ class ConfigSeeder extends Seeder
             'standard_currency' => 'CNY',
             'redirect_url' => 'https://www.baidu.com',
             'tasks_chunk' => 3000,
-            'tasks_clean' => '{"notification_logs":"-18 months","node_daily_logs":"-13 months","node_hourly_logs":"-14 days","node_heartbeats":"-30 minutes","node_online_logs":"-14 days","payments":"-1 years","rule_logs":"-3 months","node_online_ips":"-7 days","user_baned_logs":"-3 months","user_daily_logs_nodes":"-36 days","user_daily_logs_total":"-3 months","user_hourly_logs":"-3 days","login_logs":"-3 months","subscribe_logs":"-2 months","traffic_logs":"-3 days","unpaid_orders":"-1 years"}',
+            'tasks_clean' => '{"notification_logs":"-18 months","node_daily_logs":"-13 months","node_hourly_logs":"-14 days","node_heartbeats":"-30 minutes","node_online_logs":"-14 days","payments":"-1 years","payment_callbacks":"-6 months","rule_logs":"-3 months","node_online_ips":"-7 days","user_baned_logs":"-3 months","user_daily_logs_nodes":"-36 days","user_daily_logs_total":"-3 months","user_hourly_logs":"-3 days","login_logs":"-3 months","subscribe_logs":"-2 months","traffic_logs":"-3 days","unpaid_orders":"-1 years"}',
             'tasks_close' => '{"tickets":"-72 hours","confirmation_orders":"-12 hours","orders":"-15 minutes","verify":"-15 minutes"}',
             'recently_heartbeat' => '-10 minutes',
         ];
