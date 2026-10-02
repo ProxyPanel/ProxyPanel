@@ -62,7 +62,8 @@ class Node extends Model
         return $this->hasOne(NodeOnlineLog::class)->ofMany(
             ['log_time' => 'max'],
             function ($query) {
-                $query->where('log_time', '>=', strtotime('-5 minutes'));
+                // 与 latestHeartbeat 用同一个阈值：两个窗口不一致时，节点还在线却显示不出在线人数
+                $query->where('log_time', '>=', strtotime(sysConfig('recently_heartbeat')));
             }
         );
     }

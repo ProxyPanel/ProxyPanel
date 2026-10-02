@@ -27,6 +27,9 @@ class DelUser implements ShouldQueue
         if (! is_array($this->uids)) {
             $this->uids = [$this->uids];
         }
+
+        // /kick 收的是客户端ID字符串数组，JSON 数字会被服务端拒绝（鉴权返回的 id 就是字符串）
+        $this->uids = array_map('strval', $this->uids);
     }
 
     public function handle(): void

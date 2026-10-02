@@ -17,7 +17,16 @@ use ReflectionClass;
  */
 class ProxyService
 {
-    private static array $servers = [];
+    /**
+     * 节点配置缓存，键为订阅类型（未指定类型时为 all）。
+     *
+     * 必须是实例属性且按类型分键：曾经是 static 单槽缓存，同一进程内换用户或换协议类型后
+     * 会直接复用上一次的结果，导致把 A 的节点（含 passwd/uuid）发给 B、或让 type 过滤静默失效。
+     */
+    private array $servers = [];
+
+    /** 获取节点失败时的占位配置（failedProxyReturn 写入），优先级高于节点缓存 */
+    private ?array $failedServers = null;
 
     private User $user;
 
@@ -64,17 +73,26 @@ class ProxyService
 
     private function getServers(?int $type): array
     {
-        if (empty(self::$servers)) {
+        if ($this->failedServers !== null) { // 已判定获取失败，复用占位配置，顺带避免重复查库
+            return $this->failedServers;
+        }
+
+        $key = $type ?? 'all'; // 按 type 分键，否则一次订阅会把别的协议类型的节点也发出去
+
+        if (! array_key_exists($key, $this->servers)) {
             $servers = $this->fetchAvailableNodes($type);
 
             if (empty($servers)) {
-                $this->failedProxyReturn(trans('errors.subscribe.none'), $type);
-            } else {
-                self::$servers = $servers;
+                // $type 未指定时是 null，不能直接传给 failedProxyReturn 的 int 形参
+                $this->failedProxyReturn(trans('errors.subscribe.none'), $type ?? 0);
+
+                return $this->failedServers;
             }
+
+            $this->servers[$key] = $servers;
         }
 
-        return self::$servers;
+        return $this->servers[$key];
     }
 
     public function fetchAvailableNodes(?int $type = null, bool $withConfigs = true): array|Collection
@@ -196,20 +214,19 @@ class ProxyService
 
     public function failedProxyReturn(string $message, int $type = 0): void
     { // 设置错误代理返回（用于兼容客户端）
-        $types = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
+        // 键与 config/common.proxy_protocols 的协议编号一致：4（VNET）与 1 同由 SSR 协议承载。
+        // 原来是顺序数组，type 4 会错认成 hysteria2、type 5 越界，客户端拿到的是畸形占位配置。
+        $types = [0 => 'shadowsocks', 1 => 'shadowsocksr', 2 => 'vmess', 3 => 'trojan', 4 => 'shadowsocksr', 5 => 'hysteria2'];
 
         $addition = match ($type) {
-            1 => ['method' => 'none', 'passwd' => 'error', 'obfs' => 'origin', 'obfs_param' => '', 'protocol' => 'plain', 'protocol_param' => ''],
+            1, 4 => ['method' => 'none', 'passwd' => 'error', 'obfs' => 'origin', 'obfs_param' => '', 'protocol' => 'plain', 'protocol_param' => ''],
             2 => ['uuid' => '0', 'v2_alter_id' => 0, 'method' => 'auto'],
             3 => ['passwd' => 'error'],
-            5 => ['passwd' => 'error', 'sni' => 'error', 'insecure' => false],
+            5 => ['passwd' => 'error', 'sni' => 'error', 'allow_insecure' => false], // 键名与节点 profile 一致，客户端格式化器读的都是 allow_insecure
             default => ['method' => 'none', 'passwd' => 'error'],
         };
 
-        // 确保$type在有效范围内
-        $typeIndex = $type > 5 ? 0 : $type;
-
-        self::$servers = [['id' => 0, 'name' => $message, 'type' => $types[$typeIndex], 'host' => sysConfig('website_url'), 'port' => 0, 'udp' => 0, ...$addition]];
+        $this->failedServers = [['id' => 0, 'name' => $message, 'type' => $types[$type] ?? $types[0], 'host' => sysConfig('website_url'), 'port' => 0, 'udp' => 0, ...$addition]];
     }
 
     public function getUserProxyConfig(Node $node, bool $isUrlFormat = false): string
@@ -230,5 +247,9 @@ class ProxyService
     public function setUser(User $user): void
     { // 设置用户
         $this->user = $user;
+
+        // 换用户必须清缓存，否则会把上一个用户已生成的节点配置连同凭据一起发给新用户
+        $this->servers = [];
+        $this->failedServers = null;
     }
 }

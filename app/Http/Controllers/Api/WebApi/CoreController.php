@@ -6,9 +6,14 @@ use App\Helpers\ResponseEnum;
 use App\Helpers\WebApiResponse;
 use App\Models\Node;
 use App\Models\User;
+use App\Models\UserDataFlowLog;
+use App\Utils\NodeTraffic\TrafficBatch;
+use DB;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Log;
 use Validator;
 
 class CoreController extends Controller
@@ -66,31 +71,53 @@ class CoreController extends Controller
     // 上报用户流量日志
     public function setUserTraffic(Request $request, Node $node): JsonResponse
     {
-        $validator = Validator::make($request->all(), ['*.uid' => 'required|numeric|exists:user,id', '*.upload' => 'required|numeric', '*.download' => 'required|numeric']);
+        // 不再对每个 uid 做 exists 校验：那是一条查询校验一行，而且只要有一个 uid 已失效（账号被删），
+        // 整批流量都会被拒收。这里只校验形状，用户是否存在改成一次 whereIn 查回来。
+        $validator = Validator::make($request->all(), ['*.uid' => 'required|integer', '*.upload' => 'required|numeric', '*.download' => 'required|numeric']);
 
         if ($validator->fails()) {
             return $this->failed(ResponseEnum::CLIENT_PARAMETER_ERROR, $validator->errors()->all());
         }
 
-        $rate = $node->traffic_rate;
+        $rate = (float) $node->traffic_rate;
+        $logTime = time();
+        $traffic = TrafficBatch::aggregate($validator->validated(), $rate);
 
-        foreach ($validator->validated() as $input) { // 处理用户流量数据
-            $u = $input['upload'] * $rate;
-            $d = $input['download'] * $rate;
-
-            $formattedData[] = ['user_id' => $input['uid'], 'u' => $u, 'd' => $d, 'rate' => $rate, 'traffic' => formatBytes($u + $d), 'log_time' => time()];
+        if (empty($traffic)) {
+            return $this->failed([400201, '生成用户流量日志失败']);
         }
 
-        if (isset($formattedData) && $logs = $node->userDataFlowLogs()->createMany($formattedData)) { // 生成用户流量数据
-            foreach ($logs as $log) { // 更新用户流量数据
-                $user = $log->user;
-                $user->update(['u' => $user->u + $log->u, 'd' => $user->d + $log->d, 't' => time()]);
-            }
-
-            return $this->succeed();
+        // 一次查出真正存在的账号：上报里残留的已删账号只记日志并跳过，不连累同批其他用户的流量
+        $existsIds = array_map('intval', User::whereIn('id', array_keys($traffic))->pluck('id')->all());
+        if ($missingIds = array_values(array_diff(array_keys($traffic), $existsIds))) {
+            // 只记前若干个：上报内容来自节点，不能让它把日志写爆
+            Log::warning('【上报流量】节点 #'.$node->id.' 上报了不存在的账号，已跳过：'.implode(',', array_slice($missingIds, 0, 10)).'（共 '.count($missingIds).' 条）');
         }
 
-        return $this->failed([400201, '生成用户流量日志失败']);
+        $traffic = array_intersect_key($traffic, array_flip($existsIds));
+
+        if (empty($traffic)) {
+            return $this->failed([400201, '生成用户流量日志失败']);
+        }
+
+        try {
+            DB::transaction(function () use ($node, $traffic, $rate, $logTime) {
+                // 一次 INSERT 写完记录：createMany() 内部是逐行 INSERT
+                UserDataFlowLog::insert(TrafficBatch::buildLogRows($traffic, $node->id, $rate, $logTime));
+
+                // 分块累加到账号上，每块一条 UPDATE
+                foreach (TrafficBatch::chunks($traffic) as $chunk) {
+                    $query = TrafficBatch::buildUpdateQuery($chunk, $logTime);
+                    DB::update($query['sql'], $query['bindings']);
+                }
+            });
+        } catch (Exception $e) {
+            Log::error('【上报流量】节点 #'.$node->id.' 写入失败：'.$e->getMessage());
+
+            return $this->failed([400201, '生成用户流量日志失败']);
+        }
+
+        return $this->succeed();
     }
 
     // 获取节点的审计规则
