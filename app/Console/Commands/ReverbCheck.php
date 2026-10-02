@@ -97,7 +97,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * 驱动检查：null / log 时不会真推送，后台操作也不会因为广播失败而 500
+     * 驱动检查：null / log 时不会真推送，后台操作也不会因为广播失败而 500.
      */
     private function checkDriver(string $connection): bool
     {
@@ -300,7 +300,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * 读已安装的 laravel/reverb 版本（先 composer.lock，再 vendor/composer/installed.json）
+     * 读已安装的 laravel/reverb 版本（先 composer.lock，再 vendor/composer/installed.json）.
      */
     private function reverbVersion(): ?string
     {
@@ -335,7 +335,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * config 缓存：本面板生产环境大量使用 optimize，缓存与 .env 脱节时 Web 端会用旧凭据签名
+     * config 缓存：本面板生产环境大量使用 optimize，缓存与 .env 脱节时 Web 端会用旧凭据签名.
      */
     private function checkCache(): void
     {
@@ -359,7 +359,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * 直接探测 Reverb 进程本身（走服务端监听地址），用于区分「进程没起」和「验签失败」
+     * 直接探测 Reverb 进程本身（走服务端监听地址），用于区分「进程没起」和「验签失败」.
      */
     private function checkServerHealth(int $timeout): void
     {
@@ -392,7 +392,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * 端到端验证：走应用真实的 broadcast()，和 NodeController 保存节点时完全同一条代码路径
+     * 端到端验证：走应用真实的 broadcast()，和 NodeController 保存节点时完全同一条代码路径.
      */
     private function checkTrigger(string $connection): void
     {
@@ -484,7 +484,7 @@ class ReverbCheck extends Command
     }
 
     /**
-     * 只暴露长度与首尾少量字符，避免把 secret 打进日志
+     * 只暴露长度与首尾少量字符，避免把 secret 打进日志.
      */
     private function mask(string $value): string
     {

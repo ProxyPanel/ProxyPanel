@@ -72,7 +72,9 @@ class StripeApiVersionTest extends TestCase
 
         ApiRequestor::setHttpClient(new class($this->captured) implements ClientInterface
         {
-            public function __construct(public array &$captured) {}
+            public function __construct(public array &$captured)
+            {
+            }
 
             public function request($method, $absUrl, $headers, $params, $hasFile, $apiMode = 'v1', $maxNetworkRetries = null): array
             {
