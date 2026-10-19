@@ -29,8 +29,9 @@ class HorizonServiceProvider extends HorizonApplicationServiceProvider
      */
     protected function gate(): void
     {
+        // Horizon 的鉴权中间件按 Gate::check('viewHorizon', [$user]) 调用，带参数就不吃超管短路，判据只能自己走无参数的 can()
         Gate::define('viewHorizon', function (User $user) {
-            return $user->hasPermissionTo('horizon.index');
+            return $user->can('horizon.index');
         });
     }
 }

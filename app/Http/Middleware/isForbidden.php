@@ -18,14 +18,14 @@ class isForbidden
     {
         // 拒绝机器人访问
         if (sysConfig('is_forbid_robot') && Agent::isRobot()) {
-            Log::warning(trans('errors.forbidden.bots').': '.IP::getClientIp());
+            Log::warning(trans('errors.forbidden.bots').': '.$request->ip());
 
             return Response::view('auth.error', ['message' => trans('errors.forbidden.bots')], 403);
         }
 
         // 拒绝通过非网站链接访问网站，防止网站被探测
         if ($this->isForbiddenSubscription($request)) {
-            Log::warning(trans('errors.forbidden.redirect', ['ip' => IP::getClientIp(), 'url' => $request->fullUrl()]));
+            Log::warning(trans('errors.forbidden.redirect', ['ip' => $request->ip(), 'url' => $request->fullUrl()]));
 
             return redirect(sysConfig('redirect_url', 'https://www.baidu.com').'?url='.$request->url());
         }
@@ -51,7 +51,7 @@ class isForbidden
      */
     private function isForbiddenIP(): bool
     {
-        $ip = IP::getClientIP();
+        $ip = $request->ip();
         $ipLocation = IP::getIPInfo($ip);
 
         if (! $ipLocation || empty(array_filter($ipLocation))) {

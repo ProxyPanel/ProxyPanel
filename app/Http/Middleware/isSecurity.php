@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Utils\IP;
 use Cache;
 use Closure;
 use Log;
@@ -17,7 +16,7 @@ class isSecurity
      */
     public function handle($request, Closure $next)
     {
-        $ip = IP::getClientIP();
+        $ip = $request->ip();
         $code = $request->securityCode;
         $cacheKey = 'SecurityLogin_'.ip2long($ip);
         $websiteSecurityCode = sysConfig('website_security_code');

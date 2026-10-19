@@ -7,10 +7,12 @@ use App\Models\Payment;
 use App\Models\PaymentCallback;
 use App\Models\User;
 use App\Models\UserCreditLog;
+use App\Notifications\Custom;
 use App\Utils\Library\PaymentHelper;
 use DB;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 /**
@@ -22,6 +24,8 @@ class PaymentCallbackLedgerTest extends TestCase
 
     public function test_records_a_callback_that_matches_nothing(): void
     {
+        Notification::fake();
+
         $log = PaymentHelper::createPaymentCallback($this->notify([
             'method' => 'epay',
             'trade_no' => 'PLATFORM-ONLY',
@@ -65,6 +69,8 @@ class PaymentCallbackLedgerTest extends TestCase
     /** 对不上单号的回调也留原文；payload 是 TEXT，超限要截. */
     public function test_caps_an_oversized_payload(): void
     {
+        Notification::fake();
+
         $log = PaymentHelper::createPaymentCallback($this->notify([
             'method' => 'unknown',
             'blob' => str_repeat('B', 20000),
@@ -89,6 +95,106 @@ class PaymentCallbackLedgerTest extends TestCase
 
         $this->assertTrue(PaymentHelper::paymentReceived($payment->trade_no));
         $this->assertSame(PaymentCallback::STATUS_FULFILLED, (int) $log->fresh()->status);
+    }
+
+    /** 对不上号的回调要提醒管理员，但探测流量不能把提醒刷成洪水. */
+    public function test_unmatched_callback_alerts_the_admin_only_once_per_window(): void
+    {
+        Notification::fake();
+
+        // 提醒收件人固定是 id=1 的管理员，空库上先造出来（DatabaseTransactions 会回滚）
+        $admin = $this->admin();
+
+        foreach (['PROBE-A', 'PROBE-B'] as $no) {
+            PaymentHelper::createPaymentCallback($this->notify(['method' => 'epay', 'out_trade_no' => $no]));
+        }
+
+        Notification::assertSentToTimes($admin, Custom::class, 1);
+
+        // 窗口过后要能再提醒，否则去重会变成永久静默
+        $this->travel(11)->minutes();
+        PaymentHelper::createPaymentCallback($this->notify(['method' => 'epay', 'out_trade_no' => 'PROBE-C']));
+        Notification::assertSentToTimes($admin, Custom::class, 2);
+    }
+
+    public function test_matched_callback_does_not_alert(): void
+    {
+        Notification::fake();
+        $payment = $this->payment('MATCHED'.strtoupper(substr(uniqid(), -6)));
+
+        PaymentHelper::createPaymentCallback($this->notify([
+            'method' => 'epay',
+            'out_trade_no' => $payment->trade_no,
+        ]));
+
+        Notification::assertNothingSent();
+    }
+
+    /** manual 的确认/拒绝链接不带单号，只有 payment.id 的短码；认得出就不是孤儿回调. */
+    public function test_a_manual_callback_is_attributed_by_its_signed_payment_id(): void
+    {
+        Notification::fake();
+        $payment = $this->payment('MANUALSIGN'.strtoupper(substr(uniqid(), -6)));
+
+        $log = PaymentHelper::createPaymentCallback($this->notify([
+            'method' => 'manual',
+            'sign' => PaymentHelper::encodePaymentSign($payment->id),
+            'status' => '1',
+        ]));
+
+        $this->assertSame($payment->trade_no, $log->trade_no);
+        $this->assertSame(990, $log->getRawOriginal('amount'));
+
+        Notification::assertNothingSent();
+    }
+
+    /** 解不开的短码没有单号可对：仍按无人推进处理. */
+    public function test_an_unsolvable_manual_sign_still_alerts(): void
+    {
+        Notification::fake();
+        $admin = $this->admin();
+        cache()->forget('payment_callback:unmatched_alert');
+
+        $log = PaymentHelper::createPaymentCallback($this->notify([
+            'method' => 'manual',
+            'sign' => 'not-a-valid-code',
+            'status' => '1',
+        ]));
+
+        $this->assertNull($log->trade_no);
+
+        Notification::assertSentToTimes($admin, Custom::class, 1);
+    }
+
+    /** 码支付的本地单号在 pay_id，键名含义只有按值域对才认得出. */
+    public function test_a_codepay_callback_is_attributed_by_pay_id(): void
+    {
+        Notification::fake();
+        $payment = $this->payment('CODEPAYID'.strtoupper(substr(uniqid(), -6)));
+
+        $log = PaymentHelper::createPaymentCallback($this->notify([
+            'method' => 'codepay',
+            'pay_id' => $payment->trade_no,
+            'pay_no' => 'PLATFORM-9',
+        ]));
+
+        $this->assertSame($payment->trade_no, $log->trade_no);
+
+        Notification::assertNothingSent();
+    }
+
+    /** 关闭单仍可被迟到付款复活并交付：这是 2021 年起的原始语义，改它要当成行为变更. */
+    public function test_a_closed_order_is_still_fulfilled_by_a_late_callback(): void
+    {
+        $payment = $this->payment('LATE'.strtoupper(substr(uniqid(), -6)));
+        $this->assertTrue($payment->order->close());
+        $this->assertSame(-1, (int) Order::find($payment->order_id)->status);
+
+        $this->assertTrue(PaymentHelper::paymentReceived($payment->trade_no));
+
+        $this->assertSame(2, (int) Order::find($payment->order_id)->status);
+        $this->assertSame(9.9, (float) $payment->user->fresh()->credit);
+        $this->assertSame(1, UserCreditLog::whereUserId($payment->user_id)->count());
     }
 
     private function notify(array $payload): Request
