@@ -6,12 +6,15 @@ use App\Events\PaymentStatusUpdated;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentCallback;
+use App\Models\User;
+use App\Notifications\Custom;
 use App\Notifications\PaymentReceived;
-use App\Utils\IP;
 use DB;
+use Hashids\Hashids;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\Request;
 use Log;
+use Notification;
 use Str;
 use Throwable;
 
@@ -22,6 +25,9 @@ class PaymentHelper
 
     // 支付单号的发号尝试次数
     private const TRADE_NO_ATTEMPTS = 3;
+
+    // 人工审核短码的最短长度
+    private const PAYMENT_SIGN_LENGTH = 8;
 
     /**
      * MD5验签.
@@ -113,34 +119,87 @@ class PaymentHelper
     }
 
     /**
+     * 人工审核的收付凭据：支付单主键的短码，编进管理员的确认/拒绝链接，也是那条回调唯一的身份来源。
+     */
+    public static function encodePaymentSign(int $paymentId): string
+    {
+        return (new Hashids(config('app.key'), self::PAYMENT_SIGN_LENGTH))->encode($paymentId);
+    }
+
+    public static function decodePaymentSign(string $sign): ?int
+    {
+        $decoded = (new Hashids(config('app.key'), self::PAYMENT_SIGN_LENGTH))->decode($sign);
+
+        return $decoded === [] ? null : (int) $decoded[0];
+    }
+
+    /**
      * 记录刚进来的回调（此时还没验签），行 id 挂到 request 上供 paymentReceived() 回写。
      */
     public static function createPaymentCallback(Request $request): PaymentCallback
     {
         $payload = $request->all();
-        $tradeNo = self::matchLocalTradeNo($payload);
+        $method = (string) ($request->query('method') ?: $request->input('method'));
+        $tradeNo = self::matchLocalTradeNo($payload) ?? self::matchManualTradeNo($method, $payload);
         $payment = $tradeNo ? Payment::whereTradeNo($tradeNo)->first() : null;
 
         $log = PaymentCallback::create([
-            'method' => Str::limit((string) ($request->query('method') ?: $request->input('method')), 32, ''),
+            'method' => Str::limit($method, 32, ''),
             'trade_no' => $tradeNo,
             'out_trade_no' => self::matchPlatformTradeNo($payload, $tradeNo),
             'amount' => $payment?->amount ?? 0,
             // 按字符截到 15000：utf8mb4 最坏 4 字节一字符，TEXT 装得下
             'payload' => Str::limit(self::loggable($payload), 15000),
-            'ip' => IP::getClientIp(),
+            'ip' => $request->ip(),
             'status' => PaymentCallback::STATUS_UNFULFILLED,
         ]);
 
         $request->attributes->set('payment_callback_id', $log->id);
 
+        if ($tradeNo === null) {
+            self::alertUnmatched($log);
+        }
+
         return $log;
+    }
+
+    /**
+     * 对不上任何本地单号的回调：没有任何订单会被推进，只能靠台账与提醒发现.
+     *
+     * 探测流量也走这条，所以 10 分钟最多提醒一次，细节留在台账里查。
+     */
+    private static function alertUnmatched(PaymentCallback $log): void
+    {
+        if (! cache()->add('payment_callback:unmatched_alert', now()->timestamp, now()->addMinutes(10))) {
+            return;
+        }
+
+        $admin = User::find(1);
+
+        if ($admin === null) {
+            return;
+        }
+
+        try {
+            Notification::send($admin, new Custom(
+                trans('notification.payment_unmatched'),
+                trans('notification.payment_unmatched_content', [
+                    'id' => $log->id,
+                    'method' => $log->method ?: trans('common.status.unknown'),
+                    'platform_no' => $log->out_trade_no ?: trans('common.status.unknown'),
+                    'ip' => $log->ip ?: trans('common.status.unknown'),
+                ]),
+            ));
+        } catch (Throwable $e) {
+            // 提醒发不出去不能让一条已收款的回调变成 500
+            Log::error('【支付回调】未匹配提醒发送失败：'.$e->getMessage());
+        }
     }
 
     /**
      * 回调报文中「我们这边的支付单号」可能出现的字段名，按可信度排序。
      */
-    private const LOCAL_ORDER_FIELDS = ['out_trade_no', 'merchant_order_id', 'merchant_order_no', 'order_id', 'invoice', 'client_reference_id', 'trade_no'];
+    private const LOCAL_ORDER_FIELDS = ['out_trade_no', 'merchant_order_id', 'merchant_order_no', 'pay_id', 'order_id', 'invoice', 'client_reference_id', 'trade_no'];
 
     /**
      * 支付平台交易号可能出现的字段名，按可信度排序。
@@ -172,6 +231,20 @@ class PaymentHelper
         }
 
         return null;
+    }
+
+    /**
+     * 人工审核的确认/拒绝链接不带单号，身份只有 sign；解不开或单不存在才算孤儿回调.
+     */
+    private static function matchManualTradeNo(string $method, array $payload): ?string
+    {
+        if ($method !== 'manual' || ! is_string($payload['sign'] ?? null)) {
+            return null;
+        }
+
+        $paymentId = self::decodePaymentSign($payload['sign']);
+
+        return $paymentId === null ? null : Payment::whereKey($paymentId)->value('trade_no');
     }
 
     private static function matchPlatformTradeNo(array $payload, ?string $localTradeNo): ?string

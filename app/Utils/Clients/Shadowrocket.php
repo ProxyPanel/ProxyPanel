@@ -10,7 +10,7 @@ class Shadowrocket implements Client
 {
     public const AGENT = ['shadowrocket'];
 
-    public function getConfig(array $servers, User $user): string
+    public function getConfig(array $servers, User $user, string $target): string
     {
         $uri = '';
         // display remaining traffic and expire date

@@ -13,7 +13,7 @@ class Text implements Formatter
 
     public static function buildShadowsocksr(array $server): string
     {
-        return '服务器：'.$server['host'].PHP_EOL.'服务器端口：'.$server['port'].PHP_EOL.'密码：'.$server['passwd'].PHP_EOL.'加密：'.$server['method'].PHP_EOL.'协议：'.$server['protocol'].PHP_EOL.'协议参数：'.$server['protocol_param'].PHP_EOL.'混淆：'.$server['obfs'].PHP_EOL.'混淆参数：'.$server['obfs_param'].PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
+        return '服务器：'.$server['host'].PHP_EOL.'服务器端口：'.$server['port'].PHP_EOL.'密码：'.$server['passwd'].PHP_EOL.'加密：'.$server['method'].PHP_EOL.'协议：'.$server['protocol'].PHP_EOL.'协议参数：'.($server['protocol_param'] ?? '').PHP_EOL.'混淆：'.$server['obfs'].PHP_EOL.'混淆参数：'.($server['obfs_param'] ?? '').PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
     }
 
     public static function buildVmess(array $server): string
@@ -23,13 +23,13 @@ class Text implements Formatter
 
     public static function buildTrojan(array $server): string
     {
-        return '服务器：'.$server['host'].PHP_EOL.'端口：'.$server['port'].PHP_EOL.'密码：'.$server['passwd'].PHP_EOL.'SNI：'.$server['sni'].PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
+        return '服务器：'.$server['host'].PHP_EOL.'端口：'.$server['port'].PHP_EOL.'密码：'.$server['passwd'].PHP_EOL.(isset($server['sni']) ? 'SNI：'.$server['sni'].PHP_EOL : '').'UDP：'.$server['udp'].PHP_EOL;
     }
 
     public static function buildHysteria2(array $server): string
     {
         return '服务器：'.$server['host'].PHP_EOL.'端口：'.$server['port'].PHP_EOL.(isset($server['ports']) ? '端口跳跃：'.$server['ports'].PHP_EOL : '').'密码：'.$server['passwd'].PHP_EOL.(isset($server['obfs']) ? '混淆：'
-                .$server['obfs'].PHP_EOL.'混淆密码：'.$server['obfs_param'].PHP_EOL : '').'SNI：'
+                .$server['obfs'].PHP_EOL.'混淆密码：'.($server['obfs_param'] ?? '').PHP_EOL : '').'SNI：'
             .$server['host'].PHP_EOL.'允许不安全：'.($server['allow_insecure'] ? '是' : '否').PHP_EOL.'UDP：'.$server['udp'].PHP_EOL;
     }
 }

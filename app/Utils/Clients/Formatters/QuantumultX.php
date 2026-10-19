@@ -6,16 +6,20 @@ use App\Utils\Library\Templates\Formatter;
 
 class QuantumultX implements Formatter
 {
+    use TypeDispatch;
+
     // https://github.com/crossutility/Quantumult-X
+    public static function types(): array
+    {
+        return ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+    }
+
     public static function build(array $servers, bool $isEncode = true): string
     {
-        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
         $url = '';
 
-        foreach ($servers as $server) {
-            if (in_array($server['type'], $validTypes, true)) {
-                $url .= call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
-            }
+        foreach (self::matched($servers) as $hit) {
+            $url .= $hit[1];
         }
 
         return $isEncode ? base64_encode($url) : $url;

@@ -10,7 +10,7 @@ class V2rayN implements Client
 {
     public const AGENT = ['v2rayn', 'v2rayng', 'v2rayu'];
 
-    public function getConfig(array $servers, User $user): string
+    public function getConfig(array $servers, User $user, string $target): string
     {
         $uri = '';
         if (sysConfig('is_custom_subscribe')) {

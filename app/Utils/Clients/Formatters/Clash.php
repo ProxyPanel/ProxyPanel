@@ -6,22 +6,17 @@ use App\Utils\Library\Templates\Formatter;
 
 class Clash implements Formatter
 {
+    use TypeDispatch;
+
     // https://clash.wiki/configuration/outbound.html
+    public static function types(): array
+    {
+        return ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
+    }
+
     public static function build(array $servers): array
     {
-        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan'];
-
-        foreach ($servers as $server) {
-            if (in_array($server['type'], $validTypes, true)) {
-                $proxy = call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
-                if ($proxy) {
-                    $ids[] = $server['id'];
-                    $proxies[] = $proxy;
-                }
-            }
-        }
-
-        return ['ids' => $ids ?? [], 'proxies' => $proxies ?? []];
+        return self::assembleProxies($servers);
     }
 
     public static function buildShadowsocks(array $server): ?array
@@ -45,7 +40,8 @@ class Clash implements Formatter
 
     public static function buildShadowsocksr(array $server): ?array
     {
-        $supportedMethods = ['aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'rc4-md5', 'chacha20-ietf', 'xchacha20', 'none'];
+        // CTR 系列是 Clash 的流密码（v1.18.0 transport/shadowsocks/core/cipher.go:56-58），SSR 用它们合法
+        $supportedMethods = ['aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr', 'rc4-md5', 'chacha20-ietf', 'xchacha20', 'none'];
 
         $supportedObfuscations = ['plain', 'http_simple', 'http_post', 'random_head', 'tls1.2_ticket_auth', 'tls1.2_ticket_fastauth'];
 

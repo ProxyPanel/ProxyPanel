@@ -17,7 +17,7 @@ class Clash implements Client
 {
     public const AGENT = ['clash', 'stash', 'bob_vpn'];
 
-    public function getConfig(array $servers, User $user, string $target): array|string
+    public function getConfig(array $servers, User $user, string $target): string
     {
         $custom_path = '/resources/rules/custom.clash.yaml';
         if (str_contains($target, 'bob_vpn')) {

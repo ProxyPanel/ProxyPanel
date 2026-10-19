@@ -6,18 +6,22 @@ use App\Utils\Library\Templates\Formatter;
 
 class Surge implements Formatter
 {
+    use TypeDispatch;
+
     // https://manual.nssurge.com/policy/proxy.html
+    public static function types(): array
+    {
+        return ['shadowsocks', 'vmess', 'trojan', 'hysteria2'];
+    }
+
     public static function build(array $servers): array
     {
-        $validTypes = ['shadowsocks', 'vmess', 'trojan', 'hysteria2'];
         $names = '';
         $proxies = '';
 
-        foreach ($servers as $server) {
-            if (in_array($server['type'], $validTypes, true)) {
-                $names .= $server['name'].', ';
-                $proxies .= call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
-            }
+        foreach (self::matched($servers) as $hit) {
+            $names .= $hit[0]['name'].', ';
+            $proxies .= $hit[1];
         }
 
         return ['name' => rtrim($names, ', '), 'proxies' => $proxies];

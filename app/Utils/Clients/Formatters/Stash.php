@@ -6,22 +6,17 @@ use App\Utils\Library\Templates\Formatter;
 
 class Stash implements Formatter
 {
+    use TypeDispatch;
+
     // https://stash.wiki/proxy-protocols/proxy-types
+    public static function types(): array
+    {
+        return ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
+    }
+
     public static function build(array $servers): array
     {
-        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
-
-        foreach ($servers as $server) {
-            if (in_array($server['type'], $validTypes, true)) {
-                $proxy = call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
-                if ($proxy) {
-                    $ids[] = $server['id'];
-                    $proxies[] = $proxy;
-                }
-            }
-        }
-
-        return ['ids' => $ids ?? [], 'proxies' => $proxies ?? []];
+        return self::assembleProxies($servers);
     }
 
     public static function buildShadowsocks(array $server): ?array
@@ -108,15 +103,6 @@ class Stash implements Formatter
             }
         }
 
-        // 添加更多VMess选项
-        if (! empty($server['v2_alpn'])) {
-            $array['alpn'] = $server['v2_alpn'];
-        }
-
-        if (isset($server['v2_allow_insecure']) && $server['v2_allow_insecure']) {
-            $array['skip-cert-verify'] = $server['v2_allow_insecure'];
-        }
-
         return $array;
     }
 
@@ -161,11 +147,6 @@ class Stash implements Formatter
 
         if (isset($server['allow_insecure'])) {
             $array['skip-cert-verify'] = $server['allow_insecure'];
-        }
-
-        // 添加端口跳跃功能
-        if (isset($server['hop_interval']) && $server['hop_interval']) {
-            $array['hop-interval'] = $server['hop_interval'];
         }
 
         return $array;

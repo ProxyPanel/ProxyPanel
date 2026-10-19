@@ -6,27 +6,23 @@ use App\Utils\Library\Templates\Formatter;
 
 class ClashMeta implements Formatter
 {
+    use TypeDispatch;
+
     // https://wiki.metacubex.one/config/proxies/
+    public static function types(): array
+    {
+        return ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
+    }
+
     public static function build(array $servers): array
     {
-        $validTypes = ['shadowsocks', 'shadowsocksr', 'vmess', 'trojan', 'hysteria2'];
-
-        foreach ($servers as $server) {
-            if (in_array($server['type'], $validTypes, true)) {
-                $proxy = call_user_func([self::class, 'build'.ucfirst($server['type'])], $server);
-                if ($proxy) {
-                    $ids[] = $server['id'];
-                    $proxies[] = $proxy;
-                }
-            }
-        }
-
-        return ['ids' => $ids ?? [], 'proxies' => $proxies ?? []];
+        return self::assembleProxies($servers);
     }
 
     public static function buildShadowsocks(array $server): ?array
     {
-        $supportedMethods = ['aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr', 'aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'aes-128-gcm', 'aes-192-gcm', 'aes-256-gcm', 'aes-128-ccm', 'aes-192-ccm', 'aes-256-ccm', 'aes-128-gcm-siv', 'aes-256-gcm-siv', 'chacha20-ietf', 'chacha20', 'xchacha20', 'chacha20-ietf-poly1305', 'xchacha20-ietf-poly1305', 'chacha8-ietf-poly1305', 'xchacha8-ietf-poly1305', '2022-blake3-aes-128-gcm', '2022-blake3-aes-256-gcm', '2022-blake3-chacha20-poly1305', 'lea-128-gcm', 'lea-192-gcm', 'lea-256-gcm', 'rabbit128-poly1305', 'aegis-128l', 'aegis-256', 'aez-384', 'deoxys-ii-256-128', 'rc4-md5', 'none'];
+        // 名单与 mihomo v1.19.32 的注册表对齐（sing-shadowsocks2：shadowstream/shadowaead/shadowaead_2022 三组），查表按原样大小写匹配
+        $supportedMethods = ['aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr', 'aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'aes-128-gcm', 'aes-192-gcm', 'aes-256-gcm', 'aes-128-ccm', 'aes-192-ccm', 'aes-256-ccm', 'aes-128-gcm-siv', 'aes-256-gcm-siv', 'chacha20-ietf', 'chacha20', 'xchacha20', 'chacha20-ietf-poly1305', 'xchacha20-ietf-poly1305', 'chacha8-ietf-poly1305', 'xchacha8-ietf-poly1305', '2022-blake3-aes-128-gcm', '2022-blake3-aes-256-gcm', '2022-blake3-aes-128-ccm', '2022-blake3-aes-256-ccm', '2022-blake3-chacha20-poly1305', '2022-blake3-chacha8-poly1305', 'lea-128-gcm', 'lea-192-gcm', 'lea-256-gcm', 'rabbit128-poly1305', 'aegis-128l', 'aegis-256', 'aez-384', 'deoxys-ii-256-128', 'ascon128', 'ascon128a', 'rc4-md5', 'none'];
 
         if (! in_array($server['method'], $supportedMethods, true)) {
             return null;
@@ -45,7 +41,7 @@ class ClashMeta implements Formatter
 
     public static function buildShadowsocksr(array $server): ?array
     {
-        $supportedMethods = ['aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr', 'aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'rc4-md5', 'chacha20', 'chacha20-ietf', 'none'];
+        $supportedMethods = ['aes-128-ctr', 'aes-192-ctr', 'aes-256-ctr', 'aes-128-cfb', 'aes-192-cfb', 'aes-256-cfb', 'rc4-md5', 'chacha20', 'chacha20-ietf', 'xchacha20', 'none'];
 
         $supportedObfuscations = ['plain', 'http_simple', 'http_post', 'random_head', 'tls1.2_ticket_auth', 'tls1.2_ticket_fastauth'];
 
