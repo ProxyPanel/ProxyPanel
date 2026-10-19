@@ -74,7 +74,7 @@ class VNetAlgorithmWhitelistTest extends TestCase
 
     /**
      * Supported 是节点仓 docs/capabilities.json 的镜像：同机器上有两个仓检出时逐组比对，
-     * 拿不到那份文件（单独检出一个仓）就跳过——同步步骤写在 AGENTS.md 与本文件注释里
+     * 拿不到那份文件（单独检出一个仓）就跳过——同步步骤写在 AGENTS.md 与本文件注释里.
      */
     public function test_the_mirror_matches_the_node_capability_manifest_when_present(): void
     {

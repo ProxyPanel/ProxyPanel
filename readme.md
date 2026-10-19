@@ -12,9 +12,9 @@ Support but not limited to: Shadowsocks,ShadowsocksR,ShadowsocksRR,V2Ray,Trojan,
     - **Account:** test@test.com
     - **Password:** 123456
 - [**WIKI**](https://proxypanel.gitbook.io/wiki/) [简体中文](https://proxypanel.gitbook.io/wiki/)
-- [**Issues**](https://github.com/ZBrettonYe/ProxyPanel/issues)
+- [**Issues**](https://github.com/ProxyPanel/ProxyPanel/issues)
 - [**UpdateLog**](https://proxypanel.gitbook.io/wiki/updatelog)
-- [**Upcoming**](https://github.com/ZBrettonYe/ProxyPanel/projects/2)
+- [**Upcoming**](https://github.com/ProxyPanel/ProxyPanel/projects/2)
 - [**Telegram**](https://t.me/+nW8AwsPPUsliYzg1)
 
 ---

@@ -20,7 +20,7 @@ final class LockRetry
      */
     public static function run(callable $write, int $attempts = self::ATTEMPTS): int
     {
-        for ($execution = 1; ; $execution++) {
+        for ($execution = 1;; $execution++) {
             try {
                 $write();
 

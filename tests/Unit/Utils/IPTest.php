@@ -525,7 +525,7 @@ class IPTest extends TestCase
     }
 
     /**
-     * 本用例真实出网，CI 用 --exclude-group network 跳过
+     * 本用例真实出网，CI 用 --exclude-group network 跳过.
      *
      * @group network
      */
@@ -574,7 +574,7 @@ class IPTest extends TestCase
     }
 
     /**
-     * 测试单个API的实际请求；本用例真实出网，CI 用 --exclude-group network 跳过
+     * 测试单个API的实际请求；本用例真实出网，CI 用 --exclude-group network 跳过.
      *
      * @param  string  $checker  检查器名称
      * @param  string  $ip  测试IP地址

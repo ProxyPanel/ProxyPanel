@@ -165,7 +165,7 @@ class CurrencyExchangeTest extends TestCase
     }
 
     /**
-     * 本用例真实出网，CI 用 --exclude-group network 跳过
+     * 本用例真实出网，CI 用 --exclude-group network 跳过.
      *
      * @group network
      */

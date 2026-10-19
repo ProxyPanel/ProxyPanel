@@ -29,7 +29,9 @@ class ReconcileNode implements ShouldQueue
 
     public $backoff = 60;
 
-    public function __construct(private readonly Node $node) {}
+    public function __construct(private readonly Node $node)
+    {
+    }
 
     public function handle(): void
     {
