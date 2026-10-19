@@ -35,11 +35,6 @@ class IP
 
     private const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/139.0.0.0 Safari/537.36';
 
-    public static function getClientIP(): ?string
-    { // 获取访客真实IP
-        return request()?->ip();
-    }
-
     public static function getIPInfo(string $ip, ?string $checker = null): array|null|false
     { // 获取 IP 信息
         if (in_array($ip, ['::1', '127.0.0.1'], true)) {
@@ -391,7 +386,6 @@ class IP
         }
 
         $data = $response->json();
-        // 注意是 $data['msg']：这里曾经写成 $data["'msg'"]（带引号的键名），导致该 provider 永远取不到数据
         if (($data['code'] ?? null) !== 0 || ($data['msg'] ?? null) !== 'ok') {
             Log::error('【speedtest】IP查询失败：'.($data['msg'] ?? 'unknown'));
 

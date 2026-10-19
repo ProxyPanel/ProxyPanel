@@ -2,7 +2,6 @@
 
 namespace App\Utils\DDNS;
 
-use App\Utils\IP;
 use App\Utils\Library\Templates\DNS;
 use Arr;
 use Cache;
@@ -62,7 +61,7 @@ class Namecheap implements DNS
 
     private function sendRequest(string $action, array $parameters = []): array
     {
-        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT, ['ApiUser' => $this->username, 'ApiKey' => $this->apiKey, 'UserName' => $this->username, 'ClientIp' => IP::getClientIP(), 'Command' => $action, ...$parameters]);
+        $response = Http::timeout(15)->retry(3, 1000)->get(self::API_ENDPOINT, ['ApiUser' => $this->username, 'ApiKey' => $this->apiKey, 'UserName' => $this->username, 'ClientIp' => request()->ip(), 'Command' => $action, ...$parameters]);
         $data = $response->body();
         if ($data) {
             $data = json_decode(json_encode(simplexml_load_string($data)), true);

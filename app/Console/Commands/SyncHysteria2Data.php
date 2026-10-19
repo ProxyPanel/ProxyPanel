@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\ProxyType;
 use App\Jobs\Hysteria2\GetOnlineUser;
 use App\Jobs\Hysteria2\GetTrafficStats;
 use App\Models\Node;
@@ -21,7 +22,7 @@ class SyncHysteria2Data extends Command
         $this->info('开始同步Hysteria2节点流量数据');
 
         // 同步所有Hysteria2节点
-        $hysteria2Nodes = Node::where('type', 5)->where('status', 1)->get();
+        $hysteria2Nodes = Node::where('type', ProxyType::HYSTERIA2->value)->where('status', 1)->get();
 
         if ($hysteria2Nodes->isNotEmpty()) {
             // 在线状态是节点列表/仪表盘的实时展示项，先采它；流量是累计值，晚一轮不影响计费。

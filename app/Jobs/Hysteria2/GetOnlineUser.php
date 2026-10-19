@@ -3,8 +3,10 @@
 namespace App\Jobs\Hysteria2;
 
 use App\Models\Node;
+use App\Models\NodeHeartbeat;
 use App\Models\User;
 use App\Utils\Hysteria2\OnlineReport;
+use App\Utils\NodeTraffic\LockRetry;
 use Exception;
 use Http;
 use Illuminate\Bus\Queueable;
@@ -79,8 +81,8 @@ class GetOnlineUser implements ShouldQueue
      * 把观测到的在线用户同步进 user.t.
      *
      * t 是面板里「最近在线/有流量」的统一口径（仪表盘的在线用户数、用户列表的在线筛选、
-     * 营销的活跃用户筛选都读它，其它协议由节点上报流量时写入）。Hysteria2 的在线用户此前完全不写 t，
-     * 于是「连着但当前没有流量」的用户在面板里不算在线，两套口径长期对不上。
+     * 营销的活跃用户筛选都读它，其它协议由节点上报流量时写入）。Hysteria2 没有流量上报通道，
+     * 在线判定只存在于轮询观测里，所以由这里补写 t：「连着但当前没有流量」的用户同样计入在线。
      * 用查询构造器批量更新：不触发模型事件，也不改动 updated_at。
      *
      * @param  array<int, int>  $userIds
@@ -188,17 +190,22 @@ class GetOnlineUser implements ShouldQueue
     private function recordHeartbeat(Node $node): void
     {
         $now = time();
-        $previous = $node->heartbeats()->latest('log_time')->first();
-
-        $node->heartbeats()->create([
-            'uptime' => OnlineReport::uptime(
-                $previous ? (int) $previous->uptime : null,
-                $previous ? (int) $previous->log_time : null,
-                $now
-            ),
+        // 每节点只有一行：「上一条」就是当前行，uptime 增量从它算起后原地刷新
+        $previous = NodeHeartbeat::where('node_id', $node->id)->first();
+        $uptime = OnlineReport::uptime(
+            $previous ? (int) $previous->uptime : null,
+            $previous ? (int) $previous->log_time : null,
+            $now
+        );
+        $row = [[
+            'node_id' => $node->id,
+            'uptime' => $uptime,
             'load' => 'N/A',
             'log_time' => $now,
-        ]);
+        ]];
+
+        // 只重跑死锁（数据库整笔回滚这条 upsert，重跑同一次观测安全）；1205 第一次就原样抛出，判据见 LockRetry
+        LockRetry::run(fn () => NodeHeartbeat::upsert($row, ['node_id'], ['uptime', 'load', 'log_time']));
     }
 
     // 队列失败处理

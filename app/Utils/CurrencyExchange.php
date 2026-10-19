@@ -13,8 +13,7 @@ class CurrencyExchange
     /**
      * 可用的汇率来源，按顺序尝试.
      *
-     * 曾经包含两个实际不存在的来源：'wsj'（类里没有对应方法）与 'baidu'
-     * （finance.pae.baidu.com 现在直接返回 403 hit risk）—— 已移除，勿再加回。
+     * 每项都必须在类里有同名方法，否则会被 method_exists 静默跳过（不报错，也只是少一个来源）。
      */
     private static array $apis = ['fixer', 'exchangerateApi', 'wise', 'currencyData', 'exchangeRatesData', 'duckduckgo', 'xRates', 'valutafx', 'unionpay', 'jsdelivrFile', 'it120', 'k780'];
 
