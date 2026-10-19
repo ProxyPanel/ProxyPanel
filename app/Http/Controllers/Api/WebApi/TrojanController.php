@@ -16,7 +16,7 @@ class TrojanController extends Controller
         return $this->succeed([
             'id' => $node->id,
             'is_udp' => (bool) $node->is_udp,
-            'speed_limit' => $node->getRawOriginal('speed_limit'),
+            'speed_limit' => $node->speed_limit_bytes,
             'client_limit' => $node->client_limit,
             'push_port' => $node->push_port,
             'redirect_url' => sysConfig('redirect_url'),
@@ -32,7 +32,7 @@ class TrojanController extends Controller
             $data[] = [
                 'uid' => $user->id,
                 'password' => $user->passwd,
-                'speed_limit' => $user->getRawOriginal('speed_limit'),
+                'speed_limit' => $user->speed_limit_bytes,
             ];
         }
 

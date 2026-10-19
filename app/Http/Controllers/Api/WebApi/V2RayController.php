@@ -20,7 +20,7 @@ class V2RayController extends Controller
         return $this->succeed([
             'id' => $node->id,
             'is_udp' => (bool) $node->is_udp,
-            'speed_limit' => $node->getRawOriginal('speed_limit'),
+            'speed_limit' => $node->speed_limit_bytes,
             'client_limit' => $node->client_limit,
             'push_port' => $node->push_port,
             'redirect_url' => (string) sysConfig('redirect_url'),
@@ -46,7 +46,7 @@ class V2RayController extends Controller
             $data[] = [
                 'uid' => $user->id,
                 'vmess_uid' => $user->vmess_id,
-                'speed_limit' => $user->getRawOriginal('speed_limit'),
+                'speed_limit' => $user->speed_limit_bytes,
             ];
         }
 

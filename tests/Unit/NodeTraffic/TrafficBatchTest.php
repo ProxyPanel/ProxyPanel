@@ -37,17 +37,17 @@ class TrafficBatchTest extends TestCase
         $this->assertSame([5 => ['u' => 100, 'd' => 200]], TrafficBatch::aggregate($records, 1.0));
     }
 
-    public function test_build_log_rows_carries_node_and_formatted_traffic(): void
+    public function test_build_log_rows_carries_node_and_byte_deltas(): void
     {
         $rows = TrafficBatch::buildLogRows([5 => ['u' => MiB, 'd' => MiB]], 9, 1.5, 1700000000);
 
+        // 不带「产生流量」那类格式化字段：展示值由读取侧现算，写进表里就是每行的冗余
         $this->assertSame([[
             'user_id' => 5,
             'node_id' => 9,
             'u' => MiB,
             'd' => MiB,
             'rate' => 1.5,
-            'traffic' => formatBytes(2 * MiB),
             'log_time' => 1700000000,
         ]], $rows);
     }
@@ -75,6 +75,22 @@ class TrafficBatchTest extends TestCase
         $this->assertSame(substr_count($query['sql'], '?'), count($query['bindings']));
     }
 
+    /** 单轮上报可以远超 2 GiB：聚合、日志行、UPDATE 绑定都要按 64 位字节把值传下去 */
+    public function test_deltas_above_two_gigabytes_stay_intact(): void
+    {
+        $delta = 3 * GiB + 7;
+
+        $traffic = TrafficBatch::aggregate([['uid' => 5, 'upload' => $delta, 'download' => $delta]], 1.0);
+        $this->assertSame([5 => ['u' => $delta, 'd' => $delta]], $traffic);
+
+        $row = TrafficBatch::buildLogRows($traffic, 9, 1.0, 1700000000)[0];
+        $this->assertSame($delta, $row['u']);
+        $this->assertSame($delta, $row['d']);
+
+        $query = TrafficBatch::buildUpdateQuery($traffic, 1700000000);
+        $this->assertSame($delta, $query['bindings'][1], 'CASE 的 THEN 值就是这一轮的字节增量');
+    }
+
     public function test_chunks_keep_user_id_as_key(): void
     {
         $traffic = [];
@@ -94,6 +110,26 @@ class TrafficBatchTest extends TestCase
             }
 
             $this->assertSame(array_keys($chunk), array_slice(TrafficBatch::buildUpdateQuery($chunk, 1)['bindings'], -count($chunk)));
+        }
+    }
+
+    /** 聚合结果按 uid 升序：一个事务里多条 UPDATE 的取锁顺序要全局一致，并发上报才不会互锁成环 */
+    public function test_aggregate_returns_uids_ascending_and_chunks_do_not_interleave(): void
+    {
+        $records = [];
+        foreach (range(TrafficBatch::CHUNK_SIZE + 50, 1) as $uid) { // 节点上报的顺序就是逆序
+            $records[] = ['uid' => $uid, 'upload' => 1, 'download' => 1];
+        }
+
+        $this->assertSame(
+            range(1, TrafficBatch::CHUNK_SIZE + 50),
+            array_keys(TrafficBatch::aggregate($records, 1.0))
+        );
+
+        // 块与块必须是递增区间：交错时分块 UPDATE 各持一段等对方释放
+        $chunks = array_map('array_keys', TrafficBatch::chunks(TrafficBatch::aggregate($records, 1.0)));
+        for ($i = 1, $count = count($chunks); $i < $count; $i++) {
+            $this->assertLessThan(min($chunks[$i]), max($chunks[$i - 1]), '第 '.($i + 1).' 块的下界要大于前一块的上界');
         }
     }
 }

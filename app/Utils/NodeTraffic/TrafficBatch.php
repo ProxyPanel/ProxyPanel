@@ -37,6 +37,9 @@ final class TrafficBatch
             $traffic[$uid]['d'] = ($traffic[$uid]['d'] ?? 0) + max((int) ($record['download'] * $rate), 0);
         }
 
+        // uid 升序是锁序判据：分块 UPDATE 要块间也递增，并发上报取锁顺序一致才不会互锁成环
+        ksort($traffic);
+
         return $traffic;
     }
 
@@ -59,7 +62,6 @@ final class TrafficBatch
                 'u' => $row['u'],
                 'd' => $row['d'],
                 'rate' => $rate,
-                'traffic' => formatBytes($row['u'] + $row['d']),
                 'log_time' => $logTime,
             ];
         }

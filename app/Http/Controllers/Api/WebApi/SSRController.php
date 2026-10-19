@@ -28,7 +28,7 @@ class SSRController extends Controller
                 'protocol' => $user->protocol,
                 'obfs' => $user->obfs,
                 'obfs_param' => $node->profile['obfs_param'] ?? '',
-                'speed_limit' => $user->getRawOriginal('speed_limit'),
+                'speed_limit' => $user->speed_limit_bytes,
                 'enable' => $user->enable,
             ];
         }

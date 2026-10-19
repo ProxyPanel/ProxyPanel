@@ -16,7 +16,7 @@ class SSController extends Controller
         $data = [
             'id' => $node->id,
             'method' => $node->profile['method'] ?? '',
-            'speed_limit' => $node->getRawOriginal('speed_limit'),
+            'speed_limit' => $node->speed_limit_bytes,
             'client_limit' => $node->client_limit,
             'redirect_url' => sysConfig('redirect_url'),
         ];
@@ -35,7 +35,7 @@ class SSController extends Controller
                 'uid' => $user->id,
                 'port' => $user->port,
                 'passwd' => $user->passwd,
-                'speed_limit' => $user->getRawOriginal('speed_limit'),
+                'speed_limit' => $user->speed_limit_bytes,
                 'enable' => $user->enable,
             ];
         }
