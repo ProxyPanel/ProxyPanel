@@ -71,11 +71,16 @@ class OrderService
 
     private function activatePackage(): bool
     { // 激活流量包
-        if ($this->user->incrementData($this->goods->traffic * MiB)) {
-            return Helpers::addUserTrafficModifyLog($this->order->user_id, $this->user->transfer_enable - $this->goods->traffic * MiB, $this->user->transfer_enable, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]));
+        $delta = (int) ($this->goods->traffic * MiB);
+
+        if (! $this->user->incrementData($delta)) {
+            return false;
         }
 
-        return false;
+        // after 取写后回读的库值：Model::increment 只按内存快照推算属性，并发下它不等于库里真实的新值
+        $after = (int) User::whereKey($this->order->user_id)->value('transfer_enable');
+
+        return Helpers::addUserTrafficModifyLog($this->order->user_id, $after - $delta, $after, trans("[:payment] plus the user's purchased data plan.", ['payment' => $this->order->pay_way]));
     }
 
     public function activatePlan(): bool
@@ -126,9 +131,8 @@ class OrderService
      * 由「账号到期日」与「重置周期」推算下一次流量重置日期.
      *
      * 商品的 period 是「每 N 天自动重置流量」，留空（套餐允许）或 0 表示不自动重置。
-     * 这一点很容易写错：曾经 period 为空时会被当成「0 天」算出今天的日期，而
-     * TaskDaily::resetUserTraffic() 的判定是 reset_time <= 今天，于是这类用户的流量
-     * 每天都会被清零（且重置后算出的还是今天，永远退出不了这个循环）。
+     * period 为空或 0 时必须返回 null：把它当成「0 天」会算出今天，而 TaskDaily::resetUserTraffic() 判的是
+     * reset_time <= 今天，那会让这类用户每天被清零、且重算出的仍是今天，永远跳不出这个循环。
      *
      * 这里只做日期推算，不碰数据库，便于单测（本项目的 Laravel 测试需要可达的数据库才能启动）。
      */

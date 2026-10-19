@@ -52,7 +52,19 @@ class MoneyCastTest extends TestCase
             [0.125, 13, ''],
             [9.995, 1000, ''],
             [99999.995, 10000000, '进位后跨过整数元'],
+            // x.xx50 这一族在 (int) round($v * 100) 下会系统性偏小（0.145 会存成 14 分），半分进位不能靠二进制表示的运气
+            [0.145, 15, ''],
+            [1.005, 101, ''],
+            [0.29, 29, '先舍到两位小数再乘 100 仍会掉精度，外面还要再 round 一次'],
+            [-9.995, -1000, '负值同样远离零进位'],
         ];
+    }
+
+    /** 计算值造出的半分：19.99 元的订单按 0.5 提佣就是 9.995，汇率换算与除法也是这个形状 */
+    public function test_set_rounds_a_computed_half_cent_up(): void
+    {
+        $this->assertSame(1000, $this->cast->set($this->model, 'amount', 19.99 * 0.5, []));
+        $this->assertSame(30, $this->cast->set($this->model, 'amount', 0.1 + 0.2, []));
     }
 
     /**

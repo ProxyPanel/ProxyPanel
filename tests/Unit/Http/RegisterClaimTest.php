@@ -4,7 +4,6 @@ namespace Tests\Unit\Http;
 
 use App\Models\Invite;
 use App\Models\User;
-use App\Utils\IP;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestResponse;
@@ -67,7 +66,7 @@ class RegisterClaimTest extends TestCase
     public function test_over_limit_registration_is_refused_without_keeping_the_reservation(): void
     {
         config(['settings.register_ip_limit' => 1]);
-        $counter = 'register_times_'.md5(IP::getClientIp());
+        $counter = 'register_times_'.md5(request()->ip());
 
         $this->register($this->email())->assertRedirect();
         $this->assertSame(1, (int) cache()->get($counter));

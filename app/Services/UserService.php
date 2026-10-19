@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Utils\Helpers;
 use DB;
 use RuntimeException;
 
@@ -94,5 +95,37 @@ class UserService
     public function isActivePaying(): bool
     {
         return $this->getUser()->orders()->active()->where('origin_amount', '>', 0)->exists();
+    }
+
+    /**
+     * 签到发流量：时间窗内只有 cache()->add 认领成功的那一次会发.
+     *
+     * 只回状态与文案，响应封装留给调用方（网页端与客户端的形状不同）。
+     * state：disabled-未开启签到、repeated-本周期已签过、failed-发流量失败、success-已发放。
+     */
+    public function checkIn(): array
+    {
+        $user = $this->getUser();
+
+        if (! sysConfig('checkin_interval')) {
+            return ['state' => 'disabled', 'message' => trans('user.home.attendance.disable')];
+        }
+
+        if (! cache()->add('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') * Minute)) {
+            return ['state' => 'repeated', 'message' => trans('user.home.attendance.done')];
+        }
+
+        $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
+        $before = $user->transfer_enable;
+
+        if (! $user->incrementData($traffic)) {
+            cache()->forget('userCheckIn_'.$user->id); // 发失败要让人能重签
+
+            return ['state' => 'failed', 'message' => trans('user.home.attendance.failed')];
+        }
+
+        Helpers::addUserTrafficModifyLog($user->id, $before, $user->transfer_enable, trans('user.home.attendance.attribute'));
+
+        return ['state' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])];
     }
 }

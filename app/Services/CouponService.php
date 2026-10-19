@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ActionMessage;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\User;
@@ -140,7 +141,7 @@ class CouponService
                 Helpers::addCouponLog('Used for credit recharge.', $coupon->id); // 写入卡券使用日志
             });
         } catch (Exception $exception) {
-            Log::emergency(trans('common.error_action_item', ['action' => trans('common.apply'), 'attribute' => trans('model.coupon.attribute')]).': '.$exception->getMessage());
+            Log::emergency(ActionMessage::failureLog('common.apply', 'model.coupon.attribute', $exception->getMessage()));
 
             return false;
         }
