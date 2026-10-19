@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\NodeDailyDataFlow;
-use App\Models\NodeHeartbeat;
 use App\Models\NodeHourlyDataFlow;
 use App\Models\NodeOnlineIp;
 use App\Models\NodeOnlineLog;
@@ -19,7 +18,7 @@ use Log;
 
 class AutoClearLogs extends Command
 {
-    protected $signature = 'autoClearLogs {--light : 只清理保留期最短的节点心跳（供高频调度使用）}';
+    protected $signature = 'autoClearLogs';
 
     protected $description = '自动清除日志';
 
@@ -39,13 +38,6 @@ class AutoClearLogs extends Command
     private function clearLog(): void
     {
         try {
-            // 节点负载信息保留期最短（默认 30 分钟），放在最前面，供 --light 高频清理
-            $this->deleteInBatches(NodeHeartbeat::where('log_time', '<=', strtotime(sysConfig('tasks_clean.node_heartbeats')))); // 清除节点负载信息日志
-
-            if ($this->option('light')) {
-                return;
-            }
-
             $this->deleteInBatches(NodeDailyDataFlow::whereNotNull('node_id')->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.node_daily_logs'))))); // 清除节点每天流量数据日志
 
             $this->deleteInBatches(NodeHourlyDataFlow::where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_clean.node_hourly_logs'))))); // 清除节点每小时流量数据日志

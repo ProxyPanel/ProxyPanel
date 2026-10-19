@@ -11,6 +11,7 @@ use App\Models\UserSubscribe;
 use App\Models\Verify;
 use App\Models\VerifyCode;
 use App\Services\UserService;
+use App\Utils\Helpers;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Log;
@@ -77,14 +78,13 @@ class TaskAuto extends Command
 
     private function blockSubscribes(): void
     { // 封禁访问异常地订阅链接
-        $trafficBanTime = sysConfig('ban_duration');
+        $trafficBanTime = Helpers::banDurationMinutes();
         $ban_time = strtotime($trafficBanTime.' minutes');
         $dirtyWorks = ['status' => 0, 'ban_time' => $ban_time, 'ban_desc' => 'Subscription link receive abnormal access and banned by the system'];
         $banMsg = ['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked Subscription: Subscription with abnormal requests within 24 hours')];
 
-        // 注意这里不能用 whereDate()：它编译成 date(request_time) >= ?，列被函数包裹后索引直接失效，
-        // 而这是每分钟一次的相关子查询。改成与日期零点比较，语义完全相同（date(x) >= 'Y-m-d'
-        // 等价于 x >= 'Y-m-d 00:00:00'），索引才用得上。
+        // 这里不能用 whereDate()：它编译成 date(request_time) >= ?，列被函数包裹后索引失效，而这是每分钟一次的相关子查询。
+        // 与当天零点比较语义等价（date(x) >= 'Y-m-d' 即 x >= 'Y-m-d 00:00:00'），索引才用得上。
         $dayAgo = now()->subDay()->startOfDay();
 
         User::activeUser()->with(['subscribe', 'subscribeLogs'])->whereHas('subscribe', function (Builder $query) {
@@ -118,17 +118,15 @@ class TaskAuto extends Command
 
         // 封禁1小时内流量异常账号
         if (sysConfig('traffic_abuse_limit')) {
-            $trafficBanTime = sysConfig('ban_duration');
-            $ban_time = strtotime($trafficBanTime.' minutes');
+            $trafficBanTime = Helpers::banDurationMinutes();
             $userService = new UserService;
 
             User::activeUser()->whereBanTime(null)->where('t', '>=', strtotime('-5 minutes')) // 只检测最近5分钟有流量使用的用户
-                ->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($userService, $ban_time, $trafficBanTime) {
-                    $users->each(function ($user) use ($userService, $ban_time, $trafficBanTime) {
+                ->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($userService, $trafficBanTime) {
+                    $users->each(function ($user) use ($userService, $trafficBanTime) {
                         $userService->setUser($user);
                         if ($userService->isTrafficWarning()) {
-                            $user->update(['enable' => 0, 'ban_time' => $ban_time]);
-                            $user->banedLogs()->create(['time' => $trafficBanTime, 'description' => __('[Auto Task] Blocked service: Abnormal traffic within 1 hour')]); // 写入日志
+                            Helpers::tempBanUser($user, $trafficBanTime, __('[Auto Task] Blocked service: Abnormal traffic within 1 hour'));
                         }
                     });
                 });

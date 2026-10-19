@@ -16,7 +16,7 @@ use Illuminate\Support\Str;
  *  - noindex  ：实际执行过、但没有走索引的语句
  *
  * 默认在线读取 information_schema / performance_schema（后两项需要 performance_schema 开启）；
- * --dump / --file= 改为离线分析 mysqldump 快照，只做 redundant，因为另外两项依赖运行期统计。
+ * --dump / --file= 走离线分析 mysqldump 快照，只做 redundant（unused 与 noindex 依赖运行期统计，离线拿不到）。
  */
 class DbIndexAudit extends Command
 {

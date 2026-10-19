@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Node;
 use App\Models\NodeDailyDataFlow;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\UserDailyDataFlow;
+use App\Models\UserDataFlowLog;
 use App\Notifications\TicketClosed;
 use App\Services\OrderService;
 use App\Utils\Helpers;
@@ -32,8 +33,28 @@ class TaskDaily extends Command
         if (sysConfig('auto_release_port')) {
             $this->releaseAccountPort();  // 账号端口回收
         }
-        $this->userTrafficStatistics(); // 用户每日流量统计
-        $this->nodeTrafficStatistics(); // 节点每日流量统计
+
+        $createdAt = date('Y-m-d 23:59:59', strtotime('yesterday'));
+        // 昨日窗口没有原始日志就跳过：没有行可重建，而合计行会从空集聚合出 NULL，撞 NOT NULL 列（1048）把整段回滚掉
+        if ($this->windowHasLogs($createdAt)) {
+            // 聚合必须在事务外算完：每插一行都经外键给 user / node 父行加 S 锁并持有到提交，
+            // 把分组查询留在事务里就是让各节点的每分钟上报和后台改节点一起等满锁
+            ['users' => $userRows, 'nodes' => $nodeRows] = $this->trafficRows($createdAt);
+
+            // 原子替换昨日统计：重跑同一天不会翻倍（含 node_id=null 的全站日合计行），中途失败整体回滚
+            DB::transaction(function () use ($createdAt, $userRows, $nodeRows) {
+                UserDailyDataFlow::where('created_at', $createdAt)->delete();
+                NodeDailyDataFlow::where('created_at', $createdAt)->delete();
+
+                foreach (array_chunk($userRows, 500) as $slice) {
+                    UserDailyDataFlow::insert($slice);
+                }
+
+                foreach (array_chunk($nodeRows, 500) as $slice) {
+                    NodeDailyDataFlow::insert($slice);
+                }
+            });
+        }
 
         $jobTime = round(microtime(true) - $jobTime, 4);
         Log::info(__('----「:job」Completed, Used :time seconds ----', ['job' => $this->description, 'time' => $jobTime]));
@@ -114,83 +135,77 @@ class TaskDaily extends Command
         })->update(['port' => 0]);
     }
 
-    private function userTrafficStatistics(): void
+    /**
+     * 昨日统计的账号行与节点行，由原始日志的一次分片读取折出.
+     *
+     * 窗口按小时切片，每片一条 (账号,节点) 的库侧分组查询：账号行与节点行都从同一份结果累加，
+     * 所以一天只读一遍原始日志，且读多少行始终由窗口大小决定。
+     * 账号行只保留活跃账号（与 task:hourly 同一判据），节点行统计全部账号、含被禁用与封禁的。
+     * 账号行按 uid 升序、每账号内按 node_id 升序，插行时取 user / node 父行 S 锁的顺序要与并发上报一致。
+     *
+     * @return array{users: array<int, array<string, mixed>>, nodes: array<int, array<string, mixed>>}
+     */
+    private function trafficRows(string $created_at): array
     {
-        $created_at = date('Y-m-d 23:59:59', strtotime('yesterday'));
         $end = strtotime($created_at);
-        $start = $end - 86399;
+        $pairs = [];
+        $nodes = [];
 
-        User::activeUser()->whereHas('dataFlowLogs', function (Builder $query) use ($start, $end) {
-            $query->whereBetween('log_time', [$start, $end]);
-        })->with([
-            'dataFlowLogs' => function ($query) use ($start, $end) {
-                $query->whereBetween('log_time', [$start, $end]);
-            },
-        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($users) use ($created_at) {
-            foreach ($users as $user) {
-                $dataFlowLogs = $user->dataFlowLogs->groupBy('node_id');
-
-                $data = $dataFlowLogs->map(function ($logs, $nodeId) use ($created_at) {
-                    $totals = $logs->reduce(function ($carry, $log) {
-                        $carry['u'] += $log['u'];
-                        $carry['d'] += $log['d'];
-
-                        return $carry;
-                    }, ['u' => 0, 'd' => 0]);
-
-                    return [
-                        'node_id' => $nodeId,
-                        'u' => $totals['u'],
-                        'd' => $totals['d'],
-                        'created_at' => $created_at,
-                    ];
-                })->values()->all();
-
-                $data[] = [ // 每日节点流量合计
-                    'node_id' => null,
-                    'u' => array_sum(array_column($data, 'u')),
-                    'd' => array_sum(array_column($data, 'd')),
-                    'created_at' => $created_at,
-                ];
-
-                $user->dailyDataFlows()->createMany($data);
+        for ($hour = 0; $hour < 24; $hour++) {
+            $to = $end - Hour * $hour;
+            foreach (UserDataFlowLog::pairTotals($to - Hour + 1, $to) as $total) {
+                $uid = (int) $total->user_id;
+                $nodeId = (int) $total->node_id;
+                $pairs[$uid][$nodeId]['u'] = ($pairs[$uid][$nodeId]['u'] ?? 0) + (int) $total->u;
+                $pairs[$uid][$nodeId]['d'] = ($pairs[$uid][$nodeId]['d'] ?? 0) + (int) $total->d;
+                $nodes[$nodeId]['u'] = ($nodes[$nodeId]['u'] ?? 0) + (int) $total->u;
+                $nodes[$nodeId]['d'] = ($nodes[$nodeId]['d'] ?? 0) + (int) $total->d;
             }
-        });
+        }
+
+        $active = array_flip(User::activeUser()->whereIn('id', array_keys($pairs))->pluck('id')->all());
+
+        $userRows = [];
+        ksort($pairs);
+        foreach ($pairs as $uid => $perNode) {
+            if (! isset($active[$uid])) {
+                continue;
+            }
+
+            ksort($perNode);
+            $sum_u = 0;
+            $sum_d = 0;
+            foreach ($perNode as $nodeId => $traffic) {
+                $userRows[] = ['user_id' => $uid, 'node_id' => $nodeId, 'u' => $traffic['u'], 'd' => $traffic['d'], 'created_at' => $created_at];
+                $sum_u += $traffic['u'];
+                $sum_d += $traffic['d'];
+            }
+            $userRows[] = ['user_id' => $uid, 'node_id' => null, 'u' => $sum_u, 'd' => $sum_d, 'created_at' => $created_at]; // 每日节点流量合计
+        }
+
+        $nodeRows = [];
+        $total_u = 0;
+        $total_d = 0;
+        ksort($nodes);
+        foreach ($nodes as $nodeId => $traffic) {
+            $nodeRows[] = ['node_id' => $nodeId, 'u' => $traffic['u'], 'd' => $traffic['d'], 'created_at' => $created_at];
+            $total_u += $traffic['u'];
+            $total_d += $traffic['d'];
+        }
+
+        // 合计的判据取「有没有逐节点行」：不带 GROUP BY 的聚合在空集上照样返回一行 NULL，拿它当守卫等于没守卫
+        if ($nodeRows !== []) {
+            $nodeRows[] = ['node_id' => null, 'u' => $total_u, 'd' => $total_d, 'created_at' => $created_at];
+        }
+
+        return ['users' => $userRows, 'nodes' => $nodeRows];
     }
 
-    private function nodeTrafficStatistics(): void
+    /** 昨日窗口内是否还有原始流量日志 */
+    private function windowHasLogs(string $created_at): bool
     {
-        $created_at = date('Y-m-d 23:59:59', strtotime('yesterday'));
         $end = strtotime($created_at);
-        $start = $end - 86399;
 
-        Node::whereHas('userDataFlowLogs', function (Builder $query) use ($start, $end) {
-            $query->whereBetween('log_time', [$start, $end]);
-        })->withCount([
-            'userDataFlowLogs as u_sum' => function ($query) use ($start, $end) {
-                $query->select(DB::raw('SUM(u)'))->whereBetween('log_time', [$start, $end]);
-            },
-        ])->withCount([
-            'userDataFlowLogs as d_sum' => function ($query) use ($start, $end) {
-                $query->select(DB::raw('SUM(d)'))->whereBetween('log_time', [$start, $end]);
-            },
-        ])->chunkById((int) sysConfig('tasks_chunk', 3000), function ($nodes) use ($created_at) {
-            foreach ($nodes as $node) {
-                $node->dailyDataFlows()->create([
-                    'u' => $node->u_sum,
-                    'd' => $node->d_sum,
-                    'created_at' => $created_at,
-                ]);
-            }
-        });
-
-        $dailyTotal = NodeDailyDataFlow::whereNotNull('node_id')->whereCreatedAt($created_at)->selectRaw('SUM(u) as total_u, SUM(d) as total_d')->first();
-        if ($dailyTotal) {
-            NodeDailyDataFlow::create([
-                'u' => $dailyTotal->total_u,
-                'd' => $dailyTotal->total_d,
-                'created_at' => $created_at,
-            ]);
-        }
+        return UserDataFlowLog::hasLogsInWindow($end - 86399, $end);
     }
 }
