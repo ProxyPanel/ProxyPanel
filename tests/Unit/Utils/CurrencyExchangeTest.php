@@ -164,6 +164,11 @@ class CurrencyExchangeTest extends TestCase
         $this->assertEquals(650.0, $result);
     }
 
+    /**
+     * 本用例真实出网，CI 用 --exclude-group network 跳过
+     *
+     * @group network
+     */
     public function test_real_api_requests(): void
     {
         $target = 'CNY';

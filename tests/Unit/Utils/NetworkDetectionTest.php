@@ -237,7 +237,9 @@ class NetworkDetectionTest extends TestCase
     }
 
     /**
-     * 测试真实可用的 IP.
+     * 测试真实可用的 IP；本用例真实出网，CI 用 --exclude-group network 跳过.
+     *
+     * @group network
      */
     public function test_real_ip_connectivity()
     {

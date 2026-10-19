@@ -110,6 +110,7 @@ class IPTest extends TestCase
             'IPDB' => [[
                 'name' => 'IPDB',
                 'ip' => '103.250.104.0',
+                'file' => 'qqwry.ipdb',
                 'expected' => [
                     'country' => '中国',
                     'region' => '辽宁',
@@ -205,6 +206,7 @@ class IPTest extends TestCase
             'ip2Location' => [[
                 'name' => 'ip2Location',
                 'ip' => '103.250.104.0',
+                'file' => 'IP2LOCATION-LITE-DB11.IPV6.BIN',
                 'expected' => [
                     'country' => 'China',
                     'region' => 'Liaoning',
@@ -216,6 +218,7 @@ class IPTest extends TestCase
             'GeoIP2' => [[
                 'name' => 'GeoIP2',
                 'ip' => '103.250.104.0',
+                'file' => 'GeoLite2-City.mmdb',
                 'expected' => [
                     'country' => 'China',
                     'latitude' => 34.7732,
@@ -325,10 +328,10 @@ class IPTest extends TestCase
             : $case['response'];
     }
 
-    public function test_get_client_ip_is_string_or_null(): void
+    /** 夹具带 file 键的是离线库 provider：库文件由 scripts/download_dbs.sh 下载且不入库 */
+    private static function offlineLibraryMissing(array $case): bool
     {
-        $ip = IP::getClientIP();
-        $this->assertTrue(is_null($ip) || is_string($ip));
+        return isset($case['file']) && ! file_exists(database_path($case['file']));
     }
 
     /**
@@ -336,6 +339,10 @@ class IPTest extends TestCase
      */
     public function test_get_ip_info_from_each_provider(array $case): void
     {
+        if (self::offlineLibraryMissing($case)) {
+            $this->markTestSkipped("缺少离线库 database/{$case['file']}");
+        }
+
         App::setLocale($case['locale'] ?? 'zh_CN');
 
         if (! empty($case['config'])) { // 设置可能存在的假token参数，来激活 API 访问
@@ -448,6 +455,11 @@ class IPTest extends TestCase
 
     public function test_local_database_providers_are_used_when_http_fails(): void
     {
+        // 本地库被 gitignore 不入库（ip2Region 兜底用 vendor 包自带的 xdb），都缺失时跳过
+        if (! file_exists(database_path('qqwry.ipdb')) && ! file_exists(base_path('vendor/zoujingli/ip2region/ip2region.xdb'))) {
+            $this->markTestSkipped('本地 IP 库文件缺失（database/qqwry.ipdb 与 vendor 自带 ip2region.xdb 均不存在）');
+        }
+
         // 设为中文以便优先走本地库（例如 IPDB / ip2region / ipip 等）
         App::setLocale('zh_CN');
         $ip = '123.123.123.123';
@@ -512,6 +524,11 @@ class IPTest extends TestCase
         $this->assertNull($result);
     }
 
+    /**
+     * 本用例真实出网，CI 用 --exclude-group network 跳过
+     *
+     * @group network
+     */
     public function test_real_api_requests(): void
     {
         $testIp = '8.8.8.8'; // 使用一个公共的IP地址进行测试
@@ -557,10 +574,12 @@ class IPTest extends TestCase
     }
 
     /**
-     * 测试单个API的实际请求
+     * 测试单个API的实际请求；本用例真实出网，CI 用 --exclude-group network 跳过
      *
      * @param  string  $checker  检查器名称
      * @param  string  $ip  测试IP地址
+     *
+     * @group network
      */
     public function test_single_real_api_request(string $checker = 'speedtest', string $ip = '8.8.8.8'): void
     {
