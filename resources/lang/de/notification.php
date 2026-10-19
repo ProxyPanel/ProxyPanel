@@ -12,6 +12,8 @@ return [
     'close_ticket' => 'Ticket [ID: :id, Titel: :title] wurde geschlossen',
     'data_anomaly' => 'Benutzer-Traffic-Anomalie-Erinnerung',
     'data_anomaly_content' => 'Benutzer [ID: :id], Traffic-Situation der letzten Stunde (Upload: :upload, Download: :download, Gesamt: :total)',
+    'rule_ban' => 'Konto wegen Verstoßes gegen Audit-Regeln vorübergehend gesperrt',
+    'rule_ban_content' => 'Konto [ID: :uid, :email] hat die Audit-Regeln innerhalb einer Stunde :hits Mal ausgelöst (Schwellwert :threshold) und wurde für :minutes Minuten gesperrt, automatische Entsperrung bei Ablauf. Letzter Knoten: [ID: :node_id, Name: :node_name]. Details stehen in den Auslöseprotokollen.',
     'details' => 'Details anzeigen',
     'details_btn' => 'Bitte klicken Sie auf die Schaltfläche unten [Details anzeigen]',
     'ding_bot_limit' => 'Jeder Roboter kann maximal 20 Nachrichten pro Minute senden, bei Überschreitung wird 10 Minuten gedrosselt.',

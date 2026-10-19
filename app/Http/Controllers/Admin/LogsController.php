@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Helpers\DataChart;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
@@ -23,6 +24,7 @@ use Illuminate\Http\Request;
 
 class LogsController extends Controller
 {
+    use ActionResponse;
     use DataChart;
 
     public function orderList(Request $request): View
@@ -84,7 +86,7 @@ class LogsController extends Controller
         });
 
         if ($changed) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
+            return $this->successItem('common.update');
         }
 
         return response()->json(['status' => 'fail', 'message' => trans('admin.logs.order.update_conflict')]);
@@ -120,9 +122,13 @@ class LogsController extends Controller
             $query->where('log_time', '<=', strtotime($value) + 86399);
         });
 
-        $totalTraffic = formatBytes($query->sum('u') + $query->sum('d')); // 在分页前，计算总使用流量
+        // 两个合计一条聚合取回：分两次 sum 会把同一份过滤条件（无筛选时是整张流量日志）扫两遍
+        $totals = (clone $query)->toBase()->selectRaw('sum(u) as sum_u, sum(d) as sum_d')->first();
+        $totalTraffic = formatBytes((int) $totals->sum_u + (int) $totals->sum_d);
         $dataFlowLogs = $query->latest('log_time')->paginate(20)->appends($request->except('page'));
         foreach ($dataFlowLogs as $log) {
+            // 「产生流量」原本是本表一列，现在由 u+d 现算：必须排在下面两行之前，那两个字段马上要被改写成给人看的字符串
+            $log->traffic = formatBytes((int) $log->u + (int) $log->d);
             $log->u = formatBytes($log->u);
             $log->d = formatBytes($log->d);
             $log->log_time = date('Y-m-d H:i:s', $log->log_time);
@@ -251,12 +257,18 @@ class LogsController extends Controller
 
         $userList = $query->orderBy('id')->paginate(15)->appends($request->except('page'));
 
-        // 获取最近10分钟的在线IP记录
-        $nodeOnlineIPs = NodeOnlineIp::with('node:id,name')->where('created_at', '>=', strtotime('-10 minutes'))->latest()->distinct()->get(['user_id', 'node_id', 'port', 'ip', 'type', 'created_at']);
+        // 在线IP 按当页这些账号取：整窗水合是「每个在线账号每一分钟一行」的量，而这里每人最多用得上 5 行
+        $onlineIPs = NodeOnlineIp::with('node:id,name')
+            ->whereIn('user_id', $userList->pluck('id'))
+            ->where('created_at', '>=', strtotime('-10 minutes'))
+            ->latest()
+            ->distinct()
+            ->get(['user_id', 'node_id', 'port', 'ip', 'type', 'created_at'])
+            ->groupBy('user_id');
 
         foreach ($userList as $user) {
             // 最近5条在线IP记录，如果后端设置为60秒上报一次，则为10分钟内的在线IP
-            $user->onlineIPList = $nodeOnlineIPs->where('port', $user->port)->take(5);
+            $user->onlineIPList = $onlineIPs->get($user->id, collect())->take(5);
         }
 
         return view('admin.logs.userOnlineIP', ['userList' => $userList]);

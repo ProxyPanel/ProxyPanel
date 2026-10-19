@@ -61,7 +61,7 @@
                                 {{ __('common.status.unknown') }}
                             @endif
                         <td> {{ $article->sort }} </td>
-                        <td> {{ $article->created_at }} </td>
+                        <td> {{ localized_date($article->created_at) }} </td>
                         <td>
                             @canany(['admin.article.show', 'admin.article.edit', 'admin.article.destroy'])
                                 <x-admin.row-actions>

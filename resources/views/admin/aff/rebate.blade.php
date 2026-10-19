@@ -40,8 +40,8 @@
                         <td> {{ $referralLog->order_id }} </td>
                         <td> {{ $referralLog->amount }} </td>
                         <td> {{ $referralLog->commission }} </td>
-                        <td> {{ $referralLog->created_at }} </td>
-                        <td> {{ $referralLog->updated_at }} </td>
+                        <td> {{ localized_date($referralLog->created_at) }} </td>
+                        <td> {{ localized_date($referralLog->updated_at) }} </td>
                         <td> <x-badge :badge="$referralLog->status_badge" /> </td>
                     </tr>
                 @endforeach

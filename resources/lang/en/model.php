@@ -27,6 +27,7 @@ return [
     'country' => [
         'icon' => 'Flag Icon',
         'name' => 'Country Name',
+        'code' => 'Country Code',
     ],
     'coupon' => [
         'attribute' => 'Coupon',
@@ -333,6 +334,8 @@ return [
         'register_ip_limit' => 'Max Registrations per IP',
         'reset_password_times' => 'Password Reset Limit per Day',
         'reset_traffic' => 'Periodic Traffic Reset',
+        'rule_ban_times' => 'Audit Rule Ban Threshold',
+        'rule_log_cooldown' => 'Audit Log Cooldown',
         'server_chan_key' => 'ServerChan SCKEY',
         'standard_currency' => 'Default Currency',
         'stripe_public_key' => 'Stripe Public Key',

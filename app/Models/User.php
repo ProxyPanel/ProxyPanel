@@ -7,6 +7,7 @@ use App\Casts\money;
 use App\Observers\UserObserver;
 use App\Utils\Avatar;
 use App\Utils\Helpers;
+use DateTimeInterface;
 use Hash;
 use Hashids\Hashids;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -34,9 +35,23 @@ class User extends Authenticatable
 
     protected $table = 'user';
 
-    protected $casts = ['credit' => money::class, 'speed_limit' => data_rate::class, 'expired_at' => 'date:Y-m-d', 'expire_warned_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'date:Y-m-d'];
+    // ban_time 库里是整数 unix 时间戳：'datetime' cast 写前会格式化成日期字符串，'timestamp' 则原样透传，
+    // 但两者遇到 Carbon 都会经 __toString 变成 'Y-m-d H:i:s'，落到 int 列被静默截断成 2026（sql_mode 为空不报错）。
+    // 写入统一由 setBanTimeAttribute 归一成整数或 NULL；读回来是 int，给人看要过 localized_date()，客户端 API 按 epoch 发。
+    protected $casts = ['credit' => money::class, 'speed_limit' => data_rate::class, 'expired_at' => 'date:Y-m-d', 'expire_warned_at' => 'date:Y-m-d', 'reset_time' => 'date:Y-m-d', 'ban_time' => 'timestamp'];
 
     protected $guarded = [];
+
+    /** ban_time 是 int 列：只收整数 epoch 或 NULL，日期对象/日期字符串在这里归一，避免被截断成 2026 */
+    protected function setBanTimeAttribute($value): void
+    {
+        $this->attributes['ban_time'] = match (true) {
+            $value === null || $value === '' => null,
+            $value instanceof DateTimeInterface => $value->getTimestamp(),
+            is_numeric($value) => (int) $value,
+            default => (int) strtotime((string) $value) ?: null,
+        };
+    }
 
     public function routeNotificationForMail($notification): string
     {
@@ -164,7 +179,7 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    public function paidOrders(): hasMany
+    public function paidOrders(): HasMany
     {
         return $this->hasMany(Order::class)->where('status', 2)->whereNotNull('goods_id')->where('is_expire', 0)->where('amount', '>', 0);
     }
@@ -252,6 +267,11 @@ class User extends Authenticatable
         return $this->d + $this->u;
     }
 
+    public function getSpeedLimitBytesAttribute(): int
+    { // 下发给节点的值必须是字节/秒；speed_limit 本身被 data_rate cast 成 Mbps，只适合给人看
+        return (int) $this->getRawOriginal('speed_limit');
+    }
+
     public function getUnusedTrafficAttribute(): int
     {
         return max($this->transfer_enable - $this->d - $this->u, 0);
@@ -299,9 +319,30 @@ class User extends Authenticatable
 
     public function updateCredit(float $credit): bool
     {
-        $this->credit += $credit;
+        // credit 是 money cast（库里按分存），increment 绕过 cast，所以交给数据库的必须是分
+        $fen = (int) round($credit * 100);
 
-        return $this->credit >= 0 && $this->save();
+        if ($fen === 0) {
+            return true;
+        }
+
+        $query = static::whereKey($this->id);
+
+        if ($fen < 0) {
+            // sql_mode 为空，扣成负数不报错而是静默截断成 0，余额够不够只能在这里判
+            $query->where('credit', '>=', -$fen);
+        }
+
+        // 累加发生在数据库侧：读回来加完再写回会盖掉同一账号的另一次变动
+        $changed = $fen > 0
+            ? $query->increment('credit', $fen)
+            : $query->decrement('credit', -$fen);
+
+        if ($changed > 0) {
+            $this->credit += $credit; // 调用方拿它作为变动日志的 after
+        }
+
+        return $changed > 0;
     }
 
     public function incrementData(int $data): bool

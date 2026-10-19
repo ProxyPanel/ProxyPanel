@@ -64,7 +64,7 @@
                             @elseif($user['ban_time'])
                                 <i class="wb-alert orange-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.limited') }}</span>
-                                <p class="font-weight-300 m-0 orange-500">{!! trans('user.account.reason.overused', ['data' => sysConfig('traffic_abuse_limit')]) !!}</p>
+                                <p class="font-weight-300 m-0 orange-500">{!! trans('user.account.reason.overused', ['data' => sysConfig('traffic_abuse_limit'), 'min' => '']) !!}</p>
                             @else
                                 <i class="wb-help red-400 font-size-40 mr-10"></i>
                                 <span class="font-size-40 font-weight-100">{{ trans('common.status.disabled') }}</span>
@@ -276,7 +276,7 @@
                                 @forelse($announcements as $announcement)
                                     <h2 class="text-center">{!! $announcement->title !!}</h2>
                                     <p class="text-right"><small>{{ trans('common.updated_at') }}
-                                            <code>{{ $announcement->updated_at }}</code></small></p>
+                                            <code>{{ localized_date($announcement->updated_at) }}</code></small></p>
                                     <div class="announcement-content">
                                         {!! $announcement->content !!}
                                     </div>
@@ -439,7 +439,7 @@
         });
 
         @if ($user['ban_time']) // 封禁倒计时
-            const banedTime = new Date("{{ $user['ban_time'] }}").getTime();
+            const banedTime = {{ (int) $user['ban_time'] }} * 1000; // ban_time 是秒级 epoch，countDown 要的是毫秒
             countDown(banedTime, "banedTime", true);
             setInterval(function() {
                 countDown(banedTime, "banedTime", true);
@@ -468,9 +468,12 @@
             if (seconds) {
                 string += " " + Math.floor((distance % 60000) / 1000) + " " + @json(ucfirst(trans('validation.attributes.second')));
             }
-            document.getElementById(id).innerHTML = string;
+            const target = document.getElementById(id);
+            if (target) {
+                target.innerHTML = string;
+            }
 
-            if (distance <= 0 && distance.abs > 1000) {
+            if (distance <= 0 && Math.abs(distance) > 1000) {
                 window.location.reload();
             }
         }

@@ -4,12 +4,19 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use App\Models\User;
-use Hashids\Hashids;
+use App\Utils\Library\PaymentHelper;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Telegram\TelegramMessage;
 
-class PaymentConfirm extends Notification
+/**
+ * 待确认支付的提醒：与其它管理端通知一样走队列。
+ *
+ * 它在 OrderObserver::updated 里发出，而那条 update 可能跑在后台改订单状态的行锁事务里——
+ * 同步发就是把 SMTP/Telegram 的往返算进持锁时长。
+ */
+class PaymentConfirm extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -20,7 +27,7 @@ class PaymentConfirm extends Notification
     public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->sign = (new Hashids(config('app.key'), 8))->encode($order->payment->id);
+        $this->sign = PaymentHelper::encodePaymentSign($order->payment->id);
     }
 
     public function via($notifiable)

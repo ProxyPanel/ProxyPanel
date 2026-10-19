@@ -10,6 +10,7 @@ use App\Channels\PushPlusChannel;
 use App\Channels\ServerChanChannel;
 use App\Channels\TgChatChannel;
 use App\Channels\WeChatChannel;
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SystemRequest;
 use App\Models\Config;
@@ -32,31 +33,17 @@ use NotificationChannels\Telegram\TelegramChannel;
 
 class SystemController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     { // 系统设置
-        function parseTime(string|array $inputs): array
-        {
-            $items = is_array($inputs) ? $inputs : json_decode($inputs, true);
-            $result = [];
-
-            foreach ($items as $key => $duration) {
-                preg_match('/-(\d+)\s+(\w+)/', $duration, $m);
-                $result[$key] = [
-                    'num' => $m[1] ?? 1,
-                    'unit' => $m[2] ?? 'hours',
-                ];
-            }
-
-            return $result;
-        }
-
         // 获取所有配置项
         $config = Config::pluck('value', 'name')->toArray();
 
         // 预处理复杂数据
         // 解析时间类配置
-        $config['tasks_clean'] = parseTime($config['tasks_clean'] ?? []);
-        $config['tasks_close'] = parseTime($config['tasks_close'] ?? []);
+        $config['tasks_clean'] = $this->parseTime($config['tasks_clean'] ?? []);
+        $config['tasks_close'] = $this->parseTime($config['tasks_close'] ?? []);
 
         $paymentForms = PaymentManager::getSettingsFormData();
 
@@ -76,6 +63,25 @@ class SystemController extends Controller
             'notifyForms' => $this->getNotifyForms(),
             'ddns_labels' => (new DDNS)->getLabels(),
         ]);
+    }
+
+    /**
+     * 把 `-(N) (unit)` 形态的保留时长拆成控制台用的数值与单位。
+     */
+    private function parseTime(string|array $inputs): array
+    {
+        $items = is_array($inputs) ? $inputs : json_decode($inputs, true);
+        $result = [];
+
+        foreach ($items as $key => $duration) {
+            preg_match('/-(\d+)\s+(\w+)/', $duration, $m);
+            $result[$key] = [
+                'num' => $m[1] ?? 1,
+                'unit' => $m[2] ?? 'hours',
+            ];
+        }
+
+        return $result;
     }
 
     private function getCaptcha(): bool
@@ -253,7 +259,7 @@ class SystemController extends Controller
             $value /= 100;
         }
 
-        // Telegram 的 chat_id 必须是整数：旧版中继 token 存进去后每条通知都会 400 chat not found
+        // tg_chat_token 存的是整数 chat_id：非整数（32 位十六进制的中继 token）会被 Telegram 回 400 chat not found
         if ($value !== null && $name === 'tg_chat_token' && ! TgChatChannel::isValidChatId((string) $value)) {
             return response()->json(['status' => 'fail', 'message' => trans('admin.system.notification.invalid_chat_id')]);
         }
@@ -271,10 +277,10 @@ class SystemController extends Controller
 
         // 更新配置
         if (Config::findOrFail($name)->update(['value' => $value])) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.update')])]);
+            return $this->successItem('common.update');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.update')])]);
+        return $this->failItem('common.update');
     }
 
     public function sendTestNotification(): JsonResponse  // 推送通知测试

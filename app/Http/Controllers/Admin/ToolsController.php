@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionMessage;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Utils\IP;
 use DB;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -147,7 +147,7 @@ class ToolsController extends Controller
             try {
                 $file->move($save_path, $new_name);
             } catch (Exception $e) {
-                Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
+                Log::error(ActionMessage::failureLog('common.import', 'admin.menu.tools.import', $e->getMessage()));
 
                 return redirect()->back()->withErrors(trans('admin.tools.import.file_error'));
             }
@@ -179,14 +179,14 @@ class ToolsController extends Controller
                         'protocol' => $user['protocol'] ?? '',
                         'obfs' => $user['obfs'] ?? '',
                         'expired_at' => '2099-01-01',
-                        'reg_ip' => IP::getClientIp(),
+                        'reg_ip' => $request->ip(),
                     ]);
                 }
 
                 DB::commit();
             } catch (Exception $e) {
                 DB::rollBack();
-                Log::error(trans('common.error_action_item', ['action' => trans('common.import'), 'attribute' => trans('admin.menu.tools.import')]).': '.$e->getMessage());
+                Log::error(ActionMessage::failureLog('common.import', 'admin.menu.tools.import', $e->getMessage()));
 
                 // 原文只进日志：错误袋由 components/alert.blade.php 以 {!! !!} 渲染
                 return redirect()->back()->withErrors(trans('common.failed_item', ['attribute' => trans('common.import')]));

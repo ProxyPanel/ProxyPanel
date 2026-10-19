@@ -86,7 +86,7 @@
                 <dd class="col-sm-9">{{ $user->reset_date ?? trans('common.none') }}</dd>
                 <dt class="col-sm-3">{{ trans('common.latest_at') }}</dt>
                 <dd class="col-sm-9">
-                    {{ $user->t ? date('Y-m-d H:i', $user->t) : trans('common.status.unused') }}
+                    {{ $user->t ? localized_date($user->t) : trans('common.status.unused') }}
                 </dd>
                 <dt class="col-sm-3">{{ trans('model.user.expired_date') }}</dt>
                 <dd class="col-sm-9">
@@ -124,7 +124,7 @@
                     <dd class="col-sm-8">{{ $user->inviter->level }}</dd>
                     <dt class="col-sm-3 offset-md-1">{{ trans('common.latest_at') }}</dt>
                     <dd class="col-sm-8">
-                        {{ $user->inviter->t ? date('Y-m-d H:i', $user->inviter->t) : trans('common.status.unused') }}
+                        {{ $user->inviter->t ? localized_date($user->inviter->t) : trans('common.status.unused') }}
                     </dd>
                 @endisset
             </dl>

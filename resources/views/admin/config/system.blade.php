@@ -384,7 +384,10 @@
                             trans('admin.system.notification.channel.pushplus') => 'pushPlus',
                         ]" />
                         <x-system.input-limit code="traffic_abuse_limit" :value="$configs['traffic_abuse_limit']" min="1" unit="GB" />
-                        <x-system.input-limit code="ban_duration" :value="$configs['ban_duration']" unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
+                        <x-system.input-limit code="ban_duration" :value="$configs['ban_duration']" :min="1" unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
+                        <x-system.input-limit code="rule_ban_times" :value="$configs['rule_ban_times'] ?? 0" unit="{{ trans('admin.times') }}" />
+                        <x-system.input-limit code="rule_log_cooldown" :value="$configs['rule_log_cooldown'] ?? 30" :min="1"
+                                              unit="{{ ucfirst(trans('validation.attributes.minute')) }}" />
                         <x-system.input-limit code="auto_release_port" min="0" :value="$configs['auto_release_port']"
                                               unit="{{ ucfirst(trans('validation.attributes.day')) }}" />
                         <x-system.switch code="is_ban_status" :check="$configs['is_ban_status']" />

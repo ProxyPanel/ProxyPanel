@@ -60,7 +60,7 @@
                             <x-badge :badge="$order->status_badge" />
                         </td>
                         <td> {{ $order->is_expire ? trans('common.status.expire') : $order->expired_at }} </td>
-                        <td> {{ $order->created_at }} </td>
+                        <td> {{ localized_date($order->created_at) }} </td>
                         @can(['admin.order.edit'])
                             <td>
                                 <x-ui.dropdown>

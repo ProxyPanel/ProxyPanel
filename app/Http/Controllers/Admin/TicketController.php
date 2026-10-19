@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TicketRequest;
 use App\Models\Ticket;
@@ -13,6 +14,8 @@ use Illuminate\Http\Request;
 
 class TicketController extends Controller
 {
+    use ActionResponse;
+
     public function index(Request $request): View
     { // 工单列表
         $query = Ticket::where(function ($query) {
@@ -54,10 +57,10 @@ class TicketController extends Controller
         }
 
         if (Ticket::create(['user_id' => $user->id, 'admin_id' => auth()->id(), 'title' => $data['title'], 'content' => clean($data['content']), 'status' => 1])) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.create')])]);
+            return $this->successItem('common.create');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.create')])]);
+        return $this->failItem('common.create');
     }
 
     public function edit(Ticket $ticket): View
@@ -76,22 +79,22 @@ class TicketController extends Controller
         if ($ticket->reply()->create(['admin_id' => auth()->id(), 'content' => $content])) {
             $ticket->update(['status' => 1]);
 
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.ticket.reply')])]);
+            return $this->successItem('user.ticket.reply');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.ticket.reply')])]);
+        return $this->failItem('user.ticket.reply');
     }
 
     public function destroy(Ticket $ticket): JsonResponse
     { // 关闭工单
         if (! $ticket->close()) {
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
+            return $this->failItem('common.close');
         }
         // 通知用户
         if (sysConfig('ticket_closed_notification')) {
             $ticket->user->notify(new TicketClosed($ticket->id, $ticket->title, route('ticket.edit', $ticket), \request('reason'), true));
         }
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.close')])]);
+        return $this->successItem('common.close');
     }
 }

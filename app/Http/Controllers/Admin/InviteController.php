@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionMessage;
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use Illuminate\Contracts\View\View;
@@ -14,6 +16,8 @@ use Str;
 
 class InviteController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     { // 邀请码列表
         return view('admin.aff.invite', ['inviteList' => Invite::with(['invitee:id,username', 'inviter:id,username'])->orderBy('status')->orderByDesc('id')->paginate(15)->appends(request('page'))]);
@@ -33,7 +37,7 @@ class InviteController extends Controller
 
         Invite::insert($invites);
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
+        return $this->successItem('common.generate');
     }
 
     public function export(): void
@@ -66,7 +70,7 @@ class InviteController extends Controller
             $writer = new Xlsx($spreadsheet);
             $writer->save('php://output');
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.export'), 'attribute' => trans('user.invite.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.export', 'user.invite.attribute', $e->getMessage()));
         }
     }
 }

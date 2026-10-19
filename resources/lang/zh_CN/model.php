@@ -27,6 +27,7 @@ return [
     'country' => [
         'icon' => '国旗',
         'name' => '国家名称',
+        'code' => '国家代码',
     ],
     'coupon' => [
         'attribute' => '卡券',
@@ -333,6 +334,8 @@ return [
         'register_ip_limit' => '同IP注册限制',
         'reset_password_times' => '每日密码重置上限',
         'reset_traffic' => '周期性流量重置',
+        'rule_ban_times' => '审计规则封禁阈值',
+        'rule_log_cooldown' => '审计记录冷却',
         'server_chan_key' => 'ServerChan SCKEY',
         'standard_currency' => '本位货币',
         'stripe_public_key' => 'Public Key',

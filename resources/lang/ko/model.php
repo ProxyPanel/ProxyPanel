@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => '동일 IP 가입 제한',
         'reset_password_times' => '일일 비밀번호 재설정 상한',
         'reset_traffic' => '주기적 트래픽 리셋',
+        'rule_ban_times' => '감사 규칙 차단 임계값',
+        'rule_log_cooldown' => '감사 기록 쿨다운',
         'server_chan_key' => 'ServerChan SCKEY',
         'standard_currency' => '기준 통화',
         'stripe_public_key' => 'Stripe 퍼블릭 키',

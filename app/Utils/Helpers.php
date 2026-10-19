@@ -53,7 +53,7 @@ class Helpers
             'transfer_enable' => $transfer_enable,
             'expired_at' => now()->addDays($days)->toDateString(),
             'user_group_id' => null,
-            'reg_ip' => IP::getClientIp(),
+            'reg_ip' => request()->ip(),
             'inviter_id' => $inviter_id,
             'status' => $status,
         ]);
@@ -188,6 +188,32 @@ class Helpers
     public static function addUserTrafficModifyLog(int $userId, int $before, int $after, ?string $description = null, ?int $orderId = null): bool
     {
         return UserDataModifyLog::create(['user_id' => $userId, 'order_id' => $orderId, 'before' => $before, 'after' => $after, 'description' => $description])->wasRecentlyCreated;
+    }
+
+    /**
+     * 封禁时长的唯一读法，单位分钟：0 对时长不是「不限」而是「当场到期」，所以必须有下限。
+     *
+     * 后台把这一键存成 NULL（SystemController::setConfig 对 0 与空值都写 NULL），而 config() 的
+     * 默认值只在键缺失时生效，所以取不到有效值时要由这里兜住。
+     */
+    public static function banDurationMinutes(): int
+    {
+        return max(1, (int) sysConfig('ban_duration', 60));
+    }
+
+    /**
+     * 临时封禁账号并记一笔封禁日志.
+     *
+     * `task:auto` 的 `unblockUsers()` 按 `ban_time < now` 捞回，所以 enable 与 ban_time 必须成对写：
+     * 只动 enable 就是永久封。
+     *
+     * @param  int  $minutes  封禁时长（分钟），同时写进日志的 time 列
+     * @param  string  $description  封禁原因
+     */
+    public static function tempBanUser(User $user, int $minutes, string $description): void
+    {
+        $user->update(['enable' => 0, 'ban_time' => strtotime($minutes.' minutes')]);
+        $user->banedLogs()->create(['time' => $minutes, 'description' => $description]);
     }
 
     /**

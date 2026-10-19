@@ -29,7 +29,7 @@
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
                             <i class="icon wb-calendar" aria-hidden="true"></i> {{ trans('model.referral.created_at') }}
-                            <code class="float-right">{{ $referral->created_at }}</code>
+                            <code class="float-right">{{ localized_date($referral->created_at) }}</code>
                         </li>
                         @if ($referral->status === -1)
                             <span class="list-group-item badge badge-lg badge-danger"> {{ trans('common.status.rejected') }} </span>
@@ -56,7 +56,7 @@
                         </td>
                         <td> {{ $commission->amount_tag }} </td>
                         <td> {{ $commission->commission_tag }} </td>
-                        <td> {{ $commission->created_at }} </td>
+                        <td> {{ localized_date($commission->created_at) }} </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

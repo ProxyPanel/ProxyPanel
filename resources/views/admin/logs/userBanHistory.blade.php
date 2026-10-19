@@ -32,8 +32,8 @@
                         </td>
                         <td> {{ $log->time }}</td>
                         <td> {{ $log->description }} </td>
-                        <td> {{ $log->created_at }} </td>
-                        <td> {{ date('Y-m-d H:i:s', $log->user->t) }} </td>
+                        <td> {{ localized_date($log->created_at) }} </td>
+                        <td> {{ localized_date($log->user->t) }} </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

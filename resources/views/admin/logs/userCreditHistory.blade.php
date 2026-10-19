@@ -30,7 +30,7 @@
                         <td> {{ $log->amount }} </td>
                         <td> {{ $log->after }} </td>
                         <td> {{ __($log->description) }} </td>
-                        <td> {{ $log->created_at }} </td>
+                        <td> {{ localized_date($log->created_at) }} </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

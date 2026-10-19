@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\PaymentStatusUpdated;
+use App\Helpers\ActionMessage;
+use App\Helpers\ActionResponse;
 use App\Models\Coupon;
 use App\Models\Goods;
 use App\Models\Order;
@@ -17,10 +19,13 @@ use Illuminate\Container\Container;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Log;
 
 class PaymentController extends Controller
 {
+    use ActionResponse;
+
     public static string $method;
 
     public static function notify(Request $request)
@@ -65,7 +70,7 @@ class PaymentController extends Controller
                 // 触发支付成功事件
                 broadcast(new PaymentStatusUpdated($payment->trade_no, 'success', trans('common.success_item', ['attribute' => trans('user.pay')])));
 
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.pay')])]);
+                return response()->json(['status' => 'success', 'message' => ActionMessage::success('user.pay')]);
             }
 
             if ($payment->status === -1) {
@@ -221,7 +226,7 @@ class PaymentController extends Controller
 
     public function close(Order $order): JsonResponse
     {
-        if ($order->user_id !== auth()->id()) {
+        if (Gate::denies('close', $order)) {
             return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
         }
 

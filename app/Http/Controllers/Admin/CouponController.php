@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionMessage;
 use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CouponRequest;
@@ -15,6 +16,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Log;
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Str;
@@ -133,8 +135,8 @@ class CouponController extends Controller
         try {
             $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
             $writer->save('php://output');
-        } catch (\PhpOffice\PhpSpreadsheet\Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('admin.massive_export'), 'attribute' => trans('model.coupon.attribute')]).': '.$e->getMessage());
+        } catch (Exception $e) {
+            Log::error(ActionMessage::failureLog('admin.massive_export', 'model.coupon.attribute', $e->getMessage()));
         }
     }
 }

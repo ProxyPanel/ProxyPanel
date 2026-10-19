@@ -38,8 +38,8 @@
                                 <a href="{{ route('admin.subscribe.log', $subscribe) }}" target="_blank">{{ $subscribe->times }}</a>
                             @endcan
                         </td>
-                        <td> {{ $subscribe->updated_at }} </td>
-                        <td> {{ $subscribe->ban_time ? date('Y-m-d H:i', $subscribe->ban_time) : '' }} </td>
+                        <td> {{ localized_date($subscribe->updated_at) }} </td>
+                        <td> {{ localized_date($subscribe->ban_time) }} </td>
                         <td> {{ __($subscribe->ban_desc) }} </td>
                         <td>
                             @can('admin.subscribe.set')

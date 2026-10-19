@@ -7,7 +7,6 @@ use App\Models\UserSubscribe;
 use App\Models\UserSubscribeLog;
 use App\Services\ProxyService;
 use App\Services\UserService;
-use App\Utils\IP;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -85,7 +84,7 @@ class SubscribeController extends Controller
 
         if ($user->enable !== 1) {
             if ($user->ban_time) {
-                return $this->failed(trans('errors.subscribe.banned_until', ['time' => $user->ban_time]));
+                return $this->failed(trans('errors.subscribe.banned_until', ['time' => localized_date($user->ban_time)]));
             }
 
             if ($user->unused_traffic <= 0) {
@@ -104,7 +103,7 @@ class SubscribeController extends Controller
         $subscribe->increment('times'); // 更新访问次数
 
         // 记录订阅日志
-        $this->subscribeLog($subscribe->id, IP::getClientIp(), json_encode([
+        $this->subscribeLog($subscribe->id, $request->ip(), json_encode([
             'Host' => $request->getHost(),
             'User-Agent' => $request->userAgent(),
         ], JSON_THROW_ON_ERROR));

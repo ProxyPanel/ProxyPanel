@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => 'Максимальные регистрации с IP',
         'reset_password_times' => 'Лимит сброса пароля в день',
         'reset_traffic' => 'Периодический сброс трафика',
+        'rule_ban_times' => 'Порог блокировки по правилам аудита',
+        'rule_log_cooldown' => 'Пауза между записями аудита',
         'server_chan_key' => 'SCKEY ServerChan',
         'standard_currency' => 'Валюта по умолчанию',
         'stripe_public_key' => 'Публичный ключ Stripe',

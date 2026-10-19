@@ -315,7 +315,7 @@
                 ],
                 ['route' => 'log-viewer::dashboard', 'text' => trans('admin.menu.log.system'), 'can' => 'log-viewer'],
                 ['route' => 'horizon.index', 'text' => 'Horizon', 'can' => 'viewHorizon'],
-                ['route' => 'telescope', 'text' => 'Telescope', 'can' => 'viewTelescope', 'show' => $env],
+                ['route' => 'telescope', 'text' => 'Telescope', 'can' => 'viewTelescope', 'show' => $env && Illuminate\Support\Facades\Route::has('telescope')],
             ],
         ],
         [

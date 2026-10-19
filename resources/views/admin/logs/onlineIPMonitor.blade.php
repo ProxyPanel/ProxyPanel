@@ -35,7 +35,7 @@
                             @endif
                         </td>
                         <td>{{ $log->ipInfo ?? '' }}</td>
-                        <td>{{ date('Y-m-d H:i:s', $log->created_at) }}</td>
+                        <td>{{ localized_date($log->created_at) }}</td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

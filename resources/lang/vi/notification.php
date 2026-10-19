@@ -12,6 +12,8 @@ return [
     'close_ticket' => 'Ticket [ID: :id, Tiêu đề: :title] đã được đóng',
     'data_anomaly' => 'Cảnh báo lưu lượng người dùng bất thường',
     'data_anomaly_content' => 'Tình hình lưu lượng 1 giờ qua của người dùng [ID: :id]: [Tải lên: :upload, Tải xuống: :download, Tổng cộng: :total]',
+    'rule_ban' => 'Tài khoản bị tạm cấm vì kích hoạt quy tắc kiểm duyệt',
+    'rule_ban_content' => 'Tài khoản [ID: :uid, :email] đã kích hoạt quy tắc kiểm duyệt :hits lần trong một giờ (ngưỡng :threshold) và bị tạm cấm :minutes phút, tự động bỏ cấm khi hết hạn. Nút gần nhất: [ID: :node_id, Tên: :node_name]. Chi tiết xem trong nhật ký kích hoạt ở trang quản trị.',
     'details' => 'Xem chi tiết',
     'details_btn' => 'Vui lòng nhấn nút bên dưới để xem chi tiết.',
     'ding_bot_limit' => 'Mỗi bot có thể gửi tối đa 20 tin nhắn trong 1 phút. Vượt quá giới hạn sẽ bị hạn chế 10 phút.',

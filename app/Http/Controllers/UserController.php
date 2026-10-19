@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ActionResponse;
 use App\Helpers\DataChart;
 use App\Models\Article;
 use App\Services\NodeService;
@@ -19,6 +20,7 @@ use Str;
 
 class UserController extends Controller
 {
+    use ActionResponse;
     use DataChart;
 
     public function index(NodeService $nodeService, UserService $userService): View
@@ -47,29 +49,14 @@ class UserController extends Controller
     // 签到
     public function checkIn(): JsonResponse
     {
-        $user = auth()->user();
-        // 系统开启登录加积分功能才可以签到
-        if (! sysConfig('checkin_interval')) {
-            return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.disable')]);
-        }
+        $result = (new UserService(auth()->user()))->checkIn();
 
-        // 认领式签到：add 成功的那一次才发流量
-        if (! cache()->add('userCheckIn_'.$user->id, '1', sysConfig('checkin_interval') * Minute)) {
-            return response()->json(['status' => 'success', 'title' => trans('common.success'), 'message' => trans('user.home.attendance.done')]);
-        }
-
-        $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
-        $before = $user->transfer_enable;
-
-        if (! $user->incrementData($traffic)) {
-            cache()->forget('userCheckIn_'.$user->id); // 发失败要让人能重签
-
-            return response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => trans('user.home.attendance.failed')]);
-        }
-
-        Helpers::addUserTrafficModifyLog($user->id, $before, $user->transfer_enable, trans('user.home.attendance.attribute'));
-
-        return response()->json(['status' => 'success', 'message' => trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
+        return match ($result['state']) {
+            'disabled' => response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => $result['message']]),
+            'repeated' => response()->json(['status' => 'success', 'title' => trans('common.success'), 'message' => $result['message']]),
+            'failed' => response()->json(['status' => 'fail', 'title' => trans('common.failed'), 'message' => $result['message']]),
+            default => response()->json(['status' => 'success', 'message' => $result['message']]),
+        };
     }
 
     // 修改个人资料
@@ -143,14 +130,14 @@ class UserController extends Controller
 
             DB::commit();
 
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.change')])]);
+            return $this->successItem('common.change');
         } catch (Exception $e) {
             DB::rollBack();
 
             Log::error(trans('user.subscribe.error').'：'.$e->getMessage());
 
             // 原文只进日志：这条 message 前端按 HTML 插入
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.change')])]);
+            return $this->failItem('common.change');
         }
     }
 
@@ -163,10 +150,10 @@ class UserController extends Controller
         // 管理员信息重新写入user
         $user = auth()->loginUsingId(session()->pull('admin'));
         if ($user) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.toggle')])]);
+            return $this->successItem('common.toggle');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.toggle')])]);
+        return $this->failItem('common.toggle');
     }
 
     public function switchCurrency(string $code): RedirectResponse

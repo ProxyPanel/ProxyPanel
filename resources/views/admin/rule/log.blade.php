@@ -8,6 +8,7 @@
             trans('model.node.attribute'),
             trans('admin.logs.rule.name'),
             trans('admin.logs.rule.reason'),
+            trans('admin.logs.rule.scene'),
             trans('admin.logs.rule.created_at'),
         ]" :count="trans('admin.logs.counts', ['num' => $ruleLogs->total()])" :pagination="$ruleLogs->links()">
             @can('admin.rule.clear')
@@ -34,7 +35,15 @@
                         <td> {{ $ruleLog->rule_id ? '⛔  ' . ($ruleLog->rule->name ?? '【' . trans('common.deleted_item', ['attribute' => trans('model.rule.attribute')]) . '】') : trans('admin.logs.rule.tag') }}
                         </td>
                         <td> {{ $ruleLog->reason }} </td>
-                        <td> {{ $ruleLog->created_at }} </td>
+                        <td>
+                            @if ($ruleLog->target)
+                                → {{ $ruleLog->target }}
+                            @endif
+                            @if ($ruleLog->sniff_host)
+                                <br>{{ $ruleLog->sniff_protocol }}://{{ $ruleLog->sniff_host }}{{ $ruleLog->sniff_uri }}
+                            @endif
+                        </td>
+                        <td> {{ localized_date($ruleLog->created_at) }} </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

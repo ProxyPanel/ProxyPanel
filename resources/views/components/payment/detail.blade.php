@@ -42,7 +42,7 @@
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('user.payment.method') }}:
-                                    {{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}
+                                    {{ $order->pay_type === 0 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}
                                 </li>
                                 <li class="list-group-item">
                                     {{ trans('user.bought_at') }}: {{ $order->created_at }}

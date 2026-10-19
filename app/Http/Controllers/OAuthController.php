@@ -6,7 +6,6 @@ use App\Models\Invite;
 use App\Models\User;
 use App\Models\UserOauth;
 use App\Utils\Helpers;
-use App\Utils\IP;
 use Hashids\Hashids;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
@@ -157,7 +156,7 @@ class OAuthController extends Controller
     private function handleLogin(User $user): RedirectResponse
     {
         auth()->login($user);
-        Helpers::userLoginAction($user, IP::getClientIp());
+        Helpers::userLoginAction($user, request()->ip());
 
         return redirect()->route('login');
     }

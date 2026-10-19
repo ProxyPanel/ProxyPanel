@@ -18,7 +18,7 @@
                             <sub class="ml-20">{{ $article->category }}</sub>
                         @endif
                     </x-slot:heading>
-                    <x-slot:actions><code>{{ $article->created_at }}</code></x-slot:actions>
+                    <x-slot:actions><code>{{ localized_date($article->created_at) }}</code></x-slot:actions>
                     <div style="padding: 10px;">{!! $article->content !!}</div>
                     <x-slot:footer><a class="btn btn-primary" href="{{ route('admin.article.index') }}">{{ trans('common.back') }}</a></x-slot:footer>
                 </x-ui.panel>

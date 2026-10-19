@@ -23,7 +23,7 @@
                 @foreach ($applyList as $apply)
                     <tr>
                         <td> {{ $apply->id }} </td>
-                        <td> {{ $apply->created_at }} </td>
+                        <td> {{ localized_date($apply->created_at) }} </td>
                         <td>
                             @if (empty($apply->user))
                                 【{{ trans('common.deleted_item', ['attribute' => trans('common.account')]) }}】
@@ -49,7 +49,7 @@
                                 <span class="badge badge-lg badge-default"> {{ trans('common.status.payment_pending') }} </span>
                             @endif
                         </td>
-                        <td> {{ $apply->created_at === $apply->updated_at ? '' : $apply->updated_at }} </td>
+                        <td> {{ $apply->created_at === $apply->updated_at ? '' : localized_date($apply->updated_at) }} </td>
                         <td>
                             @canany(['admin.aff.setStatus', 'admin.aff.detail'])
                                 <x-admin.row-actions>

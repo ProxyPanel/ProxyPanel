@@ -12,6 +12,8 @@ return [
     'close_ticket' => '티켓 [ID: :id, 제목: :title]이 종료되었습니다',
     'data_anomaly' => '사용자 트래픽 이상 알림',
     'data_anomaly_content' => '사용자 [ID: :id]의 지난 1시간 트래픽 사용 현황: [업로드: :upload, 다운로드: :download, 합계: :total]',
+    'rule_ban' => '감사 규칙 트리거로 계정 일시 차단',
+    'rule_ban_content' => '계정 [ID: :uid, :email]이(가) 1시간 안에 감사 규칙을 :hits 회 트리거했습니다(임계값 :threshold). :minutes분 동안 일시 차단되며 만료 시 자동 해제됩니다. 최근 노드 [ID: :node_id, 이름: :node_name]. 상세 내용은 관리 화면의 트리거 기록을 확인하세요.',
     'details' => '상세 보기',
     'details_btn' => '아래 버튼을 클릭하여 상세 내용을 확인하세요.',
     'ding_bot_limit' => '각 봇은 1분간 최대 20개의 메시지를 발송할 수 있습니다. 제한을 초과하면 10분간 제한이 적용됩니다.',

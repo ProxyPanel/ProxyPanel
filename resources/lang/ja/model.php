@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => '同一IP登録制限',
         'reset_password_times' => '日次パスワードリセット上限',
         'reset_traffic' => '周期的トラフィックリセット',
+        'rule_ban_times' => '監査ルールBAN閾値',
+        'rule_log_cooldown' => '監査ログのクールダウン',
         'server_chan_key' => 'ServerChan SCKEY',
         'standard_currency' => '基準通貨',
         'stripe_public_key' => 'Stripe パブリックキー',

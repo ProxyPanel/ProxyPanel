@@ -37,6 +37,8 @@
   "I'm a teapot": "我是一个茶壶",
   "If you did not create an account, no further action is required.": "如果您未注册帐号，请忽略此邮件。",
   "If you did not request a password reset, no further action is required.": "如果您未申请重设密码，请忽略此邮件。",
+  "If your issue is not resolved, please create another ticket.": "若您的问题尚未解决，请新建一个工单。",
+  "Please click on the button below to reset your password.": "请点击下方按钮重置您的密码。",
   "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "如果您单击「:actionText」按钮时遇到问题，请复制下方链接到浏览器中访问：",
   "IM Used": "IM已使用",
   "Insufficient Storage": "存储空间不足",

@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ProxyType;
 use App\Events\NodeActions;
+use App\Helpers\ActionMessage;
+use App\Helpers\ActionResponse;
 use App\Helpers\DataChart;
 use App\Helpers\ProxyConfig;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\NodeRequest;
 use App\Jobs\VNet\ReloadNode;
+use App\Jobs\VNet\ReloadRule;
 use App\Models\Country;
 use App\Models\Label;
 use App\Models\Level;
 use App\Models\Node;
 use App\Models\NodeCertificate;
 use App\Models\RuleGroup;
+use App\Utils\Clients\NodeCompatibility;
 use App\Utils\NetworkDetection;
 use Arr;
 use Exception;
@@ -25,6 +30,7 @@ use Log;
 
 class NodeController extends Controller
 {
+    use ActionResponse;
     use DataChart, ProxyConfig;
 
     public function index(Request $request): View
@@ -49,6 +55,8 @@ class NodeController extends Controller
         $nodeList = $query->orderByDesc('sort')->orderBy('id')->paginate(15)->appends($request->except('page'))->through(function ($node) {
             // 预处理每个节点的数据
             $node->online_users = $node->latestOnlineLog?->online_user; // 在线人数
+            // 算法值不被这些客户端实现时，订阅会整条丢弃这条节点，列表里要看得见
+            $node->clientGaps = NodeCompatibility::forNode($node);
 
             // 计算流量总和
             $dailyTransfer = $node->dailyDataFlows->sum(fn ($item) => $item->u + $item->d);
@@ -93,17 +101,17 @@ class NodeController extends Controller
                 }
                 broadcast(new NodeActions('create', ['operation' => 'sync_labels', 'status' => 1]));
 
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.add')])]);
+                return $this->successItem('common.add');
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.add', 'model.node.attribute', $e->getMessage()));
             broadcast(new NodeActions('create', ['status' => 0, 'message' => $e->getMessage()]));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+            return $this->failItem('common.add');
         }
         broadcast(new NodeActions('create', ['status' => 0]));
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.add')])]);
+        return $this->failItem('common.add');
     }
 
     public function create(): View
@@ -121,50 +129,40 @@ class NodeController extends Controller
 
     private function nodeStore(array $info): array
     { // 添加节点信息
-        switch ($info['type']) {
-            case 0:
-                $profile = ['method' => $info['method']];
-                break;
-            case 2:
-                $profile = [
-                    'method' => $info['v2_method'],
-                    'v2_alter_id' => $info['v2_alter_id'],
-                    'v2_net' => $info['v2_net'],
-                    'v2_type' => $info['v2_type'],
-                    'v2_host' => $info['v2_host'],
-                    'v2_path' => $info['v2_path'],
-                    'v2_tls' => $info['v2_tls'] ? 'tls' : '',
-                    'v2_sni' => $info['v2_sni'],
-                ];
-                break;
-            case 3:
-                $profile = [
-                    'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
-                ];
-                break;
-            case 5: // Hysteria2
-                $profile = [
-                    'obfs' => $info['obfs'] ?? null,
-                    'obfs_param' => $info['obfs_param'] ?? null,
-                    'upload_mbps' => $info['upload_mbps'] ?? null,
-                    'download_mbps' => $info['download_mbps'] ?? null,
-                    'ignore_client_bandwidth' => (bool) ($info['ignore_client_bandwidth'] ?? false),
-                    'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
-                    'ports' => $info['ports'] ?? null,
-                ];
-                break;
-            case 1:
-            case 4:
-                $profile = [
-                    'method' => $info['method'],
-                    'protocol' => $info['protocol'],
-                    'obfs' => $info['obfs'],
-                    'obfs_param' => $info['obfs_param'] ?? null,
-                    'protocol_param' => $info['protocol_param'] ?? null,
-                    'passwd' => $info['passwd'] ?? null,
-                ];
-                break;
-        }
+        // 穷尽六个协议类型：新增 case 未在此分支会直接抛 UnhandledMatchError，而不是漏填 profile
+        $profile = match (ProxyType::from((int) $info['type'])) {
+            ProxyType::SHADOWSOCKS => ['method' => $info['method']],
+            ProxyType::V2RAY => [
+                'method' => $info['v2_method'],
+                'v2_alter_id' => $info['v2_alter_id'],
+                'v2_net' => $info['v2_net'],
+                'v2_type' => $info['v2_type'],
+                'v2_host' => $info['v2_host'],
+                'v2_path' => $info['v2_path'],
+                'v2_tls' => $info['v2_tls'] ? 'tls' : '',
+                'v2_sni' => $info['v2_sni'],
+            ],
+            ProxyType::TROJAN => [
+                'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
+            ],
+            ProxyType::HYSTERIA2 => [
+                'obfs' => $info['obfs'] ?? null,
+                'obfs_param' => $info['obfs_param'] ?? null,
+                'upload_mbps' => $info['upload_mbps'] ?? null,
+                'download_mbps' => $info['download_mbps'] ?? null,
+                'ignore_client_bandwidth' => (bool) ($info['ignore_client_bandwidth'] ?? false),
+                'allow_insecure' => (bool) ($info['allow_insecure'] ?? false),
+                'ports' => $info['ports'] ?? null,
+            ],
+            ProxyType::SHADOWSOCKSR, ProxyType::VNET => [
+                'method' => $info['method'],
+                'protocol' => $info['protocol'],
+                'obfs' => $info['obfs'],
+                'obfs_param' => $info['obfs_param'] ?? null,
+                'protocol_param' => $info['protocol_param'] ?? null,
+                'passwd' => $info['passwd'] ?? null,
+            ],
+        };
 
         $details = [
             'next_renewal_date' => $info['next_renewal_date'],
@@ -229,7 +227,9 @@ class NodeController extends Controller
                 Arr::except($nodeArray, ['details', 'profile']),
                 $nodeArray['details'] ?? [],
                 $nodeArray['profile'] ?? [],
-                ['labels' => $node->labels->pluck('id')->toArray()]// 将标签ID列表作为一维数组
+                ['labels' => $node->labels->pluck('id')->toArray(), // 将标签ID列表作为一维数组
+                    'single' => $node->isSinglePort() ? 1 : 0,
+                ]
             ),
             'nodes' => Node::whereNotIn('id', [$node->id])->orderBy('id')->pluck('id', 'name'),
             'countries' => Country::orderBy('code')->get(),
@@ -265,6 +265,11 @@ class NodeController extends Controller
             if ($node->update($this->nodeStore($validatedData))) {
                 broadcast(new NodeActions('update', ['operation' => 'save_node_info', 'status' => 1], $node->id));
 
+                // 换所属分组=这个节点消费的规则集合变了；节点侧没有轮询，规则的唯一增量通道是这条推送
+                if ($node->wasChanged('rule_group_id')) {
+                    ReloadRule::forNode($node);
+                }
+
                 // 如果没有字段变更，强制触发更新以确保 observer 被调用
                 if (empty($node->getChanges())) {
                     $node->touch();
@@ -274,17 +279,17 @@ class NodeController extends Controller
                 $node->labels()->sync($request->input('labels'));
                 broadcast(new NodeActions('update', ['operation' => 'sync_labels', 'status' => 1], $node->id));
 
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.edit')])]);
+                return $this->successItem('common.edit');
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.edit'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.edit', 'model.node.attribute', $e->getMessage()));
             broadcast(new NodeActions('update', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+            return $this->failItem('common.edit');
         }
         broadcast(new NodeActions('update', ['status' => 0], $node->id));
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.edit')])]);
+        return $this->failItem('common.edit');
     }
 
     public function destroy(Node $node): JsonResponse
@@ -304,18 +309,18 @@ class NodeController extends Controller
             if ($node->delete()) {
                 broadcast(new NodeActions('delete', ['operation' => 'delete_node', 'status' => 1], $node->id));
 
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+                return $this->successItem('common.delete');
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.node.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.delete', 'model.node.attribute', $e->getMessage()));
             broadcast(new NodeActions('delete', ['status' => 0, 'message' => $e->getMessage()], $node->id));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+            return $this->failItem('common.delete');
         }
 
         broadcast(new NodeActions('delete', ['status' => 0], $node->id));
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->failItem('common.delete');
     }
 
     public function checkNode(?Node $node = null): JsonResponse
@@ -395,7 +400,7 @@ class NodeController extends Controller
 
     public function reload(?Node $node = null): JsonResponse
     {
-        $nodes = $node ? collect([$node]) : Node::whereStatus(1)->whereType(4)->get();
+        $nodes = $node ? collect([$node]) : Node::whereStatus(1)->whereType(ProxyType::VNET->value)->get();
 
         // 发送节点列表信息
         broadcast(new NodeActions('reload', ['list' => $nodes->pluck('name', 'id')], $node?->id));

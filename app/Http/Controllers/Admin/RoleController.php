@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionMessage;
 use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RoleRequest;
@@ -95,11 +96,11 @@ class RoleController extends Controller
 
             $role->delete();
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.delete'), 'attribute' => trans('model.role.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.delete', 'model.role.attribute', $e->getMessage()));
 
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+            return $this->failItem('common.delete');
         }
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+        return $this->successItem('common.delete');
     }
 }

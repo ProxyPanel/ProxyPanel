@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => 'Giới hạn đăng ký cùng IP',
         'reset_password_times' => 'Giới hạn đặt lại mật khẩu hàng ngày',
         'reset_traffic' => 'Reset lưu lượng định kỳ',
+        'rule_ban_times' => 'Ngưỡng cấm theo quy tắc kiểm duyệt',
+        'rule_log_cooldown' => 'Thời gian giãn ghi kiểm duyệt',
         'server_chan_key' => 'SCKEY ServerChan',
         'standard_currency' => 'Tiền tệ chuẩn',
         'stripe_public_key' => 'Khóa công khai Stripe',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\ReferralApply;
 use App\Models\ReferralLog;
@@ -11,6 +12,8 @@ use Illuminate\Http\Request;
 
 class AffiliateController extends Controller
 {
+    use ActionResponse;
+
     public function index(Request $request): View
     { // 提现申请列表
         $query = ReferralApply::with('user:id,username');
@@ -46,10 +49,10 @@ class AffiliateController extends Controller
                 $aff->referral_logs()->update(['status' => $status]);
             }
 
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.action')])]);
+            return $this->successItem('common.action');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.action')])]);
+        return $this->failItem('common.action');
     }
 
     public function rebate(Request $request): View

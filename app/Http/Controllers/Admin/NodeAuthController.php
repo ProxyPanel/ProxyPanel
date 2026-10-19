@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Node;
 use App\Models\NodeAuth;
@@ -12,6 +13,8 @@ use Str;
 
 class NodeAuthController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     { // 节点授权列表
         $authorizations = NodeAuth::with(['node:id,name,type,server,ip,ipv6'])
@@ -41,25 +44,25 @@ class NodeAuthController extends Controller
 
         NodeAuth::insert($authData);
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
+        return $this->successItem('common.generate');
     }
 
     public function update(NodeAuth $auth): JsonResponse
     { // 重置节点授权
         if ($auth->update(['key' => Str::random(), 'secret' => Str::random(8)])) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
+            return $this->successItem('common.reset');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.reset')])]);
+        return $this->failItem('common.reset');
     }
 
     public function destroy(NodeAuth $auth): JsonResponse
     { // 删除节点授权
         if ($auth->delete()) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.delete')])]);
+            return $this->successItem('common.delete');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.delete')])]);
+        return $this->failItem('common.delete');
     }
 
     public function getDeploymentConfig(Node $node): JsonResponse

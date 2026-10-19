@@ -13,7 +13,6 @@ use App\Notifications\AccountActivation;
 use App\Notifications\PasswordReset;
 use App\Notifications\Verification;
 use App\Utils\Helpers;
-use App\Utils\IP;
 use Hash;
 use Hashids\Hashids;
 use Illuminate\Contracts\View\View;
@@ -87,7 +86,7 @@ class AuthController extends Controller
                 ['action' => '<a href="'.route('active', ['username' => $user->username]).'" target="_blank">'.trans('common.active_item', ['attribute' => trans('common.account')]).'</a>']));
         }
 
-        Helpers::userLoginAction($user, IP::getClientIp()); // 用户登录后操作
+        Helpers::userLoginAction($user, $request->ip()); // 用户登录后操作
 
         return redirect()->back();
     }
@@ -136,7 +135,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request): RedirectResponse
     { // 注册
-        $cacheKey = 'register_times_'.md5(IP::getClientIp()); // 注册限制缓存key
+        $cacheKey = 'register_times_'.md5($request->ip()); // 注册限制缓存key
 
         $data = $request->validated();
         $register_token = $request->input('register_token');
@@ -582,7 +581,7 @@ class AuthController extends Controller
             return response()->json(['status' => 'fail', 'message' => $validator->getMessageBag()->first()]);
         }
         $email = $request->input('username');
-        $ip = IP::getClientIP();
+        $ip = $request->ip();
 
         // 校验域名邮箱黑白名单
         if (sysConfig('is_email_filtering')) {

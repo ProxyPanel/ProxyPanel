@@ -35,15 +35,15 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td><a href="{{ route('invoice.show', $order->sn) }}" target="_blank">{{ $order->sn }}</a></td>
                                 <td>{{ $order->goods->name ?? trans('user.recharge_credit') }}</td>
-                                <td>{{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</td>
+                                <td>{{ $order->pay_type === 0 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</td>
                                 <td>{{ $order->amount_tag }}</td>
-                                <td>{{ $order->created_at }}</td>
-                                <td>{{ empty($order->goods) || $order->goods_id === null || $order->status === 3 ? '' : $order->expired_at }}</td>
+                                <td>{{ localized_date($order->created_at) }}</td>
+                                <td>{{ empty($order->goods) || $order->goods_id === null || $order->status === 3 ? '' : localized_date($order->expired_at) }}</td>
                                 <td><x-badge :badge="$order->status_badge" /></td>
                                 <td>
                                     <x-admin.row-actions>
 
-                                        @if ($order->status === 0 && $order->pay_way !== 1)
+                                        @if ($order->status === 0)
                                             @if ($order->payment)
                                                 @if ($order->payment->qr_code)
                                                     <a class="btn btn-primary" href="{{ route('orderDetail', $order->payment->trade_no) }}"

@@ -40,7 +40,7 @@
                         <td> {{ $log->amount_tag }} </td>
                         <td> {{ $log->status_label }} </td>
                         <td title="{{ $log->payload }}"> {{ Str::limit(preg_replace('/\s+/', ' ', $log->payload), 60) }} </td>
-                        <td> {{ $log->created_at }} </td>
+                        <td> {{ localized_date($log->created_at) }} </td>
                     </tr>
                 @endforeach
             </x-slot:tbody>

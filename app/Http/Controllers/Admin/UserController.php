@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ProxyType;
 use App\Events\UserVNetTasks;
 use App\Helpers\ActionResponse;
 use App\Helpers\ProxyConfig;
@@ -18,7 +19,6 @@ use App\Models\UserHourlyDataFlow;
 use App\Models\UserOauth;
 use App\Services\ProxyService;
 use App\Utils\Helpers;
-use App\Utils\IP;
 use Arr;
 use Exception;
 use Illuminate\Contracts\View\View;
@@ -97,7 +97,7 @@ class UserController extends Controller
         $data['transfer_enable'] *= GiB;
         $data['expired_at'] = $data['expired_at'] ?? date('Y-m-d', strtotime('next year'));
         $data['remark'] = str_replace(['atob', 'eval'], '', $data['remark'] ?? '');
-        $data['reg_ip'] = IP::getClientIp();
+        $data['reg_ip'] = $request->ip();
         $data['reset_time'] = $data['reset_time'] > date('Y-m-d') ? $data['reset_time'] : null;
         $user = User::create($data);
 
@@ -180,7 +180,7 @@ class UserController extends Controller
         session()->put('admin', auth()->id());
         session()->put('user', $user->id);
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.user.info.switch')])]);
+        return $this->successItem('admin.user.info.switch');
     }
 
     public function resetTraffic(User $user): JsonResponse
@@ -252,10 +252,10 @@ class UserController extends Controller
         if ($user->updateCredit($amount)) {
             Helpers::addUserCreditLog($user->id, null, $user->credit - $amount, $user->credit, $amount, $request->input('description') ?? 'Manually edit in dashboard.');  // 写入余额变动日志
 
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.recharge')])]);
+            return $this->successItem('user.recharge');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
+        return $this->failItem('user.recharge');
     }
 
     public function export(User $user): View
@@ -298,7 +298,7 @@ class UserController extends Controller
     public function VNetInfo(User $user): JsonResponse
     {
         // 获取用户关联的 VNet 节点
-        $nodes = $user->nodes()->whereType(4)->get();
+        $nodes = $user->nodes()->whereType(ProxyType::VNET->value)->get();
 
         // 立即发送节点列表信息给前端
         broadcast(new UserVNetTasks('check', ['nodeList' => $nodes->pluck('name', 'id')->toArray()], $user->id));
@@ -327,6 +327,6 @@ class UserController extends Controller
             });
         }
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('admin.user.connection_test')])]);
+        return $this->successItem('admin.user.connection_test');
     }
 }

@@ -23,7 +23,7 @@
             @if ($placeholder)
                 <option value="">{{ $placeholder }}</option>
             @endif
-            @foreach ($options as $value => $text)
+            @foreach (($options ?? []) as $value => $text)
                 <option value="{{ $value }}">
                     {{ $text }}
                 </option>

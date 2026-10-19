@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ActionMessage;
 use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\ArticleRequest;
@@ -50,7 +51,7 @@ class ArticleController extends Controller
                 return redirect(route('admin.article.edit', $article))->with('successMsg', trans('common.success_item', ['attribute' => trans('common.add')]));
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans('common.add'), 'attribute' => trans('model.article.attribute')]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog('common.add', 'model.article.attribute', $e->getMessage()));
 
             // 原文只进日志：错误袋由 components/alert.blade.php 以 {!! !!} 渲染
             return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans('model.article.attribute')]));

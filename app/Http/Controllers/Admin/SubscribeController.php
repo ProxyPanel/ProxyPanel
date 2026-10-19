@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\UserSubscribe;
+use App\Utils\Helpers;
 use App\Utils\IP;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
@@ -72,7 +73,7 @@ class SubscribeController extends Controller
     public function setSubscribeStatus(UserSubscribe $userSubscribe): JsonResponse
     {
         $data = $userSubscribe->status
-            ? ['status' => 0, 'ban_time' => strtotime(sysConfig('ban_duration').' minutes'), 'ban_desc' => 'Your subscription has been disabled by the administrator, please contact the administrator to restore it']
+            ? ['status' => 0, 'ban_time' => strtotime(Helpers::banDurationMinutes().' minutes'), 'ban_desc' => 'Your subscription has been disabled by the administrator, please contact the administrator to restore it']
             : ['status' => 1, 'ban_time' => null, 'ban_desc' => null];
 
         $ret = $userSubscribe->update($data)

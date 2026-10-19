@@ -7,6 +7,7 @@ use App\Models\Ticket;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TicketController extends Controller
 {
@@ -47,7 +48,7 @@ class TicketController extends Controller
 
     public function edit(Ticket $ticket): View
     { // 回复工单
-        if ($ticket->user_id !== auth()->id()) {
+        if (Gate::denies('view', $ticket)) {
             abort(404, trans('http-statuses.404'));
         }
 
@@ -61,7 +62,7 @@ class TicketController extends Controller
 
     public function reply(Request $request, Ticket $ticket): JsonResponse
     {
-        if ($ticket->user_id !== auth()->id()) {
+        if (Gate::denies('reply', $ticket)) {
             return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
         }
 
@@ -92,7 +93,7 @@ class TicketController extends Controller
 
     public function close(Ticket $ticket): JsonResponse
     { // 关闭工单
-        if ($ticket->user_id !== auth()->id()) {
+        if (Gate::denies('close', $ticket)) {
             return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
         }
 

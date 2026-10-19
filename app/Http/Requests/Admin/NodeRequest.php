@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\ProxyType;
+use App\Utils\VNet\Supported;
 use Illuminate\Foundation\Http\FormRequest;
 
 class NodeRequest extends FormRequest
@@ -29,7 +31,7 @@ class NodeRequest extends FormRequest
             'sort' => 'required|numeric|between:0,255',
             'is_udp' => 'required|boolean',
             'status' => 'required|boolean',
-            'type' => 'required|numeric|between:0,5',
+            'type' => 'required|in:'.implode(',', ProxyType::values()),
             'method' => 'required_if:type,0,1,4|exists:ss_config,name',
             'protocol' => 'required_if:type,1,4|exists:ss_config,name',
             'protocol_param' => 'nullable|string',
@@ -57,9 +59,28 @@ class NodeRequest extends FormRequest
             'ports' => 'nullable|string',
         ];
 
-        // 对于 Hysteria2 (type=5)，当 obfs 不为 'none' 时，obfs_param 是必填的
-        if ($this->type === '5' && ! empty($this->obfs)) {
+        // 对于 Hysteria2，当 obfs 不为 'none' 时，obfs_param 是必填的
+        if ((int) $this->type === ProxyType::HYSTERIA2->value && ! empty($this->obfs)) {
             $rules['obfs_param'] = 'required|string';
+        }
+
+        // VNET 由 VNet-SSR 承载，它只实现了 Supported 里那几组名字。名单外的值（auth_chain_b、
+        // http_post、camellia-* 等）不会让节点报错下线：节点拒绝建连接，心跳照常上报，
+        // 后台看到的是「在线、无人」，所以这里不能用 exists:ss_config,name 放过。
+        if ((int) $this->type === ProxyType::VNET->value) {
+            $rules['method'] = 'required|in:'.implode(',', Supported::METHODS);
+            $rules['protocol'] = 'required|in:'.implode(',', Supported::PROTOCOLS);
+            $rules['obfs'] = 'required|in:'.implode(',', Supported::OBFS);
+
+            // 单端口（passwd 非空即 isSinglePort）靠 auth 包头的 4 字节身份编号区分用户，origin 携带不了它：
+            // 选了 origin 的「单端口」节点上所有人共用节点密码，摘掉的账号也还能连
+            if ($this->filled('passwd')) {
+                $authOnly = array_values(array_filter(
+                    Supported::PROTOCOLS,
+                    fn (string $name): bool => str_starts_with($name, 'auth_')
+                ));
+                $rules['protocol'] = 'required|in:'.implode(',', $authOnly);
+            }
         }
 
         return $rules;

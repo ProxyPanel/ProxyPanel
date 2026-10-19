@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Contracts\View\View;
@@ -10,6 +11,8 @@ use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
+    use ActionResponse;
+
     public function index(Request $request): View
     { // 订单列表
         return view('user.invoices', [
@@ -34,6 +37,6 @@ class InvoiceController extends Controller
             return response()->json(['status' => 'success', 'message' => trans('common.close')]);
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.close')])]);
+        return $this->failItem('common.close');
     }
 }

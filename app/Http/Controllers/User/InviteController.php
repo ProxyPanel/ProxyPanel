@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use App\Models\Order;
@@ -15,6 +16,8 @@ use Str;
 
 class InviteController extends Controller
 {
+    use ActionResponse;
+
     public function index(): Response|View
     { // 邀请页面
         if (Order::uid()->active()->where('origin_amount', '>', 0)->doesntExist()) {
@@ -46,7 +49,7 @@ class InviteController extends Controller
             ]);
 
             if ($invite) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.generate')])]);
+                return $this->successItem('common.generate');
             }
 
             $user->increment('invite_num'); // 码没生成就把占掉的名额还回去
@@ -56,6 +59,6 @@ class InviteController extends Controller
             $user->increment('invite_num');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('common.generate')])]);
+        return $this->failItem('common.generate');
     }
 }

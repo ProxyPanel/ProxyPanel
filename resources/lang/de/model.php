@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => 'Max. Registrierungen pro IP',
         'reset_password_times' => 'Passwort-Reset-Limit pro Tag',
         'reset_traffic' => 'Periodisches Traffic-Reset',
+        'rule_ban_times' => 'Sperrschwelle für Audit-Regeln',
+        'rule_log_cooldown' => 'Abklingzeit für Audit-Protokolle',
         'server_chan_key' => 'ServerChan SCKEY',
         'standard_currency' => 'Standardwährung',
         'stripe_public_key' => 'Stripe-öffentlicher Schlüssel',

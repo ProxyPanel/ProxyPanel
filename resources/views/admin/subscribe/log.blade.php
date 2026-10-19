@@ -34,12 +34,12 @@
                         </li>
                         <li class="list-group-item bg-blue-grey-100">
                             <i class="icon wb-time" aria-hidden="true"></i> {{ trans('model.subscribe.updated_at') }}:
-                            <span class="float-right">{{ $subscribe->updated_at }}</span>
+                            <span class="float-right">{{ localized_date($subscribe->updated_at) }}</span>
                         </li>
                         @if ($subscribe->ban_time)
                             <li class="list-group-item bg-blue-grey-100">
                                 <i class="icon wb-power" aria-hidden="true"></i> {{ trans('model.subscribe.ban_time') }}
-                                : <span class="float-right">{{ date('Y-m-d H:i', $subscribe->ban_time) }}</span>
+                                : <span class="float-right">{{ localized_date($subscribe->ban_time) }}</span>
                             </li>
                             <li class="list-group-item bg-blue-grey-100">
                                 <i class="icon wb-lock" aria-hidden="true"></i> {{ trans('model.subscribe.ban_desc') }}:
@@ -69,7 +69,7 @@
                             @endif
                         </td>
                         <td>{{ $subscribe->ipInfo }}</td>
-                        <td>{{ $subscribe->request_time }}</td>
+                        <td>{{ localized_date($subscribe->request_time) }}</td>
                         <td>{{ trim($subscribe->request_header) }}</td>
                     </tr>
                 @endforeach

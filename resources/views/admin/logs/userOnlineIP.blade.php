@@ -58,7 +58,7 @@
                                                 <td>
                                                     <a href="https://db-ip.com/{{ $log->ip }}" target="_blank">{{ $log->ip }}</a>
                                                 </td>
-                                                <td>{{ date('Y-m-d H:i:s', $log->created_at) }}</td>
+                                                <td>{{ localized_date($log->created_at) }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>

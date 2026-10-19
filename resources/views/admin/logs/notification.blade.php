@@ -24,7 +24,7 @@
                         <td> {{ $log->address }} </td>
                         <td> {{ $log->title }} </td>
                         <td class="text-break"> {{ $log->content }} </td>
-                        <td> {{ $log->created_at }} </td>
+                        <td> {{ localized_date($log->created_at) }} </td>
                         <td>
                             @if ($log->status < 0)
                                 <p class="badge badge-danger text-break font-size-14"> {{ $log->error }} </p>

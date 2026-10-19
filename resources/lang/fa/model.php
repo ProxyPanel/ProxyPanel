@@ -333,6 +333,8 @@ return [
         'register_ip_limit' => 'محدودیت ثبت نام همان IP',
         'reset_password_times' => 'حد بالای بازنشانی رمز روزانه',
         'reset_traffic' => 'بازنشانی دوره‌ای ترافیک',
+        'rule_ban_times' => 'آستانه مسدودی قانون حسابرسی',
+        'rule_log_cooldown' => 'فاصله ثبت گزارش حسابرسی',
         'server_chan_key' => 'SCKEY ServerChan',
         'standard_currency' => 'ارز پایه',
         'stripe_public_key' => 'کلید عمومی',

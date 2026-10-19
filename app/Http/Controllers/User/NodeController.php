@@ -8,6 +8,7 @@ use App\Services\ProxyService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class NodeController extends Controller
 {
@@ -30,10 +31,10 @@ class NodeController extends Controller
     public function show(Request $request, Node $node): JsonResponse
     { // 节点详细信息
         // 验证用户是否有权限访问该节点
-        if (! auth()->user()->nodes()->where('node.id', $node->id)->exists()) {
+        if (Gate::denies('view', $node)) {
             return response()->json(['status' => 'fail', 'message' => trans('http-statuses.401')]);
         }
 
-        return response()->json(['status' => 'success', 'data' => (new ProxyService())->getUserProxyConfig($node, $request->input('type') !== 'text')]);
+        return response()->json(['status' => 'success', 'data' => (new ProxyService)->getUserProxyConfig($node, $request->input('type') !== 'text')]);
     }
 }

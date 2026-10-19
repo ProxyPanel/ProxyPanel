@@ -5,7 +5,6 @@ namespace App\Utils\Payments;
 use App\Models\Payment;
 use App\Utils\Library\PaymentHelper;
 use App\Utils\Library\Templates\Gateway;
-use Hashids\Hashids;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -56,9 +55,9 @@ class Manual implements Gateway
         $code = $request->input('sign');
         $status = $request->input('status');
         if (isset($status, $code)) {
-            $payment_info = (new Hashids(config('app.key'), 8))->decode($code);
-            if ($payment_info) {
-                $payment = Payment::findOrFail($payment_info[0]);
+            $paymentId = PaymentHelper::decodePaymentSign((string) $code);
+            if ($paymentId !== null) {
+                $payment = Payment::findOrFail($paymentId);
                 if ($payment && $payment->order && $payment->order->status === 1) {
                     if ($status) {
                         PaymentHelper::paymentReceived($payment->trade_no);

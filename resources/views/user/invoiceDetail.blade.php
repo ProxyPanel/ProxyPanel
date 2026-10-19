@@ -20,10 +20,10 @@
                             :<a class="font-size-20" href="javascript:void(0)">{{ $order->sn }}</a>
                         </p>
                         <p>{{ trans('user.payment.method') }}
-                            : {{ $order->pay_way === 1 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</p>
-                        <p>{{ trans('user.bought_at') }}: {{ $order->created_at }}</p>
+                            : {{ $order->pay_type === 0 ? trans('user.shop.pay_credit') : trans('user.shop.pay_online') }}</p>
+                        <p>{{ trans('user.bought_at') }}: {{ localized_date($order->created_at) }}</p>
                         @if ($order->expired_at)
-                            <p>{{ trans('common.expired_at') }}: {{ $order->expired_at }}</p>
+                            <p>{{ trans('common.expired_at') }}: {{ localized_date($order->expired_at) }}</p>
                         @endif
                     </div>
                 </div>

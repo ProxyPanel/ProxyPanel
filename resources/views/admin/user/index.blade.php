@@ -56,7 +56,7 @@
                             <a class="copySubscribeLink" data-clipboard-text="{{ $user->sub_url }}" href="javascript:">{{ $user->subscribe->code }}</a>
                         </td>
                         <td> {{ formatBytes($user->used_traffic) }} / {{ $user->transfer_enable_formatted }} </td>
-                        <td> {{ $user->t ? date('Y-m-d H:i', $user->t) : trans('common.status.unused') }} </td>
+                        <td> {{ $user->t ? localized_date($user->t) : trans('common.status.unused') }} </td>
                         <td>
                             @if ($user->expiration_status !== 3)
                                 <span class="badge badge-lg badge-{{ ['danger', 'warning', 'default'][$user->expiration_status] }}">

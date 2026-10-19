@@ -34,7 +34,7 @@
                         <td> {{ $message->id }} </td>
                         <td> {{ $message->title }} </td>
                         <td> {{ $message->status_label }} </td>
-                        <td> {{ $message->created_at }} </td>
+                        <td> {{ localized_date($message->created_at) }} </td>
                         <td> {{ $message->error }} </td>
                         <td>
                             <a class="btn btn-primary" data-toggle="collapse" href="#marketing_{{ $loop->iteration }}" aria-expanded="false"
@@ -208,22 +208,22 @@
 
     @can('admin.marketing.push')
         <x-ui.modal id="send_push_modal" :title="trans('admin.marketing.push_send')" size="lg" :backdrop="false" :keyboard="false" :simple="false" :scroll="false">
-                    <div class="alert alert-danger" id="msg" style="display: none;"></div>
+                    <div class="alert alert-danger" id="push_msg" style="display: none;"></div>
                         <form class="form-horizontal" action="#" method="post">
                             <div class="form-body">
                                 <div class="form-group">
                                     <div class="row">
-                                        <label class="col-md-2 control-label" for="title"> {{ ucfirst(trans('validation.attributes.title')) }} </label>
+                                        <label class="col-md-2 control-label" for="push_title"> {{ ucfirst(trans('validation.attributes.title')) }} </label>
                                         <div class="col-md-6">
-                                            <input class="form-control" id="title" name="title" type="text" />
+                                            <input class="form-control" id="push_title" name="title" type="text" />
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
-                                        <label class="col-md-2 control-label" for="content"> {{ ucfirst(trans('validation.attributes.content')) }} </label>
+                                        <label class="col-md-2 control-label" for="push_content"> {{ ucfirst(trans('validation.attributes.content')) }} </label>
                                         <div class="col-md-9">
-                                            <textarea class="form-control" id="content" name="content" data-provide="markdown" data-iconlibrary="fa" rows="10"></textarea>
+                                            <textarea class="form-control" id="push_content" name="content" data-provide="markdown" data-iconlibrary="fa" rows="10"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -347,17 +347,17 @@
                     '{{ route('admin.marketing.create', ['type' => 'push']) }}',
                     collectFormData("#send_push_modal form"), {
                         beforeSend: function() {
-                            $("#msg").show().html('{{ trans('admin.creating') }}');
+                            $("#push_msg").show().html('{{ trans('admin.creating') }}');
                         },
                         success: function(ret) {
                             if (ret.status === "fail") {
-                                $("#msg").show().html(ret.message);
+                                $("#push_msg").show().html(ret.message);
                                 return;
                             }
                             $("#send_push_modal").modal("hide");
                         },
                         error: function() {
-                            $("#msg").show().html('{{ trans('common.request_failed') }}');
+                            $("#push_msg").show().html('{{ trans('common.request_failed') }}');
                         }
                     }
                 );

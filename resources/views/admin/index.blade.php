@@ -27,7 +27,7 @@
             @can('admin.order')
                 <x-admin.stats-card :href="route('admin.order')" icon="md-ticket-star" :title="trans('admin.dashboard.orders')" :value="$totalOrder" :tag="$todayOrder" />
                 <x-admin.stats-card :href="route('admin.order')" color="info" icon="md-ticket-star" :title="trans('admin.dashboard.online_orders')" :value="$totalOnlinePayOrder" :tag="$todayOnlinePayOrder" />
-                <x-admin.stats-card :href="route('admin.order', ['status' => [1, 2]])" color="success" icon="md-ticket-star" :title="trans('admin.dashboard.succeed_orders')" :value="$totalSuccessOrder" :tag="$todaySuccessOrder" />
+                <x-admin.stats-card :href="route('admin.order', ['status' => [2, 3]])" color="success" icon="md-ticket-star" :title="trans('admin.dashboard.succeed_orders')" :value="$totalSuccessOrder" :tag="$todaySuccessOrder" />
             @endcan
             @can('admin.log.credit')
                 <x-admin.stats-card icon="md-money" :title="trans('admin.dashboard.credit')" :value="$totalCredit" />

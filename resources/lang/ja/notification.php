@@ -12,6 +12,8 @@ return [
     'close_ticket' => 'チケット [ID: :id, タイトル: :title] がクローズされました',
     'data_anomaly' => 'ユーザートラフィック異常アラート',
     'data_anomaly_content' => 'ユーザー [ID: :id] の過去1時間のトラフィック使用状況：[アップロード: :upload、ダウンロード: :download、合計: :total]',
+    'rule_ban' => '監査ルールのトリガーによるアカウント一時BAN',
+    'rule_ban_content' => 'アカウント [ID: :uid, :email] は1時間以内に監査ルールを :hits 回トリガーしました（閾値 :threshold）。:minutes 分間の一時BAN後、期限で自動解除されます。直近のノード [ID: :node_id, 名前: :node_name]。詳細は管理画面のトリガー記録を参照してください。',
     'details' => '詳細を表示',
     'details_btn' => '下記ボタンをクリックして詳細をご確認ください。',
     'ding_bot_limit' => '各ボットは1分間に最大20件のメッセージを送信できます。制限を超えると10分間の制限が適用されます。',

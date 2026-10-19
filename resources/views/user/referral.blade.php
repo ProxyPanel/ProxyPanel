@@ -54,7 +54,7 @@
                                     <tr>
                                         <td> {{ $loop->iteration }} </td>
                                         <td> {{ str_replace(mb_substr($user->username, 3, 4), '****', $user->username) }} </td>
-                                        <td> {{ $user->created_at }} </td>
+                                        <td> {{ localized_date($user->created_at) }} </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -98,7 +98,7 @@
                                         </td>
                                         <td> {{ $referralLog->amount_tag }} </td>
                                         <td> {{ $referralLog->commission_tag }} </td>
-                                        <td> {{ $referralLog->created_at }} </td>
+                                        <td> {{ localized_date($referralLog->created_at) }} </td>
                                         <td><x-badge :badge="$referralLog->status_badge" /></td>
                                     </tr>
                                 @endforeach
@@ -129,7 +129,7 @@
                                 @foreach ($referralApplyList as $referralApply)
                                     <tr>
                                         <td> {{ $loop->iteration + ($referralApplyList->currentPage() - 1) * $referralApplyList->perPage() }} </td>
-                                        <td> {{ $referralApply->created_at }} </td>
+                                        <td> {{ localized_date($referralApply->created_at) }} </td>
                                         <td> {{ $referralApply->amount_tag }} </td>
                                         <td>
                                             <x-badge :badge="$referralApply->status_badge" />

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Goods;
@@ -19,6 +20,8 @@ use Validator;
 
 class ShopController extends Controller
 {
+    use ActionResponse;
+
     public function index(): View
     { // 商品列表
         $user = auth()->user();
@@ -76,7 +79,7 @@ class ShopController extends Controller
             return response()->json(['status' => 'fail', 'message' => trans('user.payment.insufficient_balance')]);
         }
 
-        return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('common.reset')])]);
+        return $this->successItem('common.reset');
     }
 
     public function checkBonus(Request $request, Goods $good): JsonResponse
@@ -130,9 +133,9 @@ class ShopController extends Controller
         }
 
         if ((new CouponService($request->input('coupon_sn')))->charge()) {
-            return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans('user.recharge')])]);
+            return $this->successItem('user.recharge');
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans('user.recharge')])]);
+        return $this->failItem('user.recharge');
     }
 }
