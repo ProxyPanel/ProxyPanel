@@ -18,6 +18,22 @@ use Log;
 trait ActionResponse
 {
     /**
+     * 既有的成功 JSON 信封，供不走 $callback 流程的动作直接返回（如批量导出、开关切换）.
+     */
+    protected function successItem(string $actionKey): JsonResponse
+    {
+        return response()->json(['status' => 'success', 'message' => ActionMessage::success($actionKey)]);
+    }
+
+    /**
+     * 既有的失败 JSON 信封.
+     */
+    protected function failItem(string $actionKey): JsonResponse
+    {
+        return response()->json(['status' => 'fail', 'message' => ActionMessage::failed($actionKey)]);
+    }
+
+    /**
      * 执行动作并按既有格式返回 JSON.
      *
      * @param  string  $actionKey  动作的翻译键，如 common.add
@@ -28,16 +44,16 @@ trait ActionResponse
     {
         try {
             if ($callback()) {
-                return response()->json(['status' => 'success', 'message' => trans('common.success_item', ['attribute' => trans($actionKey)])]);
+                return $this->successItem($actionKey);
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans($actionKey), 'attribute' => trans($attributeKey)]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog($actionKey, $attributeKey, $e->getMessage()));
 
             // 原文只进日志：这条 message 会被前台按 HTML 插入（SweetAlert2 与 alert 组件都是）
-            return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans($actionKey)])]);
+            return $this->failItem($actionKey);
         }
 
-        return response()->json(['status' => 'fail', 'message' => trans('common.failed_item', ['attribute' => trans($actionKey)])]);
+        return $this->failItem($actionKey);
     }
 
     /**
@@ -57,12 +73,12 @@ trait ActionResponse
                 return $redirect;
             }
         } catch (Exception $e) {
-            Log::error(trans('common.error_action_item', ['action' => trans($actionKey), 'attribute' => trans($attributeKey)]).': '.$e->getMessage());
+            Log::error(ActionMessage::failureLog($actionKey, $attributeKey, $e->getMessage()));
 
             // 原文只进日志：错误袋会被 components/alert.blade.php 以 {!! !!} 渲染
-            return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans($actionKey)]));
+            return redirect()->back()->withInput()->withErrors(ActionMessage::failed($actionKey));
         }
 
-        return redirect()->back()->withInput()->withErrors(trans('common.failed_item', ['attribute' => trans($actionKey)]));
+        return redirect()->back()->withInput()->withErrors(ActionMessage::failed($actionKey));
     }
 }

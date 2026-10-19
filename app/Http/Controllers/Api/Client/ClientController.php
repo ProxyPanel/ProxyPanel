@@ -11,14 +11,12 @@ use App\Models\ReferralLog;
 use App\Models\Ticket;
 use App\Services\ProxyService;
 use App\Services\UserService;
-use App\Utils\Helpers;
 use Arr;
 use Artisan;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Cache;
 
 use function config;
 
@@ -128,10 +126,8 @@ class ClientController extends Controller
         // 邀请码
         $code = $user->invites()->whereStatus(0)->value('code');
 
-        $data['invite_gift'] = trans('user.invite.promotion', [
-            'traffic' => $referral_traffic,
-            'referral_percent' => $referral_percent * 100,
-        ]);
+        $data['invite_gift'] = trans('user.invite.promotion.base', ['traffic' => $referral_traffic])
+            .trans('user.invite.promotion.bonus.'.(int) sysConfig('referral_reward_mode'), ['referral_percent' => $referral_percent * 100]);
 
         $data['invite_code'] = $code ?? $user->invite_code;
         $data['invite_url'] = $user->invite_url;
@@ -151,36 +147,21 @@ class ClientController extends Controller
 
     public function checkIn(Request $request): JsonResponse
     {
-        $user = $request->user();
-        // 系统开启登录加积分功能才可以签到
-        if (! sysConfig('checkin_interval')) {
-            return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.disable')]);
-        }
+        $result = (new UserService($request->user()))->checkIn();
 
-        // 认领式签到：add 成功的那一次才发流量
-        $ttl = sysConfig('checkin_interval') * Minute;
-        if (! Cache::add('userCheckIn_'.$user->id, '1', $ttl)) {
-            return response()->json(['ret' => 0, 'title' => trans('common.success'), 'msg' => trans('user.home.attendance.done')]);
-        }
-
-        $traffic = random_int((int) sysConfig('checkin_reward'), (int) sysConfig('checkin_reward_max')) * MiB;
-        $before = $user->transfer_enable;
-
-        if (! $user->incrementData($traffic)) {
-            Cache::forget('userCheckIn_'.$user->id); // 发失败要让人能重签
-
-            return response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => trans('user.home.attendance.failed')]);
-        }
-        Helpers::addUserTrafficModifyLog($user->id, $before, $user->transfer_enable, trans('user.home.attendance.attribute'));
-
-        return $this->succeed(null, null, [200, trans('user.home.attendance.success', ['data' => formatBytes($traffic)])]);
+        return match ($result['state']) {
+            'disabled' => response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => $result['message']]),
+            'repeated' => response()->json(['ret' => 0, 'title' => trans('common.success'), 'msg' => $result['message']]),
+            'failed' => response()->json(['ret' => 0, 'title' => trans('common.failed'), 'msg' => $result['message']]),
+            default => $this->succeed(null, null, [200, $result['message']]),
+        };
     }
 
     public function proxyCheck(Request $request): JsonResponse
     {
         $md5 = $request->get('md5', '');
 
-        $proxy = (new ProxyService())->buildClientConfig('clash');
+        $proxy = (new ProxyService)->buildClientConfig('clash');
         if (strtolower(md5(json_encode($proxy))) === strtolower($md5)) {
             return $this->succeed(false);
         }
@@ -192,13 +173,13 @@ class ClientController extends Controller
     {
         $flag = strtolower($request->input('flag') ?? ($request->userAgent() ?? ''));
 
-        return (new ProxyService())->buildClientConfig($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
+        return (new ProxyService)->buildClientConfig($flag === 'v2rayng' ? 'v2rayng' : 'clash', $request->input('type'));
     }
 
     public function getProxyList(): JsonResponse
     {
         $servers = [];
-        $proxyService = new ProxyService();
+        $proxyService = new ProxyService;
         foreach ($proxyService->fetchAvailableNodes(null, false)->load('latestOnlineLog') as $node) {
             $server = $proxyService->generateNodeConfig($node);
             if ($server['type'] === 'shadowsocks' || $server['type'] === 'shadowsocksr') {

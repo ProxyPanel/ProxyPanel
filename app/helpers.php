@@ -116,6 +116,10 @@ if (! function_exists('localized_date')) {
             return '';
         }
 
+        if (is_int($date)) { // 库里存 unix 时间戳的列（ban_time、t、部分 created_at）直接传进来
+            $date = date('Y-m-d H:i:s', $date);
+        }
+
         $carbon = Carbon::parse($date);
         $locale = app()->getLocale();
         $carbon->setLocale($locale);

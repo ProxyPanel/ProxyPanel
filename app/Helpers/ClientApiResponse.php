@@ -29,7 +29,7 @@ trait ClientApiResponse
     private function jsonResponse(int $status, array $codeResponse, array|string|bool|null $data = null, ?array $addition = null): JsonResponse
     {
         [$code, $message] = $codeResponse;
-        $code = $code > 1000 ? (int) ($code / 1000) : $code;
+        $code = ResponseEnum::toHttpStatus($code);
         if (self::$client === 'bob') { // bob 客户端 返回格式
             $result = ['ret' => $status, 'msg' => $message, 'data' => $data];
 

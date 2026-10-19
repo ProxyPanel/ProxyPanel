@@ -24,6 +24,8 @@ class money implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes): int
     {
-        return (int) round($value * 100);
+        // 先按十进制语义舍到两位小数再乘 100，之后再 round 一次：直接乘会踩二进制表示的运气——
+        // 9.995（奇数分订单 × 0.5 的佣金、汇率换算都是这个形状）乘 100 得 999.4999…，半分被丢掉
+        return (int) round(round((float) $value, 2, PHP_ROUND_HALF_UP) * 100);
     }
 }

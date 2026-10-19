@@ -17,7 +17,7 @@ trait WebApiResponse
         if ($status === 'success') {
             $etag = self::abortIfNotModified($data);
         }
-        $code = $code < 1000 ? $code : (int) ($code / 1000);
+        $code = ResponseEnum::toHttpStatus($code);
         $data = compact('status', 'code', 'data', 'message');
         if (isset($addition)) {
             $data += $addition;
