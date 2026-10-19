@@ -1,0 +1,149 @@
+name: check
+
+# 面板仓唯一的自动闸门：Pint 风格 + 全量用例 + 与节点仓的算法镜像对账。
+# 用例要能连库才起得来（AppServiceProvider::register() 判 config 表，SettingServiceProvider 还要
+# /.env 存在且 config 表有行），所以这里必须给一个真的 MySQL 并 seed 出 config 行。
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: 风格与测试（PHP 8.3 + MySQL 8.4）
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    # 凭据走 job env 而不是复制 .env.example：那份模板里的值（口令、SESSION_CONNECTION 等）
+    # 会左右结果，而 Dotenv 不覆盖已存在的环境变量，所以显式写在这里就是唯一事实。
+    # .env 本身只用来满足「/.env 必须存在」那条启动判据。
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: '3306'
+      DB_DATABASE: ProxyPanel
+      DB_USERNAME: root
+      DB_PASSWORD: root
+
+    # sql-mode 必须与部署一致（生产与本机的 my.cnf 都只留 NO_ENGINE_SUBSTITUTION）：MySQL 8 默认带
+    # ONLY_FULL_GROUP_BY，按非聚合列 GROUP BY 的统计查询会在 CI 里报错而本地是绿的；默认还带
+    # STRICT_TRANS_TABLES 与 NO_ZERO_DATE，会把部署里静默截断的越界写在 CI 里打成异常——两边判据不同，
+    # 用例结果就不可信。services 只认 image/ports/env/volumes/options（cmd 与 args 是 container 的键，
+    # 写了会让整份 workflow 判为无效），options 又只收 docker run 的 flag，塞不进 mysqld 的参数，
+    # 所以这条落在下面那步 SET GLOBAL 里。
+    # 版本取 8.4 是因为 database/schema/mysql-schema.sql 在 8.4 上生成，8.0 未必装得下。
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ProxyPanel
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: 准备 PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          # 只列 setup-php 默认不装的：gd 是 mews/captcha 与 phpspreadsheet 的硬依赖，zip 同上（xlsx），
+          # pdo_mysql 是用例连库的前提。geoip2/ip2location 是纯 PHP 读库文件，不需要扩展；那些库文件
+          # 不入库（由 scripts/download_dbs.sh 下载），所以 CI 里对应用例自己跳过
+          extensions: mbstring, dom, fileinfo, pdo, pdo_mysql, gd, zip
+          coverage: none
+
+      - name: 装依赖
+        run: |
+          # 仓里不提交 composer.lock（约定见 AGENTS.md），所以 install 走的是「按清单重新解析」；
+          # 而 Composer 的 advisory 策略会把整段 laravel/framework 10.x 判为「有已知漏洞」直接不载入，
+          # 解析当场无解。面板钉在 Laravel 10 是既成事实，这条闸门要的是「改动能装起来、用例能跑」，
+          # 所以只对本次检出关掉那条拦截，不改 composer.json —— 那份文件管着生产 update.sh 与每个
+          # 开发克隆的安全策略，不属这条闸门的事。
+          composer config policy.advisories.block false
+          composer install --no-interaction --prefer-dist --no-progress
+
+      - name: 准备 Node
+        uses: actions/setup-node@v5
+        with:
+          # vite 7 的 engines 写的是 ^20.19.0 || >=22.12.0，runner 预装的那版 Node 不在里头就直接装不了
+          node-version: '22'
+
+      - name: 构建前端资源
+        run: |
+          # public/build 不入库，而带 @vite 的后台视图（节点列表、节点详情、用户列表、码支付页）在
+          # 清单缺失时渲染就抛 ViteManifestNotFoundException —— 页面级用例拿到的是 500，不是一眼能
+          # 看懂的断言失败
+          npm install --no-audit --no-fund
+          npm run build
+
+      - name: 代码风格
+        run: ./vendor/bin/pint --test
+
+      - name: 取节点仓的算法清单
+        env:
+          # 用例按 dirname(__DIR__, 4) 找「面板仓父目录/VNet-SSR/docs/capabilities.json」，
+          # 放仓内它读不到，所以必须落到 GITHUB_WORKSPACE 的兄弟目录
+          SIBLING: '${{ github.workspace }}/../VNet-SSR'
+        run: |
+          mkdir -p "$SIBLING/docs"
+          curl -fsSL https://raw.githubusercontent.com/ProxyPanel/VNet-SSR/master/docs/capabilities.json \
+            -o "$SIBLING/docs/capabilities.json"
+          # 文件缺失时镜像对账用例会 markTestSkipped —— 闸门就静默没了，所以这里当场判死
+          test -s "$SIBLING/docs/capabilities.json"
+          php -r 'exit(json_decode(file_get_contents(getenv("SIBLING")."/docs/capabilities.json"), true) === null ? 1 : 0);'
+
+      - name: 把 sql_mode 调成部署口径
+        run: |
+          # SET GLOBAL 只作用于之后的新连接（当前连接读不到新值），所以这一步排在建库之前，而核对要用
+          # 另一条新连接 —— 后面的 migrate、db:seed 与 artisan test 用的正是新连接。
+          # mysql 客户端是建库那步载入 schema 快照的前提（Laravel 会 shell 调用它），缺它时报错很难归因
+          command -v mysql
+          php -r '
+          $opt = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
+          $connect = fn () => new PDO("mysql:host=" . getenv("DB_HOST") . ";port=" . getenv("DB_PORT"), getenv("DB_USERNAME"), getenv("DB_PASSWORD"), $opt);
+          $admin = $connect();
+          $admin->exec("SET GLOBAL sql_mode = " . $admin->quote("NO_ENGINE_SUBSTITUTION"));
+          $mode = $connect()->query("SELECT @@sql_mode")->fetchColumn();
+          echo "sql_mode = " . $mode . PHP_EOL;
+          foreach (["ONLY_FULL_GROUP_BY", "STRICT_TRANS_TABLES", "STRICT_ALL_TABLES", "NO_ZERO_DATE", "NO_ZERO_IN_DATE", "ERROR_FOR_DIVISION_BY_ZERO"] as $flag) {
+              if (str_contains($mode, $flag)) {
+                  fwrite(STDERR, "sql_mode 仍带 " . $flag . "，与部署不一致" . PHP_EOL);
+                  exit(1);
+              }
+          }
+          '
+
+      - name: 建库
+        run: |
+          # /.env 必须存在（AppServiceProvider 的启动判据之一）。但 Laravel 10 的 key:generate 是靠
+          # 正则替换写文件的：文件里没有 APP_KEY= 那一行时，它只打一条 "Unable to set application key"
+          # 就返回 0（KeyGenerateCommand::writeNewEnvironmentFileWith 见替换前后相同即判失败），于是
+          # config('app.key') 一路为 null，而 new Hashids(config('app.key')) 是强类型入参 —— 一串用例
+          # 会以 TypeError 失败却看不出根因在这步。所以先给一行占位，再当场核对密钥确实落进去了。
+          printf 'APP_KEY=\n' > .env
+          php artisan key:generate --force
+          grep -q '^APP_KEY=base64:' .env
+          # 全新安装 = 先由 migrate 载入 database/schema/mysql-schema.sql，再重放未执行的迁移
+          php artisan migrate --force
+          # config 表为空时 sysConfig() 一律回默认值，依赖后台配置项的用例会假性失败
+          # （判据见 AGENTS.md「测试注意事项」）。这里不能改 config 列名：SettingServiceProvider 只认那张表
+          php artisan db:seed --force
+
+      - name: 跑用例
+        # network 组会真实打第三方 IP 库与测速接口（见 AGENTS.md），CI 里没有稳定答案，只在人工长跑里跑
+        run: php artisan test --exclude-group=network

@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\ProxyType;
+
 return [
     'payment' => [
         'icon' => [
@@ -82,12 +84,6 @@ return [
         'qq' => env('CONTACT_QQ', null),
     ],
 
-    'proxy_protocols' => [
-        0 => 'Shadowsocks',
-        1 => 'ShadowsocksR',
-        2 => 'V2Ray',
-        3 => 'Trojan',
-        4 => 'VNET',
-        5 => 'Hysteria2',
-    ],
+    // 协议名以 App\Enums\ProxyType 为唯一来源，新增协议改枚举即可
+    'proxy_protocols' => ProxyType::protocols(),
 ];

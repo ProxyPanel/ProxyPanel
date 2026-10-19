@@ -2,10 +2,7 @@
 # 设置工作目录为脚本所在的目录
 cd "$(dirname "$0")" || exit 1
 
-# 临时下载最新的 lib.sh 到当前目录（覆盖旧版本）
-curl -o scripts/lib.sh https://raw.githubusercontent.com/ProxyPanel/ProxyPanel/master/scripts/lib.sh
-
-# 引入依赖脚本
+# 引入依赖脚本：只用检出的 scripts/lib.sh，它与本仓的应用代码同属一个仓库
 source scripts/lib.sh
 
 print_message "Starting panel update..." "开始面板更新..."
@@ -15,6 +12,9 @@ print_logo
 # 更新代码
 print_message "updating Code..." "更新代码..."
 git fetch -f && git reset -q --hard origin/master && git pull
+
+# 后面的步骤还要用库函数，改用本轮拉下来的版本，与刚更新的代码对齐
+source scripts/lib.sh
 
 # 更新数据库
 print_message "Updating database..." "更新数据库..."

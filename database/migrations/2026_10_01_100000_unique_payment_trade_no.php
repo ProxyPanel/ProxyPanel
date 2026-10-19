@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 return new class extends Migration
 {
-    // 订单已终结的状态：-1 已关闭、2 已完成 —— 只有这两种支付单不会再收到有意义的回调
+    // -1 不算真终结：迟到付款仍会把它复活并交付（见 PaymentHelper::paymentReceived），换号后旧号的回调只能靠未匹配提醒发现
     private const SETTLED_ORDER_STATUSES = [-1, 2];
 
     public function up(): void

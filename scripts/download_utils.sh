@@ -1,6 +1,14 @@
 #!/bin/bash
-# 信号处理
-trap 'rm -rf /tmp; exit 130' SIGINT SIGTSTP SIGTERM
+
+UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+tmp_files=()
+TMP_VERSION_FILE="/tmp/download_utils_version.json.tmp"
+interrupted() {
+  exit 130
+}
+# 只清本次自己的半截文件；删整个 /tmp 会连带毁掉其它进程的临时文件
+trap 'rm -f "${tmp_files[@]}" "$TMP_VERSION_FILE"' EXIT
+trap 'interrupted' SIGINT SIGTSTP SIGTERM
 
 # 检查并安装软件包
 check_and_install() {
@@ -28,12 +36,11 @@ check_and_install() {
   fi
 }
 
-# 获取 GitHub 仓库的最新标签
+# 获取 GitHub 仓库的最新标签；仓库不存在、无 release 或匿名额度（60 次/小时）用尽时返回空串
 get_tag() {
   local repo=$1
-    local headers=("-H" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36")  # 合法 User-Agent
 
-  curl -fsSL "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name'
+  curl -fsSL -A "$UA" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name // empty'
 }
 
 # 定义下载函数
@@ -42,19 +49,24 @@ download_file() {
   local version=$2
   local url=$3
   local tmp_file="/tmp/$name.tmp"
-  local local_version=$(jq -r ".[\"$name\"]" <"$VERSION_FILE" 2>/dev/null || echo "0.0.0")
+  local local_version="0.0.0"
+  if [ -f "$VERSION_FILE" ]; then
+    local_version=$(jq -r ".[\"$name\"] // \"0.0.0\"" "$VERSION_FILE")
+  fi
 
   echo -e "\e[1;47;34m$name 版本信息：【本地版本】$local_version | 【最新版本】$version\e[0m"
 
   if [ "$version" != "$local_version" ]; then
     echo -e "\e[37m正在更新 $name 到版本 $version\e[0m"
 
+    tmp_files+=("$tmp_file")
+
     # 下载文件
-    if ! curl -I -L -m 10 "$url" >/dev/null 2>&1; then
+    if ! curl -I -L -m 20 -A "$UA" "$url" >/dev/null 2>&1; then
       echo -e "\e[31mURL $url 不存在\e[0m"
       return 2
     fi
-    if ! curl -L -m 60 -H "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36" --retry 3 --retry-delay 5 -o "$tmp_file" "$url"; then
+    if ! curl -L --retry 3 --retry-delay 5 -A "$UA" --speed-limit 10240 --speed-time 120 -o "$tmp_file" "$url"; then
       echo -e "\e[31m下载 $name 失败\e[0m"
       rm -f "$tmp_file"
       return 1
@@ -89,7 +101,7 @@ process_files() {
   fi
 
   # 创建临时版本文件
-  local tmp_version_file="/tmp/version.json.tmp"
+  local tmp_version_file="$TMP_VERSION_FILE"
   echo "$current_versions" > "$tmp_version_file"
 
   # 遍历所有文档
