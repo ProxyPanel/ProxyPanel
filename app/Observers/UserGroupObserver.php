@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\ProxyType;
 use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
 use App\Models\UserGroup;
@@ -11,7 +12,7 @@ class UserGroupObserver
 {
     public function created(UserGroup $userGroup): void
     {
-        $nodes = Node::whereType(4)->whereIn('id', $userGroup->nodes)->get();
+        $nodes = Node::whereType(ProxyType::VNET->value)->whereIn('id', $userGroup->nodes)->get();
         if ($nodes->isNotEmpty()) {
             ReloadNode::dispatch($nodes);
         }
@@ -21,7 +22,7 @@ class UserGroupObserver
     {
         $changes = $userGroup->getChanges();
         if (Arr::has($changes, 'nodes')) {
-            $nodes = Node::whereType(4)
+            $nodes = Node::whereType(ProxyType::VNET->value)
                 ->whereIn('id', array_diff($userGroup->nodes ?? [], $userGroup->getOriginal('nodes') ?? []))
                 ->get();
             if ($nodes->isNotEmpty()) {

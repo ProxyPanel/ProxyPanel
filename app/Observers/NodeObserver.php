@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\ProxyType;
 use App\Events\NodeActions;
 use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
@@ -143,7 +144,7 @@ class NodeObserver
         }
 
         // Reload
-        if ((int) $node->type === 4) {
+        if ($node->type === ProxyType::VNET->value) {
             ReloadNode::dispatch($node);
             $this->broadcastMessage('update', ['operation' => 'reload_node', 'status' => 1], $node->id);
         }

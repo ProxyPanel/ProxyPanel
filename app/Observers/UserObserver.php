@@ -2,10 +2,10 @@
 
 namespace App\Observers;
 
+use App\Enums\ProxyType;
 use App\Jobs\Hysteria2\DelUser as Hysteria2DelUser;
 use App\Jobs\VNet\AddUser;
 use App\Jobs\VNet\DelUser;
-use App\Jobs\VNet\EditUser;
 use App\Models\User;
 use App\Utils\Helpers;
 use Arr;
@@ -16,7 +16,7 @@ class UserObserver
     {
         $user->subscribe()->create(['code' => Helpers::makeSubscribeCode()]);
 
-        $allowNodes = $user->nodes()->whereType(4)->get();
+        $allowNodes = $user->nodes()->whereType(ProxyType::VNET->value)->get();
         if ($allowNodes->isNotEmpty()) {
             AddUser::dispatch($user->id, $allowNodes);
         }
@@ -32,54 +32,24 @@ class UserObserver
         // 如果enable状态发生变化，或者用户当前已启用且权限或配置字段发生变化
         if ($enableChanged || ($user->enable === 1 && ($permissionFieldsChanged || $configFieldsChanged))) {
             // 获取当前允许的节点
-            $currentAllowedNodes = $user->nodes()->whereType(4)->get();
+            $currentAllowedNodes = $user->nodes()->whereType(ProxyType::VNET->value)->get();
 
+            // 掉级/换组后不在「当前允许」集合里的节点，面板不会再向它下发这个人，只能显式摘掉
             if ($permissionFieldsChanged) {
-                $oldAllowedNodes = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(4)->get();
-                if ($enableChanged) {
-                    if ($user->enable) {
-                        // 用户被启用，添加到所有当前允许的节点
-                        if ($currentAllowedNodes->isNotEmpty()) {
-                            AddUser::dispatch($user->id, $currentAllowedNodes);
-                        }
-                    } elseif ($oldAllowedNodes->isNotEmpty()) {
-                        DelUser::dispatch($user->id, $oldAllowedNodes);
-                    }
-                } else {
-                    // 计算差异
-                    $nodesToRemove = $oldAllowedNodes->diff($currentAllowedNodes); // 用户失去权限的节点
-                    $nodesToAdd = $currentAllowedNodes->diff($oldAllowedNodes); // 用户新增权限的节点
+                $previous = $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))
+                    ->whereType(ProxyType::VNET->value)
+                    ->get();
+                // 按ID求差集，比 Collection::diff 的模型 JSON 比较更稳
+                $staleNodes = $previous->whereNotIn('id', $currentAllowedNodes->pluck('id')->all());
 
-                    // 处理节点移除
-                    if ($nodesToRemove->isNotEmpty()) {
-                        DelUser::dispatch($user->id, $nodesToRemove);
-                    }
-
-                    // 处理节点添加
-                    if ($nodesToAdd->isNotEmpty()) {
-                        AddUser::dispatch($user->id, $nodesToAdd);
-                    }
-
-                    // 处理节点更新（权限未变但配置变了）
-                    if ($configFieldsChanged && $currentAllowedNodes->isNotEmpty()) {
-                        $nodesToUpdate = $currentAllowedNodes->intersect($oldAllowedNodes); // 权限未变但可能需要更新配置的节点
-                        if ($nodesToUpdate->isNotEmpty()) {
-                            EditUser::dispatch($user, $nodesToUpdate);
-                        }
-                    }
+                if ($staleNodes->isNotEmpty()) {
+                    DelUser::dispatch($user->id, $staleNodes);
                 }
-            } elseif ($enableChanged && $currentAllowedNodes->isNotEmpty()) {
-                // 启用状态变化处理
-                if ($user->enable) {
-                    // 用户被启用，添加到所有允许的节点
-                    AddUser::dispatch($user->id, $currentAllowedNodes);
-                } else {
-                    // 用户被禁用，从所有允许的节点中移除
-                    DelUser::dispatch($user->id, $currentAllowedNodes);
-                }
-            } elseif ($configFieldsChanged && $currentAllowedNodes->isNotEmpty()) {
-                // 仅配置变化，更新所有允许的节点
-                EditUser::dispatch($user, $currentAllowedNodes);
+            }
+
+            // 其余一律下发当前状态：enable=0 时节点按这个字段把账号摘掉，无需再分「加/删」两条路
+            if ($currentAllowedNodes->isNotEmpty()) {
+                AddUser::dispatch($user->id, $currentAllowedNodes);
             }
 
             // Hysteria2 的节点只在客户端连接时向面板鉴权，没有「在节点上增删用户」这一步，
@@ -94,12 +64,12 @@ class UserObserver
 
     public function deleted(User $user): void
     {
-        $allowNodes = $user->nodes()->whereType(4)->get();
+        $allowNodes = $user->nodes()->whereType(ProxyType::VNET->value)->get();
         if ($allowNodes->isNotEmpty()) {
             DelUser::dispatch($user->id, $allowNodes);
         }
 
-        $hysteria2Nodes = $user->nodes()->whereType(5)->get();
+        $hysteria2Nodes = $user->nodes()->whereType(ProxyType::HYSTERIA2->value)->get();
         if ($hysteria2Nodes->isNotEmpty()) {
             Hysteria2DelUser::dispatch($user->id, $hysteria2Nodes);
         }
@@ -113,9 +83,9 @@ class UserObserver
      */
     private function kickHysteria2Sessions(User $user, bool $enableChanged, bool $permissionChanged, bool $configChanged): void
     {
-        $current = $user->nodes()->whereType(5)->get();
+        $current = $user->nodes()->whereType(ProxyType::HYSTERIA2->value)->get();
         $previous = $permissionChanged
-            ? $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(5)->get()
+            ? $user->nodes($user->getOriginal('level'), $user->getOriginal('user_group_id'))->whereType(ProxyType::HYSTERIA2->value)->get()
             : $current;
 
         $targets = $current->whereIn('id', []); // 以空集合起步，保持 Eloquent Collection 类型（DelUser 构造器要求）

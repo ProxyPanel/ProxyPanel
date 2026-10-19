@@ -90,7 +90,7 @@ class ReportController extends Controller
                     'id' => $item->node_id,
                     'name' => $item->node->name,
                     'time' => $time,
-                    'total' => round(($item->total ?? $item->u + $item->d) / (1024 * 1024), 2),
+                    'total' => round(($item->total ?? $item->u + $item->d) / MiB, 2),
                 ];
             };
 
@@ -266,9 +266,8 @@ class ReportController extends Controller
 
         $thirtyDaysAgo = now()->subDays(30);
 
-        // 近 30 天的合计与有数据天数直接取自上面那次 groupBy('date') 的结果：
-        // 同一张表、同一批行再补一次 SUM/COUNT 只是把这份工作重复做一遍。
-        // 该表现在每个 (节点, 日期) 只有一行，所以日期数就是原来的 COUNT(*)。
+        // 近 30 天的合计与有数据天数复用上面那次 groupBy('date') 的结果，不再对同一批行补一次 SUM/COUNT；
+        // 该表每个 (节点, 日期) 只有一行，所以日期数即 COUNT(*)。
         $recent30d = $flows->filter(fn ($flow) => Carbon::parse($flow->date)->gte($thirtyDaysAgo));
 
         $total30Days = (int) $recent30d->sum('total');

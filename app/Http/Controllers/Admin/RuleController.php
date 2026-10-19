@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RuleRequest;
+use App\Jobs\VNet\ReloadRule;
 use App\Models\Node;
 use App\Models\Rule;
 use App\Models\RuleLog;
@@ -33,13 +34,24 @@ class RuleController extends Controller
     }
 
     public function update(RuleRequest $request, Rule $rule): JsonResponse
-    { // 编辑审计规则
-        return $this->actionResponse('common.edit', 'model.rule.attribute', fn () => $rule->update($request->validated()));
+    { // 编辑审计规则：改完推给消费该规则的 VNET 节点重拉
+        return $this->actionResponse('common.edit', 'model.rule.attribute', function () use ($request, $rule) {
+            $ret = $rule->update($request->validated());
+            ReloadRule::forRule($rule);
+
+            return $ret;
+        });
     }
 
     public function destroy(Rule $rule): JsonResponse
-    { // 删除审计规则
-        return $this->actionResponse('common.delete', 'model.rule.attribute', fn () => $rule->delete());
+    { // 删除审计规则：目标在删除前取走，删完 pivot 级联消失就查不到了
+        return $this->actionResponse('common.delete', 'model.rule.attribute', function () use ($rule) {
+            $nodes = ReloadRule::nodesForRule($rule);
+            $ret = $rule->delete();
+            ReloadRule::pushTo($nodes);
+
+            return $ret;
+        });
     }
 
     public function ruleLogList(Request $request): View

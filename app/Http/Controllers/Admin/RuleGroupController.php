@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\ActionResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\RuleGroupRequest;
+use App\Jobs\VNet\ReloadRule;
 use App\Models\Rule;
 use App\Models\RuleGroup;
 use Illuminate\Contracts\View\View;
@@ -56,6 +57,8 @@ class RuleGroupController extends Controller
         return $this->redirectAction('common.edit', 'model.rule_group.attribute', function () use ($request, $group) {
             if ($group->update($request->only(['name', 'type']))) {
                 $group->rules()->sync($request->input('rules', []));
+                // 分组成员/模式变了，消费该分组的 VNET 节点要重拉
+                ReloadRule::forGroup($group);
 
                 return redirect()->back()->with('successMsg', trans('common.success_item', ['attribute' => trans('common.edit')]));
             }
@@ -65,7 +68,13 @@ class RuleGroupController extends Controller
     }
 
     public function destroy(RuleGroup $group): JsonResponse
-    {
-        return $this->actionResponse('common.delete', 'model.rule_group.attribute', fn () => $group->delete());
+    { // 删除分组：目标在删除前取走，FK 置 null 后节点视角变成「无规则=放行」
+        return $this->actionResponse('common.delete', 'model.rule_group.attribute', function () use ($group) {
+            $nodes = ReloadRule::nodesForGroups([$group->id]);
+            $ret = $group->delete();
+            ReloadRule::pushTo($nodes);
+
+            return $ret;
+        });
     }
 }
