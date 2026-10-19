@@ -28,9 +28,7 @@ class RecordUserLogin implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(private readonly int $userId, private readonly string $ip)
-    {
-    }
+    public function __construct(private readonly int $userId, private readonly string $ip) {}
 
     public function handle(): void
     {

@@ -16,8 +16,7 @@ class UserVNetTasks implements ShouldBroadcastNow
         public string $type,
         public array $data = [],
         public ?int $userId = null
-    ) {
-    }
+    ) {}
 
     public function broadcastOn(): Channel
     {

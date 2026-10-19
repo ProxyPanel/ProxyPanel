@@ -16,8 +16,7 @@ class PaymentStatusUpdated implements ShouldBroadcast
         public string $tradeNo,
         public string $status,
         public string $message
-    ) {
-    }
+    ) {}
 
     public function broadcastOn(): Channel
     {

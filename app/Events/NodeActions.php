@@ -16,8 +16,7 @@ class NodeActions implements ShouldBroadcastNow
         public string $type,
         public array $data = [],
         public ?int $nodeId = null
-    ) {
-    }
+    ) {}
 
     public function broadcastOn(): Channel
     {

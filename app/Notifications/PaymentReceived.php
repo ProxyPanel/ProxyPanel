@@ -12,9 +12,7 @@ class PaymentReceived extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct(private readonly string $sn, private readonly string $amountWithSign)
-    {
-    }
+    public function __construct(private readonly string $sn, private readonly string $amountWithSign) {}
 
     public function via($notifiable)
     {

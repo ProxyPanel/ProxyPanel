@@ -52,7 +52,5 @@ class Credit implements Gateway
         return response()->json(['status' => 'success', 'message' => trans('user.purchase.completed')]);
     }
 
-    public function notify(Request $request): void
-    {
-    }
+    public function notify(Request $request): void {}
 }
