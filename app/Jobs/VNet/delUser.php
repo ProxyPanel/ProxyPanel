@@ -2,10 +2,9 @@
 
 namespace App\Jobs\VNet;
 
+use App\Jobs\VNet\Concerns\PushesToNodes;
 use App\Models\Node;
-use Arr;
 use Exception;
-use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
@@ -19,6 +18,7 @@ class DelUser implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
+    use PushesToNodes;
     use Queueable;
     use SerializesModels;
 
@@ -33,37 +33,24 @@ class DelUser implements ShouldQueue
         }
     }
 
+    public $tries = 3;
+
+    public $backoff = [30, NodeReachability::TTL];
+
     public function handle(): void
     {
-        foreach ($this->nodes as $node) {
-            if ($node->is_ddns) {
-                $this->send($node->server.':'.$node->push_port, $node->auth->secret);
-            } else { // 多IP支持
-                foreach ($node->ips() as $ip) {
-                    $this->send($ip.':'.$node->push_port, $node->auth->secret);
-                }
-            }
+        // 删除丢一次就是「已禁用的账号还能用」，比新增更不能只留一行日志
+        $undelivered = $this->pushToNodes($this->nodes, $this->endpoint(), '删除用户', is_array($this->userIds) ? $this->userIds : null, 15);
+
+        if ($undelivered !== []) {
+            throw new Exception('【删除用户】未送达：'.implode(',', $undelivered));
         }
     }
 
-    private function send(string $host, string $secret): void
+    /** 单个 id 仍走 v1 端点：老部署留的口子，集合形式走 v2 批量端点 */
+    private function endpoint(): string
     {
-        try {
-            $request = Http::baseUrl($host)->timeout(15)->withHeader('secret', $secret);
-
-            if (is_array($this->userIds)) {
-                $response = $request->post('api/v2/user/del/list', $this->userIds);
-            } else {
-                $response = $request->post('api/user/del/'.$this->userIds);
-            }
-
-            $message = $response->json();
-            if ($message && Arr::has($message, ['success', 'content']) && $message['success'] === 'false') {
-                Log::alert("【删除用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
-            }
-        } catch (Exception $exception) {
-            Log::alert('【删除用户】推送异常：'.$exception->getMessage());
-        }
+        return is_array($this->userIds) ? 'api/v2/user/del/list' : 'api/user/del/'.$this->userIds;
     }
 
     // 队列失败处理

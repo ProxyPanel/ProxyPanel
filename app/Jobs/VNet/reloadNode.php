@@ -62,6 +62,9 @@ class ReloadNode implements ShouldQueue
 
     private function send(string $host, string $secret, array $data): bool
     {
+        // 重载是运维的显式意图，先解除退避再打一次：不能让人点了重置却被窗口挡住，也要让这次失败重新计入窗口
+        NodeReachability::clear($host);
+
         try {
             $response = Http::baseUrl($host)->timeout(15)->withHeader('secret', $secret)->post('api/v2/node/reload', $data);
             $message = $response->json();
@@ -78,6 +81,7 @@ class ReloadNode implements ShouldQueue
             }
             Log::warning("【重载节点】失败：$host");
         } catch (Exception $exception) {
+            NodeReachability::mark($host);
             Log::alert('【重载节点】推送异常：'.$exception->getMessage());
         }
 

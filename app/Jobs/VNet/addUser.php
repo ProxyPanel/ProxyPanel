@@ -2,11 +2,10 @@
 
 namespace App\Jobs\VNet;
 
+use App\Jobs\VNet\Concerns\PushesToNodes;
 use App\Models\Node;
 use App\Models\User;
-use Arr;
 use Exception;
-use Http;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,8 +19,13 @@ class AddUser implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
+    use PushesToNodes;
     use Queueable;
     use SerializesModels;
+
+    public $tries = 3;
+
+    public $backoff = [30, NodeReachability::TTL];
 
     private array $data;
 
@@ -40,7 +44,7 @@ class AddUser implements ShouldQueue
                 'uid' => $user->id,
                 'port' => $user->port,
                 'passwd' => $user->passwd,
-                'speed_limit' => $user->speed_limit,
+                'speed_limit' => $user->speed_limit_bytes,
                 'enable' => $user->enable,
             ];
         }
@@ -48,27 +52,15 @@ class AddUser implements ShouldQueue
 
     public function handle(): void
     {
-        foreach ($this->nodes as $node) {
-            if (isset($node->is_ddns) && $node->is_ddns) {
-                $this->send($node->server.':'.$node->push_port, $node->auth->secret);
-            } else { // 多IP支持
-                foreach ($node->ips() as $ip) {
-                    $this->send($ip.':'.$node->push_port, $node->auth->secret);
-                }
-            }
+        if ($this->data === []) { // 账号都不存在了，删除流程会负责摘掉节点上的残留
+            return;
         }
-    }
 
-    private function send(string $host, string $secret): void
-    {
-        try {
-            $response = Http::baseUrl($host)->timeout(20)->withHeader('secret', $secret)->post('api/v2/user/add/list', $this->data);
-            $message = $response->json();
-            if ($message && Arr::has($message, ['success', 'content']) && $message['success'] === 'false') {
-                Log::alert("【新增用户】推送失败（推送地址：{$host}，返回内容：".$message['content'].'）');
-            }
-        } catch (Exception $exception) {
-            Log::alert('【新增用户】推送异常：'.$exception->getMessage());
+        // 按 uid 落状态，重投同一批不会多出一份；只有传输层没送达才让队列再来一次
+        $undelivered = $this->pushToNodes($this->nodes, 'api/v2/user/add/list', '新增用户', $this->data);
+
+        if ($undelivered !== []) {
+            throw new Exception('【新增用户】未送达：'.implode(',', $undelivered));
         }
     }
 

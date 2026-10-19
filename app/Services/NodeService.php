@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\ProxyType;
 use App\Models\Node;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -9,19 +10,14 @@ class NodeService
 {
     public function getActiveNodeTypes(?Builder $nodes = null): array
     {
-        // / 1. 获取 Node 存在的 type 集合并去重
-        $nodeTypes = ($nodes ?? Node::whereStatus(1))->pluck('type')->unique()->toArray();
-        $protocols = config('common.proxy_protocols', []);
-
         $result = [];
-        foreach ($nodeTypes as $type) {
-            if (! isset($protocols[$type])) {
-                continue;
-            }
+        // 按承载协议归组：VNET(4) 与 SSR(1) 出一张牌
+        foreach (($nodes ?? Node::whereStatus(1))->pluck('type') as $type) {
+            $carrier = ProxyType::tryFrom((int) $type)?->carrier();
 
-            // 特殊逻辑：type 4 映射到 key 1，其余保持不变
-            $key = ($type === 4) ? 1 : $type;
-            $result[$key] = $protocols[$key];
+            if ($carrier) {
+                $result[$carrier->value] = $carrier->label();
+            }
         }
 
         return $result;
@@ -31,23 +27,31 @@ class NodeService
     {
         $webApi = sysConfig('web_api_url') ?: sysConfig('website_url');
 
-        return match ($node->type) {
-            1,4 => $this->getVnetConfig($node, $webApi),
-            2 => $this->getV2RayConfig($node, $webApi),
-            3 => $this->getTrojanConfig($node, $webApi),
-            5 => $this->getHysteria2Config($node),
+        return match (ProxyType::tryFrom($node->type)) {
+            ProxyType::SHADOWSOCKSR, ProxyType::VNET => $this->getVnetConfig($node, $webApi),
+            ProxyType::V2RAY => $this->getV2RayConfig($node, $webApi),
+            ProxyType::TROJAN => $this->getTrojanConfig($node, $webApi),
+            ProxyType::HYSTERIA2 => $this->getHysteria2Config($node),
             default => $this->getDefaultConfig(),
         };
     }
 
     private function getVnetConfig(Node $node, string $webApi): array
     {
+        // 装的是本仓自己的脚本（bit.ly 短链会 301 到它，但短链改指向时没人能发现）；
+        // 脚本再从 release/version.json 取要装的版本，所以升版本要同时动 version.json 和 tag
+        $script = 'https://raw.githubusercontent.com/ProxyPanel/VNet-SSR/master/release/deploy.sh';
+        $upgradeScript = 'https://raw.githubusercontent.com/ProxyPanel/VNet-SSR/master/release/upgrade.sh';
+
         return [[
             'name' => 'VNET',
             'commands' => [
-                'install' => "(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \\\n&& curl -L -s https://bit.ly/3828OP1 \\\n| WEB_API=\"$webApi\" \\\nNODE_ID=$node->id \\\nNODE_KEY={$node->auth->key} \\\nbash",
-                'update' => trans('admin.node.auth.deploy.same'),
-                'uninstall' => 'curl -L -s https://bit.ly/3828OP1 | bash -s -- --remove',
+                // WITH_TUNE=1 是让「复制粘贴就完事」成立：调优跟着装机走，不要求运维改命令；不想调优就删这一个变量
+                // -f 让这条同时是「重新下发凭据 / 修坏安装」那条：不带它时 deploy.sh 在版本相同处早退，/etc/vnet/config.json 不会被重写
+                'install' => "(yum install curl 2> /dev/null || apt install curl 2> /dev/null) \\\n&& curl -L -s {$script} \\\n| WEB_API=\"$webApi\" \\\nNODE_ID=$node->id \\\nNODE_KEY={$node->auth->key} \\\nWITH_TUNE=1 \\\nbash -s -- -f",
+                // 日常版本升级走这条：只换二进制，不碰配置/单元/调优，所以命令里不需要也不应出现凭据；坏包起不来会自动回滚
+                'update' => "curl -L -s {$upgradeScript} | bash",
+                'uninstall' => "curl -L -s {$script} | bash -s -- --remove",
                 'start' => 'systemctl start vnet',
                 'stop' => 'systemctl stop vnet',
                 'restart' => 'systemctl restart vnet',
@@ -94,8 +98,7 @@ class NodeService
     {
         if (empty($node->host)) {
             return [
-                'requires_host' => true,
-                'edit_url' => route('admin.node.edit', $node->id),
+                'hint' => trans('admin.node.auth.deploy.host_hint', ['url' => route('admin.node.edit', $node->id)]),
             ];
         }
 
@@ -116,12 +119,23 @@ class NodeService
 
     private function getHysteria2Config(Node $node): array
     {
-        // 生成配置文件内容
+        // ACME 只认域名：host 会在没填域名时退回 IP，那种配置申请不到证书，hysteria-server 起不来
+        if (empty($node->server)) {
+            return [
+                'hint' => trans('admin.node.auth.deploy.host_hint', ['url' => route('admin.node.edit', $node->id)]),
+            ];
+        }
+
+        // 邮箱缺失会生成 "email: " 空值，证书申请当场失败
+        if (empty(sysConfig('webmaster_email'))) {
+            return [
+                'hint' => trans('admin.node.auth.deploy.email_hint', ['url' => route('admin.system.index')]),
+            ];
+        }
+
         $configContent = "listen: :$node->port\n";
 
-        if (! empty($node->host)) {
-            $configContent .= "acme:\n  domains:\n    - $node->host\n  email: ".sysConfig('webmaster_email')."\n";
-        }
+        $configContent .= "acme:\n  domains:\n    - $node->host\n  email: ".sysConfig('webmaster_email')."\n";
 
         $configContent .= "auth:\n  type: http\n  http:\n    url: ".route('api.hysteria2.auth', $node->id)."\n    insecure: ".($node->allow_insecure ? 'true' : 'false')."\n";
 

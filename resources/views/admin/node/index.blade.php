@@ -77,7 +77,7 @@
                         @endcan
                     </x-admin.row-actions>
                 </x-slot:actions>
-            @endcan
+            @endcanany
             <x-slot:tbody>
                 @foreach ($nodeList as $node)
                     <tr>
@@ -91,10 +91,10 @@
                         <td> {{ $node->transfer }} </td>
                         <td> {{ $node->traffic_rate }} </td>
                         <td>
-                            @isset($node->profile['passwd'])
+                            @if ($node->isSinglePort())
                                 {{-- 单端口 --}}
                                 <span class="badge badge-lg badge-info"><i class="fa-solid fa-1" aria-hidden="true"></i></span>
-                            @endisset
+                            @endif
                             @if ($node->is_display === 0)
                                 {{-- 节点完全不可见 --}}
                                 <span class="badge badge-lg badge-danger"><i class="icon wb-eye-close" aria-hidden="true"></i></span>
@@ -104,6 +104,13 @@
                             @elseif($node->is_display === 2)
                                 {{-- 节点只可被订阅到 --}}
                                 <span class="badge badge-lg badge-danger"><i class="fa-solid fa-store-slash" aria-hidden="true"></i></span>
+                            @endif
+                            @if (! empty($node->clientGaps))
+                                {{-- 算法值不被这些客户端实现，订阅里整条丢弃 --}}
+                                @php $gap = \App\Utils\Clients\NodeCompatibility::describe($node->clientGaps); @endphp
+                                <span class="badge badge-lg badge-warning" title="{{ trans('admin.node.client_gap', $gap) }}">
+                                    <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                                </span>
                             @endif
                             @if ($node->ip)
                                 <span class="badge badge-md badge-info"><i class="fa-solid fa-4" aria-hidden="true"></i></span>
@@ -160,7 +167,7 @@
                                         @endcan
                                     @endif
                                 </x-ui.dropdown>
-                            @endcan
+                            @endcanany
                         </td>
                     </tr>
                     @foreach ($node->childNodes as $childNode)
@@ -214,7 +221,7 @@
                                                                 icon="wb-signal" :text="trans('admin.node.connection_test')" />
                                         @endcan
                                     </x-ui.dropdown>
-                                @endcan
+                                @endcanany
                             </td>
                         </tr>
                     @endforeach

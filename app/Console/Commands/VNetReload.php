@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\ProxyType;
 use App\Jobs\VNet\ReloadNode;
 use App\Models\Node;
 use Illuminate\Console\Command;
@@ -17,7 +18,7 @@ class VNetReload extends Command
     {
         $startTime = microtime(true);
 
-        $nodes = Node::whereStatus(1)->whereType(4)->get();
+        $nodes = Node::whereStatus(1)->whereType(ProxyType::VNET->value)->get();
         if ($nodes->isNotEmpty()) {
             ReloadNode::dispatchSync($nodes);
         }

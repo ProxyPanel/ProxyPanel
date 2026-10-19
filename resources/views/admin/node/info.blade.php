@@ -316,7 +316,7 @@
                 // 反向解析节点数据以适配表单字段
                 const node = @json($node);
                 nodeData = {
-                    single: node.type === 0 || node.type === 1 || node.type === 4 ? (node.passwd ? 1 : 0) : undefined,
+                    single: node.type === 0 || node.type === 1 || node.type === 4 ? (node.single ? 1 : 0) : undefined,
                     ...node,
                     v2_tls: node.type === 2 ? (node?.v2_tls === 'tls' ? 1 : 0) : undefined,
                 };
@@ -334,6 +334,7 @@
             bindEvents();
             // 自动填充表单
             autoPopulateForm(nodeData);
+            applyVNetAlgorithmLimits(currentNodeType());
             calculateNextNextRenewalDate();
         });
 
@@ -498,6 +499,58 @@
         }
 
         // 设置服务类型
+        // VNET(type=4) 由 VNet-SSR 承载：名单外的算法名不会让节点报错下线，它是拒绝建连接而心跳照常上报，
+        // 面板看着「在线、无人」，用户侧全断。这里按节点仓 docs/capabilities.json 的镜像过滤下拉，
+        // 服务端 NodeRequest 用同一份名单兜底。
+        @php
+            $vnetSupported = [
+                'methods' => \App\Utils\VNet\Supported::METHODS,
+                'protocols' => \App\Utils\VNet\Supported::PROTOCOLS,
+                'obfs' => \App\Utils\VNet\Supported::OBFS,
+            ];
+        @endphp
+        const vnetSupported = @json($vnetSupported);
+        const algorithmFields = [
+            {selector: ".ss-setting select[name='method']", allowed: vnetSupported.methods},
+            {selector: ".ssr-setting select[name='protocol']", allowed: vnetSupported.protocols},
+            {selector: ".ssr-setting select[name='obfs']", allowed: vnetSupported.obfs},
+        ];
+
+        function currentNodeType() {
+            return parseInt($("input:radio[name='type']:checked").val());
+        }
+
+        function applyVNetAlgorithmLimits(type) {
+            algorithmFields.forEach(field => {
+                const $select = $(field.selector);
+                if (!$select.length) {
+                    return;
+                }
+
+                if (!field.original) {
+                    field.original = $select.children().clone(true);
+                }
+
+                const current = $select.val();
+                let options = field.original.clone();
+                if (type === 4) {
+                    options = options.filter(function () {
+                        return this.value === "" || field.allowed.includes(this.value);
+                    });
+                }
+
+                $select.empty().append(options);
+                if (type !== 4 || field.allowed.includes(current)) {
+                    $select.val(current);
+                }
+                if ($.fn.selectpicker) {
+                    $select.selectpicker('refresh');
+                }
+                // 混淆项被过滤后当前值可能被清空，让混淆参数的显隐跟着重算
+                $select.triggerHandler('changed.bs.select');
+            });
+        }
+
         function updateServiceType() {
             const type = parseInt($(this).val());
             const settingsMap = {
@@ -511,6 +564,7 @@
             $(".ss-setting, .ssr-setting, .v2ray-setting, .trojan-setting, .hy2-setting").hide();
             Object.keys(settingsMap).forEach(key => $(settingsMap[key].join(",")).hide());
             (settingsMap[type] || []).forEach(selector => $(selector).show());
+            applyVNetAlgorithmLimits(type);
         }
 
         function toggleObfsParam() {
