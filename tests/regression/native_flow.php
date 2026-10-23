@@ -208,15 +208,18 @@ namespace {
     $trade = '';
     $invoiceStatus = 'paid';
     $paidAt = null;
-    $http->fake(function ($r) use ($http, &$mode, &$invoicePosts, &$quotePosts, &$trade, &$invoiceStatus, &$nested, &$triggered, &$paidAt, $gateway) {
+    $merchantAssets = [['code' => 'USDT', 'chain' => 'bsc', 'enabled' => true, 'invoicePaymentEnabled' => true]];
+    $settlementPair = ['USDT', 'bsc'];
+    $settlementAmount = '3.0';
+    $http->fake(function ($r) use ($http, &$mode, &$invoicePosts, &$quotePosts, &$trade, &$invoiceStatus, &$nested, &$triggered, &$paidAt, &$merchantAssets, &$settlementPair, &$settlementAmount, $gateway) {
         $path = parse_url($r->url(), PHP_URL_PATH);
         if ($path === '/api/v1/auth/apikey/token') {
             return $mode === 'auth-failure' ? $http->response(['success' => false], 401)
                 : $http->response(['data' => ['accessToken' => 'SYNTHETIC']]);
         }
         if ($path === '/api/v1/invoice/payment-assets') {
-            return $http->response(['items' => [['code' => 'USDT', 'chain' => 'bsc',
-                'enabled' => $mode !== 'asset-disabled', 'invoicePaymentEnabled' => true]]]);
+            return $http->response(['items' => $mode === 'asset-disabled'
+                ? array_map(fn ($row) => array_replace($row, ['enabled' => false]), $merchantAssets) : $merchantAssets]);
         }
         if ($path === '/api/v1/invoice/list') {
             return $http->response(['invoices' => [['invoiceId' => 'I1', 'orderId' => $trade]],
@@ -255,7 +258,7 @@ namespace {
         if ($path === '/api/v1/invoice/transaction/T1') {
             $txn = ['txnId' => 'T1', 'invoiceId' => 'I1', 'status' => str_starts_with($mode, 'quote-') ? 'pending' : 'settled',
                 'currencyCode' => 'USD', 'amount' => '3.00',
-                'payCurrency' => 'USDT', 'chain' => $mode === 'quote-mismatch' ? 'tron' : 'bsc', 'payAmount' => '3.0',
+                'payCurrency' => $settlementPair[0], 'chain' => $mode === 'quote-mismatch' ? 'tron' : $settlementPair[1], 'payAmount' => $settlementAmount,
                 'payAddress' => str_starts_with($mode, 'quote-') ? '' : 'SYNTHETIC_SENDER', 'txHash' => '0xSYNTHETIC_HASH'];
 
             return $http->response(['transaction' => $txn]);
@@ -366,5 +369,6 @@ namespace {
     require __DIR__.'/boundary_cases.php';
     require __DIR__.'/hosted_checkout_cases.php';
     require __DIR__.'/recovery_entry_cases.php';
+    require __DIR__.'/all_asset_cases.php';
     echo "PASS {$checks} native flow checks (isolated DB; user and decrypted event are fixtures)\n";
 }

@@ -123,4 +123,9 @@ try {
 check($rejected && $app['cache']->get('jangopay.fx.cny.usd') === null, 'deviation protection also rejects and clears a bad cached rate');
 $long = 'USDT:'.str_repeat('a', 32);
 check(Assets::parse($long) === [$long] && strlen($long) === 37, 'maximum asset pair length');
+$allPairs = array_map(fn ($n) => 'ASSET'.$n.':network'.$n, range(1, 24));
+$api->createInvoice('ORDER1', '3.00', $allPairs);
+$lastInvoice = $requests[array_key_last($requests)];
+check($lastInvoice['allowed_currency'] === $allPairs && $lastInvoice['currency_code'] === 'USD'
+    && $lastInvoice['amount'] === '3.00', 'all resolved assets reach invoice API without changing USD denomination');
 echo "PASS {$checks} HTTP/FX/asset checks (synthetic HTTP only)\n";

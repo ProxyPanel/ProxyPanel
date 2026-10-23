@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Throwable;
 
-/** Optional USDT/USDC gateway. All customer entitlements use ProxyPanel's existing PaymentHelper. */
+/** Hosted gateway for merchant-enabled assets. Native entitlements use PaymentHelper. */
 class JangoPay implements Gateway
 {
     public static function metadata(): array
@@ -33,13 +33,15 @@ class JangoPay implements Gateway
         return [
             'key' => 'jangopay',
             'method' => ['other'],
-            'settings' => ['jangopay_assets' => ['holder' => 'USDT:tron,USDC:ethereum']],
+            'settings' => ['jangopay_assets' => ['holder' => '*']],
         ];
     }
 
     private function allowed(): array
     {
-        return Assets::parse((string) sysConfig('jangopay_assets', ''));
+        $configured = trim((string) sysConfig('jangopay_assets', ''));
+
+        return Assets::parse($configured === '' ? '*' : $configured);
     }
 
     private function api(): Api

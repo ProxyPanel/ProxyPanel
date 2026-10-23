@@ -2,7 +2,7 @@
 @section('content')
 <div class="page-content container">
     <div class="panel panel-bordered">
-        <div class="panel-heading"><h1 class="panel-title">JangoPay · USDT / USDC</h1></div>
+        <div class="panel-heading"><h1 class="panel-title">JangoPay</h1></div>
         <div class="panel-body">
             <p>{{ trans('user.payment.jangopay.local_amount') }}: <strong>{{ $payment->amount_tag }}</strong></p>
             <p>{{ trans('user.payment.jangopay.usd_amount') }}: <strong>USD {{ $attempt->amount_usd }}</strong></p>

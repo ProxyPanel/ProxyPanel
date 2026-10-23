@@ -14,8 +14,9 @@ final class Verification
 
     public static function equalDecimal(string $a, string $b): bool
     {
-        $format = '/^(0|[1-9][0-9]{0,20})(?:\.([0-9]{1,18}))?$/D';
-        if (! preg_match($format, $a, $ma) || ! preg_match($format, $b, $mb)) {
+        $format = '/^(0|[1-9][0-9]*)(?:\.([0-9]+))?$/D';
+        if (strlen($a) > 80 || strlen($b) > 80
+            || ! preg_match($format, $a, $ma) || ! preg_match($format, $b, $mb)) {
             return false;
         }
         $fa = rtrim($ma[2] ?? '', '0');

@@ -89,7 +89,7 @@ update('database/seeders/ConfigSeeder.php', "        'maintenance_content',\n",
 
 LANGS = {
   'en': {
-    'model': "JangoPay Enabled Assets / Networks (USDT:tron,USDC:ethereum)",
+    'model': "JangoPay Assets / Networks (* or blank: all merchant-enabled pairs)",
     'unavailable': 'JangoPay checkout is not configured or temporarily unavailable.',
     'unknown_creation': 'Invoice creation is unconfirmed. Please contact support before trying to pay again.',
     'local_amount': 'Local order total', 'usd_amount': 'Payment invoice amount',
@@ -102,7 +102,7 @@ LANGS = {
     'orders': 'Back to orders',
   },
   'zh_CN': {
-    'model': 'JangoPay 支持的币种及网络（如 USDT:tron,USDC:ethereum）',
+    'model': 'JangoPay 币种及网络（* 或留空：商户已启用的全部组合）',
     'unavailable': 'JangoPay 尚未完成配置或暂时不可用。',
     'unknown_creation': '尚无法确认收款单是否创建成功。请先联系客服，避免重复支付。',
     'local_amount': '原订单金额', 'usd_amount': '美元收款单金额',
@@ -115,7 +115,7 @@ LANGS = {
     'orders': '返回订单列表',
   },
   'ja': {
-    'model': 'JangoPay 利用可能な通貨とネットワーク（USDT:tron,USDC:ethereum）',
+    'model': 'JangoPay 通貨とネットワーク（* または空欄：加盟店で有効な全組合せ）',
     'unavailable': 'JangoPayの設定が完了していないか、現在利用できません。',
     'unknown_creation': '請求書の作成が未確認です。重複送金せずサポートへ連絡してください。',
     'local_amount': '注文金額', 'usd_amount': 'USD請求額',

@@ -1,6 +1,6 @@
 # JangoPay hosted checkout
 
-Optional USDT / USDC payment integration for ProxyPanel. Customers open the official JangoPay hosted checkout; ProxyPanel creates the invoice, verifies merchant records and fulfills its existing native order. There is no local coin selection, payment address display or confirm-coin request.
+Payment integration for all merchant-enabled assets and networks for ProxyPanel. Customers open the official JangoPay hosted checkout; ProxyPanel creates the invoice, verifies merchant records and fulfills its existing native order. There is no local coin selection, payment address display or confirm-coin request.
 
 ## Installation and configuration
 
@@ -23,7 +23,16 @@ JANGOPAY_FINAL_INVOICE_STATUSES=paid
 
 `appended16`, final invoice `paid`, transaction `settled` and merchant-paid fees were verified for the tested merchant and USDT/BSC payment on 2026-10-23. Verify these settings for the deploying account before enabling collection. Empty framing/status configuration or unavailable crypto support blocks new collection.
 
-In native administrator payment settings, set **JangoPay Enabled Assets / Networks**, for example `USDT:bsc`. The local allowlist is intersected with merchant assets whose `enabled` and `invoicePaymentEnabled` fields are both JSON boolean `true`. Missing or loosely typed flags are rejected. An example pair does not guarantee that the deploying merchant supports it.
+In native administrator payment settings, **JangoPay Assets / Networks** accepts:
+
+- `*` or blank: all asset/network pairs currently enabled for invoice payments by the merchant. The plugin fetches the merchant payment-assets API for each new invoice; it does not maintain a fixed coin/network catalog.
+- An explicit list such as `USDT:bsc,USDC:ethereum,BTC:bitcoin`: restrict new invoices to the intersection of that list and the merchant-enabled pairs. Examples are identifiers, not a promise that the deploying account enables them.
+
+Both `enabled` and `invoicePaymentEnabled` must be JSON boolean `true`. Missing, false or loosely typed flags cannot enable an asset, including in all-assets mode. Each invoice sends and persists the resolved explicit list; `*` is never sent to the invoice API or saved as settlement authorization. Existing orders keep that snapshot when account/plugin settings later change. An existing explicit USDT/USDC configuration remains restricted until the operator changes it to `*` or blank.
+
+There is no USDT/USDC restriction or twenty-pair count limit. Pair identifiers are bounded by the existing 80-character database column and the saved list by its text capacity. Unsupported/malformed merchant metadata or an empty enabled set cannot create a payable invoice. New supported pairs become available to new invoices through merchant metadata without a plugin release. Previously created invoices are not expanded retroactively.
+
+JangoPay hosted checkout handles token pricing, selection, exact payment quantity, network, receiving address and QR code. Local denomination remains USD and native delivery still requires complete authenticated identity, fiat amount, fee and transaction proof. Token quantity comparisons use exact decimal strings within the saved proof field capacity, including more than eighteen fractional digits; USD accounting precision is unchanged.
 
 Register the matching RSA public key in JangoPay Developer settings and set the HTTPS callback:
 
@@ -33,7 +42,7 @@ https://your-proxypanel-site.example/callback/notify?method=jangopay
 
 The PHP worker needs ext-openssl, AES-256-GCM, `proc_open`, an OpenSSL CLI on PATH and read access to the private key. Readiness executes an OAEP-SHA256 encryption/decryption round trip. Verify the actual PHP-FPM environment and reload workers/config caches after changing credentials. A CLI success does not establish PHP-FPM readiness.
 
-Run a controlled payment for the deploying account, verify callback decryption, authenticated merchant proof and exactly one native delivery, then set `JANGOPAY_ENABLE_PAYMENTS=true`. The option is false by default. USDC and other networks need separate acceptance; the completed live test covers USDT/BSC only.
+Run a controlled payment for the deploying account, verify callback decryption, authenticated merchant proof and exactly one native delivery, then set `JANGOPAY_ENABLE_PAYMENTS=true`. The option is false by default. All merchant-enabled pairs are configurable. Per user scope, this asset expansion does not repeat real payments; the completed live payment test covers USDT/BSC only.
 
 ## Customer payment flow
 
@@ -115,11 +124,11 @@ python3 tests/regression/run.py \
 
 Optional arguments: `--php`, `--php-ini`, `--output`. Requires Python 3 without `-O`, PHP SQLite/OpenSSL and OpenSSL CLI. Merchant HTTP, decrypted callback fixtures and the lightweight test user are substituted in this suite; upstream order/payment/coupon/observer/service code and Blade are exercised. Cryptography has independent synthetic tests. Real callbacks are a separate acceptance layer.
 
-The 2026-10-23 validation used PHP 8.5.11 / Laravel 10.50.3 / MariaDB 11.8.9. It passed 249 assertions, four patch checks, syntax checks, ten migration checks and eight two-process rounds: six single deliveries, one closed-order hold and two read-only hosted redirects with zero coin POSTs.
+The 2026-10-23 validation used PHP 8.5.11 / Laravel 10.50.3 / MariaDB 11.8.9. The current isolated suite passed 287 assertions and four patch checks plus syntax checks, including generic tokens, lists above twenty pairs, strict enable flags, wildcard resolution, frozen invoice allowlists, nonstablecoin settlement and duplicate protection. No live merchant requests were made in this expansion. The hosted baseline also passed ten MariaDB migration checks and eight two-process rounds: six single deliveries, one closed-order hold and two read-only hosted redirects with zero coin POSTs; those baseline concurrency results are not claimed as newly repeated asset-specific acceptance.
 
 Real acceptance used the full isolated upstream application with actual native User/Order/Payment models, an authenticated customer session, official hosted checkout and one new USD 3.00 USDT/BSC payment. An original encrypted callback completed the order and produced one USD 3.00 native credit. The user's transaction hash matched saved and authenticated merchant proof. Two local replays of that captured payment ciphertext remained successful without another credit or notification. A captured payout ciphertext was decrypted, acknowledged as ignored and did not deliver an order. One notification ID was dispatched to database and log-mail channels; no external email delivery was tested. Temporary public ingress was closed after acceptance. Raw financial records, secrets and callback bodies are excluded from the PR.
 
-PHP 8.1, production PHP-FPM, USDC, other networks, other fee modes and real CNY payments were not exercised. This live result covers the tested merchant and payment; deploying accounts still need their own configuration/acceptance. Discovery limits and operational review remain as described above.
+PHP 8.1, production PHP-FPM, Additional tokens/networks, other fee modes and real CNY payments were not separately paid during this change. This live result covers the tested merchant and payment; deploying accounts still need their own configuration/acceptance. Discovery limits and operational review remain as described above.
 
 ## References
 

@@ -78,18 +78,37 @@ namespace {
     ok(rejects(fn () => Money::cents('999999999999')), 'overflow');
     ok(Money::fromMajor(2.5) === '2.50', 'float normalized at boundary');
     ok(Assets::parse('USDT:tron,USDC:ethereum,USDT:tron') === ['USDT:tron', 'USDC:ethereum'], 'dedup allowlist');
-    ok(rejects(fn () => Assets::parse('BTC:tron')), 'reject nonstablecoin');
+    ok(Assets::parse('BTC:bitcoin,ETH:ethereum,SOL:solana,BNB:bsc,TRX:tron') === ['BTC:bitcoin', 'ETH:ethereum', 'SOL:solana', 'BNB:bsc', 'TRX:tron'], 'generic assets are not restricted to stablecoins');
+    ok(Assets::parse('*') === ['*'], 'explicit all-assets mode');
+    foreach (['', '*,BTC:bitcoin', 'BTC:', ':bitcoin', 'BTC:bitcoin:extra', 'B TC:bitcoin', 'BTC:bit/coin', str_repeat('A', 79).':b'] as $badPair) {
+        ok(rejects(fn () => Assets::parse($badPair)), 'invalid or ambiguous asset setting rejected');
+    }
+    $many = array_map(fn ($n) => 'ASSET'.$n.':network'.$n, range(1, 24));
+    ok(Assets::parse(implode(',', $many)) === $many, 'asset list is not limited to twenty pairs');
+    ok(rejects(fn () => Assets::parse(str_repeat('A', 65536))), 'asset snapshot storage bound');
+    ok(Assets::parse(str_repeat('A', 40).':'.str_repeat('b', 39)) === [str_repeat('A', 40).':'.str_repeat('b', 39)], 'full database pair width');
     ok(rejects(fn () => Assets::parse('USDT:tron,USDT:TRON')), 'case sensitive chain');
     $enabled = Assets::merchantEnabled(['USDT:tron', 'USDC:ethereum'], [
         ['code' => 'USDT', 'chain' => 'tron', 'enabled' => true, 'invoicePaymentEnabled' => true],
         ['code' => 'USDC', 'chain' => 'ethereum', 'enabled' => true, 'invoicePaymentEnabled' => false],
     ]);
     ok($enabled === ['USDT:tron'], 'merchant-enabled only');
+    $allRows = array_map(function ($pair) {
+        [$code, $chain] = explode(':', $pair);
+
+        return ['code' => $code, 'chain' => $chain, 'enabled' => true, 'invoicePaymentEnabled' => true];
+    }, $many);
+    $allRows[] = ['code' => 'BTC', 'chain' => 'bitcoin', 'enabled' => false, 'invoicePaymentEnabled' => true];
+    $allRows[] = ['code' => 'ETH', 'chain' => 'ethereum', 'enabled' => true, 'invoicePaymentEnabled' => false];
+    $allRows[] = $allRows[0];
+    ok(Assets::merchantEnabled(['*'], $allRows) === $many, 'all mode resolves all enabled pairs, deduplicates and excludes disabled assets');
+    ok(Assets::merchantEnabled([$many[0]], $allRows) === [$many[0]], 'explicit merchant subset remains supported');
     $asset = ['code' => 'USDT', 'chain' => 'bsc', 'enabled' => true, 'invoicePaymentEnabled' => true];
     foreach (['enabled', 'invoicePaymentEnabled'] as $flag) {
         foreach ([false, null, 1, 'true', 'false'] as $value) {
             ok(Assets::merchantEnabled(['USDT:bsc'], [array_replace($asset, [$flag => $value])]) === [],
                 'reject disabled or non-boolean asset flag '.$flag.' '.json_encode($value));
+            ok(Assets::merchantEnabled(['*'], [array_replace($asset, [$flag => $value])]) === [], 'all mode also requires strict boolean flags');
         }
         $missing = $asset;
         unset($missing[$flag]);
@@ -109,6 +128,10 @@ namespace {
     ok(! Verification::matches($inv, $detailTxn, 'INV', 'TRADENO', 'TXN', '12.30', 'USDT:tron', ['paid'], '10.1234', 'OtherAddress'), 'receive address mismatch');
     ok(! Verification::matches($inv, $txn, 'INV', 'TRADENO', 'TXN', '12.30', 'USDT:tron', ['paid'], '10.1234', 'TAddress'), 'missing quote fields rejected');
     ok(! Verification::matches($inv, $txn, 'INV', 'TRADENO', 'WRONG', '12.30', 'USDT:tron', ['paid']), 'transaction ownership');
+    ok(Verification::equalDecimal('0.000000000000000000000001', '0.0000000000000000000000010'), 'token precision above eighteen decimals is compared without rounding');
+    ok(! Verification::equalDecimal('0.000000000000000000000001', '0.000000000000000000000002'), 'high precision token mismatch rejected');
+    ok(! Verification::equalDecimal(str_repeat('1', 81), str_repeat('1', 81)), 'token amount cannot exceed stored proof capacity');
+    ok(! Verification::equalDecimal('1e-24', '1e-24'), 'scientific notation is not substituted for exact decimal proof');
 
     if (! function_exists('openssl_pkey_new')) {
         throw new RuntimeException('Need ext-openssl');
