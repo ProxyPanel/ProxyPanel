@@ -4,6 +4,9 @@
 @endpush
 @section('content')
     <div class="page-content container-fluid">
+        @can('admin.jangopay.index')
+            <p><a class="btn btn-default" href="{{ route('admin.jangopay.index') }}">JangoPay · {{ trans('user.payment.jangopay.reconciliation') }}</a></p>
+        @endcan
         <x-admin.table-panel :title="trans('admin.menu.shop.order')" :theads="[
             'id' => '#',
             trans('common.account'),

@@ -624,6 +624,7 @@ return [
                 'stripe' => 'Stripe',
                 'theadpay' => '平头哥支付',
                 'cryptomus' => 'Cryptomus',
+                'jangopay' => 'JangoPay',
                 'youzan' => '有赞云',
                 'bitpayx' => '麻瓜宝',
             ],

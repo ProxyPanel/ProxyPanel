@@ -624,6 +624,7 @@ return [
                 'stripe' => 'Stripe',
                 'theadpay' => 'THeadPay',
                 'cryptomus' => 'Cryptomus',
+                'jangopay' => 'JangoPay',
                 'youzan' => 'YouZan',
                 'bitpayx' => 'BitPayX',
             ],

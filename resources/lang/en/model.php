@@ -337,6 +337,7 @@ return [
         'rule_ban_times' => 'Audit Rule Ban Threshold',
         'rule_log_cooldown' => 'Audit Log Cooldown',
         'server_chan_key' => 'ServerChan SCKEY',
+        'jangopay_assets' => 'JangoPay Enabled Assets / Networks (USDT:tron,USDC:ethereum)',
         'standard_currency' => 'Default Currency',
         'stripe_public_key' => 'Stripe Public Key',
         'stripe_secret_key' => 'Stripe Secret Key',

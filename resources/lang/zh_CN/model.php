@@ -337,6 +337,7 @@ return [
         'rule_ban_times' => '审计规则封禁阈值',
         'rule_log_cooldown' => '审计记录冷却',
         'server_chan_key' => 'ServerChan SCKEY',
+        'jangopay_assets' => 'JangoPay 支持的币种及网络（如 USDT:tron,USDC:ethereum）',
         'standard_currency' => '本位货币',
         'stripe_public_key' => 'Public Key',
         'stripe_secret_key' => 'Secret Key',
