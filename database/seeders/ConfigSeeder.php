@@ -63,6 +63,7 @@ class ConfigSeeder extends Seeder
         'is_register',
         'is_WeChatPay',
         'iYuu_token',
+        'jangopay_assets',
         'maintenance_content',
         'maintenance_mode',
         'maintenance_time',

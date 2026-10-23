@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Models\Config;
 use App\Models\Coupon;
 use App\Models\Invite;
+use App\Models\JangoPayAttempt;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\User;
 use App\Models\UserSubscribe;
 use App\Models\Verify;
@@ -14,6 +16,7 @@ use App\Services\UserService;
 use App\Utils\Helpers;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Log;
 
 class TaskAuto extends Command
@@ -57,7 +60,21 @@ class TaskAuto extends Command
                     $query->whereStatus(1)->where('created_at', '<=', date('Y-m-d H:i:s', strtotime(sysConfig('tasks_close.confirmation_orders')))); // 关闭未处理的人工支付订单
                 });
         })->chunkById((int) sysConfig('tasks_chunk', 3000), function ($orders) {
-            $orders->each->close();
+            $orders->each(function (Order $order) {
+                DB::transaction(function () use ($order) {
+                    $locked = Order::whereKey($order->id)->lockForUpdate()->first();
+                    if (! $locked) {
+                        return;
+                    }
+                    if ((int) $locked->status === 0 && $locked->pay_way === 'jangopay'
+                        && JangoPayAttempt::whereIn('payment_id', Payment::where('order_id', $locked->id)->select('id'))
+                            ->whereNotIn('state', ['delivered', 'resolved'])
+                            ->where('expires_at', '>', now()->subMinutes(JangoPayAttempt::CONFIRMATION_GRACE_MINUTES))->exists()) {
+                        return;
+                    }
+                    $locked->close(true);
+                });
+            });
         });
     }
 

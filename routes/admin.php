@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\Config\LevelController;
 use App\Http\Controllers\Admin\Config\SsConfigController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\InviteController;
+use App\Http\Controllers\Admin\JangoPayController;
 use App\Http\Controllers\Admin\LogsController;
 use App\Http\Controllers\Admin\MarketingController;
 use App\Http\Controllers\Admin\NodeAuthController;
@@ -31,6 +32,9 @@ use App\Http\Controllers\AdminController;
 use App\Utils\Payments\EPay;
 
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('payments/jangopay', [JangoPayController::class, 'index'])->name('jangopay.index');
+    Route::post('payments/jangopay/{id}/check', [JangoPayController::class, 'check'])->whereNumber('id')->name('jangopay.check');
+    Route::post('payments/jangopay/{id}/resolve', [JangoPayController::class, 'resolve'])->whereNumber('id')->name('jangopay.resolve');
     Route::get('/', [AdminController::class, 'index'])->name('index'); // 后台首页
 
     Route::resource('user', UserController::class)->except('show');
