@@ -1,0 +1,13 @@
+{
+  "provenance": "Financial fields and absent receiveAddress reproduced from merchant GET verified 2026-10-22; identifiers are synthetic.",
+  "invoice": {
+    "invoiceId": "I1", "orderId": "ORDER1", "currencyCode": "USD", "amount": "3.00000000",
+    "status": "paid", "payedAmount": "2.97000000", "feePayByUser": false
+  },
+  "transaction": {
+    "txnId": "T1", "invoiceId": "I1", "currencyCode": "USD", "amount": "3.00000000",
+    "payCurrency": "USDT", "payAmount": "3.00000000", "payAddress": "SYNTHETIC_SENDER",
+    "status": "settled", "feeAmount": "0.03000000", "netAmount": "2.97000000",
+    "chain": "bsc", "txHash": "0xSYNTHETIC_HASH", "feePayByUser": false
+  }
+}

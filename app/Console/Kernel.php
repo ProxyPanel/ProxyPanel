@@ -39,6 +39,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('task:monthly')->monthly()->withoutOverlapping(1440);
         $schedule->command('hysteria2:sync')->everyMinute()->withoutOverlapping(5);
 
+        $schedule->command('jangopay:reconcile --limit=10')->everyFiveMinutes()->withoutOverlapping(120);
+
         $this->persistOutput($schedule);
     }
 

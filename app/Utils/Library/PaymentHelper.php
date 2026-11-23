@@ -140,6 +140,12 @@ class PaymentHelper
     {
         $payload = $request->all();
         $method = (string) ($request->query('method') ?: $request->input('method'));
+        if ($method === 'jangopay') {
+            $payload = [
+                'event_type' => $payload['event_type'] ?? null,
+                'algorithm' => $payload['algorithm'] ?? null,
+            ];
+        }
         $tradeNo = self::matchLocalTradeNo($payload) ?? self::matchManualTradeNo($method, $payload);
         $payment = $tradeNo ? Payment::whereTradeNo($tradeNo)->first() : null;
 
@@ -156,7 +162,7 @@ class PaymentHelper
 
         $request->attributes->set('payment_callback_id', $log->id);
 
-        if ($tradeNo === null) {
+        if ($tradeNo === null && $method !== 'jangopay') {
             self::alertUnmatched($log);
         }
 
@@ -282,7 +288,7 @@ class PaymentHelper
     /**
      * @param  string  $tradeNo  本地订单号
      */
-    public static function paymentReceived(string $tradeNo): bool
+    public static function paymentReceived(string $tradeNo, bool $afterCommit = false): bool
     {
         $payment = Payment::whereTradeNo($tradeNo)->with('order')->first();
         if ($payment) {
@@ -297,12 +303,19 @@ class PaymentHelper
                 // 回写排在通知与广播之前
                 self::markPaymentCallbackFulfilled($tradeNo, $payment);
 
-                // 通知与广播失败不能让已收款的回调收到 500
-                try {
-                    $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount_tag));
-                    broadcast(new PaymentStatusUpdated($tradeNo, 'success', trans('common.success_item', ['attribute' => trans('user.pay')]))); // 触发支付状态更新事件
-                } catch (Throwable $e) {
-                    Log::error('【支付履约】通知/广播失败：'.$e->getMessage());
+                $send = function () use ($payment, $tradeNo): void {
+                    // 通知与广播失败不能让已收款的回调收到 500
+                    try {
+                        $payment->user->notify(new PaymentReceived($payment->order->sn, $payment->amount_tag));
+                        broadcast(new PaymentStatusUpdated($tradeNo, 'success', trans('common.success_item', ['attribute' => trans('user.pay')]))); // 触发支付状态更新事件
+                    } catch (Throwable $e) {
+                        Log::error('【支付履约】通知/广播失败：'.$e->getMessage());
+                    }
+                };
+                if ($afterCommit) {
+                    DB::afterCommit($send);
+                } else {
+                    $send();
                 }
             }
 

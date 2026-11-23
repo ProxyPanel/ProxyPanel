@@ -100,11 +100,14 @@ class Order extends Model
         return $query->uid($uid)->activePackage();
     }
 
-    public function close(): bool
+    public function close(bool $automatic = false): bool
     { // 关闭订单
         // 行锁内判状态：只有真的翻到 -1 的那一次触发 observer，重复关闭幂等
-        return (bool) DB::transaction(function (): bool {
+        return (bool) DB::transaction(function () use ($automatic): bool {
             $locked = static::whereKey($this->id)->lockForUpdate()->first();
+            if ($automatic && $locked && ! in_array((int) $locked->status, [0, 1], true)) {
+                return false;
+            }
 
             return $locked !== null && ((int) $locked->status === -1 || $locked->update(['status' => -1]));
         });

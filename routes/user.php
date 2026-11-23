@@ -11,6 +11,7 @@ use App\Http\Controllers\User\TicketController;
 use App\Http\Controllers\UserController;
 use App\Utils\Avatar;
 use App\Utils\Helpers;
+use App\Utils\Payments\JangoPay;
 use App\Utils\Payments\Manual;
 use App\Utils\Payments\Stripe;
 use Illuminate\Support\Str;
@@ -75,6 +76,7 @@ Route::prefix('payment')->controller(PaymentController::class)->group(function (
 });
 
 Route::prefix('pay')->group(function () {
+    Route::get('/jangopay/{trade_no}', [JangoPay::class, 'checkout'])->name('jangopay.checkout');
     Route::get('/manual/{payment}', [Manual::class, 'redirectPage'])->name('manual.checkout'); // 人工支付详细
     Route::post('/manual/{payment}/inform', [Manual::class, 'inform'])->name('manual.inform'); // 人工支付通知
     Route::get('/stripe/{session_id}', [Stripe::class, 'redirectPage'])->name('stripe.checkout'); // Stripe Checkout page

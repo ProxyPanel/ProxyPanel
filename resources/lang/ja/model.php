@@ -336,6 +336,7 @@ return [
         'rule_ban_times' => '監査ルールBAN閾値',
         'rule_log_cooldown' => '監査ログのクールダウン',
         'server_chan_key' => 'ServerChan SCKEY',
+        'jangopay_assets' => 'JangoPay 通貨とネットワーク（* または空欄：加盟店で有効な全組合せ）',
         'standard_currency' => '基準通貨',
         'stripe_public_key' => 'Stripe パブリックキー',
         'stripe_secret_key' => 'Stripe シークレットキー',
